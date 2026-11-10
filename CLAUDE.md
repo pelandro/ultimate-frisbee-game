@@ -61,8 +61,9 @@ L'obiettivo è integrare **entrambi** i miglioramenti: mai sovrascrivere, mai pe
 - Nomi brevi come nel resto del file; nessuna dipendenza esterna a runtime (il gioco deve funzionare offline da un solo file).
 - Ogni file di `src/` finisce con un a capo.
 - Dati dei giocatori reali: solo nome, età e statistiche pubbliche; niente date di nascita o altri dati personali.
+- **Il repository è pubblico**: codice, commit e pull request sono leggibili da chiunque. Mai chiavi, password, indirizzi email, salvataggi personali o altri dati privati, nemmeno nei messaggi dei commit.
 
 ## Cosa non fare senza chiedere
 
-- Pubblicare o distribuire il gioco (pagine pubbliche, rilasci, repository pubblico).
+- Pubblicare o distribuire il gioco oltre al repository (pagine pubbliche come GitHub Pages, rilasci).
 - Cancellare rami o commit altrui, cambiare le regole di protezione di `main`, disattivare i ganci o i test.

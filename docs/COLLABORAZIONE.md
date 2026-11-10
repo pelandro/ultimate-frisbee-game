@@ -5,7 +5,7 @@ Due persone, ognuna con Claude Code, sullo stesso repository. L'idea è semplice
 
 ## Primo avvio (una volta sola)
 
-Il repository è <https://github.com/pelandro/ultimate-frisbee-game> (privato).
+Il repository è <https://github.com/pelandro/ultimate-frisbee-game> (**pubblico**: chiunque può leggerlo, solo i collaboratori invitati possono scriverci).
 
 Chi lo possiede invita il collega da GitHub: **Settings › Collaborators › Add people** (permesso di scrittura).
 
@@ -27,7 +27,7 @@ Le protezioni di `main` su GitHub e l'unione automatica le imposta **il propriet
 - dal proprio computer: `bash tools/setup-github.sh ultimate-frisbee-game` (serve `gh auth login`);
 - oppure a mano: **Settings › General › Pull Requests** → spunta *Allow auto-merge* e *Automatically delete head branches*; **Settings › Branches › Add branch ruleset** (o *Add rule*) per `main` → *Require a pull request before merging* (0 approvazioni), *Require status checks to pass* con il controllo `verifica` e *Require branches to be up to date*, *Block force pushes*.
 
-**Repository privato con piano gratuito di GitHub**: *Allow auto-merge* e la protezione dei rami non sono disponibili (GitHub le offre sui repository privati solo con i piani a pagamento, per esempio Pro). Il flusso funziona lo stesso: `node tools/pr.js unisci` aspetta la fine della verifica e unisce solo se è verde, e i ganci di Claude Code e di Git bloccano commit e push diretti su `main`. La differenza è che su GitHub nulla impedisce a chi usa Git a mano, senza i ganci attivi, di scrivere su `main`: per questo `npm install` (che li attiva) va fatto su ogni computer.
+**Finché queste impostazioni non sono attive** (o se il repository tornasse privato con il piano gratuito di GitHub, che sui repository privati non offre *Allow auto-merge* né la protezione dei rami) il flusso funziona lo stesso: `node tools/pr.js unisci` aspetta la fine della verifica e unisce solo se è verde, e i ganci di Claude Code e di Git bloccano commit e push diretti su `main`. La differenza è che su GitHub nulla impedisce a chi usa Git a mano, senza i ganci attivi, di scrivere su `main`: per questo `npm install` (che li attiva) va fatto su ogni computer.
 
 ## Il lavoro di tutti i giorni
 
