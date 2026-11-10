@@ -10,6 +10,6 @@ Consegna l'aggiornamento di questo ramo. Titolo proposto: $ARGUMENTS
 4. Aggiungi una riga in cima a `docs/CHANGELOG.md` (sezione «Non ancora pubblicato»): cosa cambia per chi gioca, in italiano semplice.
 5. Commit con messaggi chiari in italiano (uno per argomento, non uno enorme), poi `git push -u origin <ramo>`.
 6. Scrivi il testo della pull request in un file temporaneo seguendo `.github/pull_request_template.md` (cosa cambia, moduli e funzioni toccati, contratti toccati, verifiche fatte) e aprila con `node tools/pr.js apri "<titolo>" --corpo <file>`. Funziona sia sul computer sia nelle sessioni cloud (dove `gh pr create` non è disponibile).
-7. `node tools/pr.js unisci <numero>`: attiva l'unione automatica (la pull request entra in `main` da sola quando la verifica di GitHub è verde).
-8. Se risponde che l'unione automatica non è disponibile: `node tools/pr.js attendi <numero>` e, a verifica verde, di nuovo `node tools/pr.js unisci <numero>`. Se la verifica è rossa, leggi l'esito, correggi nel ramo e ricarica: non unire.
+7. `node tools/pr.js unisci <numero>` (dagli un tempo massimo di 15 minuti): unisce la pull request quando la verifica di GitHub è verde. Se il repository offre l'unione automatica la attiva e torna subito; altrimenti aspetta la fine della verifica e poi unisce.
+8. Se la verifica è rossa non unisce: leggi l'esito, correggi nel ramo, ricarica e ripeti il passo 7.
 9. Riferiscimi il collegamento alla pull request e l'esito dei test, nient'altro.
