@@ -76,7 +76,7 @@ function drawPull(){
   pring(ex,ey,7,5,PAL.out,3);pring(ex,ey,7,5,col,1);
   if(out)ptext('FUORI',clamp(ex,24,VW-24),clamp(ey-20,BAR+2,VH-12),{f:'p',c:PAL.red});
   // i due indicatori, in basso al centro: zone colorate e cursore
-  const W=Math.min(168,VW-150),x0=ri(VW/2-W/2),hB=7,y1=VH-ri(60*DPR/PXS)-hB,y0=y1-17;   // sopra la fila dei pulsanti in basso (alti circa 50 px sullo schermo)
+  const W=Math.min(168,VW-150),x0=ri(VW/2-W/2),hB=7,y1=VH-ri(60*UIZ*DPR/PXS)-hB,y0=y1-17;   // sopra la fila dei pulsanti in basso (alti circa 50 px sullo schermo)
   const bar=(y,lab,zones,pos,on)=>{
     ptext(lab,x0-4,y-1,{f:'t',a:'r',c:on?'#ffffff':'#9aa3b8'});
     px(x0-2,y-2,W+4,hB+4,PAL.out);px(x0,y,W,hB,'#3b4263');

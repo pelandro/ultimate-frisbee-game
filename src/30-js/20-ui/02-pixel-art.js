@@ -421,7 +421,8 @@ function drawToasts(dt){
     }
   }
   toasts.forEach((t,i)=>{
-    const w=ptw(t.txt,'p')+14,x=ri(VW/2-w/2),y=(band?ri(VH*0.24)+31:BAR+5)+i*16,col=t.benefit===0?PAL.green:(t.benefit===1?PAL.red:'#ffffff');
+    const w=ptw(t.txt,'p')+14,x=ri(VW/2-w/2),y=(band?ri(VH*0.24)+31:(elHint.classList.contains('hidden')?BAR+5:ri(70*UIZ*DPR/PXS)))+i*16,   // sotto il suggerimento, se c'e'
+      col=t.benefit===0?PAL.green:(t.benefit===1?PAL.red:'#ffffff');
     if(t.t<0.2&&((G.tick*24|0)&1))return;
     pbox(x,y,w,13,'#000000');px(x+3,y+4,4,5,col);ptext(t.txt,x+10,y+3,{f:'p',a:'l',c:'#ffffff',o:false});
   });

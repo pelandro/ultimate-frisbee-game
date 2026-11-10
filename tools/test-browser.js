@@ -64,6 +64,25 @@ catch(e){
     await page.click('#tQuick');await vis('#quick');await page.click('#qPlay');await page.waitForTimeout(500);
     await page.keyboard.press('Escape');await vis('#pause');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
   });
+  await step('pull a tempo, difesa automatica e tasto «Salta»',async()=>{
+    await page.click('#tQuick');await vis('#quick');await page.selectOption('#qS','1');await page.click('#qPlay');await page.waitForTimeout(500);
+    if(await page.locator('#menu').isVisible())await page.click('#bGo');
+    const hint=async re=>{await page.waitForFunction(r=>{const h=document.getElementById('hint');return !h.classList.contains('hidden')&&new RegExp(r).test(h.textContent);},re);};
+    await hint('POTENZA');await page.waitForTimeout(700);await page.mouse.click(420,150);   // primo tocco: potenza
+    await hint('DIREZIONE');await page.waitForTimeout(350);await page.mouse.click(420,150);   // secondo tocco: direzione, il pull parte
+    await page.waitForSelector('#bSkipD:not(.hidden)',{timeout:25000});
+    if(await page.locator('#bThrow').isVisible())throw new Error('in difesa automatica il tasto dell\'handblock non deve comparire');
+    await page.click('#bSkipD');await page.waitForTimeout(300);
+    if(await page.locator('#bSkipD').isVisible())throw new Error('dopo «Salta» il possesso avversario deve essere finito');
+    // se gli avversari hanno segnato scorre lo stacco della meta: la pausa si apre appena si torna a giocare
+    for(let i=0;i<40&&!(await page.locator('#pause').isVisible());i++){await page.keyboard.press('Escape');await page.waitForTimeout(250);}
+    await vis('#pause');
+    const lab=async()=>(await page.locator('#paDef').innerText()).toLowerCase();
+    if(!/automatica/.test(await lab()))throw new Error('difesa predefinita non automatica: '+await lab());
+    await page.click('#paDef');if(!/manuale/.test(await lab()))throw new Error('la difesa non passa a manuale');
+    await page.click('#paDef');await page.click('#paDef');if(!/automatica/.test(await lab()))throw new Error('la difesa non torna automatica');
+    await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.selectOption('#qS','0');await page.click('#qBack');
+  });
   await step('torneo personalizzato',async()=>{
     await page.click('#tTourn');await vis('#tourn');
     if(await page.locator('#tnGo').count()){await page.selectOption('#tnSize','4');await page.click('#tnGo');}

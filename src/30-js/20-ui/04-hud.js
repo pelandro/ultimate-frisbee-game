@@ -47,7 +47,7 @@ function updateHUD(dt){
   if(!hint&&canThrow&&!drag&&shownHint>=3&&shownCall<2&&G.holdT>1.2)hint='Tocca un compagno per chiamargli il taglio';
   if(!hint&&dvRdy&&!man)hint='TUFFO! Tocca quando il cerchio si chiude';
   if(!hint&&defNow&&G.holder&&man&&shownCtrl<3)hint='Difesa: trascina per muovere il difensore azzurro';
-  if(!hint&&defNow&&G.holder&&!man&&shownSkip<3)hint='Difesa automatica: con SALTA vai subito al prossimo possesso';
+  if(!hint&&defNow&&G.holder&&!man&&shownSkip<3)hint='Difesa automatica: tocca SALTA per andare avanti';
   if(!hint&&G.tick<VIN.hintUntil&&G.mode==='play')hint=defNow?(man?'Spazio: handblock · Maiusc: tuffo':'Invio: salta la difesa · Spazio: tuffo quando compare'):'Frecce: direzione · Spazio: lancio (tieni premuto) · Maiusc: Hammer';
   if(DR.on)hint='';
   elHint.classList.toggle('hidden',!hint);if(hint)elHint.textContent=hint;
