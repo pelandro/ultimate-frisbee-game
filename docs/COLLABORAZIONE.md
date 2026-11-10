@@ -22,9 +22,12 @@ cd ultimate-frisbee-game && npm install && npx playwright install chromium
 `npm install` attiva i ganci Git del progetto. Per usare Claude Code sul web, collega GitHub da <https://claude.ai/connect-github>,
 dai all'app Claude l'accesso a questo repository e sceglilo all'avvio della sessione.
 
-Le protezioni di `main` su GitHub (pull request obbligatoria, verifica obbligatoria, niente force push) e l'unione automatica
-si impostano una volta con `bash tools/setup-github.sh ultimate-frisbee-game` dal computer del proprietario (serve `gh auth login`),
-oppure a mano da **Settings › Branches** e **Settings › General › Pull Requests**.
+Le protezioni di `main` su GitHub e l'unione automatica le imposta **il proprietario, una volta sola** (dalle sessioni cloud di Claude non si possono cambiare le impostazioni del repository):
+
+- dal proprio computer: `bash tools/setup-github.sh ultimate-frisbee-game` (serve `gh auth login`);
+- oppure a mano: **Settings › General › Pull Requests** → spunta *Allow auto-merge* e *Automatically delete head branches*; **Settings › Branches › Add branch ruleset** (o *Add rule*) per `main` → *Require a pull request before merging* (0 approvazioni), *Require status checks to pass* con il controllo `verifica` e *Require branches to be up to date*, *Block force pushes*.
+
+Finché non sono impostate, valgono comunque i ganci di Claude Code e di Git, e `node tools/pr.js unisci` unisce una pull request solo se la verifica è verde.
 
 ## Il lavoro di tutti i giorni
 
