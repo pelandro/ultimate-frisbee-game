@@ -11,6 +11,8 @@ Ci lavorano **due sviluppatori**, entrambi con Claude Code, sullo stesso reposit
 | `npm test` | Verifica completa: controlli statici, motore di gioco, prova nel browser (circa un minuto) |
 | `npm run test:rapido` | Controlli statici + motore con poche partite (per i passi intermedi) |
 | `npm run confronto` | Confronta il ramo con `origin/main`: chi ha cambiato cosa e dove le modifiche si toccano |
+| `node tools/pr.js apri\|elenco\|stato\|attendi\|unisci` | Pull request: funziona sul computer e nelle sessioni cloud (dove `gh pr ...` non è disponibile) |
+| `npm run mappa -- nome` | Dice in quale modulo sta una funzione |
 
 ## Com'è fatto il codice
 
