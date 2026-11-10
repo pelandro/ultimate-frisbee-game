@@ -7,7 +7,7 @@ function testMatch(ra,rb,o){   // una partita IA contro IA: ritorna punteggio, s
   o=o||{};
   setSquad(ra);applyRoster(rb);
   G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=o.fix||null;
-  newGame();G.auto=true;G.lvl=[o.lvl|0,o.lvl|0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;
+  newGame();if(o.wind)setWind(o.wind[0],o.wind[1]);G.auto=true;G.lvl=[o.lvl|0,o.lvl|0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;
   applyForm();
   G.startRec=o.rec|0;G.nextRec=G.startRec;startPoint(G.startRec);
   const dt=1/60,r={time:0,nan:0,stuck:false,hold:0,pts:0,ptT:[]};let pt=0,last=0,rec=-1,fr=0;
@@ -36,12 +36,13 @@ function selfTestPlan(opt){
     const t0=Date.now(),ms=run(ros(62,'a'),ros(62,'b'),n);S.base=ms;S.ms=(Date.now()-t0)/n;
     const thr=avg(ms.map(m=>m.st.thr[0]+m.st.thr[1])),cmp=avg(ms.map(m=>m.st.cmp[0]+m.st.cmp[1]))/thr,to=avg(ms.map(m=>m.st.to[0]+m.st.to[1]));
     const lose=avg(ms.map(m=>Math.min(m.score[0],m.score[1]))),hold=avg(ms.map(m=>m.hold/Math.max(1,m.pts))),ptT=avg([].concat(...ms.map(m=>m.ptT)));
+    const htol=2.6*Math.sqrt(0.25/Math.max(1,ms.reduce((a,m)=>a+m.pts,0)));   // con poche mete il caso pesa: il margine si stringe quando le partite aumentano
     const bad=ms.filter(m=>m.stuck||m.nan||Math.max(m.score[0],m.score[1])!==MATCH_TARGET||Math.min(m.score[0],m.score[1])>=MATCH_TARGET).length;
     return [row('Partite concluse senza blocchi né errori numerici',(n-bad)+' su '+n,bad===0),
       row('Regole del punteggio: si vince a '+MATCH_TARGET,'media sconfitta '+lose.toFixed(1),lose>=1.5&&lose<=6.2,'attesa tra 1,5 e 6,2'),
       row('Lanci completati',pc(cmp),cmp>=0.74&&cmp<=0.93,'attesa tra 74% e 93%'),
       row('Turnover a partita',to.toFixed(1),to>=6&&to<=24,'attesa tra 6 e 24'),
-      row('Mete segnate da chi riceve il pull',pc(hold),hold>=0.33&&hold<=0.85,'attesa tra 33% e 85%'),
+      row('Mete segnate da chi riceve il pull',pc(hold),hold>=0.38-htol&&hold<=0.8+htol,'attesa tra 38% e 80%, con un margine di '+pc(htol)+' per il numero di mete giocate'),
       row('Durata media di una meta',ptT.toFixed(0)+' s',ptT>=10&&ptT<=60,'attesa tra 10 e 60 secondi')];
   }]);
   S.steps.push(['Equilibrio degli schemi',()=>{
@@ -113,6 +114,19 @@ function selfTestPlan(opt){
       row('Mete avversarie per possesso saltato',pc(goals/m),goals/m>=0.05&&goals/m<=0.85,'attesa tra 5% e 85%: né muro né colabrodo'),
       row('Difesa automatica senza difensore guidato né cerchio dell\u2019handblock',ctrl+hbw===0?'sì':'no',ctrl+hbw===0)];
   }]);
+  S.steps.push(['Vento',()=>{
+    const ra=ros(62,'a'),rb=ros(62,'b'),k=Math.max(4,n),cmpOf=ms=>avg(ms.map(m=>(m.st.cmp[0]+m.st.cmp[1])/Math.max(1,m.st.thr[0]+m.st.thr[1])));
+    const calm=cmpOf(S.base||run(ra,rb,k)),strong=cmpOf(run(ra,rb,k,{wind:[3,Math.PI/2]})),bad=run(ra,rb,2,{wind:[3,0]}).filter(m=>m.stuck||m.nan).length;
+    // deriva di un lancio alto da 40 m col vento forte di lato: grande per chi lancia male, piccola per chi lancia bene
+    setWind(3,Math.PI/2);const drift=sk=>{const w=windOn(sk,40,0,40,40/23.4,true,false);return hyp(w.x,w.y);};const dLo=drift(45),dHi=drift(90);
+    // il pull va piu' lungo col vento alle spalle
+    setSquad(ra);applyRoster(rb);newGame();placeTeams(1);const p=G.puller,land=()=>{const q=pullPlan(p,0,0.8,0);return q.dist+q.wx*dirOf(0);};
+    setWind(3,dirOf(0)>0?0:Math.PI);const tail=land();setWind(3,dirOf(0)>0?Math.PI:0);const head=land();setWind(0,0);
+    return [row('Lanci completati con calma e con vento forte di lato',pc(calm)+' e '+pc(strong),strong<calm+0.01&&strong>=calm-0.16,'il vento forte toglie al massimo 16 punti'),
+      row('Partite con vento forte concluse senza blocchi',(2-bad)+' su 2',bad===0),
+      row('Deriva di uno sparo da 40 m (Sparo 45 e Sparo 90)',dLo.toFixed(1)+' m e '+dHi.toFixed(1)+' m',dLo>dHi*1.8&&dLo<=8&&dHi>=0.3,'chi lancia bene compensa'),
+      row('Pull con vento alle spalle e controvento',tail.toFixed(0)+' m e '+head.toFixed(0)+' m',tail-head>=10&&tail-head<=24,'tra 10 e 24 metri di differenza')];
+  }]);
   S.steps.push(['Prestazioni',()=>{
     const gt=S.base?avg(S.base.map(m=>m.time)):0,k=gt/Math.max(0.001,S.ms/1000);
     return [row('Velocità di simulazione',Math.round(S.ms)+' ms a partita ('+Math.round(k)+' volte il tempo reale)',k>=15,'almeno 15 volte')];
@@ -124,7 +138,7 @@ function selfTestRun(S,i){   // esegue il passo i col suo generatore casuale; i 
   for(const k in HOOKS)HOOKS[k]=k==='cine'?null:function(){};
   G.opt.cine=false;Math.random=mulberry32(S.seed+i*7919);
   try{rows=S.steps[i][1]();}catch(e){rows=[{name:S.steps[i][0],val:'errore: '+(e&&e.message),ok:false,note:''}];}
-  finally{Math.random=R0;Object.assign(HOOKS,H0);G.opt.cine=c0;G.auto=false;G.skip=false;G.fix=null;G.inMatch=false;G.drill=null;G.mode='menu';}
+  finally{Math.random=R0;Object.assign(HOOKS,H0);G.opt.cine=c0;G.auto=false;G.skip=false;setWind(0,0);G.fix=null;G.inMatch=false;G.drill=null;G.mode='menu';}
   return rows;
 }
 function selfTest(opt){const S=selfTestPlan(opt),out=[];for(let i=0;i<S.steps.length;i++)out.push({group:S.steps[i][0],rows:selfTestRun(S,i)});return out;}

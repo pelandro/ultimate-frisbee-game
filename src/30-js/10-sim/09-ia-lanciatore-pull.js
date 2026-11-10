@@ -66,13 +66,14 @@ function pullAngle(team,ang){
 // ancora piu' lungo (fuori dal fondo) e il controllo cala. Direzione e distanza hanno un errore piccolo, che dipende dallo Sparo di chi tira.
 function pullPlan(p,team,charge,ang){
   const c=clamp(charge,0,1),over=clamp((c-PULL_TH)/(1-PULL_TH),0,1);
-  return {c,over,dist:20+58*Math.min(c,PULL_TH)/PULL_TH+7*over,a:pullAngle(team,ang),
-    sa:(1.1+(100-p.s.spa)*0.03)*(1+2.2*over*over)*Math.PI/180,sd:(1.2+(100-p.s.spa)*0.045)*(1+2*over)};
+  const W=G.wind,wk=1+0.15*W.lv;   // il vento sposta il punto d'arrivo (wx, wy) e rende il pull un po' meno preciso
+  return {c,over,dist:20+58*Math.min(c,PULL_TH)/PULL_TH+7*over,a:pullAngle(team,ang),wx:W.x*PULL_WK,wy:W.y*PULL_WK,
+    sa:(1.1+(100-p.s.spa)*0.03)*(1+2.2*over*over)*wk*Math.PI/180,sd:(1.2+(100-p.s.spa)*0.045)*(1+2*over)*wk};
 }
 function doPull(charge,ang){
   const pt=G.pullTeam,p=G.puller,d=dirOf(pt),rec=G.poss,pp=pullPlan(p,pt,charge,ang);
   const dist=pp.dist+randn()*pp.sd,a=pp.a+randn()*pp.sa;
-  const tx=p.x+Math.cos(a)*dist,ty=p.y+Math.sin(a)*dist;
+  const tx=p.x+Math.cos(a)*dist+pp.wx,ty=p.y+Math.sin(a)*dist+pp.wy;
   const dl=hyp(tx-p.x,ty-p.y),oob=tx<0||tx>FIELD_L||ty<0||ty>FIELD_W;
   let spot;
   const dr=dirOf(rec),hx=dr>0?EZ:FIELD_L-EZ;
@@ -91,7 +92,9 @@ function doPull(charge,ang){
 function aiPull(){
   // l'IA mira al centro della zona verde e al centro del campo, ma sbaglia come sbaglierebbe una persona: chi ha Sparo e Lancio bassi
   // tira piu' spesso corto, lungo o fuori di lato (in media un pull su cinque finisce in brick, uno su dieci per i migliori)
-  const p=G.puller,d=dirOf(G.pullTeam);
-  doPull(clamp(0.8+randn()*(0.07+(100-p.s.spa)*0.002),0.35,0.99),(d>0?0:Math.PI)+randn()*(0.09+(100-p.s.lan)*0.002));
+  // Il punto ideale e' 8 m dentro la meta avversaria, al centro; il vento lo corregge per due terzi.
+  const p=G.puller,d=dirOf(G.pullTeam),W=G.wind,need=Math.abs((d>0?FIELD_L-EZ+8:EZ-8)-p.x)-W.x*PULL_WK*d*0.67;
+  const c0=clamp((need-20)/58*PULL_TH,0.5,PULL_TH-0.03),rel0=-Math.asin(clamp(W.y*PULL_WK*0.67/Math.max(30,need),-0.4,0.4))*d;
+  doPull(clamp(c0+randn()*(0.07+(100-p.s.spa)*0.002),0.35,0.99),(d>0?0:Math.PI)+rel0+randn()*(0.09+(100-p.s.lan)*0.002));
 }
 

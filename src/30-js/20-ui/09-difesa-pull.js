@@ -63,29 +63,33 @@ function pullTap(){
   const c=pm.c,a=(dirOf(0)>0?0:Math.PI)+pmVal()*PULL_SW;pm=null;
   doPull(c,a);shownPull++;return true;
 }
-// angolo massimo (per parte) che resta in campo alla distanza scelta
-const pullLim=dist=>Math.asin(clamp((MID-1)/dist,0,1));
+// dove cadrebbe il pull con questa potenza e questo angolo (vento compreso, senza l'errore casuale) e che cosa vale:
+// 3 fuori, 2 nella meta avversaria, 1 a meno di 10 m dalla linea di meta, 0 corto
+function pullLand(p,c,a){const q=pullPlan(p,0,c,a);return {x:p.x+Math.cos(q.a)*q.dist+q.wx,y:p.y+Math.sin(q.a)*q.dist+q.wy};}
+function pullKind(L,mg){
+  if(L.x<0||L.x>FIELD_L||L.y<mg||L.y>FIELD_W-mg)return 3;
+  const dep=dirOf(0)>0?L.x-(FIELD_L-EZ):EZ-L.x;return dep>=0?2:(dep>=-10?1:0);
+}
+const PM_COL=['#3b4263',PAL.gold,PAL.green,PAL.red],PM_N=42;
 function drawPull(){
   if(!pm||!G.puller)return;
-  const p=G.puller,fwd=dirOf(0)>0?0:Math.PI,v=pmVal(),c=pm.ph?pm.c:v,pp=pullPlan(p,0,c,fwd),rel=pm.ph?v*PULL_SW:0,a=fwd+rel;
+  const p=G.puller,fwd=dirOf(0)>0?0:Math.PI,v=pmVal(),c=pm.ph?pm.c:v,a=fwd+(pm.ph?v*PULL_SW:0);
   // punto d'arrivo sul campo: verde nella meta avversaria, bianco se e' corto, rosso se e' fuori
-  const lx=p.x+Math.cos(a)*pp.dist,ly=p.y+Math.sin(a)*pp.dist,out=lx<0||lx>FIELD_L||ly<0||ly>FIELD_W,deep=dirOf(0)>0?lx>=FIELD_L-EZ:lx<=EZ;
-  const col=out?PAL.red:(deep?PAL.green:'#ffffff'),cx=sxw(p.x),cy=syw(p.y)-10,ex=sxw(lx),ey=syw(ly);
+  const L=pullLand(p,c,a),kd=pullKind(L,0),out=kd===3;
+  const col=out?PAL.red:(kd===2?PAL.green:'#ffffff'),cx=sxw(p.x),cy=syw(p.y)-10,ex=sxw(L.x),ey=syw(L.y);
   const n=Math.max(4,ri(hyp(ex-cx,ey-cy)/7)),arc=Math.min(46,hyp(ex-cx,ey-cy)*0.25),flow=(G.tick*1.6)%1;
   for(let i=1;i<n;i++){const u=(i+flow)/n,x=ri(lerp(cx,ex,u)),y=ri(lerp(cy,ey,u)-arc*4*u*(1-u));px(x-2,y-2,4,4,PAL.out);px(x-1,y-1,2,2,col);}
   pring(ex,ey,7,5,PAL.out,3);pring(ex,ey,7,5,col,1);
   if(out)ptext('FUORI',clamp(ex,24,VW-24),clamp(ey-20,BAR+2,VH-12),{f:'p',c:PAL.red});
-  // i due indicatori, in basso al centro: zone colorate e cursore
-  const W=Math.min(168,VW-150),x0=ri(VW/2-W/2),hB=7,y1=VH-ri(60*UIZ*DPR/PXS)-hB,y0=y1-17;   // sopra la fila dei pulsanti in basso (alti circa 50 px sullo schermo)
-  const bar=(y,lab,zones,pos,on)=>{
+  // i due indicatori, in basso al centro, sopra la fila dei pulsanti (alti circa 50 px sullo schermo). I colori si ricavano dal punto d'arrivo vero,
+  // campione per campione: con il vento alle spalle il verde della potenza si sposta a sinistra, col vento di lato quello della direzione si sposta
+  const W=Math.min(168,VW-150),x0=ri(VW/2-W/2),hB=7,y1=VH-ri(60*UIZ*DPR/PXS)-hB,y0=y1-17;
+  const bar=(y,lab,kindAt,pos,on)=>{
     ptext(lab,x0-4,y-1,{f:'t',a:'r',c:on?'#ffffff':'#9aa3b8'});
-    px(x0-2,y-2,W+4,hB+4,PAL.out);px(x0,y,W,hB,'#3b4263');
-    for(const z of zones){const xa=x0+ri(clamp(z[0],0,1)*W),xb=x0+ri(clamp(z[1],0,1)*W);if(xb>xa)px(xa,y,xb-xa,hB,z[2]);}
+    px(x0-2,y-2,W+4,hB+4,PAL.out);
+    for(let i=0;i<PM_N;i++){const xa=x0+ri(i*W/PM_N),xb=x0+ri((i+1)*W/PM_N);px(xa,y,xb-xa,hB,PM_COL[kindAt((i+0.5)/PM_N)]);}
     const mx=x0+ri(clamp(pos,0,1)*W);px(mx-2,y-4,5,hB+8,PAL.out);px(mx-1,y-3,3,hB+6,on?'#ffffff':'#c9cfdd');
   };
-  bar(y0,'POTENZA',[[PULL_Y0,PULL_G0,PAL.gold],[PULL_G0,PULL_TH,PAL.green],[PULL_TH,1,PAL.red]],c,!pm.ph);
-  if(pm.ph){
-    const lim=pullLim(pp.dist)/PULL_SW,ok=Math.max(0.08,lim-0.3);   // gialla: in campo ma vicino alla linea; verde: in campo anche con un piccolo errore
-    bar(y1,'DIREZIONE',[[0,0.5-lim/2,PAL.red],[0.5-lim/2,0.5+lim/2,PAL.gold],[0.5-ok/2,0.5+ok/2,PAL.green],[0.5+lim/2,1,PAL.red]],(v+1)/2,true);
-  }
+  bar(y0,'POTENZA',u=>u>PULL_TH?3:pullKind(pullLand(p,u,fwd),0),c,!pm.ph);   // oltre la tacca e' sempre rosso: anche se resta in campo, il controllo crolla
+  if(pm.ph)bar(y1,'DIREZIONE',u=>{const k=pullKind(pullLand(p,pm.c,fwd+(u*2-1)*PULL_SW),0);return k===3?3:(pullKind(pullLand(p,pm.c,fwd+(u*2-1)*PULL_SW),3.5)===3?1:2);},(v+1)/2,true);   // giallo: in campo ma a meno di 3,5 m dalla linea laterale
 }

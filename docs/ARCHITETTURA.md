@@ -10,10 +10,10 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | Percorso | Contenuto |
 |---|---|
 | `src/00-testa.html`, `src/99-coda.html` | Apertura e chiusura della pagina |
-| `src/10-css/` | Stili: font incorporati, base, tema retro, schermate di carriera e pannelli |
+| `src/10-css/` | Stili: font incorporati, base, tema retro, schermate di carriera e pannelli, schermi grandi e tocco (`--ui`) |
 | `src/20-html/` | Struttura della pagina: campo e HUD, menu, schermate, pannelli, guida |
 | `src/30-js/10-sim/` | **Motore di gioco** (tra `/*SIM_START*/` e `/*SIM_END*/`): nessun accesso alla pagina |
-| `src/30-js/20-ui/` | Disegno a pixel, stacchi, HUD, input (trascinamento, tastiera, controller), impostazioni, schemi, fine partita |
+| `src/30-js/20-ui/` | Disegno a pixel, stacchi, HUD, input (trascinamento, tastiera, controller), impostazioni, schemi, fine partita, difesa automatica e pull a tempo (`09-difesa-pull.js`), indicatore del vento (`10-vento.js`) |
 | `src/30-js/30-carriera/` | Salvataggio, squadre e roster, stagione, rosa e linee, economia, mercato, premi, evoluzione del campionato, vita dei giocatori, avvio partita e navigazione |
 | `src/30-js/40-modalita/` | Ultimate Team, partite simulate, campo di allenamento (tutorial, sfide), torneo |
 | `src/30-js/50-schermate/` | Schermate della carriera: cruscotto, rosa, allenamenti, mercato, club, avvisi, opzioni, guida, pausa |
@@ -33,10 +33,12 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `09-ia-lanciatore-pull.js`, `10-punto-update.js` | IA di chi ha il disco, pull, meta, half time, identità tattica, ciclo `update(dt)` |
 | `11-progressione.js`, `12-allenamenti-rose.js` | Potenziale, esperienza e crescita, allenamenti, generazione delle rose, roster reali, infortuni, forma |
 | `13-partite-simulate.js`, `14-test.js` | Modello delle partite simulate; suite di test (`selfTestPlan`, `selfTestRun`) |
+| `15-vento.js` | Vento della partita (`G.wind`, `setWind`, `rollWind`, `windOn`): deriva, dispersione e gittata dei lanci |
 
 ## Come parlano le parti
 
 - **Motore → interfaccia**: solo tramite `HOOKS` (`toast`, `sfx`, `cine`, `menu`, `over`, `half`, `injury`, `shake`, `vibe`, `drill`). Nei test i ganci sono spenti.
+- **Opzioni che il motore legge**: `G.opt.cine` (stacchi laterali) e `G.opt.def` (difesa: 0 automatica, 1 manuale, 2 saltata; vedi `defMan()`). `G.skip` è acceso mentre un possesso avversario viene saltato.
 - **Interfaccia → motore**: chiama le funzioni del motore (`doThrow`, `doPull`, `callCut`, `startPoint`...) e legge `G`, `T` (le due squadre in campo), `SQ` (la rosa del giocatore).
 - **Carriera**: tutto lo stato sta in `SV` (salvato in `localStorage` da `persist()`, letto da `loadSave()`). La rosa in memoria è `SQ`; `squadData()` la trasforma in dati da salvare e `setSquad()` la ricostruisce.
 - **Modalità senza carriera** (veloce, torneo, Ultimate Team, allenamento): mettono da parte la carriera (`QM.bak`) e la rimettono all'uscita (`exitQuick`).

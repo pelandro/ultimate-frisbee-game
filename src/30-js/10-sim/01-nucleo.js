@@ -45,7 +45,7 @@ const MATCH_TARGET=7,HALF_AT=4,HALF_REST=4;   // la partita arriva a 7 punti; qu
 const G={mode:'menu',xtr:false,hint:false,routes:true,score:[0,0],target:MATCH_TARGET,halfDone:false,startRec:1,pointNo:1,poss:0,nextRec:1,holder:null,flight:null,
   disc:{x:0,y:0,z:1},ref:{x:EZ,y:MID},marker:null,closedSide:1,stallT:0,freeze:0,think:1,high:false,
   sch:{att:'vert',def:'man_out'},opp:{att:'vert',def:'man_out'},opt:{cine:true,def:0},banner:null,auto:false,
-  zoneT:0,zoneH:null,st:null,ctrl:null,cdir:null,dmode:[0,0],iso:null,pullTeam:1,puller:null,pull:null,readyT:3,schemeOpen:false,dir:[1,-1],holdT:0,hbAtt:null,injured:[]};
+  zoneT:0,zoneH:null,st:null,ctrl:null,cdir:null,dmode:[0,0],iso:null,pullTeam:1,puller:null,pull:null,readyT:3,schemeOpen:false,dir:[1,-1],holdT:0,hbAtt:null,injured:[],wind:{lv:0,a:0,v:0,x:0,y:0}};
 // DIFESA: G.opt.def = 0 automatica (predefinita: i tuoi difendono da soli, il gioco scorre piu' in fretta e restano pochi momenti a tempo),
 // 1 manuale (guidi un difensore, handblock e tuffi a ogni occasione), 2 saltata (il possesso avversario si risolve in un istante).
 // In allenamento la difesa e' sempre manuale: e' li' che si impara. G.skip: possesso avversario in corso di salto.

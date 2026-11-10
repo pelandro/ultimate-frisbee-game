@@ -329,22 +329,23 @@ function drawAim(){
     pring(gx,gy,R,R,PAL.red,1,3,ang-half,ang+half);
     for(let r=R*0.25;r<R;r+=R*0.25)pring(gx,gy,r,r,'rgba(255,90,90,.5)',1,2,ang-half,ang+half);
   }
+  const ex=drag.x+ri((pl.tx-w.x)*S),ey=drag.y+ri((pl.ty-w.y)*S);   // punto d'arrivo vero: quello mirato piu' la deriva del vento
   // ogni lancio ha il suo arco: piatto e teso, scoober a mezza altezza, hammer e huck alti, blade altissimo; la curva laterale e' quella vera del volo
-  const dpx=hyp(drag.x-gx,drag.y-gy),n=Math.max(3,ri(dpx/7));
+  const dpx=hyp(ex-gx,ey-gy),n=Math.max(3,ri(dpx/7));
   const arc=kd==='blade'?Math.min(74,dpx*0.44):(pl.sp.hi?Math.min(52,dpx*0.3):(kd==='scoober'?Math.min(22,dpx*0.17):Math.min(9,dpx*0.06)));
   const col=kd==='blade'?'#ff8a5c':(pl.sp.hi||kd==='scoober'?PAL.gold:'#ffffff'),cxp=pl.cx*S,cyp=pl.cy*S;
   const flow=(G.tick*1.6)%1,lim=G.xtr?Math.min(1,(3+0.12*dist)/Math.max(dist,0.01)):1;
-  for(let i=0;i<n;i++){const u=(i+flow)/n;if(u>lim)break;const b=4*u*(1-u);px(lerp(gx,drag.x,u)+cxp*b,lerp(gy,drag.y,u)+cyp*b,2,1,'#4f7a3f');}
+  for(let i=0;i<n;i++){const u=(i+flow)/n;if(u>lim)break;const b=4*u*(1-u);px(lerp(gx,ex,u)+cxp*b,lerp(gy,ey,u)+cyp*b,2,1,'#4f7a3f');}
   for(let i=0;i<n;i++){
     const u=(i+flow)/n;if(u>lim)break;
-    const b=4*u*(1-u),x=ri(lerp(hx,drag.x,u)+cxp*b),y=ri(lerp(hy,drag.y,u)+cyp*b-arc*b);
+    const b=4*u*(1-u),x=ri(lerp(hx,ex,u)+cxp*b),y=ri(lerp(hy,ey,u)+cyp*b-arc*b);
     px(x-2,y-2,4,4,PAL.out);px(x-1,y-1,2,2,col);
   }
   if(G.xtr)return;
   // cerchio tratteggiato = dove puo' finire il disco: si allarga con la distanza, la pressione e i lanci difficili
   const ur=clamp(ri(1.5*pl.sig*S),5,80);
-  pring(drag.x,drag.y,ur,ur,PAL.out,3,2);pring(drag.x,drag.y,ur,ur,col,1,2);
-  px(drag.x-1,drag.y-1,3,3,PAL.out);px(drag.x,drag.y,1,1,'#ffffff');
+  pring(ex,ey,ur,ur,PAL.out,3,2);pring(ex,ey,ur,ur,col,1,2);
+  px(ex-1,ey-1,3,3,PAL.out);px(ex,ey,1,1,'#ffffff');
   aimAssist(h,w,dist,pl);
 }
 // compagno agganciato dal mirino (anello + freccia; tratteggiato = e' il compagno chiamato a correre li'), distanza e tipo di lancio.

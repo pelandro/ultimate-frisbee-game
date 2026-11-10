@@ -180,7 +180,7 @@ function startUT(){
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;
   G.oppName=opp.name;G.myName='Ultimate Team';G.matchLabel='Ultimate Team · '+UT_ROUNDS[r];
-  newGame();G.lvl=[0,Math.min(2,UT.d|0)];G.oppPlus=0;G.idn=[null,teamIdentity(opp.name,T[1])];G.xtr=(UT.d|0)===3;G.hint=(UT.d|0)===0;G.routes=(UT.d|0)<=1;G.inMatch=true;G.recorded=false;   // difficolta': IA come in partita veloce, Estrema = traiettoria nascosta
+  newGame();rollWind();G.lvl=[0,Math.min(2,UT.d|0)];G.oppPlus=0;G.idn=[null,teamIdentity(opp.name,T[1])];G.xtr=(UT.d|0)===3;G.hint=(UT.d|0)===0;G.routes=(UT.d|0)<=1;G.inMatch=true;G.recorded=false;   // difficolta': IA come in partita veloce, Estrema = traiettoria nascosta
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
 }
