@@ -27,7 +27,7 @@ Le protezioni di `main` su GitHub e l'unione automatica le imposta **il propriet
 - dal proprio computer: `bash tools/setup-github.sh ultimate-frisbee-game` (serve `gh auth login`);
 - oppure a mano: **Settings › General › Pull Requests** → spunta *Allow auto-merge* e *Automatically delete head branches*; **Settings › Branches › Add branch ruleset** (o *Add rule*) per `main` → *Require a pull request before merging* (0 approvazioni), *Require status checks to pass* con il controllo `verifica` e *Require branches to be up to date*, *Block force pushes*.
 
-Finché non sono impostate, valgono comunque i ganci di Claude Code e di Git, e `node tools/pr.js unisci` unisce una pull request solo se la verifica è verde.
+**Repository privato con piano gratuito di GitHub**: *Allow auto-merge* e la protezione dei rami non sono disponibili (GitHub le offre sui repository privati solo con i piani a pagamento, per esempio Pro). Il flusso funziona lo stesso: `node tools/pr.js unisci` aspetta la fine della verifica e unisce solo se è verde, e i ganci di Claude Code e di Git bloccano commit e push diretti su `main`. La differenza è che su GitHub nulla impedisce a chi usa Git a mano, senza i ganci attivi, di scrivere su `main`: per questo `npm install` (che li attiva) va fatto su ogni computer.
 
 ## Il lavoro di tutti i giorni
 

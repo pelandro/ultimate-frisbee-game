@@ -6,7 +6,8 @@
      node tools/pr.js elenco                              pull request aperte
      node tools/pr.js stato <numero>                      si puo' unire? esito della verifica
      node tools/pr.js attendi <numero>                    aspetta la fine della verifica (fino a 12 minuti)
-     node tools/pr.js unisci <numero>                     unione automatica quando la verifica e' verde; se non e' disponibile, unisce subito solo se e' gia' verde */
+     node tools/pr.js unisci <numero>                     unisce quando la verifica e' verde: con l'unione automatica di GitHub se il repository la offre,
+                                                          altrimenti aspetta qui la fine della verifica (fino a 12 minuti) e poi unisce. Mai con verifica rossa */
 const {execFileSync}=require('child_process'),fs=require('fs');
 const run=(cmd,args,input)=>execFileSync(cmd,args,{encoding:'utf8',input,stdio:['pipe','pipe','pipe'],maxBuffer:32*1024*1024});
 const fail=m=>{console.error(m);process.exit(1);};
@@ -41,10 +42,8 @@ try{
   }else if(cmd==='stato'||cmd==='attendi'||cmd==='unisci'){
     const n=+rest[0];if(!n)fail('Indica il numero della pull request.');
     let pr=api('GET',`${R}/pulls/${n}`),ck=checks(pr.head.sha);
-    if(cmd==='attendi'){
-      const t0=Date.now();
-      while((ck.state==='in corso'||ck.state==='assente')&&Date.now()-t0<12*60*1000){execFileSync(process.execPath,['-e','setTimeout(()=>{},15000)']);pr=api('GET',`${R}/pulls/${n}`);ck=checks(pr.head.sha);}
-    }
+    const wait=()=>{const t0=Date.now();while((ck.state==='in corso'||ck.state==='assente')&&Date.now()-t0<12*60*1000){execFileSync(process.execPath,['-e','setTimeout(()=>{},15000)']);pr=api('GET',`${R}/pulls/${n}`);ck=checks(pr.head.sha);}};
+    if(cmd==='attendi')wait();
     if(cmd!=='unisci'){
       console.log(`#${n} ${pr.title} — ${pr.state}${pr.merged?' (unita)':''} · ramo ${pr.head.ref} · conflitti con main: ${pr.mergeable===false?'SÌ':(pr.mergeable===null?'in calcolo':'no')} · verifica: ${ck.state}`);
       for(const x of ck.list)console.log('   '+x);
@@ -57,7 +56,11 @@ try{
     if(!done){try{api('PUT',`${R}/pulls/${n}/ccr/auto_merge`,{merge_method:'squash'});done='Unione automatica attivata: entra in main quando la verifica è verde.';}catch(e){}}
     if(!done){
       if(pr.mergeable===false)fail(`#${n} è in conflitto con main: sincronizza il ramo (/sincronizza) e riprova.`);
-      if(ck.state!=='verde'){console.log(`Unione automatica non disponibile su questo repository e verifica ${ck.state}: riprova con «node tools/pr.js attendi ${n}» e poi «node tools/pr.js unisci ${n}».`);process.exit(3);}
+      // l'unione automatica di GitHub non c'e' (sui repository privati serve un piano a pagamento): la sostituisco aspettando qui la verifica
+      if(ck.state!=='verde'&&ck.state!=='rossa'){console.log('Unione automatica di GitHub non disponibile: aspetto la fine della verifica…');wait();}
+      if(ck.state==='rossa'){console.log(`Verifica rossa: #${n} non viene unita. Leggi l'esito, correggi nel ramo e ricarica.`);for(const x of ck.list)console.log('   '+x);process.exit(2);}
+      if(ck.state!=='verde'){console.log(`La verifica non è finita in tempo (${ck.state}): riprova più tardi con «node tools/pr.js unisci ${n}».`);process.exit(3);}
+      if(pr.mergeable===false)fail(`#${n} è in conflitto con main: sincronizza il ramo (/sincronizza) e riprova.`);
       api('PUT',`${R}/pulls/${n}/merge`,{merge_method:'squash',commit_title:`${pr.title} (#${n})`});
       try{api('DELETE',`${R}/git/refs/heads/${pr.head.ref}`);}catch(e){}
       done=`#${n} unita in main (verifica verde).`;
