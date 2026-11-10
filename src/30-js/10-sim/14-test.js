@@ -85,6 +85,34 @@ function selfTestPlan(opt){
       row('Esperienza di una partita giocata e di una simulata',xp.toFixed(1)+' e 30,0',xp>=22&&xp<=38,'devono essere vicine'),
       row('Punti per seduta di allenamento, per indirizzo',CATS.map(c=>c.name+' '+per[c.id].toFixed(2)).join(', '),mx<=mn*2.6,'nessun indirizzo oltre due volte e mezza un altro')];
   }]);
+  S.steps.push(['Pull e difesa automatica',()=>{
+    const k=Math.max(120,n*40),ra=ros(62,'a'),rb=ros(62,'b'),d0=G.opt.def;
+    setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    newGame();G.lvl=[0,0];G.oppPlus=0;G.idn=[null,null];G.inMatch=true;G.schemeOpen=false;
+    // 1) i pull dell'IA: una parte deve uscire, la maggior parte deve arrivare nella meta avversaria
+    let brick=0,deep=0;
+    for(let i=0;i<k;i++){G.auto=true;placeTeams(i%2);aiPull();if(G.pull.oob)brick++;else if(inEZ(G.pull.spot,G.pull.team))deep++;}
+    // 2) le zone delle barre dicono il vero: verde e centro restano in campo, oltre la tacca o di lato si esce
+    const pullAt=(c,rel)=>{placeTeams(1);doPull(c,(dirOf(0)>0?0:Math.PI)+rel);return G.pull.oob?1:0;};
+    let gOut=0,rOut=0,sOut=0;for(let i=0;i<k;i++){gOut+=pullAt((PULL_G0+PULL_TH)/2,0);rOut+=pullAt(1,0);sOut+=pullAt((PULL_G0+PULL_TH)/2,PULL_SW*0.85);}
+    // 3) difesa automatica: il possesso avversario si gioca da solo fino alla meta o al recupero, senza difensore guidato ne' cerchi dell'handblock
+    G.opt.def=0;G.auto=false;let goals=0,stuck=0,ctrl=0,hbw=0;const m=Math.max(40,n*10);
+    for(let i=0;i<m;i++){
+      placeTeams(1);doPull(0.8,dirOf(0)>0?0:Math.PI);G.skip=true;
+      let t=0;while(t++<14400&&G.mode==='play'&&G.poss===1){update(1/60);if(G.ctrl)ctrl++;if(hbWindow())hbw++;}
+      G.skip=false;
+      if(G.mode==='banner'){if(G.banner.team===1)goals++;}else if(G.poss!==0)stuck++;
+      G.mode='play';
+    }
+    G.opt.def=d0;
+    return [row('Pull dell\u2019IA che escono dal campo',pc(brick/k),brick/k>=0.08&&brick/k<=0.35,'attesa tra 8% e 35%'),
+      row('Pull dell\u2019IA che arrivano nella meta avversaria',pc(deep/k),deep/k>=0.35,'almeno 35%'),
+      row('Pull fermato nel verde e al centro: fuori',pc(gOut/k),gOut/k<=0.04,'al massimo 4%'),
+      row('Pull a tutta potenza o verso la linea laterale: fuori',pc(rOut/k)+' e '+pc(sOut/k),rOut/k>=0.6&&sOut/k>=0.9,'almeno 60% e 90%'),
+      row('Possessi avversari saltati che arrivano in fondo',(m-stuck)+' su '+m,stuck===0),
+      row('Mete avversarie per possesso saltato',pc(goals/m),goals/m>=0.05&&goals/m<=0.85,'attesa tra 5% e 85%: né muro né colabrodo'),
+      row('Difesa automatica senza difensore guidato né cerchio dell\u2019handblock',ctrl+hbw===0?'sì':'no',ctrl+hbw===0)];
+  }]);
   S.steps.push(['Prestazioni',()=>{
     const gt=S.base?avg(S.base.map(m=>m.time)):0,k=gt/Math.max(0.001,S.ms/1000);
     return [row('Velocità di simulazione',Math.round(S.ms)+' ms a partita ('+Math.round(k)+' volte il tempo reale)',k>=15,'almeno 15 volte')];
@@ -96,7 +124,7 @@ function selfTestRun(S,i){   // esegue il passo i col suo generatore casuale; i 
   for(const k in HOOKS)HOOKS[k]=k==='cine'?null:function(){};
   G.opt.cine=false;Math.random=mulberry32(S.seed+i*7919);
   try{rows=S.steps[i][1]();}catch(e){rows=[{name:S.steps[i][0],val:'errore: '+(e&&e.message),ok:false,note:''}];}
-  finally{Math.random=R0;Object.assign(HOOKS,H0);G.opt.cine=c0;G.auto=false;G.fix=null;G.inMatch=false;G.drill=null;G.mode='menu';}
+  finally{Math.random=R0;Object.assign(HOOKS,H0);G.opt.cine=c0;G.auto=false;G.skip=false;G.fix=null;G.inMatch=false;G.drill=null;G.mode='menu';}
   return rows;
 }
 function selfTest(opt){const S=selfTestPlan(opt),out=[];for(let i=0;i<S.steps.length;i++)out.push({group:S.steps[i][0],rows:selfTestRun(S,i)});return out;}

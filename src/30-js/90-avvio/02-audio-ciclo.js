@@ -206,24 +206,26 @@ window.addEventListener('pointerdown',()=>AUD.init(),{capture:true});
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('button'))AUD.sfx('ui');},true);
 window.addEventListener('keydown',()=>AUD.init(),{capture:true});
 for(const id of ['tSnd','sSnd','opSnd','paSnd'])$(id).addEventListener('click',()=>AUD.setOn(!AUD.isOn()));
+for(const id of ['sDef','opDef','paDef'])$(id).addEventListener('click',()=>{setDefMode((G.opt.def+1)%3);syncToggles();});
 for(const id of ['sCine','opCine','paCine'])$(id).addEventListener('click',()=>{G.opt.cine=!G.opt.cine;try{localStorage.setItem('ultimate-stacchi',G.opt.cine?'1':'0');}catch(e){}syncToggles();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)AUD.hold();else AUD.back();});
 window.addEventListener('pagehide',e=>{AUD.hold();if(!e.persisted)AUD.close();});
 window.addEventListener('pageshow',()=>AUD.back());
 try{if(localStorage.getItem('ultimate-stacchi')==='0')G.opt.cine=false;}catch(e){}
+try{const d=+localStorage.getItem(DEF_KEY);if(d===1||d===2)G.opt.def=d;}catch(e){}
 function syncToggles(){   // audio e stacchi laterali si cambiano da piu' punti (menu, impostazioni, opzioni, pausa): le etichette restano allineate
   const on=AUD.isOn(),c=G.opt.cine;
   $('tSnd').classList.toggle('off',!on);$('tSndT').textContent=on?'Audio sì':'Audio no';
   $('sSndS').textContent=on?'Acceso: musica, tifo ed effetti':'Spento';$('sCineS').textContent=c?'Accesi: salti e tuffi visti di lato':'Spenti';
   for(const id of ['opSnd','paSnd'])$(id).textContent='Audio: '+(on?'sì':'no');
   for(const id of ['opCine','paCine'])$(id).textContent='Stacchi laterali: '+(c?'sì':'no');
+  for(const id of ['opDef','paDef'])$(id).textContent='Difesa: '+DEF_LBL[G.opt.def].toLowerCase();
+  $('sDefS').textContent=DEF_LBL[G.opt.def]+': '+DEF_TXT[G.opt.def];
 }
 syncToggles();
 HOOKS.sfx=(k,a,b)=>AUD.sfx(k,a,b);
 function syncCall(){
   const h=G.holder;syncAimPoint();
-  if(pdrag&&pdrag.sl&&pdrag.warn&&pullState(pdrag).c<=PULL_TH-0.04)pdrag.warn=0;
-  if(pdrag&&pdrag.btn&&!pdrag.warn&&pullState(pdrag).c>PULL_TH){pdrag.warn=1;HOOKS.vibe(22);HOOKS.sfx('warn');}   // pull: troppo carico, finisce fuori
   if(drag&&G.mode==='play'&&h&&h.t===0&&!G.flight&&G.freeze<=0){const w=toWorld(drag.x,drag.y);updateCall(h,w.x,w.y,G.high);}
   else if(G.call)endCall();
 }
@@ -233,7 +235,8 @@ function frame(now){
   if(!portrait()){
     G.tick+=dt;
     padPoll();vinPushDir();
-    if(inDefense()&&!ddrag)G.cdir=VIN.ang!==null?{x:Math.cos(VIN.ang),y:Math.sin(VIN.ang)}:null;   // tastiera o stick: guida il difensore cerchiato
+    pullTick();defTick();
+    if(inDefense()&&!ddrag&&defMan())G.cdir=VIN.ang!==null?{x:Math.cos(VIN.ang),y:Math.sin(VIN.ang)}:null;   // tastiera o stick: guida il difensore cerchiato
     if(drag&&drag.sl&&!drag.was&&!drag.iso&&G.tick-drag.s>0.5){drag.iso=true;quickCall(drag.tw,true);}   // pressione lunga su un compagno: isolamento
     syncCall();
     // con il disco in mano e lo zoom che sta cambiando l'azione aspetta: riparte quando lo zoom ha finito

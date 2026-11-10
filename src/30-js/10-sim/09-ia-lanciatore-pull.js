@@ -49,7 +49,14 @@ function aiThrow(th){
 }
 
 /* ---- pull ---- */
-const PULL_TH=0.88,PULL_T=0.95,PULL_SPEED=1.12;   // PULL_SPEED: velocita' del disco in volo al pull (1 = com'era)
+const PULL_TH=0.88,PULL_SPEED=1.12;   // PULL_SPEED: velocita' del disco in volo al pull (1 = com'era)
+/* PULL A TEMPO: il pull e' un gesto difficile, non un lancio qualsiasi. Si decide in due tocchi su due indicatori che oscillano:
+   1) POTENZA: la zona verde (da PULL_G0 alla tacca PULL_TH) manda il disco nella meta avversaria; prima e' corto, oltre la tacca rischia di uscire dal fondo;
+   2) DIREZIONE: l'ago spazza il campo da una linea laterale all'altra e oltre (PULL_SW radianti per parte); solo la parte centrale resta in campo.
+   Gli indicatori vanno piu' piano per chi ha Sparo (potenza) e Lancio (direzione) alti. L'interfaccia legge queste costanti; il motore riceve carica e angolo. */
+const PULL_G0=0.74,PULL_Y0=0.62,PULL_SW=0.42;
+const pullPeriod=(p,k)=>k?0.62+p.s.lan*0.006:0.8+p.s.spa*0.007;   // secondi per una spazzata: 0 potenza, 1 direzione
+const pullWave=(t,T)=>{const u=(t/T)%2;return u<1?u:2-u;};          // 0..1..0 a velocita' costante
 function pullAngle(team,ang){
   const fwd=dirOf(team)>0?0:Math.PI;
   let rel=Math.atan2(Math.sin(ang-fwd),Math.cos(ang-fwd));
@@ -82,7 +89,9 @@ function doPull(charge,ang){
   HOOKS.vibe(18);HOOKS.sfx('pull');
 }
 function aiPull(){
-  const d=dirOf(G.pullTeam),sk=G.puller.s.spa;   // l'IA cerca la tacca: chi ha poco Sparo la sbaglia piu' spesso, in difetto o in eccesso
-  doPull(clamp(0.8+randn()*(0.05+(100-sk)*0.0012),0.35,0.98),(d>0?0:Math.PI)+randn()*0.07);
+  // l'IA mira al centro della zona verde e al centro del campo, ma sbaglia come sbaglierebbe una persona: chi ha Sparo e Lancio bassi
+  // tira piu' spesso corto, lungo o fuori di lato (in media un pull su cinque finisce in brick, uno su dieci per i migliori)
+  const p=G.puller,d=dirOf(G.pullTeam);
+  doPull(clamp(0.8+randn()*(0.07+(100-p.s.spa)*0.002),0.35,0.99),(d>0?0:Math.PI)+randn()*(0.09+(100-p.s.lan)*0.002));
 }
 

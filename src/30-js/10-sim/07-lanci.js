@@ -139,7 +139,7 @@ const hbSkill=th=>th.s.buc+streakMod(th);   // il lanciatore si libera del marca
 const hbCurve=(a,c)=>{c=clamp(c,0,1);return c<=0.5?lerp(a[0],a[1],c/0.5):lerp(a[1],a[2],(c-0.5)/0.5);};
 const hbRel=(th,mk)=>clamp(1+0.02*(mk.s.dif-hbSkill(th)),0.3,2);   // +20 di Difesa sul Buco = +40% di probabilita', -20 = -40%
 function hbProb(th,info,mk,ha){
-  if(mk.t===1||G.auto)return clamp(hbCurve(HB_AI,info.c)*hbRel(th,mk)*AIK(mk.t).hb*HB_K,0,0.9);   // marcatore avversario (o prova automatica): valori fissi
+  if(mk.t===1||G.auto||G.skip||!defMan())return clamp(hbCurve(HB_AI,info.c)*hbRel(th,mk)*AIK(mk.t).hb*HB_K,0,0.9);   // marcatore avversario, prova automatica o difesa automatica: decidono le statistiche
   if(!ha)return 0;                                                               // il tuo marcatore senza tocco: 0%
   return clamp(hbCurve(HB_TAB[hbColor(ha.qual)],info.c)*hbRel(th,mk)*HB_K,0,0.9);
 }
@@ -181,7 +181,7 @@ function registerThrow(p,ok,cat){
 const hbDur=(h,mk)=>clamp(0.85+(mk.s.dif-hbSkill(h))*0.0102,0.5,1.3);
 function hbWindow(){
   const h=G.holder,mk=G.marker;
-  if(G.mode!=='play'||G.flight||G.brickWait||G.walk||!h||h.t!==1||!mk||mk.t!==0)return null;
+  if(G.mode!=='play'||G.flight||G.brickWait||G.walk||!h||h.t!==1||!mk||mk.t!==0||!defMan()||G.skip)return null;
   if(hyp(mk.x-h.x,mk.y-h.y)>3.8||G.think<=0)return null;
   const Wd=hbDur(h,mk),rem=G.think/(G.k||K_DEF);   // secondi reali al lancio
   if(rem>Wd)return null;   // il cerchio compare quando mancano Wd secondi al lancio: la velocita' dipende solo dalle statistiche
@@ -233,6 +233,8 @@ function updateDisc(dt){
       if(pu.t>=pu.T){
         pu.landed=true;pu.lt=0;d.z=0;d.x=pu.spot.x;d.y=pu.spot.y;
         if(pu.oob)HOOKS.toast('Pull fuori! Si riparte dal brick',G.poss);
+        else{const dr=dirOf(G.poss),dep=((dr>0?EZ:FIELD_L-EZ)-pu.spot.x)*dr;   // metri dentro la meta di chi riceve (negativi: il disco e' caduto piu' avanti)
+          if(dep>=0)HOOKS.toast(dep>=6?'Gran pull!':'Buon pull',pu.team);else if(dep<-20)HOOKS.toast('Pull corto',G.poss);}
       }
     }else{
       pu.lt+=dt;

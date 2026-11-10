@@ -66,7 +66,7 @@ HOOKS.cine=startCine;
 HOOKS.menu=()=>{cam.snap=true;};
 HOOKS.half=()=>{$('hScore').textContent=`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${G.oppName||'Rossi'}`;$('half').classList.remove('hidden');};
 $('hSch').addEventListener('click',()=>openSchemes(false));
-$('hSub').addEventListener('click',()=>{if(G.mode!=='half')return;forcedSubs=false;$('subTitle').textContent='Cambi';$('subSub').textContent='';swapSel=null;pdrag=null;G.schemeOpen=true;renderLineupBox();$('subs').classList.remove('hidden');});
+$('hSub').addEventListener('click',()=>{if(G.mode!=='half')return;forcedSubs=false;$('subTitle').textContent='Cambi';$('subSub').textContent='';swapSel=null;G.schemeOpen=true;renderLineupBox();$('subs').classList.remove('hidden');});
 $('hCont').addEventListener('click',()=>{if(G.mode!=='half'||forcedSubs)return;$('half').classList.add('hidden');startSecondHalf();});
 HOOKS.over=showOver;
 

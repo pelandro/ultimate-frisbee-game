@@ -398,22 +398,6 @@ function drawHb(){
   if(hbFx&&G.tick<hbFx.until){const a=(hbFx.until-G.tick)/0.55,q=hbFx.q;if(a>0.5||((G.tick*20|0)&1))pring(sxw(q.x),syw(q.y)-10,Math.max(R0,hbFx.R),Math.max(R0,hbFx.R),hbFx.col,2);}
   else hbFx=null;
 }
-function drawPull(){
-  if(!pdrag||!G.puller)return;
-  const p=G.puller,cx=sxw(p.x),cy=syw(p.y)-10,R=17;
-  const ps=pullState(pdrag),c=ps.c,pp=pullPlan(p,G.pullTeam,c,ps.ang),over=pp.over>0;
-  if(pdrag.sl){const r=cv.getBoundingClientRect();drawSling(pdrag.x0+r.left,pdrag.y0+r.top,pdrag.x+r.left,pdrag.y+r.top,false);if(c<0.06)return;}
-  pring(cx,cy,R,R,PAL.out,5);pring(cx,cy,R,R,'#5c6b55',3);
-  pring(cx,cy,R,R,over?(((G.tick*10|0)&1)?PAL.red:'#ffb3b5'):PAL.green,3,0,-Math.PI/2,-Math.PI/2+c*6.2832);
-  const ta=-Math.PI/2+PULL_TH*6.2832;pline(cx+Math.cos(ta)*(R-3),cy+Math.sin(ta)*(R-3),cx+Math.cos(ta)*(R+3),cy+Math.sin(ta)*(R+3),'#ffffff',1);
-  // punto d'arrivo previsto: se e' fuori dal campo (di lato o oltre il fondo) diventa rosso. Il cerchio tratteggiato e' l'errore possibile: cresce oltre la tacca
-  const lx=p.x+Math.cos(pp.a)*pp.dist,ly=p.y+Math.sin(pp.a)*pp.dist,out=lx<0||lx>FIELD_L||ly<0||ly>FIELD_W,col=out?PAL.red:'#ffffff';
-  const ex=sxw(lx),ey=syw(ly),n=Math.max(4,ri(hyp(ex-cx,ey-cy)/7)),arc=Math.min(46,hyp(ex-cx,ey-cy)*0.25),flow=(G.tick*1.6)%1;
-  for(let i=1;i<n;i++){const u=(i+flow)/n,x=ri(lerp(cx,ex,u)),y=ri(lerp(cy,ey,u)-arc*4*u*(1-u));px(x-2,y-2,4,4,PAL.out);px(x-1,y-1,2,2,col);}
-  const ur=clamp(ri(1.6*pp.sd*S),5,46);
-  pring(ex,ey,ur,ur,PAL.out,3,2);pring(ex,ey,ur,ur,col,1,2);pring(ex,ey,4,3,PAL.out,3);pring(ex,ey,4,3,col,1);
-  if(out)ptext('FUORI',clamp(ex,24,VW-24),clamp(ey-ur-12,BAR+2,VH-12),{f:'p',c:PAL.red});
-}
 // messaggi: riquadri neri sotto la barra, testi che salgono dal punto dell'azione, fascia nera a tutto schermo per i cambi di possesso
 const floaters=[];let band=null;
 function addFloater(txt,x,y,c,f){floaters.push({txt,x,y,c:c||'#ffffff',f:f||'p',t:1.1,max:1.1});if(floaters.length>6)floaters.shift();}

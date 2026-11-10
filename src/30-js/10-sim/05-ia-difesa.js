@@ -12,7 +12,7 @@ function zoneAssign(){
    Quando l'avversario lancia il controllo passa da solo al difensore che puo' arrivare prima sul disco: se lo porti sul punto d'arrivo intercetta o contende.
    G.dmode[squadra]: 0 = contenimento (dietro all'uomo: protegge il profondo), 1 = anticipo (davanti all'uomo: toglie i passaggi corti, rischia sul lungo) */
 function autoCtrl(){
-  if(G.auto||G.poss!==1){G.ctrl=null;return;}
+  if(G.auto||G.poss!==1||!defMan()){G.ctrl=null;return;}
   const f=G.flight;
   if(f){G.ctrl=G.sprint&&G.sprint.p.t===0?G.sprint.p:T[0].slice().sort((a,b)=>a._t-b._t)[0];return;}
   const h=G.holder;if(!h)return;
@@ -20,7 +20,7 @@ function autoCtrl(){
   G.ctrl=b;
 }
 function cycleCtrl(){   // passa al difensore successivo, dal piu' vicino al disco (o al punto d'arrivo) in poi
-  if(G.poss!==1||G.auto)return;
+  if(G.poss!==1||G.auto||!defMan())return;
   const f=G.flight,o=f?{x:f.tx,y:f.ty}:(G.holder||G.ref),list=T[0].slice().sort((a,b)=>hyp(a.x-o.x,a.y-o.y)-hyp(b.x-o.x,b.y-o.y));
   G.ctrl=list[(list.indexOf(G.ctrl)+1)%list.length];G.ctrlBy=true;
 }
@@ -32,7 +32,7 @@ function updateDefenders(dt){
   let mk=null;
   if(Hh)mk=sch==='zone'?nearestTo(dT,Hh.x,Hh.y):(dT.find(q=>q.mark===Hh)||nearestTo(dT,Hh.x,Hh.y));
   G.marker=mk;
-  if(P===1&&!G.auto){   // scelta automatica del difensore che guidi: cambia a ogni nuovo portatore e a ogni lancio
+  if(P===1&&!G.auto&&defMan()){   // scelta automatica del difensore che guidi: cambia a ogni nuovo portatore e a ogni lancio
     if(G.flight){if(G.ctrlF!==G.flight){G.ctrlF=G.flight;autoCtrl();}}
     else if(Hh&&(G.ctrlH!==Hh||!G.ctrl||!dT.includes(G.ctrl))){G.ctrlH=Hh;G.ctrlBy=false;autoCtrl();}
   }else{G.ctrl=null;G.cdir=null;}

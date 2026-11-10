@@ -51,7 +51,7 @@ $('gdX').addEventListener('click',()=>{$('guide').classList.add('hidden');const 
 /* ---- PAUSA: un solo tasto in alto a destra durante la partita. La partita si ferma davvero; da qui si riprende, si simula la meta, si apre la guida o si esce ---- */
 function openPause(){
   if(!G.inMatch||!(G.mode==='play'||G.mode==='ready')||G.paused)return;
-  G.paused=true;G.schemeOpen=true;drag=null;pdrag=null;ddrag=null;aimPid=null;G.cdir=null;
+  G.paused=true;G.schemeOpen=true;drag=null;ddrag=null;aimPid=null;G.cdir=null;
   $('paSub').textContent=G.drill?G.matchLabel:`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${G.oppName||'Rossi'} · meta ${G.pointNo}`;
   $('paSim').classList.toggle('hidden',!!G.drill);
   $('paQuit').textContent=G.drill?'Esci dall’allenamento':'Abbandona la partita';delete $('paQuit').dataset.arm;
@@ -71,7 +71,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)openPause()
 function simPoint(){
   if(!G.inMatch||G.drill||G.paused||!(G.mode==='ready'||G.mode==='play'))return false;
   const H0=Object.assign({},HOOKS),c0=G.opt.cine,tot=G.score[0]+G.score[1];
-  drag=null;pdrag=null;ddrag=null;aimPid=null;G.cdir=null;G.schemeOpen=false;
+  drag=null;ddrag=null;aimPid=null;G.cdir=null;G.schemeOpen=false;
   for(const k of ['toast','sfx','vibe','shake'])HOOKS[k]=function(){};
   HOOKS.cine=null;G.opt.cine=false;G.auto=true;
   let n=0;
@@ -88,7 +88,7 @@ $('subBox').addEventListener('click',e=>{const b=e.target.closest('button[data-i
 bSub.addEventListener('click',()=>{
   if(G.mode!=='ready')return;
   forcedSubs=false;$('subTitle').textContent='Cambi';$('subSub').textContent=G.lines?(G.lineK==='o'?'Linea d’attacco':'Linea di difesa')+': i cambi che fai valgono anche per le prossime mete di questa linea.':'';
-  swapSel=null;pdrag=null;G.schemeOpen=true;renderLineupBox();$('subs').classList.remove('hidden');
+  swapSel=null;G.schemeOpen=true;renderLineupBox();$('subs').classList.remove('hidden');
 });
 // cambio automatico: al posto di ogni infortunato in campo entra il migliore disponibile dello stesso ruolo
 $('bSubAuto').addEventListener('click',()=>{fixLineup();if(G.inMatch&&G.lines&&G.lineK)G.lines[G.lineK]=lineupIds();swapSel=null;persist();renderLineupBox();});
@@ -101,7 +101,7 @@ $('bSubGo').addEventListener('click',()=>{
 });
 // infortunio a fine meta: pannello obbligatorio per far entrare un altro giocatore
 HOOKS.injury=list=>{
-  forcedSubs=true;pdrag=null;G.schemeOpen=true;
+  forcedSubs=true;G.schemeOpen=true;
   swapSel=list[0].id;
   $('subTitle').textContent='Infortunio';
   $('subSub').textContent=list.map(p=>p.name).join(', ')+(list.length>1?' si sono infortunati':' si è infortunato')+': scegli chi entra al suo posto.';

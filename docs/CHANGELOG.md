@@ -4,6 +4,8 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Difesa automatica: i tuoi difendono da soli e il gioco scorre più in fretta; restano la scelta della marcatura e, di rado, un tuffo o un duello a tempo. Il tasto «Salta» risolve subito il possesso avversario. Da Impostazioni, Opzioni e Pausa si sceglie tra difesa automatica, manuale (come prima) o saltata.
+- Pull a tempo: due tocchi su due barre che oscillano (potenza e direzione). È più difficile tirare un bel pull, e anche gli avversari ora sbagliano: circa un loro pull su cinque finisce fuori.
 - Strumenti: guida per il secondo sviluppatore e protezioni di `main` su GitHub attive (pull request e verifica obbligatorie).
 - Strumenti: `node tools/pr.js unisci` aspetta da solo la verifica quando GitHub non offre l'unione automatica (impostazione *Allow auto-merge* spenta o non disponibile).
 - Strumenti: le pull request si aprono e si uniscono con `node tools/pr.js`, che funziona anche nelle sessioni cloud di Claude Code.

@@ -44,8 +44,12 @@ const HOOKS={cine:null,toast(){},menu(){},over(){},vibe(){},injury(){},sfx(){},h
 const MATCH_TARGET=7,HALF_AT=4,HALF_REST=4;   // la partita arriva a 7 punti; quando una squadra segna il 4° c'e' l'half time, in cui si recupera pochissima energia (+4)
 const G={mode:'menu',xtr:false,hint:false,routes:true,score:[0,0],target:MATCH_TARGET,halfDone:false,startRec:1,pointNo:1,poss:0,nextRec:1,holder:null,flight:null,
   disc:{x:0,y:0,z:1},ref:{x:EZ,y:MID},marker:null,closedSide:1,stallT:0,freeze:0,think:1,high:false,
-  sch:{att:'vert',def:'man_out'},opp:{att:'vert',def:'man_out'},opt:{cine:true},banner:null,auto:false,
+  sch:{att:'vert',def:'man_out'},opp:{att:'vert',def:'man_out'},opt:{cine:true,def:0},banner:null,auto:false,
   zoneT:0,zoneH:null,st:null,ctrl:null,cdir:null,dmode:[0,0],iso:null,pullTeam:1,puller:null,pull:null,readyT:3,schemeOpen:false,dir:[1,-1],holdT:0,hbAtt:null,injured:[]};
+// DIFESA: G.opt.def = 0 automatica (predefinita: i tuoi difendono da soli, il gioco scorre piu' in fretta e restano pochi momenti a tempo),
+// 1 manuale (guidi un difensore, handblock e tuffi a ogni occasione), 2 saltata (il possesso avversario si risolve in un istante).
+// In allenamento la difesa e' sempre manuale: e' li' che si impara. G.skip: possesso avversario in corso di salto.
+const defMan=()=>G.opt.def===1||!!G.drill;
 function resetStats(){G.st={thr:[0,0],cmp:[0,0],blk:[0,0],dive:[0,0],jump:[0,0],to:[0,0],hb:[0,0],sp:[0,0],sh:[0,0],drop:[0,0]};}
 const statOrig=(r,k)=>k==='res'?(r[15]!==undefined?r[15]:60):(k==='pre'?Math.round(r[2]*0.35+r[6]*0.25+r[7]*0.4):(k==='agi'?Math.round(r[7]*0.7+r[9]*0.3):r[2+KEYS.indexOf(k)]));   // le rose di prova non hanno Presa e Agilita': si ricavano da lancio, salto, scatto e velocita'
 // rose salvate prima che esistessero Presa e Agilita': le due statistiche si ricavano dalle altre
