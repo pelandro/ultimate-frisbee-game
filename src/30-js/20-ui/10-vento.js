@@ -1,6 +1,9 @@
 /* ---- VENTO: sorteggio per ogni modalita' e indicatore sul campo (le regole sono nel motore, 10-sim/15-vento.js) ---- */
 // carriera: il vento di una partita dipende dal salvataggio, dalla stagione e dalla giornata, cosi' il cruscotto lo annuncia prima e non cambia ricaricando
 const careerWind=m=>windFor(mulberry32(hashStr('vento|'+SV.seed+'|'+SV.season+'|'+m.label+'|'+m.name)));
+const WIND_KEY='ultimate-vento';
+// acceso o spento dalle Impostazioni e dalle Opzioni della carriera: vale dalla prossima partita; spegnendolo a partita in corso cala subito
+function setWindOn(on){G.opt.wind=!!on;try{localStorage.setItem(WIND_KEY,on?'1':'0');}catch(e){}if(!on)setWind(0,0);}
 const windTxt=lv=>WIND_N[lv]+(lv>=2?': lanci lunghi e alti più difficili':(lv===1?': poco effetto':''));
 // in alto a destra, sotto la barra: freccia nella direzione in cui soffia e nome. Con la calma non compare nulla
 function drawWind(){

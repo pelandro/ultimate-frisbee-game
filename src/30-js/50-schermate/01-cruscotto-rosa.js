@@ -5,7 +5,7 @@ function renderHome(){
   let nx;
   if(m){
     const op=Math.round((m.roster?rosterPower(m.roster):m.power)+carDiff().plus),me=Math.round(squadPower()),idn=m.roster?teamIdentity(m.name,bestSeven(m.roster)):null;
-    nx=`<small>PROSSIMA · ${m.label}</small><div class="dvs"><span>${crest(m.name,26)}<b>${esc(m.name)}</b></span><span class="dpw"><i>tu</i> ${me} <i>·</i> ${op} <i>loro</i></span></div>`+(idn&&idn.tags.length?`<small class="dtag">Stile: ${idn.tags.join(', ')}</small>`:'')+`<small class="dtag">Meteo: ${windTxt(careerWind(m)[0]).toLowerCase()}</small>`;
+    nx=`<small>PROSSIMA · ${m.label}</small><div class="dvs"><span>${crest(m.name,26)}<b>${esc(m.name)}</b></span><span class="dpw"><i>tu</i> ${me} <i>·</i> ${op} <i>loro</i></span></div>`+(idn&&idn.tags.length?`<small class="dtag">Stile: ${idn.tags.join(', ')}</small>`:'')+(G.opt.wind===false?'':`<small class="dtag">Meteo: ${windTxt(careerWind(m)[0]).toLowerCase()}</small>`);
   }else nx=`<small>${SV.event==='camp'?'STAGIONE CONCLUSA':'EVENTO CONCLUSO'}</small><div class="dvs"><span><b>${SV.event==='camp'&&SV.next?esc(SV.next.short):'Ricomincia da Classifica'}</b></span></div><small class="dtag">Apri Classifica per iniziare la nuova stagione</small>`;
   $('hNext').innerHTML=nx;
   const form=SV.res.slice(-5).map(r=>`<i class="${r.su>r.so?'w':'l'}">${r.su>r.so?'V':'S'}</i>`).join('')||'<i>–</i>';

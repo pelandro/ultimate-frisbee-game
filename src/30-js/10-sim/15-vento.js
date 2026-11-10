@@ -6,12 +6,13 @@
    - allarga la dispersione, soprattutto dei lanci alti;
    - cambia la gittata: col vento alle spalle si lancia piu' lungo senza perdere precisione, controvento meno;
    - sposta il pull di qualche metro (vedi pullPlan): le zone delle barre si muovono con il vento.
-   Nei test automatici e in allenamento c'e' sempre calma (newGame azzera il vento; poi ogni modalita' lo sorteggia). */
+   Nei test automatici e in allenamento c'e' sempre calma (newGame azzera il vento; poi ogni modalita' lo sorteggia).
+   Il vento si puo' spegnere dalle Impostazioni (G.opt.wind): allora il sorteggio da' sempre calma, in tutte le modalita'. */
 const WIND_V=[0,2,4,6.5],WIND_N=['Calma','Brezza','Vento','Vento forte'];   // metri al secondo
 const WIND_K=0.45,WIND_SIG=0.07,WIND_RANGE=1.2,PULL_WK=1.3;
 function setWind(lv,a){lv=clamp(lv|0,0,3);G.wind={lv,a:a||0,v:WIND_V[lv],x:Math.cos(a||0)*WIND_V[lv],y:Math.sin(a||0)*WIND_V[lv]};}
 // sorteggio con un generatore dato (in carriera ha il seme della partita: il meteo si conosce prima di giocare). Calma 35%, brezza 35%, vento 22%, vento forte 8%
-function windFor(r){const u=r(),lv=u<0.35?0:(u<0.7?1:(u<0.92?2:3));return [lv,r()*Math.PI*2];}
+function windFor(r){if(G.opt.wind===false)return [0,0];const u=r(),lv=u<0.35?0:(u<0.7?1:(u<0.92?2:3));return [lv,r()*Math.PI*2];}
 function rollWind(r){const w=windFor(r||Math.random);setWind(w[0],w[1]);}
 function windOn(skill,dx,dy,dist,T,hi,scoob){
   const W=G.wind;if(!W||!W.lv)return null;
