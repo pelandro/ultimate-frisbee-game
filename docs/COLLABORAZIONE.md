@@ -22,12 +22,23 @@ cd ultimate-frisbee-game && npm install && npx playwright install chromium
 `npm install` attiva i ganci Git del progetto. Per usare Claude Code sul web, collega GitHub da <https://claude.ai/connect-github>,
 dai all'app Claude l'accesso a questo repository e sceglilo all'avvio della sessione.
 
-Le protezioni di `main` su GitHub e l'unione automatica le imposta **il proprietario, una volta sola** (dalle sessioni cloud di Claude non si possono cambiare le impostazioni del repository):
+Le protezioni di `main` su GitHub e l'unione automatica le imposta **il proprietario, una volta sola** (dalle sessioni cloud di Claude non si possono cambiare le impostazioni del repository). **Sono già attive**: il ruleset *Proteggi main* (Settings › Rules › Rulesets) e *Allow auto-merge*. Se in futuro vanno rifatte:
 
 - dal proprio computer: `bash tools/setup-github.sh ultimate-frisbee-game` (serve `gh auth login`);
-- oppure a mano: **Settings › General › Pull Requests** → spunta *Allow auto-merge* e *Automatically delete head branches*; **Settings › Branches › Add branch ruleset** (o *Add rule*) per `main` → *Require a pull request before merging* (0 approvazioni), *Require status checks to pass* con il controllo `verifica` e *Require branches to be up to date*, *Block force pushes*.
+- oppure a mano: **Settings › General › Pull Requests** → spunta *Allow auto-merge* e *Automatically delete head branches*; **Settings › Rules › Rulesets › New branch ruleset** per il ramo predefinito → *Require a pull request before merging* (0 approvazioni), *Require status checks to pass* con il controllo `verifica` e *Require branches to be up to date*, *Block force pushes*, *Restrict deletions*, lista di bypass vuota.
 
-**Finché queste impostazioni non sono attive** (o se il repository tornasse privato con il piano gratuito di GitHub, che sui repository privati non offre *Allow auto-merge* né la protezione dei rami) il flusso funziona lo stesso: `node tools/pr.js unisci` aspetta la fine della verifica e unisce solo se è verde, e i ganci di Claude Code e di Git bloccano commit e push diretti su `main`. La differenza è che su GitHub nulla impedisce a chi usa Git a mano, senza i ganci attivi, di scrivere su `main`: per questo `npm install` (che li attiva) va fatto su ogni computer.
+Se il repository tornasse privato con il piano gratuito di GitHub (che sui repository privati non offre *Allow auto-merge* né la protezione dei rami) il flusso funzionerebbe lo stesso: `node tools/pr.js unisci` aspetta la fine della verifica e unisce solo se è verde, e i ganci di Claude Code e di Git bloccano commit e push diretti su `main`.
+
+## Cosa deve fare il collaboratore (una volta sola)
+
+Le regole per Claude **non vanno scritte a mano**: stanno nel repository (`CLAUDE.md`, `.claude/settings.json`, `.claude/commands/`, `tools/hooks/`) e Claude Code le legge da solo appena apre la cartella del progetto. Basta:
+
+1. Accettare l'invito a collaborare (arriva per email e in <https://github.com/pelandro/ultimate-frisbee-game/invitations>).
+2. Clonare il repository e lanciare `npm install` (vedi sopra): attiva i ganci Git.
+3. Aprire Claude Code **dentro la cartella clonata** (oppure, sul web, scegliere questo repository) e, alla richiesta, fidarsi del progetto.
+4. Verificare che funzioni dicendo a Claude: «/stato». Deve rispondere in italiano con rami e pull request aperte.
+
+Da lì in poi si lavora come descritto sotto. Non servono impostazioni personali. Due accortezze: non usare il proprio `.claude/settings.local.json` per aggirare i blocchi, e avvisarsi quando si cambiano le regole (`CLAUDE.md`, `.claude/`, `tools/hooks/`), perché cambiano il modo di lavorare di entrambi; passano da una pull request come ogni altra modifica.
 
 ## Il lavoro di tutti i giorni
 
