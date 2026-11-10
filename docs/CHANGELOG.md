@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Il vento si può spegnere: Impostazioni › Vento, oppure Opzioni della carriera. Da spento tutte le partite si giocano con la calma.
 - Vento: ogni partita ha il suo (in carriera lo annuncia il cruscotto). Sposta e sporca i lanci lunghi e alti, cambia la gittata e muove le zone del pull; chi lancia bene lo compensa.
 - Schermi grandi: su PC e iPad Pro menu, pannelli e barra in alto si ingrandiscono. Con il dito i tasti piccoli della Rosa e della pausa sono più comodi; il Mercato non esce più dallo schermo sui telefoni stretti.
 - Difesa automatica: i tuoi difendono da soli e il gioco scorre più in fretta; restano la scelta della marcatura e, di rado, un tuffo o un duello a tempo. Il tasto «Salta» risolve subito il possesso avversario. Da Impostazioni, Opzioni e Pausa si sceglie tra difesa automatica, manuale (come prima) o saltata.

@@ -38,7 +38,7 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 ## Come parlano le parti
 
 - **Motore → interfaccia**: solo tramite `HOOKS` (`toast`, `sfx`, `cine`, `menu`, `over`, `half`, `injury`, `shake`, `vibe`, `drill`). Nei test i ganci sono spenti.
-- **Opzioni che il motore legge**: `G.opt.cine` (stacchi laterali) e `G.opt.def` (difesa: 0 automatica, 1 manuale, 2 saltata; vedi `defMan()`). `G.skip` è acceso mentre un possesso avversario viene saltato.
+- **Opzioni che il motore legge**: `G.opt.cine` (stacchi laterali), `G.opt.wind` (vento acceso o spento) e `G.opt.def` (difesa: 0 automatica, 1 manuale, 2 saltata; vedi `defMan()`). `G.skip` è acceso mentre un possesso avversario viene saltato.
 - **Interfaccia → motore**: chiama le funzioni del motore (`doThrow`, `doPull`, `callCut`, `startPoint`...) e legge `G`, `T` (le due squadre in campo), `SQ` (la rosa del giocatore).
 - **Carriera**: tutto lo stato sta in `SV` (salvato in `localStorage` da `persist()`, letto da `loadSave()`). La rosa in memoria è `SQ`; `squadData()` la trasforma in dati da salvare e `setSquad()` la ricostruisce.
 - **Modalità senza carriera** (veloce, torneo, Ultimate Team, allenamento): mettono da parte la carriera (`QM.bak`) e la rimettono all'uscita (`exitQuick`).

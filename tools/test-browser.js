@@ -39,6 +39,16 @@ catch(e){
   await step('nuova carriera e cruscotto',async()=>{
     await page.click('#tCareer');await vis('#team');await page.click('#tSr button[data-k="C"]');await page.click('.tteam >> nth=0');await page.waitForTimeout(300);await vis('#home');
   });
+  await step('vento: si spegne e si riaccende dalle opzioni, il cruscotto si aggiorna',async()=>{
+    const meteo=async()=>/Meteo:/.test(await page.locator('#home').innerText());
+    if(!(await meteo()))throw new Error('il cruscotto non annuncia il meteo');
+    await page.click('#hOpt');await vis('#opts');await page.click('#opWind');
+    if(!/no/.test(await page.locator('#opWind').innerText()))throw new Error('il vento non si spegne');
+    await page.click('#opX');if(await meteo())throw new Error('con il vento spento il cruscotto non deve annunciare il meteo');
+    await page.click('#hOpt');await page.click('#opWind');
+    if(!/sì/.test(await page.locator('#opWind').innerText()))throw new Error('il vento non si riaccende');
+    await page.click('#opX');if(!(await meteo()))throw new Error('riacceso il vento il meteo deve tornare');
+  });
   await step('rosa, allenamenti, mercato, club, classifica, opzioni',async()=>{
     await page.click('#hRoster');await vis('#roster');await page.click('tr.pl >> nth=0');await vis('tr.dt');await page.click('#rBack');
     await page.click('#hTrain');await vis('#train');await page.click('#tTeamBox .ttype[data-team="tec"]');await vis('#tRes .tres');await page.click('#tBack');

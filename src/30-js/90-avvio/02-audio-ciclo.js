@@ -206,6 +206,7 @@ window.addEventListener('pointerdown',()=>AUD.init(),{capture:true});
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('button'))AUD.sfx('ui');},true);
 window.addEventListener('keydown',()=>AUD.init(),{capture:true});
 for(const id of ['tSnd','sSnd','opSnd','paSnd'])$(id).addEventListener('click',()=>AUD.setOn(!AUD.isOn()));
+for(const id of ['sWind','opWind'])$(id).addEventListener('click',()=>{setWindOn(G.opt.wind===false);syncToggles();if(!$('home').classList.contains('hidden'))renderHome();});
 for(const id of ['sDef','opDef','paDef'])$(id).addEventListener('click',()=>{setDefMode((G.opt.def+1)%3);syncToggles();});
 for(const id of ['sCine','opCine','paCine'])$(id).addEventListener('click',()=>{G.opt.cine=!G.opt.cine;try{localStorage.setItem('ultimate-stacchi',G.opt.cine?'1':'0');}catch(e){}syncToggles();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)AUD.hold();else AUD.back();});
@@ -213,6 +214,7 @@ window.addEventListener('pagehide',e=>{AUD.hold();if(!e.persisted)AUD.close();})
 window.addEventListener('pageshow',()=>AUD.back());
 try{if(localStorage.getItem('ultimate-stacchi')==='0')G.opt.cine=false;}catch(e){}
 try{const d=+localStorage.getItem(DEF_KEY);if(d===1||d===2)G.opt.def=d;}catch(e){}
+try{if(localStorage.getItem(WIND_KEY)==='0')G.opt.wind=false;}catch(e){}
 function syncToggles(){   // audio e stacchi laterali si cambiano da piu' punti (menu, impostazioni, opzioni, pausa): le etichette restano allineate
   const on=AUD.isOn(),c=G.opt.cine;
   $('tSnd').classList.toggle('off',!on);$('tSndT').textContent=on?'Audio sì':'Audio no';
@@ -221,6 +223,7 @@ function syncToggles(){   // audio e stacchi laterali si cambiano da piu' punti 
   for(const id of ['opCine','paCine'])$(id).textContent='Stacchi laterali: '+(c?'sì':'no');
   for(const id of ['opDef','paDef'])$(id).textContent='Difesa: '+DEF_LBL[G.opt.def].toLowerCase();
   $('sDefS').textContent=DEF_LBL[G.opt.def]+': '+DEF_TXT[G.opt.def];
+  const wOn=G.opt.wind!==false;$('opWind').textContent='Vento: '+(wOn?'sì':'no');$('sWindS').textContent=wOn?'Acceso: ogni partita ha il suo meteo':'Spento: sempre calma';
 }
 syncToggles();
 HOOKS.sfx=(k,a,b)=>AUD.sfx(k,a,b);
