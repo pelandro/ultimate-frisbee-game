@@ -1,0 +1,17 @@
+/* ---- SCHERMI GRANDI E TOCCO ----
+   Il gioco e' disegnato per un telefono in orizzontale. Su PC, iPad Pro e schermi larghi menu, pannelli e pulsanti del campo restavano
+   piccoli in un angolo: ora si ingrandiscono in blocco di un fattore --ui (1 su telefono e iPad, fino a 2,25 sui monitor grandi),
+   calcolato in resize() a passi di un quarto per tenere nitidi i caratteri a pixel. Il campo si ingrandisce gia' da solo. */
+.screen,.overlay,#ctrl,#hint,#coach,#skip,#score,#stall,#bExit{zoom:var(--ui,1)}   /* la barra nera in alto cresce insieme (BAR in resize()) */
+#hud::before{height:calc(28px*var(--ui,1))}
+#posedit{zoom:1}   /* l'editor della posizione dei pulsanti lavora in pixel dello schermo */
+/* con il dito i bersagli piccoli diventano comodi: tasti delle linee e della scheda nella Rosa, tasto di pausa in partita */
+@media (pointer:coarse){
+  .rt .lb,.rt .dbtn{min-height:34px;min-width:40px}
+  #bExit::after{content:"";position:absolute;inset:-6px -10px -16px -16px}
+}
+/* telefoni stretti: nel Mercato i due tasti di ogni riga vanno uno sopra l'altro, cosi' la tabella non esce dallo schermo */
+@media (max-width:760px){
+  .mka{white-space:normal}
+  .mka .sec,.mka .go.sm{display:block;width:100%;margin:2px 0}
+}

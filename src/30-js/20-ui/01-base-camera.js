@@ -4,7 +4,7 @@ const cv=$('c'),octx=cv.getContext('2d');
 // il gioco si disegna in un buffer a bassa risoluzione (pcv) e poi si ingrandisce a pixel netti sul canvas vero (cv).
 // VW e VH sono le dimensioni del buffer in pixel di gioco; CW e CH quelle dello schermo in pixel CSS (servono per i pulsanti); PXS = pixel fisici per pixel di gioco
 const pcv=document.createElement('canvas'),ctx=pcv.getContext('2d');
-let VW=400,VH=224,CW=800,CH=400,PXS=2,BAR=12,DPR=1,S=9,OY=0,baseS=9,CX=0,OYi=0;
+let VW=400,VH=224,CW=800,CH=400,PXS=2,BAR=12,DPR=1,S=9,OY=0,baseS=9,CX=0,OYi=0,UIZ=1;   // UIZ: ingrandimento di menu e pannelli sugli schermi grandi (--ui nel CSS)
 let uiReady=false;   // i pulsanti di gioco si posizionano solo dopo che l'interfaccia e' pronta
 const cam={x:0,y:FIELD_W/2,z:1,zF:1,zTo:1,zP:1,dz:0,snap:true};
 const ZOOM_T=1.6;   // secondi per passare da uno zoom all'altro
@@ -25,10 +25,11 @@ const portrait=()=>typeof matchMedia==='function'&&matchMedia('(orientation: por
 function resize(){
   const r=cv.getBoundingClientRect();DPR=Math.min(window.devicePixelRatio||1,3);
   CW=Math.max(1,r.width);CH=Math.max(1,r.height);
+  UIZ=clamp(Math.floor(Math.min(CW/1000,CH/560)*4)/4,1,2.25);document.documentElement.style.setProperty('--ui',UIZ);
   cv.width=Math.round(CW*DPR);cv.height=Math.round(CH*DPR);
   PXS=Math.max(1,Math.round(cv.height/224));   // circa 224 pixel di gioco in altezza, ingrandimento sempre intero
   VW=Math.ceil(cv.width/PXS);VH=Math.ceil(cv.height/PXS);pcv.width=VW;pcv.height=VH;
-  BAR=Math.ceil(28*DPR/PXS);   // altezza della barra nera in alto (28 px CSS) in pixel di gioco
+  BAR=Math.ceil(28*UIZ*DPR/PXS);   // altezza della barra nera in alto (28 px CSS, ingrandita sugli schermi grandi) in pixel di gioco
   baseS=(VH-BAR)/(FIELD_W+8);S=baseS*cam.z;OY=(VH+BAR)/2-cam.y*S;CX=Math.round(cam.x*S);OYi=Math.round(OY);
   layoutButtons();
 }
@@ -66,7 +67,7 @@ HOOKS.cine=startCine;
 HOOKS.menu=()=>{cam.snap=true;};
 HOOKS.half=()=>{$('hScore').textContent=`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${G.oppName||'Rossi'}`;$('half').classList.remove('hidden');};
 $('hSch').addEventListener('click',()=>openSchemes(false));
-$('hSub').addEventListener('click',()=>{if(G.mode!=='half')return;forcedSubs=false;$('subTitle').textContent='Cambi';$('subSub').textContent='';swapSel=null;pdrag=null;G.schemeOpen=true;renderLineupBox();$('subs').classList.remove('hidden');});
+$('hSub').addEventListener('click',()=>{if(G.mode!=='half')return;forcedSubs=false;$('subTitle').textContent='Cambi';$('subSub').textContent='';swapSel=null;G.schemeOpen=true;renderLineupBox();$('subs').classList.remove('hidden');});
 $('hCont').addEventListener('click',()=>{if(G.mode!=='half'||forcedSubs)return;$('half').classList.add('hidden');startSecondHalf();});
 HOOKS.over=showOver;
 

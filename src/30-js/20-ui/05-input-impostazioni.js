@@ -1,5 +1,5 @@
 /* ---- input ---- */
-let drag=null,tap=null,pdrag=null,ddrag=null;
+let drag=null,tap=null,ddrag=null;
 const ptr=e=>{const r=cv.getBoundingClientRect();return {px:e.clientX-r.left,py:e.clientY-r.top};};
 function nearestPlayer(px,py,maxd,team){
   let b=null,bd=maxd;const off=PH()*0.5;
@@ -8,7 +8,7 @@ function nearestPlayer(px,py,maxd,team){
 }
 /* ---- LANCIO A TRASCINAMENTO (come il lancio di Retro Bowl): si tocca lo schermo in un punto qualsiasi, si trascina il dito all'indietro come una fionda
    e si rilascia. Il disco parte nella direzione opposta al trascinamento e va tanto piu' lontano quanto piu' e' lungo. Riportando il dito vicino al punto
-   di partenza il lancio si annulla. Il pull si fa allo stesso modo: se tiri troppo indietro esce dal campo. Non c'e' nessun pulsante di lancio. ---- */
+   di partenza il lancio si annulla. Non c'e' nessun pulsante di lancio. Il pull e' un evento a parte, a due tocchi (09-difesa-pull.js). ---- */
 const SL_DEAD=14;                                  // px: sotto questa lunghezza non c'e' direzione e il rilascio annulla
 const SL_SENS=[1.3,1.14,1,0.86],DSL=['Molto bassa','Bassa','Media','Alta'];   // sensibilita' (Impostazioni): piu' e' alta, meno bisogna trascinare
 const slFull=()=>0.5*CH*SL_SENS[SETT.ds];          // px di trascinamento per il lancio massimo (55 m): meta' dell'altezza dello schermo
@@ -36,15 +36,13 @@ function slMove(e){
 }
 cv.addEventListener('pointerdown',e=>{
   if(G.mode==='cine'){cineTap();return;}
-  if(G.mode==='ready'){   // pull: fionda
-    if(!(G.pullTeam===0&&!G.auto&&!G.schemeOpen&&G.puller)||pdrag)return;
-    try{cv.setPointerCapture(e.pointerId);}catch(_){}
-    const q=ptr(e);aimPid=e.pointerId;pdrag={x0:q.px,y0:q.py,x:q.px,y:q.py,s:G.tick,btn:true,sl:true};return;
-  }
+  if(G.mode==='ready'){pullTap();return;}   // pull a tempo: ogni tocco ferma un indicatore
+  if(diveTouch())return;                      // difesa automatica: durante il rallentatore basta toccare lo schermo per tuffarsi
   if(G.mode!=='play'||G.freeze>0||G.zoomHold||G.brickWait||G.walk)return;   // brick o disco da raccogliere: si aspetta
   try{cv.setPointerCapture(e.pointerId);}catch(_){}
   const sprintNow=!!(G.flight&&G.flight.sparo&&G.sprint&&!G.pull);if(sprintNow)G.hold=true;   // sparo in volo: tieni premuto per far scattare il tuo corridore
-  if(inDefense()&&!G.auto){   // difesa: il dito guida il difensore cerchiato (trascina = corri in quella direzione, tocco su un altro difensore = prendi lui)
+  if(inDefense()&&!G.auto&&!defMan())return;   // difesa automatica: niente da guidare
+  if(inDefense()&&!G.auto){   // difesa manuale: il dito guida il difensore cerchiato (trascina = corri in quella direzione, tocco su un altro difensore = prendi lui)
     if(!ddrag)ddrag={ox:e.clientX,oy:e.clientY,fx:e.clientX,fy:e.clientY,pid:e.pointerId,t0:G.tick,mv:false};return;
   }
   if(sprintNow)return;
@@ -63,12 +61,11 @@ cv.addEventListener('pointermove',e=>{
     return;
   }
   if(e.pointerId!==aimPid)return;
-  if(pdrag&&pdrag.sl){const q=ptr(e);pdrag.x=q.px;pdrag.y=q.py;}
-  else if(drag&&drag.sl)slMove(e);
+  if(drag&&drag.sl)slMove(e);
 });
 cv.addEventListener('pointercancel',e=>{
   tap=null;ddrag=null;G.cdir=null;G.hold=false;
-  if(e.pointerId===aimPid&&((drag&&drag.sl)||(pdrag&&pdrag.sl))){drag=null;pdrag=null;aimPid=null;G.high=false;}
+  if(e.pointerId===aimPid&&drag&&drag.sl){drag=null;aimPid=null;G.high=false;}
 });
 cv.addEventListener('pointerup',e=>{
   G.hold=false;tap=null;
@@ -76,14 +73,8 @@ cv.addEventListener('pointerup',e=>{
     if(!ddrag.mv&&G.tick-ddrag.t0<0.35&&inDefense()){const b=cssToBuf(e.clientX,e.clientY),q=nearMate(toWorld(b[0],b[1]),0,3.4);if(q){G.ctrl=q;G.ctrlBy=true;HOOKS.sfx('ui');HOOKS.vibe(8);}}
     ddrag=null;G.cdir=null;return;
   }
-  if(e.pointerId===aimPid&&((drag&&drag.sl)||(pdrag&&pdrag.sl)))aimUp(e);
+  if(e.pointerId===aimPid&&drag&&drag.sl)aimUp(e);
 });
-// carica (0..1) e direzione del pull: a fionda col trascinamento, a tempo con tastiera e controller
-function pullState(pd){
-  const dx=pd.x-pd.x0,dy=pd.y-pd.y0,len=hyp(dx,dy),fwd=dirOf(G.pullTeam)>0?0:Math.PI;
-  if(pd.sl)return {c:clamp((len-SL_DEAD)/(0.9*slFull()-SL_DEAD),0,1),ang:len<SL_DEAD?fwd:Math.atan2(-dy,-dx)};
-  return {c:clamp((G.tick-pd.s)/PULL_T,0,1),ang:len<18?fwd:Math.atan2(dy,dx)};
-}
 // da pixel CSS dello schermo a pixel del buffer di gioco (per disegnare l'elastico sotto il dito)
 function cssToBuf(cx,cy){const r=cv.getBoundingClientRect();return [(cx-r.left)*DPR/PXS,(cy-r.top)*DPR/PXS];}
 function drawSling(x0,y0,x1,y1,cancel){

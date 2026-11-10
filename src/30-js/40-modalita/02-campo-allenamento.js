@@ -13,8 +13,8 @@ const TUT_STEPS=[
   {id:'style',def:'off',x0:14,n:1,t:'3 · Tipi di lancio',x:'Il tasto in basso a destra cambia il lancio: PIATTO è teso e veloce, ALTO scavalca i difensori, BLADE curva stretta. Scegli ALTO e lancia.',g:'Completa 1 lancio ALTO'},
   {id:'stall',def:'mark',x0:14,n:3,t:'4 · Marcatore e stall',x:'Ora un difensore ti marca e conta fino a 10: se arriva in fondo perdi il disco. Lancia sul lato che lascia libero, lontano dalle sue braccia.',g:'Completa 3 passaggi prima dello stall'},
   {id:'goal',def:'on',x0:34,n:1,t:'5 · La meta',x:'Difesa completa. Si segna ricevendo il disco nella zona di meta avversaria (a destra). Avanza con passaggi sicuri o prova il lancio lungo.',g:'Segna una meta'},
-  {id:'def',side:'def',def:'on',x0:22,n:1,t:'6 · La difesa',x:'Il tuo difensore ha il cerchio azzurro: trascina per muoverlo e resta tra il tuo uomo e il disco. Tocca un compagno per passare a lui. Quando lampeggiano, premi i tasti per handblock e tuffo.',g:'Recupera il disco'},
-  {id:'pull',pull:true,n:1,t:'7 · Il pull',x:'Ogni meta comincia col pull. Trascina all’indietro e rilascia: deve atterrare in campo, il più lontano possibile. Se tiri troppo esce.',g:'Tira un pull che resta in campo'}
+  {id:'def',side:'def',def:'on',x0:22,n:1,t:'6 · La difesa',x:'In partita la difesa è automatica (si cambia dalle Impostazioni). Qui provi quella manuale: il tuo difensore ha il cerchio azzurro, trascina per muoverlo e resta tra il tuo uomo e il disco. Quando lampeggiano, premi i tasti per handblock e tuffo.',g:'Recupera il disco'},
+  {id:'pull',pull:true,n:1,t:'7 · Il pull',x:'Ogni meta comincia col pull, in due tocchi. Primo tocco: ferma la POTENZA nel verde. Secondo tocco: ferma la DIREZIONE al centro. Sul campo vedi dove cadrà il disco.',g:'Tira un pull che resta in campo'}
 ];
 // sfide: ogni lancio (o possesso) e' una prova; il punteggio da' una medaglia
 const CHAL={
@@ -124,7 +124,7 @@ function drillTick(){
     const st=TUT_STEPS[Math.min(DR.step,TUT_STEPS.length-1)];
     if(st.pull&&G.drill.live){   // il pull e' riuscito se, quando qualcuno raccoglie il disco, non c'e' brick (cioe' non e' uscito)
       if(G.pull)DR.pulled=true;
-      else if(DR.pulled&&G.mode==='play'&&G.holder){DR.pulled=false;if(!G.brickWait){DR.cnt++;tutNext();}else{drSay('Fuori dal campo: riprova con meno forza');drillNext(1.6);}}
+      else if(DR.pulled&&G.mode==='play'&&G.holder){DR.pulled=false;if(!G.brickWait){DR.cnt++;tutNext();}else{drSay('Fuori dal campo: potenza nel verde, direzione al centro');drillNext(1.6);}}
     }
     h=`<b>${st.t}</b>${st.x}<i>${fresh?DR.last:st.g+(st.n>1?' · '+DR.cnt+'/'+st.n:'')}</i>`;
   }else if(DR.kind==='free')h=`<b>Allenamento libero</b>${G.drill.side==='def'?'Difendi: trascina per muovere il difensore azzurro':'Attacca verso destra: trascina all’indietro e rilascia per lanciare'}${fresh?`<i>${DR.last}</i>`:''}`;

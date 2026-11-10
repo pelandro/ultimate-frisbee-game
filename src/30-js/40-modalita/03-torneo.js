@@ -39,7 +39,7 @@ function startTourn(sim){
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;applyForm();
   G.oppName=b;G.myName=a;G.matchLabel='Torneo · '+tnRoundName(tnCur().length);
-  newGame();G.lvl=[0,Math.min(2,TOUR.d|0)];G.oppPlus=0;G.idn=[null,teamIdentity(b,T[1])];G.xtr=(TOUR.d|0)===3;G.hint=(TOUR.d|0)===0;G.routes=(TOUR.d|0)<=1;G.inMatch=true;G.recorded=false;
+  newGame();rollWind();G.lvl=[0,Math.min(2,TOUR.d|0)];G.oppPlus=0;G.idn=[null,teamIdentity(b,T[1])];G.xtr=(TOUR.d|0)===3;G.hint=(TOUR.d|0)===0;G.routes=(TOUR.d|0)<=1;G.inMatch=true;G.recorded=false;
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
 }

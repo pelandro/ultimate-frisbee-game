@@ -1,7 +1,7 @@
 /* ---- tastiera e controller: stessi comandi dei pulsanti a schermo ----
    Frecce o WASD = direzione (si aggancia al compagno piu' vicino a quella direzione, e lo segue mentre corre).
    Spazio (o J) = Lancio: tieni premuto per caricare, rilascia per tirare; in difesa = handblock; durante uno sparo = scatto; nello stacco laterale = tocco.
-   Maiusc (o K, L) = Hammer; in difesa = tuffo. Esc = annulla il lancio. Controller: stick o croce = direzione, A / RT = Lancio, X / B = Hammer. */
+   Maiusc (o K, L) = Hammer; in difesa = tuffo. Invio (o Y) in difesa = salta il possesso avversario. Esc = annulla il lancio. Controller: stick o croce = direzione, A / RT = Lancio, X / B = Hammer. */
 const SRC={kb:{th:false,hm:false,ang:null},pad:{th:false,hm:false,ang:null}},VIN={th:false,hm:false,ang:null,live:false,sp:false,pid:9001,hintUntil:0,hinted:false};
 const vinEvt=(x,y)=>({pointerId:VIN.pid,clientX:x,clientY:y,preventDefault(){},currentTarget:{setPointerCapture(){}}});
 const angDiff=(a,b)=>Math.abs(Math.atan2(Math.sin(a-b),Math.cos(a-b)));
@@ -46,7 +46,7 @@ function vinSync(){   // unisce tastiera e controller: un comando e' premuto se 
   if(bl!==!!VIN.bl){VIN.bl=bl;if(bl)vinDown(2);else vinUp();}
   vinPushDir();
 }
-function vinCancel(){if(!VIN.live)return;VIN.live=false;drag=null;pdrag=null;aimPid=null;G.high=false;}
+function vinCancel(){if(!VIN.live)return;VIN.live=false;drag=null;aimPid=null;G.high=false;}
 const KB_DIRS={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],KeyW:[0,-1],KeyS:[0,1],KeyA:[-1,0],KeyD:[1,0]};
 const kbHeld=new Set();
 function kbRecalc(){let x=0,y=0;for(const c of kbHeld){const d=KB_DIRS[c];x+=d[0];y+=d[1];}SRC.kb.ang=(x||y)?Math.atan2(y,x):null;}
@@ -56,7 +56,7 @@ function vinMate(){const h=G.holder;if(VIN.ang===null||!h||h.t!==0)return null;l
 // tasti singoli: E = chiama il taglio, Q = isolamento (in difesa: cambia difensore, anche Tab), C = clear, F = anticipo o contenimento
 function kbAction(c){
   if(G.mode!=='play')return false;
-  if(inDefense()){if(c==='KeyQ'||c==='Tab'){cycleCtrl();HOOKS.sfx('ui');return true;}if(c==='KeyF'){toggleDmode();return true;}return false;}
+  if(inDefense()){if(c==='Enter'){skipDefense();return true;}if(c==='KeyQ'||c==='Tab'){if(defMan()){cycleCtrl();HOOKS.sfx('ui');}return true;}if(c==='KeyF'){toggleDmode();return true;}return false;}
   const h=G.holder;if(!h||h.t!==0||G.flight)return false;
   if(c==='KeyC'){quickCall({x:h.x,y:h.y-1.4},false);return true;}
   if(c==='KeyE'||c==='KeyQ'){const q=vinMate();if(q)quickCall({x:q.x,y:q.y-1.4},c==='KeyQ');return true;}
@@ -66,7 +66,7 @@ window.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.metaKey||e.altKey)return;
   if(e.code==='Escape'&&VIN.live&&kbOn()){e.preventDefault();vinCancel();return;}
   if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat){if(G.paused&&!$('pause').classList.contains('hidden')){e.preventDefault();closePause();return;}if(G.inMatch&&(G.mode==='play'||G.mode==='ready')&&!G.schemeOpen){e.preventDefault();openPause();return;}}
-  if(kbOn()&&['KeyE','KeyQ','KeyC','KeyF','Tab'].includes(e.code)){e.preventDefault();if(!e.repeat)kbAction(e.code);return;}
+  if(kbOn()&&(['KeyE','KeyQ','KeyC','KeyF','Tab'].includes(e.code)||(e.code==='Enter'&&inDefense()))){e.preventDefault();if(!e.repeat)kbAction(e.code);return;}
   const k=kbKind(e.code);if(!k||!kbOn())return;
   e.preventDefault();if(e.repeat)return;
   if(!VIN.hinted&&G.mode!=='cine'){VIN.hinted=true;VIN.hintUntil=G.tick+7;}
@@ -80,7 +80,7 @@ window.addEventListener('keyup',e=>{
   vinSync();
 },true);
 window.addEventListener('blur',()=>{kbHeld.clear();SRC.kb.th=SRC.kb.hm=SRC.kb.bl=false;SRC.kb.ang=null;SRC.pad.th=SRC.pad.hm=SRC.pad.bl=false;G.cdir=null;vinSync();});
-let padSeen=false,padSw=false;
+let padSeen=false,padSw=false,padY=false;
 function padPoll(){
   const gps=navigator.getGamepads?navigator.getGamepads():null;let g=null;
   if(gps)for(const q of gps)if(q&&q.connected){g=q;break;}
@@ -90,6 +90,7 @@ function padPoll(){
   let dx=g.axes[0]||0,dy=g.axes[1]||0;if(b(14))dx=-1;if(b(15))dx=1;if(b(12))dy=-1;if(b(13))dy=1;
   SRC.pad.ang=hyp(dx,dy)>0.45?Math.atan2(dy,dx):null;
   SRC.pad.th=b(0)||b(7)||b(5);SRC.pad.hm=b(2)||b(1);SRC.pad.bl=b(3);
+  if(b(3)&&!padY&&inDefense())skipDefense();padY=b(3);   // Y in difesa: salta il possesso avversario
   if(b(4)&&!padSw){if(inDefense())cycleCtrl();else{const q=vinMate();if(q)quickCall({x:q.x,y:q.y-1.4},false);}}padSw=b(4);   // LB: cambia difensore o chiama il taglio
   if(SRC.pad.th||SRC.pad.hm||SRC.pad.bl||SRC.pad.ang!==null||VIN.th||VIN.hm||VIN.bl){if(!VIN.hinted&&kbOn())VIN.hinted=true;vinSync();}
 }

@@ -7,6 +7,7 @@ function startMatch(){
   G.formB=teamFormB();applyForm();
   G.oppName=m.name;G.myName=SV.team;G.matchLabel=m.label;
   newGame();G.lvl=[0,carDiff().ai|0];G.oppPlus=plus||0;G.idn=[null,teamIdentity(m.name,T[1])];G.xtr=SV.diff==='xtr';G.hint=(SV.diff||'easy')==='easy';G.routes=G.hint||SV.diff==='med';G.inMatch=true;G.recorded=false;
+  {const w=careerWind(m);setWind(w[0],w[1]);}   // il meteo annunciato sul cruscotto
   fixLines();G.lines={o:matchLine('lineO'),d:matchLine('lineD'),auto:!!SV.autoSub};G.injK=1-0.2*(SV.fac.fis|0);   // linee d'attacco e di difesa, cambi intelligenti, fisioterapia
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
@@ -95,7 +96,7 @@ function startQuick(){
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;applyForm();
   G.oppName=b;G.myName=a;G.matchLabel='Partita veloce';
-  newGame();G.lvl=[0,Math.min(2,QM.d|0)];G.oppPlus=0;G.idn=[null,teamIdentity(b,T[1])];G.xtr=(QM.d|0)===3;G.hint=(QM.d|0)===0;G.routes=(QM.d|0)<=1;G.inMatch=true;G.recorded=false;   // Estrema = IA come Difficile
+  newGame();rollWind();G.lvl=[0,Math.min(2,QM.d|0)];G.oppPlus=0;G.idn=[null,teamIdentity(b,T[1])];G.xtr=(QM.d|0)===3;G.hint=(QM.d|0)===0;G.routes=(QM.d|0)<=1;G.inMatch=true;G.recorded=false;   // Estrema = IA come Difficile
   G.nextRec=QM.s===0?0:1;G.startRec=G.nextRec;   // chi riceve il primo pull inizia in attacco; l'altra squadra tira il pull (difesa)
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;

@@ -26,7 +26,7 @@ function buildOpts(box,list,col,cur,set){
   }
 }
 function openSchemes(first,fromHome){
-  G.schemeOpen=true;pdrag=null;$('menu').classList.remove('hidden');$('over').classList.add('hidden');
+  G.schemeOpen=true;$('menu').classList.remove('hidden');$('over').classList.add('hidden');
   $('mTitle').textContent='Schemi';
   $('mScore').textContent=`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${G.oppName||'Rossi'}`;
   $('hAtt').textContent='Attacco';$('hDef').textContent='Difesa';

@@ -54,12 +54,14 @@ function planThrow(th,ax,ay,style,exec){
   if(kind==='forehand')k*=1+0.012*Math.max(0,dist-16);
   if(kind==='scoober')k*=1+0.1*Math.max(0,dist-11);
   if(kind==='blade')k*=1+0.03*Math.max(0,dist-30)+0.05*Math.max(0,12-dist);
-  const comf=30+th.s.spa*0.28;if(dist>comf)k*=1+0.09*(dist-comf);   // gittata: oltre la distanza che il lanciatore regge (dipende dallo Sparo) la precisione crolla
+  const wn=windOn(info.skill,dx,dy,dist,Math.max(0.45,dist/sp.v),sp.hi,kind==='scoober');   // vento: deriva, dispersione, gittata
+  const comf=30+th.s.spa*0.28+(wn?wn.along*WIND_RANGE:0);if(dist>comf)k*=1+0.09*(dist-comf);   // gittata: oltre la distanza che il lanciatore regge (dipende dallo Sparo e dal vento) la precisione crolla
+  if(wn)k*=wn.k;
   let near=0;for(const q of T[1-th.t])if(q!==mk&&hyp(q.x-th.x,q.y-th.y)<3)near++;
   if(near)k*=1.06;   // un secondo difensore addosso disturba
   k*=exec||1;       // qualita' dell'esecuzione: un lancio affrettato e' meno preciso
   return {kind,sp,info,dist,side,sig:sigmaOf(info.skill,dist)*k,T:Math.max(0.45,dist/sp.v),H:throwH(kind,dist),
-    sx:th.x,sy:th.y,tx:ax,ty:ay,cx:rx*side*sp.curve*dist,cy:ry*side*sp.curve*dist,e:sp.ease};
+    sx:th.x,sy:th.y,tx:ax+(wn?wn.x:0),ty:ay+(wn?wn.y:0),cx:rx*side*sp.curve*dist,cy:ry*side*sp.curve*dist,e:sp.ease};
 }
 function aimSnap(th,wx,wy,high){
   const dx=wx-th.x,dy=wy-th.y,d0=hyp(dx,dy),ux=d0>0.01?dx/d0:1,uy=d0>0.01?dy/d0:0;
@@ -119,6 +121,7 @@ function laneBlock(th,tx,ty,f){   // f = volo o progetto del lancio (con la sua 
 }
 function estimateThrow(th,ax,ay,intended,high){
   const pl=planThrow(th,ax,ay,high),info=pl.info,dist=pl.dist,sig=pl.sig;
+  ax=pl.tx;ay=pl.ty;   // con il vento il disco arriva spostato: e' li' che vanno contati difensori e ricevitori
   let p=1-Math.exp(-(3.2*3.2)/(2*sig*sig));
   const near=nearestTo(T[1-th.t],ax,ay),nd=hyp(near.x-ax,near.y-ay);
   if(nd<2.2)p*=0.5;else if(nd<4)p*=0.78;
@@ -139,7 +142,7 @@ const hbSkill=th=>th.s.buc+streakMod(th);   // il lanciatore si libera del marca
 const hbCurve=(a,c)=>{c=clamp(c,0,1);return c<=0.5?lerp(a[0],a[1],c/0.5):lerp(a[1],a[2],(c-0.5)/0.5);};
 const hbRel=(th,mk)=>clamp(1+0.02*(mk.s.dif-hbSkill(th)),0.3,2);   // +20 di Difesa sul Buco = +40% di probabilita', -20 = -40%
 function hbProb(th,info,mk,ha){
-  if(mk.t===1||G.auto)return clamp(hbCurve(HB_AI,info.c)*hbRel(th,mk)*AIK(mk.t).hb*HB_K,0,0.9);   // marcatore avversario (o prova automatica): valori fissi
+  if(mk.t===1||G.auto||G.skip||!defMan())return clamp(hbCurve(HB_AI,info.c)*hbRel(th,mk)*AIK(mk.t).hb*HB_K,0,0.9);   // marcatore avversario, prova automatica o difesa automatica: decidono le statistiche
   if(!ha)return 0;                                                               // il tuo marcatore senza tocco: 0%
   return clamp(hbCurve(HB_TAB[hbColor(ha.qual)],info.c)*hbRel(th,mk)*HB_K,0,0.9);
 }
@@ -154,7 +157,7 @@ function doThrow(th,ax,ay,intended,style,exec){
   if(mk&&mk.t!==th.t&&hyp(mk.x-th.x,mk.y-th.y)<3.8){
     if(Math.random()<hbProb(th,info,mk,ha)*sp.hb){handblock(th,mk,cat);return;}
   }
-  const lx=ax+randn()*pl.sig,ly=ay+randn()*pl.sig,dl=Math.max(0.5,hyp(lx-th.x,ly-th.y));
+  const lx=pl.tx+randn()*pl.sig,ly=pl.ty+randn()*pl.sig,dl=Math.max(0.5,hyp(lx-th.x,ly-th.y));
   const rx=-(ly-th.y)/dl,ry=(lx-th.x)/dl;
   G.flight={sx:th.x,sy:th.y,tx:lx,ty:ly,t:0,T:Math.max(0.45,dl/sp.v),H:throwH(pl.kind,dl),high:sp.hi,team:th.t,thrower:th,intended,sparo:info.sparo,info,cat,
     kind:pl.kind,sp,e:sp.ease,cx:rx*pl.side*sp.curve*dl,cy:ry*pl.side*sp.curve*dl,stall:G.stallT,brk:!!G.marker&&(ly-th.y)*G.closedSide>1.5};
@@ -181,7 +184,7 @@ function registerThrow(p,ok,cat){
 const hbDur=(h,mk)=>clamp(0.85+(mk.s.dif-hbSkill(h))*0.0102,0.5,1.3);
 function hbWindow(){
   const h=G.holder,mk=G.marker;
-  if(G.mode!=='play'||G.flight||G.brickWait||G.walk||!h||h.t!==1||!mk||mk.t!==0)return null;
+  if(G.mode!=='play'||G.flight||G.brickWait||G.walk||!h||h.t!==1||!mk||mk.t!==0||!defMan()||G.skip)return null;
   if(hyp(mk.x-h.x,mk.y-h.y)>3.8||G.think<=0)return null;
   const Wd=hbDur(h,mk),rem=G.think/(G.k||K_DEF);   // secondi reali al lancio
   if(rem>Wd)return null;   // il cerchio compare quando mancano Wd secondi al lancio: la velocita' dipende solo dalle statistiche
@@ -233,6 +236,8 @@ function updateDisc(dt){
       if(pu.t>=pu.T){
         pu.landed=true;pu.lt=0;d.z=0;d.x=pu.spot.x;d.y=pu.spot.y;
         if(pu.oob)HOOKS.toast('Pull fuori! Si riparte dal brick',G.poss);
+        else{const dr=dirOf(G.poss),dep=((dr>0?EZ:FIELD_L-EZ)-pu.spot.x)*dr;   // metri dentro la meta di chi riceve (negativi: il disco e' caduto piu' avanti)
+          if(dep>=0)HOOKS.toast(dep>=6?'Gran pull!':'Buon pull',pu.team);else if(dep<-20)HOOKS.toast('Pull corto',G.poss);}
       }
     }else{
       pu.lt+=dt;

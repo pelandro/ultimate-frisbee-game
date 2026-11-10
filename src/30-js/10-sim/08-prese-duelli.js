@@ -118,7 +118,7 @@ function duel(f,a,d,reach){
     if(out==='att')catchBy(f,a.p,hi?'Presa in salto!':'Presa contesa!');
     else finishTurn(f,d.p,hi?'Bloccato in salto!':'Intercetto!',{x:f.tx,y:f.ty});
   };
-  if(hi&&G.opt.cine&&!G.noCine&&HOOKS.cine)HOOKS.cine({kind:'jump',a:a.p,d:d.p,resolve,apply});
+  if(hi&&G.opt.cine&&!G.noCine&&HOOKS.cine&&defEvt(f))HOOKS.cine({kind:'jump',a:a.p,d:d.p,resolve,apply});
   else apply(resolve(0));
 }
 function diveChain(f,L,atk,def,reach){
@@ -136,7 +136,8 @@ function diveChain(f,L,atk,def,reach){
     }
     const o=lst[i];used.add(i);
     // un attaccante e un difensore che si tuffano insieme: un'unica azione, vince chi arriva (a parita' il piu' vicino)
-    const j=(G.opt.cine&&!G.noCine&&HOOKS.cine)?lst.findIndex((q,k)=>k>i&&!used.has(k)&&q.att!==o.att):-1;
+    const show=G.opt.cine&&!G.noCine&&HOOKS.cine&&(f.team===0||defMan());   // in difesa automatica i tuffi oltre la portata si risolvono da soli (resta il tuffo a tempo)
+    const j=show?lst.findIndex((q,k)=>k>i&&!used.has(k)&&q.att!==o.att):-1;
     if(j>=0){
       used.add(j);
       const q=lst[j],A=o.att?o:q,D=o.att?q:o,pA=pOf(A),pD=pOf(D),mine=A.p.t===0?A:D;
@@ -161,7 +162,7 @@ function diveChain(f,L,atk,def,reach){
         if(o.att)catchBy(f,o.p,'Presa in tuffo!');else finishTurn(f,o.p,'Blocco in tuffo!',L);
       }else{HOOKS.toast('Tuffo mancato',1-o.p.t);step(i+1);}
     };
-    if(G.opt.cine&&!G.noCine&&HOOKS.cine){
+    if(show){
       if(mine){HOOKS.cine({kind:'dive',diver:o.p,att:o.att,p:p0,timing:true,resolve,apply});return;}
       if(resolve(0)){HOOKS.cine({kind:'dive',diver:o.p,att:o.att,p:p0,timing:false,fixed:true,resolve,apply});return;}
       HOOKS.toast('Tuffo mancato',o.p.t===0?1:0);step(i+1);return;

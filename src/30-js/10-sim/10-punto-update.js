@@ -9,6 +9,14 @@ function scoreGoal(team,p,kind){
 // tuffo difensivo a tempo: quando l'avversario lancia e un tuo difensore e' a distanza di tuffo dal punto d'arrivo, il gioco va al rallentatore
 // e con il tempismo giusto (pulsante TUFFO) il difensore si tuffa per intercettare. La vista resta quella di gioco.
 const SLOW_TAIL=0.8,SLOW_K=0.3,DIVE_REM=0.36,DIVE_COOL=20,DIVE_NEAR=4;   // pausa minima tra due occasioni (s) e distanza massima dal ricevitore (m)
+// difesa automatica: i momenti a tempo (tuffo, duello in salto) restano ma sono rari. Dopo ognuno passa almeno DEF_EVT_COOL secondi e l'occasione
+// successiva arriva poco piu' di una volta su due: in media uno ogni tre mete difese (misurato su 300 mete)
+const DEF_EVT_COOL=32,DEF_EVT_P=0.6;
+function defEvt(f){
+  if(f.team!==1||defMan()||G.auto)return true;   // in attacco e in difesa manuale gli stacchi ci sono sempre
+  if(G.skip||G.diveCool>0||Math.random()>DEF_EVT_P)return false;
+  G.diveCool=DEF_EVT_COOL;return true;
+}
 const DIVE_BONUS={green:0.22,yellow:0.06,red:-0.15};
 const drOf=p=>3+2.4*clamp((p.s.tuf-40)/60,0,1);   // quanto oltre la portata ci si puo' tuffare: da 3 m (Tuffo 40) a 5,4 m (Tuffo 100)
 // difficolta' della partita veloce: 0 facile (com'era), 1 medio, 2 difficile. Agisce solo sulla squadra avversaria (team 1) e non sulle statistiche
@@ -47,10 +55,10 @@ function halfTime(){
   if(G.injured&&G.injured.length)HOOKS.injury(G.injured);
 }
 function startSecondHalf(){G.pointNo++;G.dir=[-G.dir[0],-G.dir[1]];startPoint(G.nextRec);HOOKS.menu();}
-const K_DEF=0.85,K_ATT=0.95;   // 1 = velocita' originale: tutto il gioco (giocatori, disco, pull) va all'85% in difesa e al 95% in attacco
+const K_DEF=0.85,K_ATT=0.95,K_DEF_AUTO=1.3;   // 1 = velocita' originale: tutto il gioco va al 95% in attacco, all'85% in difesa manuale (serve tempo per reagire) e al 130% in difesa automatica (scorre da sola)
 function update(dt){
   const dtr=dt;   // tempo reale (il rallentatore agisce solo sul tempo di gioco)
-  const kt=G.poss===1?K_DEF:K_ATT;G.k=G.k?G.k+(kt-G.k)*(1-Math.exp(-dt*3)):kt;   // il cambio di velocita' e' graduale
+  const kt=G.poss===1&&!G.pull?(G.auto||defMan()?K_DEF:K_DEF_AUTO):K_ATT;G.k=G.k?G.k+(kt-G.k)*(1-Math.exp(-dt*3)):kt;   // il cambio di velocita' e' graduale
   if(G.slowTail>0)G.slowTail-=dtr;
   G.diveScene=!!(G.diveWin||G.slowTail>0);
   const st=G.diveScene?SLOW_K:1;G.slowK=G.slowK===undefined?1:G.slowK+(st-G.slowK)*(1-Math.exp(-dtr*10));
@@ -96,7 +104,7 @@ function update(dt){
     if(waiting){G.think=Math.max(G.think,0.6);G.stallT=0;}
     if(!waiting&&G.marker&&hyp(G.marker.x-h.x,G.marker.y-h.y)<3.8)G.stallT+=dt;
     if(G.stallT>=10){HOOKS.sfx('whistle');HOOKS.toast('Stall! Disco perso',1-h.t);turnover(1-h.t,h.x,h.y,G.marker,'',1-h.t);return;}
-    if(h.t===1&&!G.auto){   // il cerchio dell'handblock deve sempre partire intero: se il tuo marcatore arriva quando manca poco al lancio, l'avversario aspetta
+    if(h.t===1&&!G.auto&&defMan()&&!G.skip){   // il cerchio dell'handblock deve sempre partire intero: se il tuo marcatore arriva quando manca poco al lancio, l'avversario aspetta
       const mk=G.marker;
       if(mk&&mk.t===0&&G.hbOk!==h&&hyp(mk.x-h.x,mk.y-h.y)<3.8){const need=hbDur(h,mk)*(G.k||K_DEF)+0.04;if(G.think<need)G.think=need;G.hbOk=h;}
     }
@@ -130,13 +138,14 @@ function diveOffer(dtr){
     if(!f||w.t>=w.W+0.2)G.diveWin=null;
     return;
   }
-  if(!f||f._offer||f.team!==1||(G.auto&&!G.testDive)||G.diveCool>0)return;
+  if(!f||f._offer||f.team!==1||(G.auto&&!G.testDive)||G.skip||G.diveCool>0)return;
   const rem=f.T-f.t;
   if(rem>DIVE_REM)return;
   f._offer=true;
   const p=diveCandidate(f);if(!p)return;
+  const man=defMan()||G.auto;if(!man&&Math.random()>DEF_EVT_P)return;
   const W=Math.max(0.8,rem/((G.k||K_DEF)*SLOW_K));
-  G.diveWin={p,t:0,W,tp:W*0.78,tol:W*0.32,done:false,color:null};G.diveCool=DIVE_COOL;G.diveFocus=p;   // la tolleranza in secondi e' proporzionale alla durata: cerchio piu' veloce = tempismo piu' stretto
+  G.diveWin={p,t:0,W,tp:W*0.78,tol:W*0.32,done:false,color:null};G.diveCool=man?DIVE_COOL:DEF_EVT_COOL;G.diveFocus=p;   // la tolleranza in secondi e' proporzionale alla durata: cerchio piu' veloce = tempismo piu' stretto
 }
 // tocco sul pulsante TUFFO: il tempismo decide il colore (verde, giallo, rosso)
 function diveTap(){

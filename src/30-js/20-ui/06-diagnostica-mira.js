@@ -53,15 +53,11 @@ uiReady=true;layoutButtons();
 function aimDown(e,hammer){
   if(inDefense()){   // difesa: sinistra = tuffo, destra = handblock (stesso tempismo di prima, ma sul pulsante)
     e.preventDefault();
-    if(hammer){if(G.diveWin&&!G.diveWin.done)diveTap();}
-    else if(tryHandblock()>=0)HOOKS.vibe(12);
+    if(G.diveWin&&!G.diveWin.done&&(hammer||!defMan()))diveTap();   // in difesa automatica vale qualsiasi tasto
+    else if(!hammer&&tryHandblock()>=0)HOOKS.vibe(12);
     return;
   }
-  if(G.mode==='ready'){   // pull: tieni premuto «Lancio» (il cerchio si carica) e trascina sul pulsante per la direzione
-    if(hammer||!(G.pullTeam===0&&!G.auto&&!G.schemeOpen&&G.puller)||pdrag)return;
-    e.preventDefault();try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}
-    const q=ptr(e);aimPid=e.pointerId;pdrag={x0:q.px,y0:q.py,x:q.px,y:q.py,s:G.tick,btn:true};return;
-  }
+  if(G.mode==='ready'){e.preventDefault();if(!hammer)pullTap();return;}   // pull a tempo: Spazio o A fermano l'indicatore
   const h=G.holder;
   if(hammer&&e.pointerId!==VIN.pid){   // tocco sul pulsante Hammer: accende o spegne il lancio alto (vale anche a mira gia' iniziata)
     e.preventDefault();
@@ -76,21 +72,12 @@ function aimDown(e,hammer){
   G.high=hammer;
 }
 function aimMove(e){
-  if(pdrag&&pdrag.btn&&e.pointerId===aimPid){const q=ptr(e);pdrag.x=q.px;pdrag.y=q.py;return;}
   if(!drag||e.pointerId!==aimPid)return;
   const vx=e.clientX-drag.ox,vy=e.clientY-drag.oy;
   if(hyp(vx,vy)>=CH_DEAD){drag.dirOk=true;drag.ang=Math.atan2(vy,vx);}else drag.dirOk=false;   // dito tornato al punto di partenza: nessuna direzione, il rilascio annulla
   syncAimPoint();
 }
 function aimUp(e){
-  if(pdrag&&pdrag.btn&&e.pointerId===aimPid){
-    const pd=pdrag,q=ptr(e);pdrag=null;aimPid=null;
-    if(G.mode==='ready'&&G.puller){
-      pd.x=q.px;pd.y=q.py;const st=pullState(pd);
-      if(st.c>=0.06){doPull(st.c,st.ang);shownPull++;}
-    }
-    return;
-  }
   if(!drag||e.pointerId!==aimPid)return;
   syncAimPoint();
   const h=G.holder,ok=G.mode==='play'&&h&&h.t===0&&!G.flight&&G.freeze<=0;
@@ -113,7 +100,7 @@ for(const [b,hm] of [[bThrow,false],[bHammer,true]]){
   b.addEventListener('pointerdown',e=>aimDown(e,hm));
   b.addEventListener('pointermove',aimMove);
   b.addEventListener('pointerup',aimUp);
-  b.addEventListener('pointercancel',e=>{if(e.pointerId!==aimPid)return;if(drag){drag=null;G.high=false;}pdrag=null;aimPid=null;});
+  b.addEventListener('pointercancel',e=>{if(e.pointerId!==aimPid)return;if(drag){drag=null;G.high=false;}aimPid=null;});
   b.addEventListener('contextmenu',e=>e.preventDefault());
 }
 

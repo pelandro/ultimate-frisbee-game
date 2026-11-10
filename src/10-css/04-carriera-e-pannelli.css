@@ -176,6 +176,7 @@
 #thr.def .tlab{display:none}
 #bHammer.bl::before{background:#000}#bHammer.bl::after{background:#ff8a5c}#bHammer.bl{color:#1a1c2c}
 #bDef.on{background:var(--gold);color:#1a1c2c;border-color:#000}
+#ctrl #bSkipD{background:#29366f}
 #score b,#stall,.panel h1,.shead h2{font-size-adjust:none}
 .qs,button.qs{background:#29366f;color:#fff;border:3px solid #000;box-shadow:inset 2px 2px 0 rgba(255,255,255,.16),0 3px 0 #000;font-weight:400}
 :focus-visible{outline:3px solid var(--gold)!important;outline-offset:2px}

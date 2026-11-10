@@ -329,22 +329,23 @@ function drawAim(){
     pring(gx,gy,R,R,PAL.red,1,3,ang-half,ang+half);
     for(let r=R*0.25;r<R;r+=R*0.25)pring(gx,gy,r,r,'rgba(255,90,90,.5)',1,2,ang-half,ang+half);
   }
+  const ex=drag.x+ri((pl.tx-w.x)*S),ey=drag.y+ri((pl.ty-w.y)*S);   // punto d'arrivo vero: quello mirato piu' la deriva del vento
   // ogni lancio ha il suo arco: piatto e teso, scoober a mezza altezza, hammer e huck alti, blade altissimo; la curva laterale e' quella vera del volo
-  const dpx=hyp(drag.x-gx,drag.y-gy),n=Math.max(3,ri(dpx/7));
+  const dpx=hyp(ex-gx,ey-gy),n=Math.max(3,ri(dpx/7));
   const arc=kd==='blade'?Math.min(74,dpx*0.44):(pl.sp.hi?Math.min(52,dpx*0.3):(kd==='scoober'?Math.min(22,dpx*0.17):Math.min(9,dpx*0.06)));
   const col=kd==='blade'?'#ff8a5c':(pl.sp.hi||kd==='scoober'?PAL.gold:'#ffffff'),cxp=pl.cx*S,cyp=pl.cy*S;
   const flow=(G.tick*1.6)%1,lim=G.xtr?Math.min(1,(3+0.12*dist)/Math.max(dist,0.01)):1;
-  for(let i=0;i<n;i++){const u=(i+flow)/n;if(u>lim)break;const b=4*u*(1-u);px(lerp(gx,drag.x,u)+cxp*b,lerp(gy,drag.y,u)+cyp*b,2,1,'#4f7a3f');}
+  for(let i=0;i<n;i++){const u=(i+flow)/n;if(u>lim)break;const b=4*u*(1-u);px(lerp(gx,ex,u)+cxp*b,lerp(gy,ey,u)+cyp*b,2,1,'#4f7a3f');}
   for(let i=0;i<n;i++){
     const u=(i+flow)/n;if(u>lim)break;
-    const b=4*u*(1-u),x=ri(lerp(hx,drag.x,u)+cxp*b),y=ri(lerp(hy,drag.y,u)+cyp*b-arc*b);
+    const b=4*u*(1-u),x=ri(lerp(hx,ex,u)+cxp*b),y=ri(lerp(hy,ey,u)+cyp*b-arc*b);
     px(x-2,y-2,4,4,PAL.out);px(x-1,y-1,2,2,col);
   }
   if(G.xtr)return;
   // cerchio tratteggiato = dove puo' finire il disco: si allarga con la distanza, la pressione e i lanci difficili
   const ur=clamp(ri(1.5*pl.sig*S),5,80);
-  pring(drag.x,drag.y,ur,ur,PAL.out,3,2);pring(drag.x,drag.y,ur,ur,col,1,2);
-  px(drag.x-1,drag.y-1,3,3,PAL.out);px(drag.x,drag.y,1,1,'#ffffff');
+  pring(ex,ey,ur,ur,PAL.out,3,2);pring(ex,ey,ur,ur,col,1,2);
+  px(ex-1,ey-1,3,3,PAL.out);px(ex,ey,1,1,'#ffffff');
   aimAssist(h,w,dist,pl);
 }
 // compagno agganciato dal mirino (anello + freccia; tratteggiato = e' il compagno chiamato a correre li'), distanza e tipo di lancio.
@@ -398,22 +399,6 @@ function drawHb(){
   if(hbFx&&G.tick<hbFx.until){const a=(hbFx.until-G.tick)/0.55,q=hbFx.q;if(a>0.5||((G.tick*20|0)&1))pring(sxw(q.x),syw(q.y)-10,Math.max(R0,hbFx.R),Math.max(R0,hbFx.R),hbFx.col,2);}
   else hbFx=null;
 }
-function drawPull(){
-  if(!pdrag||!G.puller)return;
-  const p=G.puller,cx=sxw(p.x),cy=syw(p.y)-10,R=17;
-  const ps=pullState(pdrag),c=ps.c,pp=pullPlan(p,G.pullTeam,c,ps.ang),over=pp.over>0;
-  if(pdrag.sl){const r=cv.getBoundingClientRect();drawSling(pdrag.x0+r.left,pdrag.y0+r.top,pdrag.x+r.left,pdrag.y+r.top,false);if(c<0.06)return;}
-  pring(cx,cy,R,R,PAL.out,5);pring(cx,cy,R,R,'#5c6b55',3);
-  pring(cx,cy,R,R,over?(((G.tick*10|0)&1)?PAL.red:'#ffb3b5'):PAL.green,3,0,-Math.PI/2,-Math.PI/2+c*6.2832);
-  const ta=-Math.PI/2+PULL_TH*6.2832;pline(cx+Math.cos(ta)*(R-3),cy+Math.sin(ta)*(R-3),cx+Math.cos(ta)*(R+3),cy+Math.sin(ta)*(R+3),'#ffffff',1);
-  // punto d'arrivo previsto: se e' fuori dal campo (di lato o oltre il fondo) diventa rosso. Il cerchio tratteggiato e' l'errore possibile: cresce oltre la tacca
-  const lx=p.x+Math.cos(pp.a)*pp.dist,ly=p.y+Math.sin(pp.a)*pp.dist,out=lx<0||lx>FIELD_L||ly<0||ly>FIELD_W,col=out?PAL.red:'#ffffff';
-  const ex=sxw(lx),ey=syw(ly),n=Math.max(4,ri(hyp(ex-cx,ey-cy)/7)),arc=Math.min(46,hyp(ex-cx,ey-cy)*0.25),flow=(G.tick*1.6)%1;
-  for(let i=1;i<n;i++){const u=(i+flow)/n,x=ri(lerp(cx,ex,u)),y=ri(lerp(cy,ey,u)-arc*4*u*(1-u));px(x-2,y-2,4,4,PAL.out);px(x-1,y-1,2,2,col);}
-  const ur=clamp(ri(1.6*pp.sd*S),5,46);
-  pring(ex,ey,ur,ur,PAL.out,3,2);pring(ex,ey,ur,ur,col,1,2);pring(ex,ey,4,3,PAL.out,3);pring(ex,ey,4,3,col,1);
-  if(out)ptext('FUORI',clamp(ex,24,VW-24),clamp(ey-ur-12,BAR+2,VH-12),{f:'p',c:PAL.red});
-}
 // messaggi: riquadri neri sotto la barra, testi che salgono dal punto dell'azione, fascia nera a tutto schermo per i cambi di possesso
 const floaters=[];let band=null;
 function addFloater(txt,x,y,c,f){floaters.push({txt,x,y,c:c||'#ffffff',f:f||'p',t:1.1,max:1.1});if(floaters.length>6)floaters.shift();}
@@ -437,7 +422,8 @@ function drawToasts(dt){
     }
   }
   toasts.forEach((t,i)=>{
-    const w=ptw(t.txt,'p')+14,x=ri(VW/2-w/2),y=(band?ri(VH*0.24)+31:BAR+5)+i*16,col=t.benefit===0?PAL.green:(t.benefit===1?PAL.red:'#ffffff');
+    const w=ptw(t.txt,'p')+14,x=ri(VW/2-w/2),y=(band?ri(VH*0.24)+31:(elHint.classList.contains('hidden')?BAR+5:ri(70*UIZ*DPR/PXS)))+i*16,   // sotto il suggerimento, se c'e'
+      col=t.benefit===0?PAL.green:(t.benefit===1?PAL.red:'#ffffff');
     if(t.t<0.2&&((G.tick*24|0)&1))return;
     pbox(x,y,w,13,'#000000');px(x+3,y+4,4,5,col);ptext(t.txt,x+10,y+3,{f:'p',a:'l',c:'#ffffff',o:false});
   });
