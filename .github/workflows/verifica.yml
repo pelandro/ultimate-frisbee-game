@@ -1,0 +1,36 @@
+name: Verifica
+# Su ogni pull request GitHub prova il risultato dell'unione con main (non il ramo da solo):
+# se due aggiornamenti funzionano da soli ma non insieme, la verifica fallisce prima che entrino in main.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  merge_group:
+concurrency:
+  group: verifica-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  verifica:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Dipendenze
+        run: npm install --no-audit --no-fund
+      - name: Browser per la prova
+        run: npx playwright install --with-deps chromium
+      - name: Verifica completa
+        run: npm test
+      - name: Costruzione del gioco
+        run: npm run build
+      - name: Gioco pronto da scaricare
+        uses: actions/upload-artifact@v4
+        with:
+          name: ultimate-frisbee
+          path: dist/ultimate-frisbee.html
+          retention-days: 30

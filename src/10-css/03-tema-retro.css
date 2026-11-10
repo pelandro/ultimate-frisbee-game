@@ -1,0 +1,121 @@
+/* ===================== TEMA RETRO (stile Retro Bowl) =====================
+   Sovrascrive colori, font, bordi e ombre di HUD e menu: niente sfumature, niente angoli tondi, niente sfocature.
+   Le dimensioni e i layout restano quelli di prima (cosi' tutto continua a stare in una schermata sul telefono). */
+:root,:root[data-theme="dark"],:root:not([data-theme="light"]){
+  --bg:#1d2b53;--panel:#1a1c2c;--ink:#f4f4f4;--mute:#a9b6d6;--line:#5a6a96;--chip:#29366f;--accent:#ffd23f;--accent-ink:#1a1c2c;--good:#4fe58f;--bad:#ff6b70;
+  --hud-bg:#000;--hud-ink:#fff;--hud-mute:#b8c0d8;--scrim:rgba(8,10,24,.78);--gold:#ffd23f;--k:#000;
+  --font:'UFJersey',"Barlow Condensed","Arial Narrow",system-ui,sans-serif;--pfont:'UFPress','UFJersey',monospace;
+}
+html,body{background:#000}
+body{font-size-adjust:0.5;-webkit-font-smoothing:none;font-smooth:never;letter-spacing:.02em}
+canvas{image-rendering:pixelated;image-rendering:crisp-edges;image-rendering:pixelated}
+.screen *,.overlay *,#hud .chip,#hud .btn,#skip{border-radius:0!important}
+.chip,.btn,.tbtn{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+/* ---- barra nera in alto: squadre e punteggio a sinistra, meta al centro, stall ed «Esci» a destra ---- */
+#hud::before{content:"";position:absolute;left:0;right:0;top:0;height:28px;background:#000;box-shadow:0 2px 0 rgba(0,0,0,.35)}
+#score,#score.mini{top:0;left:max(10px,env(safe-area-inset-left,0px));height:28px;padding:0;background:none;display:flex;flex-wrap:nowrap;align-items:center;gap:8px;max-width:none}
+#score .tn,#score.mini .tn{display:inline-block;font-size:20px;font-weight:400;max-width:23vw;line-height:28px}
+#score .dash,#score.mini .dash{display:inline}
+#score b,#score.mini b{font-family:var(--pfont);font-size:14px;font-weight:400;color:#fff!important;min-width:1em}
+#score small,#score.mini small{display:block;position:fixed;left:auto;right:calc(max(8px,env(safe-area-inset-right,0px)) + 66px);top:0;margin:0;line-height:28px;font-size:19px;color:#c2cbe6;white-space:nowrap;flex-basis:auto}
+#score #pt{flex-basis:auto}
+#bExit{top:3px;right:max(8px,env(safe-area-inset-right,0px));height:22px;padding:0 9px;font-size:18px;font-weight:400;line-height:18px;background:#000;color:#fff;border:2px solid #fff}
+#stall{top:34px;left:max(8px,env(safe-area-inset-left,0px));height:24px;padding:0 9px;font-family:var(--pfont);font-size:11px;line-height:20px;font-weight:400;background:#000;color:#fff;border:2px solid #fff;text-transform:uppercase}
+#stall.hot{background:var(--bad);color:#fff;border-color:#000;animation:blink .3s steps(2) infinite}
+@keyframes blink{50%{opacity:.35}}
+#hint{top:36px;background:#000;border:2px solid #fff;font-size:18px;font-weight:400;padding:3px 10px}
+@media (max-height:420px){#hint{top:34px;font-size:17px}}
+#ctrl .btn,#skip{background:#000;color:#fff;border:2px solid #fff;font-size:19px;font-weight:400;padding:5px 12px;box-shadow:3px 3px 0 rgba(0,0,0,.45)}
+#skip{top:34px}
+.btn.on{background:var(--gold);color:#1a1c2c;border-color:#000}
+/* ---- pulsanti di gioco: quadrati con gli angoli a scalini, come i tasti di una console ---- */
+.tbtn{background:none!important;box-shadow:none!important;border-radius:0}
+.tbtn::before,.tbtn::after{content:"";position:absolute;clip-path:polygon(0 14%,7% 14%,7% 7%,14% 7%,14% 0,86% 0,86% 7%,93% 7%,93% 14%,100% 14%,100% 86%,93% 86%,93% 93%,86% 93%,86% 100%,14% 100%,14% 93%,7% 93%,7% 86%,0 86%)}
+.tbtn::before{inset:0;background:#fff}
+.tbtn::after{inset:3px;background:#101425}
+.tbtn .ia,.tbtn .id{position:relative;z-index:1;stroke-linecap:square;stroke-linejoin:miter;stroke-width:3.4}
+.tbtn .ring{z-index:2}
+.tbtn:active{transform:translateY(2px)}
+.tbtn.on::before{background:#000}.tbtn.on::after{background:var(--gold)}.tbtn.on{color:#1a1c2c}
+#thr.def .tbtn::after{background:#b02632}#thr.def .tbtn{color:#fff}
+#thr.def .tbtn.rdy::before{background:#000}#thr.def .tbtn.rdy::after{background:var(--gold)}#thr.def .tbtn.rdy{color:#1a1c2c;animation:tpulse .3s steps(2) infinite alternate}
+.sprevb .red::after{background:#b02632}
+.ring .rb{stroke:rgba(0,0,0,.55);stroke-width:12}.ring .rf{stroke-width:9;stroke-linecap:butt}.ring .tk{stroke:#fff;stroke-width:3}
+#posedit .pbtn.drag{box-shadow:none!important;outline:3px solid var(--gold);outline-offset:3px}
+/* ---- schermate e pannelli ---- */
+.screen{background:#1d2b53;color:#f4f4f4}
+.screen::before{background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 2px,transparent 2px 4px);position:fixed}
+#title{background:rgba(20,28,62,.8)}#title::before{background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 2px,transparent 2px 4px)}
+.overlay{background:var(--scrim)}
+.panel{background:#1a1c2c;color:#f4f4f4;border:3px solid #f4f4f4;box-shadow:0 0 0 3px #000,8px 8px 0 3px rgba(0,0,0,.45)}
+.panel h1,.shead h2,#half .ht,.htitle,.ttl1,.ttl2,#mScore,.qph h1{font-family:var(--pfont);font-weight:400;font-size-adjust:none;letter-spacing:0;text-transform:uppercase}
+.panel h1{font-size:clamp(12px,4.4vh,18px);line-height:1.3;color:var(--gold);text-shadow:2px 2px 0 #000}
+.qph h1{font-size:clamp(11px,3.8vh,15px)}
+.shead h2{font-size:clamp(12px,4.6vh,20px);line-height:1.3;color:var(--gold);text-shadow:3px 3px 0 #000}
+#mScore{font-size:clamp(10px,3.4vh,14px);line-height:1.6}
+.panel p{color:var(--mute)}
+.htitle{font-size:clamp(20px,8.5vh,40px);line-height:1.25;color:var(--gold);text-shadow:4px 4px 0 #000}
+.hsub{color:#fff}.hinfo{color:var(--mute)}
+.ttl1{font-size:clamp(17px,7.4vh,34px);letter-spacing:0;color:#fff;text-shadow:4px 4px 0 #000;line-height:1.2}
+.ttl2{font-size:clamp(22px,10vh,48px);letter-spacing:0;font-style:normal;transform:none;background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--gold);-webkit-text-fill-color:var(--gold);filter:none;text-shadow:5px 5px 0 #000;line-height:1.25}
+.ttlDisc{image-rendering:pixelated;shape-rendering:crispEdges;width:clamp(96px,30vh,168px);margin-top:clamp(6px,2.5vh,16px)}
+.fbBody{animation:fbRock 1.6s steps(4) infinite}.fbShadow{animation:fbShadow 1.6s steps(4) infinite}
+#half .ht{font-size:clamp(22px,11vh,52px);letter-spacing:0;color:var(--gold);text-shadow:5px 5px 0 #000}
+/* pulsanti dei menu: blocchi pieni col bordo nero e lo «spessore» in basso */
+.hbtn,.tteam,.ecard,.ttype,.prow,.opt,.back,.sec,.go,.sg,.qswap,.lu button,.qtabs button,.qpg button,select.qs,.uchip,.urow,.ucard{transition:none!important}
+.hbtn,.tteam,.ecard,.ttype{background:#29366f;color:#fff;border:3px solid #000;box-shadow:inset 3px 3px 0 rgba(255,255,255,.16),inset -3px -3px 0 rgba(0,0,0,.3),0 4px 0 #000}
+.hbtn small,.ecard small,.ttype small{color:#c2cbe6}
+.hbtn.hp,.ecard.on{background:var(--gold);border-color:#000;color:#1a1c2c;box-shadow:inset 3px 3px 0 rgba(255,255,255,.45),inset -3px -3px 0 rgba(0,0,0,.2),0 4px 0 #000}
+.hbtn.hp small,.ecard.on small{color:#4a3d00}
+.hbtn svg{shape-rendering:crispEdges;stroke-linecap:square;stroke-linejoin:miter}
+.hbtn:hover:not(:disabled),.tteam:hover,.opt:hover,.ecard:hover:not(:disabled){transform:none;filter:brightness(1.12)}
+.hbtn:active:not(:disabled),.go:active:not(:disabled),.tteam:active,.opt:active,.sec:active,.back:active,.ecard:active:not(:disabled),.ttype:active:not(:disabled){transform:translateY(3px);box-shadow:inset 3px 3px 0 rgba(0,0,0,.25),0 1px 0 #000}
+.tteam:hover,.tteam:focus-visible{border-color:var(--gold)}
+.hlink{color:#c2cbe6;text-decoration:none;border-bottom:2px solid currentColor;padding:2px 2px 0}
+.hlink:hover{color:#fff}
+.go{background:var(--gold);color:#1a1c2c;border:3px solid #000;box-shadow:inset 3px 3px 0 rgba(255,255,255,.45),inset -3px -3px 0 rgba(0,0,0,.2),0 4px 0 #000;font-weight:400}
+.sec,.back,.qswap{background:#29366f;color:#fff;border:3px solid #000;box-shadow:inset 2px 2px 0 rgba(255,255,255,.16),0 3px 0 #000;font-weight:400}
+.sg{background:#29366f;color:#fff;border:3px solid #000;font-weight:400}
+.sg.on{background:var(--gold);color:#1a1c2c;border-color:#000}
+.opt{background:#29366f;color:#fff;border:3px solid #000}
+.opt svg{background:#8ab66b;shape-rendering:crispEdges}
+.opt span{color:#c2cbe6}
+.opt.on{background:#3b4d99;border-color:var(--gold);box-shadow:0 0 0 2px #000}
+select.qs{background:#29366f;border:3px solid #000;box-shadow:inset 2px 2px 0 rgba(255,255,255,.16),0 3px 0 #000;font-weight:400}
+select.qs option,select.qs optgroup{background:#1a1c2c;color:#fff}
+.qtabs button{background:#29366f;color:#fff;border:3px solid #000;font-weight:400}
+.qtabs button.on{background:var(--gold);border-color:#000;color:#1a1c2c}
+.qpg button{background:#29366f;color:#fff;border:3px solid #000;font-weight:400}
+.qpg button b{color:var(--gold)}
+.qpg button.sel{border-color:var(--gold);background:#3b4d99}
+.qcol label,.qdiff label,.srow label{color:var(--gold);font-weight:400}
+.sw input{accent-color:var(--gold)}
+details summary{color:var(--gold)}details{color:#d5dcf0}
+.note,.qp{color:#c2cbe6}
+.selbar{background:#3a3300;border:3px solid var(--gold)}
+.lu button{background:#29366f;color:#fff;border:3px solid #000}
+.lu button small{color:#c2cbe6}
+.lu button.on{border-color:var(--gold)}
+.lu button.sel{background:var(--gold);border-color:#000;color:#1a1c2c;box-shadow:0 0 0 3px var(--gold);transform:none}
+.eb{background:#000;height:6px}
+.lu-h{color:#fff}.lu-n{color:#c2cbe6}
+.prow{background:#29366f;border:3px solid #000}
+.prow.on{border-color:var(--gold);background:#3b4d99}
+.tteam2,.tres,.elist li{background:#141a36;border:2px solid #000}
+.rt th,.rt td{border-bottom:2px solid rgba(0,0,0,.45);font-weight:400}
+.rt th{color:#c2cbe6}
+.rt .dbtn{background:#29366f;border:2px solid #000}
+.rt tr.dt td{background:#141a36}
+.uchip{background:#29366f;border:3px solid #000}
+.uchip.cur{background:var(--gold);border-color:#000}
+.ucard{background:#141a36;border:3px solid var(--rc);box-shadow:4px 4px 0 #000!important;animation:ucin .3s steps(4) forwards}
+.pack{background:var(--gold);border:4px solid #000;box-shadow:inset 4px 4px 0 rgba(255,255,255,.5),inset -4px -4px 0 rgba(0,0,0,.25),6px 6px 0 #000;animation:packb 1s steps(2) infinite}
+.urow{background:#29366f;border:2px solid #000}
+.urow.sel{border-color:var(--gold);background:#3b4d99}
+.av{image-rendering:pixelated;border:2px solid #000}
+.crest{clip-path:polygon(0 0,100% 0,100% 62%,75% 62%,75% 82%,62% 82%,62% 100%,38% 100%,38% 82%,25% 82%,25% 62%,0 62%);box-shadow:none}
+#oStats{font-size:18px}
+#oEvent,#oGrow{color:#f4f4f4}
+@media (max-height:480px){.shead{background:#1d2b53}}
+#rot .panel h1{font-size:14px}
+

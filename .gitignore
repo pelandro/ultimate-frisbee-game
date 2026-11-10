@@ -1,0 +1,8 @@
+node_modules/
+dist/
+package-lock.json
+.claude/settings.local.json
+test-results/
+*.log
+.DS_Store
+Thumbs.db

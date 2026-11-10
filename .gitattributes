@@ -1,0 +1,8 @@
+# a capo uguali su ogni sistema: la concatenazione dei moduli deve dare lo stesso file per entrambi
+* text=auto eol=lf
+*.png binary
+# il registro delle modifiche si unisce da solo: le righe aggiunte da entrambi restano tutte
+docs/CHANGELOG.md merge=union
+# file enormi su una riga: non mostrarne le differenze riga per riga
+src/10-css/01-font.css -diff linguist-generated
+src/30-js/30-carriera/02-roster-2026.js linguist-generated

@@ -1,0 +1,11 @@
+#!/bin/sh
+# Niente push diretto su main (e quindi niente force push su main). Vale per chiunque, anche fuori da Claude Code.
+while read local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ] && [ -z "$ALLOW_MAIN" ]; then
+    echo "Push su main bloccato: main cambia solo con le pull request." >&2
+    exit 1
+  fi
+done
+# controllo veloce (meno di un secondo): sintassi, nomi doppi, segni di conflitto. La verifica completa la fa GitHub sulla pull request.
+if command -v node >/dev/null 2>&1; then node tools/check.js || exit 1; fi
+exit 0

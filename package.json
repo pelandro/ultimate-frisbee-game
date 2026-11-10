@@ -1,0 +1,23 @@
+{
+  "name": "ultimate-frisbee",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ultimate Frisbee: gioco arcade 2D in stile retro, in un solo file HTML",
+  "scripts": {
+    "build": "node tools/build.js",
+    "check": "node tools/check.js",
+    "test": "node tools/test.js",
+    "test:rapido": "node tools/test.js --rapido",
+    "test:sim": "node tools/test-sim.js",
+    "test:browser": "node tools/test-browser.js",
+    "confronto": "node tools/overlap.js",
+    "prepare": "node tools/setup-hooks.js",
+    "mappa": "node tools/mappa.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}

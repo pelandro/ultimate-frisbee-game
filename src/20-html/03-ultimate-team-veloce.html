@@ -1,0 +1,45 @@
+<div id="ut" class="screen hidden"><div class="spanel">
+  <div class="shead"><button class="back" id="uBack" type="button">‹ Indietro</button><h2>Ultimate Team</h2></div>
+  <p class="utinfo" id="uStats"></p>
+  <div class="utr" id="uRounds"></div>
+  <div class="smenu" id="uMenu">
+    <button class="hbtn hp" id="uPack" type="button"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="4" width="18" height="24" rx="3"/><path d="M12 12h8M12 17h8"/></svg><span><strong id="uPackT">Apri pacchetto</strong><small id="uPackS"></small></span></button>
+    <div class="hrow" id="uPlayRow"><button class="hbtn hp" id="uPlay" type="button"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><ellipse cx="16" cy="16" rx="13" ry="6.5"/><ellipse cx="16" cy="16" rx="6" ry="2.8"/></svg><span><strong id="uPlayT">Gioca</strong><small id="uPlayS"></small></span></button><button class="hbtn hsim" id="uSim" type="button" aria-label="Simula partita"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l9 8-9 8zM17 8l9 8-9 8z"/></svg><span><strong>Simula</strong><small>partita</small></span></button></div>
+    <button class="hbtn" id="uTeam" type="button"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="4.2"/><circle cx="22" cy="12" r="3.4"/><path d="M3 26c0-5 3.5-8 8-8s8 3 8 8M17 26c.4-4 2.8-6.4 6-6.4s5.6 2.4 6 6.4"/></svg><span><strong>La tua squadra</strong><small id="uTeamS"></small></span></button>
+    <button class="hbtn hp" id="uNew" type="button"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5h14v7a7 7 0 0 1-14 0zM9 8H4c0 4 2 6 5 6M23 8h5c0 4-2 6-5 6M16 19v5M11 27h10"/></svg><span><strong>Nuovo torneo</strong><small>Tieni i tuoi giocatori e apri un nuovo pacchetto</small></span></button>
+  </div>
+  <div class="schrow"><button class="sec" id="uBuy" type="button">Compra un pacchetto</button></div>
+  <div class="uobj" id="uObj"></div>
+  <div class="orow"><h2>Difficoltà</h2><div class="seg" id="uDiff" style="max-width:520px"></div></div>
+  <p class="qp" id="uDiffN"></p>
+  <p class="qp" id="uMsg"></p>
+</div></div>
+
+<div id="utPack" class="screen hidden"><div class="spanel">
+  <div class="shead"><h2 id="pkTitle">Pacchetto</h2></div>
+  <div id="pkBody"></div>
+  <div class="pkbar"><button class="go" id="pkGo" type="button">Apri</button></div>
+</div></div>
+
+<div id="utTeam" class="screen hidden"><div class="spanel">
+  <div class="shead"><button class="back" id="tmBack" type="button">‹ Indietro</button><h2>La tua squadra</h2><button class="sec" id="tmAuto" type="button" style="margin-left:auto">Migliori 7</button></div>
+  <div class="umode" id="tmMode"><button type="button" data-m="sel">Titolari</button><button type="button" data-m="up">Potenzia</button><button type="button" data-m="del">Scarta</button></div>
+  <p class="utinfo" id="tmInfo"></p>
+  <div class="ulist" id="tmList"></div>
+</div></div>
+
+<div id="quick" class="screen hidden"><div class="spanel">
+  <div class="shead"><button class="back" id="qBack" type="button">‹ Indietro</button><h2>Partita veloce</h2></div>
+  <div class="qgrid">
+    <div class="qcol"><label>Tua squadra (blu)</label><button id="qA" class="qs qpick" type="button"></button><p class="qp" id="qAP"></p></div>
+    <button class="qswap" id="qSwap" type="button" aria-label="Scambia le squadre">⇄</button>
+    <div class="qcol"><label>Avversario (rossa)</label><button id="qB" class="qs qpick" type="button"></button><p class="qp" id="qBP"></p></div>
+  </div>
+  <div class="qbar">
+    <div class="qdiff"><label for="qD">Difficoltà</label><select id="qD" class="qs"><option value="0">Facile</option><option value="1">Medio</option><option value="2">Difficile</option><option value="3">Estrema</option></select></div>
+    <div class="qdiff"><label for="qS">Inizia in attacco</label><select id="qS" class="qs"><option value="0">Tua squadra</option><option value="1">Avversario</option></select></div>
+    <button class="go" id="qPlay" type="button">Gioca</button>
+  </div>
+  <p class="qp" id="qDP" style="text-align:center"></p>
+</div></div>
+

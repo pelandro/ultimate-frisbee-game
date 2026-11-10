@@ -1,0 +1,13 @@
+#!/bin/sh
+# Niente commit diretti su main: ogni aggiornamento vive nel suo ramo ed entra in main con una pull request.
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+if [ "$branch" = "main" ] && [ -z "$ALLOW_MAIN" ]; then
+  echo "Commit su main bloccato: crea un ramo (git switch -c agg/nome-breve) e apri una pull request." >&2
+  exit 1
+fi
+# segni di conflitto dimenticati nei file che stai per salvare
+if git diff --cached --name-only --diff-filter=ACM | grep -E '^(src|tools|docs)/' | xargs -r grep -lE '^(<<<<<<<|>>>>>>>) ' 2>/dev/null | grep -q .; then
+  echo "Ci sono segni di conflitto (<<<<<<< o >>>>>>>) nei file: risolvili prima del commit." >&2
+  exit 1
+fi
+exit 0

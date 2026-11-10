@@ -1,0 +1,26 @@
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="sai" aria-hidden="true" style="position:fixed;right:0;bottom:0;width:env(safe-area-inset-right,0px);height:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none"></div>
+
+<div id="hud" class="hidden">
+  <div id="score" class="chip"><span class="tn b" id="myN">BLU</span><b id="s0">0</b><span class="dash">–</span><b id="s1">0</b><span class="tn r" id="oppN">ROSSI</span><small id="pt"></small></div>
+  <div id="stall" class="chip hidden"></div>
+  <button id="bExit" class="btn hidden" type="button" aria-label="Pausa">II</button>
+  <div id="hint" class="chip hidden"></div>
+  <div id="coach" class="hidden"></div>
+  <div id="ctrl">
+    <button id="bSch" class="btn">Schemi</button>
+    <button id="bSub" class="btn">Cambi</button>
+    <button id="bSimPt" class="btn" type="button">Simula meta</button>
+    <button id="bDef" class="btn hidden" type="button">Marcatura: contieni</button>
+  </div>
+  <button id="bSprint" class="tbtn sprint chg hidden" type="button" aria-label="Scatto"><svg class="ia" viewBox="0 0 32 32" aria-hidden="true"><path d="M19 3L8 18h7l-2 11 12-16h-7z"/></svg><svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="rb" cx="50" cy="50" r="44"/><circle class="rf" cx="50" cy="50" r="44" stroke-dasharray="276.46" stroke-dashoffset="0"/></svg></button>
+  <div id="thr" class="hidden">
+    <button id="bHammer" class="tbtn" type="button" aria-label="Tipo di lancio: piatto, alto o blade (in difesa: tuffo)"><span class="tlab" id="stLab">PIATTO</span><svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="rb" cx="50" cy="50" r="44"/><circle class="rf" cx="50" cy="50" r="44" stroke-dasharray="276.46" stroke-dashoffset="276.46"/></svg><svg class="ia" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 25Q14 3 27 16M21 9l7 7-10 3"/></svg><svg class="id" viewBox="0 0 32 32" aria-hidden="true"><circle cx="24" cy="9" r="3"/><path d="M21 12L10 19M21 12l7 3M10 19L3 17M10 19l-5 6M8 27h16"/></svg></button>
+    <button id="bThrow" class="tbtn" type="button" aria-label="Lancio (in difesa: handblock)"><svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="rb" cx="50" cy="50" r="44"/><circle class="rf" cx="50" cy="50" r="44" stroke-dasharray="276.46" stroke-dashoffset="276.46"/></svg><svg class="ia" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 16h23M19 8l8 8-8 8"/></svg><svg class="id" viewBox="0 0 32 32" aria-hidden="true"><path d="M9 16V8M14 15V5M19 15V6M24 16v-4M9 16v5a7 7 0 007 7h1a7 7 0 007-7v-5M9 21l-4-4"/></svg></button>
+  </div>
+</div>
+<button id="skip" class="btn hidden">Salta lo stacco</button>
+
