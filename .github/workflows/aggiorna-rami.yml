@@ -2,7 +2,8 @@ name: Aggiorna rami
 # Quando una pull request entra in main, le altre pull request con l'unione automatica attiva restano «indietro» e la regola di protezione di main impedisce
 # di unirle finche' non sono aggiornate e riprovate. Qui lo si fa da soli, come una coda di unione:
 #   1. si porta main dentro il ramo (aggiornamento del ramo, come il tasto «Update branch»);
-#   2. si rilancia la verifica su quel ramo (i commit fatti dal bot non avviano da soli le verifiche, per una regola di GitHub: la si avvia a mano);
+#   2. la verifica parte da sola sul ramo aggiornato, ma GitHub la tiene «in attesa di approvazione» perche' il commit lo ha fatto il bot (regola per i
+#      collaboratori esterni) e la pull request resterebbe bloccata: qui la si approva. Se la verifica non compare la si lancia a mano sul ramo;
 #   3. quando e' verde, l'unione automatica fa il resto.
 # Se l'unione con main ha un conflitto vero, il bot non tocca nulla e lascia un commento: serve /sincronizza dalla sessione di Claude di chi ha aperto la pull request.
 # Si aggiornano solo pull request non in bozza, dello stesso repository e con l'unione automatica attiva: un ramo ancora «in lavorazione» non viene toccato.
@@ -44,6 +45,16 @@ jobs:
               NEW=$(gh api "repos/$R/pulls/$N" --jq .head.sha); [ "$NEW" != "$OLD" ] && break; sleep 3
             done
             if [ "$NEW" = "$OLD" ]; then echo "#$N: il ramo non e' cambiato dopo l'aggiornamento."; continue; fi
-            gh api -X POST "repos/$R/actions/workflows/verifica.yml/dispatches" -f ref="$REF" >/dev/null
-            echo "#$N: ramo aggiornato a ${NEW::7}, verifica rilanciata."
+            APPROVATA=no   # la verifica del ramo aggiornato compare entro pochi secondi, in attesa di approvazione
+            for i in $(seq 1 20); do
+              RID=$(gh api "repos/$R/actions/runs?head_sha=$NEW&event=pull_request" --jq '[.workflow_runs[] | select(.name=="Verifica")] | sort_by(.created_at) | last | select(.conclusion=="action_required") | .id // empty')
+              if [ -n "$RID" ]; then gh api -X POST "repos/$R/actions/runs/$RID/approve" >/dev/null && APPROVATA=si; break; fi
+              ESISTE=$(gh api "repos/$R/actions/runs?head_sha=$NEW&event=pull_request" --jq '[.workflow_runs[] | select(.name=="Verifica" and .conclusion!="action_required")] | length')
+              if [ "${ESISTE:-0}" -ge 1 ]; then APPROVATA=gia; break; fi
+              sleep 3
+            done
+            if [ "$APPROVATA" = "no" ]; then   # la verifica non e' comparsa: la si lancia a mano sul ramo
+              gh api -X POST "repos/$R/actions/workflows/verifica.yml/dispatches" -f ref="$REF" >/dev/null && echo "#$N: verifica lanciata a mano."
+            fi
+            echo "#$N: ramo aggiornato a ${NEW::7} (verifica: $APPROVATA)."
           done
