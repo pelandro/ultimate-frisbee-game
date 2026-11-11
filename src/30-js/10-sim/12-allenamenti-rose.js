@@ -117,8 +117,9 @@ function realRoster(rows,seedStr,opt){
       list.push({sur:'',nm,a,g,age:clamp(base,14,65),f:false,gen:true});
     }
   }
-  const first=o=>o.nm.split(' ')[0],cnt={},used={};
-  list.forEach(o=>{cnt[first(o)]=(cnt[first(o)]||0)+1;});
+  // in partita si legge il COGNOME (i giocatori inventati non ce l'hanno: restano col nome); se due compagni lo condividono si aggiunge l'iniziale del nome
+  const first=o=>o.nm.split(' ')[0],sn=o=>o.sur||first(o),cnt={},used={};
+  list.forEach(o=>{cnt[sn(o)]=(cnt[sn(o)]||0)+1;});
   return list.map((o,idx)=>{
     const full=((o.sur+' '+o.nm).trim())+(o.gen?' (g'+idx+')':'');
     const rng=mulberry32(hashStr(seedStr+'|'+full)),R=(a,b)=>a+rng()*(b-a);   // un generatore per giocatore: il suo talento non cambia se cambia il resto del roster
@@ -135,16 +136,26 @@ function realRoster(rows,seedStr,opt){
       const off=g==='L'?9*d:(g==='V'?3*d:-7*d);
       s[k]=clamp(Math.round(Rv+off+R(-4,4)),28,capVal(full,k,g==='L'?tl:(g==='V'?tv:tf)));
     });
-    let disp=first(o);
-    if(cnt[disp]>1){disp=first(o)+' '+(o.sur||'?')[0]+'.';if(used[disp])disp=first(o)+' '+(o.sur||'?').split(' ')[0];}
+    let disp=sn(o);
+    if(cnt[disp]>1){disp=sn(o)+' '+first(o)[0]+'.';if(used[disp])disp=sn(o)+' '+first(o);}
     used[disp]=1;
     return {n:disp,label:o.gen?first(o):(o.nm+' '+o.sur),full,sur:o.sur,r:role,age,tl,tf,tv,s,a:o.a,g:o.g,gen:o.gen,f:o.f,tot,trait:traitFor(full,s,role),dev:devOf(full)};
   });
 }
+// nome mostrato in partita = cognome. Vale anche per i salvataggi vecchi, che hanno ancora il solo nome: si ricalcola dal cognome (con l'iniziale se due compagni lo condividono)
+function applySurnames(list){
+  const cnt={};for(const p of list)if(p.sur)cnt[p.sur]=(cnt[p.sur]||0)+1;
+  for(const p of list){
+    if(!p.sur)continue;
+    const lb=p.label||'',fn=(lb.endsWith(p.sur)?lb.slice(0,lb.length-p.sur.length):lb).trim().split(' ')[0]||'';
+    p.name=cnt[p.sur]>1&&fn?p.sur+' '+fn[0]+'.':p.sur;
+  }
+}
 // la tua squadra: 7 in campo scelti tra i migliori, gli altri in panchina
 function setSquad(list){
   SQ.length=0;
-  list.forEach((o,i)=>{const p=newPlayer(0,i,{name:o.n,label:o.label,full:o.full,gen:o.gen,f:o.f,role:o.r,tl:o.tl,tf:o.tf,tv:o.tv,age:o.age,s:Object.assign({},o.s),trait:o.trait,dev:o.dev,cond:o.cond,sk:o.sk,car:o.car,pos:o.pos});p.sur=o.sur;p.inj=o.inj|0;p.tr=!!o.tr;if(o.star){p.star=true;p.nat=o.nat;}if(o.ae)p.ae=1;p.aw=o.aw||[];p.ra=o.ra;p.ret=o.ret|0;p.retHold=o.retHold|0;p.injC=o.injC|0;p.injBig=o.injBig|0;p.idle=o.idle|0;p.mood=o.mood|0;p.prom=o.prom|0;p.rw=o.rw|0;if(o.spec&&SPECS[o.spec])p.spec=o.spec;if(o.goal)p.goal=o.goal;p.sad=o.sad|0;SQ.push(p);});
+  list.forEach((o,i)=>{const p=newPlayer(0,i,{name:o.n,label:o.label,full:o.full,gen:o.gen,f:o.f,role:o.r,tl:o.tl,tf:o.tf,tv:o.tv,age:o.age,s:Object.assign({},o.s),trait:o.trait,dev:o.dev,cond:o.cond,sk:o.sk,car:o.car,pos:o.pos});p.sur=o.sur;p.inj=o.inj|0;p.tr=!!o.tr;if(o.star){p.star=true;p.nat=o.nat;}if(o.ae)p.ae=1;p.aw=o.aw||[];p.ra=o.ra;p.ret=o.ret|0;p.retHold=o.retHold|0;p.injC=o.injC|0;p.injBig=o.injBig|0;p.idle=o.idle|0;p.mood=o.mood|0;p.prom=o.prom|0;p.rw=o.rw|0;if(o.spec&&SPECS[o.spec])p.spec=o.spec;if(o.goal)p.goal=o.goal;p.sad=o.sad|0;p.ext=o.ex|0;SQ.push(p);});
+  applySurnames(SQ);
   setLineup(pickSeven(SQ,p=>p.role,mean9).map(p=>p.id));
 }
 const rosterPower=list=>{const b=bestSeven(list);return b.reduce((a,o)=>a+mean9(o),0)/b.length;};

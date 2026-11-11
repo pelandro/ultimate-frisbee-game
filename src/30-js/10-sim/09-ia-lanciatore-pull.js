@@ -10,6 +10,7 @@ function aiPick(th){
     for(const df of defs){open=Math.min(open,hyp(df.x-q.x,df.y-q.y));lane=Math.min(lane,segDist(df.x,df.y,th.x,th.y,q.x,q.y));}
     const fwd=dx*d,c=closedness(th,dx,dy);
     let sc=Math.min(open,9)+Math.min(lane,6)*0.8+fwd*0.11*(1+0.4*idn.deep)-dist*0.06-c*4+rnd(0,Math.max(1,3.8+(0.6-th.s.vis/100)*9))*lv.noise;
+    {const cr=throwComf(th),mr=throwMax(th);if(dist>cr)sc-=(dist-cr)*0.15;if(dist>mr)sc-=40;}   // oltre la gittata comoda cala il punteggio; oltre il massimo il disco non arriva
     if(dist>=SPARO_D)sc+=(th.s.spa-55)*0.05-1.5+(open>=5?1.5:0)+idn.deep*1.6;   // sparo: conviene se sei bravo e il compagno e' libero (di piu' per le squadre che giocano lungo)
     if(dist<10)sc-=clamp(1+idn.deep*0.8,0,2);   // evita il gioco troppo vicino al portatore (le squadre da gioco corto lo accettano)
     // MISMATCH: cerca il compagno che ha un vantaggio sul suo marcatore (velocita', salto sul lungo, agilita' sul corto) e mani sicure

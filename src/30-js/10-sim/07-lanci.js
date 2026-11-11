@@ -43,6 +43,9 @@ function pathDist(q,f){let b=1e9;for(let i=1;i<10;i++){const P=flightAt(f,i/10);
 // progetto del lancio: tipo, lato del rilascio, dispersione, tempo. Lo usano il lancio vero, l'anteprima della mira e le scelte dell'IA
 function planThrow(th,ax,ay,style,exec){
   style=style===true?1:(style|0);
+  // gittata: oltre la distanza massima che il suo Sparo permette il disco non arriva, cade corto (vedi 07c-gittata.js)
+  const mxR=throwMax(th),d0=hyp(ax-th.x,ay-th.y),short=d0>mxR;
+  if(short){const f=mxR/d0;ax=th.x+(ax-th.x)*f;ay=th.y+(ay-th.y)*f;}
   const dx=ax-th.x,dy=ay-th.y,dist=Math.max(1.5,hyp(dx,dy)),info=throwInfo(th,dx,dy,dist);
   const rx=-dy/dist,ry=dx/dist;   // la destra del lanciatore
   let side=-1;const mk=G.marker;
@@ -55,12 +58,13 @@ function planThrow(th,ax,ay,style,exec){
   if(kind==='scoober')k*=1+0.1*Math.max(0,dist-11);
   if(kind==='blade')k*=1+0.03*Math.max(0,dist-30)+0.05*Math.max(0,12-dist);
   const wn=windOn(info.skill,dx,dy,dist,Math.max(0.45,dist/sp.v),sp.hi,kind==='scoober');   // vento: deriva, dispersione, gittata
-  const comf=30+th.s.spa*0.28+(wn?wn.along*WIND_RANGE:0);if(dist>comf)k*=1+0.09*(dist-comf);   // gittata: oltre la distanza che il lanciatore regge (dipende dallo Sparo e dal vento) la precisione crolla
+  const comf=throwComf(th)+(wn?wn.along*WIND_RANGE:0);if(dist>comf)k*=1+0.09*(dist-comf);   // gittata comoda: oltre la distanza che il lanciatore regge (dipende dallo Sparo e dal vento) la precisione crolla
   if(wn)k*=wn.k;
   let near=0;for(const q of T[1-th.t])if(q!==mk&&hyp(q.x-th.x,q.y-th.y)<3)near++;
   if(near)k*=1.06;   // un secondo difensore addosso disturba
   k*=exec||1;       // qualita' dell'esecuzione: un lancio affrettato e' meno preciso
-  return {kind,sp,info,dist,side,sig:sigmaOf(info.skill,dist)*k,T:Math.max(0.45,dist/sp.v),H:throwH(kind,dist),
+  const vm=0.95+0.1*(info.sparo?th.s.spa:th.s.lan)/100;   // chi ha piu' Lancio (o Sparo, da lontano) lo fa viaggiare piu' veloce: meno tempo per intercettarlo
+  return {kind,sp,info,dist,short,mx:mxR,vm,side,sig:sigmaOf(info.skill,dist)*k,T:Math.max(0.45,dist/(sp.v*vm)),H:throwH(kind,dist),
     sx:th.x,sy:th.y,tx:ax+(wn?wn.x:0),ty:ay+(wn?wn.y:0),cx:rx*side*sp.curve*dist,cy:ry*side*sp.curve*dist,e:sp.ease};
 }
 function aimSnap(th,wx,wy,high){
@@ -77,6 +81,14 @@ function aimSnap(th,wx,wy,high){
       if(m<bm){bm=m;best=q;}
     }
   }
+  // isteresi: il compagno gia' agganciato resta agganciato finche' e' appena fuori dall'ellisse, cosi' il mirino non salta avanti e indietro tra due compagni che si muovono
+  const sq=G.snapQ;
+  if(sq&&sq!==th&&sq.t===th.t&&sq!==best){
+    const dd=hyp(sq.x-th.x,sq.y-th.y),tt=flightTime(dd,high||dd>=SPARO_D,dd>=SPARO_D);let mq=9;
+    for(let k=0;k<2;k++){const qx=sq.x+(k?sq.vx*tt*0.8:0),qy=sq.y+(k?sq.vy*tt*0.8:0),rx=qx-th.x,ry=qy-th.y;mq=Math.min(mq,hyp((-rx*uy+ry*ux)/Rb,(rx*ux+ry*uy-d0)/Ra));}
+    if(mq<1.3&&mq<bm+0.3){best=sq;bm=Math.min(bm,mq);}
+  }
+  G.snapQ=best;
   return {best,snapR,m:bm};
 }
 function computeAim(th,wx,wy,high,nc){
@@ -94,16 +106,27 @@ function computeAim(th,wx,wy,high,nc){
 }
 // il mirino punta una zona senza compagni vicini: e' come dire al compagno piu' vicino a quella zona di correre li'
 const CALL_MAX=14;   // distanza massima (m) tra la zona indicata e il compagno che viene chiamato a correrci
-function endCall(){const c=G.call;if(!c)return;G.call=null;if(!c.q.fl){c.q.cs='set';c.q.cutT=rnd(0.4,1);}}
-function updateCall(th,wx,wy,high){
-  if(G.flight||G.holder!==th||hyp(wx-th.x,wy-th.y)<6||computeAim(th,wx,wy,high,true).intended){endCall();return;}
+// il compagno chiamato smette di correre verso la zona: si ferma un attimo dov'e' (non torna a vagare a caso) e poi riprende il suo gioco
+function endCall(){const c=G.call;if(!c)return;G.call=null;if(!c.q.fl){c.q.cs='hold';c.q.cutT=rnd(0.5,0.9);}}
+const CALL_DEAD=3,CALL_GRACE=0.45;   // il punto della chiamata segue il dito solo oltre 3 m di spostamento; se il mirino esce dalla zona per un attimo la chiamata non cade subito
+/* exact: al rilascio il disco va esattamente dove hai indicato, quindi il punto della chiamata coincide col dito e non ci sono tolleranze. */
+function updateCall(th,wx,wy,high,exact){
+  const lose=()=>{const c=G.call;if(!c)return;if(exact){endCall();return;}if(c.off===undefined)c.off=G.tick;if(G.tick-c.off>CALL_GRACE)endCall();};   // un tentennamento del mirino non fa fermare chi sta correndo
+  if(G.flight||G.holder!==th){endCall();return;}
+  if(hyp(wx-th.x,wy-th.y)<6||computeAim(th,wx,wy,high,true).intended){lose();return;}
   let best=null,bd=1e9;
   for(const q of T[th.t]){if(q===th)continue;const d=hyp(q.x-wx,q.y-wy);if(d<bd){bd=d;best=q;}}
-  if(bd>CALL_MAX){endCall();return;}   // zona lontana da tutti i compagni: lancio libero, nessuno viene chiamato
+  if(bd>CALL_MAX){lose();return;}   // zona lontana da tutti i compagni: lancio libero, nessuno viene chiamato
   const cur=G.call&&G.call.q;
-  if(cur&&cur!==best&&hyp(cur.x-wx,cur.y-wy)<bd+2.5)best=cur;   // isteresi: non cambia compagno per un soffio
+  if(cur&&cur!==best&&hyp(cur.x-wx,cur.y-wy)<bd+4)best=cur;   // isteresi: non cambia compagno per un soffio
   if(cur&&cur!==best)endCall();
-  G.call={q:best,x:clamp(wx,1,FIELD_L-1),y:clamp(wy,1.5,FIELD_W-1.5)};
+  const px=clamp(wx,1,FIELD_L-1),py=clamp(wy,1.5,FIELD_W-1.5),c=G.call;
+  if(c&&c.q===best){
+    c.off=undefined;
+    const dd=hyp(px-c.x,py-c.y);
+    if(exact||dd>CALL_DEAD*3){c.x=px;c.y=py;}   // zona cambiata di molto (o rilascio): nuovo punto
+    else if(dd>CALL_DEAD){const k=(dd-CALL_DEAD)/dd*0.18;c.x+=(px-c.x)*k;c.y+=(py-c.y)*k;}   // il punto insegue il dito piano, solo per la parte oltre la tolleranza: senza scatti e senza tremare
+  }else G.call={q:best,x:px,y:py};
 }
 const ZONE_LANE_K=2.0,ZONE_LANE_W=2.8;   // la zona chiude le linee di passaggio: i difensori leggono il lancio basso (il disco alto, Hammer e sparo, le scavalca)
 function laneBlock(th,tx,ty,f){   // f = volo o progetto del lancio (con la sua curva); senza, linea retta dal lanciatore
@@ -147,7 +170,7 @@ function hbProb(th,info,mk,ha){
   return clamp(hbCurve(HB_TAB[hbColor(ha.qual)],info.c)*hbRel(th,mk)*HB_K,0,0.9);
 }
 function doThrow(th,ax,ay,intended,style,exec){
-  endCall();
+  endCall();G.snapQ=null;
   const pl=planThrow(th,ax,ay,style,exec),info=pl.info,sp=pl.sp;
   const cat=info.c>0.15?'buc':(info.sparo?'spa':'lan');   // categoria del lancio: buco, sparo o lancio
   if(info.sparo)G.st.sp[th.t]++;if(pl.dist<10)G.st.sh[th.t]++;
@@ -160,7 +183,7 @@ function doThrow(th,ax,ay,intended,style,exec){
   const dL=duoOf(th,intended),sg=pl.sig*(1-DUO_SIG*dL);   // intesa con il compagno a cui lancia
   const lx=pl.tx+randn()*sg,ly=pl.ty+randn()*sg,dl=Math.max(0.5,hyp(lx-th.x,ly-th.y));
   const rx=-(ly-th.y)/dl,ry=(lx-th.x)/dl;
-  G.flight={sx:th.x,sy:th.y,tx:lx,ty:ly,t:0,T:Math.max(0.45,dl/sp.v),H:throwH(pl.kind,dl),high:sp.hi,team:th.t,thrower:th,intended,sparo:info.sparo,info,cat,
+  G.flight={sx:th.x,sy:th.y,tx:lx,ty:ly,t:0,T:Math.max(0.45,dl/(sp.v*pl.vm)),H:throwH(pl.kind,dl),high:sp.hi,team:th.t,thrower:th,intended,sparo:info.sparo,info,cat,
     kind:pl.kind,sp,duoL:dL,e:sp.ease,cx:rx*pl.side*sp.curve*dl,cy:ry*pl.side*sp.curve*dl,stall:G.stallT,brk:!!G.marker&&(ly-th.y)*G.closedSide>1.5};
   G.holder=null;G.stallT=0;G.holdT=0;G.st.thr[th.t]++;
   if(G.kinds)G.kinds[pl.kind]=(G.kinds[pl.kind]||0)+1;
@@ -254,7 +277,7 @@ function updateDisc(dt){
         if(inAir){d.x=c.x;d.y=c.y;}   // presa al volo: il disco e' a pochi centimetri dalla mano
         c.vx=c.vy=0;clearFl();
         if(!inAir){c.x=clamp(d.x,0,FIELD_L);c.y=clamp(d.y,0,FIELD_W);}
-        G.holder=c;G.pull=null;G.stallT=0;G.holdT=0;G.hbAtt=null;G.zoneH=null;G.hbOk=null;G.think=thinkFor(c.t,0.9,1.6);d.z=1;
+        G.holder=c;G.pull=null;G.stallT=0;G.holdT=0;G.hbAtt=null;G.zoneH=null;G.hbOk=null;G.think=thinkFor(c.t,0.9,1.6,c);d.z=1;
         G.brickWait=!!pu.oob;G.brickT=0;G.walk=null;   // brick: l'attacco aspetta che la difesa si schieri
         for(const q of T[G.poss]){q.cs='set';q.cutT=rnd(0.5,1.6);}
         assignMarks();startPlay(G.poss);

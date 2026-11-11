@@ -52,7 +52,7 @@ function catchBy(f,p,msg,ck){
   registerThrow(f.thrower,true,f.cat);
   if(f.sparo)p.m.vel++;else p.m.sca++;
   G.brickWait=false;G.walk=null;playOnCatch(f.team,p);
-  G.holder=p;G.poss=f.team;p.vx=p.vy=0;G.stallT=0;G.holdT=0;G.hbAtt=null;G.zoneH=null;G.hbOk=null;G.think=thinkFor(p.t,0.8,1.6);
+  G.holder=p;G.poss=f.team;p.vx=p.vy=0;G.stallT=0;G.holdT=0;G.hbAtt=null;G.zoneH=null;G.hbOk=null;G.think=thinkFor(p.t,0.8,1.6,p);
   G.st.cmp[f.team]++;
   if(f.team===0&&!G.auto&&G.obs){const gn=(p.x-f.sx)*dirOf(0);G.obs.n++;if(gn>=22)G.obs.d++;else if(gn>=3&&gn<18)G.obs.u++;}   // cio' che l'avversario osserva del tuo gioco
   for(const q of T[f.team]){q.cs='set';q.cutT=rnd(0.4,1.6);}

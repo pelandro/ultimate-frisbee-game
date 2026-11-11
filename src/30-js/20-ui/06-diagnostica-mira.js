@@ -86,7 +86,7 @@ function aimUp(e){
   const tapW=drag.sl&&!drag.was&&!drag.iso&&G.tick-drag.s<0.35?drag.tw:null;   // tocco senza trascinare: chiamata rapida a un compagno
   drag=null;aimPid=null;
   if(ok&&dOk&&hyp(w.x-h.x,w.y-h.y)>=3.5){   // nessuna direzione (dito al punto di partenza) o troppo vicino: il lancio si annulla
-    updateCall(h,w.x,w.y,hi);
+    updateCall(h,w.x,w.y,hi,true);
     const aim=computeAim(h,w.x,w.y,hi);
     doThrow(h,aim.x,aim.y,aim.intended,hi,exq);shownHint++;throwStyle=0;
   }else if(ok&&tapW)quickCall(tapW,false);

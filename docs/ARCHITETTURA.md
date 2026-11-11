@@ -35,6 +35,8 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `11-progressione.js`, `12-allenamenti-rose.js` | Potenziale, esperienza e crescita, allenamenti, generazione delle rose, roster reali, infortuni, forma |
 | `13-partite-simulate.js`, `14-test.js` | Modello delle partite simulate; suite di test (`selfTestPlan`, `selfTestRun`) |
 | `16-pacchetti.js` | Rarità dei pacchetti di Ultimate Team per qualità (`UT_PQ`, `utPackTiers`, garanzie, paracadute `UT_PITY`) |
+| `07c-gittata.js` | Gittata del lanciatore (`throwComf`, `throwMax`, dallo Sparo) e fiducia dei compagni (`trustOf`, `reachSeen`, `deepRun`, `deepAppetite`): chi taglia lungo lo fa solo dove il lancio arriva, di più con intesa. `planThrow` accorcia il lancio oltre `throwMax` (`pl.short`) |
+| `30-carriera/14-maturita.js` | `talentGrow`: ogni estate chi ha raggiunto il limite può superarlo (talento +1, `p.ext`, massimo `EXT_MAX`) |
 | `11b-specializzazioni.js`, `11c-intesa.js` | Indirizzi di sviluppo dei giocatori (`SPECS`, `specBonus`) e intesa tra coppie (`G.duo`, `duoOf`) |
 | `15-vento.js` | Vento della partita (`G.wind`, `setWind`, `rollWind`, `windOn`): deriva, dispersione e gittata dei lanci |
 
