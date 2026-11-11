@@ -83,7 +83,7 @@ test del motore con partite simulate a seme fisso, prova del gioco in un browser
 
 **Se consegniamo nello stesso momento?** Le pull request si mettono in fila da sole, come in una coda di unione:
 1. Entra per prima la prima che ha la verifica verde. `main` accetta solo pull request verdi **e** aggiornate all'ultima `main`.
-2. L'altra resta «indietro». Il lavoro **Aggiorna rami** (`.github/workflows/aggiorna-rami.yml`) porta `main` dentro il suo ramo e rilancia la verifica sul risultato: così si prova la combinazione dei due lavori, non solo il secondo da solo.
+2. L'altra resta «indietro». Il lavoro **Aggiorna rami** (`.github/workflows/aggiorna-rami.yml`) porta `main` dentro il suo ramo e fa ripartire la verifica sul risultato (GitHub la tiene in attesa di approvazione perché il commit lo fa il bot: la approva il bot stesso): così si prova la combinazione dei due lavori, non solo il secondo da solo. Serve circa un minuto e mezzo in più per ogni lavoro in coda.
 3. Se è verde, entra da sola (l'unione automatica era già attiva). Nessuno deve fare niente.
 4. Se i due lavori toccano le stesse righe c'è un conflitto: il bot non tocca nulla e scrive un commento sulla pull request. Chi l'ha aperta dice a Claude `/sincronizza` (unione ragionata: si tengono entrambi i miglioramenti) e poi si riprende da sola.
 5. La pubblicazione è una alla volta e pubblica sempre l'ultimo commit di `main`: una versione vecchia non può coprire una nuova.
