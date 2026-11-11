@@ -5,12 +5,17 @@ partita veloce, torneo, Ultimate Team, tutorial e sfide. Il gioco è un solo fil
 
 ## Giocare
 
+**Sempre l'ultima versione, senza installare nulla:** <https://pelandro.github.io/ultimate-frisbee-game/> (su telefono: in orizzontale; si può aggiungere alla schermata Home).
+La pagina si aggiorna da sola pochi minuti dopo ogni modifica entrata in `main`; sotto il titolo del gioco c'è scritta la versione (data e ora). I salvataggi restano nel browser del dispositivo.
+
+Sul proprio computer, dai sorgenti:
+
 ```bash
 npm run build
 ```
 
-Poi apri `dist/ultimate-frisbee.html` nel browser (su telefono: in orizzontale).
-Ogni pull request e ogni aggiornamento di `main` producono anche il file pronto da scaricare tra gli «Artifacts» della verifica su GitHub.
+Poi apri `dist/ultimate-frisbee.html` nel browser.
+Ogni pull request produce anche il file pronto da scaricare tra gli «Artifacts» della verifica su GitHub.
 
 ## Sviluppare (due persone, con Claude Code)
 
