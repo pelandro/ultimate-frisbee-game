@@ -24,6 +24,17 @@ function cycleCtrl(){   // passa al difensore successivo, dal piu' vicino al dis
   const f=G.flight,o=f?{x:f.tx,y:f.ty}:(G.holder||G.ref),list=T[0].slice().sort((a,b)=>hyp(a.x-o.x,a.y-o.y)-hyp(b.x-o.x,b.y-o.y));
   G.ctrl=list[(list.indexOf(G.ctrl)+1)%list.length];G.ctrlBy=true;
 }
+// LETTURA DEGLI SCHEMI: se il tuo attacco ha gia' segnato almeno 2 volte con lo stesso schema a sequenza, l'IA (Medio e Difficile) lo riconosce:
+// a ogni ripresa, con probabilita' pari al suo adattamento, i marcatori dei ricevitori previsti si mettono sulla fine del loro taglio.
+// Ritorna la mappa attaccante -> punto da coprire (o null). E' la contromisura alle giocate ripetute: lo stesso schema smette di pagare.
+function playRead(dTeam){
+  const P=1-dTeam,pb=G.pb&&G.pb[P];if(!pb||!pb.active||P!==0||!aiTeam(dTeam)||!G.seen||(G.seen.att[pb.id]|0)<2)return null;
+  if(pb.read===undefined)pb.read=Math.random()<AIK(dTeam).adapt;
+  if(!pb.read)return null;
+  const ph=PLAYBOOK[pb.id].phases[pb.phase],m=new Map();
+  for(const r of ph.pass||[]){const a=pb.rp[r],way=ph.go[r];if(!a||!way)continue;const w=way[way.length-1];m.set(a,pbPos(pb,P,w[0],w[1],w[2]));}
+  return m.size?m:null;
+}
 function updateDefenders(dt){
   const P=G.poss,dT=T[1-P],aT=T[P],d=dirOf(P),Hh=G.holder;
   const sch=P===0?G.opp.def:G.sch.def;
@@ -44,7 +55,7 @@ function updateDefenders(dt){
   // vicino alla propria meta non c'e' piu' profondo da proteggere: l'IA marca davanti all'uomo
   const nearGoal=Hh?((d>0?FIELD_L-EZ-Hh.x:Hh.x-EZ)<16):false,front=G.dmode[dTeam]===1||(ai&&nearGoal);
   // aiuti lontano dal disco: sempre con lo schema «uomo con aiuti», altrimenti quanto vuole l'identita' della squadra e il livello dell'IA
-  const pf=sch==='man_poach'?1:(ai?0.45*idn.poach*lvD.poach:0);
+  const pf=sch==='man_poach'?1:(ai?0.45*idn.poach*lvD.poach:0),rd=sch!=='zone'?playRead(dTeam):null;
   let deepA=null;if(Hh){let bf=-1e9;for(const a of aT){if(a===Hh)continue;const fw=(a.x-Hh.x)*d;if(fw>bf){bf=fw;deepA=a;}}}
   // CAMBI DI MARCATURA: se due difensori sono messi meglio scambiandosi l'uomo, se lo scambiano
   G.swT=(G.swT||0)-dt;
@@ -87,6 +98,7 @@ function updateDefenders(dt){
         const far=hyp(a.x-Hd.x,a.y-Hd.y);
         if(far>20){const k=clamp((far-20)/18,0,1)*0.42*pf;px=lerp(px,Hd.x+(a.x-Hd.x)*0.6,k);py=lerp(py,Hd.y+(a.y-Hd.y)*0.6,k);}
       }
+      if(rd&&rd.has(a)&&Hd){const e=rd.get(a);px=lerp(px,e.x,0.55);py=lerp(py,e.y,0.55);}   // ha riconosciuto lo schema: si mette sulla traiettoria del taglio previsto
       const close=hyp(q.x-a.x,q.y-a.y)<8;
       const mt=Hd?awayFrom(Hd,px,py,MIN_DEF):{x:px,y:py};
       moveTo(q,mt.x,mt.y,dt,Hd&&hyp(q.x-Hd.x,q.y-Hd.y)<MIN_DEF?1.7:(close?0.85+q.s.dif/180:1));

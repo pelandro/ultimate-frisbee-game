@@ -73,7 +73,7 @@ function simPoint(){
   const H0=Object.assign({},HOOKS),c0=G.opt.cine,tot=G.score[0]+G.score[1];
   drag=null;ddrag=null;aimPid=null;G.cdir=null;G.schemeOpen=false;
   for(const k of ['toast','sfx','vibe','shake'])HOOKS[k]=function(){};
-  HOOKS.cine=null;G.opt.cine=false;G.auto=true;
+  HOOKS.cine=null;G.opt.cine=false;G.auto=true;RP.buf.length=0;
   let n=0;
   try{while(n++<24000&&(G.mode==='ready'||G.mode==='play')&&G.score[0]+G.score[1]===tot)update(1/60);}
   finally{Object.assign(HOOKS,H0);G.opt.cine=c0;G.auto=false;}

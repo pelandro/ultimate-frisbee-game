@@ -3,14 +3,14 @@ const bDef=$('bDef');bDef.addEventListener('click',()=>{if(inDefense())toggleDmo
 const hud=$('hud'),elScore0=$('s0'),elScore1=$('s1'),elPt=$('pt'),elStall=$('stall'),elHint=$('hint'),bThr=$('thr'),bSprint=$('bSprint'),bThrow=$('bThrow'),bHammer=$('bHammer'),bSch=$('bSch'),skipBtn=$('skip');
 const cache=new Map();
 function setHTML(el,html){if(cache.get(el)!==html){cache.set(el,html);el.innerHTML=html;}}
-const ATT_NAME={vert:'Verticale',horz:'Orizzontale',hex:'Esagono',side:'Stack laterale',t1:'T1'},DEF_NAME={man_out:'Uomo, forza fuori',man_in:'Uomo, forza dentro',zone:'Zona',man_poach:'Uomo con aiuti'};
+const ATT_NAME={vert:'Verticale',horz:'Orizzontale',hex:'Esagono',side:'Stack laterale',t1:'T1',weave:'Weave'},DEF_NAME={man_out:'Uomo, forza fuori',man_in:'Uomo, forza dentro',zone:'Zona',man_poach:'Uomo con aiuti'};
 let shownHint=0,shownPull=0,shownDef=0;
 // in difesa (l'avversario ha il disco o lo ha lanciato) i due pulsanti diventano handblock (destra) e tuffo (sinistra)
 const inDefense=()=>G.mode==='play'&&!G.pull&&!!((G.holder&&G.holder.t===1)||(G.flight&&G.flight.team===1));
 function updateHUD(dt){
   const play=G.mode==='play'||G.mode==='banner'||G.mode==='ready';
   hud.classList.toggle('hidden',!play||G.schemeOpen);
-  skipBtn.classList.toggle('hidden',G.mode!=='cine');
+  skipBtn.classList.toggle('hidden',!(G.mode==='cine'||RP.on));if(RP.on||G.mode==='cine'){const st=RP.on?'Salta il replay':'Salta lo stacco';if(skipBtn.textContent!==st)skipBtn.textContent=st;}
   if(!play)return;
   elScore0.textContent=G.drill?drHud(0):G.score[0];elScore1.textContent=G.drill?drHud(1):G.score[1];
   $('score').classList.toggle('mini',G.mode==='play');   // durante l'azione restano solo i due numeri; a fine meta tornano i nomi

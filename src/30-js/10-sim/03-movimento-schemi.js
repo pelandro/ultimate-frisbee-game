@@ -60,16 +60,21 @@ SLOTS.side=[[-7,'r',0],[-2,'r',-10],[2,'r',-5],[13,'r',13],[18,'r',13],[24,'r',1
 SLOTS.t1=[[-7,'r',0],[-9,'a',4.6],[-9,'a',33],[30,'a',2.2],[30,'a',13.5],[30,'a',23.5],[30,'a',34.5]];   // formazione di riserva: chi non segue lo schema torna qui
 const PB_ROLES=['H1','H2','H3','C1','C2','C3','C4'];
 const adhOf=p=>clamp(0.3+0.75*visOf(p),0.35,0.99);   // quanto segue lo schema: Visione 45 -> 64%, 60 -> 75%, 90 -> 97%
-function pbPos(pb,team,u,y){const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ;return {x:clamp(own+d*(u+pb.shift),1,FIELD_L-1),y:clamp(y,2.5,FIELD_W-2.5)};}
-function startPlay(team){
-  const sch=team===0?G.sch.att:G.opp.att,book=PLAYBOOK[sch];
+// posizione di uno schema: [u, y] si sposta con il punto di partenza del portatore; [u, y, 'a'] e' assoluta (per esempio dentro la meta);
+// [du, dy, 'h'] e' relativa a dove il portatore ha iniziato lo schema (handler di sostegno)
+function pbPos(pb,team,u,y,m){const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ;
+  const uu=m==='a'?u:(m==='h'?pb.hu+u:u+pb.shift),yy=m==='h'?pb.hy+y:y;
+  return {x:clamp(own+d*uu,1,FIELD_L-1),y:clamp(yy,2.5,FIELD_W-2.5)};}
+function startPlay(team,force){   // force: avvia uno schema preciso (l'attacco in meta) invece di quello scelto
+  const sch=force||(team===0?G.sch.att:G.opp.att),book=PLAYBOOK[sch];
+  if(!force){if(!G.ezUsed)G.ezUsed=[false,false];G.ezUsed[team]=false;}   // nuovo possesso: l'attacco in meta si puo' usare di nuovo
   if(!G.pb)G.pb=[null,null];
   const h=G.holder;
   if(!book||!h||h.t!==team){G.pb[team]=null;return;}
   const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ,uh=(h.x-own)*d;   // dove parte il portatore: la formazione si muove con lui
-  const pb={id:sch,phase:0,stage:'go',stageT:0,shift:clamp(uh,-2,30)-0.6,follow:{},role:{},rp:{},wp:{},post:{},active:true,ready:false};   // se si riparte lontano dalla linea di meta si parte subito in corsa
+  const pb={id:sch,phase:0,stage:'go',stageT:0,shift:clamp(uh,-2,30)-0.6,hu:uh,hy:h.y,follow:{},role:{},rp:{},wp:{},post:{},active:true,ready:false};   // se si riparte lontano dalla linea di meta si parte subito in corsa
   const others=T[team].filter(p=>p!==h),roles=PB_ROLES.slice(1),setPos={};
-  for(const r of roles){const sp=book.phases[0].set[r];setPos[r]=pbPos(pb,team,sp[0],sp[1]);}
+  for(const r of roles){const sp=book.phases[0].set[r];setPos[r]=sp?pbPos(pb,team,sp[0],sp[1],sp[2]):{x:h.x,y:h.y};}
   const pairs=[];
   for(const p of others)for(const r of roles)pairs.push([hyp(p.x-setPos[r].x,p.y-setPos[r].y)+((p.role==='H')===(r[0]==='H')?0:25),p,r]);   // handler agli handler, cutter ai cutter
   pairs.sort((a,b)=>a[0]-b[0]);const up=new Set(),ur=new Set();
@@ -81,11 +86,11 @@ function startPlay(team){
 function pbTarget(team,p){
   const pb=G.pb&&G.pb[team];if(!pb||!pb.active||!pb.follow[p.id])return null;
   const r=pb.role[p.id],ph=PLAYBOOK[pb.id].phases[pb.phase];if(!r)return null;
-  if(pb.phase===0&&pb.stage==='set'){const sp=ph.set[r];if(!sp)return {hold:true};const t=pbPos(pb,team,sp[0],sp[1]);return {x:t.x,y:t.y,am:1,vm:0.9};}
-  const way=ph.go[r];if(!way){if(!pb.post[p.id]){const sp=pb.phase===0&&ph.set&&ph.set[r];pb.post[p.id]=sp?pbPos(pb,team,sp[0],sp[1]):{x:p.x,y:p.y};}return {free:true,post:pb.post[p.id]};}   // handler dietro: vanno al loro posto e li' cercano di liberarsi
-  if(pb.wp[p.id]===undefined){const t0=pbPos(pb,team,way[0][0],way[0][1]);pb.wp[p.id]=(way.length>1&&hyp(p.x-t0.x,p.y-t0.y)>12)?1:0;}   // se parte lontano dal punto della finta, va direttamente al taglio
-  let i=pb.wp[p.id],tg=pbPos(pb,team,way[i][0],way[i][1]);
-  if(i<way.length-1&&hyp(p.x-tg.x,p.y-tg.y)<2.5){i++;pb.wp[p.id]=i;tg=pbPos(pb,team,way[i][0],way[i][1]);}
+  if(pb.phase===0&&pb.stage==='set'){const sp=ph.set[r];if(!sp)return {hold:true};const t=pbPos(pb,team,sp[0],sp[1],sp[2]);return {x:t.x,y:t.y,am:1,vm:0.9};}
+  const way=ph.go[r];if(!way){if(!pb.post[p.id]){const sp=pb.phase===0&&ph.set&&ph.set[r];pb.post[p.id]=sp?pbPos(pb,team,sp[0],sp[1],sp[2]):{x:p.x,y:p.y};}return {free:true,post:pb.post[p.id]};}   // handler dietro: vanno al loro posto e li' cercano di liberarsi
+  if(pb.wp[p.id]===undefined){const t0=pbPos(pb,team,way[0][0],way[0][1],way[0][2]);pb.wp[p.id]=(way.length>1&&hyp(p.x-t0.x,p.y-t0.y)>12)?1:0;}   // se parte lontano dal punto della finta, va direttamente al taglio
+  let i=pb.wp[p.id],tg=pbPos(pb,team,way[i][0],way[i][1],way[i][2]);
+  if(i<way.length-1&&hyp(p.x-tg.x,p.y-tg.y)<2.5){i++;pb.wp[p.id]=i;tg=pbPos(pb,team,way[i][0],way[i][1],way[i][2]);}
   return {x:tg.x,y:tg.y,am:1,vm:1};
 }
 function updatePlay(dt){
@@ -97,18 +102,20 @@ function updatePlay(dt){
     if(pb.stage==='set'){
       if(G.brickWait||G.walk||G.pull)continue;
       let ok=true;
-      for(const p of T[team]){if(!pb.follow[p.id]||p===G.holder)continue;const sp=ph.set[pb.role[p.id]];if(sp){const t=pbPos(pb,team,sp[0],sp[1]);if(hyp(p.x-t.x,p.y-t.y)>3.5)ok=false;}}
+      for(const p of T[team]){if(!pb.follow[p.id]||p===G.holder)continue;const sp=ph.set[pb.role[p.id]];if(sp){const t=pbPos(pb,team,sp[0],sp[1],sp[2]);if(hyp(p.x-t.x,p.y-t.y)>3.5)ok=false;}}
       if(ok||pb.stageT>1.2){pb.stage='go';pb.stageT=0;}
     }else if(ph.ready){
       const rp=pb.rp[ph.ready];
       if(!rp||!pb.follow[rp.id])pb.ready=true;
-      else{const way=ph.go[ph.ready],f=pbPos(pb,team,way[way.length-1][0],way[way.length-1][1]);pb.ready=hyp(rp.x-f.x,rp.y-f.y)<10||pb.stageT>3.2;}
+      else{const way=ph.go[ph.ready],w1=way[way.length-1],f=pbPos(pb,team,w1[0],w1[1],w1[2]);pb.ready=hyp(rp.x-f.x,rp.y-f.y)<10||pb.stageT>3.2;}
     }else pb.ready=pb.stageT>0.8;
   }
 }
-const pbWait=h=>{const pb=G.pb&&G.pb[h.t];return !!(pb&&pb.active&&pb.follow[h.id]&&(pb.stage==='set'||!pb.ready));};   // il portatore aspetta che lo schema sia pronto
+// il portatore aspetta che lo schema sia pronto, ma non oltre lo stall 3: da li' lo schema si abbandona e si gioca libero (PB_STALL)
+const PB_STALL=3;
+const pbWait=h=>{const pb=G.pb&&G.pb[h.t];return !!(pb&&pb.active&&pb.follow[h.id]&&G.stallT<PB_STALL&&(pb.stage==='set'||!pb.ready));};
 function pbAllowed(th){   // a chi puo' lanciare chi segue lo schema
-  const pb=G.pb&&G.pb[th.t];if(!pb||!pb.active||!pb.follow[th.id]||pb.stage==='set')return null;
+  const pb=G.pb&&G.pb[th.t];if(!pb||!pb.active||!pb.follow[th.id]||pb.stage==='set'||G.stallT>=PB_STALL)return null;
   const ph=PLAYBOOK[pb.id].phases[pb.phase];if(!ph.pass)return null;
   const al=ph.pass.map(r=>pb.rp[r]).filter(q=>q&&pb.follow[q.id]);
   return al.length?al:null;
@@ -129,6 +136,18 @@ function assignMarks(){
   pairs.sort((u,v)=>u[0]-v[0]);
   const ua=new Set(),ud=new Set();
   for(const [,a,q] of pairs){if(ua.has(a)||ud.has(q))continue;ua.add(a);ud.add(q);q.mark=a;}
+  dangerMark(atk,def);
+}
+// la difesa dell'IA mette il suo difensore migliore sull'attaccante che in questa partita le sta facendo piu' male (mete, tagli riusciti, prese contese).
+// Succede a ogni ripresa con probabilita' pari a quanto l'IA e' attenta (smart): al livello facile di rado, al difficile quasi sempre
+function dangerMark(atk,def){
+  const dT=def.length&&def[0].t;if(!def.length||!aiTeam(dT)||Math.random()>AIK(dT).smart*0.7)return;
+  const thr=a=>a.m.g*3+a.m.cut+a.m.pre+a.m.sal*0.5;let ta=null,tv=2.5;
+  for(const a of atk){if(a===G.holder)continue;const v=thr(a);if(v>tv){tv=v;ta=a;}}
+  if(!ta)return;
+  const best=def.filter(q=>!(G.holder&&q.mark===G.holder)).sort((x,y)=>(y.s.dif*0.6+y.s.vel*0.4)-(x.s.dif*0.6+x.s.vel*0.4))[0],cur=def.find(q=>q.mark===ta);
+  if(!best||!cur||best===cur)return;
+  cur.mark=best.mark;best.mark=ta;G.st.dm[dT]++;
 }
 function placeTeams(rec){
   G.poss=rec;const d=dirOf(rec),atk=T[rec],def=T[1-rec],pt=1-rec;
@@ -165,8 +184,10 @@ function restPlayers(){
 }
 // % di possessi che finiscono in meta per ogni attacco contro ogni difesa (misurata con migliaia di partite simulate: serve all'IA per scegliere gli schemi).
 // Ogni schema ha un controgioco: la Zona ferma Verticale ed Esagono ma subisce Orizzontale e T1; l'Esagono rende meno ma e' il piu' sicuro contro la zona stretta
-const SCH_EFF={vert:{man_out:45,man_in:44,zone:31,man_poach:41},horz:{man_out:38,man_in:44,zone:47,man_poach:41},hex:{man_out:40,man_in:39,zone:26,man_poach:42},t1:{man_out:46,man_in:51,zone:51,man_poach:47},side:{man_out:42,man_in:44,zone:37,man_poach:40}};   // misurata con 800 partite simulate dopo le macroaree 1 e 2
-const SCH_ATT=['vert','horz','hex','t1','side'],SCH_DEF=['man_out','man_in','zone','man_poach'];
+// misurata con le aperture del playbook, i tagli coordinati e gli intercetti lungo il volo: 30 partite per casella, 3 coppie di rose (mete / (mete + turnover)).
+// Il T1 resta il piu' efficace, soprattutto contro la zona: l'IA dei livelli alti lo sa e gli risponde con la difesa a uomo, dove il margine e' piccolo
+const SCH_EFF={vert:{man_out:41,man_in:39,zone:32,man_poach:40},horz:{man_out:37,man_in:35,zone:41,man_poach:38},hex:{man_out:39,man_in:41,zone:32,man_poach:42},t1:{man_out:43,man_in:44,zone:54,man_poach:48},side:{man_out:41,man_in:41,zone:37,man_poach:41},weave:{man_out:40,man_in:39,zone:41,man_poach:37}};
+const SCH_ATT=['vert','horz','hex','t1','side','weave'],SCH_DEF=['man_out','man_in','zone','man_poach'];
 // L'avversario non legge piu' lo schema che hai scelto per questa meta: ricorda quelli che ti ha VISTO usare nelle mete precedenti (G.seen).
 // Facile: sceglie a caso; Medio e Difficile: sempre piu' spesso prende il controgioco dello schema che usi di piu'. L'identita' della squadra pesa sulle scelte a caso.
 function seenTop(o){let b=null,bn=0;for(const k in o)if(o[k]>bn){bn=o[k];b=k;}return bn>=1?b:null;}
@@ -175,7 +196,10 @@ function oppSchemes(){
   const lv=AIK(1),idn=idOf(1),sa=G.seen?seenTop(G.seen.att):null,sd=G.seen?seenTop(G.seen.def):null;
   const wA=k=>1+(k==='vert'||k==='t1'||k==='side'?idn.deep*0.6:-idn.deep*0.6),wD=k=>k==='man_poach'?0.4+idn.poach:(k==='zone'?0.8+Math.max(0,idn.pat)*0.5:1);
   const wpick=(arr,w)=>{let t=0;const ws=arr.map(k=>{const x=Math.max(0.1,w(k));t+=x;return x;});let r=Math.random()*t;for(let i=0;i<arr.length;i++){r-=ws[i];if(r<=0)return arr[i];}return arr[arr.length-1];};
-  G.opp.att=sd&&Math.random()<lv.adapt?SCH_ATT.slice().sort((a,b)=>SCH_EFF[b][sd]-SCH_EFF[a][sd])[0]:wpick(SCH_ATT,wA);
+  // schema d'attacco che in questa partita le fa perdere troppi dischi: l'IA lo usa sempre meno (G.aiRec: [mete, turnover] per schema)
+  const rec=G.aiRec||{},bad=k=>{const r=rec[k];return r&&r[1]-2*r[0]>=3;};
+  const wA2=k=>wA(k)*(bad(k)?0.2:1);
+  G.opp.att=sd&&Math.random()<lv.adapt?SCH_ATT.filter(k=>!bad(k)).sort((a,b)=>SCH_EFF[b][sd]-SCH_EFF[a][sd])[0]:wpick(SCH_ATT,wA2);
   G.opp.def=sa&&Math.random()<lv.adapt?SCH_DEF.slice().sort((a,b)=>SCH_EFF[sa][a]-SCH_EFF[sa][b])[0]:wpick(SCH_DEF,wD);
   // marcatura dell'IA: parte dall'identita' e si corregge con cio' che ha osservato (tanti passaggi corti riusciti: anticipo; tanti lanci lunghi: contenimento)
   let pr=idn.press;const o=G.obs;

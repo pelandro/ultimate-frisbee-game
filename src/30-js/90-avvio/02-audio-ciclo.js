@@ -218,7 +218,7 @@ try{if(localStorage.getItem(WIND_KEY)==='0')G.opt.wind=false;}catch(e){}
 function syncToggles(){   // audio e stacchi laterali si cambiano da piu' punti (menu, impostazioni, opzioni, pausa): le etichette restano allineate
   const on=AUD.isOn(),c=G.opt.cine;
   $('tSnd').classList.toggle('off',!on);$('tSndT').textContent=on?'Audio sì':'Audio no';
-  $('sSndS').textContent=on?'Acceso: musica, tifo ed effetti':'Spento';$('sCineS').textContent=c?'Accesi: salti e tuffi visti di lato':'Spenti';
+  $('sSndS').textContent=on?'Acceso: musica, tifo ed effetti':'Spento';$('sCineS').textContent=c?'Accesi: salti, tuffi e replay delle mete spettacolari':'Spenti';
   for(const id of ['opSnd','paSnd'])$(id).textContent='Audio: '+(on?'sì':'no');
   for(const id of ['opCine','paCine'])$(id).textContent='Stacchi laterali: '+(c?'sì':'no');
   for(const id of ['opDef','paDef'])$(id).textContent='Difesa: '+DEF_LBL[G.opt.def].toLowerCase();
@@ -246,6 +246,7 @@ function frame(now){
     const zoomWait=G.mode==='play'&&!!G.holder&&!G.pull&&!G.flight&&(cam.zP<1||Math.abs(zoomTarget()-cam.zTo)>0.001);
     G.zoomHold=zoomWait;
     if(G.paused){}else if(G.mode==='cine')updateCine(dt);else if(!zoomWait)update(dt);
+    rpRecord();rpCheck();rpApply(dt);   // replay: memoria degli ultimi secondi e riproduzione dopo le mete spettacolari
     updateCamera(dt);
     updateHUD(dt);
     render(dt);
