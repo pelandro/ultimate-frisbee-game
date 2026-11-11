@@ -35,6 +35,7 @@ function slMove(e){
   syncAimPoint();
 }
 cv.addEventListener('pointerdown',e=>{
+  if(RP.on){rpEnd(true);return;}   // un tocco salta il replay
   if(G.mode==='cine'){cineTap();return;}
   if(G.mode==='ready'){pullTap();return;}   // pull a tempo: ogni tocco ferma un indicatore
   if(diveTouch())return;                      // difesa automatica: durante il rallentatore basta toccare lo schermo per tuffarsi

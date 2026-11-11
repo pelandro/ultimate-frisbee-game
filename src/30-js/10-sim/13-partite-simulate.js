@@ -1,8 +1,8 @@
 /* ---- partite simulate (carriera, tornei, Ultimate Team): stessa scala di forza delle partite giocate ---- */
-// Ricalibrato con il modello degli intercetti lungo il volo: 6 coppie di rose diverse per ogni scarto (0-12 punti), circa 270 punti per scarto.
-// Una sola pendenza spiega tutto: 0,21 per punto di forza (prima 0,27 fino a 6 punti e 0,12 oltre, che sopravvalutava di 4-6 punti percentuali
-// il vantaggio di chi e' poco piu' forte). Difficolta' dell'IA avversaria misurata allo stesso modo: Medio vale 2,6 punti di forza, Difficile 3,6.
-const SIM_K=0.21,SIM_KS=0.21,SIM_CAP=12,SIM_DIFF=[0,-2.6,-3.6,-3.6];
+// Ricalibrato dopo la P1 (intercetti lungo il volo, tagli coordinati, aperture del playbook): 6 coppie di rose diverse per ogni scarto (0-12 punti),
+// circa 280 punti per scarto. Una sola pendenza spiega tutto: 0,185 per punto di forza (il gioco di squadra rende la sola forza un po' meno decisiva).
+// Difficolta' dell'IA avversaria misurata allo stesso modo su circa 1200 punti per livello: Medio vale 1,5 punti di forza, Difficile 2,7.
+const SIM_K=0.185,SIM_KS=0.185,SIM_CAP=12,SIM_DIFF=[0,-1.5,-2.7,-2.7];
 function simPointP(diff){const c=clamp(diff,-SIM_CAP,SIM_CAP);return 1/(1+Math.exp(-(SIM_K*c+SIM_KS*(diff-c))));}
 function simMatch(myP,oppP,dlv){
   const p=simPointP(myP-oppP+(SIM_DIFF[dlv|0]||0));let a=0,b=0;

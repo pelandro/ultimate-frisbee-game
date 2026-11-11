@@ -164,6 +164,7 @@ function doThrow(th,ax,ay,intended,style,exec){
   G.holder=null;G.stallT=0;G.holdT=0;G.st.thr[th.t]++;
   if(G.kinds)G.kinds[pl.kind]=(G.kinds[pl.kind]||0)+1;
   assignFlight();
+  giveGo(th,dl);   // passaggio corto: chi lancia riparte per ricevere di nuovo
   HOOKS.vibe(14);HOOKS.sfx('throw',dl,sp.hi);
 }
 /* ---- streak: serie positiva (oltre 10 lanci riusciti di fila) e negativa (2 errori di fila) ---- */

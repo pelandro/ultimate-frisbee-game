@@ -2,7 +2,7 @@
 function aiPick(th){
   const P=th.t,d=dirOf(P),defs=T[1-P];
   let mates=T[P].filter(q=>q!==th);
-  {const al=pbAllowed(th);if(al){const m2=mates.filter(q=>al.includes(q));if(m2.length)mates=m2;}}   // schema a sequenza: il lancio va a chi e' previsto
+  {const al=pbAllowed(th);if(al){const free=q=>defs.every(df=>hyp(df.x-q.x,df.y-q.y)>=3.5),m2=mates.filter(q=>al.includes(q)&&free(q));if(m2.length)mates=m2;}}   // schema a sequenza: il lancio va a chi e' previsto, se e' libero; se lo schema e' chiuso si gioca libero
   let best=null,bs=-1e9;const lv=AIK(P),idn=idOf(P),dmD=G.dmode[1-P];
   for(const q of mates){
     const dx=q.x-th.x,dy=q.y-th.y,dist=hyp(dx,dy);if(dist<3.5)continue;

@@ -1,11 +1,12 @@
 /* ---- menu di inizio meta ---- */
 const ATTS=[
-  {id:'vert',name:'Verticale',desc:'Cutter in fila al centro: tagli profondi e di rientro.',pos:[[.1,.5],[.24,.15],[.24,.85],[.45,.5],[.58,.5],[.71,.5],[.84,.5]]},
-  {id:'horz',name:'Orizzontale',desc:'Cutter in linea obliqua sul campo, handler dietro il disco.',pos:[[.1,.5],[.24,.12],[.24,.88],[.48,.1],[.56,.37],[.64,.63],[.72,.9]]},
-  {id:'hex',name:'Esagono',desc:'Tutti spaziati: molti tagli corti e campo largo.',pos:[[.14,.25],[.14,.75],[.36,.08],[.36,.92],[.56,.5],[.8,.25],[.8,.75]]}
+  {id:'vert',name:'Verticale',desc:'Fila al centro. Apertura: uno viene sotto sul lato aperto, uno va lungo sull’altro. Forte contro l’uomo, soffre la zona.',pos:[[.1,.5],[.24,.15],[.24,.85],[.45,.5],[.58,.5],[.71,.5],[.84,.5]]},
+  {id:'horz',name:'Orizzontale',desc:'Cutter in linea larga. Apertura: il cutter interno va lungo, quello accanto viene incontro. Allarga e batte la zona; contro l’uomo che forza dentro fatica.',pos:[[.1,.5],[.24,.12],[.24,.88],[.48,.1],[.56,.37],[.64,.63],[.72,.9]]},
+  {id:'hex',name:'Esagono',desc:'Tutti spaziati: molti tagli corti. Buono contro gli aiuti, la zona lo chiude.',pos:[[.14,.25],[.14,.75],[.36,.08],[.36,.92],[.56,.5],[.8,.25],[.8,.75]]}
 ];
-ATTS.push({id:'side',name:'Stack laterale',desc:'Cutter in fila su un lato: mezzo campo libero per i tagli in isolamento.',pos:[[.1,.5],[.24,.2],[.3,.36],[.46,.85],[.58,.85],[.7,.85],[.82,.84]]});
-ATTS.push({id:'t1',name:'T1',desc:'Sequenza: un cutter taglia verso il disco, poi taglio in meta o di rientro. Si segue alla lettera con Visione alta.',pos:[[.19,.51],[.09,.13],[.09,.90],[.5,.06],[.5,.36],[.5,.63],[.5,.93]]});
+ATTS.push({id:'side',name:'Stack laterale',desc:'Cutter in fila su un lato: mezzo campo libero per i tagli in isolamento. Solido contro ogni marcatura a uomo, meno efficace contro la zona.',pos:[[.1,.5],[.24,.2],[.3,.36],[.46,.85],[.58,.85],[.7,.85],[.82,.84]]});
+ATTS.push({id:'weave',name:'Weave',desc:'Tre handler che si passano il disco in diagonale correndosi davanti. Guadagna metri contro la zona; contro gli aiuti i passaggi corti si complicano.',pos:[[.1,.5],[.18,.2],[.06,.8],[.42,.12],[.52,.38],[.62,.62],[.72,.88]]});
+ATTS.push({id:'t1',name:'T1',desc:'Sequenza: un cutter taglia verso il disco, poi taglio in meta o di rientro. Il più efficace, ma se lo ripeti l’IA lo riconosce. Si segue alla lettera con Visione alta.',pos:[[.19,.51],[.09,.13],[.09,.90],[.5,.06],[.5,.36],[.5,.63],[.5,.93]]});
 const DEFS=[
   {id:'man_out',name:'Uomo, forza fuori',desc:'Il marcatore chiude il centro: il disco va verso la linea.',pos:[[.1,.5],[.26,.15],[.26,.85],[.46,.5],[.6,.5],[.74,.5],[.88,.5]]},
   {id:'man_in',name:'Uomo, forza dentro',desc:'Il marcatore chiude la linea: lanci verso il centro.',pos:[[.1,.5],[.26,.15],[.26,.85],[.46,.5],[.6,.5],[.74,.5],[.88,.5]]},

@@ -62,7 +62,9 @@ function catchBy(f,p,msg,ck){
    if(f.stall>=5){p.m.rst++;f.thrower.m.rst++;}                                                     // reset riuscito con lo stall alto
    const mk0=T[1-f.team].find(q=>q.mark===p);if(mk0&&nd<2)mk0.m.mk+=0.3;}                            // il marcatore era comunque addosso
   drillEvt('catch',f.team,p,f);
+  G.lastPlay={gain:(p.x-f.sx)*dirOf(f.team),duel:!!f._duel,ck:ck||(/tuffo/i.test(msg||'')?'tuffo':(/salto/i.test(msg||'')?'salto':'')),team:f.team,pt:G.pointNo};   // per il replay dell'interfaccia
   if(inEZ(p,f.team)){p.m.vis++;f.thrower.m.vis++;p.m.g++;f.thrower.m.a++;scoreGoal(f.team,p);return;}
+  ezCheck(f.team,p);   // vicino alla meta: parte l'attacco in meta
   HOOKS.toast(msg||'Presa!',f.team,{gain:(p.x-f.sx)*dirOf(f.team),p,ck:ck||(/tuffo/i.test(msg||'')?'tuffo':(/salto/i.test(msg||'')?'salto':''))});
   HOOKS.sfx('catch',/salto|tuffo|contesa|mano/i.test(msg||'')?1:0.65);
   if(/tuffo|salto/i.test(msg||'')){HOOKS.shake(4);G.freeze=Math.max(G.freeze,0.05);}
@@ -93,6 +95,7 @@ function turnover(newTeam,x,y,picker,msg,benefit){
   else{pk.x=spot.x;pk.y=spot.y;pk.vx=pk.vy=0;G.walk=null;}
   G.brickWait=false;
   G.st.to[1-newTeam]++;
+  if(1-newTeam===1){const k=G.opp.att,r=G.aiRec||(G.aiRec={});(r[k]||(r[k]=[0,0]))[1]++;}   // l'IA tiene il conto dei dischi persi con ogni schema
   G.poss=newTeam;G.holder=pk;G.flight=null;G.marker=null;G.stallT=0;G.holdT=0;G.hbAtt=null;G.zoneH=null;G.zoneT=0;G.call=null;
   HOOKS.sfx('turn',newTeam);
   if(G.walk){G.disc.x=spot.x;G.disc.y=spot.y;G.disc.z=0;}else{G.disc.x=pk.x;G.disc.y=pk.y;G.disc.z=1;}
@@ -110,17 +113,17 @@ function oobSpot(f){
 function duel(f,a,d,reach){
   const hi=f.high;
   const base=(o,isA)=>{
-    const p=o.p,near=(reach(p)-o.d)*6;
+    const p=o.p,near=(reach(p)-o.d)*8;   // la posizione conta: chi e' piu' dentro alla portata parte avvantaggiato
     if(hi)return (isA?p.s.sal:p.s.sal*0.7+p.s.dif*0.3)+near;            // disco alto: conta il Salto (in difesa anche la Difesa)
-    return (isA?p.s.sca*0.7+p.s.vel*0.3:p.s.dif*0.5+p.s.sca*0.5)+near;   // disco basso: non si salta, contano Scatto, Velocita' e Difesa
+    return (isA?p.s.sca*0.5+p.s.vel*0.2+p.s.agi*0.3:p.s.dif*0.5+p.s.sca*0.3+p.s.agi*0.2)+near;   // disco basso: non si salta, contano Scatto, Agilita', Velocita' e Difesa
   };
   // duello: decidono qualita' fisiche, posizione (chi e' piu' vicino al disco), tempismo (chi e' arrivato prima sul punto) e le mani di chi riceve; il caso pesa meno di prima
   const early=clamp(((d.p._t||0)-(a.p._t||0))*7,-9,9);
-  const sa=base(a,true)+(f.intended===a.p?4:0)+(a.p.s.pre-60)*0.22+early-f.sp.cd*40+(hi&&hasT(a.p,'sky')?7:0),sd=base(d,false)+(hasT(d.p,'lock')?5:0)+(hi&&hasT(d.p,'sky')?7:0),rA=rnd(0,24),rD=rnd(0,24);
+  const sa=base(a,true)+(f.intended===a.p?4:0)+(a.p.s.pre-60)*0.22+early-f.sp.cd*40+(hi&&hasT(a.p,'sky')?7:0),sd=base(d,false)+(hasT(d.p,'lock')?5:0)+(hi&&hasT(d.p,'sky')?7:0),rA=rnd(0,16),rD=rnd(0,16);   // il caso pesa meno: decidono di piu' statistiche, posizione e tempismo
   const resolve=b=>(sa+rA+(a.p.t===0?b*22:0))>=(sd+rD+(d.p.t===0?b*22:0))?'att':'def';
   const apply=out=>{
     if(hi){G.st.jump[out==='att'?a.p.t:d.p.t]++;(out==='att'?a.p:d.p).m.sal++;}
-    if(out==='att')catchBy(f,a.p,hi?'Presa in salto!':'Presa contesa!');
+    if(out==='att'){f._duel=true;catchBy(f,a.p,hi?'Presa in salto!':'Presa contesa!');}
     else finishTurn(f,d.p,hi?'Bloccato in salto!':'Intercetto!',{x:f.tx,y:f.ty});
   };
   if(hi&&G.opt.cine&&!G.noCine&&HOOKS.cine&&defEvt(f))HOOKS.cine({kind:'jump',a:a.p,d:d.p,resolve,apply});

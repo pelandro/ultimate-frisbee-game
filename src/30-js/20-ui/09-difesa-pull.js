@@ -15,7 +15,7 @@ function skipDefense(){
   drag=null;ddrag=null;aimPid=null;G.cdir=null;
   HOOKS.toast=(t,b)=>{if(t)last=[t,b];};
   for(const k of ['sfx','vibe','shake'])HOOKS[k]=function(){};
-  HOOKS.cine=null;G.opt.cine=false;G.skip=true;
+  HOOKS.cine=null;G.opt.cine=false;G.skip=true;RP.buf.length=0;
   try{while(n++<14400&&G.mode==='play'&&G.poss===1)update(1/60);}
   finally{Object.assign(HOOKS,H0);G.opt.cine=c0;G.skip=false;}
   G.diveWin=null;G.dive=null;G.slowTail=0;G.hold=false;G.sprint=null;G.ctrl=null;cam.snap=true;shownSkip++;

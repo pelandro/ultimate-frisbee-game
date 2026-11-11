@@ -431,6 +431,7 @@ function drawToasts(dt){
 // meta: fascia nera, scritta grande nel colore della squadra, coriandoli a quadretti
 function drawBanner(dt){
   if(G.mode!=='banner'||!G.banner){conf.length=0;return;}
+  if(G.banner.t>2.4)return;   // prima c'e' il replay
   const b=G.banner,age=2.4-b.t,col=b.team===0?'#6aa0ff':'#ff7b80';
   if(!b.conf){
     b.conf=true;

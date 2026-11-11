@@ -116,5 +116,5 @@ $('sFs').addEventListener('click',()=>{
 const updFs=()=>{$('hFs').textContent=fsOn()?'Attivo: tocca per uscire':'Usa tutto lo schermo';};
 document.addEventListener('fullscreenchange',updFs);document.addEventListener('webkitfullscreenchange',updFs);
 bSch.addEventListener('click',()=>{if(G.mode==='ready')openSchemes(false);});
-skipBtn.addEventListener('click',skipCine);
+skipBtn.addEventListener('click',()=>{if(RP.on)rpEnd(true);else skipCine();});
 

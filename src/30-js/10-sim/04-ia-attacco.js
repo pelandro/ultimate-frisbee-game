@@ -77,6 +77,7 @@ function updateAttackers(dt){
     G.resetH=Hh;let b=null,bd=1e9;for(const p of atk){if(p===Hh||p.cmd||p.role!=='H')continue;const dd=hyp(p.x-Hh.x,p.y-Hh.y);if(dd<bd){bd=dd;b=p;}}
     if(b){const open=G.marker?-G.closedSide:(Hh.y<MID?1:-1);b.cmd={k:'reset',x:clamp(Hh.x-d*4.5,2,FIELD_L-2),y:clamp(Hh.y+open*6.5,3,FIELD_W-3),t:3};b.cs='cut';}
   }
+  aiIso(P,Hh,dt);   // l'IA isola il cutter che ha un vantaggio sul suo marcatore
   const isoT=G.iso&&G.iso.p.t===P?G.iso.p.cmd:null;   // corridoio da lasciare libero
   for(const p of atk){
     p.rt=null;   // dove sta andando (solo per disegnare la linea del taglio)
@@ -90,7 +91,8 @@ function updateAttackers(dt){
     if(G.call&&G.call.q===p&&Hh&&!G.flight){p.rt={x:G.call.x,y:G.call.y};moveTo(p,G.call.x,G.call.y,dt);continue;}
     if(p.cmd){   // chiamata rapida: corre al punto indicato, piu' deciso di un taglio normale
       const c=p.cmd;c.t-=dt;
-      if(c.t<=0||!Hh||G.flight||hyp(p.x-c.x,p.y-c.y)<1.5){p.cmd=null;p.cs='hold';p.cutT=rnd(0.5,0.9);}
+      const go=c.k==='go'&&G.flight&&G.flight.team===P;   // give-and-go: si continua a correre mentre il disco e' in volo
+      if(c.t<=0||(!Hh&&!go)||(G.flight&&!go)||hyp(p.x-c.x,p.y-c.y)<1.5){p.cmd=null;p.cs='hold';p.cutT=rnd(0.5,0.9);}
       else{p.rt={x:c.x,y:c.y};moveTo(p,c.x,c.y,dt,1.15,1);continue;}
     }   // chiamato dal lanciatore: corre nella zona indicata
     {const tg=pbTarget(P,p);if(tg){
@@ -124,7 +126,8 @@ function updateAttackers(dt){
         else{
           const tg=pickCut(p,H,d,sch,w);
           if(!tight&&(active>=cutCap(v)||(Math.random()<clamp(0.12+v*1.1,0,1)&&!spaceClear(p,tg.x,tg.y,atk))))p.cutT=rnd(0.3,0.7); // aspetta che i compagni liberino lo spazio: tetto ai tagli contemporanei a ogni livello di Visione
-          else{p.cs='cut';const tg2=spreadFrom(p,tg.x,tg.y,atk,SPREAD_R,SPREAD_K),tc=awayFrom(H,tg2.x,tg2.y,MIN_ATT);p.tx=tc.x;p.ty=tc.y;p.cutT=tg.deep?3.8:2.4;active++;}
+          else{p.cs='cut';const tg2=spreadFrom(p,tg.x,tg.y,atk,SPREAD_R,SPREAD_K),tc=awayFrom(H,tg2.x,tg2.y,MIN_ATT);p.tx=tc.x;p.ty=tc.y;p.cutT=tg.deep?3.8:2.4;active++;
+            if(!isoT&&w<0.5){const n0=G.st.pair[P];pairCut(p,!!tg.deep,H,d,atk);if(G.st.pair[P]>n0)active++;}}   // taglio in coppia
         }
       }
     }else if(p.cs==='cut'){

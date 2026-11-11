@@ -13,7 +13,7 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `src/10-css/` | Stili: font incorporati, base, tema retro, schermate di carriera e pannelli, schermi grandi e tocco (`--ui`) |
 | `src/20-html/` | Struttura della pagina: campo e HUD, menu, schermate, pannelli, guida. **L'ultimo file (`08-…`) apre `<script>`**: un file HTML nuovo deve venire prima in ordine alfabetico (per esempio `07b-imprevisti.html`) |
 | `src/30-js/10-sim/` | **Motore di gioco** (tra `/*SIM_START*/` e `/*SIM_END*/`): nessun accesso alla pagina |
-| `src/30-js/20-ui/` | Disegno a pixel, stacchi, HUD, input (trascinamento, tastiera, controller), impostazioni, schemi, fine partita, difesa automatica e pull a tempo (`09-difesa-pull.js`), indicatore del vento (`10-vento.js`), test della carriera in Diagnostica (`11-test-carriera.js`, `careerSelfTest`) |
+| `src/30-js/20-ui/` | Disegno a pixel, stacchi, HUD, input (trascinamento, tastiera, controller), impostazioni, schemi, fine partita, difesa automatica e pull a tempo (`09-difesa-pull.js`), indicatore del vento (`10-vento.js`), test della carriera in Diagnostica (`11-test-carriera.js`, `careerSelfTest`), replay delle mete spettacolari (`12-replay.js`) |
 | `src/30-js/30-carriera/` | Salvataggio, squadre e roster, stagione, rosa e linee, economia, mercato, premi, evoluzione del campionato, vita dei giocatori, avvio partita e navigazione, carriera dinamica (`11-carriera-dinamica.js`: intensità degli allenamenti, manutenzione e usura delle strutture, imprevisti `EVT`, sfida della dirigenza, dominio) |
 | `src/30-js/40-modalita/` | Ultimate Team, partite simulate, campo di allenamento (tutorial, sfide), torneo |
 | `src/30-js/50-schermate/` | Schermate della carriera: cruscotto, rosa, allenamenti, mercato, club, avvisi, opzioni, guida, pausa |
@@ -27,7 +27,8 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `01-nucleo.js` | Costanti del campo, `KEYS` (le 12 statistiche), stato della partita `G`, `HOOKS`, creazione dei giocatori |
 | `02-overall-tratti.js` | Overall per ruolo (`ROLE_W`, `ovr`, `posOf`), tratti (`TRAITS`), velocità di crescita |
 | `03-movimento-schemi.js` | Movimento, schemi e playbook, marcature, linee (`useLines`), inizio meta (`startPoint`) |
-| `04-ia-attacco.js`, `05-ia-difesa.js` | IA dei compagni senza disco e dei difensori; chiamate rapide; difensore guidato dal giocatore |
+| `03b-playbook.js` | Aperture di Verticale e Orizzontale, schema Weave, attacco in meta (`PLAYBOOK`, `ezCheck`); posizioni `[u,y]`, `[u,y,'a']` assolute, `[du,dy,'h']` relative al portatore |
+| `04-ia-attacco.js`, `04b-ia-coordinazione.js`, `05-ia-difesa.js` | IA dei compagni senza disco (tagli in coppia `pairCut`, give-and-go `giveGo`, isolamenti dell'IA `aiIso`) e dei difensori (lettura degli schemi ripetuti `playRead`, marcatura sul pericolo `dangerMark`); chiamate rapide; difensore guidato dal giocatore |
 | `06-campo-allenamento.js` | Regole di tutorial, allenamento libero e sfide (`G.drill`) |
 | `07-lanci.js`, `07b-intercetti.js`, `08-prese-duelli.js` | Tipi di lancio, traiettorie, precisione, handblock; intercetti lungo il volo (`laneRead`, `laneCheck`); prese, duelli, tuffi, turnover (con `G.walk`: chi raccoglie corre al disco), uscite dal campo (`oobSpot`) |
 | `09-ia-lanciatore-pull.js`, `10-punto-update.js` | IA di chi ha il disco, pull, meta, half time, identità tattica, ciclo `update(dt)` |
