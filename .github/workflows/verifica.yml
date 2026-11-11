@@ -24,7 +24,9 @@ jobs:
       - name: Dipendenze
         run: npm install --no-audit --no-fund
       - name: Browser per la prova
-        run: npx playwright install --with-deps chromium
+        # se il server non raggiunge gli archivi di Ubuntu (succede), le librerie di sistema ci sono gia' quasi sempre: si installa solo il browser
+        run: |
+          timeout 600 npx playwright install --with-deps chromium || { echo "::warning::Librerie di sistema non installate (rete): si prova con il solo browser"; npx playwright install chromium; }
       - name: Verifica completa
         run: npm test
       - name: Costruzione del gioco

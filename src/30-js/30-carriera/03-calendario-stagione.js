@@ -25,6 +25,7 @@ function freshTab(names){const t={};for(const n of names)t[n]={pts:0,w:0,l:0,pf:
 function beginSeason(){
   const names=SV.mem[SV.sr];
   SV.sched=roundRobin(names.length);SV.round=0;SV.tab=freshTab(names);SV.res=[];SV.done=false;SV.next=null;
+  leagueBegin();   // le altre due serie hanno ora un calendario vero
   if(SV.rost)SV.expOrd=names.slice().sort((a,b)=>teamPow(b)-teamPow(a));   // gerarchie a inizio stagione: servono al premio per l'allenatore dell'anno
   if(SV.cash!==undefined){setObjective();for(const p of SQ)if(p.car){p.car.yrs=(p.car.yrs|0)+(p.car.ss.mp>0?1:0);p.car.ls=p.car.ss;p.car.ss={mp:0,g:0,a:0,b:0};}}
 }
@@ -78,7 +79,7 @@ function nextMatch(){
   if(SV.event==='camp'){
     if(SV.done)return null;
     const names=SV.mem[SV.sr],ui=names.indexOf(SV.team),pr=SV.sched[SV.round].find(m=>m[0]===ui||m[1]===ui),on=names[pr[0]===ui?pr[1]:pr[0]];
-    return {name:on,roster:SV.rost[on],label:`Giornata ${SV.round+1} di ${totalRounds()}`};
+    return {name:on,roster:SV.rost[on],label:`Giornata ${SV.round+1} di ${totalRounds()}`+(on===SV.riv?' · Derby':'')};
   }
   if(SV.eu.state!=='on')return null;
   const r=SV.eu.round;return {name:SV.eu.opps[r],power:EU_POW[r]+euPlus(),label:EU_ROUND[r]};   // ogni coppa vinta alza il livello delle avversarie
@@ -99,7 +100,9 @@ function simSeasonOrder(names){
 // fine stagione: le prime 2 salgono, le ultime 2 scendono (le serie non coinvolte vengono simulate)
 function endSeason(){
   const order={};
-  for(const sr of ['A','B','C'])order[sr]=sr===SV.sr?ranking(SV.tab,SV.mem[sr]):simSeasonOrder(SV.mem[sr]);
+  leagueAdvance();   // le altre serie finiscono le giornate che mancano
+  for(const sr of ['A','B','C'])order[sr]=sr===SV.sr?ranking(SV.tab,SV.mem[sr]):(SV.lg&&SV.lg[sr]&&SV.lg[sr].round>=SV.lg[sr].sched.length?ranking(SV.lg[sr].tab,SV.mem[sr]):simSeasonOrder(SV.mem[sr]));
+  leagueEndStories(order);
   const rank=order[SV.sr].indexOf(SV.team)+1,P=PROMO,nm={};
   nm.A=order.A.slice(0,order.A.length-P).concat(order.B.slice(0,P));
   nm.B=order.B.slice(P,order.B.length-P).concat(order.A.slice(order.A.length-P),order.C.slice(0,P));
@@ -138,7 +141,7 @@ function newSeason(){
   for(const p of SQ){p.sk=Math.min(3,(p.sk|0)+1);p.cond=100;}   // un anno insieme: conosci meglio il potenziale dei tuoi
   summerChanges(was);evolveLeague();
   SV.chem=clamp(50+(SV.chem-50)*0.6,0,100);SV.mor=clamp(60+(SV.mor-60)*0.5,0,100);   // estate: l'intesa si allenta un poco, l'umore torna verso la norma
-  beginSeason();buildMarket();
+  beginSeason();buildMarket();pickRival();
   seasonStartDyn();   // premi di mantenimento e usura delle strutture, nuova sfida
   retireCheck('start');starsRetire();   // chi comincia a pensare al ritiro lo dice subito
   persist();
@@ -146,17 +149,19 @@ function newSeason(){
 function recordResult(win,su,so){
   let msg='';SV.played=(SV.played||0)+1;
   if(SV.event==='camp'){
-    const names=SV.mem[SV.sr],ui=names.indexOf(SV.team);
+    const names=SV.mem[SV.sr],ui=names.indexOf(SV.team);let opp0='';
     for(const [i,j] of SV.sched[SV.round]){
       const a=names[i],b=names[j];
-      if(i===ui){addRes(SV.tab,a,b,su,so);SV.res.push({opp:b,su,so});}
-      else if(j===ui){addRes(SV.tab,a,b,so,su);SV.res.push({opp:a,su,so});}
+      if(i===ui){addRes(SV.tab,a,b,su,so);SV.res.push({opp:b,su,so});opp0=b;}
+      else if(j===ui){addRes(SV.tab,a,b,so,su);SV.res.push({opp:a,su,so});opp0=a;}
       else{const [sa,sb]=simPower(a,b);addRes(SV.tab,a,b,sa,sb);}
     }
     SV.round++;
-    if(SV.round===Math.floor(SV.sched.length/2)){retireCheck('mid');leagueRetAnnounce();}   // a meta' stagione arrivano gli annunci di ritiro
-    if(SV.round>=SV.sched.length){endSeason();msg=`Stagione ${SV.season} conclusa: ${SV.next.rank}° posto. ${SV.next.short}`;}
-    else msg=`Giornata ${SV.round} di ${totalRounds()} conclusa: ${myRank()}° in classifica. Prossima: ${nextMatch().name}.`;
+    leagueAdvance();   // giocano anche le altre serie
+    const dby=derbyAfter(opp0,win);   // rivalita': incasso, morale e reputazione
+    if(SV.round===Math.floor(SV.sched.length/2)){retireCheck('mid');leagueRetAnnounce();leagueHalf();}   // a meta' stagione arrivano gli annunci di ritiro
+    if(SV.round>=SV.sched.length){endSeason();msg=`Stagione ${SV.season} conclusa: ${SV.next.rank}° posto. ${SV.next.short}`+dby;}
+    else msg=`Giornata ${SV.round} di ${totalRounds()} conclusa: ${myRank()}° in classifica. Prossima: ${nextMatch().name}.`+dby;
   }else{
     if(win){
       SV.eu.round++;
@@ -176,7 +181,7 @@ function recordResult(win,su,so){
   const inc=matchIncome(win),wg=wageBill();SV.cash+=inc-wg;SV.lastInc=inc-wg;SV.lastWage=wg;
   // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso gli stipendi arrivano in ritardo e l'umore cala
   SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-(SV.cash<0?3:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede'),0,100);
-  for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis'),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
+  for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+staffLv('fit'),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
   lifeAfterMatch();dynAfterMatch();
   if(SV.event==='camp'&&!SV.done&&SV.round%5===0)buildMarket();   // il mercato si rinnova ogni 5 giornate
   persist();return msg;

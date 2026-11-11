@@ -50,6 +50,7 @@ function seasonStartDyn(){
   if(got.length)alertAdd('club','Premi di mantenimento delle strutture: '+got.join('; ')+'.');
   if(worn.length)alertAdd('club','Usura estiva: '+worn.join(', ')+'. Per riavere il livello serve un nuovo investimento.');
   SV.facDays={};SV.facRnd=0;   // si ricomincia a contare
+  progSeasonStart();   // intesa che si raffredda, nuovi obiettivi personali
   pickChallenge();
 }
 /* ---- sfida della dirigenza ---- */
@@ -68,6 +69,7 @@ function pickChallenge(){
 const chalTxt=()=>SV.chal&&BCHAL[SV.chal.id]?BCHAL[SV.chal.id].txt(SV.chal):'';
 // fine stagione (prima dei premi di classifica): esito della sfida e reazione del campionato al tuo dominio
 function seasonEndDyn(rank){
+  goalsEnd();   // obiettivi personali: premio o delusione
   const c=SV.chal;
   if(c&&BCHAL[c.id]&&!c.done){
     c.done=1;c.won=BCHAL[c.id].ok(c)?1:0;
@@ -116,6 +118,9 @@ const EVT={
     o:a=>[['Premio di '+a.c+' crediti: +4 morale',()=>{SV.cash-=a.c;SV.mor=clamp(SV.mor+4,0,100);return 'Premio pagato: l’ambiente apprezza.';},()=>SV.cash>=a.c],['Non ora: −5 morale',()=>{SV.mor=clamp(SV.mor-5,0,100);return 'Richiesta respinta: qualche muso lungo.';}]]},
   maltempo:{w:2,ok:()=>!SV.tTeam&&trainOpen(),mk:()=>({}),t:a=>['Campo allagato','Ha piovuto tutta la settimana: l’allenamento di squadra di questa giornata salta. Restano i lavori individuali.'],
     o:a=>[['Pazienza',()=>{SV.tTeam=true;return 'Niente seduta di squadra fino alla prossima partita.';}]]},
+  staff:{w:2,ok:()=>Object.keys(STAFF).some(k=>staffLv(k)>=1),mk:()=>{const ks=Object.keys(STAFF).filter(k=>staffLv(k)>=1),k=ks[Math.floor(Math.random()*ks.length)];return {k,c:Math.round(20*evK()+STAFF_WAGE[staffLv(k)]*5)};},
+    t:a=>['Offerta per il tuo staff','Un altro club vuole portare via '+STAFF[a.k].n.toLowerCase()+' (livello '+staffLv(a.k)+').'],
+    o:a=>[['Trattieni con un premio di '+a.c+' crediti',()=>{SV.cash-=a.c;return 'Resta con voi.';},()=>SV.cash>=a.c],['Lascialo andare: perde un livello',()=>{SV.staff[a.k]=Math.max(0,staffLv(a.k)-1);return STAFF[a.k].n+' lascia il club: livello '+staffLv(a.k)+'.';}]]},
   spirito:{w:2,mk:()=>({}),t:a=>['Premio Spirit of the Game','Le avversarie vi hanno votato come la squadra più corretta dell’ultimo turno.'],
     o:a=>[['Grazie!',()=>{SV.rep=clamp(SV.rep+3,0,100);return '+3 reputazione.';}]]}
 };
@@ -138,7 +143,8 @@ function evtAnswer(i){   // applica la scelta e ritorna il testo dell'esito
 // dopo ogni partita: manutenzione, avviso sulla fatica, eventuale imprevisto
 function dynAfterMatch(){
   if(SV.event==='camp'){SV.facRnd=(SV.facRnd|0)+1;if(!SV.facDays)SV.facDays={};for(const k of Object.keys(FAC))if(facLv(k)>=KEEP_LV)SV.facDays[k]=(SV.facDays[k]|0)+1;}   // giornate di campionato al livello del premio
-  const up=facUpkeep();if(up){SV.cash-=up;SV.lastInc=(SV.lastInc|0)-up;}SV.lastUp=up;
+  progAfterMatch();   // intesa tra le coppie
+  const up=facUpkeep()+staffWage();if(up){SV.cash-=up;SV.lastInc=(SV.lastInc|0)-up;}SV.lastUp=up;
   const tired=SQ.filter(p=>!p.inj&&p.cond<TIRED_AT);
   const tn=tired.length,more=tn>(SV.tiredN|0);SV.tiredN=tn;   // l'avviso arriva quando la situazione peggiora, non a ogni giornata
   if(more)alertAdd('tired',(tired.length===1?pname(tired[0])+' è molto affaticat'+oa(tired[0]):tired.slice(0,4).map(pname).join(', ')+(tired.length>4?' e altri':'')+' sono molto affaticati')+': con il Recupero o una partita in panchina il rischio di infortunio rientra.');

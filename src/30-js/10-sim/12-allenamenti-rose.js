@@ -8,17 +8,18 @@ function trainCategory(p,c,boost){
   // punti: in media 1,6 a seduta per un talento normale a 24-27 anni, di piu' per i giovani e per chi cresce in fretta, quasi nulla vicino al massimo.
   // Tattica e Difesa hanno meno statistiche: meta' dei punti, cosi' nessuna statistica corre piu' delle altre
   const tal=c.keys.reduce((a,k)=>a+talX(p,k),0)/c.keys.length,gained={};
-  let pts=(0.8+trainGain(tal)*0.4)*(p.dev||1)*Math.sqrt(ageMul(p.age))*(c.keys.length<3?0.55:1)*(boost||1),n=Math.floor(pts);if(Math.random()<pts-n)n++;
+  const sb=specBonus(p,c.keys),sp=p.spec&&SPECS[p.spec]?SPECS[p.spec].keys:null;   // indirizzo personale: piu' punti, e i punti vanno alle sue statistiche
+  let pts=(0.8+trainGain(tal)*0.4)*(p.dev||1)*Math.sqrt(ageMul(p.age))*(c.keys.length<3?0.55:1)*(boost||1)*(1+sb),n=Math.floor(pts);if(Math.random()<pts-n)n++;
   for(let i=0;i<n;i++){
     const el=c.keys.filter(k=>p.s[k]<capX(p,k));if(!el.length)break;
-    let t=0;const ws=el.map(k=>{const r=clamp((capX(p,k)-p.s[k])/10,0.08,1);t+=r;return r;});
+    let t=0;const ws=el.map(k=>{const r=clamp((capX(p,k)-p.s[k])/10,0.08,1)*(sp&&sp.includes(k)?1+2*specRoom(p):1);t+=r;return r;});
     let r=Math.random()*t,k=el[0];for(let j=0;j<el.length;j++){r-=ws[j];if(r<=0){k=el[j];break;}}
     if(Math.random()>clamp((capX(p,k)-p.s[k])/6,0.2,1)*lvlF(p.s[k]))continue;   // vicino al massimo il punto puo' non arrivare
     gained[k]=(gained[k]||0)+1;p.s[k]++;
   }
   const changes=Object.keys(gained).map(k=>({k,to:p.s[k],from:p.s[k]-gained[k],gain:gained[k]}));
   const gain=changes.reduce((a,x)=>a+x.gain,0);
-  return {p,c,changes,gain,why:gain>0?'ok':(c.keys.every(k=>p.s[k]>=capX(p,k))?'cap':'none')};
+  return {p,c,changes,gain,spec:sb>0,why:gain>0?'ok':(c.keys.every(k=>p.s[k]>=capX(p,k))?'cap':'none')};
 }
 function trainPlayer(p,k){return trainCategory(p,CATS.find(c=>c.keys.includes(k))||CATS[0]);}
 // rischio di infortunio in allenamento: nullo con buona condizione, fino al 6% a condizione zero
@@ -143,7 +144,7 @@ function realRoster(rows,seedStr,opt){
 // la tua squadra: 7 in campo scelti tra i migliori, gli altri in panchina
 function setSquad(list){
   SQ.length=0;
-  list.forEach((o,i)=>{const p=newPlayer(0,i,{name:o.n,label:o.label,full:o.full,gen:o.gen,f:o.f,role:o.r,tl:o.tl,tf:o.tf,tv:o.tv,age:o.age,s:Object.assign({},o.s),trait:o.trait,dev:o.dev,cond:o.cond,sk:o.sk,car:o.car,pos:o.pos});p.sur=o.sur;p.inj=o.inj|0;p.tr=!!o.tr;if(o.star){p.star=true;p.nat=o.nat;}if(o.ae)p.ae=1;p.aw=o.aw||[];p.ra=o.ra;p.ret=o.ret|0;p.retHold=o.retHold|0;p.injC=o.injC|0;p.injBig=o.injBig|0;p.idle=o.idle|0;p.mood=o.mood|0;p.prom=o.prom|0;p.rw=o.rw|0;SQ.push(p);});
+  list.forEach((o,i)=>{const p=newPlayer(0,i,{name:o.n,label:o.label,full:o.full,gen:o.gen,f:o.f,role:o.r,tl:o.tl,tf:o.tf,tv:o.tv,age:o.age,s:Object.assign({},o.s),trait:o.trait,dev:o.dev,cond:o.cond,sk:o.sk,car:o.car,pos:o.pos});p.sur=o.sur;p.inj=o.inj|0;p.tr=!!o.tr;if(o.star){p.star=true;p.nat=o.nat;}if(o.ae)p.ae=1;p.aw=o.aw||[];p.ra=o.ra;p.ret=o.ret|0;p.retHold=o.retHold|0;p.injC=o.injC|0;p.injBig=o.injBig|0;p.idle=o.idle|0;p.mood=o.mood|0;p.prom=o.prom|0;p.rw=o.rw|0;if(o.spec&&SPECS[o.spec])p.spec=o.spec;if(o.goal)p.goal=o.goal;p.sad=o.sad|0;SQ.push(p);});
   setLineup(pickSeven(SQ,p=>p.role,mean9).map(p=>p.id));
 }
 const rosterPower=list=>{const b=bestSeven(list);return b.reduce((a,o)=>a+mean9(o),0)/b.length;};
@@ -211,5 +212,5 @@ function applyForm(){
 }
 function restoreForm(){for(const p of SQ.concat(T[1]))if(p.b){p.s=p.b;p.b=null;}}
 function newGame(){G.injured=[];for(const p of SQ.concat(T[1])){p.st=p.t===0&&p.cond!==undefined?Math.round(62+0.38*p.cond):100;   // chi arriva stanco dalla settimana parte con meno energia
-  p.spr=false;p.run=0;p.miss=0;p.hot=false;p.cold=false;p.m=newCounters();}G.score=[0,0];G.pointNo=1;G.nextRec=1;G.startRec=1;G.halfDone=false;G.dir=[1,-1];G.seen={att:{},def:{}};G.obs={u:0,d:0,n:0};G.resetH=null;setWind(0,0);resetStats();}
+  p.spr=false;p.run=0;p.miss=0;p.hot=false;p.cold=false;p.m=newCounters();}G.score=[0,0];G.pointNo=1;G.nextRec=1;G.startRec=1;G.halfDone=false;G.dir=[1,-1];G.seen={att:{},def:{}};G.obs={u:0,d:0,n:0};G.resetH=null;G.duo={};setWind(0,0);resetStats();}
 

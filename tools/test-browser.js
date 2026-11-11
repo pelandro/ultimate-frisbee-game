@@ -19,7 +19,7 @@ catch(e){
   // gli avvisi della carriera si aprono da soli: li chiudo quando coprono cio' che sto per toccare
   await page.addLocatorHandler(page.locator('#alerts:not(.hidden) #alX'),async()=>{await page.click('#alX');});
   // anche gli imprevisti compaiono da soli (di rado): scelgo la prima risposta possibile e chiudo
-  await page.addLocatorHandler(page.locator('#evt:not(.hidden)'),async()=>{if(await page.locator('#evOk').isVisible())await page.click('#evOk');else await page.click('#evOpts button:not([disabled]) >> nth=0');});
+  await page.addLocatorHandler(page.locator('#evt:not(.hidden)'),async()=>{if(!(await page.locator('#evOk').isVisible()))await page.click('#evOpts button:not([disabled]) >> nth=0');await page.click('#evOk');});   // risponde e chiude: Playwright aspetta che il riquadro sparisca
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
   const step=async(name,fn)=>{try{await fn();done.push(name);}catch(e){errs.push(name+': '+e.message.split('\n')[0]);}};
   const playOut=async()=>{   // gioca la partita in corso simulando una meta alla volta, gestendo schemi, cambi obbligati e half time
@@ -61,14 +61,20 @@ catch(e){
     await page.click('#opX');if(!(await meteo()))throw new Error('riacceso il vento il meteo deve tornare');
   });
   await step('rosa, allenamenti, mercato, club, classifica, opzioni',async()=>{
-    await page.click('#hRoster');await vis('#roster');await page.click('tr.pl >> nth=0');await vis('tr.dt');await page.click('#rBack');
+    await page.click('#hRoster');await vis('#roster');await page.click('tr.pl >> nth=0');await vis('tr.dt');
+    if(await page.locator('.dspec button[data-spec]').count()!==6)throw new Error('gli indirizzi di sviluppo devono essere sei');
+    if(!(await page.locator('tr.dt .scr').isVisible()))throw new Error('manca il rapporto di scouting nella scheda');
+    await page.click('#rBack');
     await page.click('#hTrain');await vis('#train');await page.click('#tTeamBox [data-int="2"]');
     if(!/Intenso/.test(await page.locator('.tint small').innerText()))throw new Error('l\'intensità dell\'allenamento non cambia');
     await page.click('#tTeamBox [data-int="1"]');await page.click('#tTeamBox .ttype[data-team="tec"]');await vis('#tRes .tres');await page.click('#tBack');
-    await page.click('#hMarket');await vis('#market');await page.click('#mkTabs [data-k="int"]');await page.click('#mkBack');
-    await page.click('#hClub');await vis('#club');if(await page.locator('#clBox .fac').count()!==6)throw new Error('le strutture del club devono essere sei');
+    await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#mkBack');
+    await page.click('#hClub');await vis('#club');if(await page.locator('#clBox .fac').count()!==10)throw new Error('devono esserci sei strutture e quattro figure dello staff');
+    if(await page.locator('#clBox [data-staff]').count()!==4)throw new Error('le figure dello staff devono essere quattro');
     await page.click('#clTabs [data-k="hon"]');await page.click('#clTabs [data-k="rec"]');await page.click('#clBack');
-    await page.click('#hEvent');await vis('#event');await page.click('#eBack');
+    await page.click('#hEvent');await vis('#event');await page.click('#evTabs [data-sr="A"]');await page.click('#evTabs [data-sr="B"]');await vis('#eBody table.rt');
+    const trs=await page.locator('#eBody table.rt tr').count();if(trs<8)throw new Error('classifica di un\'altra serie troppo corta: '+trs);
+    await page.click('#eBack');
     await page.click('#hOpt');await vis('#opts');await page.click('#opX');
     await page.click('#hBell');await vis('#alerts');   // lo chiude il gestore qui sopra alla prossima azione
   });
@@ -117,6 +123,16 @@ catch(e){
     await page.click('#tUT');await vis('#ut');
     if(await page.locator('#uPack').isVisible()){await page.click('#uPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await page.waitForTimeout(200);}
     await vis('#ut');await page.click('#uBack');
+  });
+  await step('Ultimate Team: potenziamenti specializzati',async()=>{
+    await page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut')||'null');if(o){o.coins=900;localStorage.setItem('ultimate-ut',JSON.stringify(o));}});
+    await page.reload();await page.waitForTimeout(500);
+    await page.click('#tUT');await vis('#ut');await page.click('#uTeam');await vis('#utTeam');
+    await page.click('#tmMode [data-m="up"]');await page.click('#tmList .urow[data-i] >> nth=0');await vis('#tmUp');
+    if(await page.locator('#tmUp [data-ul]').count()!==4)throw new Error('i potenziamenti devono essere quattro (Tiro, Atletico, Difesa, Mani e testa)');
+    await page.click('#tmUp [data-ul="d"]');
+    if(!/potenziato \(Difesa\)/.test(await page.locator('#tmInfo').innerText()))throw new Error('il potenziamento non e\' stato applicato: '+await page.locator('#tmInfo').innerText());
+    await page.click('#tmBack');await page.click('#uBack');
   });
   await step('allenamento: il tutorial parte e si esce dalla pausa',async()=>{
     await page.click('#tSchool');await vis('#school');await page.click('[data-go="tut"]');await page.waitForTimeout(700);await vis('#coach');

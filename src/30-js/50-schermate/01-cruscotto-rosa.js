@@ -73,7 +73,7 @@ function detailHTML(p){
   const rr=['H','C','D'].map(r=>`<span class="${pos===r?'on':''}">${POS_NAME[r]} ${Math.round(rate(p.s,r))}</span>`).join('');
   const tr=p.trait&&TRAITS[p.trait]?`<div class="dtr"><b>${TRAITS[p.trait][0]}</b>: ${TRAITS[p.trait][1].toLowerCase()}.</div>`:'';
   const st=c&&c.mp?`<div class="dst">Stagione: ${ss.mp} partite, ${ss.g} mete, ${ss.a} assist, ${ss.b} difese · Carriera: ${c.mp} partite, ${c.g} mete, ${c.a} assist, ${c.b} difese</div>`:'<div class="dst">Ancora nessuna partita con questa squadra.</div>';
-  return `<div class="drole">${rr}</div>${tr}<div class="dst">Potenziale ${potTxt(p)}${sure?' (certo)':''} · crescita ${(p.sk|0)>=2?devLabel(p.dev):'da osservare'} · condizione ${Math.round(p.cond)} · stipendio ${Math.round(wageOf(p))} a stagione${p.ret===1?' · <b style="color:#c9a0ff;font-weight:400">si ritira a fine stagione</b>':(retScore(p)>-1.5?' · <b style="color:#c9a0ff;font-weight:400">pensa al ritiro</b>':(p.age>=30?' · ritiro lontano':''))}${(p.injC|0)?' · infortuni seri: '+p.injC:''}</div><div class="dg">${stats}</div>${st}${p.aw&&p.aw.length?`<div class="dst"><b style="color:var(--gold);font-weight:400">Premi</b>: ${p.aw.map(a=>esc(a.k)+' (S'+a.s+')').join(', ')}</div>`:''}<div class="dact">${sure?'':`<button type="button" class="sec" data-scout="${p.id}"${SV.cash<scoutCost()?' disabled':''}>Osserva (${scoutCost()} crediti)</button>`}<button type="button" class="sec" data-sell="${p.id}"${SQ.length>SQ_MIN?'':' disabled'}>${sellArm===p.id?'Conferma la cessione':'Cedi'} (+${sellValue(p)})</button></div>`;
+  return `<div class="drole">${rr}</div>${tr}<div class="dst">Potenziale ${potTxt(p)}${sure?' (certo)':''} · crescita ${(p.sk|0)>=2?devLabel(p.dev):'da osservare'} · condizione ${Math.round(p.cond)} · stipendio ${Math.round(wageOf(p))} a stagione${p.ret===1?' · <b style="color:#c9a0ff;font-weight:400">si ritira a fine stagione</b>':(retScore(p)>-1.5?' · <b style="color:#c9a0ff;font-weight:400">pensa al ritiro</b>':(p.age>=30?' · ritiro lontano':''))}${(p.injC|0)?' · infortuni seri: '+p.injC:''}</div><div class="dg">${stats}</div>${st}${goalLineHTML(p)}${duoHTML(p)}${p.aw&&p.aw.length?`<div class="dst"><b style="color:var(--gold);font-weight:400">Premi</b>: ${p.aw.map(a=>esc(a.k)+' (S'+a.s+')').join(', ')}</div>`:''}${specHTML(p)}<div class="dst scr">${scoutReport(p)}</div><div class="dact">${sure?'':`<button type="button" class="sec" data-scout="${p.id}"${SV.cash<scoutCost()?' disabled':''}>Osserva (${scoutCost()} crediti)</button>`}<button type="button" class="sec" data-sell="${p.id}"${SQ.length>SQ_MIN?'':' disabled'}>${sellArm===p.id?'Conferma la cessione':'Cedi'} (+${sellValue(p)})</button></div>`;
 }
 function renderRoster(){
   const inO=new Set(SV.lineO),inD=new Set(SV.lineD);
@@ -107,14 +107,16 @@ function renderLineupBox(){
   $('subBox').innerHTML=`${selBanner()}<p class="lu-h">In campo</p><div class="lu">${T[0].map(chip).join('')}</div><p class="lu-h">Panchina</p><div class="lu">${SQ.filter(p=>!on.has(p.id)).map(chip).join('')}</div>`;
   $('bSubGo').disabled=mustSub();$('bSubAuto').classList.toggle('hidden',!T[0].some(p=>p.inj));
 }
-function standingsHTML(){
-  const names=SV.mem[SV.sr],t=SV.tab,ord=ranking(t,names),n=ord.length;
+function standingsHTML(sr){
+  sr=sr||SV.sr;const names=SV.mem[sr],t=lgTab(sr),ord=ranking(t,names),n=ord.length;
   const rows=ord.map((nm,pos)=>{
-    const cls=[nm===SV.team?'me':'',(SV.sr!=='A'&&pos<PROMO)?'up':'',(SV.sr!=='C'&&pos>=n-PROMO)?'dn':''].filter(Boolean).join(' ');
+    const cls=[nm===SV.team?'me':'',(sr!=='A'&&pos<PROMO)?'up':'',(sr!=='C'&&pos>=n-PROMO)?'dn':''].filter(Boolean).join(' ');
     return `<tr${cls?` class="${cls}"`:''}><td>${pos+1}. ${crest(nm,15)} ${nm}<span class="tp">${Math.round(teamPower(nm)||0)}</span></td><td>${t[nm].w+t[nm].l}</td><td>${t[nm].w}</td><td>${t[nm].l}</td><td>${t[nm].pf-t[nm].pa}</td><td><b>${t[nm].pts}</b></td></tr>`;
   }).join('');
   return `<div style="overflow-x:auto"><table class="rt"><tr><th>Squadra e forza</th><th>G</th><th>V</th><th>S</th><th>Diff</th><th>Pt</th></tr>${rows}</table></div>`;
 }
+let evSr='';
+$('eBody').addEventListener('click',e=>{const b=e.target.closest('#evTabs [data-sr]');if(!b)return;evSr=b.dataset.sr;renderEvent();});
 function renderEvent(){
   const cs=SV.done?`${SERIES_NAME[SV.sr]}, stagione conclusa`:`${SERIES_NAME[SV.sr]}, giornata ${SV.round+1} di ${totalRounds()}`;
   const es=SV.eu.state==='champ'?'Campioni':(SV.eu.state==='out'?'Eliminati':EU_ROUND[SV.eu.round]);
@@ -125,8 +127,13 @@ function renderEvent(){
       :`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo</strong><small>Bloccato: serve chiudere la stagione tra le prime 3 della Serie A, e vale per la stagione dopo.</small></button>`);
   let body='';
   if(SV.event==='camp'){
-    body+=`<p class="estat">${SERIES_NAME[SV.sr]}, stagione ${SV.season}${SV.sr!=='A'?', in verde chi sale':''}${SV.sr!=='C'?`${SV.sr!=='A'?' e in rosso':', in rosso'} chi scende`:''}</p>`;
-    body+=standingsHTML();
+    if(!SV.lg||!SV.lg[evSr])evSr=SV.sr;
+    body+=`<div class="seg" id="evTabs">${['A','B','C'].map(s=>`<button type="button" class="sg${evSr===s?' on':''}" data-sr="${s}">${SERIES_NAME[s]}${s===SV.sr?' (tua)':''}</button>`).join('')}</div>`;
+    body+=`<p class="estat">${SERIES_NAME[evSr]}, stagione ${SV.season}${evSr!=='A'?', in verde chi sale':''}${evSr!=='C'?`${evSr!=='A'?' e in rosso':', in rosso'} chi scende`:''}${evSr!==SV.sr&&SV.lg[evSr]?` · giornata ${SV.lg[evSr].round} di ${SV.lg[evSr].sched.length}`:''}</p>`;
+    body+=standingsHTML(evSr);
+    if(evSr!==SV.sr&&SV.lg[evSr]&&SV.lg[evSr].last.length)body+=`<h3 class="eh">Ultima giornata in ${SERIES_NAME[evSr]}</h3><ul class="elist">${SV.lg[evSr].last.map(m=>`<li class="${m[2]>m[3]?'w':'l'}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('')}</ul>`;
+    if(evSr===SV.sr&&SV.riv)body+=`<p class="note" style="margin:8px 0 0">${derbyTxt()}.</p>`;
+    if(SV.story&&SV.story.length)body+=`<h3 class="eh">Dal campionato</h3><ul class="elist">${SV.story.slice(0,6).map(x=>`<li><span>${esc(x.txt)}</span><span>S${x.s}·G${x.r}</span></li>`).join('')}</ul>`;
     const done=SV.res.slice(-6).map((r,i)=>{const g=SV.res.length-Math.min(6,SV.res.length)+i+1;return `<li class="${r.su>r.so?'w':'l'}"><span>Giornata ${g} contro ${r.opp}</span><span>${r.su} – ${r.so}</span></li>`;});
     const nm=nextMatch();
     if(nm)done.push(`<li class="n"><span>${nm.label} contro ${nm.name}</span><span>Prossima</span></li>`);

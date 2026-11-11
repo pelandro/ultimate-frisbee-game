@@ -115,28 +115,35 @@ $('pkGo').addEventListener('click',()=>{
 function renderTeamUT(){
   const idx=UT.col.map((p,i)=>i).sort((a,b)=>UT.col[b].ovr-UT.col[a].ovr);
   for(const b of $('tmMode').children)b.classList.toggle('on',b.dataset.m===UT.mode);
-  const tip=UT.mode==='sel'?'tocca un giocatore per metterlo o toglierlo dai titolari':(UT.mode==='up'?'tocca una carta per potenziarla (+1 a tutte le statistiche, fino a 5 volte): il prezzo è accanto al nome':'tocca una riserva per scartarla e recuperare gettoni (i titolari non si scartano)');
+  const tip=UT.mode==='sel'?'tocca un giocatore per metterlo o toglierlo dai titolari':(UT.mode==='up'?'tocca una carta e scegli il potenziamento: ogni carta ne ha al massimo 4 (2 per linea), il prezzo è accanto al nome':'tocca una riserva per scartarla e recuperare gettoni (i titolari non si scartano)');
   $('tmInfo').innerHTML=`Titolari: <b>${UT.sel.length}/7</b> · Forza: <b>${utPower()}</b> · Gettoni: <b>${UT.coins}</b> — ${tmMsg||tip}`;
   const hdr=`<div class="urow hd"><span></span><span>Giocatore</span><span></span>${SHOW.map(k=>`<span class="sv">${k.toUpperCase()}</span>`).join('')}</div>`;
-  $('tmList').innerHTML=hdr+idx.map(i=>{const p=UT.col[i],rc=utRar(p.ovr)[1],ex=UT.mode==='up'?((p.up|0)>=5?'max':utUpCost(p)+'g'):(UT.mode==='del'&&!UT.sel.includes(i)?'+'+UT_SELL[rc]+'g':'');
-    return `<div class="urow ${rc}${UT.sel.includes(i)?' sel':''}" data-i="${i}"><b class="uo">${p.ovr}</b><span class="un">${p.n}${p.isNew?'<span class="nw">NEW</span>':''}${p.up?`<span class="upb">+${p.up}</span>`:''}${ex?`<span class="upb" style="color:var(--gold)">${ex}</span>`:''}</span><em title="${p.trait&&TRAITS[p.trait]?TRAITS[p.trait][0]:''}">${posOf(p)}${p.trait?'*':''}</em>${SHOW.map(k=>`<span class="sv">${p.s[k]}</span>`).join('')}</div>`;}).join('');
+  $('tmList').innerHTML=hdr+idx.map(i=>{const p=UT.col[i],rc=utRar(p.ovr)[1],ex=UT.mode==='up'?((p.up|0)>=UT_UP_MAX?'max':utUpCost(p)+'g'):(UT.mode==='del'&&!UT.sel.includes(i)?'+'+UT_SELL[rc]+'g':'');
+    return `<div class="urow ${rc}${UT.sel.includes(i)?' sel':''}${UT.mode==='up'&&UT.upSel===i?' sel2':''}" data-i="${i}"><b class="uo">${p.ovr}</b><span class="un">${p.n}${p.isNew?'<span class="nw">NEW</span>':''}${p.up?`<span class="upb">${p.ul?Object.keys(UT_LINES).filter(l=>p.ul[l]).map(l=>UT_LINES[l].n[0]+(p.ul[l]>1?p.ul[l]:'')).join(' '):'+'+p.up}</span>`:''}${ex?`<span class="upb" style="color:var(--gold)">${ex}</span>`:''}</span><em title="${p.trait&&TRAITS[p.trait]?TRAITS[p.trait][0]:''}">${posOf(p)}${p.trait?'*':''}</em>${SHOW.map(k=>`<span class="sv">${p.s[k]}</span>`).join('')}</div>`;}).join('');
+  renderUp();
   UT.col.forEach(p=>{p.isNew=false;});utSave();
 }
 let tmMsg='';
-$('tmMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;UT.mode=b.dataset.m;tmMsg='';renderTeamUT();});
+function renderUp(){
+  const p=UT.mode==='up'&&UT.upSel!==undefined?UT.col[UT.upSel]:null,box=$('tmUp');
+  box.classList.toggle('hidden',!p);if(!p)return;
+  const c=utUpCost(p);
+  box.innerHTML=`<b>${p.n}</b> · ${p.ovr} · potenziamenti ${p.up|0}/${UT_UP_MAX} · prezzo ${c} gettoni<div class="schrow">${Object.keys(UT_LINES).map(l=>{const L=UT_LINES[l],why=utUpWhy(p,l),n=(p.ul&&p.ul[l])|0;return `<button type="button" class="sec" data-ul="${l}"${why||UT.coins<c?' disabled':''} title="${esc(L.keys.map(k=>LBL[k]).join(', '))}"><strong>${L.n}</strong> +${L.g}<small>${L.keys.map(k=>k.toUpperCase()).join(' ')}${n?' · '+n+'/'+UT_UP_LINE:''}${why?' · '+why:''}</small></button>`;}).join('')}</div>`;
+}
+$('tmUp').addEventListener('click',e=>{
+  const b=e.target.closest('[data-ul]');if(!b||b.disabled)return;
+  const p=UT.col[UT.upSel];if(!p)return;const c=utUpCost(p),l=b.dataset.ul;
+  if(utUpWhy(p,l)||UT.coins<c)return;
+  UT.coins-=c;utDoUp(p,l);UT.stat.up++;tmMsg=`${p.n} potenziato (${UT_LINES[l].n}): ora vale ${p.ovr}.`;renderTeamUT();
+});
+$('tmMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;UT.mode=b.dataset.m;UT.upSel=undefined;tmMsg='';renderTeamUT();});
 $('tmList').addEventListener('click',e=>{
   const r=e.target.closest('.urow[data-i]');if(!r)return;const i=+r.dataset.i,k=UT.sel.indexOf(i),p=UT.col[i];tmMsg='';
-  if(UT.mode==='up'){
-    const c=utUpCost(p);
-    if((p.up|0)>=5)tmMsg='questa carta è già al massimo dei potenziamenti.';
-    else if(UT.coins<c)tmMsg=`servono ${c} gettoni per potenziare ${p.n}.`;
-    else{UT.coins-=c;p.up=(p.up|0)+1;for(const q of KEYS)p.s[q]=Math.min(99,p.s[q]+1);p.ovr=ovr(p);UT.stat.up++;tmMsg=`${p.n} potenziato: ora vale ${p.ovr}.`;}
-    renderTeamUT();return;
-  }
+  if(UT.mode==='up'){UT.upSel=i;renderTeamUT();return;}   // si sceglie la carta, poi il potenziamento nel riquadro
   if(UT.mode==='del'){
     if(k>=0)tmMsg='i titolari non si scartano: toglilo prima dai titolari.';
     else if(UT.col.length<=7)tmMsg='servono almeno 7 giocatori.';
-    else{const g=UT_SELL[utRar(p.ovr)[1]];UT.coins+=g;UT.col.splice(i,1);UT.sel=UT.sel.map(x=>x>i?x-1:x);tmMsg=`${p.n} scartato: +${g} gettoni.`;}
+    else{const g=UT_SELL[utRar(p.ovr)[1]];UT.coins+=g;UT.col.splice(i,1);UT.upSel=undefined;UT.sel=UT.sel.map(x=>x>i?x-1:x);tmMsg=`${p.n} scartato: +${g} gettoni.`;}
     renderTeamUT();return;
   }
   UT.manual=true;
@@ -192,7 +199,13 @@ function startUT(){
 }
 // gettoni: si guadagnano giocando (di piu' vincendo e andando avanti), si spendono in pacchetti e potenziamenti; scartando i doppioni se ne recuperano
 const UT_PACK_COST=90,UT_SELL={com:4,unc:8,rar:20,epi:55,leg:140};
-const utUpCost=p=>12+Math.max(0,p.ovr-50)*2+(p.up|0)*6;
+// crescita lenta delle carte che giocano: ogni 4 partite da titolare +1 alla loro statistica migliore ancora sotto il massimo (fino a +4 in tutto)
+function utGrowCards(){
+  const out=[];
+  for(const i of UT.sel){const p=UT.col[i];if(!p)continue;p.gm=(p.gm|0)+1;
+    if(p.gm%4===0&&(p.gu|0)<4){const ks=KEYS.filter(k=>p.s[k]<90).sort((a,b)=>p.s[b]-p.s[a]);if(ks.length){p.s[ks[0]]++;p.gu=(p.gu|0)+1;p.ovr=ovr(p);out.push(p.n);}}}
+  return out;
+}
 const UT_OBJ=[
   {id:'w3',txt:'Vinci 3 partite',rw:60,ok:()=>UT.stat.w>=3,pr:()=>Math.min(3,UT.stat.w)+'/3'},
   {id:'w10',txt:'Vinci 10 partite',rw:150,ok:()=>UT.stat.w>=10,pr:()=>Math.min(10,UT.stat.w)+'/10'},
@@ -203,11 +216,12 @@ const UT_OBJ=[
 ];
 function utRecord(win){
   const r=UT.round,gain=win?40+15*r:15;UT.coins+=gain;if(win){UT.stat.w++;if(r>=5)UT.stat.t++;}
+  const grown=utGrowCards();
   if(win){
     if(r>=5){UT.st='won';UT.round=6;UT.packs.push(6);UT.res='Campioni! Hai vinto il torneo e ottieni un pacchetto speciale.';}
     else{UT.round=r+1;UT.packs.push(r+1);UT.res=`Passi ai ${UT_ROUNDS[r+1]}: hai ottenuto un nuovo pacchetto.`;}
   }else{UT.st='out';UT.res=`Eliminati ai ${UT_ROUNDS[r]}. Puoi iniziare un nuovo torneo e tenere i tuoi giocatori.`;}
-  UT.res+=` +${gain} gettoni.`;
+  UT.res+=` +${gain} gettoni.`+(grown.length?` ${grown.length===1?grown[0]+' è cresciuto':grown.length+' carte sono cresciute'} giocando.`:'');
   utSave();return UT.res;
 }
 utLoad();

@@ -10,6 +10,7 @@ function renderClub(){
     h+=`<div class="ccard"><h3>Bilancio e ambiente</h3><div class="dcash"><span>Crediti</span><b>${SV.cash}</b></div><p>Ogni partita porta <b>${matchIncome(true)}</b> crediti se vinci e <b>${matchIncome(false)}</b> se perdi; gli stipendi costano <b>${wageBill()}</b> a partita (i giocatori più forti costano di più) e la manutenzione delle strutture <b>${facUpkeep()}</b>. A fine stagione arrivano il premio di classifica e quello dell’obiettivo.${SV.cash<0?' <b>Conti in rosso</b>: niente acquisti e il morale scende finché non rientri.':''}</p>${statBar('Reputazione',SV.rep,'#ffd23f')}${statBar('Morale',SV.mor,'#4fe58f')}${statBar('Affiatamento',SV.chem,'#5ac8ff')}<p>La reputazione decide chi accetta di venire; morale e affiatamento spostano un poco la forma dei tuoi in partita.</p></div>`;
     h+=`<div class="ccard"><h3>Obiettivo della stagione</h3>${SV.obj?`<p><b>${SV.obj.txt}</b></p><p>Premio: ${SV.obj.reward} crediti e reputazione in più; se lo manchi la reputazione scende. A inizio stagione eravate la ${SV.obj.exp}ª forza del campionato${SV.event==='camp'&&SV.round>0?`; ora siete ${myRank()}ª in classifica`:''}.</p>`:'<p>Nessun obiettivo.</p>'}${SV.chal?`<h3 style="margin-top:8px">Sfida della dirigenza</h3><p><b>${esc(chalTxt())}</b></p><p>${SV.chal.done?(SV.chal.won?'Riuscita: premio incassato.':'Non riuscita in questa stagione.'):'Facoltativa: se riesce valgono '+SV.chal.reward+' crediti e reputazione, se non riesce non succede nulla.'}</p>`:''}</div>`;
     h+=`<div class="ccard" style="grid-column:1/-1"><h3>Strutture</h3>${Object.keys(FAC).map(k=>{const lv=facLv(k),c=facCost(k),dd=(SV.facDays&&SV.facDays[k])|0,rn=SV.facRnd|0;return `<div class="fac"><div><b>${FAC[k][0]}</b> <span class="lv">${'■'.repeat(lv)}${'□'.repeat(FAC_MAX-lv)}</span><small>${FAC[k][1]}</small><small class="kp${dd?'':' off'}">Premio estivo (livello ${KEEP_LV}+ per almeno metà stagione): ${FAC_KEEP[k]}.${rn?` Finora ${dd} giornate su ${rn}.`:''}</small></div><button type="button" class="sec" data-fac="${k}"${lv>=FAC_MAX||SV.cash<c?' disabled':''}>${lv>=FAC_MAX?'Massimo':'Migliora · '+c}</button></div>`;}).join('')}<p class="fup">Manutenzione: ${facUpkeep()} crediti a partita (cresce con i livelli). D’estate una struttura dal livello 2 in su può perdere un livello per usura, tanto più facilmente quanto più è avanzata.</p></div>`;
+    h+=`<div class="ccard">${staffHTML()}</div><div class="ccard">${goalsHTML()}</div>`;
     h+=`<div class="ccard" style="grid-column:1/-1"><h3>Notizie</h3>${SV.news.length?`<ul class="nlist">${SV.news.slice(0,12).map(n=>`<li><i>S${n.s}·G${n.r}</i>${esc(n.txt)}</li>`).join('')}</ul>`:'<p>Nessuna notizia.</p>'}</div></div>`;
   }else if(clTab==='hon'){
     // bacheca: i trofei si accendono quando li vinci
@@ -61,6 +62,8 @@ function importSave(txt){
 $('clBox').addEventListener('click',e=>{
   const f=e.target.closest('[data-fac]');
   if(f){if(buyFac(f.dataset.fac)){clMsg='';persist();}renderClub();return;}
+  const sf=e.target.closest('[data-staff]');
+  if(sf){if(buyStaff(sf.dataset.staff)){clMsg='';persist();}renderClub();return;}
 });
 $('clExp').addEventListener('click',()=>{$('opMsg').textContent=exportSave();});
 $('clImp').addEventListener('click',()=>{$('clFile').value='';$('clFile').click();});

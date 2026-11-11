@@ -131,6 +131,17 @@ function selfTestPlan(opt){
       row('Vento spento dalle impostazioni: il sorteggio da\u2019 sempre calma',offOk?'sì':'no',offOk),
       row('Pull con vento alle spalle e controvento',tail.toFixed(0)+' m e '+head.toFixed(0)+' m',tail-head>=10&&tail-head<=24,'tra 10 e 24 metri di differenza')];
   }]);
+  S.steps.push(['Specializzazioni e intesa',()=>{
+    // 200 sedute di Tecnica con e senza indirizzo «Regista»: il vantaggio c'e', ma cala con l'eta'
+    const gainOf=(age,spec)=>{let t=0;for(let i=0;i<200;i++){const o=makeRoster(60,'spt|'+i)[0],pl={s:Object.assign({},o.s),tl:o.tl,tf:o.tf,tv:o.tv,age,dev:1,full:'s'+i,name:'s'+i,spec:spec||undefined};t+=trainCategory(pl,CATS[0],1).gain;}return t/200;};
+    const rY=gainOf(19,'reg')/gainOf(19),rO=gainOf(33,'reg')/gainOf(33);
+    // intesa: simmetrica, solo per la tua squadra e con effetti contenuti
+    G.duo={[duoKey('Anna','Bruno')]:1};const a1={t:0,full:'Anna'},b1={t:0,full:'Bruno'},c1={t:1,full:'Bruno'};
+    const sym=duoOf(a1,b1)===1&&duoOf(b1,a1)===1,mine=duoOf(a1,c1)===0;G.duo={};
+    return [row('Specializzazione: punti in più per seduta a 19 anni',(rY>=1?'+':'')+Math.round((rY-1)*100)+'%',rY>=1.1&&rY<=1.35,'tra +10% e +35%'),
+      row('Specializzazione: vantaggio a 33 anni, più basso di quello a 19',(rO>=1?'+':'')+Math.round((rO-1)*100)+'%',rO<rY&&rO<=1.1,'rendimenti decrescenti con l’età'),
+      row('Intesa: simmetrica, solo per la tua squadra, bonus contenuti',sym&&mine?'sì':'no',sym&&mine&&DUO_SIG<=0.12&&DUO_DROP<=0.35)];
+  }]);
   S.steps.push(['Pacchetti di Ultimate Team',()=>{
     // 3000 pacchetti da 5 per qualita': la qualita' deve contare davvero, le garanzie valere sempre, il paracadute evitare lunghe serie sfortunate
     const avgQ=[],gRar=[],gEpi=[];let worst=0;
@@ -143,6 +154,23 @@ function selfTestPlan(opt){
     return [row('Overall medio delle carte per qualità del pacchetto (0-6)',avgQ.map(v=>v.toFixed(0)).join(', '),mono&&avgQ[6]-avgQ[0]>=12,'cresce a ogni qualità, di almeno 12 punti in tutto'),
       row('Garanzie: un Raro dalla qualità 2, un Epico nel pacchetto dei campioni',gRar.every(Boolean)&&gEpi.every(Boolean)?'sempre':'no',gRar.every(Boolean)&&gEpi.every(Boolean)),
       row('Pacchetti di fila senza Epici, al massimo',String(worst),worst<UT_PITY,'meno di '+UT_PITY)];
+  }]);
+  S.steps.push(['Potenziamenti di Ultimate Team',()=>{
+    // 400 carte: ognuna riceve i quattro potenziamenti permessi su linee a caso. Il tetto vale, il guadagno e' contenuto e le carte restano diverse tra loro
+    let over=0,gainT=0,n=0,diff=0;const cards=[];
+    for(let i=0;i<400;i++){
+      const rng=mulberry32(900+i),o=makeRoster(utTierOvr(2,rng),'upg|'+i)[i%2?0:6],p={s:Object.assign({},o.s),r:i%2?'H':'C'};p.ovr=ovr(p);const o0=p.ovr;let done=0;
+      for(let k=0;k<8;k++){const l=Object.keys(UT_LINES)[Math.floor(rng()*4)];if(!utUpWhy(p,l)){utDoUp(p,l);done++;}}
+      if(done>UT_UP_MAX||(p.up|0)>UT_UP_MAX||Object.values(p.ul).some(v=>v>UT_UP_LINE))over++;
+      gainT+=p.ovr-o0;n++;cards.push(p);
+    }
+    // due carte della stessa forza ma con potenziamenti diversi: quanto differiscono le loro statistiche (media delle differenze assolute)
+    const base=makeRoster(70,'upg|base')[6],A={s:Object.assign({},base.s),r:'C'},B={s:Object.assign({},base.s),r:'C'};A.ovr=ovr(A);B.ovr=ovr(B);utDoUp(A,'t');utDoUp(A,'t');utDoUp(B,'a');utDoUp(B,'d');
+    for(const k of KEYS)diff+=Math.abs(A.s[k]-B.s[k]);diff/=KEYS.length;
+    const gain=gainT/n;
+    return [row('Nessuna carta supera 4 potenziamenti, né 2 per linea',over?over+' carte fuori limite':'rispettato',over===0),
+      row('Overall guadagnato con 4 potenziamenti, in media',(gain>=0?'+':'')+gain.toFixed(1),gain>=2&&gain<=9,'tra +2 e +9'),
+      row('Due carte della stessa forza con potenziamenti diversi: differenza media per statistica',diff.toFixed(1),diff>=1.5,'almeno 1,5 punti: restano diverse')];
   }]);
   S.steps.push(['Prestazioni',()=>{
     const gt=S.base?avg(S.base.map(m=>m.time)):0,k=gt/Math.max(0.001,S.ms/1000);

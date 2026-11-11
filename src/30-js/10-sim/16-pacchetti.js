@@ -20,3 +20,14 @@ function utPackTiers(q,n,pity,rng){
   return {tiers:out.sort((a,b)=>a-b),pity:np};
 }
 const utTierOvr=(t,rng)=>{const b=UT_BAND[UT_TIER[t]];return Math.round(b[0]+(b[1]-b[0])*Math.pow(rng(),1.6));};   // dentro la fascia, i valori bassi sono piu' comuni
+// POTENZIAMENTI SPECIALIZZATI: ogni carta ha al massimo UT_UP_MAX potenziamenti, al massimo UT_UP_LINE per ogni linea. Ogni potenziamento alza un gruppo di
+// statistiche (a meta' sopra 85), cosi' due carte della stessa forza restano diverse: una e' un lanciatore, l'altra un saltatore, l'altra un difensore.
+const UT_LINES={t:{n:'Tiro',keys:['lan','buc','spa'],g:4},a:{n:'Atletico',keys:['vel','sca','agi','sal','res'],g:3},d:{n:'Difesa',keys:['dif','tuf'],g:4},m:{n:'Mani e testa',keys:['pre','vis'],g:4}};
+const UT_UP_MAX=4,UT_UP_LINE=2;
+const utUpCost=p=>Math.round(12+Math.max(0,p.ovr-50)*2.2+(p.up|0)*10);
+const utUpWhy=(p,l)=>(p.up|0)>=UT_UP_MAX?'carta al massimo':(((p.ul&&p.ul[l])|0)>=UT_UP_LINE?'linea al massimo':'');
+function utDoUp(p,l){
+  const L=UT_LINES[l];if(!p.ul)p.ul={t:0,a:0,d:0,m:0};
+  for(const k of L.keys)p.s[k]=Math.min(99,p.s[k]+(p.s[k]>=85?Math.max(1,Math.floor(L.g/2)):L.g));
+  p.ul[l]++;p.up=(p.up|0)+1;p.ovr=ovr(p);
+}
