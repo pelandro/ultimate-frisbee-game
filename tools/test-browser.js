@@ -38,6 +38,15 @@ catch(e){
     await vis('#title');await page.click('#tHelp');await vis('#guide');await page.click('#gdX');
     await page.click('#tSet');await vis('#settings');await page.click('#sBack');await vis('#title');
   });
+  await step('diagnostica: carriera di prova di 12 stagioni',async()=>{
+    await page.click('#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgCar');
+    await page.waitForFunction(()=>/^Finito/.test(document.getElementById('dgState').textContent),null,{timeout:120000});
+    const no=await page.locator('#dgOut li').filter({hasText:/^NO/}).allInnerTexts(),n=await page.locator('#dgOut li').count();
+    await page.click('#sBack');await page.click('#sBack').catch(()=>{});await vis('#title');   // si torna al menu anche se un controllo e' fallito
+    if(no.length)throw new Error('controlli della carriera falliti: '+no.join(' | '));
+    if(n<8)throw new Error('il test della carriera ha dato pochi risultati');
+    if(/Continua/.test(await page.locator('#tCareerS').innerText()))throw new Error('il test della carriera ha lasciato una carriera salvata');
+  });
   await step('nuova carriera e cruscotto',async()=>{
     await page.click('#tCareer');await vis('#team');await page.click('#tSr button[data-k="C"]');await page.click('.tteam >> nth=0');await page.waitForTimeout(300);await vis('#home');
   });

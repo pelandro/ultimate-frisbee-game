@@ -50,7 +50,7 @@ function careerInit(){   // campi nuovi della carriera (anche per i salvataggi p
   if(SV.cash===undefined)SV.cash=Math.round(70*SR_K[SV.sr]);
   if(SV.rep===undefined)SV.rep=SV.sr==='A'?60:(SV.sr==='B'?40:20);
   if(!SV.fac)SV.fac={camp:0,fis:0,viv:0};
-  if(SV.tInt===undefined)SV.tInt=1;if(!SV.facKeep)SV.facKeep={};if(SV.dom===undefined)SV.dom=0;   // carriera dinamica: intensita' normale, nessun premio di mantenimento maturato, nessun dominio
+  if(SV.tInt===undefined)SV.tInt=1;if(!SV.facKeep)SV.facKeep={};if(SV.dom===undefined)SV.dom=0;if(SV.facRnd===undefined){SV.facRnd=SV.event==='camp'?(SV.round|0):0;SV.facDays={};for(const k in (SV.fac||{}))if((SV.fac[k]|0)>=3)SV.facDays[k]=SV.facRnd;}   // salvataggi di prima: le strutture gia' al livello 3 contano come mantenute da inizio stagione   // carriera dinamica: intensita' normale, nessun premio di mantenimento maturato, nessun dominio
   if(SV.chem===undefined)SV.chem=50;if(SV.mor===undefined)SV.mor=60;
   if(!SV.alerts)SV.alerts=[];
   if(!SV.news)SV.news=[];if(!SV.hist)SV.hist=[];if(!SV.hof)SV.hof=[];if(!SV.rec)SV.rec={};if(!SV.troph)SV.troph={};if(!SV.former)SV.former=[];

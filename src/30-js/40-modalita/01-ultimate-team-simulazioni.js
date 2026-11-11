@@ -20,12 +20,17 @@ function utPlayer(role,ovr,rng){
   return {n:nm,full:nm,label:nm,gen:true,r,age:18+Math.floor(rng()*14),tl:99,tf:99,tv:99,s:st,ovr:Math.round(ovrX({s:st,r})),trait:traitFor(nm,st,r),up:0};
 }
 const utRar=o=>o>=90?['Leggenda','leg']:(o>=80?['Epico','epi']:(o>=65?['Raro','rar']:(o>=50?['Non comune','unc']:['Comune','com'])));
-// rarita': ovr = 38 + 58*U^UT_E (UT_E=6): media 46, il 5,4% dei giocatori supera 80, il 2,0% supera 90, lo 0,4% supera 95. Rarita' uguale per tutti i pacchetti (niente piu' pacchetti migliori man mano).
-// Il primo pacchetto in assoluto ha 10 giocatori (4 handler + 6 cutter), tutti i successivi 5 (2 handler + 3 cutter)
-const UT_E=6;
-const utPackOvr=()=>Math.round(38+58*Math.pow(Math.random(),UT_E));
+// rarita': dipende dalla qualita' del pacchetto (modello in 10-sim/16-pacchetti.js: tabella, fasce, garanzie e «paracadute»).
+// Il primo pacchetto in assoluto ha 10 giocatori (4 handler, 4 cutter, 2 defender), tutti i successivi 5 (2 handler, 2 cutter, 1 defender)
 const utPackSize=()=>UT.col.length?5:10;
-function utMakePack(){const roles=utPackSize()===10?['H','H','H','H','C','C','C','C','D','D']:['H','H','C','C','D'];return roles.map(r=>utPlayer(r,utPackOvr(),Math.random)).sort((a,b)=>a.ovr-b.ovr);}
+function utMakePack(q){
+  const roles=utPackSize()===10?['H','H','H','H','C','C','C','C','D','D']:['H','H','C','C','D'],pk=utPackTiers(q|0,roles.length,UT.pity,Math.random);
+  UT.pity=pk.pity;
+  const tiers=pk.tiers.sort(()=>Math.random()-0.5);   // la rarita' non dipende dal ruolo
+  return roles.map((r,i)=>utPlayer(r,utTierOvr(tiers[i],Math.random),Math.random)).sort((a,b)=>a.ovr-b.ovr);
+}
+const utPackName=q=>q===0&&!UT.col.length?'Pacchetto iniziale':UT_PQN[clamp(q|0,0,6)];
+const utPackTip=q=>q>=6?'almeno un Epico garantito':(q>=2?'almeno un Raro garantito':((UT.pity|0)+1>=UT_PITY?'questo contiene di sicuro un Epico':'più sono forti, più sono rari'));
 // squadra avversaria del turno: 7 titolari con media esatta = forza del turno, 7 di panchina piu' deboli
 function utOppRoster(power,seed){
   const rng=mulberry32(hashStr(seed)),v=[],roles=['H','H','H','C','C','C','C'];let tot=0;
@@ -35,8 +40,8 @@ function utOppRoster(power,seed){
   return out;
 }
 const UT_DIFF=[{name:'Facile',txt:'L’IA avversaria gioca come sempre.'},{name:'Medio',txt:'L’IA avversaria sceglie e reagisce un po’ meglio.'},{name:'Difficile',txt:'L’IA avversaria sceglie e reagisce molto meglio.'},{name:'Estrema',txt:'Come Difficile, ma la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'}];
-const UT={on:false,d:0,manual:false,col:[],sel:[],round:0,tid:0,packs:[],st:'play',res:'',opp:[],stage:'closed',cur:[],coins:0,stat:{w:0,t:0,up:0},claimed:{},mode:'sel'};   // col: giocatori; sel: indici dei 7 titolari; packs: qualita' dei pacchetti da aprire
-function utSave(){try{localStorage.setItem(UT_KEY,JSON.stringify({v:2,d:UT.d,manual:UT.manual,col:UT.col,sel:UT.sel,round:UT.round,tid:UT.tid,packs:UT.packs,st:UT.st,res:UT.res,coins:UT.coins,stat:UT.stat,claimed:UT.claimed}));}catch(e){}}
+const UT={on:false,d:0,manual:false,col:[],sel:[],round:0,tid:0,packs:[],st:'play',res:'',opp:[],stage:'closed',cur:[],coins:0,stat:{w:0,t:0,up:0},claimed:{},mode:'sel',pity:0};   // pity: pacchetti di fila senza Epici   // col: giocatori; sel: indici dei 7 titolari; packs: qualita' dei pacchetti da aprire
+function utSave(){try{localStorage.setItem(UT_KEY,JSON.stringify({v:2,d:UT.d,manual:UT.manual,col:UT.col,sel:UT.sel,round:UT.round,tid:UT.tid,packs:UT.packs,st:UT.st,res:UT.res,coins:UT.coins,stat:UT.stat,claimed:UT.claimed,pity:UT.pity|0}));}catch(e){}}
 function utOpps(){   // 6 avversarie del torneo: squadre vere scelte con un seme
   const names=Object.keys(TEAM),rng=mulberry32(hashStr('utopp|'+UT.tid)),pick=[];
   while(pick.length<6){const n=names[Math.floor(rng()*names.length)];if(!pick.includes(n))pick.push(n);}
@@ -44,6 +49,7 @@ function utOpps(){   // 6 avversarie del torneo: squadre vere scelte con un seme
 }
 function utLoad(){
   try{const o=JSON.parse(localStorage.getItem(UT_KEY)||'null');if(o&&Array.isArray(o.col)){for(const c of o.col)if(c&&c.s)fillStats(c.s);for(const pk of (o.packs||[]))for(const c of (Array.isArray(pk)?pk:[]))if(c&&c.s)fillStats(c.s);UT.col=o.col;UT.d=(o.d>=0&&o.d<4)?o.d|0:0;UT.manual=!!o.manual;UT.sel=(o.sel||[]).filter(i=>o.col[i]);UT.round=o.round|0;UT.tid=o.tid|0;UT.packs=o.packs||[];UT.st=o.st||'play';UT.res=o.res||'';UT.coins=o.coins|0;UT.stat=Object.assign({w:0,t:0,up:0},o.stat||{});UT.claimed=o.claimed||{};
+    UT.pity=o.pity|0;
     for(const c of UT.col){c.ovr=ovr(c);if(c.trait===undefined)c.trait=traitFor(c.full||c.n,c.s,c.r);c.up=c.up|0;}}}catch(e){}   // salvataggi precedenti: il valore delle carte diventa l'Overall nel ruolo
   if(UT.tid)utOpps();
 }
@@ -65,8 +71,8 @@ function renderUT(){
   $('uObj').innerHTML=has?UT_OBJ.filter(o=>!UT.claimed[o.id]).slice(0,3).map(o=>`<div class="chal"><div><b>${o.txt}</b><small>${o.pr()} · premio ${o.rw} gettoni</small></div><button type="button" class="go" data-obj="${o.id}"${o.ok()?'':' disabled'}>${o.ok()?'Riscuoti':'In corso'}</button></div>`).join(''):'';
   $('uRounds').innerHTML=UT_ROUNDS.map((n,i)=>{const c=(UT.st==='won'||i<UT.round)?'done':(i===UT.round?(UT.st==='out'?'lost':'cur'):'');return `<span class="uchip ${c}"><small>${n}</small><b>${UT_POWERS[i]}</b></span>`;}).join('');
   $('uPack').classList.toggle('hidden',!pend);
-  $('uPackT').textContent=UT.packs[0]===0&&!has?'Apri il pacchetto iniziale':`Apri pacchetto${pend>1?' ('+pend+')':''}`;
-  $('uPackS').textContent=pend?`${utPackSize()} giocatori casuali: più sono forti, più sono rari`:'';
+  $('uPackT').textContent=UT.packs[0]===0&&!has?'Apri il pacchetto iniziale':`Apri: ${utPackName(UT.packs[0])}${pend>1?' (+'+(pend-1)+')':''}`;
+  $('uPackS').textContent=pend?`${utPackSize()} giocatori · ${utPackTip(UT.packs[0])}`:'';
   const r=Math.min(UT.round,5),o=UT.opp[r];
   $('uPlayRow').classList.toggle('hidden',UT.st!=='play'||!!pend||!has);
   $('uPlay').disabled=!playing;$('uSim').disabled=!playing;
@@ -93,13 +99,13 @@ const utPos=p=>POS_NAME[posOf(p)];
 const utCard=(p,i)=>{const [rn,rc]=utRar(p.ovr);return `<div class="ucard ${rc}" style="animation-delay:${(i*0.3).toFixed(2)}s"><b>${p.ovr}</b><span>${p.n}</span><i>${utPos(p)} · ${rn}</i>${p.trait&&TRAITS[p.trait]?`<i style="color:#e0b3ff">${TRAITS[p.trait][0]}</i>`:''}</div>`;};
 function renderPack(){
   const open=UT.stage==='open';
-  $('pkTitle').textContent=open?'Ecco i tuoi giocatori':(!UT.col.length?'Pacchetto iniziale':'Pacchetto premio');
-  $('pkBody').innerHTML=open?`<div class="ucards">${UT.cur.map(utCard).join('')}</div>`:`<div class="pack"><b>${utPackSize()}</b><span>GIOCATORI</span></div>`;
+  $('pkTitle').textContent=open?'Ecco i tuoi giocatori':utPackName(UT.packs[0]);
+  $('pkBody').innerHTML=open?`<div class="ucards">${UT.cur.map(utCard).join('')}</div>`:`<div class="pack q${clamp(UT.packs[0]|0,0,6)}"><b>${utPackSize()}</b><span>GIOCATORI</span><small>${utPackTip(UT.packs[0])}</small></div>`;
   $('pkGo').textContent=open?(UT.packs.length?`Prossimo pacchetto (${UT.packs.length})`:'Continua'):'Apri';
 }
 $('pkGo').addEventListener('click',()=>{
   if(UT.stage==='closed'){
-    UT.packs.shift();UT.cur=utMakePack();UT.cur.forEach(p=>{p.isNew=true;UT.col.push(p);});
+    UT.cur=utMakePack(UT.packs.shift());UT.cur.forEach(p=>{p.isNew=true;UT.col.push(p);});
     if(UT.sel.length<7||!UT.manual)utAuto();   // finche' non scegli tu i titolari, restano i migliori 7
     utSave();UT.stage='open';renderPack();
   }else if(UT.packs.length){UT.stage='closed';renderPack();}
@@ -140,9 +146,8 @@ $('tmList').addEventListener('click',e=>{
 $('tmAuto').addEventListener('click',()=>{UT.manual=false;utAuto();utSave();renderTeamUT();});
 $('tmBack').addEventListener('click',()=>showScreen('ut'));
 // ---- partita del torneo ----
-// ---- SIMULA PARTITA (carriera e Ultimate Team): il risultato dipende dalla forza delle due squadre. Calibrato con 630 partite del motore di gioco tra squadre di forza diversa:
-//  la probabilita' di vincere un punto segue una logistica della differenza di forza (0,15 per punto di differenza fino a 12, 0,09 oltre); a pari forza vince il 53% delle partite.
-//  Difficolta' dell'IA (solo Ultimate Team): equivale a una squadra avversaria piu' forte di 1,3 (Medio) o 1,8 (Difficile ed Estrema) punti. Si gioca ai 7 punti, come la partita vera.
+// ---- SIMULA PARTITA (carriera, torneo, Ultimate Team): il risultato dipende dalla forza delle due squadre e dalla difficolta' dell'IA,
+//  con la scala misurata sulle partite giocate (simPointP e SIM_DIFF in 10-sim/13-partite-simulate.js). Si gioca ai 7 punti, come la partita vera.
 let simAfter=null;
 function showSim(win,score,msg,after){
   $('srTitle').textContent=win?'Vittoria!':'Sconfitta';$('srScore').textContent=score;$('srEvent').textContent=msg;simAfter=after;$('simres').classList.remove('hidden');
@@ -156,11 +161,12 @@ function simCareerMatch(){
   const tired=all.reduce((a,p)=>a+(100-p.cond),0)/Math.max(1,all.length);
   // forza = media delle due linee, con gli stessi effetti di una partita giocata: affiatamento e morale, condizione fisica
   const opp=(m.roster?rosterPower(m.roster):m.power)+carDiff().plus,my=(avg(lo)+avg(ld))/2+teamFormB()*0.8-tired*0.04;
-  const r=simMatch(my,opp,0),w=r.a>r.b;
-  // una partita simulata vale come una giocata: stessa esperienza media, statistiche personali, fatica
+  const r=simMatch(my,opp,carDiff().ai|0),w=r.a>r.b;   // la difficolta' scelta vale anche qui: l'IA migliore vale qualche punto di forza in piu'
+  // una partita simulata vale come una giocata: stessa esperienza media, statistiche personali, fatica e (ora) anche gli infortuni
   const on=new Set(matchLine('lineO').concat(matchLine('lineD')));
   for(const p of SQ){p.m=newCounters();if(on.has(p.id)&&!p.inj){p.m.pts=1;growBy(p,simParts(p,1),XP_ROLE[posOf(p)]);}}
   simMatchStats(r.a);
+  simInjuries([...on].map(id=>SQ[id]).filter(Boolean),1-0.12*facLv('fis'));   // dopo la crescita: chi si fa male in partita la partita l'ha giocata
   const msg=recordResult(w,r.a,r.b)+incTxt();
   showSim(w,`${SV.team} ${r.a} – ${r.b} ${m.name}`,msg,()=>renderHome());
 }

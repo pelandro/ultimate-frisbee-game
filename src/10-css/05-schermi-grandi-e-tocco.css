@@ -25,3 +25,6 @@
 .evk{display:block;color:#ffb347;font-size:13px;letter-spacing:1px;margin-bottom:2px}
 #evt .res{margin:8px 0;padding:6px 8px;border:2px solid #4fe58f;color:#eafff2}
 #evTxt{font-size:17px;line-height:1.25}
+/* pacchetti di Ultimate Team: il colore dice la qualita' */
+.pack small{display:block;font-size:10px;line-height:1.1;text-align:center;padding:0 6px;margin-top:4px;font-weight:400}
+.pack.q2{background:#c8875a}.pack.q3{background:#cfd6e4}.pack.q4{background:var(--gold)}.pack.q5{background:#9fe8ff}.pack.q6{background:#e0b3ff}

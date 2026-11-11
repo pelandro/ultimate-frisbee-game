@@ -131,6 +131,19 @@ function selfTestPlan(opt){
       row('Vento spento dalle impostazioni: il sorteggio da\u2019 sempre calma',offOk?'sì':'no',offOk),
       row('Pull con vento alle spalle e controvento',tail.toFixed(0)+' m e '+head.toFixed(0)+' m',tail-head>=10&&tail-head<=24,'tra 10 e 24 metri di differenza')];
   }]);
+  S.steps.push(['Pacchetti di Ultimate Team',()=>{
+    // 3000 pacchetti da 5 per qualita': la qualita' deve contare davvero, le garanzie valere sempre, il paracadute evitare lunghe serie sfortunate
+    const avgQ=[],gRar=[],gEpi=[];let worst=0;
+    for(let q=0;q<=6;q++){let t=0,ok2=true,ok6=true,pity=0,run=0;
+      for(let i=0;i<3000;i++){const pk=utPackTiers(q,5,pity,Math.random);pity=pk.pity;const mx=Math.max(...pk.tiers);
+        if(q>=2&&mx<2)ok2=false;if(q>=6&&mx<3)ok6=false;run=mx>=3?0:run+1;worst=Math.max(worst,run);
+        for(const x of pk.tiers)t+=utTierOvr(x,Math.random);}
+      avgQ.push(t/15000);gRar.push(ok2);gEpi.push(ok6);}
+    const mono=avgQ.every((v,i)=>i===0||v>avgQ[i-1]+0.3);
+    return [row('Overall medio delle carte per qualità del pacchetto (0-6)',avgQ.map(v=>v.toFixed(0)).join(', '),mono&&avgQ[6]-avgQ[0]>=12,'cresce a ogni qualità, di almeno 12 punti in tutto'),
+      row('Garanzie: un Raro dalla qualità 2, un Epico nel pacchetto dei campioni',gRar.every(Boolean)&&gEpi.every(Boolean)?'sempre':'no',gRar.every(Boolean)&&gEpi.every(Boolean)),
+      row('Pacchetti di fila senza Epici, al massimo',String(worst),worst<UT_PITY,'meno di '+UT_PITY)];
+  }]);
   S.steps.push(['Prestazioni',()=>{
     const gt=S.base?avg(S.base.map(m=>m.time)):0,k=gt/Math.max(0.001,S.ms/1000);
     return [row('Velocità di simulazione',Math.round(S.ms)+' ms a partita ('+Math.round(k)+' volte il tempo reale)',k>=15,'almeno 15 volte')];

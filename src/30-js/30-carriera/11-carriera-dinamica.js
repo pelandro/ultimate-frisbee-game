@@ -1,7 +1,8 @@
 /* ---- CARRIERA DINAMICA: cio' che tiene viva la carriera dopo le prime stagioni ----
    1) INTENSITA' degli allenamenti (SV.tInt): leggero, normale, intenso. Piu' intenso = piu' crescita, ma piu' condizione spesa e piu' rischio.
    2) STRUTTURE: sei, fino al livello 5. Costano una manutenzione a ogni partita, d'estate possono perdere un livello per usura, e chi le tiene
-      almeno al livello 3 per una stagione intera riceve ogni anno un premio di mantenimento (SV.facKeep).
+      almeno al livello 3 riceve ogni estate un premio di mantenimento, proporzionato alle giornate di campionato in cui l'ha tenuta li'
+      (SV.facDays: giornate al livello 3+ per struttura, SV.facRnd: giornate giocate nella stagione).
    3) IMPREVISTI (SV.evt): ogni tanto, dopo una partita, succede qualcosa: a volte aiuta, a volte no, spesso chiede una scelta.
    4) SFIDA DELLA DIRIGENZA (SV.chal): per i club affermati, un traguardo facoltativo a stagione, senza penalita' se lo si manca.
    5) DOMINIO (SV.dom): chi vince la Serie A vede le rivali rinforzarsi, e l'Europa si fa piu' dura a ogni coppa vinta.
@@ -25,26 +26,30 @@ function boostYoung(maxAge,n){   // +1 in n statistiche a caso, sotto il proprio
   let c=0;for(const p of SQ){if(p.age>maxAge)continue;const ks=KEYS.filter(k=>p.s[k]<capX(p,k)).sort(()=>Math.random()-0.5).slice(0,n);for(const k of ks)p.s[k]++;if(ks.length)c++;}
   return c;
 }
+// quota della stagione appena finita in cui la struttura e' rimasta al livello del premio (0..1)
+const keepShare=k=>SV.facRnd?clamp(((SV.facDays&&SV.facDays[k])|0)/SV.facRnd,0,1):0;
+const KEEP_MIN=0.5;   // sotto meta' stagione niente premio; da li' cresce fino al premio pieno
 // inizio stagione: premi di mantenimento, usura delle strutture, nuova sfida della dirigenza
 function seasonStartDyn(){
   if(!SV.facKeep)SV.facKeep={};
   const got=[],worn=[];
   for(const k of Object.keys(FAC)){
-    const lv=facLv(k);
-    SV.facKeep[k]=lv>=KEEP_LV?(SV.facKeep[k]|0)+1:0;
-    if(SV.facKeep[k]>=1){
-      if(k==='camp'){const c=boostYoung(23,2);if(c)got.push('ritiro estivo ('+c+' giovani migliorati)');}
-      else if(k==='fis'){SV.fisShield=2;got.push('prevenzione degli infortuni');}
-      else if(k==='viv'){const o=youthFromAcademy('viv',lv-2);if(o)got.push('dal vivaio arriva '+(o.label||o.n)+' ('+o.age+' anni)');}
-      else if(k==='stad'){const c=Math.round(12*lv*SR_K[SV.sr]);SV.cash+=c;got.push('abbonamenti (+'+c+' crediti)');}
-      else if(k==='oss'){for(const m of SV.market||[])m.o.sk=3;got.push('rapporto degli osservatori sul mercato');}
-      else if(k==='sede'){SV.rep=clamp(SV.rep+2,0,100);SV.mor=clamp(SV.mor+5,0,100);got.push('ambiente sereno (+2 reputazione, +5 morale)');}
+    const lv=facLv(k),f=keepShare(k),full=f>=0.9,pc=Math.round(f*100)+'% della stagione';
+    SV.facKeep[k]=f>=KEEP_MIN?(SV.facKeep[k]|0)+1:0;   // stagioni di fila in cui e' stata mantenuta
+    if(f>=KEEP_MIN){
+      if(k==='camp'){const c=boostYoung(23,full?2:1);if(c)got.push('ritiro estivo ('+c+' giovani migliorati, '+pc+')');}
+      else if(k==='fis'){SV.fisShield=full?2:1;got.push('prevenzione degli infortuni ('+SV.fisShield+(SV.fisShield>1?' infortuni dimezzati':' infortunio dimezzato')+')');}
+      else if(k==='viv'){if(f>=0.75){const o=youthFromAcademy('viv',Math.round((Math.max(KEEP_LV,lv)-2)*f));if(o)got.push('dal vivaio arriva '+(o.label||o.n)+' ('+o.age+' anni)');}}
+      else if(k==='stad'){const c=Math.round(12*Math.max(KEEP_LV,lv)*SR_K[SV.sr]*f);SV.cash+=c;got.push('abbonamenti (+'+c+' crediti, '+pc+')');}
+      else if(k==='oss'){for(const m of SV.market||[])m.o.sk=Math.max(m.o.sk|0,full?3:2);got.push('rapporto degli osservatori sul mercato'+(full?'':' (parziale)'));}
+      else if(k==='sede'){const r=Math.round(2*f),m=Math.round(5*f);SV.rep=clamp(SV.rep+r,0,100);SV.mor=clamp(SV.mor+m,0,100);got.push('ambiente sereno (+'+r+' reputazione, +'+m+' morale)');}
     }else if(k==='fis')SV.fisShield=0;
     // usura: piu' una struttura e' avanzata, piu' e' facile che d'estate perda un livello
     if(lv>=2&&Math.random()<0.06+0.03*lv){SV.fac[k]=lv-1;worn.push(FAC[k][0]+' (ora livello '+(lv-1)+')');}
   }
   if(got.length)alertAdd('club','Premi di mantenimento delle strutture: '+got.join('; ')+'.');
   if(worn.length)alertAdd('club','Usura estiva: '+worn.join(', ')+'. Per riavere il livello serve un nuovo investimento.');
+  SV.facDays={};SV.facRnd=0;   // si ricomincia a contare
   pickChallenge();
 }
 /* ---- sfida della dirigenza ---- */
@@ -132,6 +137,7 @@ function evtAnswer(i){   // applica la scelta e ritorna il testo dell'esito
 }
 // dopo ogni partita: manutenzione, avviso sulla fatica, eventuale imprevisto
 function dynAfterMatch(){
+  if(SV.event==='camp'){SV.facRnd=(SV.facRnd|0)+1;if(!SV.facDays)SV.facDays={};for(const k of Object.keys(FAC))if(facLv(k)>=KEEP_LV)SV.facDays[k]=(SV.facDays[k]|0)+1;}   // giornate di campionato al livello del premio
   const up=facUpkeep();if(up){SV.cash-=up;SV.lastInc=(SV.lastInc|0)-up;}SV.lastUp=up;
   const tired=SQ.filter(p=>!p.inj&&p.cond<TIRED_AT);
   const tn=tired.length,more=tn>(SV.tiredN|0);SV.tiredN=tn;   // l'avviso arriva quando la situazione peggiora, non a ogni giornata

@@ -215,6 +215,7 @@ function assignFlight(){
   // uomo: insegue il marcatore del ricevitore. Zona: converge sul disco chi e' piu' vicino al punto d'arrivo (e un secondo se e' ad appena un passo), non chi ha "in custodia" il ricevitore
   if(zoneD){const near=def.slice().sort((a,b)=>a._t-b._t);chase(near[0]);if(near[1]&&near[1]._t<near[0]._t+0.45)chase(near[1]);}
   else{const m=def.find(q=>q.mark===rc);if(m)chase(m);}
+  laneRead(f);   // gli altri difensori: chi vede passare il disco vicino prova a tagliargli la strada
   // sparo: i corridori sono scelti in automatico (il piu' vicino al punto d'arrivo). Il tuo scatta se tieni premuto, quelli avversari a volte da soli
   G.hold=false;G.sprint=null;G.aiSprint=[];
   const zone=(P===0?G.opp.def:G.sch.def)==='zone';
@@ -264,7 +265,8 @@ function updateDisc(dt){
     if(G.holder){d.x=G.holder.x;d.y=G.holder.y;d.z=1;}return;
   }
   f.t+=dt;const u=Math.min(1,f.t/f.T),fs=flightS(f,u),P=flightAt(f,fs);   // il disco parte veloce e rallenta (o, per il blade, accelera in picchiata) e segue la sua curva
-  d.x=P.x;d.y=P.y;d.z=lerp(1.1,0.3,fs)+4*f.H*fs*(1-fs);
+  d.x=P.x;d.y=P.y;d.z=discZ(f,fs);
+  if(f.t<f.T&&laneCheck(f,P,d.z))return;   // toccato da un difensore lungo il volo
   if(f.t>=f.T)landDisc();
 }
 
