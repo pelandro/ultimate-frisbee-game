@@ -56,6 +56,7 @@ function updateDefenders(dt){
   const nearGoal=Hh?((d>0?FIELD_L-EZ-Hh.x:Hh.x-EZ)<16):false,front=G.dmode[dTeam]===1||(ai&&nearGoal);
   // aiuti lontano dal disco: sempre con lo schema «uomo con aiuti», altrimenti quanto vuole l'identita' della squadra e il livello dell'IA
   const pf=sch==='man_poach'?1:(ai?0.45*idn.poach*lvD.poach:0),rd=sch!=='zone'?playRead(dTeam):null;
+  const thR=Hh?throwMax(Hh):99;   // chi non ha il braccio per arrivarci non e' una minaccia: l'attaccante oltre la sua gittata si puo' lasciare
   let deepA=null;if(Hh){let bf=-1e9;for(const a of aT){if(a===Hh)continue;const fw=(a.x-Hh.x)*d;if(fw>bf){bf=fw;deepA=a;}}}
   // CAMBI DI MARCATURA: se due difensori sono messi meglio scambiandosi l'uomo, se lo scambiano
   G.swT=(G.swT||0)-dt;
@@ -93,10 +94,10 @@ function updateDefenders(dt){
       const react=clamp(0.42-q.s.dif*0.0034+0.06+(0.6-q.s.vis/100)*0.4,0.08,0.55)*(hasT(q,'lock')?0.7:1);
       let px=a.x+a.vx*react+d*0.9+q.nx,py=a.y+a.vy*react+q.ny;
       if(front&&Hd){const ax=Hd.x-a.x,ay=Hd.y-a.y,al=hyp(ax,ay);if(al>6){px=a.x+a.vx*react+ax/al*1.25+q.nx;py=a.y+a.vy*react+ay/al*1.25+q.ny;}}   // anticipo: tra l'uomo e il disco
-      else if(a===deepA&&Hd)px+=d*1.6;   // contenimento: chi marca l'attaccante piu' avanzato tiene un passo in piu' verso la meta (copre il profondo)
+      else if(a===deepA&&Hd&&(a.x-Hd.x)*d<thR+3)px+=d*1.6;   // contenimento: chi marca l'attaccante piu' avanzato tiene un passo in piu' verso la meta (copre il profondo)
       if(pf>0&&Hd&&a.cs!=='cut'&&!a.cmd&&!a.fl){   // AIUTO: se il suo uomo e' lontano dal disco e fermo, scala verso la linea di passaggio; appena l'uomo taglia torna su di lui
         const far=hyp(a.x-Hd.x,a.y-Hd.y);
-        if(far>20){const k=clamp((far-20)/18,0,1)*0.42*pf;px=lerp(px,Hd.x+(a.x-Hd.x)*0.6,k);py=lerp(py,Hd.y+(a.y-Hd.y)*0.6,k);}
+        if(far>20){const k=Math.min(1,clamp((far-20)/18,0,1)*0.42*pf*(far>thR+4?1.6:1));px=lerp(px,Hd.x+(a.x-Hd.x)*0.6,k);py=lerp(py,Hd.y+(a.y-Hd.y)*0.6,k);}
       }
       if(rd&&rd.has(a)&&Hd){const e=rd.get(a);px=lerp(px,e.x,0.55);py=lerp(py,e.y,0.55);}   // ha riconosciuto lo schema: si mette sulla traiettoria del taglio previsto
       const close=hyp(q.x-a.x,q.y-a.y)<8;

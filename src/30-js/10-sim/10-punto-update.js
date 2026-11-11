@@ -46,7 +46,7 @@ function teamIdentity(seedStr,list){
 const idOf=t=>(G.idn&&G.idn[t])||ID0;
 const aiTeam=t=>t===1||!!G.auto;   // squadra guidata dall'IA anche nelle scelte tattiche
 const AIK=t=>DIFF_AI[t===1&&G.lvl?G.lvl[1]:0];
-const thinkFor=(t,lo,hi)=>rnd(lo,hi)*AIK(t).think;
+const thinkFor=(t,lo,hi,p)=>rnd(lo,hi)*AIK(t).think*(p?1+(60-p.s.vis)*0.004:1);   // la Visione fa decidere prima: 99 -> 16% piu' rapido, 30 -> 12% piu' lento (60 = standard)
 // half time: pausa a meta' partita. Si recupera pochissima energia e chi ha iniziato in difesa (il pull) riparte in attacco
 function halfTime(){
   G.mode='half';G.halfDone=true;

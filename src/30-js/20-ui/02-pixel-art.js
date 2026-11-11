@@ -362,9 +362,9 @@ function aimAssist(h,w,dist,pl){
     pring(x,y,10+pu,4,PAL.out,3,locked?0:2);pring(x,y,10+pu,4,col,1,locked?0:2);
     if(locked){const ay=y-PH()-17-pu;parrow(x,ay-1,1,PAL.out,5);parrow(x,ay,1,col,4);}
   }
-  const kd=pl.kind,txt=Math.round(dist)+' m '+pl.sp.name.toUpperCase();
+  const kd=pl.kind,txt=pl.short?'MAX '+Math.round(pl.mx)+' m: CORTO':Math.round(dist)+' m '+pl.sp.name.toUpperCase();   // oltre la gittata (Sparo) il disco cade corto
   const tw=ptw(txt,'p')+6,bx=clamp(drag.x-tw/2,2,VW-tw-2),by=clamp(drag.y-26,BAR+2,VH-14);
-  pbox(bx,by,tw,12,'#000000');ptext(txt,bx+3,by+2,{f:'p',a:'l',c:kd==='blade'?'#ff8a5c':(pl.sp.hi||kd==='scoober'?PAL.gold:'#ffffff'),o:false});
+  pbox(bx,by,tw,12,'#000000');ptext(txt,bx+3,by+2,{f:'p',a:'l',c:pl.short?PAL.red:(kd==='blade'?'#ff8a5c':(pl.sp.hi||kd==='scoober'?PAL.gold:'#ffffff')),o:false});
 }
 // sparo in volo: il tuo corridore ha un anello, una freccia e la barra dell'energia
 function drawSprint(){

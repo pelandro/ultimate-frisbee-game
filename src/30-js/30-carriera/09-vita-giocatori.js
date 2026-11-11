@@ -108,6 +108,7 @@ function unhappyAnswer(p,sell){
 function summerChanges(was){   // dopo l'estate: chi e' cresciuto, chi accusa l'eta', e ogni tanto un giovane che esplode
   for(const p of SQ){
     if(p.age<=22&&potX(p)-ovrX(p)>=6&&Math.random()<0.1){const ks=KEYS.slice().sort(()=>Math.random()-0.5).slice(0,6);for(const k of ks)p.s[k]=Math.min(capX(p,k),p.s[k]+2);p.boom=1;}
+    talentGrow(p);
     const a=was.get(p.full),b=ovr(p);if(a===undefined)continue;
     if(p.boom){p.boom=0;alertAdd('up',`${pname(p)} (${p.age} anni) è esplos${oa(p)} durante l’estate: Overall da ${a} a ${b}.`,{full:p.full});}
     else if(b-a>=2)alertAdd('up',`${pname(p)} è cresciut${oa(p)} durante l’estate: Overall da ${a} a ${b}.`,{full:p.full});

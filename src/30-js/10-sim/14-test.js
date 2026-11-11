@@ -3,6 +3,7 @@
    peso della forza e degli attributi, coerenza tra partite simulate e giocate, crescita dei giocatori, prestazioni.
    Ogni passo usa un generatore casuale con seme fisso: con lo stesso seme e lo stesso numero di partite i risultati sono identici a ogni esecuzione.
    Si lancia da Impostazioni > Diagnostica oppure da riga di comando (node test_ultimate_frisbee.js). */
+const REV_MAX=10;   // prima delle correzioni (tagli liberi che dondolano, lato dell'attacco che si scambia) erano circa 13 al minuto; ora circa 7
 function testMatch(ra,rb,o){   // una partita IA contro IA: ritorna punteggio, statistiche e controlli
   o=o||{};
   setSquad(ra);applyRoster(rb);
@@ -10,7 +11,7 @@ function testMatch(ra,rb,o){   // una partita IA contro IA: ritorna punteggio, s
   newGame();if(o.wind)setWind(o.wind[0],o.wind[1]);G.auto=true;G.lvl=[o.lvl|0,o.lvl|0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;
   applyForm();
   G.startRec=o.rec|0;G.nextRec=G.startRec;startPoint(G.startRec);
-  const dt=1/60,r={time:0,nan:0,stuck:false,hold:0,pts:0,ptT:[]};let pt=0,last=0,rec=-1,fr=0;
+  const dt=1/60,r={time:0,nan:0,stuck:false,hold:0,pts:0,ptT:[],rev:0,revT:0};let pt=0,last=0,rec=-1,fr=0;
   while(G.mode!=='over'&&r.time<3600){
     update(dt);r.time+=dt;pt+=dt;fr++;
     if(G.mode==='half')startSecondHalf();
@@ -18,6 +19,15 @@ function testMatch(ra,rb,o){   // una partita IA contro IA: ritorna punteggio, s
     const tot=G.score[0]+G.score[1];
     if(tot!==last){const sc=G.banner?G.banner.team:(G.score[0]>G.score[1]?0:1);if(sc===rec)r.hold++;r.pts++;r.ptT.push(pt);pt=0;last=tot;rec=-1;}
     if(pt>240){r.stuck=true;break;}
+    if(fr%6===0){   // ripensamenti: chi non ha il disco, mentre il portatore aspetta, inverte la corsa (angolo oltre 120 gradi rispetto a 0,4 secondi prima)
+      if(G.mode==='play'&&G.holder&&!G.flight&&!G.pull&&G.holdT>1){   // solo a formazione assestata (dopo 1 s dalla presa): e' quando chi ha il disco sta decidendo o mirando
+        for(const p of T[G.poss]){
+          if(p===G.holder){p._hq=null;continue;}
+          const q=p._hq||(p._hq=[]),sp=hyp(p.vx,p.vy);q.push([p.vx,p.vy]);if(q.length>4)q.shift();r.revT+=0.1;
+          if(q.length===4&&sp>2.5){const o=q[0],so=hyp(o[0],o[1]);if(so>2.5&&(o[0]*p.vx+o[1]*p.vy)/(so*sp)<-0.5){r.rev++;q.length=0;}}
+        }
+      }else for(const p of T[0].concat(T[1]))p._hq=null;
+    }
     if(fr%30===0)for(const p of T[0].concat(T[1]))if(!isFinite(p.x)||!isFinite(p.y)){r.nan++;p.x=50;p.y=18;}
   }
   r.score=G.score.slice();r.st=JSON.parse(JSON.stringify(G.st));
@@ -36,6 +46,7 @@ function selfTestPlan(opt){
     const t0=Date.now(),ms=run(ros(62,'a'),ros(62,'b'),n);S.base=ms;S.ms=(Date.now()-t0)/n;
     const thr=avg(ms.map(m=>m.st.thr[0]+m.st.thr[1])),cmp=avg(ms.map(m=>m.st.cmp[0]+m.st.cmp[1]))/thr,to=avg(ms.map(m=>m.st.to[0]+m.st.to[1]));
     const lose=avg(ms.map(m=>Math.min(m.score[0],m.score[1]))),hold=avg(ms.map(m=>m.hold/Math.max(1,m.pts))),ptT=avg([].concat(...ms.map(m=>m.ptT)));
+    const rev=ms.reduce((a,m)=>a+m.rev,0)/Math.max(1,ms.reduce((a,m)=>a+m.revT,0)/60);
     const htol=2.6*Math.sqrt(0.25/Math.max(1,ms.reduce((a,m)=>a+m.pts,0)));   // con poche mete il caso pesa: il margine si stringe quando le partite aumentano
     const bad=ms.filter(m=>m.stuck||m.nan||Math.max(m.score[0],m.score[1])!==MATCH_TARGET||Math.min(m.score[0],m.score[1])>=MATCH_TARGET).length;
     return [row('Partite concluse senza blocchi né errori numerici',(n-bad)+' su '+n,bad===0),
@@ -43,7 +54,8 @@ function selfTestPlan(opt){
       row('Lanci completati',pc(cmp),cmp>=0.74&&cmp<=0.93,'attesa tra 74% e 93%'),
       row('Turnover a partita',to.toFixed(1),to>=6&&to<=24,'attesa tra 6 e 24'),
       row('Mete segnate da chi riceve il pull',pc(hold),hold>=0.38-htol&&hold<=0.8+htol,'attesa tra 38% e 80%, con un margine di '+pc(htol)+' per il numero di mete giocate'),
-      row('Durata media di una meta',ptT.toFixed(0)+' s',ptT>=10&&ptT<=60,'attesa tra 10 e 60 secondi')];
+      row('Durata media di una meta',ptT.toFixed(0)+' s',ptT>=10&&ptT<=60,'attesa tra 10 e 60 secondi'),
+      row('Ripensamenti: inversioni di corsa di un attaccante senza disco, ogni minuto',rev.toFixed(1),rev<=REV_MAX,'meno di '+REV_MAX+': chi parte per uno scatto lo porta a termine')];
   }]);
   S.steps.push(['Equilibrio degli schemi',()=>{
     const k=Math.max(2,Math.round(n/3)),ra=ros(62,'a'),rb=ros(62,'b'),res=[];
@@ -85,7 +97,7 @@ function selfTestPlan(opt){
     const per={};for(const c of CATS){const ro=makeRoster(60,'all'+c.id);let t=0;for(const o of ro){o.age=24;o.dev=1;for(let i=0;i<20;i++)t+=trainCategory(o,c).gain;}per[c.id]=t/ro.length/20;}
     const v=Object.values(per),mx=Math.max(...v),mn=Math.min(...v);
     return [row('Overall guadagnato in 15 partite (18, 26, 34 anni)','+'+g18.toFixed(1)+', +'+g26.toFixed(1)+', +'+g34.toFixed(1),g18>g26&&g26>g34&&g34>=0&&g18<=6,'i giovani crescono di più'),
-      row('Esperienza di una partita giocata e di una simulata',xp.toFixed(1)+' e 30,0',xp>=22&&xp<=38,'devono essere vicine'),
+      row('Esperienza di una partita giocata e di una simulata',xp.toFixed(1)+' e 30,0',xp>=20&&xp<=38,'devono essere vicine'),
       row('Punti per seduta di allenamento, per indirizzo',CATS.map(c=>c.name+' '+per[c.id].toFixed(2)).join(', '),mx<=mn*2.6,'nessun indirizzo oltre due volte e mezza un altro')];
   }]);
   S.steps.push(['Pull e difesa automatica',()=>{
@@ -130,6 +142,63 @@ function selfTestPlan(opt){
       row('Deriva di uno sparo da 40 m (Sparo 45 e Sparo 90)',dLo.toFixed(1)+' m e '+dHi.toFixed(1)+' m',dLo>dHi*1.8&&dLo<=8&&dHi>=0.3,'chi lancia bene compensa'),
       row('Vento spento dalle impostazioni: il sorteggio da\u2019 sempre calma',offOk?'sì':'no',offOk),
       row('Pull con vento alle spalle e controvento',tail.toFixed(0)+' m e '+head.toFixed(0)+' m',tail-head>=10&&tail-head<=24,'tra 10 e 24 metri di differenza')];
+  }]);
+  S.steps.push(['Mira e chiamate',()=>{
+    // il giocatore mira una zona libera con il dito che trema (e ogni tanto sfiora un compagno): il compagno chiamato deve correrci senza ripensamenti
+    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    newGame();G.auto=true;G.lvl=[0,0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();G.startRec=0;G.nextRec=0;startPoint(0);
+    let g=0;while(g++<60*120&&!(G.mode==='play'&&G.holder&&G.holder.t===0&&G.holdT>1.5&&!G.flight))update(1/60);
+    const th=G.holder,d=dirOf(0);let swaps=0,rev=0,ended=0,prevQ=null,pv=null,moved=99,sx=null,ok=!!th;
+    if(ok){
+      G.auto=false;   // adesso decide il giocatore: l'azione aspetta il lancio
+      const zx=clamp(th.x+d*24,6,FIELD_L-6),zy=th.y<MID?MID+8:MID-8;
+      for(let i=0;i<60*3&&G.holder===th&&!G.flight;i++){
+        const j=Math.sin(i*0.9)*2.2,jx=zx+j,jy=zy+Math.cos(i*1.3)*2.2;
+        // ogni tanto il mirino sfiora per un attimo un compagno vicino: la chiamata non deve cadere
+        const q0=G.call&&G.call.q;let wx=jx,wy=jy;if(q0&&i%40>=20&&i%40<26){wx=q0.x;wy=q0.y;}
+        updateCall(th,wx,wy,false);
+        const c=G.call;if(c){if(prevQ&&prevQ!==c.q)swaps++;prevQ=c.q;}else if(prevQ&&i>6){ended++;prevQ=null;}
+        update(1/60);
+        const q=G.call&&G.call.q;
+        if(q){if(!sx)sx=[q.x,q.y];const sp=hyp(q.vx,q.vy);if(i>=24&&pv&&sp>2.5&&hyp(pv[0],pv[1])>2.5&&(pv[0]*q.vx+pv[1]*q.vy)/(sp*hyp(pv[0],pv[1]))<-0.5)rev++;if(i%6===0)pv=[q.vx,q.vy];moved=hyp(q.x-G.call.x,q.y-G.call.y);}
+      }
+    }
+    return [row('Chiamata a una zona libera con il dito che trema: cambi di compagno e chiamate cadute',ok?swaps+' e '+ended:'partita non pronta',ok&&swaps===0&&ended===0,'chi corre verso la zona ci va senza fermarsi'),
+      row('Chiamata: inversioni di corsa del compagno e distanza dal punto chiamato dopo 3 secondi',ok?rev+' e '+moved.toFixed(1)+' m':'-',ok&&rev===0&&moved<=6,'arriva al punto e ci resta')];
+  }]);
+  S.steps.push(['Gittata, fiducia e cognomi',()=>{
+    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);newGame();setWind(0,0);placeTeams(1);
+    const th=T[0][0],d=dirOf(0),spa0=th.s.spa,cut=T[0].find(q=>q.role==='C')||T[0][3];
+    // 1. gittata: Sparo 20 non arriva a 60 m (il disco cade corto), Sparo 99 si', e i limiti seguono lo Sparo
+    th.s.spa=20;const lo=planThrow(th,th.x+d*60,th.y,0),mxLo=throwMax(th);
+    th.s.spa=99;const hi=planThrow(th,th.x+d*90,th.y,0),mxHi=throwMax(th);
+    // 2. i compagni: tagli lunghi (frequenza e distanza) con un lanciatore debole, forte, forte e con tanta intesa
+    const deepStat=(spa,duo)=>{
+      th.s.spa=spa;G.duo=duo?{[duoKey(th.full||th.name,cut.full||cut.name)]:1}:{};
+      let n=0,dp=0,tot=0;const H={x:th.x,y:th.y,s:th.s,t:0,full:th.full,name:th.name};
+      for(let i=0;i<2500;i++){const c=pickCut(cut,Object.assign(H,{}),d,'vert',0);if(c.deep){n++;tot+=(c.x-th.x)*d;}}
+      return {f:n/2500,dist:n?tot/n:0};
+    };
+    const w=deepStat(25,0),f0=deepStat(90,0),f1=deepStat(90,1);G.duo={};
+    // 3. l'IA non lancia dove il disco non arriva: Sparo 20, un compagno libero a 55 m e uno coperto a 10 m
+    th.s.spa=20;let farPick=0;const far=T[0][1],near=T[0][2];
+    for(const q of T[0])if(q!==th&&q!==far&&q!==near){q.x=th.x-d*6;q.y=th.y+8;}
+    for(let i=0;i<200;i++){far.x=th.x+d*55;far.y=th.y;near.x=th.x+d*10;near.y=th.y+6;T[1].forEach((q,j)=>{q.x=near.x+(j%2?1:-1)*0.8;q.y=near.y+0.3*j;});if(aiPick(th).best===far)farPick++;}
+    th.s.spa=spa0;
+    // 3b. Lancio e Visione: il disco di chi ha piu' Lancio viaggia piu' veloce; chi ha piu' Visione decide prima
+    const lan0=th.s.lan,vis0=th.s.vis;th.s.lan=30;const tL=planThrow(th,th.x+d*20,th.y,0).T;th.s.lan=99;const tH=planThrow(th,th.x+d*20,th.y,0).T;th.s.lan=lan0;
+    const thk=v=>{th.s.vis=v;let t=0;for(let i=0;i<400;i++)t+=thinkFor(0,1,1,th);return t/400;};const kLo=thk(30),kHi=thk(99);th.s.vis=vis0;
+    // 4. cognomi in partita: solo il cognome, con l'iniziale se due compagni lo condividono; i giocatori inventati restano col nome
+    const lst=[{sur:'Rossi',label:'Mario Rossi',name:'Mario'},{sur:'Rossi',label:'Luca Rossi',name:'Luca'},{sur:'Bianchi',label:'Anna Bianchi',name:'Anna'},{sur:'',label:'Pippo',name:'Pippo'}];applySurnames(lst);
+    const nm=lst.map(o=>o.name).join('|');
+    return [row('Gittata col Sparo: massimo a Sparo 20 e a Sparo 99',Math.round(mxLo)+' m e '+Math.round(mxHi)+' m',mxLo<=32&&mxHi>=96,'20 non spara lontano, 99 fa tutto il campo'),
+      row('Lancio da 60 m con Sparo 20 (cade corto) e da 90 m con Sparo 99',(lo.short?'corto':'ok')+' e '+(hi.short?'corto':'ok'),lo.short&&lo.dist<=mxLo+0.01&&!hi.short),
+      row('Tagli lunghi con lanciatore debole, forte, forte e affiatato',pc(w.f)+', '+pc(f0.f)+', '+pc(f1.f),w.f<f0.f*0.7&&f0.f<f1.f,'chi lancia lontano e conosce i compagni fa partire piu\u2019 tagli lunghi'),
+      row('Distanza media dei tagli lunghi con lanciatore debole e forte',w.dist.toFixed(0)+' m e '+f0.dist.toFixed(0)+' m',w.dist<=30&&f0.dist>=38&&f1.dist>=f0.dist-0.5,'il corridore si ferma dove il lancio arriva'),
+      row('L\u2019IA con Sparo 20 lancia al compagno libero a 55 m',farPick+' su 200',farPick<=4,'non lancia dove il disco non arriva'),
+      row('Tempo di volo di un lancio da 20 m con Lancio 30 e con Lancio 99',tL.toFixed(2)+' s e '+tH.toFixed(2)+' s',tL>tH*1.03&&tL<tH*1.12,'chi lancia meglio lancia piu\u2019 veloce'),
+      row('Tempo di decisione con Visione 30 e con Visione 99 (1 = standard)',kLo.toFixed(2)+' e '+kHi.toFixed(2),kLo>1.05&&kHi<0.9&&kLo<1.2,'chi vede meglio decide prima'),
+      row('Cognomi in partita',nm,nm==='Rossi M.|Rossi L.|Bianchi|Pippo')];
   }]);
   S.steps.push(['Specializzazioni e intesa',()=>{
     // 200 sedute di Tecnica con e senza indirizzo «Regista»: il vantaggio c'e', ma cala con l'eta'

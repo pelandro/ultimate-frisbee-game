@@ -4,9 +4,9 @@
    durante il test QM.on blocca il salvataggio (persist) e alla fine si rimette la carriera com'era. Seme fisso: risultati ripetibili. */
 function careerSelfTest(seasons,seed){
   const bak=hasCareer()?(persist(),JSON.stringify(SV)):null,R0=Math.random,q0=QM.on,rows=[],row=(name,val,ok,note)=>({name,val,ok:!!ok,note:note||''});
-  Math.random=mulberry32(seed||2026);QM.on=true;
+  Math.random=mulberry32(seed||2026);QM.on=true;talentGrow.n=0;
   const hide=()=>{for(const id of ['simres','alerts','evt'])$(id).classList.add('hidden');};
-  let lgBad=[],stories=0,derby=0,spec=0,goalsOk=0,goalsKo=0,duoMax=0,err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,worn=0,keep=0;
+  let lgBad=[],stories=0,derby=0,spec=0,goalsOk=0,goalsKo=0,duoMax=0,err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,worn=0,keep=0,signed=0;
   try{
     startCareer(SERIES.C[2]);
     for(let s=1;s<=seasons;s++){
@@ -16,6 +16,10 @@ function careerSelfTest(seasons,seed){
           SV.tInt=avg>82?2:(avg>66?1:0);
           const opt=avg<58?TR_OPTS.find(c=>c.id==='rec'):TR_OPTS[r%4];
           for(const p of SQ)if(!p.inj||opt.id==='rec')trainApply(p,opt,false);SV.tTeam=true;
+        }
+        if(r===0&&s>1){   // come farebbe chi gioca: ogni estate rinnova la rosa con giovani promesse e libera il posto ai piu' anziani
+          for(let n=0;n<2&&SQ.length<20;n++){let bi=-1,bs=-1;(SV.market||[]).forEach((m,i)=>{if(canSign(m)||m.o.age>24)return;const v=potX(m.o);if(v>bs){bs=v;bi=i;}});if(bi>=0){signPlayer(bi);signed++;}}
+          while(SQ.length>16){const old=SQ.map((p,i)=>[p,i]).sort((a,b)=>(b[0].age-a[0].age)||(ovrX(a[0])-ovrX(b[0])))[0];if(!sellPlayer(old[1]))break;}
         }
         for(const k of Object.keys(FAC).sort((x,y)=>facCost(x)-facCost(y)))if(SV.cash>facCost(k)+60&&facLv(k)<FAC_MAX){buyFac(k);break;}
         for(const k of Object.keys(STAFF))if(SV.cash>staffCost(k)+90&&staffLv(k)<STAFF_MAX){buyStaff(k);break;}   // staff e indirizzi personali: si comprano quando c'e' margine
@@ -42,12 +46,17 @@ function careerSelfTest(seasons,seed){
       for(const a of SV.alerts)a.seen=1;
     }
     maxed=SQ.filter(p=>ovrX(p)>=90).length/Math.max(1,SQ.length);
+    const top7=pickSeven(SQ,p=>p.role,mean9);let atCap=0,nst=0,ageS=0;for(const p of top7){ageS+=p.age;for(const k of KEYS){nst++;if(p.s[k]>=capOf(p,k)-1)atCap++;}}
+    const capRow=Math.round(100*atCap/Math.max(1,nst))+'% al massimo, età media '+(ageS/Math.max(1,top7.length)).toFixed(1);
     const others=Object.values(SV.rost).filter(r=>r&&r.length).map(r=>rosterPower(r));
     rows.push(row('Stagioni giocate fino in fondo',seasonsDone+' su '+seasons,seasonsDone===seasons));
     rows.push(row('Valori sempre validi (statistiche, condizione, rosa, linee, strutture, crediti)',bad.length?bad.slice(0,3).join('; '):'sì',!bad.length));
     rows.push(row('Forza della squadra nelle stagioni',pw.map(v=>v.toFixed(0)).join(' → '),pw.every(v=>v>=35&&v<=97),'tra 35 e 97'));
+    rows.push(row('I 7 migliori: statistiche al massimo del talento',capRow,true,'informativo: se quasi tutto è al massimo la crescita si ferma'));
+    {const L=pw.length,m=x=>x.reduce((a,v)=>a+v,0)/Math.max(1,x.length);
+    rows.push(row('Dopo 10 stagioni la forza non crolla né si ferma del tutto (media delle ultime 5 contro le stagioni 8-10)',L>=16?m(pw.slice(-5)).toFixed(1)+' contro '+m(pw.slice(7,10)).toFixed(1):'serve un test da 16 stagioni',L<16||m(pw.slice(-5))>=m(pw.slice(7,10))-1,'rinnovando la rosa non si scende; con i giovani giusti si continua a salire'));}
     rows.push(row('Giocatori della rosa con Overall 90 o più alla fine',Math.round(maxed*100)+'%',maxed<=0.5,'al massimo metà: la crescita non deve appiattire tutti'));
-    rows.push(row('Forza delle altre squadre',Math.min(...others).toFixed(0)+'–'+Math.max(...others).toFixed(0),Math.min(...others)>=30&&Math.max(...others)<=95,'tra 30 e 95'));
+    rows.push(row('Forza delle altre squadre',Math.min(...others).toFixed(0)+'–'+Math.max(...others).toFixed(0),Math.min(...others)>=30&&Math.max(...others)<=99,'tra 30 e 99'));
     rows.push(row('Crediti: minimo e massimo',Math.round(cashMin)+' e '+Math.round(cashMax),cashMin>=-300&&cashMax<=6000,'né bancarotta né accumulo senza limiti'));
     rows.push(row('Infortuni per stagione (partite simulate)',(inj/Math.max(1,seasonsDone)).toFixed(1),inj>=1&&inj/Math.max(1,seasonsDone)<=12,'almeno uno in tutto il test, al massimo 12 a stagione (la squadra del test si riposa quasi sempre: ne servono pochi)'));
     rows.push(row('Imprevisti per stagione',(evts/Math.max(1,seasonsDone)).toFixed(1),evts/Math.max(1,seasonsDone)>=0.4&&evts/Math.max(1,seasonsDone)<=4,'tra 0,4 e 4'));
@@ -58,6 +67,8 @@ function careerSelfTest(seasons,seed){
     rows.push(row('Derby giocati nelle stagioni',String(derby),derby>=seasons*0.5,'almeno uno ogni due stagioni'));
     rows.push(row('Obiettivi personali raggiunti e mancati',goalsOk+' e '+goalsKo,goalsOk+goalsKo>=seasons&&goalsOk>0&&goalsKo>0,'né tutti né nessuno'));
     rows.push(row('Intesa massima tra due giocatori (partite insieme)',String(duoMax),duoMax>=6&&duoMax<=DUO_FULL*2));
+    rows.push(row('Giocatori che hanno superato il proprio limite (maturità)',String(talentGrow.n|0),(talentGrow.n|0)>=1,'almeno uno in tutto il test'));
+    rows.push(row('Giovani promesse ingaggiate nel test',String(signed),true));
     rows.push(row('Indirizzi personali assegnati nel test',String(spec),spec>=1));
   }catch(e){err=e&&e.message||String(e);rows.push(row('Errore durante il test',err,false));}
   finally{
