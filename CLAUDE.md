@@ -28,8 +28,9 @@ Ci lavorano **due sviluppatori**, entrambi con Claude Code, sullo stesso reposit
 2. **`main` cambia solo con le pull request**, unite quando la verifica di GitHub è verde. Mai push diretto, mai force push su `main`, mai `--admin`.
 3. **Prima di integrare, sincronizza**: `git fetch origin` e `git merge origin/main` nel ramo di lavoro. Si usa il merge, non il rebase: così non serve mai un force push.
 4. **Non eliminare né riscrivere il lavoro dell'altro sviluppatore** (commit, rami, file) senza la sua autorizzazione. Se una sua modifica sembra sbagliata, integrala e segnalalo.
-5. Dopo ogni integrazione: `npm test`. Una pull request con verifica rossa non si unisce.
-6. I ganci in `tools/hooks/` e `.githooks/` bloccano le violazioni: se un comando viene fermato, non aggirarlo, segui l'indicazione.
+5. Se l'altro sviluppatore unisce per primo, la tua pull request si riallinea da sola (lavoro «Aggiorna rami», con l'unione automatica attiva): non rifare a mano la sincronizzazione. Intervieni solo se il bot lascia un commento di conflitto: allora `/sincronizza`, risolvi con l'unione ragionata e ricarica il ramo.
+6. Dopo ogni integrazione: `npm test`. Una pull request con verifica rossa non si unisce.
+7. I ganci in `tools/hooks/` e `.githooks/` bloccano le violazioni: se un comando viene fermato, non aggirarlo, segui l'indicazione.
 
 Comandi pronti: `/inizia` (nuovo ramo), `/sincronizza` (porta dentro `main`), `/consegna` (verifica, push, pull request con unione automatica), `/integra` (pull request dell'altro), `/stato`.
 
