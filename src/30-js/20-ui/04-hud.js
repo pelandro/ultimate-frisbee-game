@@ -41,7 +41,7 @@ function updateHUD(dt){
   if(!defNow&&(ddrag||G.cdir)){ddrag=null;G.cdir=null;}
   let hint='';
   if(G.mode==='ready'&&G.pullTeam===1&&!G.schemeOpen)hint='Pull avversario tra '+Math.max(1,Math.ceil(G.readyT));
-  if(G.mode==='play'&&G.holder&&!G.flight){if(G.brickWait)hint='Brick: si aspetta che la difesa si schieri';else if(G.walk)hint='Si riparte dalla linea di meta';}
+  if(G.mode==='play'&&G.holder&&!G.flight){if(G.brickWait)hint='Brick: si aspetta che la difesa si schieri';else if(G.walk)hint=G.walk.line?'Si riparte dalla linea di meta':'Si raccoglie il disco';}
   if(!hint&&pullMine&&pm)hint=pm.ph?'Tocca per fermare la DIREZIONE dentro il campo':'PULL: tocca per fermare la POTENZA nel verde';
   if(!hint&&canThrow&&!drag&&shownHint<3)hint='Trascina all’indietro e rilascia per lanciare';
   if(!hint&&canThrow&&!drag&&shownHint>=3&&shownCall<2&&G.holdT>1.2)hint='Tocca un compagno per chiamargli il taglio';

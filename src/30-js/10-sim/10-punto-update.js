@@ -96,9 +96,9 @@ function update(dt){
       G.brickT+=dt;
       if(brickReady()||G.brickT>8){G.brickWait=false;G.think=rnd(0.5,0.9);}
     }
-    if(G.walk){   // disco raccolto nella propria meta: prima raggiunge il disco, poi cammina fino alla linea di meta
+    if(G.walk){   // dopo un turnover: prima raggiunge il disco; se e' nella meta che attacca, poi cammina fino alla linea di meta
       const wk=G.walk,tg=wk.stage?wk.line:wk.pick;
-      if(hyp(h.x-tg.x,h.y-tg.y)<0.6){if(!wk.stage)wk.stage=1;else{G.walk=null;G.think=rnd(0.7,1.1);}}
+      if(hyp(h.x-tg.x,h.y-tg.y)<0.6){if(!wk.stage&&wk.line)wk.stage=1;else{G.walk=null;G.think=rnd(0.7,1.1);}}
     }
     const waiting=G.brickWait||!!G.walk;
     if(waiting){G.think=Math.max(G.think,0.6);G.stallT=0;}

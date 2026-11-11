@@ -43,7 +43,6 @@ function landDisc(){
     HOOKS.toast('Tuffo mancato',f.team);
     D=D.filter(o=>o.p!==p);   // il difensore e' fuori posizione
   }
-  {const lb=laneBlock(f.thrower,L.x,L.y,f);if(lb&&Math.random()<lb.prob)return finishTurn(f,lb.q,'Intercetto!');}
   if(A.length&&!D.length)return tryCatch(f,A[0],def,L);
   if(D.length&&!A.length)return finishTurn(f,D[0].p,'Intercetto!',L);
   if(A.length&&D.length)return duel(f,A[0],D[0],reach);
@@ -86,21 +85,27 @@ function finishTurn(f,p,msg,spot){
 function turnover(newTeam,x,y,picker,msg,benefit){
   const spot={x:clamp(x,1,FIELD_L-1),y:clamp(y,1,FIELD_W-1)};
   const pk=picker||nearestTo(T[newTeam],spot.x,spot.y);
-  // il disco cade a terra nella meta di chi lo perde (quella che il nuovo possessore attacca): non si gioca li', ma il piu' vicino lo raccoglie
-  // e cammina fino alla linea di meta, da dove si riparte
+  // nessun teletrasporto: chi raccoglie corre fino al disco (G.walk, fase 0) e da li' si riparte. Se il disco cade nella meta che il nuovo
+  // possessore attacca non si gioca li': dopo averlo raccolto cammina fino alla linea di meta (fase 1), come dice il regolamento
   const ez=!picker&&inEZ(spot,newTeam);
   if(ez){const dr=dirOf(newTeam),line=dr>0?FIELD_L-EZ:EZ;G.walk={pick:{x:spot.x,y:spot.y},line:{x:line-dr*0.6,y:clamp(spot.y,2.5,FIELD_W-2.5)},stage:0};pk.vx=pk.vy=0;}
+  else if(hyp(pk.x-spot.x,pk.y-spot.y)>0.8){G.walk={pick:{x:spot.x,y:spot.y},line:null,stage:0};pk.vx=pk.vy=0;}
   else{pk.x=spot.x;pk.y=spot.y;pk.vx=pk.vy=0;G.walk=null;}
   G.brickWait=false;
   G.st.to[1-newTeam]++;
   G.poss=newTeam;G.holder=pk;G.flight=null;G.marker=null;G.stallT=0;G.holdT=0;G.hbAtt=null;G.zoneH=null;G.zoneT=0;G.call=null;
   HOOKS.sfx('turn',newTeam);
-  if(ez){G.disc.x=spot.x;G.disc.y=spot.y;G.disc.z=0;}else{G.disc.x=pk.x;G.disc.y=pk.y;G.disc.z=1;}
+  if(G.walk){G.disc.x=spot.x;G.disc.y=spot.y;G.disc.z=0;}else{G.disc.x=pk.x;G.disc.y=pk.y;G.disc.z=1;}
   for(const p of T[0].concat(T[1])){p.fl=null;p.boost=0;p.flD=0;p.cs='set';p.cutT=rnd(0.6,1.6);p.cmd=null;}
   assignMarks();G.pb=[null,null];startPlay(newTeam);
   G.hbOk=null;G.think=thinkFor(newTeam,0.9,1.7);
   if(msg)HOOKS.toast(msg,benefit===undefined?newTeam:benefit);
   drillEvt('to',newTeam,pk,msg);
+}
+// ultimo punto del volo ancora dentro il campo (lungo la traiettoria vera, curva compresa): li' il disco e' uscito
+function oobSpot(f){
+  for(let s=1;s>=0;s-=0.02){const P=flightAt(f,s);if(P.x>=0&&P.x<=FIELD_L&&P.y>=0&&P.y<=FIELD_W)return P;}
+  return {x:f.sx,y:f.sy};
 }
 function duel(f,a,d,reach){
   const hi=f.high;
@@ -130,9 +135,9 @@ function diveChain(f,L,atk,def,reach){
   const step=i=>{
     while(i<lst.length&&used.has(i))i++;
     if(i>=lst.length){
-      const oob=L.x<0||L.x>FIELD_L||L.y<0||L.y>FIELD_W;
+      const oob=L.x<0||L.x>FIELD_L||L.y<0||L.y>FIELD_W,sp=oob?oobSpot(f):L;   // fuori: si riparte dal punto in cui il disco ha lasciato il campo
       registerThrow(f.thrower,false,f.cat);HOOKS.sfx('drop');
-      return turnover(1-f.team,L.x,L.y,null,oob?'Fuori!':'Disco a terra',1-f.team);
+      return turnover(1-f.team,sp.x,sp.y,null,oob?'Fuori!':'Disco a terra',1-f.team);
     }
     const o=lst[i];used.add(i);
     // un attaccante e un difensore che si tuffano insieme: un'unica azione, vince chi arriva (a parita' il piu' vicino)
