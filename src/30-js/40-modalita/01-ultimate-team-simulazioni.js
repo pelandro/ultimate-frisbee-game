@@ -168,7 +168,7 @@ function simCareerMatch(){
   const tired=all.reduce((a,p)=>a+(100-p.cond),0)/Math.max(1,all.length);
   // forza = media delle due linee, con gli stessi effetti di una partita giocata: affiatamento e morale, condizione fisica
   const opp=(m.roster?rosterPower(m.roster):m.power)+carDiff().plus,my=(avg(lo)+avg(ld))/2+teamFormB()*0.8-tired*0.04;
-  const r=simMatch(my,opp,carDiff().ai|0),w=r.a>r.b;   // la difficolta' scelta vale anche qui: l'IA migliore vale qualche punto di forza in piu'
+  const r=simMatch(my,opp,carDiff().ai|0,carLen()),w=r.a>r.b;   // la difficolta' scelta vale anche qui: l'IA migliore vale qualche punto di forza in piu'
   // una partita simulata vale come una giocata: stessa esperienza media, statistiche personali, fatica e (ora) anche gli infortuni
   const on=new Set(matchLine('lineO').concat(matchLine('lineD')));
   for(const p of SQ){p.m=newCounters();if(on.has(p.id)&&!p.inj){p.m.pts=1;growBy(p,simParts(p,1),XP_ROLE[posOf(p)]);}}

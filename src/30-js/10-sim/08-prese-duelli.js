@@ -110,7 +110,8 @@ function oobSpot(f){
   for(let s=1;s>=0;s-=0.02){const P=flightAt(f,s);if(P.x>=0&&P.x<=FIELD_L&&P.y>=0&&P.y<=FIELD_W)return P;}
   return {x:f.sx,y:f.sy};
 }
-function duel(f,a,d,reach){
+// punteggi del duello (senza il caso): li usa duel() e li misura il test
+function duelScore(f,a,d,reach){
   const hi=f.high;
   const base=(o,isA)=>{
     const p=o.p,near=(reach(p)-o.d)*8;   // la posizione conta: chi e' piu' dentro alla portata parte avvantaggiato
@@ -119,7 +120,15 @@ function duel(f,a,d,reach){
   };
   // duello: decidono qualita' fisiche, posizione (chi e' piu' vicino al disco), tempismo (chi e' arrivato prima sul punto) e le mani di chi riceve; il caso pesa meno di prima
   const early=clamp(((d.p._t||0)-(a.p._t||0))*7,-9,9);
-  const sa=base(a,true)+(f.intended===a.p?4:0)+(a.p.s.pre-60)*0.22+early-f.sp.cd*40+(hi&&hasT(a.p,'sky')?7:0),sd=base(d,false)+(hasT(d.p,'lock')?5:0)+(hi&&hasT(d.p,'sky')?7:0),rA=rnd(0,16),rD=rnd(0,16);   // il caso pesa meno: decidono di piu' statistiche, posizione e tempismo
+  // QUALITA' DEL LANCIO: un disco preciso arriva dove il compagno lo aspetta (vantaggio a chi riceve), uno sbagliato di 3 m diventa una palla contesa (vantaggio a chi difende)
+  const qual=clamp(3-(f.err||0)*1.7,-6,3);
+  // RINCORSA: sul disco alto chi arriva correndo stacca piu' in alto di chi salta da fermo
+  const run=o=>hi?clamp(hyp(o.p.vx,o.p.vy)-3,0,4)*0.9:0;
+  const sa=base(a,true)+(f.intended===a.p?4:0)+(a.p.s.pre-60)*0.22+early+qual+run(a)-f.sp.cd*40+(hi&&hasT(a.p,'sky')?7:0),sd=base(d,false)+run(d)+(hasT(d.p,'lock')?5:0)+(hi&&hasT(d.p,'sky')?7:0);
+  return {sa,sd};
+}
+function duel(f,a,d,reach){
+  const hi=f.high,{sa,sd}=duelScore(f,a,d,reach),rA=rnd(0,16),rD=rnd(0,16);   // il caso pesa meno: decidono di piu' statistiche, posizione e tempismo
   const resolve=b=>(sa+rA+(a.p.t===0?b*22:0))>=(sd+rD+(d.p.t===0?b*22:0))?'att':'def';
   const apply=out=>{
     if(hi){G.st.jump[out==='att'?a.p.t:d.p.t]++;(out==='att'?a.p:d.p).m.sal++;}

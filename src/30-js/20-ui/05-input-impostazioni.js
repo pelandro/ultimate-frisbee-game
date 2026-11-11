@@ -23,7 +23,7 @@ function quickCall(w,long){
   const q=nearMate(w,0,3.4);if(!q)return;
   if(q===h){if(callClear(0)){addFloater('CLEAR!',h.x,h.y,PAL.sky);HOOKS.sfx('ui');HOOKS.vibe(8);}return;}
   const k=long?callIso(q):callCut(q,'auto');if(!k)return;
-  addFloater(long?'ISO!':(k==='deep'?'LUNGO!':'VIENI!'),q.x,q.y,PAL.sky);HOOKS.sfx('ui');HOOKS.vibe(8);shownCall++;
+  addFloater(long?'ISO!':(k==='deep'?'LUNGO!':(k==='reset'?'RESET!':'VIENI!')),q.x,q.y,PAL.sky);HOOKS.sfx('ui');HOOKS.vibe(8);shownCall++;
 }
 let shownCall=0,shownCtrl=0;
 function toggleDmode(){G.dmode[0]=1-G.dmode[0];HOOKS.sfx('ui');HOOKS.vibe(8);}

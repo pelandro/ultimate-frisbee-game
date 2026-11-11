@@ -26,6 +26,23 @@ function laneRead(f){
     }
   }
 }
+// per la mira: il difensore che farebbe in tempo a mettersi sulla traiettoria di questo lancio (stesso criterio di laneRead, senza il caso), e dove.
+// Non decide nulla: serve solo a far vedere il rischio a chi sta mirando. pl = progetto del lancio (planThrow)
+function aimThreat(th,pl){
+  const f={sx:pl.sx,sy:pl.sy,tx:pl.tx,ty:pl.ty,cx:pl.cx,cy:pl.cy,e:pl.e,T:pl.T,H:pl.H,team:th.t},zone=zoneDef(f);
+  let best=null,bm=-1;
+  for(const q of T[1-th.t]){
+    if(q===G.marker)continue;const rq=reactOf(q),rz=reachZ(q);
+    for(let i=2;i<=8;i++){
+      const s=i/10,P=flightAt(f,s),t=sToU(f,s)*f.T;
+      if(hyp(P.x-f.sx,P.y-f.sy)<LANE_END||hyp(P.x-f.tx,P.y-f.ty)<LANE_END||discZ(f,s)>rz)continue;
+      if(hyp(P.x-q.x,P.y-q.y)>LANE_SEE*(zone?1.3:1))continue;
+      const mg=t+0.05-rq-ttr(q,P.x,P.y);
+      if(mg>=0&&mg>bm){bm=mg;best={q,x:P.x,y:P.y};}
+    }
+  }
+  return best;
+}
 // durante il volo: ogni difensore ha una sola occasione, nel punto in cui il disco gli passa piu' vicino
 function laneCheck(f,P,z){
   if(f.t<0.12||hyp(P.x-f.sx,P.y-f.sy)<LANE_END||hyp(P.x-f.tx,P.y-f.ty)<LANE_END)return false;

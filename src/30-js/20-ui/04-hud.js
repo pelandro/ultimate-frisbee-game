@@ -14,7 +14,7 @@ function updateHUD(dt){
   if(!play)return;
   elScore0.textContent=G.drill?drHud(0):G.score[0];elScore1.textContent=G.drill?drHud(1):G.score[1];
   $('score').classList.toggle('mini',G.mode==='play');   // durante l'azione restano solo i due numeri; a fine meta tornano i nomi
-  elPt.textContent=G.drill?G.matchLabel:(G.matchLabel?G.matchLabel+' · ':'')+'Meta '+G.pointNo;myN.textContent=G.drill?drHud(2):(G.myName||'Blu');oppN.textContent=G.drill?drHud(3):(G.oppName||'Rossi');bExit.classList.toggle('hidden',!G.inMatch);
+  elPt.textContent=G.drill?G.matchLabel:(G.matchLabel?G.matchLabel+' · ':'')+'Meta '+G.pointNo+(G.target!==MATCH_TARGET?' · ai '+G.target:'');myN.textContent=G.drill?drHud(2):(G.myName||'Blu');oppN.textContent=G.drill?drHud(3):(G.oppName||'Rossi');bExit.classList.toggle('hidden',!G.inMatch);
   const h=G.holder;
   const n=h&&!G.flight&&G.marker&&hyp(G.marker.x-h.x,G.marker.y-h.y)<3.8?Math.min(10,Math.floor(G.stallT)+1):0;
   elStall.classList.toggle('hidden',!n||G.mode!=='play');elStall.classList.toggle('hot',n>=7);

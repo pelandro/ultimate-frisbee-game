@@ -89,7 +89,7 @@ function nextMatch(){
   const r=SV.eu.round;return {name:SV.eu.opps[r],power:EU_POW[r]+euPlus(),label:EU_ROUND[r]};   // ogni coppa vinta alza il livello delle avversarie
 }
 function simPower(a,b){
-  const r=simMatch(teamPow(a),teamPow(b),0);   // stesse regole delle partite vere: si arriva a 7, punto per punto
+  const r=simMatch(teamPow(a),teamPow(b),0,carLen());   // stesse regole delle partite vere: si arriva al punteggio scelto, punto per punto
   return [r.a,r.b];
 }
 function addRes(tab,a,b,sa,sb){

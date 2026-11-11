@@ -4,9 +4,9 @@
 // Difficolta' dell'IA avversaria misurata allo stesso modo su circa 1200 punti per livello: Medio vale 1,5 punti di forza, Difficile 2,7.
 const SIM_K=0.185,SIM_KS=0.185,SIM_CAP=12,SIM_DIFF=[0,-1.5,-2.7,-2.7];
 function simPointP(diff){const c=clamp(diff,-SIM_CAP,SIM_CAP);return 1/(1+Math.exp(-(SIM_K*c+SIM_KS*(diff-c))));}
-function simMatch(myP,oppP,dlv){
-  const p=simPointP(myP-oppP+(SIM_DIFF[dlv|0]||0));let a=0,b=0;
-  while(a<MATCH_TARGET&&b<MATCH_TARGET){if(Math.random()<p)a++;else b++;}
+function simMatch(myP,oppP,dlv,tgt){   // tgt: punteggio che chiude la partita (predefinito 7)
+  const p=simPointP(myP-oppP+(SIM_DIFF[dlv|0]||0)),N=tgt||MATCH_TARGET;let a=0,b=0;
+  while(a<N&&b<N){if(Math.random()<p)a++;else b++;}
   return {a,b,p};
 }
 // infortuni nelle partite simulate: lo stesso rischio delle giocate (misurato per condizione di partenza), dimezzato perche' in carriera le due linee si alternano.
@@ -19,8 +19,8 @@ function simInjuries(list,inj){
   return out;
 }
 // probabilita' di vincere la partita (ai 7 punti) data quella di vincere un punto
-function matchWinP(p){
-  const N=MATCH_TARGET,f=[];for(let a=0;a<=N;a++){f.push([]);for(let b=0;b<=N;b++)f[a].push(0);}
+function matchWinP(p,tgt){
+  const N=tgt||MATCH_TARGET,f=[];for(let a=0;a<=N;a++){f.push([]);for(let b=0;b<=N;b++)f[a].push(0);}
   for(let a=N;a>=0;a--)for(let b=N;b>=0;b--){if(a===N&&b===N)continue;f[a][b]=a===N?1:(b===N?0:p*f[a+1][b]+(1-p)*f[a][b+1]);}
   return f[0][0];
 }

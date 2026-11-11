@@ -24,7 +24,7 @@ else{
   const dup=[...new Set(ids.filter((x,i)=>ids.indexOf(x)!==i))];
   if(dup.length)errs.push('id duplicati nell\'HTML: '+dup.join(', '));
   const all=new Set([...html.matchAll(/\bid="([A-Za-z0-9_]+)"/g)].map(m=>m[1]));
-  const DYN=['tnSize','tnPool','tnD'];   // id creati da codice con un modello (non compaiono come id="..." nel sorgente)
+  const DYN=['tnSize','tnPool','tnD','tnLen'];   // id creati da codice con un modello (non compaiono come id="..." nel sorgente)
   const miss=[...new Set([...js.matchAll(/\$\('([A-Za-z0-9_]+)'\)/g)].map(m=>m[1]))].filter(x=>!all.has(x)&&!DYN.includes(x));
   if(miss.length)errs.push("$('id') verso elementi che non esistono: "+miss.join(', '));
   if(!/const SAVE_V=\d+/.test(js))errs.push('manca la versione del salvataggio (SAVE_V)');

@@ -54,12 +54,13 @@ function awayFrom(H,x,y,R){
   return {x:clamp(H.x+dx/d*R,1,FIELD_L-1),y:clamp(H.y+dy/d*R,2.5,FIELD_W-2.5)};
 }
 /* ---- CHIAMATE RAPIDE (tocco su un compagno): taglio profondo, taglio di rientro, isolamento, clear ---- */
-function callCut(p,kind){   // kind: 'deep', 'under' oppure 'auto' (profondo se e' vicino al disco, di rientro se e' gia' lontano)
+function callCut(p,kind){   // kind: 'deep', 'under', 'reset' oppure 'auto' (un handler dietro o di fianco al disco fa il RESET; un cutter va profondo se e' vicino al disco, di rientro se e' gia' lontano)
   const h=G.holder;if(!h||h.t!==p.t||p===h||G.flight||G.walk||G.brickWait)return null;
   const d=dirOf(p.t),fw=(p.x-h.x)*d;
-  if(kind==='auto')kind=fw>15?'under':'deep';
+  if(kind==='auto')kind=(p.role==='H'&&fw<6)?'reset':(fw>15?'under':'deep');   // prima anche l'handler alle spalle veniva mandato lungo: adesso offre lo scarico
   let x,y;
   if(kind==='deep'){x=h.x+d*clamp(Math.max(fw+16,30),26,Math.max(26,Math.min(60,deepRun(p,h)+4)));y=clamp(p.y+(p.y<MID?-2:2),4,FIELD_W-4);}
+  else if(kind==='reset'){const open=G.marker?-G.closedSide:(p.y<h.y?-1:1);x=h.x-d*rnd(3.5,5.5);y=clamp(h.y+open*rnd(6,8),3,FIELD_W-3);}   // scarico: un passo dietro al disco, sul lato che il marcatore lascia aperto
   else{const open=G.marker?-G.closedSide:(p.y<h.y?-1:1);x=h.x+d*rnd(8,11);y=clamp(h.y+open*rnd(5,9),3,FIELD_W-3);}   // di rientro: verso il lato aperto dal marcatore
   x=clamp(x,2,FIELD_L-2);
   p.cmd={k:kind,x,y,t:kind==='deep'?4.5:3};p.cs='cut';p.tx=x;p.ty=y;p.cutT=p.cmd.t;p.calledT=G.tick;
