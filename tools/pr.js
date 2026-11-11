@@ -42,10 +42,12 @@ try{
   }else if(cmd==='stato'||cmd==='attendi'||cmd==='unisci'){
     const n=+rest[0];if(!n)fail('Indica il numero della pull request.');
     let pr=api('GET',`${R}/pulls/${n}`),ck=checks(pr.head.sha);
-    const wait=()=>{const t0=Date.now();while((ck.state==='in corso'||ck.state==='assente')&&Date.now()-t0<12*60*1000){execFileSync(process.execPath,['-e','setTimeout(()=>{},15000)']);pr=api('GET',`${R}/pulls/${n}`);ck=checks(pr.head.sha);}};
+    // aspetta fino alla fine della verifica o all'unione. Se l'altra persona unisce per prima, aggiorna-rami.yml riallinea questo ramo e rilancia la verifica
+    // su un commit nuovo: qui si segue sempre l'ultimo commit del ramo, quindi l'attesa continua fino all'esito vero
+    const wait=()=>{const t0=Date.now();while(!pr.merged&&(ck.state==='in corso'||ck.state==='assente')&&Date.now()-t0<12*60*1000){execFileSync(process.execPath,['-e','setTimeout(()=>{},15000)']);pr=api('GET',`${R}/pulls/${n}`);ck=checks(pr.head.sha);}};
     if(cmd==='attendi')wait();
     if(cmd!=='unisci'){
-      console.log(`#${n} ${pr.title} — ${pr.state}${pr.merged?' (unita)':''} · ramo ${pr.head.ref} · conflitti con main: ${pr.mergeable===false?'SÌ':(pr.mergeable===null?'in calcolo':'no')} · verifica: ${ck.state}`);
+      console.log(`#${n} ${pr.title} — ${pr.state}${pr.merged?' (unita)':''} · ramo ${pr.head.ref} · conflitti con main: ${pr.mergeable===false?'SÌ':(pr.mergeable===null?'in calcolo':'no')} · verifica: ${ck.state}${pr.mergeable_state==='behind'?' · indietro rispetto a main: la riallinea da sola aggiorna-rami.yml':''}`);
       for(const x of ck.list)console.log('   '+x);
       process.exit(ck.state==='rossa'?2:0);
     }
@@ -65,6 +67,6 @@ try{
       try{api('DELETE',`${R}/git/refs/heads/${pr.head.ref}`);}catch(e){}
       done=`#${n} unita in main (verifica verde).`;
     }
-    console.log(done);
+    console.log(done+(pr.mergeable_state==='behind'?' Il ramo e\' indietro rispetto a main (l\'altra persona ha unito per prima): lo riallinea e lo riprova da solo il lavoro «Aggiorna rami»; se c\'e\' un conflitto lascia un commento sulla pull request.':''));
   }else fail('Uso: node tools/pr.js apri "Titolo" [--corpo file] | elenco | stato <n> | attendi <n> | unisci <n>');
 }catch(e){fail('GitHub ha risposto con un errore: '+e.message.slice(0,400));}
