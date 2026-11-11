@@ -11,10 +11,10 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 |---|---|
 | `src/00-testa.html`, `src/99-coda.html` | Apertura e chiusura della pagina |
 | `src/10-css/` | Stili: font incorporati, base, tema retro, schermate di carriera e pannelli, schermi grandi e tocco (`--ui`) |
-| `src/20-html/` | Struttura della pagina: campo e HUD, menu, schermate, pannelli, guida |
+| `src/20-html/` | Struttura della pagina: campo e HUD, menu, schermate, pannelli, guida. **L'ultimo file (`08-…`) apre `<script>`**: un file HTML nuovo deve venire prima in ordine alfabetico (per esempio `07b-imprevisti.html`) |
 | `src/30-js/10-sim/` | **Motore di gioco** (tra `/*SIM_START*/` e `/*SIM_END*/`): nessun accesso alla pagina |
 | `src/30-js/20-ui/` | Disegno a pixel, stacchi, HUD, input (trascinamento, tastiera, controller), impostazioni, schemi, fine partita, difesa automatica e pull a tempo (`09-difesa-pull.js`), indicatore del vento (`10-vento.js`) |
-| `src/30-js/30-carriera/` | Salvataggio, squadre e roster, stagione, rosa e linee, economia, mercato, premi, evoluzione del campionato, vita dei giocatori, avvio partita e navigazione |
+| `src/30-js/30-carriera/` | Salvataggio, squadre e roster, stagione, rosa e linee, economia, mercato, premi, evoluzione del campionato, vita dei giocatori, avvio partita e navigazione, carriera dinamica (`11-carriera-dinamica.js`: intensità degli allenamenti, manutenzione e usura delle strutture, imprevisti `EVT`, sfida della dirigenza, dominio) |
 | `src/30-js/40-modalita/` | Ultimate Team, partite simulate, campo di allenamento (tutorial, sfide), torneo |
 | `src/30-js/50-schermate/` | Schermate della carriera: cruscotto, rosa, allenamenti, mercato, club, avvisi, opzioni, guida, pausa |
 | `src/30-js/90-avvio/` | Ciclo principale, audio, avvio |

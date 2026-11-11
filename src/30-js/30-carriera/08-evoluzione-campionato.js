@@ -38,7 +38,7 @@ function evolveLeague(){
     while(ro.length>20){const w=ro.slice().sort((a,b)=>ovrX(a)-ovrX(b))[0];ro.splice(ro.indexOf(w),1);}
     // la squadra tende al proprio livello storico, spostato dal ciclo del momento: cosi' il campionato resta credibile per decenni, con squadre che salgono e che scendono
     const prev=SV.cyc[n]||0;SV.cyc[n]=clamp(prev*0.75+(R()*2-1)*2.6,-7,7);
-    const gap=clamp(SV.anc[n]+SV.cyc[n]-rosterPower(ro),-3,3)*0.8,best=ro.slice().sort((a,b)=>ovrX(b)-ovrX(a)).slice(0,11);
+    const gap=clamp(SV.anc[n]+SV.cyc[n]+domBoost(n)-rosterPower(ro),-3,3)*0.8,best=ro.slice().sort((a,b)=>ovrX(b)-ovrX(a)).slice(0,11);
     if(Math.abs(gap)>0.3)for(const o of best){
       if(gap>0&&o.age>29)continue;if(gap<0&&o.age<24&&R()<0.4)continue;   // crescono i giovani e chi e' nel pieno, calano soprattutto i meno giovani
       const g=gap*(gap>0?1.5:1.7);

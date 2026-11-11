@@ -8,7 +8,7 @@ function startMatch(){
   G.oppName=m.name;G.myName=SV.team;G.matchLabel=m.label;
   newGame();G.lvl=[0,carDiff().ai|0];G.oppPlus=plus||0;G.idn=[null,teamIdentity(m.name,T[1])];G.xtr=SV.diff==='xtr';G.hint=(SV.diff||'easy')==='easy';G.routes=G.hint||SV.diff==='med';G.inMatch=true;G.recorded=false;
   {const w=careerWind(m);setWind(w[0],w[1]);}   // il meteo annunciato sul cruscotto
-  fixLines();G.lines={o:matchLine('lineO'),d:matchLine('lineD'),auto:!!SV.autoSub};G.injK=1-0.2*(SV.fac.fis|0);   // linee d'attacco e di difesa, cambi intelligenti, fisioterapia
+  fixLines();G.lines={o:matchLine('lineO'),d:matchLine('lineD'),auto:!!SV.autoSub};G.injK=1-0.12*facLv('fis');   // linee d'attacco e di difesa, cambi intelligenti, fisioterapia
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
   if(first)openSchemes(true);   // la prima volta si aprono gli schemi, con il rimando a tutorial e guida
@@ -33,7 +33,7 @@ const carDiff=()=>CAR_DIFF[(SV&&SV.diff)||'easy']||CAR_DIFF.easy;
 const trainOpen=()=>((SV.played||0)%carDiff().n)===0;       // la sessione e' disponibile prima della 1a partita e poi ogni n partite giocate (anche in Europa)
 const trainWait=()=>{const n=carDiff().n;return n-((SV.played||0)%n);};
 // forza di una squadra = media delle statistiche dei suoi 7 migliori giocatori (3 handler e 4 cutter)
-const incTxt=()=>` Bilancio della giornata: ${SV.lastInc>=0?'+':''}${SV.lastInc} crediti (stipendi ${SV.lastWage|0}).`;
+const incTxt=()=>` Bilancio della giornata: ${SV.lastInc>=0?'+':''}${SV.lastInc} crediti (stipendi ${SV.lastWage|0}${SV.lastUp?', manutenzione '+SV.lastUp:''}).`;
 const teamFormB=()=>clamp((SV.chem-50)/50*0.9+(SV.mor-50)/50*0.6,-1.5,1.5);
 const squadPower=()=>{const b=pickSeven(SQ,p=>p.role,mean9);return b.reduce((a,p)=>a+mean9(p),0)/b.length;};
 const teamPower=n=>n===SV.team?squadPower():(SV.rost&&SV.rost[n]?rosterPower(SV.rost[n])+carDiff().plus:null);

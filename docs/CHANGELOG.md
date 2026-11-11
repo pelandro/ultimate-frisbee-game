@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Carriera più viva: intensità degli allenamenti (leggero, normale, intenso), fatica che pesa di più (chi è molto affaticato rischia l’infortunio), sei strutture fino al livello 5 con manutenzione, usura e premi annuali di mantenimento, imprevisti occasionali con scelte, sfida facoltativa della dirigenza, rivali che si rinforzano dopo i tuoi scudetti e Coppa europea più dura a ogni vittoria. Effetti delle strutture ribilanciati (campo 10% e fisioterapia 12% per livello).
 - Il gioco è sempre aggiornato all'indirizzo <https://pelandro.github.io/ultimate-frisbee-game/>; sotto il titolo compare la versione (data e ora).
 - Il vento si può spegnere: Impostazioni › Vento, oppure Opzioni della carriera. Da spento tutte le partite si giocano con la calma.
 - Vento: ogni partita ha il suo (in carriera lo annuncia il cruscotto). Sposta e sporca i lanci lunghi e alti, cambia la gittata e muove le zone del pull; chi lancia bene lo compensa.

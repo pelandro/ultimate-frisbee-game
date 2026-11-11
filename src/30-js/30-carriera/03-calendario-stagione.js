@@ -81,7 +81,7 @@ function nextMatch(){
     return {name:on,roster:SV.rost[on],label:`Giornata ${SV.round+1} di ${totalRounds()}`};
   }
   if(SV.eu.state!=='on')return null;
-  const r=SV.eu.round;return {name:SV.eu.opps[r],power:EU_POW[r],label:EU_ROUND[r]};
+  const r=SV.eu.round;return {name:SV.eu.opps[r],power:EU_POW[r]+euPlus(),label:EU_ROUND[r]};   // ogni coppa vinta alza il livello delle avversarie
 }
 function simPower(a,b){
   const r=simMatch(teamPow(a),teamPow(b),0);   // stesse regole delle partite vere: si arriva a 7, punto per punto
@@ -120,6 +120,7 @@ function endSeason(){
   if(nsr<SV.sr)SV.rep=clamp(SV.rep+6,0,100);else if(nsr>SV.sr)SV.rep=clamp(SV.rep-8,0,100);
   if(SV.sr==='A'&&rank===1)SV.rep=clamp(SV.rep+6,0,100);
   SV.next.prize=prize;SV.next.objOk=!!ok;
+  seasonEndDyn(rank);   // sfida della dirigenza, reazione delle rivali
   seasonAwards(rank,order);
   news('Stagione '+SV.season+' conclusa al '+rank+'° posto: premio di '+prize+' crediti'+(SV.obj?(ok?', obiettivo raggiunto (+'+SV.obj.reward+')':', obiettivo mancato'):'')+'.');
 }
@@ -138,6 +139,7 @@ function newSeason(){
   summerChanges(was);evolveLeague();
   SV.chem=clamp(50+(SV.chem-50)*0.6,0,100);SV.mor=clamp(60+(SV.mor-60)*0.5,0,100);   // estate: l'intesa si allenta un poco, l'umore torna verso la norma
   beginSeason();buildMarket();
+  seasonStartDyn();   // premi di mantenimento e usura delle strutture, nuova sfida
   retireCheck('start');starsRetire();   // chi comincia a pensare al ritiro lo dice subito
   persist();
 }
@@ -164,17 +166,18 @@ function recordResult(win,su,so){
   }
   for(const p of SQ){   // nuova giornata: tornano gli allenamenti, gli infortunati recuperano; ogni infortunio e ogni rientro viene segnalato
     p.tr=false;
+    if(p.injNew&&(SV.fisShield|0)>0&&p.inj>1){p.inj=Math.ceil(p.inj/2);SV.fisShield--;}   // prevenzione (fisioterapia tenuta almeno al livello 3)
     if(p.injNew){const big=p.inj>=5;if(big){p.injC=(p.injC|0)+1;p.injBig=1;}alertAdd('inj',`${pname(p)} si è infortunat${oa(p)}${big?' in modo serio':''}: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full});}
-    else if(p.inj>0){p.inj--;if(p.inj===0)healed(p);}
+    else if(p.inj>0){p.inj--;if(p.inj===0){if(p.abs)p.abs=0;else healed(p);}}   // abs: assenza per impegni, non un infortunio
     p.injNew=false;
   }
   SV.tTeam=false;
   // incasso, morale, affiatamento, condizione: chi ha giocato si stanca, la settimana fa recuperare (di piu' con la fisioterapia)
   const inc=matchIncome(win),wg=wageBill();SV.cash+=inc-wg;SV.lastInc=inc-wg;SV.lastWage=wg;
   // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso gli stipendi arrivano in ritardo e l'umore cala
-  SV.mor=clamp(SV.mor+(win?6:-5)+(60-SV.mor)*0.1-(SV.cash<0?3:0),0,100);SV.chem=clamp(SV.chem+0.5,0,100);
-  for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(4,10-p.s.res*0.05):0)+10+3*(SV.fac.fis|0),0,100);}
-  lifeAfterMatch();
+  SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-(SV.cash<0?3:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede'),0,100);
+  for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis'),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
+  lifeAfterMatch();dynAfterMatch();
   if(SV.event==='camp'&&!SV.done&&SV.round%5===0)buildMarket();   // il mercato si rinnova ogni 5 giornate
   persist();return msg;
 }
