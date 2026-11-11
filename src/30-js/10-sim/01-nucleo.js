@@ -50,7 +50,7 @@ const G={mode:'menu',xtr:false,hint:false,routes:true,score:[0,0],target:MATCH_T
 // 1 manuale (guidi un difensore, handblock e tuffi a ogni occasione), 2 saltata (il possesso avversario si risolve in un istante).
 // In allenamento la difesa e' sempre manuale: e' li' che si impara. G.skip: possesso avversario in corso di salto.
 const defMan=()=>G.opt.def===1||!!G.drill;
-function resetStats(){G.st={thr:[0,0],cmp:[0,0],blk:[0,0],dive:[0,0],jump:[0,0],to:[0,0],hb:[0,0],sp:[0,0],sh:[0,0],drop:[0,0],lane:[0,0],pair:[0,0],gg:[0,0],iso:[0,0],ez:[0,0],dm:[0,0]};G.aiRec={};}
+function resetStats(){G.st={thr:[0,0],cmp:[0,0],blk:[0,0],dive:[0,0],jump:[0,0],to:[0,0],hb:[0,0],sp:[0,0],sh:[0,0],drop:[0,0],lane:[0,0],pair:[0,0],gg:[0,0],iso:[0,0],ez:[0,0],dm:[0,0]};G.aiRec={};G.ptLog=[];G.schR={};G.defR={};}
 const statOrig=(r,k)=>k==='res'?(r[15]!==undefined?r[15]:60):(k==='pre'?Math.round(r[2]*0.35+r[6]*0.25+r[7]*0.4):(k==='agi'?Math.round(r[7]*0.7+r[9]*0.3):r[2+KEYS.indexOf(k)]));   // le rose di prova non hanno Presa e Agilita': si ricavano da lancio, salto, scatto e velocita'
 // rose salvate prima che esistessero Presa e Agilita': le due statistiche si ricavano dalle altre
 function fillStats(st){if(typeof st.pre!=='number')st.pre=Math.round(st.lan*0.3+st.sal*0.3+st.sca*0.4);if(typeof st.agi!=='number')st.agi=Math.round(st.sca*0.7+st.vel*0.3);return st;}

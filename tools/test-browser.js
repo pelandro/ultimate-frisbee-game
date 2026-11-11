@@ -86,6 +86,32 @@ catch(e){
     await page.waitForTimeout(300);await page.click('#bExit');await vis('#pause');await page.click('#paGo');
     await playOut();await vis('#over');await page.click('#bAgain');await page.waitForTimeout(200);await vis('#home');
   });
+  await step('partita sospesa: si salva, resiste alla ricarica e si riprende dal punteggio salvato',async()=>{
+    await vis('#home');await page.click('#hPlay');await page.waitForTimeout(500);if(await page.locator('#menu').isVisible())await page.click('#bGo');
+    for(let i=0;i<2;i++){await page.waitForSelector('#bSimPt:not(.hidden)',{timeout:20000});await page.click('#bSimPt');await page.waitForTimeout(150);}
+    await page.waitForSelector('#bExit:not(.hidden)');await page.waitForTimeout(3500);   // finisce la fascia della meta
+    for(let i=0;i<30&&!(await page.locator('#pause').isVisible());i++){await page.keyboard.press('Escape');await page.waitForTimeout(250);}
+    await vis('#pause');await page.click('#paSusp');await vis('#home');
+    const t=await page.locator('#hPlayT').innerText(),sub=await page.locator('#hPlayS').innerText();
+    if(!/Riprendi/.test(t))throw new Error('dopo la sospensione il cruscotto non propone di riprendere: '+t);
+    const sc=(sub.match(/(\d+)–(\d+)/)||[]).slice(1).map(Number);if(sc.length!==2||sc[0]+sc[1]<1)throw new Error('punteggio sospeso non valido: '+sub);
+    await page.reload();await page.waitForTimeout(500);
+    if(!/sospesa/.test(await page.locator('#tCareerS').innerText()))throw new Error('dopo la ricarica la partita sospesa non c\'e\' piu\'');
+    await page.click('#tCareer');await vis('#home');await page.click('#hPlay');await page.waitForTimeout(600);if(await page.locator('#menu').isVisible())await page.click('#bGo');
+    const s2=(await page.locator('#score').innerText()).match(/(\d+)\s*[–-]\s*(\d+)/);
+    if(!s2||+s2[1]!==sc[0]||+s2[2]!==sc[1])throw new Error('ripresa con un punteggio diverso: '+(s2?s2[0]:'?')+' invece di '+sc.join('-'));
+    await playOut();await vis('#over');await page.click('#bAgain');await page.waitForTimeout(200);await vis('#home');
+    if(/Riprendi/.test(await page.locator('#hPlayT').innerText()))throw new Error('a partita finita resta una sospensione');
+  });
+  await step('slot carriera: una seconda carriera e il ritorno alla prima',async()=>{
+    const team1=(await page.locator('#tCareerS').innerText().catch(()=>''));
+    await vis('#home');const name1=await page.locator('#home .dname').first().innerText();
+    await page.click('#hOpt');await vis('#opts');if(await page.locator('#opSlots [data-slot]').count()!==3)throw new Error('gli slot devono essere tre');
+    await page.click('#opSlots [data-slot="2"]');await vis('#team');await page.click('#tSr button[data-k="B"]');await page.click('.tteam >> nth=3');await page.waitForTimeout(300);await vis('#home');
+    const name2=await page.locator('#home .dname').first().innerText();if(name2===name1)throw new Error('lo slot 2 ha la stessa squadra dello slot 1');
+    await page.click('#hOpt');await page.click('#opSlots [data-slot="1"]');await page.waitForTimeout(300);await vis('#home');
+    const back=await page.locator('#home .dname').first().innerText();if(back!==name1)throw new Error('tornando allo slot 1 la carriera non e\' quella di prima: '+back);
+  });
   await step('il salvataggio resiste alla ricarica della pagina',async()=>{
     await page.reload();await page.waitForTimeout(500);
     const t=await page.locator('#tCareerS').innerText();if(!/Continua/.test(t))throw new Error('carriera non ritrovata dopo la ricarica: «'+t+'»');

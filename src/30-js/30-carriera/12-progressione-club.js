@@ -123,3 +123,19 @@ function specHTML(p){
 }
 const duoHTML=p=>{const L=duoList(p);return L.length?`<div class="dst"><b style="color:#7fd8ff;font-weight:400">Intesa</b>: ${L.map(x=>esc(pname(x.q))+' ('+Math.min(DUO_FULL,x.n)+'/'+DUO_FULL+' partite)').join(', ')}</div>`:'';};
 const goalLineHTML=p=>p.goal&&p.goal.s===SV.season?`<div class="dst"><b style="color:#7fd8ff;font-weight:400">Obiettivo</b>: ${GOALS[p.goal.id].txt(p.goal)} (${Math.round(GOALS[p.goal.id].cur(p))}/${p.goal.tgt})${p.sad?' · deluso '+p.sad+' volte':''}</div>`:'';
+/* ---- CONFRONTO TRA DUE GIOCATORI: statistiche una per una con la differenza, Overall, potenziale, eta', stipendio e valore ---- */
+function compareHTML(a,b,la,lb){
+  const cell=(k,va,vb)=>{const d=va-vb;return `<span>${k}</span><b>${va}</b><b>${vb}</b><i class="${d>0?'up':(d<0?'dn':'')}">${d>0?'+':''}${d||'='}</i>`;};
+  const cap=s=>s.length>14?s.slice(0,13)+'…':s;
+  let h=`<div class="cmp"><span></span><b>${esc(cap(la))}</b><b>${esc(cap(lb))}</b><i></i>`;
+  h+=cell('Overall',ovr(a),ovr(b))+`<span>Potenziale</span><b>${potTxt(a)}</b><b>${potTxt(b)}</b><i></i>`+cell('Età',a.age,b.age);
+  h+=`<span>Ruolo</span><b>${POS_NAME[posOf(a)]}</b><b>${POS_NAME[posOf(b)]}</b><i></i>`;
+  for(const k of SHOW)h+=cell(LBL[k],a.s[k],b.s[k]);
+  h+=cell('Stipendio',Math.round(wageOf(a)),Math.round(wageOf(b)))+cell('Valore',priceOf(a),priceOf(b));
+  return h+'</div>';
+}
+// per il Mercato: il titolare piu' debole del ruolo (quello che il nuovo giocatore sostituirebbe), o il migliore se e' una riserva
+function cmpTarget(o){
+  const pos=posOf(o),same=SQ.filter(p=>posOf(p)===pos).sort((a,b)=>ovrX(b)-ovrX(a)),slot=pos==='H'?3:4;
+  return same[Math.min(slot,same.length)-1]||same[0]||null;
+}

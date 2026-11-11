@@ -19,9 +19,10 @@ function renderHome(){
   $('hObj').textContent=SV.obj?`Obiettivo: ${SV.obj.txt} (premio ${SV.obj.reward}).`:'';
   $('hNews').textContent=SV.news.length?'Ultime: '+SV.news[0].txt:'';
   // l'azione principale e' sempre quella che serve adesso: giocare, oppure aprire la nuova stagione (o il nuovo torneo europeo)
-  $('hPlayT').textContent=m?'Inizia partita':(SV.event==='camp'?'Nuova stagione':'Nuovo torneo');
-  $('hPlayS').textContent=m?`Contro ${m.name} · ${carDiff().name}`:(SV.event==='camp'?'Riepilogo, premi e ripartenza':'Campionato europeo concluso');
-  $('hSim').classList.toggle('hidden',!m);
+  const su=suspOk();
+  $('hPlayT').textContent=su?'Riprendi la partita':(m?'Inizia partita':(SV.event==='camp'?'Nuova stagione':'Nuovo torneo'));
+  $('hPlayS').textContent=su?`Sospesa sul ${SV.susp.score[0]}–${SV.susp.score[1]} contro ${m.name}`:(m?`Contro ${m.name} · ${carDiff().name}`:(SV.event==='camp'?'Riepilogo, premi e ripartenza':'Campionato europeo concluso'));
+  $('hSim').classList.toggle('hidden',!m||su);   // una partita sospesa si riprende, non si simula
   const left=3-SQ.filter(p=>p.tr).length,hurt=SQ.filter(p=>p.inj).length,low=SQ.filter(p=>p.cond<50).length;
   $('hTrainS').textContent=!trainOpen()?`Prossima sessione tra ${trainWait()} ${trainWait()>1?'partite':'partita'}`:`Squadra ${SV.tTeam?'fatta':'da fare'} · singoli ${left}/3`;
   $('hRosterS').textContent=`${SQ.length} giocatori · forza ${Math.round(squadPower())}`+(hurt?` · ${hurt} inf.`:(low?` · ${low} scarichi`:''));
@@ -67,14 +68,23 @@ function lineToggle(p,k){
   if(L.length>=7)return (k==='lineO'?'La linea d’attacco':'La linea di difesa')+' ha già 7 giocatori: togline uno prima di aggiungerne un altro.';
   L.push(p.full);return '';
 }
+// confronto con un compagno: si sceglie dal menu (di base il compagno dello stesso ruolo piu' vicino come Overall)
+const cmpWith={};
+function rosterCmp(p){
+  const pos=posOf(p),others=SQ.filter(q=>q!==p).sort((a,b)=>(posOf(b)===pos)-(posOf(a)===pos)||Math.abs(ovrX(a)-ovrX(p))-Math.abs(ovrX(b)-ovrX(p)));
+  if(!others.length)return '';
+  const q=byFull(cmpWith[p.full])||others[0];
+  return `<div class="dst"><b style="color:var(--gold);font-weight:400">Confronta con</b> <select class="qs cmpsel" data-cmp="${p.id}">${others.map(o=>`<option value="${esc(o.full)}"${o===q?' selected':''}>${esc(pname(o))} · ${POS_NAME[posOf(o)]} ${ovr(o)}</option>`).join('')}</select></div>${compareHTML(p,q,pname(p),pname(q))}`;
+}
 function detailHTML(p){
   const sure=(p.sk|0)>=3,c=p.car,ss=c?c.ss:null,pos=posOf(p);
   const stats=CATS.map(ct=>`<div class="dgr"><b>${ct.name} ${catLevel(p,ct)}</b>`+ct.keys.map(k=>`<span>${LBL[k]} ${p.s[k]}${sure?`<small>/${capX(p,k)}</small>`:''}</span>`).join('')+'</div>').join('');
   const rr=['H','C','D'].map(r=>`<span class="${pos===r?'on':''}">${POS_NAME[r]} ${Math.round(rate(p.s,r))}</span>`).join('');
   const tr=p.trait&&TRAITS[p.trait]?`<div class="dtr"><b>${TRAITS[p.trait][0]}</b>: ${TRAITS[p.trait][1].toLowerCase()}.</div>`:'';
   const st=c&&c.mp?`<div class="dst">Stagione: ${ss.mp} partite, ${ss.g} mete, ${ss.a} assist, ${ss.b} difese · Carriera: ${c.mp} partite, ${c.g} mete, ${c.a} assist, ${c.b} difese</div>`:'<div class="dst">Ancora nessuna partita con questa squadra.</div>';
-  return `<div class="drole">${rr}</div>${tr}<div class="dst">Potenziale ${potTxt(p)}${sure?' (certo)':''} · crescita ${(p.sk|0)>=2?devLabel(p.dev):'da osservare'} · condizione ${Math.round(p.cond)} · stipendio ${Math.round(wageOf(p))} a stagione${p.ret===1?' · <b style="color:#c9a0ff;font-weight:400">si ritira a fine stagione</b>':(retScore(p)>-1.5?' · <b style="color:#c9a0ff;font-weight:400">pensa al ritiro</b>':(p.age>=30?' · ritiro lontano':''))}${(p.injC|0)?' · infortuni seri: '+p.injC:''}</div><div class="dg">${stats}</div>${st}${goalLineHTML(p)}${duoHTML(p)}${p.aw&&p.aw.length?`<div class="dst"><b style="color:var(--gold);font-weight:400">Premi</b>: ${p.aw.map(a=>esc(a.k)+' (S'+a.s+')').join(', ')}</div>`:''}${specHTML(p)}<div class="dst scr">${scoutReport(p)}</div><div class="dact">${sure?'':`<button type="button" class="sec" data-scout="${p.id}"${SV.cash<scoutCost()?' disabled':''}>Osserva (${scoutCost()} crediti)</button>`}<button type="button" class="sec" data-sell="${p.id}"${SQ.length>SQ_MIN?'':' disabled'}>${sellArm===p.id?'Conferma la cessione':'Cedi'} (+${sellValue(p)})</button></div>`;
+  return `<div class="drole">${rr}</div>${tr}<div class="dst">Potenziale ${potTxt(p)}${sure?' (certo)':''} · crescita ${(p.sk|0)>=2?devLabel(p.dev):'da osservare'} · condizione ${Math.round(p.cond)} · stipendio ${Math.round(wageOf(p))} a stagione${p.ret===1?' · <b style="color:#c9a0ff;font-weight:400">si ritira a fine stagione</b>':(retScore(p)>-1.5?' · <b style="color:#c9a0ff;font-weight:400">pensa al ritiro</b>':(p.age>=30?' · ritiro lontano':''))}${(p.injC|0)?' · infortuni seri: '+p.injC:''}</div><div class="dg">${stats}</div>${st}${goalLineHTML(p)}${duoHTML(p)}${p.aw&&p.aw.length?`<div class="dst"><b style="color:var(--gold);font-weight:400">Premi</b>: ${p.aw.map(a=>esc(a.k)+' (S'+a.s+')').join(', ')}</div>`:''}${specHTML(p)}<div class="dst scr">${scoutReport(p)}</div>${rosterCmp(p)}<div class="dact">${sure?'':`<button type="button" class="sec" data-scout="${p.id}"${SV.cash<scoutCost()?' disabled':''}>Osserva (${scoutCost()} crediti)</button>`}<button type="button" class="sec" data-sell="${p.id}"${SQ.length>SQ_MIN?'':' disabled'}>${sellArm===p.id?'Conferma la cessione':'Cedi'} (+${sellValue(p)})</button></div>`;
 }
+$('rBox').addEventListener('change',e=>{const s=e.target.closest('[data-cmp]');if(!s)return;const p=SQ[+s.dataset.cmp];if(p){cmpWith[p.full]=s.value;renderRoster();}});
 function renderRoster(){
   const inO=new Set(SV.lineO),inD=new Set(SV.lineD);
   const ord=SQ.slice().sort((a,b)=>ovrX(b)-ovrX(a)||a.name.localeCompare(b.name));

@@ -16,7 +16,7 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `src/30-js/20-ui/` | Disegno a pixel, stacchi, HUD, input (trascinamento, tastiera, controller), impostazioni, schemi, fine partita, difesa automatica e pull a tempo (`09-difesa-pull.js`), indicatore del vento (`10-vento.js`), test della carriera in Diagnostica (`11-test-carriera.js`, `careerSelfTest`), replay delle mete spettacolari (`12-replay.js`) |
 | `src/30-js/30-carriera/` | Salvataggio, squadre e roster, stagione, rosa e linee, economia, mercato, premi, evoluzione del campionato, vita dei giocatori, avvio partita e navigazione, staff, intesa, obiettivi personali, scouting e specializzazioni (`12-progressione-club.js`), campionati persistenti, rivalità e storie (`13-campionati.js`), carriera dinamica (`11-carriera-dinamica.js`: intensità degli allenamenti, manutenzione e usura delle strutture, imprevisti `EVT`, sfida della dirigenza, dominio) |
 | `src/30-js/40-modalita/` | Ultimate Team, partite simulate, campo di allenamento (tutorial, sfide), torneo |
-| `src/30-js/50-schermate/` | Schermate della carriera: cruscotto, rosa, allenamenti, mercato, club, avvisi, opzioni, guida, pausa |
+| `src/30-js/50-schermate/` | Schermate della carriera: cruscotto, rosa (con confronti), allenamenti, mercato, club, avvisi, opzioni, guida, pausa, imprevisti, partite sospese (`07-sospendi.js`: `SV.susp`, `suspSnap`, `resumeMatch`), slot carriera (`08-slot.js`) |
 | `src/30-js/90-avvio/` | Ciclo principale, audio, avvio |
 | `tools/` | Costruzione, verifiche, confronto tra rami, ganci |
 

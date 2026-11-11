@@ -67,7 +67,8 @@ function pbPos(pb,team,u,y,m){const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ;
   return {x:clamp(own+d*uu,1,FIELD_L-1),y:clamp(yy,2.5,FIELD_W-2.5)};}
 function startPlay(team,force){   // force: avvia uno schema preciso (l'attacco in meta) invece di quello scelto
   const sch=force||(team===0?G.sch.att:G.opp.att),book=PLAYBOOK[sch];
-  if(!force){if(!G.ezUsed)G.ezUsed=[false,false];G.ezUsed[team]=false;}   // nuovo possesso: l'attacco in meta si puo' usare di nuovo
+  if(!force){if(!G.ezUsed)G.ezUsed=[false,false];G.ezUsed[team]=false;
+    if(G.schR){const R=team===0?G.schR:G.defR,k=team===0?G.sch.att:G.sch.def;(R[k]||(R[k]=[0,0]))[0]++;}}   // per il riepilogo: possessi per schema (tuo attacco, tua difesa)   // nuovo possesso: l'attacco in meta si puo' usare di nuovo
   if(!G.pb)G.pb=[null,null];
   const h=G.holder;
   if(!book||!h||h.t!==team){G.pb[team]=null;return;}
