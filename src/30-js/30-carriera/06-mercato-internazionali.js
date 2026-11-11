@@ -86,4 +86,4 @@ function sellPlayer(id){
   news('Ceduto '+(p.label||p.name)+' per '+v+' crediti.');return true;
 }
 const SCOUT_COST=6;
-function scoutPlayer(x){if(!x||(x.sk|0)>=3||SV.cash<SCOUT_COST)return false;SV.cash-=SCOUT_COST;x.sk=(x.sk|0)+1;return true;}
+function scoutPlayer(x){if(!x||(x.sk|0)>=3||SV.cash<scoutCost())return false;SV.cash-=scoutCost();x.sk=(x.sk|0)+1;return true;}

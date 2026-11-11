@@ -69,11 +69,13 @@ function selfTestPlan(opt){
     return out;
   }]);
   S.steps.push(['Peso degli attributi',()=>{
-    const rb=ros(62,'b'),m0=margin(S.base||run(ros(62,'a'),rb,n)),out=[],slack=3.2*Math.sqrt(2/n);
+    // lo scarto medio di poche partite e' rumoroso (circa 3,3 punti di deviazione a partita): servono almeno 10 partite per lato e un margine
+    // di 2,6 deviazioni standard, altrimenti il controllo fallisce o passa per caso
+    const k=Math.max(n,10),rb=ros(62,'b'),m0=margin(S.base&&n>=k?S.base:run(ros(62,'a'),rb,k)),out=[],slack=2.6*3.3*Math.sqrt(2/k);
     for(const c of CATS.filter(c=>c.keys.length>1)){
       const ra=ros(62,'a');for(const o of ra)for(const k of c.keys)o.s[k]=Math.min(99,o.s[k]+12);
-      const mv=margin(run(ra,rb,n));
-      out.push(row(c.name+' +12: scarto medio in punti',(mv>=0?'+':'')+mv.toFixed(1)+' (base '+(m0>=0?'+':'')+m0.toFixed(1)+')',mv>m0-slack,'non deve peggiorare il risultato'));
+      const mv=margin(run(ra,rb,k));
+      out.push(row(c.name+' +12: scarto medio in punti',(mv>=0?'+':'')+mv.toFixed(1)+' (base '+(m0>=0?'+':'')+m0.toFixed(1)+')',mv>m0-slack,'non deve peggiorare il risultato oltre il margine del caso ('+slack.toFixed(1)+')'));
     }
     return out;
   }]);

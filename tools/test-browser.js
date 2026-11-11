@@ -18,6 +18,8 @@ catch(e){
   page.on('console',m=>{if(m.type()==='error'&&!/font|net::ERR|Failed to load resource/i.test(m.text()))errs.push('console: '+m.text());});
   // gli avvisi della carriera si aprono da soli: li chiudo quando coprono cio' che sto per toccare
   await page.addLocatorHandler(page.locator('#alerts:not(.hidden) #alX'),async()=>{await page.click('#alX');});
+  // anche gli imprevisti compaiono da soli (di rado): scelgo la prima risposta possibile e chiudo
+  await page.addLocatorHandler(page.locator('#evt:not(.hidden)'),async()=>{if(await page.locator('#evOk').isVisible())await page.click('#evOk');else await page.click('#evOpts button:not([disabled]) >> nth=0');});
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
   const step=async(name,fn)=>{try{await fn();done.push(name);}catch(e){errs.push(name+': '+e.message.split('\n')[0]);}};
   const playOut=async()=>{   // gioca la partita in corso simulando una meta alla volta, gestendo schemi, cambi obbligati e half time
@@ -51,9 +53,12 @@ catch(e){
   });
   await step('rosa, allenamenti, mercato, club, classifica, opzioni',async()=>{
     await page.click('#hRoster');await vis('#roster');await page.click('tr.pl >> nth=0');await vis('tr.dt');await page.click('#rBack');
-    await page.click('#hTrain');await vis('#train');await page.click('#tTeamBox .ttype[data-team="tec"]');await vis('#tRes .tres');await page.click('#tBack');
+    await page.click('#hTrain');await vis('#train');await page.click('#tTeamBox [data-int="2"]');
+    if(!/Intenso/.test(await page.locator('.tint small').innerText()))throw new Error('l\'intensità dell\'allenamento non cambia');
+    await page.click('#tTeamBox [data-int="1"]');await page.click('#tTeamBox .ttype[data-team="tec"]');await vis('#tRes .tres');await page.click('#tBack');
     await page.click('#hMarket');await vis('#market');await page.click('#mkTabs [data-k="int"]');await page.click('#mkBack');
-    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="hon"]');await page.click('#clTabs [data-k="rec"]');await page.click('#clBack');
+    await page.click('#hClub');await vis('#club');if(await page.locator('#clBox .fac').count()!==6)throw new Error('le strutture del club devono essere sei');
+    await page.click('#clTabs [data-k="hon"]');await page.click('#clTabs [data-k="rec"]');await page.click('#clBack');
     await page.click('#hEvent');await vis('#event');await page.click('#eBack');
     await page.click('#hOpt');await vis('#opts');await page.click('#opX');
     await page.click('#hBell');await vis('#alerts');   // lo chiude il gestore qui sopra alla prossima azione

@@ -4,13 +4,13 @@ const TR_OPTS=CATS.concat([{id:'rec',name:'Recupero',keys:[]}]);
 const TR_SUB={tec:'Lancio, Buco, Sparo, Presa',atl:'Velocità, Scatto, Agilità, Salto, Resistenza',dif:'Difesa, Tuffo',tat:'Visione; di squadra anche affiatamento',rec:'Ridà condizione, nessuna crescita'};
 function trainApply(p,opt,single){
   if(opt.id==='rec'){
-    const before=p.cond;p.cond=clamp(p.cond+REST_GAIN+(single?8:0)+2*(SV.fac.fis|0),0,100);
+    const before=p.cond;p.cond=clamp(p.cond+REST_GAIN+(single?8:0)+2*facLv('fis'),0,100);
     let heal=false;if(single&&p.inj>1){p.inj--;heal=true;}   // il lavoro individuale di recupero accorcia di una partita uno stop lungo
     return {p,c:opt,changes:[],gain:0,rest:Math.round(p.cond-before),heal};
   }
-  const r=trainCategory(p,opt,(1+0.15*(SV.fac.camp|0))*(single?1.5:1));   // il lavoro individuale rende il 50% in piu'; il campo di allenamento il 15% per livello
-  p.cond=clamp(p.cond-(single?TRAIN_COST1:TRAIN_COST),0,100);
-  if(Math.random()<trainRisk(p)*(1-0.2*(SV.fac.fis|0))){p.inj=1+Math.floor(Math.random()*2);r.hurt=p.inj;alertAdd('inj',`${pname(p)} si è infortunat${oa(p)} in allenamento: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full,seen:1});}
+  const it=trInt(),r=trainCategory(p,opt,(1+0.1*facLv('camp'))*(single?1.5:1)*it.g);   // il lavoro individuale rende il 50% in piu'; il campo di allenamento il 10% per livello; l'intensita' scelta fa il resto
+  p.cond=clamp(p.cond-Math.round((single?TRAIN_COST1:TRAIN_COST)*it.c),0,100);
+  if(Math.random()<(trainRisk(p)*it.r+(it.r>1?0.004:0))*(1-0.12*facLv('fis'))){p.inj=1+Math.floor(Math.random()*2);r.hurt=p.inj;alertAdd('inj',`${pname(p)} si è infortunat${oa(p)} in allenamento: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full,seen:1});}
   return r;
 }
 function renderTrain(){
@@ -21,10 +21,10 @@ function renderTrain(){
   }).join('');
   const one=trainSel.size===1?SQ[[...trainSel][0]]:null;
   const avgC=Math.round(SQ.reduce((a,p)=>a+p.cond,0)/SQ.length);
-  $('tTeamBox').innerHTML=`<div class="tteam2"><strong>Tutta la squadra</strong><small>${!open?`Bloccato: prossima sessione tra ${trainWait()} ${trainWait()>1?'partite':'partita'}.`:(SV.tTeam?'Già fatto in questa giornata.':`Una volta a giornata. Ogni seduta costa ${TRAIN_COST} di condizione a tutti (media attuale ${avgC}); il Recupero ne ridà ${REST_GAIN}.`)}</small><div class="ttypes t5">${TR_OPTS.map(c=>`<button type="button" class="ttype" data-team="${c.id}"${SV.tTeam||!open?' disabled':''}><strong>${c.name}</strong></button>`).join('')}</div></div><strong class="tsing">Lavoro individuale: ${left} su 3 rimasti</strong>`;
+  $('tTeamBox').innerHTML=`<div class="tteam2"><strong>Tutta la squadra</strong><small>${!open?`Bloccato: prossima sessione tra ${trainWait()} ${trainWait()>1?'partite':'partita'}.`:(SV.tTeam?'Già fatto in questa giornata.':`Una volta a giornata. Ogni seduta costa ${Math.round(TRAIN_COST*trInt().c)} di condizione a tutti (media attuale ${avgC}); il Recupero ne ridà ${REST_GAIN}.`)}</small><div class="tint"><span>Intensità</span><div class="seg">${TR_INT.map((t,i)=>`<button type="button" class="sg${(SV.tInt|0)===i?' on':''}" data-int="${i}">${t.n}</button>`).join('')}</div><small>${trInt().n}: ${trInt().t}.</small></div><div class="ttypes t5">${TR_OPTS.map(c=>`<button type="button" class="ttype" data-team="${c.id}"${SV.tTeam||!open?' disabled':''}><strong>${c.name}</strong></button>`).join('')}</div></div><strong class="tsing">Lavoro individuale: ${left} su 3 rimasti</strong>`;
   $('tTypes').className='ttypes t5';
   $('tTypes').innerHTML=TR_OPTS.map(c=>`<button type="button" class="ttype" data-k="${c.id}"${trainSel.size?'':' disabled'}><strong>${c.name}</strong><small>${TR_SUB[c.id]}</small>${one&&c.keys.length?`<small class="mt">livello ${catLevel(one,c)}</small>`:''}</button>`).join('');
-  $('tHint').textContent=!open?`Allenamenti bloccati in questa difficoltà: la prossima sessione è tra ${trainWait()} ${trainWait()>1?'partite':'partita'}.`:left===0?'Hai già usato i 3 lavori individuali di questa giornata. Tornano dopo la prossima partita.':(trainSel.size?`${trainSel.size} ${trainSel.size>1?'giocatori selezionati':'giocatore selezionato'}: scegli l’indirizzo. Il lavoro individuale rende il 50% in più e costa ${TRAIN_COST1} di condizione.`:`Seleziona fino a ${left} giocatori per il lavoro individuale. I giovani e chi è lontano dal proprio potenziale crescono di più. Con la condizione sotto 45 allenarsi può causare infortuni: fai recuperare chi è scarico. Gli infortunati possono fare solo Recupero.`);
+  $('tHint').textContent=!open?`Allenamenti bloccati in questa difficoltà: la prossima sessione è tra ${trainWait()} ${trainWait()>1?'partite':'partita'}.`:left===0?'Hai già usato i 3 lavori individuali di questa giornata. Tornano dopo la prossima partita.':(trainSel.size?`${trainSel.size} ${trainSel.size>1?'giocatori selezionati':'giocatore selezionato'}: scegli l’indirizzo. Il lavoro individuale rende il 50% in più e costa ${Math.round(TRAIN_COST1*trInt().c)} di condizione.`:`Seleziona fino a ${left} giocatori per il lavoro individuale. I giovani e chi è lontano dal proprio potenziale crescono di più. Con la condizione sotto 45 allenarsi può causare infortuni (di più con l’intensità alta): fai recuperare chi è scarico. Gli infortunati possono fare solo Recupero.`);
   if(trainRes){
     const ups=trainRes.filter(r=>r.gain>0),flat=trainRes.filter(r=>!r.gain&&!r.rest&&r.c.keys.length),rest=trainRes.filter(r=>r.rest!==undefined),hurt=trainRes.filter(r=>r.hurt);
     $('tRes').innerHTML=`<div class="tres">${ups.map(r=>`<div class="up">${r.p.name}: ${r.changes.map(x=>`${LONG[x.k]} ${x.from}→${x.to}`).join(', ')}</div>`).join('')}${rest.length?`<div class="rs">Recupero: ${rest.length===1?rest[0].p.name+' +'+rest[0].rest:rest.length+' giocatori, in media +'+Math.round(rest.reduce((a,r)=>a+r.rest,0)/rest.length)} di condizione${rest.some(r=>r.heal)?', stop per infortunio accorciato di una partita':''}</div>`:''}${flat.length?`<div class="no">${flat.length===1?flat[0].p.name+': nessun progresso':flat.length+' giocatori senza progressi'} in questa seduta</div>`:''}${hurt.map(r=>`<div class="bad">${r.p.name} si è infortunato in allenamento: ${r.hurt} ${r.hurt>1?'partite':'partita'} di stop</div>`).join('')}${trainRes.note?`<div class="rs">${trainRes.note}</div>`:''}</div>`;
@@ -45,6 +45,7 @@ $('tTypes').addEventListener('click',e=>{
   trainSel.clear();trainRes=out;fixLines();persist();renderTrain();
 });
 $('tTeamBox').addEventListener('click',e=>{
+  const it=e.target.closest('[data-int]');if(it){SV.tInt=+it.dataset.int;trainRes=null;persist();renderTrain();return;}   // intensita': vale per le sedute di squadra e per i lavori individuali
   const b=e.target.closest('.ttype');if(!b||b.disabled||SV.tTeam||!trainOpen())return;
   const opt=TR_OPTS.find(c=>c.id===b.dataset.team),out=[];
   for(const p of SQ){if(!p.inj||opt.id==='rec')out.push(trainApply(p,opt,false));}

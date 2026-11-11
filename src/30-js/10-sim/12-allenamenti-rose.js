@@ -181,7 +181,8 @@ const INJ_K=0.045;
 function checkInjuries(){
   const out=[];
   for(const p of T[0]){
-    const f=clamp((50-p.st)/50,0,1)*(1+clamp((60-(p.cond===undefined?100:p.cond))/60,0,1))*(G.injK===undefined?1:G.injK);   // piu' rischio se la condizione e' bassa; la fisioterapia lo riduce
+    const cd=p.cond===undefined?100:p.cond;   // rischio: energia finita in partita (di piu' se la condizione e' bassa) e, a parte, la fatica accumulata: sotto 40 di condizione c'e' sempre un po' di rischio; la fisioterapia riduce tutto
+    const f=(clamp((50-p.st)/50,0,1)*(1+clamp((60-cd)/60,0,1))+0.25*clamp((40-cd)/40,0,1))*(G.injK===undefined?1:G.injK);
     if(f>0&&Math.random()<INJ_K*f){   // di solito 1-3 partite; ogni tanto un infortunio serio (5-8 partite), piu' probabile dopo i 32 anni
       p.inj=Math.random()<0.1+(p.age>=32?0.07:0)?5+Math.floor(Math.random()*4):1+Math.floor(Math.random()*3);p.injNew=true;out.push(p);}
   }
