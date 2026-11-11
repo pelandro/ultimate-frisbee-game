@@ -6,7 +6,7 @@ partita veloce, torneo, Ultimate Team, tutorial e sfide. Il gioco è un solo fil
 ## Giocare
 
 **Sempre l'ultima versione, senza installare nulla:** <https://pelandro.github.io/ultimate-frisbee-game/> (su telefono: in orizzontale; si può aggiungere alla schermata Home).
-La pagina si aggiorna da sola pochi minuti dopo ogni modifica entrata in `main`; sotto il titolo del gioco c'è scritta la versione (data e ora). I salvataggi restano nel browser del dispositivo.
+La pagina si aggiorna da sola circa tre minuti dopo ogni consegna (90 secondi di verifica e poco più per la pubblicazione); sotto il titolo del gioco c'è scritta la versione (data e ora). I salvataggi restano nel browser del dispositivo.
 
 Sul proprio computer, dai sorgenti:
 
