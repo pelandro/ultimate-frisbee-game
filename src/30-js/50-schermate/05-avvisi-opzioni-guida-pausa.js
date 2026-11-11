@@ -54,7 +54,7 @@ function openPause(){
   G.paused=true;G.schemeOpen=true;drag=null;ddrag=null;aimPid=null;G.cdir=null;
   $('paSub').textContent=G.drill?G.matchLabel:`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${G.oppName||'Rossi'} · meta ${G.pointNo}`;
   $('paSim').classList.toggle('hidden',!!G.drill);$('paSusp').classList.toggle('hidden',!!(G.drill||QM.on));   // sospendere: solo le partite di carriera
-  $('paQuit').textContent=G.drill?'Esci dall’allenamento':'Abbandona la partita';delete $('paQuit').dataset.arm;
+  $('paQuit').textContent=G.drill?'Esci dall’allenamento':(matchCounts()?'Abbandona (sconfitta a tavolino)':'Abbandona la partita');delete $('paQuit').dataset.arm;
   syncToggles();$('pause').classList.remove('hidden');
 }
 function closePause(){$('pause').classList.add('hidden');G.paused=false;G.schemeOpen=false;}
@@ -62,7 +62,9 @@ $('paGo').addEventListener('click',closePause);
 $('paHelp').addEventListener('click',()=>{$('pause').classList.add('hidden');openGuide(inDefense()?2:0,()=>$('pause').classList.remove('hidden'));});
 $('paQuit').addEventListener('click',()=>{
   if(G.drill){closePause();quitMatch();return;}
-  armed($('paQuit'),'Conferma: il risultato non viene registrato','Abbandona la partita',()=>{closePause();quitMatch();});
+  // carriera, torneo e Ultimate Team: abbandonare e' una sconfitta a tavolino (prima non veniva registrato nulla e la partita si poteva rigiocare finche' non si vinceva)
+  if(matchCounts())armed($('paQuit'),'Conferma: sconfitta a tavolino','Abbandona (sconfitta a tavolino)',()=>{closePause();forfeitMatch();});
+  else armed($('paQuit'),'Conferma: il risultato non viene registrato','Abbandona la partita',()=>{closePause();quitMatch();});
 });
 $('paSim').addEventListener('click',()=>{closePause();simPoint();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)openPause();});   // cambi app o scheda: la partita ti aspetta
@@ -108,7 +110,7 @@ HOOKS.injury=list=>{
   renderLineupBox();$('subs').classList.remove('hidden');
 };
 $('hSim').addEventListener('click',simCareerMatch);
-$('hPlay').addEventListener('click',()=>{if(suspOk())resumeMatch();else if(nextMatch())startMatch();else showScreen('event');});
+$('hPlay').addEventListener('click',()=>{if(suspOk())resumeMatch();else if(nextMatch())startMatch();else if(SV.event==='eu'&&!SV.done){SV.event='camp';persist();renderHome();}else{SV.event='camp';showScreen('event');}});
 $('hRoster').addEventListener('click',()=>showScreen('roster'));
 $('tCareer').addEventListener('click',()=>showScreen(hasCareer()?'home':'team'));
 $('tQuick').addEventListener('click',()=>showScreen('quick'));

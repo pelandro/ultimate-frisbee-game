@@ -1,6 +1,7 @@
 /* ---- economia: crediti da partite, classifica e obiettivi; si spendono in giocatori, osservatori e strutture ---- */
 function priceOf(o){const v=ovrX(o),pr=potRange(o),pm=(pr[0]+pr[1])/2;return Math.max(3,Math.round(Math.pow(Math.max(0,v-34),2)/11*(o.age<=21?1.25:(o.age>=31?0.55:1))*(1+Math.max(0,pm-v)/60)));}
-const sellValue=o=>Math.round(priceOf(o)*0.6);
+// chi ha annunciato il ritiro vale poco (gli resta mezza stagione), un infortunato un po' meno: prima si incassava il prezzo pieno alla vigilia dell'addio
+const sellValue=o=>Math.round(priceOf(o)*0.6*(o.ret===1?0.35:1)*(o.inj?0.8:1));
 const repCap=()=>48+SV.rep*0.5;   // Overall massimo dei giocatori disposti a venire, in base alla reputazione
 const matchIncome=win=>Math.round((9+(win?8:0))*SR_K[SV.sr]*(1+SV.rep/200)*(1+0.07*facLv('stad')));   // le tribune portano pubblico
 // stipendi: ogni giocatore costa in base al suo Overall (a stagione); si pagano a ogni partita. Una rosa lunga e forte costa: tenere le riserve giuste e' una scelta

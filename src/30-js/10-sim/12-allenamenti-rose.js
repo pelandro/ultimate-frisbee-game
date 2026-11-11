@@ -223,5 +223,5 @@ function applyForm(){
 }
 function restoreForm(){for(const p of SQ.concat(T[1]))if(p.b){p.s=p.b;p.b=null;}}
 function newGame(){G.injured=[];for(const p of SQ.concat(T[1])){p.st=p.t===0&&p.cond!==undefined?Math.round(62+0.38*p.cond):100;   // chi arriva stanco dalla settimana parte con meno energia
-  p.spr=false;p.run=0;p.miss=0;p.hot=false;p.cold=false;p.m=newCounters();}G.score=[0,0];G.pointNo=1;G.nextRec=1;G.startRec=1;G.halfDone=false;G.dir=[1,-1];G.seen={att:{},def:{}};G.obs={u:0,d:0,n:0};G.resetH=null;G.duo={};setWind(0,0);resetStats();}
+  p.spr=false;p.run=0;p.miss=0;p.hot=false;p.cold=false;p.m=newCounters();}G.score=[0,0];G.pointNo=1;G.nextRec=1;G.startRec=1;G.halfDone=false;G.dir=[1,-1];G.seen={att:{},def:{}};G.obs={u:0,d:0,n:0};G.resetH=null;G.duo={};G.forfeit=false;setWind(0,0);resetStats();}
 

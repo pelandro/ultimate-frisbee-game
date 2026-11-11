@@ -61,8 +61,10 @@ $('tTeams').addEventListener('click',e=>{
 });
 $('eCards').addEventListener('click',e=>{const b=e.target.closest('.ecard');if(!b)return;SV.event=b.dataset.e;persist();renderEvent();});
 $('eBody').addEventListener('click',e=>{
+  if(e.target.closest('#eCamp')){SV.event='camp';persist();renderEvent();return;}   // coppa conclusa: si torna al campionato (non riparte)
   if(!e.target.closest('#eReset'))return;
-  if(SV.event==='camp')newSeason();else SV.eu=newEu();
+  if(SV.event!=='camp'||!SV.done||!SV.next)return;   // la nuova stagione parte solo a campionato concluso
+  newSeason();
   persist();renderEvent();
 });
 for(const [b,sc] of [['rBack','home'],['eBack','home'],['tBack','home']])$(b).addEventListener('click',()=>showScreen(sc));

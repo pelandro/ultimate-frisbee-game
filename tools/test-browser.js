@@ -103,6 +103,27 @@ catch(e){
     await playOut();await vis('#over');await page.click('#bAgain');await page.waitForTimeout(200);await vis('#home');
     if(/Riprendi/.test(await page.locator('#hPlayT').innerText()))throw new Error('a partita finita resta una sospensione');
   });
+  await step('abbandonare una partita di carriera è una sconfitta a tavolino',async()=>{
+    await vis('#home');const before=await page.locator('#hNext').innerText();
+    await page.click('#hPlay');await page.waitForTimeout(500);if(await page.locator('#menu').isVisible())await page.click('#bGo');
+    for(let i=0;i<30&&!(await page.locator('#pause').isVisible());i++){await page.keyboard.press('Escape');await page.waitForTimeout(250);}
+    await vis('#pause');await page.click('#paQuit');await page.click('#paQuit');await vis('#over');
+    if(!/tavolino/i.test(await page.locator('#oTitle').innerText()))throw new Error('l\'abbandono non e\' registrato come sconfitta a tavolino');
+    await page.click('#bAgain');await page.waitForTimeout(200);await vis('#home');
+    if((await page.locator('#hNext').innerText())===before)throw new Error('dopo l\'abbandono la stessa partita si puo\' rigiocare');
+  });
+  await step('Campionato europeo: una sola edizione a stagione, poi si torna al campionato',async()=>{
+    // la coppa si sblocca solo dalla Serie A: per provarla si modifica il salvataggio (come se la squadra si fosse qualificata) e si ricarica
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(localStorage.getItem(k));d.euUnlocked=true;d.event='eu';d.eu={round:0,state:'on',s:d.season,opps:['Berlino','Parigi','Madrid']};d.susp=null;localStorage.setItem(k,JSON.stringify(d));if(d.slot)localStorage.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
+    for(let i=0;i<3&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim');await vis('#simres');await page.click('#srOk');await page.waitForTimeout(150);}
+    const t=await page.locator('#hPlayT').innerText();if(!/Torna al campionato/.test(t))throw new Error('a coppa conclusa il tasto principale dice «'+t+'»');
+    if(/nuova stagione/i.test(await page.locator('#hNext').innerText()))throw new Error('a coppa conclusa il cruscotto parla di nuova stagione');
+    await page.click('#hEvent');await vis('#event');
+    if(await page.locator('#eReset').count())throw new Error('la coppa conclusa si puo\' ancora far ripartire');
+    await page.click('#eCamp');await page.waitForTimeout(150);await page.click('#eBack');await vis('#home');
+    if(!/Inizia partita/.test(await page.locator('#hPlayT').innerText()))throw new Error('dopo la coppa non si torna al campionato');
+  });
   await step('slot carriera: una seconda carriera e il ritorno alla prima',async()=>{
     const team1=(await page.locator('#tCareerS').innerText().catch(()=>''));
     await vis('#home');const name1=await page.locator('#home .dname').first().innerText();
