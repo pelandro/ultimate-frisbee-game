@@ -79,7 +79,16 @@ test del motore con partite simulate a seme fisso, prova del gioco in un browser
 
 **Dove trovo il gioco da provare?** L'ultima versione di `main` è sempre su <https://pelandro.github.io/ultimate-frisbee-game/>: la pubblica GitHub da solo quando una pull request entra in `main` con la verifica verde (lavoro `pubblica` in `.github/workflows/verifica.yml`), e sotto il titolo c'è scritta la versione. Per provare un ramo non ancora unito: `npm run build` crea `dist/ultimate-frisbee.html`, e ogni verifica su GitHub lo allega tra gli «Artifacts».
 
-**Quanto ci mette a pubblicare?** Circa 2-3 minuti: la verifica sulla pull request (2 minuti) e poi la pubblicazione (1 minuto), che parte appena la pull request entra in `main` senza rifare i test (sono già passati sulla pull request). Se la verifica dura molto di più (10 minuti o oltre), quasi sempre la rete dei server di GitHub verso gli archivi di Ubuntu non risponde durante l'installazione delle librerie del browser di prova: la verifica ora installa prima solo il browser e le librerie solo se servono.
+**Quanto ci mette a pubblicare?** Circa 2-3 minuti dal «consegna»: la verifica sulla pull request (circa 90 secondi), poi l'unione e la pubblicazione (circa 30 secondi, perché su `main` non si rifanno i test se i file sono identici a quelli già provati). Se la verifica dura molto di più (10 minuti o oltre), quasi sempre la rete dei server di GitHub verso gli archivi di Ubuntu non risponde durante l'installazione delle librerie del browser di prova: la verifica installa prima solo il browser e le librerie solo se servono.
+
+**Se consegniamo nello stesso momento?** Le pull request si mettono in fila da sole, come in una coda di unione:
+1. Entra per prima la prima che ha la verifica verde. `main` accetta solo pull request verdi **e** aggiornate all'ultima `main`.
+2. L'altra resta «indietro». Il lavoro **Aggiorna rami** (`.github/workflows/aggiorna-rami.yml`) porta `main` dentro il suo ramo e rilancia la verifica sul risultato: così si prova la combinazione dei due lavori, non solo il secondo da solo.
+3. Se è verde, entra da sola (l'unione automatica era già attiva). Nessuno deve fare niente.
+4. Se i due lavori toccano le stesse righe c'è un conflitto: il bot non tocca nulla e scrive un commento sulla pull request. Chi l'ha aperta dice a Claude `/sincronizza` (unione ragionata: si tengono entrambi i miglioramenti) e poi si riprende da sola.
+5. La pubblicazione è una alla volta e pubblica sempre l'ultimo commit di `main`: una versione vecchia non può coprire una nuova.
+
+La regola che tiene tutto sicuro è quella di `main` (pull request obbligatoria, verifica `verifica` verde, ramo aggiornato): non va tolta.
 
 **La pagina non si aggiorna.** Aspetta qualche minuto e ricarica. Se la versione non cambia, guarda in **Actions** l'ultima esecuzione su `main`: se il lavoro `pubblica` dice «saltata», va attivato **Settings › Pages › Source: GitHub Actions**; poi **Actions › Verifica › Run workflow** la ripubblica.
 

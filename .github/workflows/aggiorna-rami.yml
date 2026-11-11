@@ -1,0 +1,49 @@
+name: Aggiorna rami
+# Quando una pull request entra in main, le altre pull request con l'unione automatica attiva restano «indietro» e la regola di protezione di main impedisce
+# di unirle finche' non sono aggiornate e riprovate. Qui lo si fa da soli, come una coda di unione:
+#   1. si porta main dentro il ramo (aggiornamento del ramo, come il tasto «Update branch»);
+#   2. si rilancia la verifica su quel ramo (i commit fatti dal bot non avviano da soli le verifiche, per una regola di GitHub: la si avvia a mano);
+#   3. quando e' verde, l'unione automatica fa il resto.
+# Se l'unione con main ha un conflitto vero, il bot non tocca nulla e lascia un commento: serve /sincronizza dalla sessione di Claude di chi ha aperto la pull request.
+# Si aggiornano solo pull request non in bozza, dello stesso repository e con l'unione automatica attiva: un ramo ancora «in lavorazione» non viene toccato.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: aggiorna-rami
+  cancel-in-progress: false
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+jobs:
+  aggiorna:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Riallinea le pull request rimaste indietro
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          R="${{ github.repository }}"
+          for N in $(gh api "repos/$R/pulls?state=open&per_page=50" --jq '.[] | select(.draft==false and .auto_merge!=null and .head.repo.full_name=="'"$R"'") | .number'); do
+            P=$(gh api "repos/$R/pulls/$N")
+            REF=$(echo "$P" | jq -r .head.ref); OLD=$(echo "$P" | jq -r .head.sha)
+            BEHIND=$(gh api "repos/$R/compare/main...$OLD" --jq .behind_by)
+            if [ "$BEHIND" = "0" ]; then echo "#$N ($REF): gia' aggiornata."; continue; fi
+            echo "#$N ($REF): indietro di $BEHIND commit, aggiorno."
+            if ! OUT=$(gh api -X PUT "repos/$R/pulls/$N/update-branch" -f expected_head_sha="$OLD" 2>&1); then
+              if echo "$OUT" | grep -qi "conflict"; then
+                gh api -X POST "repos/$R/issues/$N/comments" -f body="Il ramo \`$REF\` ha un conflitto con \`main\` (dopo l'ultima unione): l'aggiornamento automatico si ferma qui. Dalla sessione di Claude di chi ha aperto questa pull request: \`/sincronizza\`, poi si riprende da sola." >/dev/null
+                echo "#$N: conflitto, lasciato un commento."
+              else echo "#$N: aggiornamento non riuscito: $OUT"; fi
+              continue
+            fi
+            for i in $(seq 1 20); do   # l'aggiornamento e' asincrono: si aspetta il nuovo commit del ramo
+              NEW=$(gh api "repos/$R/pulls/$N" --jq .head.sha); [ "$NEW" != "$OLD" ] && break; sleep 3
+            done
+            if [ "$NEW" = "$OLD" ]; then echo "#$N: il ramo non e' cambiato dopo l'aggiornamento."; continue; fi
+            gh api -X POST "repos/$R/actions/workflows/verifica.yml/dispatches" -f ref="$REF" >/dev/null
+            echo "#$N: ramo aggiornato a ${NEW::7}, verifica rilanciata."
+          done

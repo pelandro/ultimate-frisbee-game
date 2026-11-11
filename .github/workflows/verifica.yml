@@ -1,12 +1,18 @@
 name: Verifica
-# Su ogni pull request GitHub prova il risultato dell'unione con main (non il ramo da solo):
-# se due aggiornamenti funzionano da soli ma non insieme, la verifica fallisce prima che entrino in main.
+# COME FUNZIONA (due persone che lavorano insieme)
+# 1. Su ogni pull request GitHub prova il risultato dell'unione con main (non il ramo da solo): se due aggiornamenti funzionano da soli ma non insieme,
+#    la verifica fallisce prima che entrino in main. Dura circa 90 secondi.
+# 2. main accetta solo pull request verdi E aggiornate all'ultima main (regola di protezione). Se l'altra persona unisce per prima, il lavoro di chi resta
+#    indietro viene riallineato e riprovato da solo (aggiorna-rami.yml), poi entra da solo: nessuno deve ricordarsi di fare niente.
+# 3. Quando una pull request entra in main, la verifica su main controlla se l'albero dei file e' IDENTICO a quello gia' provato sulla pull request:
+#    se si', non rifa i test (sono gia' passati su quei file, byte per byte) e passa in pochi secondi; altrimenti rifa la verifica completa.
+# 4. La pubblicazione parte solo dopo una verifica verde su main (completa o «gia' provata») e solo se quel commit e' ancora l'ultimo di main.
 on:
   pull_request:
   push:
     branches: [main]
   merge_group:
-  workflow_dispatch:   # pulsante «Run workflow»: ripubblica il gioco a mano
+  workflow_dispatch:   # pulsante «Run workflow»: ripubblica il gioco a mano; usato anche da aggiorna-rami.yml per riprovare un ramo riallineato
 concurrency:
   group: verifica-${{ github.ref }}
   cancel-in-progress: true
@@ -16,14 +22,43 @@ jobs:
   verifica:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: read
+    outputs:
+      gia: ${{ steps.gia.outputs.gia }}
     steps:
+      - name: Questi file sono gia' stati provati su una pull request?
+        id: gia
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          R="${{ github.repository }}"; SHA="$GITHUB_SHA"
+          PR=$(gh api "repos/$R/commits/$SHA/pulls" --jq '.[0].number // empty' 2>/dev/null || true)
+          if [ -z "$PR" ]; then echo "Nessuna pull request associata a questo commit: verifica completa."; exit 0; fi
+          HEAD=$(gh api "repos/$R/pulls/$PR" --jq .head.sha)
+          T_MAIN=$(gh api "repos/$R/git/commits/$SHA" --jq .tree.sha)
+          T_PR=$(gh api "repos/$R/git/commits/$HEAD" --jq .tree.sha)
+          VERDI=$(gh api "repos/$R/commits/$HEAD/check-runs?check_name=verifica" --jq '[.check_runs[] | select(.conclusion=="success")] | length')
+          if [ "$T_MAIN" = "$T_PR" ] && [ "${VERDI:-0}" -ge 1 ]; then
+            echo "gia=si" >> "$GITHUB_OUTPUT"
+            echo "::notice::Pull request #$PR: gli stessi file ($T_MAIN) hanno gia' superato la verifica completa. Non si rifanno i test."
+          else
+            echo "Albero diverso da quello della pull request #$PR, o verifica non verde (verdi: ${VERDI:-0}): verifica completa."
+          fi
       - uses: actions/checkout@v4
+        if: steps.gia.outputs.gia != 'si'
       - uses: actions/setup-node@v4
+        if: steps.gia.outputs.gia != 'si'
         with:
           node-version: 22
       - name: Dipendenze
+        if: steps.gia.outputs.gia != 'si'
         run: npm install --no-audit --no-fund
       - name: Browser per la prova
+        if: steps.gia.outputs.gia != 'si'
         # Prima solo il browser (circa 15 secondi). Le librerie di sistema, che richiedono apt e quindi la rete degli archivi Ubuntu, si installano solo se il browser
         # non parte: quando quella rete non risponde (succede) apt riprova per minuti, ed e' il motivo per cui la verifica durava 12 minuti invece di 2.
         run: |
@@ -33,21 +68,22 @@ jobs:
             timeout 240 npx playwright install-deps chromium
           fi
       - name: Verifica completa
+        if: steps.gia.outputs.gia != 'si'
         run: npm test
       - name: Costruzione del gioco
+        if: steps.gia.outputs.gia != 'si'
         run: npm run build
       - name: Gioco pronto da scaricare
+        if: steps.gia.outputs.gia != 'si'
         uses: actions/upload-artifact@v4
         with:
           name: ultimate-frisbee
           path: dist/ultimate-frisbee.html
           retention-days: 30
 
-  # Pubblicazione: quando una modifica entra in main il gioco va sulla pagina web del repository (GitHub Pages), sempre allo stesso indirizzo.
-  # Sulle pull request questo lavoro non parte. Non aspetta la verifica che gira in parallelo su main: la stessa verifica e' gia' passata sulla pull request,
-  # che entra in main solo se verde e aggiornata (regola di protezione di main), quindi il risultato e' lo stesso albero di file. Prima di pubblicare
-  # si rifanno comunque i controlli statici e la costruzione, che durano pochi secondi.
+  # Pubblicazione: il gioco va sulla pagina web del repository (GitHub Pages), sempre allo stesso indirizzo. Solo su main, solo dopo una verifica verde.
   pubblica:
+    needs: verifica
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -55,37 +91,48 @@ jobs:
       contents: read
       pages: write
       id-token: write
+    # una pubblicazione alla volta; una piu' recente prende il posto di quella in attesa, ma non ne interrompe una in corso
+    concurrency:
+      group: pagine
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - name: Le pagine sono attive?
-        id: pagine
+      - name: Si puo' pubblicare?
+        id: vai
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh api "repos/${{ github.repository }}/pages" >/dev/null 2>&1; then echo "attive=si" >> "$GITHUB_OUTPUT"
-          else echo "::notice::Pubblicazione saltata: attiva Settings > Pages > Source: GitHub Actions, poi rilancia questo workflow."; fi
+          R="${{ github.repository }}"
+          if ! gh api "repos/$R/pages" >/dev/null 2>&1; then
+            echo "::notice::Pubblicazione saltata: attiva Settings > Pages > Source: GitHub Actions, poi rilancia questo workflow."; exit 0
+          fi
+          ULTIMO=$(gh api "repos/$R/commits/main" --jq .sha)
+          if [ "$ULTIMO" != "$GITHUB_SHA" ]; then
+            echo "::notice::Questo commit non e' piu' l'ultimo di main ($ULTIMO): lo pubblichera' l'esecuzione piu' recente. Salto, cosi' una versione vecchia non copre quella nuova."; exit 0
+          fi
+          echo "vai=si" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
-        if: steps.pagine.outputs.attive == 'si'
+        if: steps.vai.outputs.vai == 'si'
       - uses: actions/setup-node@v4
-        if: steps.pagine.outputs.attive == 'si'
+        if: steps.vai.outputs.vai == 'si'
         with:
           node-version: 22
       - name: Controlli statici
-        if: steps.pagine.outputs.attive == 'si'
+        if: steps.vai.outputs.vai == 'si'
         run: node tools/check.js
       - name: Costruzione con la versione
-        if: steps.pagine.outputs.attive == 'si'
+        if: steps.vai.outputs.vai == 'si'
         run: |
           export UF_BUILD="$(TZ=Europe/Rome date +'%d/%m/%Y %H:%M') · ${GITHUB_SHA::7}"
           npm run build
           mkdir -p _site && cp dist/ultimate-frisbee.html _site/index.html
       - uses: actions/upload-pages-artifact@v3
-        if: steps.pagine.outputs.attive == 'si'
+        if: steps.vai.outputs.vai == 'si'
         with:
           path: _site
       - name: Pubblicazione
         id: deploy
-        if: steps.pagine.outputs.attive == 'si'
+        if: steps.vai.outputs.vai == 'si'
         uses: actions/deploy-pages@v4
