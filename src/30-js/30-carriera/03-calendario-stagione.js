@@ -30,9 +30,9 @@ function beginSeason(){
   if(SV.cash!==undefined){setObjective();for(const p of SQ)if(p.car){p.car.yrs=(p.car.yrs|0)+(p.car.ss.mp>0?1:0);p.car.ls=p.car.ss;p.car.ss={mp:0,g:0,a:0,b:0};}}
 }
 function startCareer(name){
-  const help=!!SV.help;
+  const help=!!SV.help,slot=SV.slot||1;   // lo slot in cui nasce la carriera
   SV={v:SAVE_V,team:name,seed:Math.floor(Math.random()*1e9),sr:(TEAM[name]&&TEAM[name].series)||'C',season:1,event:'camp',eu:newEu(),help,
-      mem:{A:SERIES.A.slice(),B:SERIES.B.slice(),C:SERIES.C.slice()},realAB:1,rv:3};
+      mem:{A:SERIES.A.slice(),B:SERIES.B.slice(),C:SERIES.C.slice()},realAB:1,rv:3,slot};
   SV.rost={};for(const n in TEAM)if(n!==name)SV.rost[n]=aiRoster(n);
   beginSeason();
   if(REAL[name]){SV.realv=2;setSquad(userRoster());}
@@ -70,7 +70,7 @@ function loadSave(d0){
 function persist(){
   if(QM.on)return;   // partita veloce: la carriera non si tocca
   SV.v=SAVE_V;SV.squad=squadData();delete SV.players;SV.lineup=lineupIds();SV.savedAt=Date.now();
-  try{const prev=localStorage.getItem(SAVE_KEY);if(prev&&prev.length<3e6)localStorage.setItem(SAVE_KEY+'-bak',prev);localStorage.setItem(SAVE_KEY,JSON.stringify(SV));}catch(e){}   // la versione precedente resta come copia di sicurezza
+  try{const prev=localStorage.getItem(SAVE_KEY);if(prev&&prev.length<3e6&&+((prev.match(/"slot":(\d)/)||[0,'1'])[1])===(SV.slot||1))localStorage.setItem(SAVE_KEY+'-bak',prev);localStorage.setItem(SAVE_KEY,JSON.stringify(SV));if(SV.team)localStorage.setItem(slotKey(SV.slot||1),JSON.stringify(SV));}catch(e){}   // la versione precedente resta come copia di sicurezza (solo se e' della stessa carriera, cioe' dello stesso slot)
 }
 const ranking=(tab,names)=>names.slice().sort((a,b)=>tab[b].pts-tab[a].pts||(tab[b].pf-tab[b].pa)-(tab[a].pf-tab[a].pa)||tab[b].pf-tab[a].pf);
 const myRank=()=>ranking(SV.tab,SV.mem[SV.sr]).indexOf(SV.team)+1;
@@ -147,6 +147,7 @@ function newSeason(){
   persist();
 }
 function recordResult(win,su,so){
+  SV.susp=null;   // la partita e' finita: niente piu' da riprendere
   let msg='';SV.played=(SV.played||0)+1;
   if(SV.event==='camp'){
     const names=SV.mem[SV.sr],ui=names.indexOf(SV.team);let opp0='';

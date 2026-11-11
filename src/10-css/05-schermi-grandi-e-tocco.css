@@ -36,3 +36,11 @@
 #tmUp{margin:0 0 8px;padding:6px 8px;border:2px solid var(--gold);font-size:15px}
 #tmUp .schrow{flex-wrap:wrap;gap:6px;margin-top:6px}#tmUp .sec{font-size:14px;padding:4px 8px;text-align:left}#tmUp .sec small{display:block;font-size:11px;opacity:.8}
 .urow.sel2{outline:2px solid var(--gold)}
+/* riepilogo della partita */
+.omore{font-size:15px;margin:0 0 10px;line-height:1.35}.omore b{font-weight:400;color:var(--gold)}
+.otop{display:grid;grid-template-columns:1fr repeat(4,auto);gap:2px 12px;margin-top:6px}.otop span:not(:first-child){text-align:right}.otop .hd{color:#c2cbe6;font-size:13px}
+/* confronto tra giocatori */
+.cmp{display:grid;grid-template-columns:1fr auto auto auto;gap:1px 12px;font-size:14px;max-width:460px;margin:4px 0 8px}
+.cmp b{font-weight:400;text-align:right}.cmp i{font-style:normal;text-align:right;color:#9fb0de}.cmp i.up{color:var(--good,#4fe58f)}.cmp i.dn{color:var(--bad,#ff6b70)}
+.cmpsel{font-size:14px;padding:2px 4px;max-width:260px}
+.slotb{text-align:left;min-width:150px}.slotb small{display:block;font-size:12px;opacity:.85}.slotb.on{outline:2px solid var(--gold)}

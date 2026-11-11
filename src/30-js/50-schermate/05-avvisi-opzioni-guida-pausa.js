@@ -32,7 +32,7 @@ function renderOpts(){
   $('opSub').textContent=`${SV.team} · ${SERIES_NAME[SV.sr]} · stagione ${SV.season}`;
   $('opDiff').innerHTML=order.map(k=>`<button type="button" class="sg${k===cur?' on':''}" data-k="${k}">${CAR_DIFF[k].name}</button>`).join('');
   $('opDiffN').textContent=CAR_DIFF[cur].txt;
-  syncToggles();
+  renderSlots();syncToggles();
 }
 $('hOpt').addEventListener('click',()=>{$('opMsg').textContent='';renderOpts();$('opts').classList.remove('hidden');});
 $('opX').addEventListener('click',()=>{$('opts').classList.add('hidden');renderHome();});
@@ -53,7 +53,7 @@ function openPause(){
   if(!G.inMatch||!(G.mode==='play'||G.mode==='ready')||G.paused)return;
   G.paused=true;G.schemeOpen=true;drag=null;ddrag=null;aimPid=null;G.cdir=null;
   $('paSub').textContent=G.drill?G.matchLabel:`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${G.oppName||'Rossi'} · meta ${G.pointNo}`;
-  $('paSim').classList.toggle('hidden',!!G.drill);
+  $('paSim').classList.toggle('hidden',!!G.drill);$('paSusp').classList.toggle('hidden',!!(G.drill||QM.on));   // sospendere: solo le partite di carriera
   $('paQuit').textContent=G.drill?'Esci dall’allenamento':'Abbandona la partita';delete $('paQuit').dataset.arm;
   syncToggles();$('pause').classList.remove('hidden');
 }
@@ -108,7 +108,7 @@ HOOKS.injury=list=>{
   renderLineupBox();$('subs').classList.remove('hidden');
 };
 $('hSim').addEventListener('click',simCareerMatch);
-$('hPlay').addEventListener('click',()=>{if(nextMatch())startMatch();else showScreen('event');});
+$('hPlay').addEventListener('click',()=>{if(suspOk())resumeMatch();else if(nextMatch())startMatch();else showScreen('event');});
 $('hRoster').addEventListener('click',()=>showScreen('roster'));
 $('tCareer').addEventListener('click',()=>showScreen(hasCareer()?'home':'team'));
 $('tQuick').addEventListener('click',()=>showScreen('quick'));
@@ -138,8 +138,8 @@ function armed(btn,label,idle,fn){
 }
 $('hNew').addEventListener('click',()=>armed($('hNew'),'Conferma: cancella la carriera','Nuova carriera',()=>{
   $('opts').classList.add('hidden');
-  try{localStorage.removeItem(SAVE_KEY);}catch(e){}
-  const help=SV.help;SV={help};showScreen('team');
+  const slot=SV.slot||1;try{localStorage.removeItem(SAVE_KEY);localStorage.removeItem(slotKey(slot));}catch(e){}
+  const help=SV.help;SV={help,slot};showScreen('team');   // la nuova carriera resta nello stesso slot
 }));
 bExit.addEventListener('click',()=>openPause());
 

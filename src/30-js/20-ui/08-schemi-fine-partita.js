@@ -39,20 +39,30 @@ function openSchemes(first,fromHome){
   buildOpts($('optDef'),DEFS,'#ff4b4b',G.sch.def,v=>{G.sch.def=v;});
   $('mTip').textContent=first?'Prima partita? Il tutorial è nel menu iniziale, alla voce Allenamento; la guida è nel menu di pausa (II).':'';
 }
+// riepilogo: rendimento delle linee (O = mete in cui ricevi il pull, D = quelle in cui lo tiri), schemi usati e migliori in campo
+function overMoreHTML(){
+  const L=G.ptLog||[],o=L.filter(x=>x.rec===0),d=L.filter(x=>x.rec===1),hold=o.filter(x=>x.by===0).length,brk=d.filter(x=>x.by===0).length;
+  let h=`<div class="omore"><div><b>Attacco (ricevi il pull)</b>: ${hold} mete su ${o.length}${o.length?' ('+Math.round(hold/o.length*100)+'%)':''}</div><div><b>Difesa (tiri il pull)</b>: ${brk} break su ${d.length}${d.length?' ('+Math.round(brk/d.length*100)+'%)':''}</div>`;
+  const sch=(R,N,lab)=>{const ks=Object.keys(R||{}).filter(k=>R[k][0]);return ks.length?`<div><b>${lab}</b>: ${ks.map(k=>`${N[k]||k} ${R[k][1]}/${R[k][0]}`).join(' · ')}</div>`:'';};
+  h+=sch(G.schR,ATT_NAME,'Tuoi schemi d’attacco (mete/possessi)')+sch(G.defR,DEF_NAME,'Tue difese (mete subite/possessi avversari)');
+  const pl=SQ.filter(p=>p.m&&p.m.pts>0).map(p=>{const m=p.m,t=m.lan[0]+m.lan[1]+m.spa[0]+m.spa[1]+m.buc[0]+m.buc[1],ok=m.lan[0]+m.spa[0]+m.buc[0];return {p,sc:(m.g|0)*3+(m.a|0)*3+(m.dif|0)*3+ok*0.3+(p.xpLast||0)*0.1,g:m.g|0,a:m.a|0,b:m.dif|0,c:t?Math.round(ok/t*100)+'%':'–'};}).sort((a,b)=>b.sc-a.sc).slice(0,3);
+  if(pl.length)h+=`<div class="otop"><span class="hd">Migliori</span><span class="hd">Mete</span><span class="hd">Assist</span><span class="hd">Difese</span><span class="hd">Lanci</span>${pl.map((x,i)=>`<span>${i===0?'★ ':''}${esc(x.p.label||x.p.name)}</span><span>${x.g}</span><span>${x.a}</span><span>${x.b}</span><span>${x.c}</span>`).join('')}</div>`;
+  return h+'</div>';
+}
 function showOver(){
   const w=G.score[0]>G.score[1],on=G.oppName||'Rossi';
   let msg='',grow=[];
   const hurt=QM.on?[]:SQ.filter(p=>p.injNew);
   if(G.inMatch&&!G.recorded){G.recorded=true;restoreForm();if(!QM.on){grow=matchGrowth(0);recordMatchStats();msg=recordResult(w,G.score[0],G.score[1])+incTxt();}else if(UT.on)msg=utRecord(w);else if(TN.on)msg=tnRecord(w,G.score[0],G.score[1]);else msg='Partita veloce: non cambia la carriera.';}
-  // migliore in campo (più esperienza raccolta) e crescita, raggruppata per giocatore
+  // crescita in partita, raggruppata per giocatore
   let gh='';
   if(!QM.on){
-    const best=SQ.filter(p=>p.m&&p.m.pts>0).sort((a,b)=>(b.xpLast||0)-(a.xpLast||0))[0];
-    if(best)gh+=`<div class="mvp">Migliore in campo: ${best.label||best.name} (${best.m.g|0} mete, ${best.m.a|0} assist, ${best.m.dif|0} difese)</div>`;
+    // i migliori in campo stanno nel riepilogo (overMoreHTML)
     const by=new Map();for(const g of grow){if(!by.has(g.p))by.set(g.p,[]);by.get(g.p).push(g);}
     if(by.size)gh+='<strong>Crescita in partita</strong>'+[...by].map(([p,l])=>`<div>${p.name}: ${l.map(g=>`${LONG[g.k]} ${g.from}→${g.to}`).join(', ')}</div>`).join('');
   }
   $('oGrow').innerHTML=gh;
+  $('oMore').innerHTML=overMoreHTML();
   $('oTitle').textContent=w?'Vittoria!':'Sconfitta';
   $('oScore').textContent=`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${on}`;
   $('oEvent').textContent=msg;

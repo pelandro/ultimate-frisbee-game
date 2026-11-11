@@ -2,6 +2,7 @@
 function scoreGoal(team,p,kind){
   if(G.drill){G.flight=null;HOOKS.sfx('goal',team);HOOKS.toast(team===0?'Meta!':'Meta avversaria',team);drillEvt('goal',team,p,kind);return;}   // allenamento: niente punteggio, si ricomincia
   if(G.seen){G.seen.att[G.sch.att]=(G.seen.att[G.sch.att]||0)+1;G.seen.def[G.sch.def]=(G.seen.def[G.sch.def]||0)+1;}   // gli schemi che hai appena usato: l'avversario se li ricorda
+  if(G.ptLog){G.ptLog.push({rec:1-G.pullTeam,by:team,att:G.sch.att,def:G.sch.def});const R=team===0?G.schR:G.defR,k=team===0?G.sch.att:G.sch.def;if(R)(R[k]||(R[k]=[0,0]))[1]++;}   // per il riepilogo della partita
   checkInjuries();
   if(team===1){const k=G.opp.att,r=G.aiRec||(G.aiRec={});(r[k]||(r[k]=[0,0]))[0]++;}
   G.score[team]++;G.mode='banner';HOOKS.sfx('goal',team);HOOKS.shake(team===0?7:4);G.banner={t:2.4,team,scorer:p,kind};G.flight=null;
