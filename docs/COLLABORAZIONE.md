@@ -79,6 +79,8 @@ test del motore con partite simulate a seme fisso, prova del gioco in un browser
 
 **Dove trovo il gioco da provare?** L'ultima versione di `main` è sempre su <https://pelandro.github.io/ultimate-frisbee-game/>: la pubblica GitHub da solo quando una pull request entra in `main` con la verifica verde (lavoro `pubblica` in `.github/workflows/verifica.yml`), e sotto il titolo c'è scritta la versione. Per provare un ramo non ancora unito: `npm run build` crea `dist/ultimate-frisbee.html`, e ogni verifica su GitHub lo allega tra gli «Artifacts».
 
+**Quanto ci mette a pubblicare?** Circa 2-3 minuti: la verifica sulla pull request (2 minuti) e poi la pubblicazione (1 minuto), che parte appena la pull request entra in `main` senza rifare i test (sono già passati sulla pull request). Se la verifica dura molto di più (10 minuti o oltre), quasi sempre la rete dei server di GitHub verso gli archivi di Ubuntu non risponde durante l'installazione delle librerie del browser di prova: la verifica ora installa prima solo il browser e le librerie solo se servono.
+
 **La pagina non si aggiorna.** Aspetta qualche minuto e ricarica. Se la versione non cambia, guarda in **Actions** l'ultima esecuzione su `main`: se il lavoro `pubblica` dice «saltata», va attivato **Settings › Pages › Source: GitHub Actions**; poi **Actions › Verifica › Run workflow** la ripubblica.
 
 **Perché `dist/` non è nel repository?** È un file generato: se fosse in Git, ogni aggiornamento di entrambi lo metterebbe in conflitto.

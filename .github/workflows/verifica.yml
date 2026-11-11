@@ -24,9 +24,14 @@ jobs:
       - name: Dipendenze
         run: npm install --no-audit --no-fund
       - name: Browser per la prova
-        # se il server non raggiunge gli archivi di Ubuntu (succede), le librerie di sistema ci sono gia' quasi sempre: si installa solo il browser
+        # Prima solo il browser (circa 15 secondi). Le librerie di sistema, che richiedono apt e quindi la rete degli archivi Ubuntu, si installano solo se il browser
+        # non parte: quando quella rete non risponde (succede) apt riprova per minuti, ed e' il motivo per cui la verifica durava 12 minuti invece di 2.
         run: |
-          timeout 600 npx playwright install --with-deps chromium || { echo "::warning::Librerie di sistema non installate (rete): si prova con il solo browser"; npx playwright install chromium; }
+          npx playwright install chromium
+          if ! node -e "require('playwright').chromium.launch().then(b=>b.close()).catch(e=>{console.error(e.message.split('\n')[0]);process.exit(1);})"; then
+            echo "::warning::Il browser non parte senza le librerie di sistema: le installo (puo' richiedere tempo se la rete e' lenta)"
+            timeout 240 npx playwright install-deps chromium
+          fi
       - name: Verifica completa
         run: npm test
       - name: Costruzione del gioco
@@ -38,10 +43,11 @@ jobs:
           path: dist/ultimate-frisbee.html
           retention-days: 30
 
-  # Pubblicazione: quando una modifica entra in main e la verifica e' verde, il gioco va sulla pagina web del repository
-  # (GitHub Pages), sempre allo stesso indirizzo. Sulle pull request questo lavoro non parte.
+  # Pubblicazione: quando una modifica entra in main il gioco va sulla pagina web del repository (GitHub Pages), sempre allo stesso indirizzo.
+  # Sulle pull request questo lavoro non parte. Non aspetta la verifica che gira in parallelo su main: la stessa verifica e' gia' passata sulla pull request,
+  # che entra in main solo se verde e aggiornata (regola di protezione di main), quindi il risultato e' lo stesso albero di file. Prima di pubblicare
+  # si rifanno comunque i controlli statici e la costruzione, che durano pochi secondi.
   pubblica:
-    needs: verifica
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -66,6 +72,9 @@ jobs:
         if: steps.pagine.outputs.attive == 'si'
         with:
           node-version: 22
+      - name: Controlli statici
+        if: steps.pagine.outputs.attive == 'si'
+        run: node tools/check.js
       - name: Costruzione con la versione
         if: steps.pagine.outputs.attive == 'si'
         run: |
