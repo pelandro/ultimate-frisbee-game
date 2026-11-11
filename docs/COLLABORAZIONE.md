@@ -77,7 +77,9 @@ test del motore con partite simulate a seme fisso, prova del gioco in un browser
 
 ## Domande frequenti
 
-**Dove trovo il gioco da provare?** `npm run build` crea `dist/ultimate-frisbee.html`. Ogni verifica su GitHub lo allega anche tra gli «Artifacts».
+**Dove trovo il gioco da provare?** L'ultima versione di `main` è sempre su <https://pelandro.github.io/ultimate-frisbee-game/>: la pubblica GitHub da solo quando una pull request entra in `main` con la verifica verde (lavoro `pubblica` in `.github/workflows/verifica.yml`), e sotto il titolo c'è scritta la versione. Per provare un ramo non ancora unito: `npm run build` crea `dist/ultimate-frisbee.html`, e ogni verifica su GitHub lo allega tra gli «Artifacts».
+
+**La pagina non si aggiorna.** Aspetta qualche minuto e ricarica. Se la versione non cambia, guarda in **Actions** l'ultima esecuzione su `main`: se il lavoro `pubblica` dice «saltata», va attivato **Settings › Pages › Source: GitHub Actions**; poi **Actions › Verifica › Run workflow** la ripubblica.
 
 **Perché `dist/` non è nel repository?** È un file generato: se fosse in Git, ogni aggiornamento di entrambi lo metterebbe in conflitto.
 

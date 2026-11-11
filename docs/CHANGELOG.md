@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Il gioco è sempre aggiornato all'indirizzo <https://pelandro.github.io/ultimate-frisbee-game/>; sotto il titolo compare la versione (data e ora).
 - Il vento si può spegnere: Impostazioni › Vento, oppure Opzioni della carriera. Da spento tutte le partite si giocano con la calma.
 - Vento: ogni partita ha il suo (in carriera lo annuncia il cruscotto). Sposta e sporca i lanci lunghi e alti, cambia la gittata e muove le zone del pull; chi lancia bene lo compensa.
 - Schermi grandi: su PC e iPad Pro menu, pannelli e barra in alto si ingrandiscono. Con il dito i tasti piccoli della Rosa e della pausa sono più comodi; il Mercato non esce più dallo schermo sui telefoni stretti.

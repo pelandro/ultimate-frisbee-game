@@ -6,6 +6,7 @@ on:
   push:
     branches: [main]
   merge_group:
+  workflow_dispatch:   # pulsante «Run workflow»: ripubblica il gioco a mano
 concurrency:
   group: verifica-${{ github.ref }}
   cancel-in-progress: true
@@ -34,3 +35,46 @@ jobs:
           name: ultimate-frisbee
           path: dist/ultimate-frisbee.html
           retention-days: 30
+
+  # Pubblicazione: quando una modifica entra in main e la verifica e' verde, il gioco va sulla pagina web del repository
+  # (GitHub Pages), sempre allo stesso indirizzo. Sulle pull request questo lavoro non parte.
+  pubblica:
+    needs: verifica
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Le pagine sono attive?
+        id: pagine
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api "repos/${{ github.repository }}/pages" >/dev/null 2>&1; then echo "attive=si" >> "$GITHUB_OUTPUT"
+          else echo "::notice::Pubblicazione saltata: attiva Settings > Pages > Source: GitHub Actions, poi rilancia questo workflow."; fi
+      - uses: actions/checkout@v4
+        if: steps.pagine.outputs.attive == 'si'
+      - uses: actions/setup-node@v4
+        if: steps.pagine.outputs.attive == 'si'
+        with:
+          node-version: 22
+      - name: Costruzione con la versione
+        if: steps.pagine.outputs.attive == 'si'
+        run: |
+          export UF_BUILD="$(TZ=Europe/Rome date +'%d/%m/%Y %H:%M') · ${GITHUB_SHA::7}"
+          npm run build
+          mkdir -p _site && cp dist/ultimate-frisbee.html _site/index.html
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.pagine.outputs.attive == 'si'
+        with:
+          path: _site
+      - name: Pubblicazione
+        id: deploy
+        if: steps.pagine.outputs.attive == 'si'
+        uses: actions/deploy-pages@v4

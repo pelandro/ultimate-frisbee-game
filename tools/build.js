@@ -13,7 +13,8 @@ function files(dir=SRC,rel=''){
   }
   return out.sort((a,b)=>a<b?-1:a>b?1:0);   // ordine per codice dei caratteri: uguale su ogni sistema
 }
-function build(){return files().map(f=>fs.readFileSync(path.join(SRC,f),'utf8').replace(/\r\n/g,'\n')).join('');}
+// @@BUILD@@ nei sorgenti diventa la versione: data e commit quando costruisce GitHub (variabile UF_BUILD), «locale» sul proprio computer
+function build(){return files().map(f=>fs.readFileSync(path.join(SRC,f),'utf8').replace(/\r\n/g,'\n')).join('').replace(/@@BUILD@@/g,process.env.UF_BUILD||'locale');}
 module.exports={build,files,SRC,OUT,ROOT};
 if(require.main===module){
   const html=build();fs.mkdirSync(path.dirname(OUT),{recursive:true});fs.writeFileSync(OUT,html);

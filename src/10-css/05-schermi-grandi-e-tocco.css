@@ -5,6 +5,8 @@
 .screen,.overlay,#ctrl,#hint,#coach,#skip,#score,#stall,#bExit{zoom:var(--ui,1)}   /* la barra nera in alto cresce insieme (BAR in resize()) */
 #hud::before{height:calc(28px*var(--ui,1))}
 #posedit{zoom:1}   /* l'editor della posizione dei pulsanti lavora in pixel dello schermo */
+/* versione del gioco sotto il titolo: serve a capire se si sta giocando l'ultima */
+.tver{display:block;margin-top:6px;font-size:12px;color:rgba(255,255,255,.55)}
 /* con il dito i bersagli piccoli diventano comodi: tasti delle linee e della scheda nella Rosa, tasto di pausa in partita */
 @media (pointer:coarse){
   .rt .lb,.rt .dbtn{min-height:34px;min-width:40px}
