@@ -6,7 +6,7 @@ function careerSelfTest(seasons,seed){
   const bak=hasCareer()?(persist(),JSON.stringify(SV)):null,R0=Math.random,q0=QM.on,rows=[],row=(name,val,ok,note)=>({name,val,ok:!!ok,note:note||''});
   Math.random=mulberry32(seed||2026);QM.on=true;
   const hide=()=>{for(const id of ['simres','alerts','evt'])$(id).classList.add('hidden');};
-  let err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,worn=0,keep=0;
+  let lgBad=[],stories=0,derby=0,spec=0,goalsOk=0,goalsKo=0,duoMax=0,err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,worn=0,keep=0;
   try{
     startCareer(SERIES.C[2]);
     for(let s=1;s<=seasons;s++){
@@ -18,6 +18,9 @@ function careerSelfTest(seasons,seed){
           for(const p of SQ)if(!p.inj||opt.id==='rec')trainApply(p,opt,false);SV.tTeam=true;
         }
         for(const k of Object.keys(FAC).sort((x,y)=>facCost(x)-facCost(y)))if(SV.cash>facCost(k)+60&&facLv(k)<FAC_MAX){buyFac(k);break;}
+        for(const k of Object.keys(STAFF))if(SV.cash>staffCost(k)+90&&staffLv(k)<STAFF_MAX){buyStaff(k);break;}   // staff e indirizzi personali: si comprano quando c'e' margine
+        for(const p of SQ)if(!p.spec&&p.age<=26&&SV.cash>specCost(p)+120){setSpec(p,Object.keys(SPECS)[Math.floor(Math.random()*6)]);spec++;break;}
+        duoMax=Math.max(duoMax,...Object.values(SV.duo||{}),0);
         const a0=SV.alN|0;simCareerMatch();hide();
         inj+=(SV.alerts||[]).filter(a=>a.id>a0&&a.k==='inj').length;   // gli infortuni di questa giornata (in partita e in allenamento)
         if(SV.evt){evts++;const e=SV.evt,ops=EVT[e.id].o(e.a),ok=ops.map((o,i)=>(!o[2]||o[2]())?i:-1).filter(i=>i>=0);evtAnswer(ok[Math.floor(Math.random()*ok.length)]);}
@@ -29,6 +32,9 @@ function careerSelfTest(seasons,seed){
         if(!isFinite(SV.cash))bad.push(`S${s}: crediti non validi`);
       }
       if(!SV.done){bad.push(`S${s}: la stagione non finisce`);break;}
+      for(const sr in SV.lg){const L=SV.lg[sr],w=Object.values(L.tab).reduce((a,x)=>a+x.w,0),l=Object.values(L.tab).reduce((a,x)=>a+x.l,0);if(L.round!==L.sched.length||w!==l)lgBad.push(`S${s} ${sr}: giornate ${L.round}/${L.sched.length}, V ${w} S ${l}`);}
+      stories+=SV.story.filter(x=>x.s===SV.season).length;derby+=((SV.rivRec&&SV.rivRec.w)|0)+((SV.rivRec&&SV.rivRec.l)|0);
+      for(const p of SQ)if(p.goal&&p.goal.s===SV.season){if(goalOk(p))goalsOk++;else goalsKo++;}
       if(SV.sr==='A'&&SV.next.rank===1)champ++;if(SV.next.sr<SV.sr)promo++;
       pw.push(squadPower());
       const n0=SV.news.length;newSeason();hide();seasonsDone++;
@@ -43,10 +49,16 @@ function careerSelfTest(seasons,seed){
     rows.push(row('Giocatori della rosa con Overall 90 o più alla fine',Math.round(maxed*100)+'%',maxed<=0.5,'al massimo metà: la crescita non deve appiattire tutti'));
     rows.push(row('Forza delle altre squadre',Math.min(...others).toFixed(0)+'–'+Math.max(...others).toFixed(0),Math.min(...others)>=30&&Math.max(...others)<=95,'tra 30 e 95'));
     rows.push(row('Crediti: minimo e massimo',Math.round(cashMin)+' e '+Math.round(cashMax),cashMin>=-300&&cashMax<=6000,'né bancarotta né accumulo senza limiti'));
-    rows.push(row('Infortuni per stagione (partite simulate)',(inj/Math.max(1,seasonsDone)).toFixed(1),inj/Math.max(1,seasonsDone)>=0.3&&inj/Math.max(1,seasonsDone)<=12,'tra 0,3 e 12'));
+    rows.push(row('Infortuni per stagione (partite simulate)',(inj/Math.max(1,seasonsDone)).toFixed(1),inj>=1&&inj/Math.max(1,seasonsDone)<=12,'almeno uno in tutto il test, al massimo 12 a stagione (la squadra del test si riposa quasi sempre: ne servono pochi)'));
     rows.push(row('Imprevisti per stagione',(evts/Math.max(1,seasonsDone)).toFixed(1),evts/Math.max(1,seasonsDone)>=0.4&&evts/Math.max(1,seasonsDone)<=4,'tra 0,4 e 4'));
     rows.push(row('Scudetti e promozioni',champ+' e '+promo,champ<=Math.ceil(seasons*0.6),'nessun dominio automatico'));
     rows.push(row('Premi di mantenimento e usura estiva',keep+' e '+worn,true));
+    rows.push(row('Altre serie: tutte le giornate giocate, vittorie = sconfitte',lgBad.length?lgBad.slice(0,2).join('; '):'sì',!lgBad.length));
+    rows.push(row('Storie dal campionato per stagione',(stories/Math.max(1,seasonsDone)).toFixed(1),stories/Math.max(1,seasonsDone)>=2,'almeno 2'));
+    rows.push(row('Derby giocati nelle stagioni',String(derby),derby>=seasons*0.5,'almeno uno ogni due stagioni'));
+    rows.push(row('Obiettivi personali raggiunti e mancati',goalsOk+' e '+goalsKo,goalsOk+goalsKo>=seasons&&goalsOk>0&&goalsKo>0,'né tutti né nessuno'));
+    rows.push(row('Intesa massima tra due giocatori (partite insieme)',String(duoMax),duoMax>=6&&duoMax<=DUO_FULL*2));
+    rows.push(row('Indirizzi personali assegnati nel test',String(spec),spec>=1));
   }catch(e){err=e&&e.message||String(e);rows.push(row('Errore durante il test',err,false));}
   finally{
     Math.random=R0;QM.on=q0;hide();

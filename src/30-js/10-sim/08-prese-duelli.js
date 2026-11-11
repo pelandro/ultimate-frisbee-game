@@ -14,7 +14,7 @@ const dropProb=(p,diff)=>clamp((0.003+diff*(1.3-1.15*p.s.pre/100))*(hasT(p,'hand
 const CATCH_MSG={salto:'Presa in salto!',mano:'Presa a una mano!',contesa:'Presa contesa!',corsa:'Presa in corsa!',semplice:'Presa!'};
 function tryCatch(f,o,def,L){
   const ci=catchInfo(f,o,def),p=o.p;
-  if(Math.random()<dropProb(p,ci.diff)){   // disco sfuggito: e' un errore di chi riceve, non di chi lancia
+  if(Math.random()<dropProb(p,ci.diff)*(1-DUO_DROP*(f.duoL||0))){   // disco sfuggito: e' un errore di chi riceve, non di chi lancia
     G.st.drop[f.team]++;HOOKS.sfx('drop');
     return turnover(1-f.team,L.x,L.y,null,'Presa mancata',1-f.team);
   }

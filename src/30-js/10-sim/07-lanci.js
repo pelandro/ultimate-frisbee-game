@@ -157,10 +157,11 @@ function doThrow(th,ax,ay,intended,style,exec){
   if(mk&&mk.t!==th.t&&hyp(mk.x-th.x,mk.y-th.y)<3.8){
     if(Math.random()<hbProb(th,info,mk,ha)*sp.hb){handblock(th,mk,cat);return;}
   }
-  const lx=pl.tx+randn()*pl.sig,ly=pl.ty+randn()*pl.sig,dl=Math.max(0.5,hyp(lx-th.x,ly-th.y));
+  const dL=duoOf(th,intended),sg=pl.sig*(1-DUO_SIG*dL);   // intesa con il compagno a cui lancia
+  const lx=pl.tx+randn()*sg,ly=pl.ty+randn()*sg,dl=Math.max(0.5,hyp(lx-th.x,ly-th.y));
   const rx=-(ly-th.y)/dl,ry=(lx-th.x)/dl;
   G.flight={sx:th.x,sy:th.y,tx:lx,ty:ly,t:0,T:Math.max(0.45,dl/sp.v),H:throwH(pl.kind,dl),high:sp.hi,team:th.t,thrower:th,intended,sparo:info.sparo,info,cat,
-    kind:pl.kind,sp,e:sp.ease,cx:rx*pl.side*sp.curve*dl,cy:ry*pl.side*sp.curve*dl,stall:G.stallT,brk:!!G.marker&&(ly-th.y)*G.closedSide>1.5};
+    kind:pl.kind,sp,duoL:dL,e:sp.ease,cx:rx*pl.side*sp.curve*dl,cy:ry*pl.side*sp.curve*dl,stall:G.stallT,brk:!!G.marker&&(ly-th.y)*G.closedSide>1.5};
   G.holder=null;G.stallT=0;G.holdT=0;G.st.thr[th.t]++;
   if(G.kinds)G.kinds[pl.kind]=(G.kinds[pl.kind]||0)+1;
   assignFlight();

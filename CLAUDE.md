@@ -47,7 +47,7 @@ L'obiettivo è integrare **entrambi** i miglioramenti: mai sovrascrivere, mai pe
 
 ### Contratti da ricontrollare a ogni integrazione
 
-- **Salvataggio**: ogni campo nuovo di un giocatore va aggiunto sia in `squadData()` (scrittura) sia in `setSquad()` (lettura), con un valore predefinito per i salvataggi vecchi in `careerInit()`. Se il formato cambia in modo non compatibile, aumenta `SAVE_V` e aggiungi la conversione in `loadSave()`. Le chiavi di `localStorage` non si riusano.
+- **Salvataggio**: ogni campo nuovo di un giocatore va aggiunto sia in `squadData()` (scrittura) sia in `setSquad()` (lettura), con un valore predefinito per i salvataggi vecchi in `careerInit()`. Dalla P2 i giocatori hanno anche `spec`, `goal`, `sad`; la carriera `SV.staff`, `SV.duo`, `SV.lg` (calendari delle altre serie), `SV.story`, `SV.riv`. Se il formato cambia in modo non compatibile, aumenta `SAVE_V` e aggiungi la conversione in `loadSave()`. Le chiavi di `localStorage` non si riusano.
 - **Statistiche**: `KEYS` elenca le 12 statistiche; i pesi di `ROLE_W` devono sommare 1 per ogni ruolo (lo controlla il test).
 - **Motore ↔ interfaccia**: il motore chiama `HOOKS.nome(...)`; se aggiungi un gancio, definiscilo anche nell'oggetto `HOOKS` iniziale (funzione vuota) e spegnilo nei test (`selfTestRun`).
 - **Stato della partita**: i campi di `G` valgono per tutte le modalità (carriera, veloce, torneo, Ultimate Team, allenamento). Un campo nuovo va azzerato in ogni avvio partita (`startMatch`, `startQuick`, `startUT`, `startTourn`, `startDrill`). Ciò che vale per tutta la partita (per esempio il vento, `G.wind`) si azzera in `newGame()`, che tutte le modalità chiamano.
