@@ -49,6 +49,15 @@ function overMoreHTML(){
   if(pl.length)h+=`<div class="otop"><span class="hd">Migliori</span><span class="hd">Mete</span><span class="hd">Assist</span><span class="hd">Difese</span><span class="hd">Lanci</span>${pl.map((x,i)=>`<span>${i===0?'★ ':''}${esc(x.p.label||x.p.name)}</span><span>${x.g}</span><span>${x.a}</span><span>${x.b}</span><span>${x.c}</span>`).join('')}</div>`;
   return h+'</div>';
 }
+// partite che contano: carriera, torneo, Ultimate Team (non la partita veloce ne' gli allenamenti)
+const matchCounts=()=>!!G.inMatch&&!G.recorded&&!G.drill&&(!QM.on||UT.on||TN.on);
+// abbandono di una partita che conta: sconfitta a tavolino. L'avversario arriva al punteggio che chiude la partita, il tuo resta quello che era
+function forfeitMatch(){
+  if(!matchCounts())return false;
+  $('half').classList.add('hidden');G.paused=false;G.schemeOpen=false;
+  G.score=[Math.min(G.score[0],G.target-1),G.target];G.mode='over';G.forfeit=true;
+  showOver();return true;
+}
 function showOver(){
   const w=G.score[0]>G.score[1],on=G.oppName||'Rossi';
   let msg='',grow=[];
@@ -63,7 +72,7 @@ function showOver(){
   }
   $('oGrow').innerHTML=gh;
   $('oMore').innerHTML=overMoreHTML();
-  $('oTitle').textContent=w?'Vittoria!':'Sconfitta';
+  $('oTitle').textContent=w?'Vittoria!':(G.forfeit?'Sconfitta a tavolino':'Sconfitta');
   $('oScore').textContent=`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${on}`;
   $('oEvent').textContent=msg;
   $('oInj').textContent=hurt.length?'Infortuni: '+hurt.map(p=>`${p.name} (${p.inj} ${p.inj>1?'partite':'partita'} di stop)`).join(', ')+'.':'';

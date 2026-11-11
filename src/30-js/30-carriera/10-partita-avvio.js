@@ -39,7 +39,8 @@ const incTxt=()=>` Bilancio della giornata: ${SV.lastInc>=0?'+':''}${SV.lastInc}
 const teamFormB=()=>clamp((SV.chem-50)/50*0.9+(SV.mor-50)/50*0.6+0.3*staffLv('ana'),-1.5,1.5);
 const squadPower=()=>{const b=pickSeven(SQ,p=>p.role,mean9);return b.reduce((a,p)=>a+mean9(p),0)/b.length;};
 const teamPower=n=>n===SV.team?squadPower():(SV.rost&&SV.rost[n]?rosterPower(SV.rost[n])+carDiff().plus:null);
-const previewPower=n=>REAL[n]?rosterPower(realRoster(REAL[n],'preview|'+n,realOpt(n,7))):0;
+// forza mostrata nella scelta della squadra: la stessa regola della rosa con cui si parte davvero (userRoster: 9 giocatori, un po' meno allenata delle avversarie)
+const previewPower=n=>REAL[n]?rosterPower(realRoster(REAL[n],'preview|'+n,Object.assign(realOpt(n,9),{low:true}))):0;
 // stemma della squadra: scudetto con due colori e iniziali, generato dal nome
 function crest(name,px){
   const h=hashStr('crest|'+name),h1=h%360,h2=(h1+130+(h>>8)%90)%360,ini=name.replace(/[^A-Za-zÀ-ÿ0-9 ]/g,'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();

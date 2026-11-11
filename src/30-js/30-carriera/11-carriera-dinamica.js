@@ -67,12 +67,15 @@ function pickChallenge(){
   SV.chal={id,base:SV.cash,x:id==='bil'?Math.round(45*SR_K[SV.sr]):Math.round(n*6.2),reward:Math.round(45*SR_K[SV.sr])};
 }
 const chalTxt=()=>SV.chal&&BCHAL[SV.chal.id]?BCHAL[SV.chal.id].txt(SV.chal):'';
-// fine stagione (prima dei premi di classifica): esito della sfida e reazione del campionato al tuo dominio
+// fine stagione: premio della sfida (gia' giudicata da chalEval) e reazione del campionato al tuo dominio
+// l'esito si fissa prima di qualunque premio di fine stagione (chalEval, chiamata da endSeason); il premio si paga dopo, una volta sola
+function chalEval(){const c=SV.chal;if(c&&BCHAL[c.id]&&!c.done){c.done=1;c.won=BCHAL[c.id].ok(c)?1:0;}}
 function seasonEndDyn(rank){
+  chalEval();
   goalsEnd();   // obiettivi personali: premio o delusione
   const c=SV.chal;
-  if(c&&BCHAL[c.id]&&!c.done){
-    c.done=1;c.won=BCHAL[c.id].ok(c)?1:0;
+  if(c&&BCHAL[c.id]&&!c.paid){
+    c.paid=1;
     if(c.won){SV.cash+=c.reward;SV.rep=clamp(SV.rep+3,0,100);SV.troph.chal=(SV.troph.chal|0)+1;news('Sfida della dirigenza vinta: +'+c.reward+' crediti e reputazione in più.');}
     else news('Sfida della dirigenza non riuscita: nessuna penalità.');
   }

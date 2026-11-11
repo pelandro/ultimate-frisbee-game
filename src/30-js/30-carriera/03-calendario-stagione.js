@@ -12,7 +12,9 @@ const flavorOf=n=>/U17/.test(n)?'u17':(/U20/.test(n)?'u20':(/NewGen|NextGen|Next
 const aiRoster=n=>REAL[n]?realRoster(REAL[n],SV.seed+'|'+n,realOpt(n,7)):makeRoster(TEAM[n].power,SV.seed+'|'+n);
 const userRoster=()=>realRoster(REAL[SV.team]||[],SV.seed+'|user',Object.assign(realOpt(SV.team,9),{low:true}));   // la tua rosa: quella vera, un po' meno allenata delle avversarie
 const EU_NAMES=['Berlino','Parigi','Madrid','Amsterdam','Londra','Praga','Vienna','Lisbona'],EU_POW=[80,86,91],EU_ROUND=['Quarti di finale','Semifinale','Finale'];
-const newEu=()=>({round:0,state:'on',opps:EU_NAMES.slice().sort(()=>Math.random()-0.5).slice(0,3)});
+// una sola edizione a stagione (s = stagione dell'edizione): prima il torneo concluso si poteva far ripartire all'infinito, accumulando trofei e incassi
+const newEu=season=>({round:0,state:'on',s:season|0,opps:EU_NAMES.slice().sort(()=>Math.random()-0.5).slice(0,3)});
+const EU_PRIZE=[12,22,60];   // crediti (per il coefficiente della Serie A) a ogni turno superato: quarti, semifinale, finale
 function roundRobin(n){
   const arr=[...Array(n).keys()],rounds=[];
   for(let r=0;r<n-1;r++){
@@ -31,12 +33,14 @@ function beginSeason(){
 }
 function startCareer(name){
   const help=!!SV.help,slot=SV.slot||1;   // lo slot in cui nasce la carriera
-  SV={v:SAVE_V,team:name,seed:Math.floor(Math.random()*1e9),sr:(TEAM[name]&&TEAM[name].series)||'C',season:1,event:'camp',eu:newEu(),help,
+  SV={v:SAVE_V,team:name,seed:Math.floor(Math.random()*1e9),sr:(TEAM[name]&&TEAM[name].series)||'C',season:1,event:'camp',eu:newEu(1),help,
       mem:{A:SERIES.A.slice(),B:SERIES.B.slice(),C:SERIES.C.slice()},realAB:1,rv:3,slot};
   SV.rost={};for(const n in TEAM)if(n!==name)SV.rost[n]=aiRoster(n);
-  beginSeason();
+  // la rosa scelta va caricata PRIMA di beginSeason: le gerarchie di inizio stagione (SV.expOrd) leggono la forza della tua squadra,
+  // e prima usavano quella della rosa rimasta in memoria (la squadra di prima, o quella iniziale)
   if(REAL[name]){SV.realv=2;setSquad(userRoster());}
   else{startLow();setLineup([0,1,2,3,4,5,6]);}
+  beginSeason();
   careerInit();news('Inizia la carriera con '+name+' in '+SERIES_NAME[SV.sr]+'.');
   persist();
 }
@@ -44,7 +48,7 @@ function loadSave(d0){
   let d=d0||null;
   if(!d){try{const r=localStorage.getItem(SAVE_KEY);if(r)d=JSON.parse(r);}catch(e){}}
   if(d&&d.team&&d.mem&&d.sched&&d.tab){
-    SV=d;if(SV.rost)for(const n in SV.rost)for(const o of SV.rost[n])if(o&&o.s)fillStats(o.s);SV.tTeam=!!SV.tTeam;if(!SV.eu||!SV.eu.opps)SV.eu=newEu();if(!SV.event||(SV.event==='eu'&&!SV.euUnlocked))SV.event='camp';
+    SV=d;if(SV.rost)for(const n in SV.rost)for(const o of SV.rost[n])if(o&&o.s)fillStats(o.s);SV.tTeam=!!SV.tTeam;if(!SV.eu||!SV.eu.opps)SV.eu=newEu(SV.season);if(!SV.event||(SV.event==='eu'&&!SV.euUnlocked))SV.event='camp';
     const mig=SV.realv===1;   // carriera iniziata con i vecchi roster: la rosa diventa quella ufficiale; gli allenamenti dei giocatori veri restano
     if(Array.isArray(SV.squad)&&SV.squad.length>=7){for(const o of SV.squad)if(o&&o.s)fillStats(o.s);setSquad(SV.squad);}   // versione 3: la rosa e' salvata per intero (acquisti e cessioni compresi)
     else if(SV.realv&&REAL[SV.team])setSquad(userRoster());
@@ -115,6 +119,7 @@ function endSeason(){
   else short=`Restate in ${SERIES_NAME[nsr]}.`;
   const qual=SV.sr==='A'&&rank<=3;
   if(qual)short+=' Per la prossima stagione si sblocca il Campionato europeo.';
+  chalEval();   // la sfida della dirigenza si giudica adesso, PRIMA dei premi: «Conti in ordine» guarda il saldo con cui arrivi in fondo, non quello gonfiato dai premi
   SV.done=true;SV.next={mem:nm,sr:nsr,rank,short,qual};
   // premi di fine stagione: classifica, obiettivo, reputazione, premi individuali
   const n=SV.mem[SV.sr].length,prize=Math.round((n-rank+1)*3*SR_K[SV.sr]);SV.cash+=prize;
@@ -134,7 +139,7 @@ function agePlayers(){
 }
 function newSeason(){
   SV.mem=SV.next.mem;SV.sr=SV.next.sr;SV.season++;
-  SV.euUnlocked=!!SV.next.qual;if(SV.euUnlocked)SV.eu=newEu();else if(SV.event==='eu')SV.event='camp';
+  SV.euUnlocked=!!SV.next.qual;if(SV.euUnlocked)SV.eu=newEu(SV.season);SV.event='camp';   // la stagione nuova riparte sempre dal campionato
   retireOwn();   // chi aveva annunciato l'addio lascia adesso
   const was=new Map(SQ.map(p=>[p.full,ovr(p)]));
   agePlayers();
@@ -165,8 +170,9 @@ function recordResult(win,su,so){
     else msg=`Giornata ${SV.round} di ${totalRounds()} conclusa: ${myRank()}° in classifica. Prossima: ${nextMatch().name}.`+dby;
   }else{
     if(win){
+      {const pz=Math.round(EU_PRIZE[Math.min(2,SV.eu.round)]*SR_K.A);SV.cash+=pz;SV.eu.cash=(SV.eu.cash|0)+pz;}   // premio del turno superato
       SV.eu.round++;
-      if(SV.eu.round>=3){SV.eu.state='champ';msg='Siete campioni d’Europa!';SV.troph.eu=(SV.troph.eu|0)+1;news('Campioni d’Europa nella stagione '+SV.season+'!');}
+      if(SV.eu.round>=3){SV.eu.state='champ';msg='Siete campioni d’Europa!';SV.troph.eu=(SV.troph.eu|0)+1;SV.rep=clamp(SV.rep+5,0,100);news('Campioni d’Europa nella stagione '+SV.season+'! Premi del torneo: '+SV.eu.cash+' crediti.');}
       else msg=`Si avanza: ${EU_ROUND[SV.eu.round].toLowerCase()} contro ${SV.eu.opps[SV.eu.round]}.`;
     }else{SV.eu.state='out';msg=`Eliminati: ${EU_ROUND[SV.eu.round].toLowerCase()} persa.`;}
   }

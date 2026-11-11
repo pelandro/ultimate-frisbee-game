@@ -9,7 +9,12 @@ function careerSelfTest(seasons,seed){
   let lgBad=[],stories=0,derby=0,spec=0,goalsOk=0,goalsKo=0,duoMax=0,err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,worn=0,keep=0,signed=0;
   try{
     startCareer(SERIES.C[2]);
+    // gerarchie di inizio carriera: calcolate con la rosa scelta, non con quella rimasta in memoria
+    const eo0=SV.mem[SV.sr].slice().sort((a,b)=>teamPow(b)-teamPow(a)),expOk=!!SV.expOrd&&SV.expOrd.indexOf(SV.team)===eo0.indexOf(SV.team);
+    // sfida «Conti in ordine»: deve essere giudicata prima dei premi di fine stagione (SV.next nasce subito dopo il giudizio e prima dei premi)
+    const bilOk0=BCHAL.bil.ok;let chalWhen=[];BCHAL.bil.ok=c=>{chalWhen.push(SV.next?'dopo':'prima');return bilOk0(c);};
     for(let s=1;s<=seasons;s++){
+      if(s%2===0&&!SV.chal)SV.chal={id:'bil',base:SV.cash,x:30,reward:10};   // a stagioni alterne una sfida economica, per controllarne il giudizio
       for(let r=0;r<40&&!SV.done;r++){
         const avg=SQ.reduce((x,p)=>x+p.cond,0)/SQ.length;
         if(trainOpen()&&!SV.tTeam){
@@ -49,6 +54,9 @@ function careerSelfTest(seasons,seed){
     const top7=pickSeven(SQ,p=>p.role,mean9);let atCap=0,nst=0,ageS=0;for(const p of top7){ageS+=p.age;for(const k of KEYS){nst++;if(p.s[k]>=capOf(p,k)-1)atCap++;}}
     const capRow=Math.round(100*atCap/Math.max(1,nst))+'% al massimo, età media '+(ageS/Math.max(1,top7.length)).toFixed(1);
     const others=Object.values(SV.rost).filter(r=>r&&r.length).map(r=>rosterPower(r));
+    BCHAL.bil.ok=bilOk0;
+    rows.push(row('Gerarchie di inizio carriera calcolate con la rosa scelta',expOk?'sì':'no',expOk));
+    rows.push(row('Sfida «Conti in ordine» giudicata prima dei premi',chalWhen.length?(chalWhen.every(x=>x==='prima')?'sì':'no')+' ('+chalWhen.length+' volte)':'mai capitata',chalWhen.length>0&&chalWhen.every(x=>x==='prima')));
     rows.push(row('Stagioni giocate fino in fondo',seasonsDone+' su '+seasons,seasonsDone===seasons));
     rows.push(row('Valori sempre validi (statistiche, condizione, rosa, linee, strutture, crediti)',bad.length?bad.slice(0,3).join('; '):'sì',!bad.length));
     rows.push(row('Forza della squadra nelle stagioni',pw.map(v=>v.toFixed(0)).join(' → '),pw.every(v=>v>=35&&v<=97),'tra 35 e 97'));

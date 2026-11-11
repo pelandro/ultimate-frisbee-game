@@ -6,7 +6,8 @@ function renderHome(){
   if(m){
     const op=Math.round((m.roster?rosterPower(m.roster):m.power)+carDiff().plus),me=Math.round(squadPower()),idn=m.roster?teamIdentity(m.name,bestSeven(m.roster)):null;
     nx=`<small>PROSSIMA · ${m.label}</small><div class="dvs"><span>${crest(m.name,26)}<b>${esc(m.name)}</b></span><span class="dpw"><i>tu</i> ${me} <i>·</i> ${op} <i>loro</i></span></div>`+(idn&&idn.tags.length?`<small class="dtag">Stile: ${idn.tags.join(', ')}</small>`:'')+(G.opt.wind===false?'':`<small class="dtag">Meteo: ${windTxt(careerWind(m)[0]).toLowerCase()}</small>`);
-  }else nx=`<small>${SV.event==='camp'?'STAGIONE CONCLUSA':'EVENTO CONCLUSO'}</small><div class="dvs"><span><b>${SV.event==='camp'&&SV.next?esc(SV.next.short):'Ricomincia da Classifica'}</b></span></div><small class="dtag">Apri Classifica per iniziare la nuova stagione</small>`;
+  }else if(SV.event==='camp')nx=`<small>STAGIONE CONCLUSA</small><div class="dvs"><span><b>${SV.next?esc(SV.next.short):''}</b></span></div><small class="dtag">Premi e riepilogo in Classifica: da lì parte la nuova stagione</small>`;
+  else nx=`<small>CAMPIONATO EUROPEO CONCLUSO</small><div class="dvs"><span><b>${euEndTxt()}</b></span></div><small class="dtag">${SV.done?'La prossima edizione, se vi qualificate, è nella nuova stagione':'Si torna al campionato: la prossima edizione è tra una stagione, se vi qualificate'}</small>`;
   $('hNext').innerHTML=nx;
   const form=SV.res.slice(-5).map(r=>`<i class="${r.su>r.so?'w':'l'}">${r.su>r.so?'V':'S'}</i>`).join('')||'<i>–</i>';
   let tab;
@@ -20,8 +21,10 @@ function renderHome(){
   $('hNews').textContent=SV.news.length?'Ultime: '+SV.news[0].txt:'';
   // l'azione principale e' sempre quella che serve adesso: giocare, oppure aprire la nuova stagione (o il nuovo torneo europeo)
   const su=suspOk();
-  $('hPlayT').textContent=su?'Riprendi la partita':(m?'Inizia partita':(SV.event==='camp'?'Nuova stagione':'Nuovo torneo'));
-  $('hPlayS').textContent=su?`Sospesa sul ${SV.susp.score[0]}–${SV.susp.score[1]} contro ${m.name}`:(m?`Contro ${m.name} · ${carDiff().name}`:(SV.event==='camp'?'Riepilogo, premi e ripartenza':'Campionato europeo concluso'));
+  // a competizione conclusa il tasto dice che cosa succede davvero: nuova stagione (se il campionato e' finito) oppure ritorno al campionato (coppa finita)
+  const toCamp=!m&&SV.event==='eu'&&!SV.done;
+  $('hPlayT').textContent=su?'Riprendi la partita':(m?'Inizia partita':(toCamp?'Torna al campionato':'Nuova stagione'));
+  $('hPlayS').textContent=su?`Sospesa sul ${SV.susp.score[0]}–${SV.susp.score[1]} contro ${m.name}`:(m?`Contro ${m.name} · ${carDiff().name}`:(toCamp?`Giornata ${SV.round+1} di ${totalRounds()}`:'Riepilogo, premi e ripartenza'));
   $('hSim').classList.toggle('hidden',!m||su);   // una partita sospesa si riprende, non si simula
   const left=3-SQ.filter(p=>p.tr).length,hurt=SQ.filter(p=>p.inj).length,low=SQ.filter(p=>p.cond<50).length;
   $('hTrainS').textContent=!trainOpen()?`Prossima sessione tra ${trainWait()} ${trainWait()>1?'partite':'partita'}`:`Squadra ${SV.tTeam?'fatta':'da fare'} · singoli ${left}/3`;
@@ -36,8 +39,9 @@ function renderHome(){
   $('hBellB').textContent=nwA||pdA;$('hBellB').classList.toggle('hidden',!(nwA||pdA));
   if(nwA&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openAlerts();   // c'e' una novita': la mostro subito
   else if(SV.evt&&$('evt').classList.contains('hidden')&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openEvt();   // un imprevisto aspetta una risposta
-  $('hEventS').textContent=SV.event==='camp'?(SV.done?'Nuova stagione':`Giornata ${SV.round+1} di ${totalRounds()}`):'Campionato europeo';
+  $('hEventS').textContent=SV.event==='camp'?(SV.done?'Stagione conclusa: premi e ripartenza':`Giornata ${SV.round+1} di ${totalRounds()}`):(SV.eu.state==='on'?'Campionato europeo: '+EU_ROUND[SV.eu.round].toLowerCase():'Campionato europeo concluso');
 }
+const euEndTxt=()=>SV.eu.state==='champ'?'Campioni d’Europa!':(SV.eu.state==='out'?'Eliminati: '+EU_ROUND[Math.min(2,SV.eu.round)].toLowerCase()+' persa':'');
 // ---- pezzi comuni delle schermate di carriera ----
 const esc=x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 const ovrCls=v=>v>=80?'o5':(v>=70?'o4':(v>=60?'o3':(v>=50?'o2':'o1')));
@@ -138,6 +142,9 @@ function renderEvent(){
   let body='';
   if(SV.event==='camp'){
     if(!SV.lg||!SV.lg[evSr])evSr=SV.sr;
+    let endH='';
+    if(SV.done){const hx=SV.hist[0];endH=`<p class="estat">${SV.next.short}</p>`+(SV.next.prize!==undefined?`<p class="note" style="margin:0 0 8px">Premio di classifica: ${SV.next.prize} crediti. Obiettivo ${SV.next.objOk?'raggiunto: +'+SV.obj.reward+' crediti':'mancato'}.${hx&&hx.mvp?` MVP della squadra: ${esc(hx.mvp)} (${hx.mvpS}).`:''} Con la nuova stagione tutti invecchiano di un anno, i veterani possono ritirarsi, le altre squadre cambiano e il mercato si rinnova.</p>`:'')+(hx&&hx.aw&&hx.aw.length?`<div class="seas"><h3>Premi della stagione · ${SERIES_NAME[SV.sr]}</h3><ul class="awl">${hx.aw.map(awRow).join('')}</ul>${hx.best7&&hx.best7.length?`<p>Squadra ideale: ${hx.best7.map(q=>`${q.mine?'<b style="color:var(--gold)">':'<b>'}${esc(q.name)}</b> (${q.pos})`).join(', ')}</p>`:''}</div>`:'')+`<button type="button" class="go" id="eReset">Inizia la nuova stagione</button>`;}
+    body+=endH;   // a stagione conclusa il riepilogo, i premi e il tasto per ripartire stanno in cima: prima erano in fondo a una pagina lunga
     body+=`<div class="seg" id="evTabs">${['A','B','C'].map(s=>`<button type="button" class="sg${evSr===s?' on':''}" data-sr="${s}">${SERIES_NAME[s]}${s===SV.sr?' (tua)':''}</button>`).join('')}</div>`;
     body+=`<p class="estat">${SERIES_NAME[evSr]}, stagione ${SV.season}${evSr!=='A'?', in verde chi sale':''}${evSr!=='C'?`${evSr!=='A'?' e in rosso':', in rosso'} chi scende`:''}${evSr!==SV.sr&&SV.lg[evSr]?` · giornata ${SV.lg[evSr].round} di ${SV.lg[evSr].sched.length}`:''}</p>`;
     body+=standingsHTML(evSr);
@@ -148,7 +155,6 @@ function renderEvent(){
     const nm=nextMatch();
     if(nm)done.push(`<li class="n"><span>${nm.label} contro ${nm.name}</span><span>Prossima</span></li>`);
     body+=`<ul class="elist" style="margin-top:10px">${done.join('')}</ul>`;
-    if(SV.done){const hx=SV.hist[0];body+=`<p class="estat">${SV.next.short}</p>`+(SV.next.prize!==undefined?`<p class="note" style="margin:0 0 8px">Premio di classifica: ${SV.next.prize} crediti. Obiettivo ${SV.next.objOk?'raggiunto: +'+SV.obj.reward+' crediti':'mancato'}.${hx&&hx.mvp?` MVP della squadra: ${esc(hx.mvp)} (${hx.mvpS}).`:''} Con la nuova stagione tutti invecchiano di un anno, i veterani possono ritirarsi, le altre squadre cambiano e il mercato si rinnova.</p>`:'')+(hx&&hx.aw&&hx.aw.length?`<div class="seas"><h3>Premi della stagione · ${SERIES_NAME[SV.sr]}</h3><ul class="awl">${hx.aw.map(awRow).join('')}</ul>${hx.best7&&hx.best7.length?`<p>Squadra ideale: ${hx.best7.map(q=>`${q.mine?'<b style="color:var(--gold)">':'<b>'}${esc(q.name)}</b> (${q.pos})`).join(', ')}</p>`:''}</div>`:'')+`<button type="button" class="go" id="eReset">Inizia la nuova stagione</button>`;}
   }else{
     const items=EU_ROUND.map((n,i)=>{
       const cls=(SV.eu.state==='champ'||i<SV.eu.round)?'w':(i===SV.eu.round&&SV.eu.state==='out'?'l':(i===SV.eu.round?'n':''));
@@ -156,7 +162,8 @@ function renderEvent(){
       return `<li class="${cls}"><span>${n} contro ${SV.eu.opps[i]}</span><span>${st}</span></li>`;
     });
     body+=`<ul class="elist">${items.join('')}</ul>`;
-    if(SV.eu.state!=='on')body+=`<button type="button" class="go" id="eReset">Nuovo torneo</button>`;
+    if(SV.eu.state!=='on')body+=`<p class="estat">${euEndTxt()}${SV.eu.cash?` · premi del torneo: ${SV.eu.cash} crediti`:''}</p><p class="note" style="margin:0 0 8px">Il Campionato europeo si gioca una volta a stagione: la prossima edizione è nella stagione dopo, se chiudete la Serie A tra le prime 3.</p><button type="button" class="go" id="eCamp">${SV.done?'Vai al campionato: nuova stagione':'Torna al campionato'}</button>`;
+    else body+=`<p class="note" style="margin:8px 0 0">Premi: ${EU_PRIZE.map((v,i)=>Math.round(v*SR_K.A)+' crediti ('+EU_ROUND[i].toLowerCase()+')').join(', ')}. Una sola edizione a stagione.</p>`;
   }
   $('eBody').innerHTML=body;
 }
