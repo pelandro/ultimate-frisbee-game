@@ -342,6 +342,12 @@ function drawAim(){
     px(x-2,y-2,4,4,PAL.out);px(x-1,y-1,2,2,col);
   }
   if(G.xtr)return;
+  // GITTATA: quando il lancio si avvicina al massimo che il suo Sparo permette compare l'arco del limite (rosso); il disco non va oltre
+  if(pl.short||pl.dist>pl.mx*0.72){const R=ri(pl.mx*S),an=Math.atan2(w.y-h.y,w.x-h.x);pring(gx,gy,R,R,PAL.out,3,3,an-0.2,an+0.2);pring(gx,gy,R,R,pl.short?PAL.red:'#ff9a8a',1,3,an-0.2,an+0.2);}
+  // RISCHIO DI INTERCETTO: il difensore che fa in tempo a mettersi sulla traiettoria lampeggia in rosso, con una croce nel punto in cui la taglierebbe
+  {const tr=aimThreat(h,pl);if(tr){const qx=sxw(tr.q.x),qy=syw(tr.q.y),cx2=sxw(tr.x),cy2=syw(tr.y)-6,bl=Math.sin(G.tick*14)>0;
+    pring(qx,qy,9,4,PAL.out,3);pring(qx,qy,9,4,bl?PAL.red:'#ffffff',1);
+    px(cx2-3,cy2-3,7,7,PAL.out);for(let k=-2;k<=2;k++){px(cx2+k,cy2+k,1,1,PAL.red);px(cx2+k,cy2-k,1,1,PAL.red);}}}
   // cerchio tratteggiato = dove puo' finire il disco: si allarga con la distanza, la pressione e i lanci difficili
   const ur=clamp(ri(1.5*pl.sig*S),5,80);
   pring(ex,ey,ur,ur,PAL.out,3,2);pring(ex,ey,ur,ur,col,1,2);

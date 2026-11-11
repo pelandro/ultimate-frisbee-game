@@ -70,7 +70,7 @@ function update(dt){
     G.banner.t-=dt;
     if(G.banner.t<=0){
       if(Math.max(G.score[0],G.score[1])>=G.target){G.mode='over';HOOKS.over();}
-      else if(!G.halfDone&&Math.max(G.score[0],G.score[1])>=HALF_AT)halfTime();
+      else if(!G.halfDone&&Math.max(G.score[0],G.score[1])>=halfAt())halfTime();
       else{G.nextRec=1-G.banner.team;G.pointNo++;G.dir=[-G.dir[0],-G.dir[1]];startPoint(G.nextRec);HOOKS.menu();if(G.injured&&G.injured.length)HOOKS.injury(G.injured);}
     }
     return;

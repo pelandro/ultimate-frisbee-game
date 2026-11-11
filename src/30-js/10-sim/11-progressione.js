@@ -56,7 +56,8 @@ function simParts(x,share){const b=XP_SIM[posOf(x)],o={};let t=0;for(const k in 
 function matchGrowth(team){   // dopo una partita giocata: crescita a XP di chi e' sceso in campo
   const out=[];
   for(const p of (team===0?SQ:T[team])){
-    const parts=xpParts(p.m);p.xpLast=Math.round(xpTotal(p.m)*10)/10;
+    const parts=xpParts(p.m),lk=lenK();if(lk<1)for(const k in parts)parts[k]*=lk;   // partita lunga: stessa esperienza di una partita ai 7
+    p.xpLast=Math.round(xpTotal(p.m)*lk*10)/10;
     for(const c of growBy(p,parts,XP_ROLE[posOf(p)]))out.push({p,k:c.k,from:c.from,to:c.to,gain:c.to-c.from});
   }
   return out;

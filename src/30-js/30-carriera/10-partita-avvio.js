@@ -6,7 +6,7 @@ function startMatch(){
   const first=!SV.help;if(first){SV.help=true;persist();}   // salvo prima della forma del giorno
   G.formB=teamFormB();applyForm();
   G.oppName=m.name;G.myName=SV.team;G.matchLabel=m.label;
-  newGame();G.lvl=[0,carDiff().ai|0];G.oppPlus=plus||0;G.idn=[null,teamIdentity(m.name,T[1])];G.xtr=SV.diff==='xtr';G.hint=(SV.diff||'easy')==='easy';G.routes=G.hint||SV.diff==='med';G.inMatch=true;G.recorded=false;
+  newGame();G.target=carLen();G.lvl=[0,carDiff().ai|0];G.oppPlus=plus||0;G.idn=[null,teamIdentity(m.name,T[1])];G.xtr=SV.diff==='xtr';G.hint=(SV.diff||'easy')==='easy';G.routes=G.hint||SV.diff==='med';G.inMatch=true;G.recorded=false;
   G.duo=duoMap();   // intesa tra le coppie: vale solo in carriera
   {const w=careerWind(m);setWind(w[0],w[1]);}   // il meteo annunciato sul cruscotto
   fixLines();G.lines={o:matchLine('lineO'),d:matchLine('lineD'),auto:!!SV.autoSub};G.injK=1-0.12*facLv('fis');   // linee d'attacco e di difesa, cambi intelligenti, fisioterapia
@@ -32,6 +32,7 @@ const CAR_DIFF={
   xtr:{name:'Estrema',n:3,plus:2,ai:2,txt:'Come Difficile, ma la traiettoria del lancio si vede solo all’inizio.'}
 };
 const carDiff=()=>CAR_DIFF[(SV&&SV.diff)||'easy']||CAR_DIFF.easy;
+const carLen=()=>lenOk((SV&&SV.len)|0);   // durata delle partite di carriera (Opzioni): 7, 11 o 15 punti
 const trainOpen=()=>((SV.played||0)%carDiff().n)===0;       // la sessione e' disponibile prima della 1a partita e poi ogni n partite giocate (anche in Europa)
 const trainWait=()=>{const n=carDiff().n;return n-((SV.played||0)%n);};
 // forza di una squadra = media delle statistiche dei suoi 7 migliori giocatori (3 handler e 4 cutter)
@@ -70,7 +71,7 @@ function renderQuick(){
   const all=[].concat(SERIES.A,SERIES.B,SERIES.C);
   if(!QM.a||!all.includes(QM.a))QM.a=hasCareer()&&all.includes(SV.team)?SV.team:'Grem';
   if(!QM.b||!all.includes(QM.b)||QM.b===QM.a)QM.b=all.find(n=>n!==QM.a&&TEAM[n]&&TEAM[n].series!==TEAM[QM.a].series)||all.find(n=>n!==QM.a);
-  $('qD').value=QM.d|0;$('qS').value=String(QM.s);updateQuick();
+  $('qD').value=QM.d|0;$('qS').value=String(QM.s);$('qL').value=String(lenOk(QM.len|0));updateQuick();
 }
 // selettore delle squadre: le categorie sono linguette e l'elenco della categoria e' gia' aperto
 function openPick(side){QM.side=side;QM.tab=TEAM[QM[side]].series;renderPick();$('qPick').classList.remove('hidden');}
@@ -87,7 +88,7 @@ function updateQuick(){
   $('qA').innerHTML=btn(a);$('qB').innerHTML=btn(b);
   $('qAP').textContent=row(a);$('qBP').textContent=row(b);
   $('qPlay').disabled=a===b;$('qPlay').textContent=a===b?'Scegli due squadre diverse':'Gioca';
-  QM.d=+$('qD').value;QM.s=+$('qS').value;
+  QM.d=+$('qD').value;QM.s=+$('qS').value;QM.len=+$('qL').value;
   $('qS').options[0].textContent=a;$('qS').options[1].textContent=b;   // i nomi delle due squadre
   $('qDP').textContent=['L’IA avversaria gioca come sempre.','L’IA avversaria sceglie e reagisce un po’ meglio.','L’IA avversaria sceglie e reagisce molto meglio.','Come Difficile, ma la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'][QM.d]+' Le statistiche dei giocatori non cambiano.';
 }
@@ -99,7 +100,7 @@ function startQuick(){
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;applyForm();
   G.oppName=b;G.myName=a;G.matchLabel='Partita veloce';
-  newGame();rollWind();G.lvl=[0,Math.min(2,QM.d|0)];G.oppPlus=0;G.idn=[null,teamIdentity(b,T[1])];G.xtr=(QM.d|0)===3;G.hint=(QM.d|0)===0;G.routes=(QM.d|0)<=1;G.inMatch=true;G.recorded=false;   // Estrema = IA come Difficile
+  newGame();G.target=lenOk(QM.len|0);rollWind();G.lvl=[0,Math.min(2,QM.d|0)];G.oppPlus=0;G.idn=[null,teamIdentity(b,T[1])];G.xtr=(QM.d|0)===3;G.hint=(QM.d|0)===0;G.routes=(QM.d|0)<=1;G.inMatch=true;G.recorded=false;   // Estrema = IA come Difficile
   G.nextRec=QM.s===0?0:1;G.startRec=G.nextRec;   // chi riceve il primo pull inizia in attacco; l'altra squadra tira il pull (difesa)
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;

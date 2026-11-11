@@ -19,7 +19,7 @@ function simMatchStats(goals){   // dopo una partita simulata: mete e assist dis
   const line=matchLine('lineO').concat(matchLine('lineD')).map(id=>SQ[id]),set=[...new Set(line)];if(!set.length)return;
   const g={},a={},wp=(arr,w)=>{let t=0;const ws=arr.map(x=>{const v=Math.max(0.1,w(x));t+=v;return v;});let r=Math.random()*t;for(let i=0;i<arr.length;i++){r-=ws[i];if(r<=0)return arr[i];}return arr[0];};
   for(let i=0;i<goals;i++){const sc=wp(set,p=>(p.role==='H'?0.5:1.5)*(rate(p.s,'C')-30)),as=wp(set.filter(p=>p!==sc),p=>(p.role==='H'?1.6:0.6)*(rate(p.s,'H')-30));g[sc.full]=(g[sc.full]||0)+1;a[as.full]=(a[as.full]||0)+1;}
-  const b={};for(let i=0;i<BLK_MATCH;i++){const d=wp(set,p=>rate(p.s,'D')-35);b[d.full]=(b[d.full]||0)+1;}   // difese: in media quante in una partita giocata
+  const b={};for(let i=0;i<Math.round(BLK_MATCH*carLen()/MATCH_TARGET);i++){const d=wp(set,p=>rate(p.s,'D')-35);b[d.full]=(b[d.full]||0)+1;}   // difese: in media quante in una partita giocata
   for(const p of set)addStats(p,g[p.full]|0,a[p.full]|0,b[p.full]|0);
 }
 /* ---- PREMI DI FINE STAGIONE (del tuo campionato) ----
@@ -34,7 +34,7 @@ function seriesStats(sr){
     const R=mulberry32(hashStr(SV.seed+'|st|'+SV.season+'|'+n)),st=ro.map(()=>({g:0,a:0,b:0}));
     const pick=(w,skip)=>{let tot=0;const ws=ro.map((o,i)=>{const v=i===skip?0:Math.max(0.1,w(o))*(i<7?1:0.45);tot+=v;return v;});let r=R()*tot;for(let i=0;i<ro.length;i++){r-=ws[i];if(r<=0)return i;}return 0;};
     for(let i=0;i<t.pf;i++){const sc=pick(o=>(o.r==='H'?0.5:1.5)*(rate(o.s,'C')-30),-1);st[sc].g++;st[pick(o=>(o.r==='H'?1.6:0.6)*(rate(o.s,'H')-30),sc)].a++;}
-    for(let i=0;i<mp*BLK_MATCH;i++)st[pick(o=>rate(o.s,'D')-35,-1)].b++;
+    for(let i=0;i<Math.round(mp*BLK_MATCH*carLen()/MATCH_TARGET);i++)st[pick(o=>rate(o.s,'D')-35,-1)].b++;
     ro.forEach((o,i)=>out.push({name:o.label||o.n,team:n,age:o.age,pos:posOf(o),g:st[i].g,a:st[i].a,b:st[i].b,mine:false}));
   }
   return out;

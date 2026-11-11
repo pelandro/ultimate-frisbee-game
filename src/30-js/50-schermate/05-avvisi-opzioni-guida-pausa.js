@@ -32,10 +32,13 @@ function renderOpts(){
   $('opSub').textContent=`${SV.team} · ${SERIES_NAME[SV.sr]} · stagione ${SV.season}`;
   $('opDiff').innerHTML=order.map(k=>`<button type="button" class="sg${k===cur?' on':''}" data-k="${k}">${CAR_DIFF[k].name}</button>`).join('');
   $('opDiffN').textContent=CAR_DIFF[cur].txt;
+  $('opLen').innerHTML=LEN_OPTS.map(o=>`<button type="button" class="sg${o.n===carLen()?' on':''}" data-n="${o.n}">${o.name} · ${o.n}</button>`).join('');
+  $('opLenN').textContent=LEN_OPTS.find(o=>o.n===carLen()).txt+' Vale dalla prossima partita, anche per quelle simulate e per le altre squadre; l’esperienza di una partita resta la stessa.';
   renderSlots();syncToggles();
 }
 $('hOpt').addEventListener('click',()=>{$('opMsg').textContent='';renderOpts();$('opts').classList.remove('hidden');});
 $('opX').addEventListener('click',()=>{$('opts').classList.add('hidden');renderHome();});
+$('opLen').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)return;SV.len=lenOk(+b.dataset.n);persist();renderOpts();});
 $('opDiff').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)return;SV.diff=b.dataset.k;persist();renderOpts();});
 $('opSet').addEventListener('click',()=>{$('opts').classList.add('hidden');setFrom='home';showScreen('settings');});
 /* ---- GUIDA a schede: si apre dal menu iniziale, dal cruscotto e dalla pausa, senza uscire da dove si e' ---- */
@@ -119,7 +122,7 @@ $('sBack').addEventListener('click',()=>{if(sView==='size')setSView('btns');else
 $('hBack').addEventListener('click',()=>showScreen('title'));
 $('teamBack').addEventListener('click',()=>showScreen('title'));
 $('qBack').addEventListener('click',()=>showScreen('title'));
-$('qD').addEventListener('change',updateQuick);$('qS').addEventListener('change',updateQuick);
+$('qL').addEventListener('change',updateQuick);$('qD').addEventListener('change',updateQuick);$('qS').addEventListener('change',updateQuick);
 $('qA').addEventListener('click',()=>openPick('a'));$('qB').addEventListener('click',()=>openPick('b'));
 $('qpX').addEventListener('click',()=>$('qPick').classList.add('hidden'));
 $('qPick').addEventListener('click',e=>{if(e.target===$('qPick'))$('qPick').classList.add('hidden');});

@@ -53,7 +53,7 @@ function updateDefenders(dt){
   if(sch==='zone'&&(G.zoneT<=0||G.zoneH!==Hh)){zoneAssign();G.zoneT=1.2;G.zoneH=Hh;}
   const dTeam=1-P,ai=aiTeam(dTeam),lvD=AIK(dTeam),idn=idOf(dTeam);
   // vicino alla propria meta non c'e' piu' profondo da proteggere: l'IA marca davanti all'uomo
-  const nearGoal=Hh?((d>0?FIELD_L-EZ-Hh.x:Hh.x-EZ)<16):false,front=G.dmode[dTeam]===1||(ai&&nearGoal);
+  const nearGoal=Hh?((d>0?FIELD_L-EZ-Hh.x:Hh.x-EZ)<16):false,front=G.dmode[dTeam]===1||(ai&&nearGoal)||(ai&&!!Hh&&lvD.smart>=0.6&&throwMax(Hh)<40);   // contro chi non ha il braccio per il lungo l'IA esperta marca davanti: non c'e' profondo da proteggere
   // aiuti lontano dal disco: sempre con lo schema «uomo con aiuti», altrimenti quanto vuole l'identita' della squadra e il livello dell'IA
   const pf=sch==='man_poach'?1:(ai?0.45*idn.poach*lvD.poach:0),rd=sch!=='zone'?playRead(dTeam):null;
   const thR=Hh?throwMax(Hh):99;   // chi non ha il braccio per arrivarci non e' una minaccia: l'attaccante oltre la sua gittata si puo' lasciare

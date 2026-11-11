@@ -118,7 +118,7 @@ function realRoster(rows,seedStr,opt){
     }
   }
   // in partita si legge il COGNOME (i giocatori inventati non ce l'hanno: restano col nome); se due compagni lo condividono si aggiunge l'iniziale del nome
-  const first=o=>o.nm.split(' ')[0],sn=o=>o.sur||first(o),cnt={},used={};
+  const first=o=>o.nm.split(' ')[0],sn=o=>shortSur(o.sur)||first(o),cnt={},used={};
   list.forEach(o=>{cnt[sn(o)]=(cnt[sn(o)]||0)+1;});
   return list.map((o,idx)=>{
     const full=((o.sur+' '+o.nm).trim())+(o.gen?' (g'+idx+')':'');
@@ -143,12 +143,14 @@ function realRoster(rows,seedStr,opt){
   });
 }
 // nome mostrato in partita = cognome. Vale anche per i salvataggi vecchi, che hanno ancora il solo nome: si ricalcola dal cognome (con l'iniziale se due compagni lo condividono)
+// i doppi cognomi lunghi («Spaccapanico Proietti») sul campo coprono i compagni: si tiene la prima parola, se da sola e' un cognome (non «De», «Di», «La»...)
+function shortSur(sur){if(!sur||sur.length<=13)return sur||'';const w=sur.split(' ');return w.length>1&&w[0].length>=4?w[0]:sur;}
 function applySurnames(list){
-  const cnt={};for(const p of list)if(p.sur)cnt[p.sur]=(cnt[p.sur]||0)+1;
+  const cnt={};for(const p of list)if(p.sur)cnt[shortSur(p.sur)]=(cnt[shortSur(p.sur)]||0)+1;
   for(const p of list){
     if(!p.sur)continue;
     const lb=p.label||'',fn=(lb.endsWith(p.sur)?lb.slice(0,lb.length-p.sur.length):lb).trim().split(' ')[0]||'';
-    p.name=cnt[p.sur]>1&&fn?p.sur+' '+fn[0]+'.':p.sur;
+    const ss=shortSur(p.sur);p.name=cnt[ss]>1&&fn?ss+' '+fn[0]+'.':ss;
   }
 }
 // la tua squadra: 7 in campo scelti tra i migliori, gli altri in panchina
@@ -223,5 +225,5 @@ function applyForm(){
 }
 function restoreForm(){for(const p of SQ.concat(T[1]))if(p.b){p.s=p.b;p.b=null;}}
 function newGame(){G.injured=[];for(const p of SQ.concat(T[1])){p.st=p.t===0&&p.cond!==undefined?Math.round(62+0.38*p.cond):100;   // chi arriva stanco dalla settimana parte con meno energia
-  p.spr=false;p.run=0;p.miss=0;p.hot=false;p.cold=false;p.m=newCounters();}G.score=[0,0];G.pointNo=1;G.nextRec=1;G.startRec=1;G.halfDone=false;G.dir=[1,-1];G.seen={att:{},def:{}};G.obs={u:0,d:0,n:0};G.resetH=null;G.duo={};G.forfeit=false;setWind(0,0);resetStats();}
+  p.spr=false;p.run=0;p.miss=0;p.hot=false;p.cold=false;p.m=newCounters();}G.score=[0,0];G.pointNo=1;G.nextRec=1;G.startRec=1;G.halfDone=false;G.dir=[1,-1];G.seen={att:{},def:{}};G.obs={u:0,d:0,n:0};G.resetH=null;G.duo={};G.forfeit=false;G.target=MATCH_TARGET;setWind(0,0);resetStats();}
 
