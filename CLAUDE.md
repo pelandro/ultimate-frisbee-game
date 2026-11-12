@@ -16,7 +16,7 @@ Ci lavorano **due sviluppatori**, entrambi con Claude Code, sullo stesso reposit
 
 ## Com'è fatto il codice
 
-- I sorgenti stanno in `src/`. Il gioco è la **concatenazione dei file di `src/` in ordine alfabetico di percorso** (`tools/build.js`). Niente moduli né import: tutto il JavaScript vive in un unico ambito globale.
+- I sorgenti stanno in `src/`. Il gioco è la **concatenazione dei file di `src/` in ordine alfabetico di percorso** (`tools/build.js`). Il build trasforma anche il CSS per la rotazione automatica (ogni media query su larghezza/altezza diventa anche una container query sul `<body>`, ogni vh/vw anche cqh/cqw): nei sorgenti si scrive il CSS nel modo solito, ma per le coordinate dei tocchi si usa `layRect(el)` al posto di `getBoundingClientRect()`. Niente moduli né import: tutto il JavaScript vive in un unico ambito globale.
 - **Non modificare `dist/`**: è generato e non sta in Git.
 - Per aggiungere codice crea un file nuovo nella cartella giusta con un numero libero (per esempio `30-js/30-carriera/11-sponsor.js`). **Non rinumerare né rinominare** i file esistenti: l'ordine conta, perché una costante deve essere dichiarata prima di essere usata al caricamento.
 - `src/30-js/10-sim/` è il **motore di gioco**: non deve usare la pagina (`document`, `window`, `localStorage`, `$()`), così gira anche da riga di comando. Parla con l'interfaccia solo attraverso `HOOKS`.

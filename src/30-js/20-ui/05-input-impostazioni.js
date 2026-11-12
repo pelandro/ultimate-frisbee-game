@@ -1,6 +1,6 @@
 /* ---- input ---- */
 let drag=null,tap=null,ddrag=null;
-const ptr=e=>{const r=cv.getBoundingClientRect();return {px:e.clientX-r.left,py:e.clientY-r.top};};
+const ptr=e=>{const r=layRect(cv);return {px:e.clientX-r.left,py:e.clientY-r.top};};
 function nearestPlayer(px,py,maxd,team){
   let b=null,bd=maxd;const off=PH()*0.5;
   for(const p of (team===undefined?T[0].concat(T[1]):T[team])){const d=hyp(sxw(p.x)-px,syw(p.y)-off-py);if(d<bd){bd=d;b=p;}}
@@ -77,7 +77,7 @@ cv.addEventListener('pointerup',e=>{
   if(e.pointerId===aimPid&&drag&&drag.sl)aimUp(e);
 });
 // da pixel CSS dello schermo a pixel del buffer di gioco (per disegnare l'elastico sotto il dito)
-function cssToBuf(cx,cy){const r=cv.getBoundingClientRect();return [(cx-r.left)*DPR/PXS,(cy-r.top)*DPR/PXS];}
+function cssToBuf(cx,cy){const r=layRect(cv);return [(cx-r.left)*DPR/PXS,(cy-r.top)*DPR/PXS];}
 function drawSling(x0,y0,x1,y1,cancel){
   const a=cssToBuf(x0,y0),b=cssToBuf(x1,y1);
   pline(a[0],a[1],b[0],b[1],PAL.out,3,3);pline(a[0],a[1],b[0],b[1],cancel?PAL.red:'#ffffff',1,3);
@@ -109,7 +109,7 @@ applyBtnSize();
 // ---- posizione dei pulsanti di gioco: predefinita (angolo in basso a destra, SCATTO nell'angolo e Lancio, Hammer a sinistra) oppure scelta dal giocatore ----
 const tbPx=()=>Math.min(54,Math.max(46,0.155*CH))*BSCALE[SETT.bs];   // stessa formula del CSS: clamp(46px,15.5vh,54px) * --bsc
 function defCenter(name){
-  const tb=tbPx(),sai=$('sai').getBoundingClientRect(),rr=Math.max(24,sai.width),bb=Math.max(12,sai.height);
+  const tb=tbPx(),sai=layRect($('sai')),rr=Math.max(24,sai.width),bb=Math.max(12,sai.height);
   const y=CH-bb-tb/2,xs=CW-rr-tb/2;
   return name==='sprint'?[xs,y]:(name==='throw'?[xs-tb-12,y]:[xs-2*tb-22,y]);
 }

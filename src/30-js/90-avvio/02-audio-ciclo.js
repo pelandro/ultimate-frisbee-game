@@ -207,6 +207,7 @@ window.addEventListener('pointerdown',()=>AUD.init(),{capture:true});
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('button'))AUD.sfx('ui');},true);
 window.addEventListener('keydown',()=>AUD.init(),{capture:true});
 for(const id of ['tSnd','sSnd','opSnd','paSnd'])$(id).addEventListener('click',()=>AUD.setOn(!AUD.isOn()));
+$('sRot').addEventListener('click',()=>{setRotPref(!rotPref);syncToggles();});
 for(const id of ['sWind','opWind'])$(id).addEventListener('click',()=>{setWindOn(G.opt.wind===false);syncToggles();if(!$('home').classList.contains('hidden'))renderHome();});
 for(const id of ['sDef','opDef','paDef'])$(id).addEventListener('click',()=>{setDefMode((G.opt.def+1)%3);syncToggles();});
 for(const id of ['sCine','opCine','paCine'])$(id).addEventListener('click',()=>{G.opt.cine=!G.opt.cine;try{localStorage.setItem('ultimate-stacchi',G.opt.cine?'1':'0');}catch(e){}syncToggles();});
@@ -224,6 +225,7 @@ function syncToggles(){   // audio e stacchi laterali si cambiano da piu' punti 
   for(const id of ['opCine','paCine'])$(id).textContent='Stacchi laterali: '+(c?'sì':'no');
   for(const id of ['opDef','paDef'])$(id).textContent='Difesa: '+DEF_LBL[G.opt.def].toLowerCase();
   $('sDefS').textContent=DEF_LBL[G.opt.def]+': '+DEF_TXT[G.opt.def];
+  $('sRotS').textContent=rotPref?'Accesa: in verticale il gioco si gira da solo':'Spenta: in verticale compare «Gira lo schermo»';
   const wOn=G.opt.wind!==false;$('opWind').textContent='Vento: '+(wOn?'sì':'no');$('sWindS').textContent=wOn?'Acceso: ogni partita ha il suo meteo':'Spento: sempre calma';
 }
 syncToggles();
@@ -236,7 +238,7 @@ function syncCall(){
 function frame(now){
   const dt=Math.min(0.05,Math.max(0,(now-last)/1000));last=now;
   AUD.sync(G.inMatch&&G.mode!=='over'?'match':'home');
-  if(!portrait()){
+  if(!portrait()||rotOn){   // in verticale il gioco si ferma, tranne quando si disegna ruotato da solo
     G.tick+=dt;
     padPoll();vinPushDir();
     pullTick();defTick();momentTick();

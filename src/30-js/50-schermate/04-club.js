@@ -56,7 +56,7 @@ function importSave(txt){
   persist();
   if(d&&d.extra&&typeof d.extra==='object'){   // anche Ultimate Team, torneo e allenamento, se il file li contiene
     for(const k of [UT_KEY,TN_KEY,TUT_KEY])if(d.extra[k]){try{localStorage.setItem(k,JSON.stringify(d.extra[k]));}catch(e){}}
-    utLoad();try{TOUR=JSON.parse(localStorage.getItem(TN_KEY)||'null');const o=JSON.parse(localStorage.getItem(TUT_KEY)||'null');if(o)SCH={tut:!!o.tut,best:o.best||{}};}catch(e){}
+    utLoad();try{TOUR=JSON.parse(localStorage.getItem(TN_KEY)||'null');const o=JSON.parse(localStorage.getItem(TUT_KEY)||'null');if(o)SCH={tut:!!o.tut,lv:o.lv|0,best:o.best||{}};}catch(e){}
   }
   return '';
 }

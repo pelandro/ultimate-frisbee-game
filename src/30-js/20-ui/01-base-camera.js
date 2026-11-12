@@ -23,7 +23,7 @@ const toWorld=(px,py)=>({x:(px+CX)/S,y:(py-OYi)/S});
 const portrait=()=>typeof matchMedia==='function'&&matchMedia('(orientation: portrait)').matches;
 
 function resize(){
-  const r=cv.getBoundingClientRect();DPR=Math.min(window.devicePixelRatio||1,3);
+  const r={width:cv.clientWidth,height:cv.clientHeight};DPR=Math.min(window.devicePixelRatio||1,3);
   CW=Math.max(1,r.width);CH=Math.max(1,r.height);
   UIZ=clamp(Math.floor(Math.min(CW/1000,CH/560)*4)/4,1,2.25);document.documentElement.style.setProperty('--ui',UIZ);
   cv.width=Math.round(CW*DPR);cv.height=Math.round(CH*DPR);

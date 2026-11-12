@@ -128,7 +128,7 @@ $('tQuick').addEventListener('click',()=>showScreen('quick'));
 $('tSet').addEventListener('click',()=>showScreen('settings'));
 $('sBack').addEventListener('click',()=>{if(sView==='size')setSView('btns');else if(sView!=='menu')setSView('menu');else{const to=setFrom;setFrom='title';showScreen(to);}});
 $('hBack').addEventListener('click',()=>showScreen('title'));
-$('teamBack').addEventListener('click',()=>showScreen('title'));
+$('teamBack').addEventListener('click',teamBack);
 $('qBack').addEventListener('click',()=>showScreen('title'));
 $('qL').addEventListener('change',updateQuick);$('qD').addEventListener('change',updateQuick);$('qS').addEventListener('change',updateQuick);
 $('qA').addEventListener('click',()=>openPick('a'));$('qB').addEventListener('click',()=>openPick('b'));

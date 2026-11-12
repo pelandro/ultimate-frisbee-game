@@ -4,7 +4,7 @@ const DR={on:false,kind:'',step:0,cnt:0,score:0,tries:0,ch:null,last:'',lastT:0,
 const TN={on:false};
 const TUT_KEY='ultimate-scuola';
 let SCH={tut:false,best:{}};
-try{const o=JSON.parse(localStorage.getItem(TUT_KEY)||'null');if(o&&typeof o==='object')SCH={tut:!!o.tut,best:o.best||{}};}catch(e){}
+try{const o=JSON.parse(localStorage.getItem(TUT_KEY)||'null');if(o&&typeof o==='object')SCH={tut:!!o.tut,lv:o.lv|0,best:o.best||{}};}catch(e){}   // lv: lezioni del tutorial superate (si riprende da li')
 const schSave=()=>{try{localStorage.setItem(TUT_KEY,JSON.stringify(SCH));}catch(e){}};
 // lezioni del tutorial: ognuna prepara il campo e si supera FACENDO la cosa spiegata
 const TUT_STEPS=[
@@ -28,24 +28,25 @@ const MEDAL_N=['Nessuna medaglia','Bronzo','Argento','Oro'];
 function renderSchool(){
   $('tSchoolS').textContent=SCH.tut?'Tutorial, pratica e sfide':'Nuovo? Inizia dal tutorial';
   let h='<div class="schg">';
-  h+=`<div class="ccard"><h3>Tutorial guidato</h3><p>Sette lezioni brevi sul campo: lancio, tagli, tipi di lancio, stall, meta, difesa e pull. Ogni lezione si supera facendo ciò che spiega.${SCH.tut?' <b>Completato.</b>':''}</p><div class="schrow"><button type="button" class="go" data-go="tut">${SCH.tut?'Ripeti il tutorial':'Inizia il tutorial'}</button></div>
+  const nL=TUT_STEPS.length,done=SCH.tut?nL:Math.min(nL,SCH.lv|0);
+  h+=`<div class="ccard"><h3>Tutorial guidato</h3><p>Sette lezioni brevi sul campo: ogni lezione si supera facendo ciò che spiega. Puoi ripeterne una sola quando vuoi.</p><div class="tprog2"><span><i style="width:${Math.round(done/nL*100)}%"></i></span><b>${done}/${nL}</b></div><div class="schrow"><button type="button" class="go" data-go="tut" data-step="${done>0&&done<nL?done:0}">${done>=nL?'Ripeti il tutorial':(done?'Riprendi: lezione '+(done+1):'Inizia il tutorial')}</button></div><div class="tles">${TUT_STEPS.map((t,i)=>`<button type="button" class="sec${i<done?' ok':''}" data-go="tut" data-step="${i}" title="${esc(t.g||'')}">${i<done?'✓ ':''}${esc(t.t)}</button>`).join('')}</div>
     <h3 style="margin-top:10px">Allenamento libero</h3><p>Nessun punteggio e nessun cronometro: si riparte da fermo dopo ogni meta o turnover, con l’energia sempre piena.</p><div class="schrow"><select class="qs" id="scSide"><option value="att">Attacco</option><option value="def">Difesa</option></select><select class="qs" id="scDef"><option value="off">Senza avversari</option><option value="mark">Solo il marcatore</option><option value="on">Difesa completa</option></select><button type="button" class="go" data-go="free">Entra in campo</button></div></div>`;
   h+=`<div class="ccard"><h3>Sfide di abilità</h3>${Object.keys(CHAL).map(k=>{const c=CHAL[k],b=SCH.best[k];return `<div class="chal"><div><b>${c.name}</b><small>${c.txt}</small><span class="md"><span class="medal m${b===undefined?0:medalOf(c,b)}"></span>${b===undefined?'Mai provata':'Record '+b+' · '+MEDAL_N[medalOf(c,b)]} · bronzo ${c.medal[0]}, argento ${c.medal[1]}, oro ${c.medal[2]}</span></div><button type="button" class="go" data-go="${k}">Gioca</button></div>`;}).join('')}</div>`;
   $('scBox').innerHTML=h+'</div>';
   $('scSide').value=DR.free.side;$('scDef').value=DR.free.def;
   $('scDef').disabled=DR.free.side==='def';
 }
-function startDrill(kind){
+function startDrill(kind,step){   // step: lezione da cui parte il tutorial (0 = dall'inizio)
   const all=[].concat(SERIES.A,SERIES.B,SERIES.C),a=hasCareer()&&REAL[SV.team]?SV.team:'Grem',b=all.find(n=>n!==a&&TEAM[n].series===TEAM[a].series&&REAL[n])||all.find(n=>n!==a);
   if(hasCareer()){persist();QM.bak=JSON.stringify(SV);}else QM.bak=null;   // la carriera resta com'e': viene rimessa all'uscita
-  QM.on=true;UT.on=false;DR.on=true;DR.kind=kind==='tut'||kind==='free'?kind:'ch';DR.ch=CHAL[kind]?kind:null;DR.step=0;DR.cnt=0;DR.score=0;DR.tries=0;DR.last='';DR.pulled=false;
+  QM.on=true;UT.on=false;DR.on=true;DR.kind=kind==='tut'||kind==='free'?kind:'ch';DR.ch=CHAL[kind]?kind:null;DR.step=kind==='tut'?clamp(step|0,0,TUT_STEPS.length-1):0;DR.cnt=0;DR.score=0;DR.tries=0;DR.last='';DR.pulled=false;
   setSquad(qRoster(a,9));applyRoster(qRoster(b,7));
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=0;
   G.oppName=b;G.myName=a;G.matchLabel=kind==='tut'?'Tutorial':(kind==='free'?'Allenamento libero':'Sfida · '+CHAL[kind].name);
   newGame();G.lvl=[0,1];G.oppPlus=0;G.idn=[null,teamIdentity(b,T[1])];G.xtr=false;G.hint=true;G.routes=true;G.inMatch=true;G.recorded=true;G.auto=false;
   G.opp={att:'vert',def:'man_out'};
-  const c=kind==='tut'?TUT_STEPS[0]:(kind==='free'?{side:DR.free.side,def:DR.free.side==='def'?'on':DR.free.def,x0:DR.free.side==='def'?22:16}:CHAL[kind]);
+  const c=kind==='tut'?TUT_STEPS[DR.step]:(kind==='free'?{side:DR.free.side,def:DR.free.side==='def'?'on':DR.free.def,x0:DR.free.side==='def'?22:16}:CHAL[kind]);
   G.drill={side:c.side||'att',def:c.def||'on',x0:c.x0||14,pull:!!c.pull,wait:0,live:false,done:false};
   hideScreens();$('over').classList.add('hidden');$('drEnd').classList.add('hidden');
   drillStart();cam.snap=true;
@@ -53,7 +54,7 @@ function startDrill(kind){
 function drillNext(delay,done){const D=G.drill;if(!D)return;D.live=false;D.wait=delay;D.done=!!done;}
 function drSay(txt){DR.last=txt;DR.lastT=G.tick;}
 function tutNext(){
-  DR.step++;DR.cnt=0;DR.pulled=false;
+  DR.step++;DR.cnt=0;DR.pulled=false;SCH.lv=Math.max(SCH.lv|0,DR.step);schSave();   // lezione superata: resta segnata anche se esci a meta' tutorial
   if(DR.step>=TUT_STEPS.length){SCH.tut=true;schSave();drSay('Tutorial completato!');drillNext(1.6,true);return;}
   const c=TUT_STEPS[DR.step];Object.assign(G.drill,{side:c.side||'att',def:c.def||'on',x0:c.x0||14,pull:!!c.pull});
   drSay('Ottimo! Prossima lezione');HOOKS.sfx('ui');drillNext(1.7);
@@ -132,7 +133,7 @@ function drillTick(){
   if(co.dataset.h!==h){co.dataset.h=h;co.innerHTML=h;}
   co.classList.remove('hidden');
 }
-$('scBox').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)startDrill(b.dataset.go);});
+$('scBox').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)startDrill(b.dataset.go,+(b.dataset.step||0));});
 $('scBox').addEventListener('change',e=>{if(e.target.id==='scSide'){DR.free.side=e.target.value;$('scDef').disabled=DR.free.side==='def';}else if(e.target.id==='scDef')DR.free.def=e.target.value;});
 $('scBack').addEventListener('click',()=>showScreen('title'));
 $('tSchool').addEventListener('click',()=>showScreen('school'));

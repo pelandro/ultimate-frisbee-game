@@ -28,7 +28,7 @@ let pDrag=null;
 function endPDrag(e){if(!pDrag||e.pointerId!==pDrag.id)return;pDrag.el.classList.remove('drag');pDrag=null;saveSett();}
 for(const [name,id] of [['throw','pdThrow'],['hammer','pdHammer'],['sprint','pdSprint']]){
   const el=$(id);
-  el.addEventListener('pointerdown',e=>{e.preventDefault();try{el.setPointerCapture(e.pointerId);}catch(_){}const r=el.getBoundingClientRect();pDrag={name,el,id:e.pointerId,dx:e.clientX-(r.left+r.width/2),dy:e.clientY-(r.top+r.height/2)};el.classList.add('drag');});
+  el.addEventListener('pointerdown',e=>{e.preventDefault();try{el.setPointerCapture(e.pointerId);}catch(_){}const r=layRect(el);pDrag={name,el,id:e.pointerId,dx:e.clientX-(r.left+r.width/2),dy:e.clientY-(r.top+r.height/2)};el.classList.add('drag');});
   el.addEventListener('pointermove',e=>{
     if(!pDrag||pDrag.el!==el||e.pointerId!==pDrag.id)return;
     const tb=tbPx(),cx=clamp(e.clientX-pDrag.dx,tb/2+2,CW-tb/2-2),cy=clamp(e.clientY-pDrag.dy,tb/2+2,CH-tb/2-2);
