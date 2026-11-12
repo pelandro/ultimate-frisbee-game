@@ -208,8 +208,41 @@ catch(e){
     await page.click('#tmBack');await page.click('#uBack');
   });
   await step('allenamento: il tutorial parte e si esce dalla pausa',async()=>{
-    await page.click('#tSchool');await vis('#school');await page.click('[data-go="tut"]');await page.waitForTimeout(700);await vis('#coach');
+    await page.click('#tSchool');await vis('#school');if(await page.locator('.tles [data-step]').count()!==7)throw new Error('mancano le sette lezioni del tutorial');
+    await page.click('#scBox .schrow [data-go="tut"]');await page.waitForTimeout(700);await vis('#coach');
     await page.click('#bExit');await vis('#pause');await page.click('#paQuit');await page.waitForTimeout(300);await vis('#school');
+  });
+  await step('menu iniziale: Carriere, nuova carriera in un altro slot e ritorno, senza passare dalle Opzioni',async()=>{
+    await page.click('#tBack').catch(()=>{});
+    if(!(await page.locator('#title').isVisible())){await page.goto('file://'+OUT);await page.waitForTimeout(400);}
+    await page.click('#tSlots');await vis('#slots');
+    const full=await page.locator('#csBox [data-cgo]').count();if(full<1)throw new Error('la carriera esistente non compare tra gli slot');
+    const empty=await page.locator('#csBox .csl:not(:has([data-cgo])) [data-cnew]').first();
+    const k=+(await empty.getAttribute('data-cnew'));await empty.click();await vis('#team');
+    await page.click('#teamBack');await vis('#slots');   // ripensamento: la carriera di prima resta
+    if(await page.locator('#csBox [data-cgo]').count()!==full)throw new Error('tornando indietro la carriera di prima e\' sparita');
+    await page.click('#csBox [data-cnew="'+k+'"]');await vis('#team');await page.click('#tSr button[data-k="B"]');await page.click('.tteam >> nth=2');await page.waitForTimeout(300);await vis('#home');
+    await page.click('#hBack');await vis('#title');await page.click('#tSlots');
+    if(await page.locator('#csBox [data-cgo]').count()!==full+1)throw new Error('la nuova carriera non e\' nello slot '+k);
+    const other=await page.locator('#csBox [data-cgo]:not([data-cgo="'+k+'"])').first();await other.click();await vis('#home');
+    await page.click('#hBack');await vis('#title');
+    if(!(await page.locator('link[rel="icon"]').getAttribute('href')||'').startsWith('data:image/png'))throw new Error('manca l\'icona del gioco');
+  });
+  // ROTAZIONE AUTOMATICA: telefono tenuto in verticale. Il gioco si disegna girato, i menu si toccano e una partita si gioca
+  await step('telefono in verticale: il gioco si gira da solo e risponde al tocco',async()=>{
+    const ctx=await browser.newContext({viewport:{width:390,height:664},isMobile:true,hasTouch:true,deviceScaleFactor:1}),p=await ctx.newPage(),er=[];
+    p.on('pageerror',e=>er.push(e.message));
+    await p.goto('file://'+OUT);await p.waitForTimeout(500);
+    const st=await p.evaluate(()=>({rot:document.documentElement.classList.contains('rotp'),cw:document.getElementById('c').clientWidth,ch:document.getElementById('c').clientHeight,msg:getComputedStyle(document.getElementById('rot')).display}));
+    if(!st.rot||st.cw!==664||st.ch!==390||st.msg!=='none')throw new Error('rotazione non applicata: '+JSON.stringify(st));
+    await p.click('#tQuick');await p.waitForSelector('#quick:not(.hidden)');await p.click('#qPlay');await p.waitForTimeout(600);
+    if(await p.locator('#menu').isVisible())await p.click('#bGo');
+    await p.waitForSelector('#bExit:not(.hidden)');await p.click('#bExit');await p.waitForSelector('#pause:not(.hidden)');
+    await p.click('#paQuit');await p.click('#paQuit');await p.waitForSelector('#quick:not(.hidden)');
+    await p.click('#qBack');await p.click('#tSet');await p.click('#sRot');
+    if(await p.evaluate(()=>document.documentElement.classList.contains('rotp')))throw new Error('la rotazione non si spegne dalle Impostazioni');
+    await p.click('#sRot').catch(()=>{});await ctx.close();
+    if(er.length)throw new Error('errore in verticale: '+er[0]);
   });
   await browser.close();
   for(const d of done)console.log('  [OK] '+d);

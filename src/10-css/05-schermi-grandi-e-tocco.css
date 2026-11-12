@@ -93,3 +93,26 @@
 .inl{list-style:none;margin:0;padding:0;color:#c2cbe6;font-size:clamp(14px,4.4vh,18px);line-height:1.25}
 .inl li{margin:2px 0}
 #intro .go{margin-top:clamp(4px,2vh,12px);min-width:160px;min-height:40px;font-size:19px}
+/* ---- rotazione automatica (90-avvio/00-rotazione.js): il body e' il contenitore delle container query generate dal build ---- */
+body{container:uf/size}
+html.rotp{padding:0;--sa-left:env(safe-area-inset-top,0px);--sa-right:env(safe-area-inset-bottom,0px);--sa-top:0px;--sa-bottom:0px}
+html.rotp body{position:fixed;left:0;top:0;transform-origin:0 0;transform:rotate(90deg) translateY(-100%)}
+html.rotp #rot{display:none!important}
+/* ---- menu iniziale: Carriera e, accanto, Carriere (slot); schermata Carriere ---- */
+.crow{display:flex;gap:8px;align-items:stretch}.crow #tCareer{flex:1 1 auto;min-width:0}
+.crow .cslot{flex:0 0 auto;width:auto;max-width:42%;padding-left:12px;padding-right:12px}
+.crow .cslot small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.csl.on{border-color:var(--gold)}
+.cst{display:flex;align-items:center;gap:10px;margin:4px 0}.cst span{display:flex;flex-direction:column;min-width:0}
+.cst b{font-size:18px;font-weight:400;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cst small{font-size:14px;color:#c2cbe6;line-height:1.2}
+.cse{color:#9fb0de;font-size:16px;margin:6px 0 10px}.csd{color:#9fb0de;font-size:13px;margin:2px 0 8px}
+.csl .schrow .go,.csl .schrow .sec{min-height:38px}
+@media (max-height:480px){.crow .cslot strong{font-size:17px}.csgrid{gap:7px}}
+/* ---- impostazioni in gruppi; tutorial con progressi e lezioni ---- */
+.smenu.g2 .sgh{grid-column:1/-1;margin:6px 0 0;font-family:var(--pfont);font-weight:400;font-size:11px;color:var(--gold);letter-spacing:.04em;text-transform:uppercase}
+.smenu.g2 .sgh:first-child{margin-top:0}
+.tprog2{display:flex;align-items:center;gap:10px;margin:2px 0 8px}.tprog2 span{flex:1;height:10px;background:#0c1330;border:2px solid #000}
+.tprog2 i{display:block;height:100%;background:var(--gold)}.tprog2 b{font-weight:400;color:#fff;font-size:16px}
+.tles{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.tles .sec{font-size:14px;padding:4px 8px;min-height:34px}.tles .sec.ok{color:#4fe58f}
+@media (max-height:480px){.smenu.g2 .sgh{margin-top:3px;font-size:10px}}

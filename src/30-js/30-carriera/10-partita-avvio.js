@@ -17,12 +17,12 @@ function startMatch(resume){   // resume: ripresa di una partita sospesa (niente
 }
 function quitMatch(){if(!QM.on&&SV&&SV.susp){SV.susp=null;persist();}   // abbandonata: niente da riprendere
   $('half').classList.add('hidden');$('pause').classList.add('hidden');G.paused=false;restoreForm();if(QM.on){exitQuick(quickNext());return;}G.schemeOpen=false;G.inMatch=false;$('menu').classList.add('hidden');$('over').classList.add('hidden');showScreen('home');}
-const SCREENS=['title','quick','home','team','roster','event','train','market','club','school','tourn','settings','posedit','ut','utPack','utTeam'];
+const SCREENS=['title','slots','quick','home','team','roster','event','train','market','club','school','tourn','settings','posedit','ut','utPack','utTeam'];
 function hideScreens(){for(const sc of SCREENS)$(sc).classList.add('hidden');}
 function showScreen(id){
   for(const sc of SCREENS)$(sc).classList.toggle('hidden',sc!==id);
   G.mode='home';
-  if(id==='title')renderTitle();else if(id==='quick')renderQuick();else if(id==='home')renderHome();else if(id==='team')renderTeams();else if(id==='roster'){rosterMsg='';sellArm=null;renderRoster();}else if(id==='event')renderEvent();else if(id==='settings')setSView('menu');else if(id==='posedit')layoutButtons();else if(id==='ut')renderUT();else if(id==='utPack')renderPack();else if(id==='utTeam')renderTeamUT();else if(id==='school')renderSchool();else if(id==='tourn')renderTourn();else if(id==='market'){mkMsg='';if(SV.mkSeen!==SV.mkN){SV.mkSeen=SV.mkN;persist();}renderMarket();}else if(id==='club'){clMsg='';renderClub();}else{trainSel.clear();trainRes=null;renderTrain();}
+  if(id==='title')renderTitle();else if(id==='slots')renderCareers();else if(id==='quick')renderQuick();else if(id==='home')renderHome();else if(id==='team')renderTeams();else if(id==='roster'){rosterMsg='';sellArm=null;renderRoster();}else if(id==='event')renderEvent();else if(id==='settings')setSView('menu');else if(id==='posedit')layoutButtons();else if(id==='ut')renderUT();else if(id==='utPack')renderPack();else if(id==='utTeam')renderTeamUT();else if(id==='school')renderSchool();else if(id==='tourn')renderTourn();else if(id==='market'){mkMsg='';if(SV.mkSeen!==SV.mkN){SV.mkSeen=SV.mkN;persist();}renderMarket();}else if(id==='club'){clMsg='';renderClub();}else{trainSel.clear();trainRes=null;renderTrain();}
 }
 const evName=()=>SV.event==='camp'?'Campionato':'Campionato europeo';
 // difficolta' della carriera: ritmo degli allenamenti e forza delle avversarie
@@ -64,7 +64,7 @@ function renderTeams(){for(const b of $('tSr').children)b.classList.toggle('on',
 // ---- menu iniziale e partita veloce ----
 const QM={on:false,bak:null,a:null,b:null,s:1};   // s: la squadra che inizia in attacco (0 = tua/blu, 1 = avversaria/rossa)
 const hasCareer=()=>!!(SV&&SV.team);
-function renderTitle(){$('tSchoolS').textContent=SCH.tut?'Tutorial, pratica e sfide':'Nuovo? Inizia dal tutorial';$('tCareerS').textContent=hasCareer()?`Continua: ${SV.team}, ${SERIES_NAME[SV.sr]}${SV.susp?' · partita sospesa':''}`:'Scegli la squadra e inizia';}
+function renderTitle(){$('tSchoolS').textContent=SCH.tut?'Tutorial, pratica e sfide':((SCH.lv|0)?`Tutorial: lezione ${(SCH.lv|0)+1} di ${TUT_STEPS.length}`:'Nuovo? Inizia dal tutorial');$('tCareerS').textContent=hasCareer()?`Continua: ${SV.team}, ${SERIES_NAME[SV.sr]}${SV.susp?' · partita sospesa':''}`:'Scegli la squadra e inizia';const n=[1,2,3].filter(k=>slotInfo(k)).length;$('tSlotsS').textContent=n?`${n} di 3 slot · nuova`:'3 slot liberi';}
 const qPowCache={};
 function qRoster(n,min){return REAL[n]?realRoster(REAL[n],'qm|'+n,realOpt(n,min)):makeRoster(TEAM[n].power,'qm|'+n);}
 function qPower(n){if(qPowCache[n]==null)qPowCache[n]=rosterPower(qRoster(n,7));return qPowCache[n];}
