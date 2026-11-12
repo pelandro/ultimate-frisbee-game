@@ -67,9 +67,14 @@ catch(e){
     await page.click('#rBack');
     await page.click('#hTrain');await vis('#train');await page.click('#tTeamBox [data-int="2"]');
     if(!/Intenso/.test(await page.locator('.tint small').innerText()))throw new Error('l\'intensità dell\'allenamento non cambia');
-    await page.click('#tTeamBox [data-int="1"]');await page.click('#tTeamBox .ttype[data-team="tec"]');await vis('#tRes .tres');await page.click('#tBack');
+    await page.click('#tTeamBox [data-int="1"]');
+    if(!/punti/.test(await page.locator('#tTeamBox .ttype[data-team="tec"] .fc').innerText()))throw new Error('manca l\'anteprima della seduta di squadra');
+    await page.click('#tTeamBox .ttype[data-team="tec"]');await vis('#tRes .tres');
+    await page.click('#tTeamBox [data-prog]');if(!/Acceso/.test(await page.locator('#tTeamBox [data-prog]').innerText()))throw new Error('il programma automatico non si accende');
+    if(await page.locator('#tList .prow:not([disabled])').count()>await page.locator('#tList .prow').count()-3)throw new Error('il programma automatico non ha fatto i lavori individuali');
+    await page.click('#tTeamBox [data-prog]');await page.click('#tBack');
     await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#mkBack');
-    await page.click('#hClub');await vis('#club');if(await page.locator('#clBox .fac').count()!==10)throw new Error('devono esserci sei strutture e quattro figure dello staff');
+    await page.click('#hClub');await vis('#club');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fac').count()!==10)throw new Error('devono esserci sei strutture e quattro figure dello staff');
     if(await page.locator('#clBox [data-staff]').count()!==4)throw new Error('le figure dello staff devono essere quattro');
     await page.click('#clTabs [data-k="hon"]');await page.click('#clTabs [data-k="rec"]');await page.click('#clBack');
     await page.click('#hEvent');await vis('#event');await page.click('#evTabs [data-sr="A"]');await page.click('#evTabs [data-sr="B"]');await vis('#eBody table.rt');

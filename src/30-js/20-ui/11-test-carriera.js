@@ -12,7 +12,7 @@ function careerSelfTest(seasons,seed){
     // gerarchie di inizio carriera: calcolate con la rosa scelta, non con quella rimasta in memoria
     const eo0=SV.mem[SV.sr].slice().sort((a,b)=>teamPow(b)-teamPow(a)),expOk=!!SV.expOrd&&SV.expOrd.indexOf(SV.team)===eo0.indexOf(SV.team);
     // sfida «Conti in ordine»: deve essere giudicata prima dei premi di fine stagione (SV.next nasce subito dopo il giudizio e prima dei premi)
-    const bilOk0=BCHAL.bil.ok;let chalWhen=[];BCHAL.bil.ok=c=>{chalWhen.push(SV.next?'dopo':'prima');return bilOk0(c);};
+    const bilOk0=BCHAL.bil.ok;let chalWhen=[],lsChk=[],anc0=null;BCHAL.bil.ok=c=>{chalWhen.push(SV.next?'dopo':'prima');return bilOk0(c);};
     for(let s=1;s<=seasons;s++){
       if(s%2===0&&!SV.chal)SV.chal={id:'bil',base:SV.cash,x:30,reward:10};   // a stagioni alterne una sfida economica, per controllarne il giudizio
       for(let r=0;r<40&&!SV.done;r++){
@@ -46,6 +46,9 @@ function careerSelfTest(seasons,seed){
       for(const p of SQ)if(p.goal&&p.goal.s===SV.season){if(goalOk(p))goalsOk++;else goalsKo++;}
       if(SV.sr==='A'&&SV.next.rank===1)champ++;if(SV.next.sr<SV.sr)promo++;
       pw.push(squadPower());
+      // statistiche individuali del girone: le mete dei giocatori di una squadra avversaria devono tornare con quelle in classifica (salvo chi e' stato ceduto durante l'anno)
+      {const on=SV.mem[SV.sr].find(n=>n!==SV.team),sg=(SV.rost[on]||[]).reduce((a,o)=>a+(o.ss?o.ss.g:0),0),pf=SV.tab[on].pf;lsChk.push(lsLive()&&sg<=pf&&sg>=pf*0.8);}
+      if(s===1)anc0=Object.assign({},SV.anc||{});
       const n0=SV.news.length;newSeason();hide();seasonsDone++;
       worn+=SV.news.filter(x=>/Usura estiva/.test(x.txt)&&x.s===SV.season).length;keep+=SV.news.filter(x=>/Premi di mantenimento/.test(x.txt)&&x.s===SV.season).length;
       for(const a of SV.alerts)a.seen=1;
@@ -55,6 +58,19 @@ function careerSelfTest(seasons,seed){
     const capRow=Math.round(100*atCap/Math.max(1,nst))+'% al massimo, età media '+(ageS/Math.max(1,top7.length)).toFixed(1);
     const others=Object.values(SV.rost).filter(r=>r&&r.length).map(r=>rosterPower(r));
     BCHAL.bil.ok=bilOk0;
+    // programma automatico, bilancio previsionale, storico dei progressi (la stagione nuova e' appena cominciata: c'e' una sessione disponibile)
+    SV.prog={on:true,team:'auto'};for(const p of SQ)p.tr=false;SV.tTeam=false;SV.played=0;
+    const at=autoTrain(),progOk=!!at&&SV.tTeam&&SQ.filter(p=>p.tr).length===Math.min(3,SQ.length)&&autoTrain()===null;
+    const bf=budgetForecast(),bOk=isFinite(bf.end)&&bf.left===SV.sched.length-SV.round&&bf.end===Math.round(SV.cash+bf.inc-bf.wage-bf.up)&&bf.winP>0&&bf.winP<1&&bf.after===bf.end+bf.prize+bf.obj;
+    const hOk=seasons<3||(SQ.some(p=>(p.hist||[]).length>=2)&&SQ.every(p=>(p.hist||[]).length<=14));
+    rows.push(row('Programma automatico: fa la seduta di squadra e i 3 lavori individuali, una volta sola',progOk?'sì':'no'+(at?'':' (non parte)'),progOk));
+    rows.push(row('Bilancio previsionale: partite rimaste, vittorie attese e saldo finale coerenti',bOk?`sì (${bf.left} partite, ${Math.round(bf.winP*100)}% vittorie, saldo ${bf.end})`:'no',bOk));
+    rows.push(row('Storico dei progressi dei giocatori',hOk?'sì':'no',hOk));
+    rows.push(row('Statistiche individuali del girone: mete dei giocatori coerenti con la classifica',lsChk.filter(Boolean).length+' stagioni su '+lsChk.length,lsChk.length>0&&lsChk.every(Boolean)));
+    {const ks=Object.keys(anc0||{}).filter(k=>SV.anc&&SV.anc[k]!==undefined),mv=ks.filter(k=>Math.abs(SV.anc[k]-anc0[k])>=1).length;
+     rows.push(row('Livello storico delle squadre che si sposta negli anni',seasons>=4?mv+' squadre su '+ks.length+' cambiate di almeno 1 punto':'serve un test da 4 stagioni',seasons<4||mv>=ks.length*0.4,'le gerarchie non restano quelle di partenza'));}
+    {mkReprice();const mm=SV.market||[],withMot=mm.filter(m=>m.mot).length,bad=mm.filter(m=>m.mot==='min'&&!wouldStart(m.o)&&!canSign(m)).length+mm.filter(m=>m.price!==Math.round(m.base*motMul(m))).length;
+     rows.push(row('Mercato: motivazioni dei giocatori rispettate',withMot+' con una motivazione su '+mm.length+(bad?', '+bad+' non rispettate':''),mm.length>0&&bad===0));}
     rows.push(row('Gerarchie di inizio carriera calcolate con la rosa scelta',expOk?'sì':'no',expOk));
     rows.push(row('Sfida «Conti in ordine» giudicata prima dei premi',chalWhen.length?(chalWhen.every(x=>x==='prima')?'sì':'no')+' ('+chalWhen.length+' volte)':'mai capitata',chalWhen.length>0&&chalWhen.every(x=>x==='prima')));
     rows.push(row('Stagioni giocate fino in fondo',seasonsDone+' su '+seasons,seasonsDone===seasons));

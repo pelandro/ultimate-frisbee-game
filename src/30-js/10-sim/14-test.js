@@ -97,8 +97,11 @@ function selfTestPlan(opt){
     const g18=gain(18),g26=gain(26),g34=gain(34),xp=S.base?avg(S.base.map(m=>m.xp)):30;
     const per={};for(const c of CATS){const ro=makeRoster(60,'all'+c.id);let t=0;for(const o of ro){o.age=24;o.dev=1;for(let i=0;i<20;i++)t+=trainCategory(o,c).gain;}per[c.id]=t/ro.length/20;}
     const v=Object.values(per),mx=Math.max(...v),mn=Math.min(...v);
+    // anteprima degli allenamenti: i punti attesi (trainExpect) devono corrispondere a quelli che arrivano davvero, in media
+    let ex=0,re=0;for(const c of CATS){const ro=makeRoster(60,'exp'+c.id);for(const o of ro){o.age=23;o.dev=1;ex+=trainExpect(o,c,1)*40;for(let i=0;i<40;i++){const cl=Object.assign({},o,{s:Object.assign({},o.s)});re+=trainCategory(cl,c,1).gain;}}}
     return [row('Overall guadagnato in 15 partite (18, 26, 34 anni)','+'+g18.toFixed(1)+', +'+g26.toFixed(1)+', +'+g34.toFixed(1),g18>g26&&g26>g34&&g34>=0&&g18<=6,'i giovani crescono di più'),
       row('Esperienza di una partita giocata e di una simulata',xp.toFixed(1)+' e 30,0',xp>=20&&xp<=38,'devono essere vicine'),
+      row('Anteprima degli allenamenti: punti attesi e punti arrivati davvero',ex.toFixed(0)+' e '+re.toFixed(0),Math.abs(ex-re)<=re*0.15,'scarto al massimo del 15%'),
       row('Punti per seduta di allenamento, per indirizzo',CATS.map(c=>c.name+' '+per[c.id].toFixed(2)).join(', '),mx<=mn*2.6,'nessun indirizzo oltre due volte e mezza un altro')];
   }]);
   S.steps.push(['Pull e difesa automatica',()=>{

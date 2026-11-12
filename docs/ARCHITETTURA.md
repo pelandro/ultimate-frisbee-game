@@ -36,6 +36,10 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `13-partite-simulate.js`, `14-test.js` | Modello delle partite simulate; suite di test (`selfTestPlan`, `selfTestRun`) |
 | `16-pacchetti.js` | Rarità dei pacchetti di Ultimate Team per qualità (`UT_PQ`, `utPackTiers`, garanzie, paracadute `UT_PITY`) |
 | `07c-gittata.js` | Gittata del lanciatore (`throwComf`, `throwMax`, dallo Sparo) e fiducia dei compagni (`trustOf`, `reachSeen`, `deepRun`, `deepAppetite`): chi taglia lungo lo fa solo dove il lancio arriva, di più con intesa. `planThrow` accorcia il lancio oltre `throwMax` (`pl.short`) |
+| `30-carriera/15-programma-allenamenti.js` | Anteprima degli allenamenti (`trainForecast`, da `trainExpect` del motore) e programma automatico (`SV.prog`, `autoTrain`, priorità `p.pri`) |
+| `30-carriera/16-bilancio.js` | Bilancio previsionale (`budgetForecast`, `budgetPayback`, `budgetHTML`) |
+| `30-carriera/17-statistiche-campionato.js` | Statistiche individuali persistenti del girone (`lsMatch`, `o.ss`/`o.cs` sui giocatori avversari, `leadersHTML`); `seriesStats` le usa per i premi |
+| `30-carriera/18-motivazioni.js` | Motivazioni sul mercato (`m.mot`, `motBlock`, `mkReprice`) e compatibilità tattica (`fitOf`) |
 | `30-carriera/14-maturita.js` | `talentGrow`: ogni estate chi ha raggiunto il limite può superarlo (talento +1, `p.ext`, massimo `EXT_MAX`) |
 | `17-durata.js` | Durata della partita: `LEN_OPTS` (7, 11, 15 punti), `G.target`, `halfAt()`, `lenK()` (l'esperienza non cresce con le partite lunghe). `simMatch(…, tgt)` usa lo stesso traguardo |
 | `11b-specializzazioni.js`, `11c-intesa.js` | Indirizzi di sviluppo dei giocatori (`SPECS`, `specBonus`) e intesa tra coppie (`G.duo`, `duoOf`) |

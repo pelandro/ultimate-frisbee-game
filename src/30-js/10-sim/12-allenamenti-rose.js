@@ -21,6 +21,15 @@ function trainCategory(p,c,boost){
   const gain=changes.reduce((a,x)=>a+x.gain,0);
   return {p,c,changes,gain,spec:sb>0,why:gain>0?'ok':(c.keys.every(k=>p.s[k]>=capX(p,k))?'cap':'none')};
 }
+// punti ATTESI da una seduta (media, senza toccare il giocatore): la stessa formula di trainCategory senza il caso. Serve all'anteprima degli allenamenti e al programma automatico
+function trainExpect(p,c,boost){
+  if(!c.keys.length)return 0;
+  const tal=c.keys.reduce((a,k)=>a+talX(p,k),0)/c.keys.length,sb=specBonus(p,c.keys),sp=p.spec&&SPECS[p.spec]?SPECS[p.spec].keys:null;
+  const pts=(0.8+trainGain(tal)*0.4)*(p.dev||1)*Math.sqrt(ageMul(p.age))*(c.keys.length<3?0.55:1)*(boost||1)*(1+sb);
+  const el=c.keys.filter(k=>p.s[k]<capX(p,k));if(!el.length)return 0;
+  let t=0,e=0;for(const k of el){const r=clamp((capX(p,k)-p.s[k])/10,0.08,1)*(sp&&sp.includes(k)?1+2*specRoom(p):1);t+=r;e+=r*clamp((capX(p,k)-p.s[k])/6,0.2,1)*lvlF(p.s[k]);}
+  return pts*e/t;
+}
 function trainPlayer(p,k){return trainCategory(p,CATS.find(c=>c.keys.includes(k))||CATS[0]);}
 // rischio di infortunio in allenamento: nullo con buona condizione, fino al 6% a condizione zero
 const trainRisk=p=>clamp((45-(p.cond===undefined?100:p.cond))/45,0,1)*0.06;
@@ -156,7 +165,7 @@ function applySurnames(list){
 // la tua squadra: 7 in campo scelti tra i migliori, gli altri in panchina
 function setSquad(list){
   SQ.length=0;
-  list.forEach((o,i)=>{const p=newPlayer(0,i,{name:o.n,label:o.label,full:o.full,gen:o.gen,f:o.f,role:o.r,tl:o.tl,tf:o.tf,tv:o.tv,age:o.age,s:Object.assign({},o.s),trait:o.trait,dev:o.dev,cond:o.cond,sk:o.sk,car:o.car,pos:o.pos});p.sur=o.sur;p.inj=o.inj|0;p.tr=!!o.tr;if(o.star){p.star=true;p.nat=o.nat;}if(o.ae)p.ae=1;p.aw=o.aw||[];p.ra=o.ra;p.ret=o.ret|0;p.retHold=o.retHold|0;p.injC=o.injC|0;p.injBig=o.injBig|0;p.idle=o.idle|0;p.mood=o.mood|0;p.prom=o.prom|0;p.rw=o.rw|0;if(o.spec&&SPECS[o.spec])p.spec=o.spec;if(o.goal)p.goal=o.goal;p.sad=o.sad|0;p.ext=o.ex|0;SQ.push(p);});
+  list.forEach((o,i)=>{const p=newPlayer(0,i,{name:o.n,label:o.label,full:o.full,gen:o.gen,f:o.f,role:o.r,tl:o.tl,tf:o.tf,tv:o.tv,age:o.age,s:Object.assign({},o.s),trait:o.trait,dev:o.dev,cond:o.cond,sk:o.sk,car:o.car,pos:o.pos});p.sur=o.sur;p.inj=o.inj|0;p.tr=!!o.tr;if(o.star){p.star=true;p.nat=o.nat;}if(o.ae)p.ae=1;p.aw=o.aw||[];p.ra=o.ra;p.ret=o.ret|0;p.retHold=o.retHold|0;p.injC=o.injC|0;p.injBig=o.injBig|0;p.idle=o.idle|0;p.mood=o.mood|0;p.prom=o.prom|0;p.rw=o.rw|0;if(o.spec&&SPECS[o.spec])p.spec=o.spec;if(o.goal)p.goal=o.goal;p.sad=o.sad|0;p.ext=o.ex|0;p.pri=o.pri?1:0;p.hist=Array.isArray(o.hi)?o.hi:[];SQ.push(p);});
   applySurnames(SQ);
   setLineup(pickSeven(SQ,p=>p.role,mean9).map(p=>p.id));
 }
