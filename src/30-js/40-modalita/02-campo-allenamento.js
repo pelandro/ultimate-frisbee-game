@@ -10,11 +10,11 @@ const schSave=()=>{try{localStorage.setItem(TUT_KEY,JSON.stringify(SCH));}catch(
 const TUT_STEPS=[
   {id:'thr',def:'off',x0:14,n:3,t:'1 · Il lancio',x:'Tocca lo schermo, trascina il dito ALL’INDIETRO come una fionda e rilascia: il disco parte nella direzione opposta. Più trascini, più va lontano.',g:'Completa 3 passaggi'},
   {id:'call',def:'off',x0:14,n:2,t:'2 · Chiama il taglio',x:'Tocca un compagno: gli chiedi di smarcarsi (VIENI o LUNGO). Lancia verso dove sta correndo, non dove si trova.',g:'Completa 2 passaggi a un compagno che hai chiamato'},
-  {id:'style',def:'off',x0:14,n:1,t:'3 · Tipi di lancio',x:'Il tasto in basso a destra cambia il lancio: PIATTO è teso e veloce, ALTO scavalca i difensori, BLADE curva stretta. Scegli ALTO e lancia.',g:'Completa 1 lancio ALTO'},
+  {id:'style',def:'off',x0:14,n:1,t:'3 · Tipi di lancio',x:'Il lancio si sceglie con le dita: una dita PIATTO (teso e veloce), due dita ALTO (scavalca i difensori, il rovesciato), tre dita BLADE (curva stretta). Trascina con due dita (con la tastiera: Maiusc) e lancia ALTO.',g:'Completa 1 lancio ALTO'},
   {id:'stall',def:'mark',x0:14,n:3,t:'4 · Marcatore e stall',x:'Ora un difensore ti marca e conta fino a 10: se arriva in fondo perdi il disco. Lancia sul lato che lascia libero, lontano dalle sue braccia.',g:'Completa 3 passaggi prima dello stall'},
   {id:'goal',def:'on',x0:34,n:1,t:'5 · La meta',x:'Difesa completa. Si segna ricevendo il disco nella zona di meta avversaria (a destra). Avanza con passaggi sicuri o prova il lancio lungo.',g:'Segna una meta'},
   {id:'def',side:'def',def:'on',x0:22,n:1,t:'6 · La difesa',x:'In partita la difesa è automatica (si cambia dalle Impostazioni). Qui provi quella manuale: il tuo difensore ha il cerchio azzurro, trascina per muoverlo e resta tra il tuo uomo e il disco. Quando lampeggiano, premi i tasti per handblock e tuffo.',g:'Recupera il disco'},
-  {id:'pull',pull:true,n:1,t:'7 · Il pull',x:'Ogni meta comincia col pull, in due tocchi. Primo tocco: ferma la POTENZA nel verde. Secondo tocco: ferma la DIREZIONE al centro. Sul campo vedi dove cadrà il disco.',g:'Tira un pull che resta in campo'}
+  {id:'pull',pull:true,n:1,t:'7 · Il pull',x:'Ogni meta comincia col pull, in due tocchi. Primo tocco: ferma la POTENZA nel verde. Secondo tocco: ferma la DIREZIONE al centro. Sul campo vedi dove cadrà il disco e che pull sarebbe: cerca il GRAN PULL, ben in fondo alla meta.',g:'Tira un pull che resta in campo'}
 ];
 // sfide: ogni lancio (o possesso) e' una prova; il punteggio da' una medaglia
 const CHAL={
@@ -67,7 +67,7 @@ HOOKS.drill=(k,team,p,f)=>{
     const st=TUT_STEPS[DR.step];let ok=false;
     if(st.id==='thr'||st.id==='stall')ok=k==='catch'&&team===0;
     else if(st.id==='call'){ok=k==='catch'&&team===0&&p.calledT!==undefined&&G.tick-p.calledT<7;if(k==='catch'&&team===0&&!ok)drSay('Presa! Ma prima tocca il compagno per chiamarlo');}
-    else if(st.id==='style'){ok=k==='catch'&&team===0&&!!f.high;if(k==='catch'&&team===0&&!ok)drSay('Presa! Ora scegli ALTO col tasto in basso a destra');}
+    else if(st.id==='style'){ok=k==='catch'&&team===0&&!!f.high;if(k==='catch'&&team===0&&!ok)drSay('Presa! Ora lancia ALTO: trascina con due dita (o tieni Maiusc)');}
     else if(st.id==='goal')ok=k==='goal'&&team===0;
     else if(st.id==='def')ok=k==='to'&&team===0;
     if(ok){DR.cnt++;if(DR.cnt<st.n)drSay('Bene!');}

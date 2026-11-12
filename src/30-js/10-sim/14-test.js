@@ -124,13 +124,31 @@ function selfTestPlan(opt){
       G.mode='play';
     }
     G.opt.def=d0;
+    // 4) la bravura conta: con Sparo e Lancio alti il pull riesce meglio (e le barre vanno piu' piano); un buon pull vale davvero per chi lo tira
+    const humanQ=ps=>{   // chi gioca ferma le barre con un errore di tempo di 70 ms: qualita' del pull (0 fuori, 1 corto, 2 buono, 3 gran pull)
+      const cnt=[0,0,0,0],kk=Math.max(1200,n*100);
+      for(let i=0;i<kk;i++){placeTeams(1);const p=G.puller;p.s.spa=ps;p.s.lan=ps;const T0=pullPeriod(p,0),T1=pullPeriod(p,1);
+        doPull(clamp((PULL_G0+PULL_TH)/2+randn()*0.07/T0,0.12,1),(dirOf(0)>0?0:Math.PI)+randn()*0.07/T1*2*PULL_SW);cnt[G.pull.q]++;}
+      return cnt.map(x=>x/kk);
+    };
+    const lo=humanQ(30),hi=humanQ(90);placeTeams(1);const pl=G.puller;pl.s.spa=30;const per30=pullPeriod(pl,0);pl.s.spa=90;const per90=pullPeriod(pl,0);
+    const mm=Math.max(150,n*15),afterPull=c=>{   // mete di chi riceve nel possesso dopo un pull di quel tipo (tira un fuoriclasse: la qualita' e' quella voluta)
+      let g=0;for(let i=0;i<mm;i++){
+        placeTeams(1);const p=G.puller;p.s.spa=99;p.s.lan=99;doPull(c,dirOf(0)>0?0:Math.PI);G.opt.def=0;G.auto=false;G.skip=true;
+        let t=0;while(t++<14400&&G.mode==='play'&&G.poss===1)update(1/60);G.skip=false;if(G.mode==='banner'&&G.banner.team===1)g++;G.mode='play';
+      }
+      return g/mm;
+    };
+    const gGran=afterPull((PULL_G0+PULL_TH)/2),gShort=afterPull(0.5),gBrick=afterPull(1);G.opt.def=d0;
     return [row('Pull dell\u2019IA che escono dal campo',pc(brick/k),brick/k>=0.08&&brick/k<=0.35,'attesa tra 8% e 35%'),
       row('Pull dell\u2019IA che arrivano nella meta avversaria',pc(deep/k),deep/k>=0.35,'almeno 35%'),
       row('Pull fermato nel verde e al centro: fuori',pc(gOut/k),gOut/k<=0.04,'al massimo 4%'),
       row('Pull a tutta potenza o verso la linea laterale: fuori',pc(rOut/k)+' e '+pc(sOut/k),rOut/k>=0.6&&sOut/k>=0.9,'almeno 60% e 90%'),
       row('Possessi avversari saltati che arrivano in fondo',(m-stuck)+' su '+m,stuck===0),
       row('Mete avversarie per possesso saltato',pc(goals/m),goals/m>=0.02&&goals/m<=0.85,'attesa tra 2% e 85%: né muro né colabrodo'),
-      row('Difesa automatica senza difensore guidato né cerchio dell\u2019handblock',ctrl+hbw===0?'sì':'no',ctrl+hbw===0)];
+      row('Difesa automatica senza difensore guidato né cerchio dell\u2019handblock',ctrl+hbw===0?'sì':'no',ctrl+hbw===0),
+      row('Pull: con Sparo e Lancio alti riesce meglio (Gran pull / fuori, con Sparo e Lancio a 30 e a 90)',pc(lo[3])+' / '+pc(lo[0])+' e '+pc(hi[3])+' / '+pc(hi[0])+'; barra a '+per30.toFixed(1)+' s e '+per90.toFixed(1)+' s',hi[3]-lo[3]>=0.25&&lo[0]-hi[0]>=0.1&&per90>=per30*1.6,'+25 punti di Gran pull, 10 punti di fuori in meno, barra almeno 1,6 volte piu\u2019 lenta'),
+      row('Un buon pull vale: mete di chi riceve dopo un Gran pull, un pull corto e un brick',pc(gGran)+', '+pc(gShort)+' e '+pc(gBrick),gGran<=gShort*0.85&&gGran<gBrick,'dopo un Gran pull segna almeno il 15% in meno che dopo un pull corto')];
   }]);
   S.steps.push(['Durata della partita',()=>{
     // partita Competitiva (11 punti): finisce a 11, half time al sesto punto, esperienza per partita vicina a quella di una partita ai 7
@@ -145,7 +163,8 @@ function selfTestPlan(opt){
       row('Partite simulate: agli 11 finiscono a 11; +4 di forza vince ai 7 e ai 15',(simOk?'sì':'no')+'; '+pc(w7/4000)+' e '+pc(w15/4000),simOk&&w15>w7,'la partita lunga premia di più la squadra più forte')];
   }]);
   S.steps.push(['Vento',()=>{
-    const ra=ros(62,'a'),rb=ros(62,'b'),k=Math.max(4,n),cmpOf=ms=>avg(ms.map(m=>(m.st.cmp[0]+m.st.cmp[1])/Math.max(1,m.st.thr[0]+m.st.thr[1])));
+    // almeno 10 partite: con meno, il rumore del campione poteva arrivare ai 16 punti di tolleranza
+    const ra=ros(62,'a'),rb=ros(62,'b'),k=Math.max(10,n),cmpOf=ms=>avg(ms.map(m=>(m.st.cmp[0]+m.st.cmp[1])/Math.max(1,m.st.thr[0]+m.st.thr[1])));
     const calm=cmpOf(S.base||run(ra,rb,k)),strong=cmpOf(run(ra,rb,k,{wind:[3,Math.PI/2]})),bad=run(ra,rb,2,{wind:[3,0]}).filter(m=>m.stuck||m.nan).length;
     // deriva di un lancio alto da 40 m col vento forte di lato: grande per chi lancia male, piccola per chi lancia bene
     setWind(3,Math.PI/2);const drift=sk=>{const w=windOn(sk,40,0,40,40/23.4,true,false);return hyp(w.x,w.y);};const dLo=drift(45),dHi=drift(90);

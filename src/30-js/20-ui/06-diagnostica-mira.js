@@ -59,11 +59,7 @@ function aimDown(e,hammer){
   }
   if(G.mode==='ready'){e.preventDefault();if(!hammer)pullTap();return;}   // pull a tempo: Spazio o A fermano l'indicatore
   const h=G.holder;
-  if(hammer&&e.pointerId!==VIN.pid){   // tocco sul pulsante Hammer: accende o spegne il lancio alto (vale anche a mira gia' iniziata)
-    e.preventDefault();
-    if(G.mode==='play'&&h&&h.t===0&&!G.flight){throwStyle=(throwStyle+1)%3;if(drag&&drag.sl){drag.btn=throwStyle?'hammer':'throw';G.high=throwStyle;}HOOKS.vibe(8);HOOKS.sfx('ui');}
-    return;
-  }
+  if(hammer&&e.pointerId!==VIN.pid){e.preventDefault();return;}   // il pulsante dell'Hammer non c'e' piu' in attacco: il lancio alto si fa con due dita (05-input-impostazioni.js)
   if(G.mode!=='play'||G.freeze>0||G.zoomHold||G.brickWait||G.walk||G.flight||!h||h.t!==0||drag)return;
   e.preventDefault();
   try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}
@@ -83,12 +79,12 @@ function aimUp(e){
   const h=G.holder,ok=G.mode==='play'&&h&&h.t===0&&!G.flight&&G.freeze<=0;
   const w=toWorld(drag.x,drag.y),hi=G.high,dOk=drag.dirOk;
   const exq=drag.sl&&G.tick-drag.s<0.22?1.18:1;                          // lancio affrettato (rilasciato in un lampo): meno preciso
-  const tapW=drag.sl&&!drag.was&&!drag.iso&&G.tick-drag.s<0.35?drag.tw:null;   // tocco senza trascinare: chiamata rapida a un compagno
+  const tapW=drag.sl&&!drag.was&&!drag.iso&&!drag.multi&&G.tick-drag.s<0.35?drag.tw:null;   // tocco senza trascinare: chiamata rapida a un compagno
   drag=null;aimPid=null;
   if(ok&&dOk&&hyp(w.x-h.x,w.y-h.y)>=3.5){   // nessuna direzione (dito al punto di partenza) o troppo vicino: il lancio si annulla
     updateCall(h,w.x,w.y,hi,true);
     const aim=computeAim(h,w.x,w.y,hi);
-    doThrow(h,aim.x,aim.y,aim.intended,hi,exq);shownHint++;throwStyle=0;
+    doThrow(h,aim.x,aim.y,aim.intended,hi,exq);shownHint++;
   }else if(ok&&tapW)quickCall(tapW,false);
   G.high=false;
 }

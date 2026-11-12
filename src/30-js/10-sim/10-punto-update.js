@@ -66,6 +66,7 @@ function update(dt){
   const st=G.diveScene?SLOW_K:1;G.slowK=G.slowK===undefined?1:G.slowK+(st-G.slowK)*(1-Math.exp(-dtr*10));
   if(G.diveCool>0)G.diveCool-=dtr;
   dt*=G.k*G.slowK;
+  if(G.edge){G.edge.t-=dt;if(G.edge.t<=0)G.edge=null;}   // il vantaggio del pull dura pochi secondi di gioco
   if(G.mode==='banner'){
     G.banner.t-=dt;
     if(G.banner.t<=0){
