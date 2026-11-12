@@ -60,6 +60,7 @@ function planThrow(th,ax,ay,style,exec){
   const wn=windOn(info.skill,dx,dy,dist,Math.max(0.45,dist/sp.v),sp.hi,kind==='scoober');   // vento: deriva, dispersione, gittata
   const comf=throwComf(th)+(wn?wn.along*WIND_RANGE:0);if(dist>comf)k*=1+0.09*(dist-comf);   // gittata comoda: oltre la distanza che il lanciatore regge (dipende dallo Sparo e dal vento) la precisione crolla
   if(wn)k*=wn.k;
+  k*=WX_SIG[G.wx|0]||1;   // pioggia e neve: lancio meno preciso
   let near=0;for(const q of T[1-th.t])if(q!==mk&&hyp(q.x-th.x,q.y-th.y)<3)near++;
   if(near)k*=1.06;   // un secondo difensore addosso disturba
   k*=exec||1;       // qualita' dell'esecuzione: un lancio affrettato e' meno preciso

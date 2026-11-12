@@ -152,10 +152,14 @@ function selfTestPlan(opt){
     // il pull va piu' lungo col vento alle spalle
     setSquad(ra);applyRoster(rb);newGame();placeTeams(1);const p=G.puller,land=()=>{const q=pullPlan(p,0,0.8,0);return q.dist+q.wx*dirOf(0);};
     const w0=G.opt.wind;G.opt.wind=false;let offOk=true;for(let i=0;i<50;i++)if(windFor(Math.random)[0]!==0)offOk=false;G.opt.wind=true;let some=false;for(let i=0;i<50;i++)if(windFor(Math.random)[0]>0)some=true;offOk=offOk&&some;G.opt.wind=w0;
+    const wxN=[0,0,0];for(let i=0;i<4000;i++)wxN[weatherFor(Math.random)]++;
+    const th0=T[0][0],wxDiff=[0,1,2].map(v=>{setWx(v);return catchInfo({kind:'backhand',high:false,sp:THROWS.backhand},{p:T[0][3],d:1},[]).diff;}),wxSig=[0,1,2].map(v=>{setWx(v);return planThrow(th0,th0.x+dirOf(0)*15,th0.y,0).sig;});setWx(0);
     setWind(3,dirOf(0)>0?0:Math.PI);const tail=land();setWind(3,dirOf(0)>0?Math.PI:0);const head=land();setWind(0,0);
     return [row('Lanci completati con calma e con vento forte di lato',pc(calm)+' e '+pc(strong),strong<calm+0.01&&strong>=calm-0.16,'il vento forte toglie al massimo 16 punti'),
       row('Partite con vento forte concluse senza blocchi',(2-bad)+' su 2',bad===0),
       row('Deriva di uno sparo da 40 m (Sparo 45 e Sparo 90)',dLo.toFixed(1)+' m e '+dHi.toFixed(1)+' m',dLo>dHi*1.8&&dLo<=8&&dHi>=0.3,'chi lancia bene compensa'),
+      row('Meteo: sereno, pioggia, neve nel sorteggio (4000 prove)',pc(wxN[0]/4000)+', '+pc(wxN[1]/4000)+', '+pc(wxN[2]/4000),wxN[0]/4000>0.57&&wxN[0]/4000<0.67&&wxN[1]/4000>0.22&&wxN[1]/4000<0.30&&wxN[2]/4000>0.09&&wxN[2]/4000<0.15),
+      row('Pioggia e neve: la presa e\u2019 piu\u2019 difficile e il lancio meno preciso',wxDiff.map(x=>x.toFixed(3)).join(' < ')+'; sigma x'+wxSig.map(x=>x.toFixed(2)).join(' x'),wxDiff[0]<wxDiff[1]&&wxDiff[1]<wxDiff[2]&&wxSig[0]<wxSig[1]&&wxSig[1]<wxSig[2],'sereno, pioggia, neve'),
       row('Vento spento dalle impostazioni: il sorteggio da\u2019 sempre calma',offOk?'sì':'no',offOk),
       row('Pull con vento alle spalle e controvento',tail.toFixed(0)+' m e '+head.toFixed(0)+' m',tail-head>=10&&tail-head<=24,'tra 10 e 24 metri di differenza')];
   }]);

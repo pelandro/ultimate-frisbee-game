@@ -66,10 +66,11 @@ function seasonAwards(rank,order){   // a fine stagione: premi del campionato, s
   let mine=0;
   for(const a of aw)if(a.mine){mine++;SV.rep=clamp(SV.rep+2,0,100);SV.cash+=10;const p=a.full?byFull(a.full):null;if(p){p.aw=p.aw||[];p.aw.push({s:SV.season,k:a.k});}}
   for(const q of best7)if(q.mine){const p=byFull(q.full);if(p){p.aw=p.aw||[];p.aw.push({s:SV.season,k:'Squadra ideale'});}}
-  if(rank===1)for(const p of SQ)if(p.car&&p.car.ss.mp>=3)p.ti=(p.ti|0)+1;   // chi ha contribuito al titolo lo porta nella scheda
-  const tr=SV.troph;if(rank===1)tr[SV.sr]=(tr[SV.sr]|0)+1;if(SV.next&&SV.next.sr<SV.sr)tr.promo=(tr.promo|0)+1;tr.aw=(tr.aw|0)+mine;tr.b7=(tr.b7|0)+best7.filter(q=>q.mine).length;
-  const champs={};if(order)for(const sr of ['A','B','C'])champs[sr]=order[sr][0];
-  SV.hist.unshift({season:SV.season,sr:SV.sr,rank,n,w:t.w,l:t.l,mvp:mvp?(mvp.label||mvp.name):'',mvpS:mvp&&mvp.car?`${mvp.car.ss.g} mete, ${mvp.car.ss.a} assist, ${mvp.car.ss.b} difese`:'',obj:SV.obj?rank<=SV.obj.tgt:false,short:SV.next?SV.next.short:'',aw,best7,champs});
+  const tit=!!(SV.next&&SV.next.tit);   // campione: in Serie A chi vince i playoff, nelle altre chi chiude primo
+  if(tit)for(const p of SQ)if(p.car&&p.car.ss.mp>=3)p.ti=(p.ti|0)+1;   // chi ha contribuito al titolo lo porta nella scheda
+  const tr=SV.troph;if(tit)tr[SV.sr]=(tr[SV.sr]|0)+1;if(SV.next&&SV.next.sr<SV.sr)tr.promo=(tr.promo|0)+1;tr.aw=(tr.aw|0)+mine;tr.b7=(tr.b7|0)+best7.filter(q=>q.mine).length;
+  const champs=SV.next&&SV.next.champs?Object.assign({},SV.next.champs):{};if(order)for(const sr of ['A','B','C'])if(!champs[sr])champs[sr]=order[sr][0];
+  SV.hist.unshift({season:SV.season,sr:SV.sr,rank,n,w:t.w,l:t.l,mvp:mvp?(mvp.label||mvp.name):'',mvpS:mvp&&mvp.car?`${mvp.car.ss.g} mete, ${mvp.car.ss.a} assist, ${mvp.car.ss.b} difese`:'',obj:SV.obj?rank<=SV.obj.tgt:false,short:SV.next?SV.next.short:'',aw,best7,champs,po:SV.next&&SV.next.po?{kind:SV.next.po.kind,fin:SV.next.po.fin,win:SV.next.po.win}:undefined});
   if(SV.hist.length>40)SV.hist.length=40;
   const w0=aw[0];if(w0)news(`MVP del campionato: ${w0.name} (${w0.team}).`+(mine?` Premi vinti dai tuoi: ${mine}.`:''));
   if(mvp)news('MVP della tua squadra: '+(mvp.label||mvp.name)+'.');

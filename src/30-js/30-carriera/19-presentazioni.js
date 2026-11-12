@@ -5,11 +5,14 @@
 const gaTxt=(g,a)=>`${g} ${g===1?'meta':'mete'}, ${a} assist`;
 function matchStakes(m){
   const lines=[];let tag='',title='';
-  if(SV.event==='eu'){
+  if(SV.po&&SV.po.on&&SV.event==='camp'){
+    tag=PO_NAME[SV.po.kind];title=SV.po.round===0?'Semifinale':'Finale';
+    lines.push(SV.po.kind==='tit'?(SV.po.round?'Chi vince è campione d’Italia: trofeo e reputazione.':'Chi vince va in finale per lo scudetto: partita secca.'):(SV.po.round?'Chi vince sale di categoria insieme alla prima della classe.':'Chi vince va alla finale per la seconda promozione: partita secca.'));
+  }else if(SV.event==='eu'){
     const r=SV.eu.round;tag='Campionato europeo';title=EU_ROUND[r];
     lines.push(r===2?'Chi vince alza la coppa: trofeo, reputazione e '+Math.round(EU_PRIZE[2]*SR_K.A)+' crediti.':'Eliminazione diretta: chi perde è fuori. In palio '+Math.round(EU_PRIZE[r]*SR_K.A)+' crediti.');
   }else{
-    const names=SV.mem[SV.sr],n=names.length,last=SV.round===SV.sched.length-1,ord=ranking(SV.tab,names),rk=ord.indexOf(SV.team)+1,pts=x=>SV.tab[x].pts,me=pts(SV.team);
+    const names=SV.mem[SV.sr],n=names.length,last=SV.round===SV.sched.length-1&&!(SV.po&&SV.po.on),ord=ranking(SV.tab,names),rk=ord.indexOf(SV.team)+1,pts=x=>SV.tab[x].pts,me=pts(SV.team);
     if(m.name===SV.riv){tag='Rivalità';title='Derby';const rr=SV.rivRec||{w:0,l:0};lines.push(`Contro ${m.name} vale di più: incasso, morale e reputazione.${rr.w+rr.l?` Finora ${rr.w} ${rr.w===1?'vinto':'vinti'} e ${rr.l} ${rr.l===1?'perso':'persi'}.`:''}`);}
     if(last){
       const near=i=>ord[i]&&Math.abs(me-pts(ord[i]))<=3;

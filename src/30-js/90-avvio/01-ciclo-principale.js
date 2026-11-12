@@ -10,7 +10,7 @@ function render(dt){
   if(G.mode==='cine'&&cine){drawCine();blit();return;}
   let sh=false;
   if(shake.t>0){shake.t=Math.max(0,shake.t-dt);const k=shake.t/0.3,m=shake.a*0.45*k*k;ctx.save();ctx.translate(Math.round((Math.random()-0.5)*2*m),Math.round((Math.random()-0.5)*2*m));sh=true;}
-  drawField();drawRoutes();drawPlayers(dt);drawDisc();updateFx(dt);drawFx();drawAim();if(ddrag&&ddrag.mv&&inDefense())drawSling(ddrag.ox,ddrag.oy,ddrag.fx,ddrag.fy,false);drawSprint();drawHb();drawDiveWin();drawPull();drawWind();drawToasts(dt);drawBanner(dt);drawReplay();
+  drawField();drawRoutes();drawPlayers(dt);drawDisc();updateFx(dt);drawFx();drawWeather();drawAim();if(ddrag&&ddrag.mv&&inDefense())drawSling(ddrag.ox,ddrag.oy,ddrag.fx,ddrag.fy,false);drawSprint();drawHb();drawDiveWin();drawPull();drawWind();drawToasts(dt);drawBanner(dt);drawReplay();
   if(sh)ctx.restore();
   blit();
 }

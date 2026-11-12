@@ -38,11 +38,13 @@ function leagueHalf(){   // giro di boa: la fotografia delle tre serie
     story(`Giro di boa in ${SERIES_NAME[sr]}: capolista ${o[0]} (${t[o[0]].pts} punti), ultima ${o[o.length-1]}.`,false);
   }
 }
-function leagueEndStories(order){
+function leagueEndStories(order,res){
   for(const sr of ['A','B','C']){
     if(sr===SV.sr)continue;
     const o=order[sr];if(!o)continue;
-    story(`${o[0]} vince la ${SERIES_NAME[sr]}; ${sr==='A'?'':'sale'+(PROMO>1?'no':'')+' con '+o.slice(1,PROMO).join(' e ')+(PROMO>1?'':'')+'. '}${sr==='C'?'':'In coda: '+o.slice(-PROMO).join(' e ')+'.'}`.replace(/; \. /,'. ').replace(/ con \./,'.'),false);
+    const w0=sr==='A'&&res&&res.A?res.A.win:o[0];
+    if(res&&res[sr])story(sr==='A'?`${res[sr].win} è campione d’Italia: batte ${res[sr].runner} in finale ${Math.max(res[sr].fin[2],res[sr].fin[3])}–${Math.min(res[sr].fin[2],res[sr].fin[3])}.`:`Spareggio promozione in ${SERIES_NAME[sr]}: sale ${res[sr].win}.`,false);
+    story(`${w0} vince la ${SERIES_NAME[sr]}; ${sr==='A'?'':'sale'+(PROMO>1?'no':'')+' con '+o.slice(1,PROMO).join(' e ')+(PROMO>1?'':'')+'. '}${sr==='C'?'':'In coda: '+o.slice(-PROMO).join(' e ')+'.'}`.replace(/; \. /,'. ').replace(/ con \./,'.'),false);
   }
 }
 /* ---- rivalita' ---- */

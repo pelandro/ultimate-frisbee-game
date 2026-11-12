@@ -8,7 +8,7 @@ function startMatch(resume){   // resume: ripresa di una partita sospesa (niente
   G.oppName=m.name;G.myName=SV.team;G.matchLabel=m.label;
   newGame();G.target=carLen();G.lvl=[0,carDiff().ai|0];G.oppPlus=plus||0;G.idn=[null,teamIdentity(m.name,T[1])];G.xtr=SV.diff==='xtr';G.hint=(SV.diff||'easy')==='easy';G.routes=G.hint||SV.diff==='med';G.inMatch=true;G.recorded=false;
   G.duo=duoMap();   // intesa tra le coppie: vale solo in carriera
-  {const w=careerWind(m);setWind(w[0],w[1]);}   // il meteo annunciato sul cruscotto
+  {const w=careerWind(m);setWind(w[0],w[1]);setWx(careerWeather(m));}   // il meteo annunciato sul cruscotto
   fixLines();G.lines={o:matchLine('lineO'),d:matchLine('lineD'),auto:!!SV.autoSub};G.injK=1-0.12*facLv('fis');   // linee d'attacco e di difesa, cambi intelligenti, fisioterapia
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;

@@ -125,8 +125,8 @@ function retireOwn(){   // a fine stagione lascia chi aveva annunciato l'addio; 
   }
   if(!gone.length)return;
   for(const p of gone){
-    const c=p.car,hof=!!(c&&((c.mp>=60&&c.g+c.a>=60)||c.g+c.a>=150||(p.aw||[]).length>=2));keepFormer(p);
-    if(hof){SV.hof.unshift({name:pname(p),yrs:c.yrs+1,mp:c.mp,g:c.g,a:c.a,b:c.b,season:SV.season-1,aw:(p.aw||[]).length});SV.rep=clamp(SV.rep+1,0,100);}
+    const c=p.car,hof=!!(c&&((c.mp>=60&&c.g+c.a>=60)||c.g+c.a>=150||(p.aw||[]).length>=2||(p.ti|0)>=3));keepFormer(p);
+    if(hof){SV.hof.unshift({name:pname(p),yrs:c.yrs+1,mp:c.mp,g:c.g,a:c.a,b:c.b,season:SV.season-1,aw:(p.aw||[]).length,pos:posOf(p),v:ovr(p),lk:p.look||null,t:p.t|0,nk:p.nick||'',md:medalsOf(p).slice(0,4)});SV.rep=clamp(SV.rep+1,0,100);}   // pos/v/lk/t/nk/md servono alla carta dorata (11-traguardi-albo.js)
     alertAdd('bye',`${pname(p)} si è ritirat${oa(p)} a ${p.age} anni`+(c&&c.mp?` dopo ${c.mp} partite, ${c.g} mete e ${c.a} assist con la squadra`:'')+(hof?': entra nella Hall of Fame.':'.'));
   }
   leaveSquad(gone);

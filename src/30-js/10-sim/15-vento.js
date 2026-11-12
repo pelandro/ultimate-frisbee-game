@@ -13,7 +13,12 @@ const WIND_K=0.45,WIND_SIG=0.07,WIND_RANGE=1.2,PULL_WK=1.3;
 function setWind(lv,a){lv=clamp(lv|0,0,3);G.wind={lv,a:a||0,v:WIND_V[lv],x:Math.cos(a||0)*WIND_V[lv],y:Math.sin(a||0)*WIND_V[lv]};}
 // sorteggio con un generatore dato (in carriera ha il seme della partita: il meteo si conosce prima di giocare). Calma 35%, brezza 35%, vento 22%, vento forte 8%
 function windFor(r){if(G.opt.wind===false)return [0,0];const u=r(),lv=u<0.35?0:(u<0.7?1:(u<0.92?2:3));return [lv,r()*Math.PI*2];}
-function rollWind(r){const w=windFor(r||Math.random);setWind(w[0],w[1]);}
+function rollWind(r){const w=windFor(r||Math.random);setWind(w[0],w[1]);setWx(weatherFor(r||Math.random));}
+/* METEO: oltre al vento puo' piovere o nevicare (G.wx: 0 sereno, 1 pioggia, 2 neve). Il disco e' bagnato o gelato: le prese sono un po' piu' difficili (WX_CATCH, in catchInfo)
+   e i lanci un po' meno precisi (WX_SIG, in planThrow). Sereno 62%, pioggia 26%, neve 12%. Segue lo stesso interruttore del vento (G.opt.wind). */
+const WX_N=['Sereno','Pioggia','Neve'],WX_CATCH=[0,0.03,0.04],WX_SIG=[1,1.05,1.07];
+function weatherFor(r){if(G.opt.wind===false)return 0;const u=r();return u<0.62?0:(u<0.88?1:2);}
+function setWx(v){G.wx=clamp(v|0,0,2);}
 function windOn(skill,dx,dy,dist,T,hi,scoob){
   const W=G.wind;if(!W||!W.lv)return null;
   const expo=T*(hi?1.5:(scoob?1.2:1)),res=1-clamp(0.25+0.6*skill/100,0,0.88);   // res: la parte di deriva che il lanciatore non riesce a compensare

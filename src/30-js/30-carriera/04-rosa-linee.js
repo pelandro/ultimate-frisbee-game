@@ -66,6 +66,8 @@ function careerInit(){   // campi nuovi della carriera (anche per i salvataggi p
   if(!SV.market||SV.mkStars!==2){buildMarket();SV.mkStars=2;}
   leagueAnchors();
   for(const p of SQ)retAnchor(p);
+  if(!SV.ach){SV.ach={};if(SV.sched&&SV.mem)achCheck(true);}   // traguardi: quelli gia' raggiunti da una carriera vecchia si segnano senza premio
+  if(!SV.alb)SV.alb=[];
   if(!SV.lifeV){SV.lifeV=1;if(SV.sched)retireCheck('start');}   // anche le carriere gia' avviate ricevono subito i primi avvisi
 }
 function news(txt){SV.news.unshift({s:SV.season,r:(SV.round|0)+1,txt});if(SV.news.length>40)SV.news.length=40;}
