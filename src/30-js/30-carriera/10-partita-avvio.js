@@ -1,4 +1,4 @@
-function startMatch(){
+function startMatch(resume){   // resume: ripresa di una partita sospesa (niente presentazione)
   const m=nextMatch();if(!m)return;
   applyRoster(m.roster||makeRoster(m.power,SV.seed+'|'+m.name));
   const plus=carDiff().plus;if(plus)for(const q of T[1])for(const k of KEYS)q.s[k]=Math.min(99,q.s[k]+plus);   // difficile: avversarie piu' forti
@@ -13,6 +13,7 @@ function startMatch(){
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
   if(first)openSchemes(true);   // la prima volta si aprono gli schemi, con il rimando a tutorial e guida
+  else if(!resume)showIntro(m);   // finali, derby, ultima giornata con qualcosa in palio: un cartello breve prima del pull
 }
 function quitMatch(){if(!QM.on&&SV&&SV.susp){SV.susp=null;persist();}   // abbandonata: niente da riprendere
   $('half').classList.add('hidden');$('pause').classList.add('hidden');G.paused=false;restoreForm();if(QM.on){exitQuick(quickNext());return;}G.schemeOpen=false;G.inMatch=false;$('menu').classList.add('hidden');$('over').classList.add('hidden');showScreen('home');}

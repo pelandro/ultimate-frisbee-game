@@ -284,9 +284,13 @@ function drawPlayers(dt){
       if(p.t===0&&p.st<62){px(x-5,y+3,11,3,PAL.out);px(x-4,y+4,Math.max(1,Math.round(9*p.st/100)),1,p.st<30?PAL.red:(p.st<46?'#ff9a3a':PAL.gold));}
       else if(p.t===1&&p.st<38&&Math.sin(G.tick*5+p.i)>0){px(x+4,y-h+1,1,1,PAL.sky);px(x+4,y-h+2,2,2,PAL.sky);}
     }
+    // frenata netta o cambio di direzione (p._brk, dal motore): due sbuffi di polvere ai piedi, una volta per frenata
+    if(p._brk&&!p._bd&&G.mode==='play'){p._bd=1;for(let k=0;k<2;k++)addFx({t:'dust',x:p.x,y:p.y,vx:-p.vx*0.12+rnd(-0.6,0.6),vy:-p.vy*0.08+rnd(-0.3,0.3),z:0.2,vz:rnd(0.3,0.9),life:0.45,max:0.45,r:rnd(0.2,0.4)});}
+    else if(!p._brk)p._bd=0;
     if(p===G.holder||p===G.puller||(p.t===0&&S>5))names.push(p);   // nella vista larga (pull) solo chi ha il disco: i nomi si sovrapporrebbero
   }
-  for(const p of names)ptext(p.name,sxw(p.x),syw(p.y)-h-10-(p.dv?4:0),{f:'t',c:p.t===0?'#ffffff':'#ffd9d9'});
+  // i giocatori simbolo (stelle internazionali e chi ha vinto premi) hanno il nome dorato
+  for(const p of names)ptext(p.name,sxw(p.x),syw(p.y)-h-10-(p.dv?4:0),{f:'t',c:(p.star||(p.aw&&p.aw.length)||(p.ro&&p.ro.star))?PAL.gold:(p.t===0?'#ffffff':'#ffd9d9')});
   // stall: da 6 in su il conteggio compare anche sopra chi ha il disco (rosso e lampeggiante da 8)
   const hh=G.holder;
   if(hh&&!G.flight&&G.marker&&G.mode==='play'&&hyp(G.marker.x-hh.x,G.marker.y-hh.y)<3.8){
@@ -314,7 +318,11 @@ function drawDisc(){
     pdiscSprite(x,y,G.tick*3);return;
   }
   const gy=syw(d.y),lift=ri(z*(f&&(f.high||f===G.pull)?1.7:1)*S*0.5);
-  pell(x,gy+1,3,1,'rgba(10,30,10,.3)');
+  // ALTEZZA DEL DISCO: l'ombra resta a terra e si stringe e schiarisce man mano che il disco sale; sopra i 3 metri una fila di puntini la collega al disco,
+  // cosi' si capisce a colpo d'occhio quanto e' alto (e se un difensore puo' arrivarci) e dove sta per cadere
+  const hk=clamp(lift/40,0,1);
+  pell(x,gy+1,ri(lerp(4,2,hk)),1,`rgba(10,30,10,${(0.42-0.2*hk).toFixed(2)})`);
+  if(lift>12)for(let yy=gy-3;yy>gy-lift;yy-=4)px(x,yy,1,1,'rgba(255,255,255,.38)');
   pdiscSprite(x,gy-2-lift,G.tick*22);
 }
 // mira: arco di quadratini bianchi col bordo nero (come la traiettoria di Retro Bowl) e la sua ombra a puntini sul prato
