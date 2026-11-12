@@ -44,12 +44,11 @@ function aiThrow(th){
   if(dist<SPARO_D){
     if(lv.smart>=0.7){   // SCELTA DEL LANCIO: prova gli stili che sa fare e tira quello che ha piu' probabilita' di arrivare
       let bp=-1;
-      for(const st of (th.s.lan>76?[0,1,2]:[0,1])){const a=lead(st),e=estimateThrow(th,a[0],a[1],best,st).p+(st===0?0.03:0)+rnd(0,0.05);if(e>bp){bp=e;style=st;}}
+      for(const st of [0,1]){const a=lead(st),e=estimateThrow(th,a[0],a[1],best,st).p+(st===0?0.03:0)+rnd(0,0.05);if(e>bp){bp=e;style=st;}}
     }else{   // livello facile: regole semplici
       const lb=laneBlock(th,best.x,best.y,planThrow(th,best.x,best.y,0));
       if(open<4&&dist>14&&Math.random()<0.4)style=1;
       else if(lb&&lb.prob>0.14&&Math.random()<0.35+th.s.vis*0.004)style=1;
-      else if(open>6&&dist>16&&th.s.lan>78&&Math.random()<0.05)style=2;
     }
   }
   const a=lead(style);

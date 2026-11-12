@@ -2,7 +2,7 @@
 function clearFl(){for(const p of T[0].concat(T[1])){p.fl=null;p.boost=0;p.flD=0;}}
 // PRESA: quanto e' difficile una ricezione (0 = facile) e con che probabilita' il disco sfugge di mano.
 // Contano il tipo di lancio, il disco al limite della portata (presa a una mano), la corsa, un difensore addosso e la stanchezza: mai il caso da solo.
-const reachOf=(f,p)=>f.kind==='blade'?1.25+p.s.sal*0.006:(f.high?1.2+p.s.sal*0.014+(hasT(p,'sky')?0.15:0)+(f.sparo&&hasT(p,'deep')?0.2:0):1.5);
+const reachOf=(f,p)=>f.high?1.2+p.s.sal*0.014+(hasT(p,'sky')?0.15:0)+(f.sparo&&hasT(p,'deep')?0.2:0):1.5;
 function catchInfo(f,o,def){
   const p=o.p,edge=clamp(o.d/reachOf(f,p),0,1),sp=hyp(p.vx,p.vy);
   let nd=9;for(const q of def)nd=Math.min(nd,hyp(q.x-p.x,q.y-p.y));

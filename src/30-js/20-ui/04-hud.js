@@ -25,10 +25,10 @@ function updateHUD(dt){
   const defNow=inDefense(),man=defMan(),hbRdy=defNow&&!!hbWindow()&&!G.hbAtt,dvRdy=defNow&&!!(G.diveWin&&!G.diveWin.done);   // rdy: e' il momento di premere
   // difesa automatica: il tasto del tuffo compare solo nel momento del tuffo a tempo, quello dell'handblock mai
   bThr.classList.toggle('hidden',!(mine||defNow));bThr.classList.toggle('def',defNow);bThr.classList.toggle('dis',mine&&!canThrow);bHammer.classList.toggle('hidden',!(defNow&&(man||dvRdy)));   // in attacco non c'e' piu': il lancio alto si fa con due dita
-  bThrow.classList.toggle('hidden',!(defNow&&man));   // in attacco si lancia trascinando sullo schermo (una dita piatto, due alto, tre blade): nessun pulsante
+  bThrow.classList.toggle('hidden',!(defNow&&man));   // in attacco si lancia trascinando sullo schermo (una dita piatto, due o piu' alto): nessun pulsante
   bThrow.classList.toggle('rdy',hbRdy);bHammer.classList.toggle('rdy',dvRdy);
   bThrow.classList.toggle('on',!!(drag&&drag.btn==='throw'&&!drag.sl));bHammer.classList.toggle('on',!!(drag&&drag.btn==='hammer'&&!drag.sl&&G.high!==2));
-  cv.dataset.aim=drag&&drag.sl?['piatto','alto','blade'][G.high|0]:'';   // tipo di lancio in corso di mira (lo legge anche la prova nel browser)
+  cv.dataset.aim=drag&&drag.sl?['piatto','alto'][G.high?1:0]:'';   // tipo di lancio in corso di mira (lo legge anche la prova nel browser)
   if(!mine&&drag){drag=null;aimPid=null;G.high=false;}   // il disco e' partito o cambiato mano: il mirino si annulla
   updRings();
   const spr=G.mode==='play'&&!!G.flight&&!!G.flight.sparo&&!!G.sprint&&!G.pull;   // SCATTO: solo sui lanci lunghi

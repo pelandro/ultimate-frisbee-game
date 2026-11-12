@@ -357,10 +357,10 @@ function drawAim(){
     for(let r=R*0.25;r<R;r+=R*0.25)pring(gx,gy,r,r,'rgba(255,90,90,.5)',1,2,ang-half,ang+half);
   }
   const ex=drag.x+ri((pl.tx-w.x)*S),ey=drag.y+ri((pl.ty-w.y)*S);   // punto d'arrivo vero: quello mirato piu' la deriva del vento
-  // ogni lancio ha il suo arco: piatto e teso, scoober a mezza altezza, hammer e huck alti, blade altissimo; la curva laterale e' quella vera del volo
+  // ogni lancio ha il suo arco: piatto e teso, scoober a mezza altezza, hammer e huck alti; la curva laterale e' quella vera del volo
   const dpx=hyp(ex-gx,ey-gy),n=Math.max(3,ri(dpx/7));
-  const arc=kd==='blade'?Math.min(74,dpx*0.44):(pl.sp.hi?Math.min(52,dpx*0.3):(kd==='scoober'?Math.min(22,dpx*0.17):Math.min(9,dpx*0.06)));
-  const col=kd==='blade'?'#ff8a5c':(pl.sp.hi||kd==='scoober'?PAL.gold:'#ffffff'),cxp=pl.cx*S,cyp=pl.cy*S;
+  const arc=pl.sp.hi?Math.min(52,dpx*0.3):(kd==='scoober'?Math.min(22,dpx*0.17):Math.min(9,dpx*0.06));
+  const col=pl.sp.hi||kd==='scoober'?PAL.gold:'#ffffff',cxp=pl.cx*S,cyp=pl.cy*S;
   const flow=(G.tick*1.6)%1,lim=G.xtr?Math.min(1,(3+0.12*dist)/Math.max(dist,0.01)):1;
   for(let i=0;i<n;i++){const u=(i+flow)/n;if(u>lim)break;const b=4*u*(1-u);px(lerp(gx,ex,u)+cxp*b,lerp(gy,ey,u)+cyp*b,2,1,'#4f7a3f');}
   for(let i=0;i<n;i++){
@@ -397,7 +397,7 @@ function aimAssist(h,w,dist,pl){
   }
   const kd=pl.kind,txt=pl.short?'MAX '+Math.round(pl.mx)+' m: CORTO':Math.round(dist)+' m '+pl.sp.name.toUpperCase();   // oltre la gittata (Sparo) il disco cade corto
   const tw=ptw(txt,'p')+6,bx=clamp(drag.x-tw/2,2,VW-tw-2),by=clamp(drag.y-26,BAR+2,VH-14);
-  pbox(bx,by,tw,12,'#000000');ptext(txt,bx+3,by+2,{f:'p',a:'l',c:pl.short?PAL.red:(kd==='blade'?'#ff8a5c':(pl.sp.hi||kd==='scoober'?PAL.gold:'#ffffff')),o:false});
+  pbox(bx,by,tw,12,'#000000');ptext(txt,bx+3,by+2,{f:'p',a:'l',c:pl.short?PAL.red:(pl.sp.hi||kd==='scoober'?PAL.gold:'#ffffff'),o:false});
 }
 // sparo in volo: il tuo corridore ha un anello, una freccia e la barra dell'energia
 function drawSprint(){

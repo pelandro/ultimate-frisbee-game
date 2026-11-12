@@ -1,7 +1,7 @@
 /* ---- VENTO ----
    Ogni partita ha il suo vento (G.wind): calma, brezza, vento o vento forte, con una direzione. Vale per tutti allo stesso modo e, siccome le squadre
    cambiano campo a ogni meta, il vantaggio si alterna. Che cosa fa:
-   - sposta il punto d'arrivo del disco nella direzione del vento, tanto di piu' quanto piu' il lancio resta in aria (sparo, hammer, blade) e quanto meno
+   - sposta il punto d'arrivo del disco nella direzione del vento, tanto di piu' quanto piu' il lancio resta in aria (sparo, hammer) e quanto meno
      sa lanciare chi tira: chi ha Lancio o Sparo alti compensa quasi tutto da solo;
    - allarga la dispersione, soprattutto dei lanci alti;
    - cambia la gittata: col vento alle spalle si lancia piu' lungo senza perdere precisione, controvento meno;
