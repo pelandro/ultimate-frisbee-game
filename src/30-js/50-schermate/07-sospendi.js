@@ -29,7 +29,7 @@ function suspendMatch(){
 function resumeMatch(){
   if(!suspOk()){SV.susp=null;persist();return false;}
   const s=SV.susp;
-  startMatch();   // squadre, forma, vento, linee e intesa come all'inizio: poi si rimette lo stato salvato
+  startMatch(true);   // squadre, forma, vento, linee e intesa come all'inizio: poi si rimette lo stato salvato
   G.target=lenOk(s.tg|0);   // la partita sospesa finisce al punteggio con cui era cominciata, anche se nel frattempo hai cambiato la durata
   G.score=s.score.slice();G.pointNo=s.pno;G.halfDone=s.half;G.startRec=s.startRec;G.nextRec=s.rec;G.dir=s.dir.slice();
   G.st=s.st;G.seen=s.seen;G.obs=s.obs;G.aiRec=s.aiRec;Object.assign(G.sch,s.sch);Object.assign(G.opp,s.opp);G.dmode=s.dmode.slice();

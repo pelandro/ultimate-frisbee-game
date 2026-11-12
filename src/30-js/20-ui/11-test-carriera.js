@@ -66,6 +66,11 @@ function careerSelfTest(seasons,seed){
     rows.push(row('Programma automatico: fa la seduta di squadra e i 3 lavori individuali, una volta sola',progOk?'sì':'no'+(at?'':' (non parte)'),progOk));
     rows.push(row('Bilancio previsionale: partite rimaste, vittorie attese e saldo finale coerenti',bOk?`sì (${bf.left} partite, ${Math.round(bf.winP*100)}% vittorie, saldo ${bf.end})`:'no',bOk));
     rows.push(row('Storico dei progressi dei giocatori',hOk?'sì':'no',hOk));
+    // presentazioni: un derby e una partita europea sono «partite che contano», una giornata qualunque no
+    {const nm=nextMatch(),riv0=SV.riv;SV.riv='';const plain=matchStakes(nm);SV.riv=nm.name;const dby=matchStakes(nm);SV.riv=riv0;
+     const ev0=SV.event,eu0=SV.eu;SV.event='eu';SV.eu=newEu(SV.season);SV.eu.round=2;const fin=matchStakes(nextMatch());SV.event=ev0;SV.eu=eu0;
+     const ok=plain===null&&dby&&dby.title==='Derby'&&fin&&fin.title==='Finale'&&fin.lines.length>0;
+     rows.push(row('Presentazioni: derby e finale europea sì, giornata normale no',ok?'sì':'no',ok));}
     rows.push(row('Statistiche individuali del girone: mete dei giocatori coerenti con la classifica',lsChk.filter(Boolean).length+' stagioni su '+lsChk.length,lsChk.length>0&&lsChk.every(Boolean)));
     {const ks=Object.keys(anc0||{}).filter(k=>SV.anc&&SV.anc[k]!==undefined),mv=ks.filter(k=>Math.abs(SV.anc[k]-anc0[k])>=1).length;
      rows.push(row('Livello storico delle squadre che si sposta negli anni',seasons>=4?mv+' squadre su '+ks.length+' cambiate di almeno 1 punto':'serve un test da 4 stagioni',seasons<4||mv>=ks.length*0.4,'le gerarchie non restano quelle di partenza'));}

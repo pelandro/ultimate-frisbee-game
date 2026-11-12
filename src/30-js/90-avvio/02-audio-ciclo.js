@@ -189,6 +189,7 @@ const AUD=(function(){
     const t=A.currentTime+0.02;
     if(type==='goal'){eng.sfx.goal(t);if(a===0)eng.cheer(t,1);else eng.groan(t,0.9);}   // a = squadra che segna
     else if(type==='turn'){if(t-lastSfx<2)return;lastSfx=t;if(a===0)eng.cheer(t,0.28);else eng.groan(t,0.4);}
+    else if(type==='crowd')eng.cheer(t,a||0.5);   // boato del pubblico nei momenti decisivi (a = intensita')
     else if(eng.sfx[type])eng.sfx[type](t,a,b);
   }
   function setOn(v){
@@ -238,7 +239,7 @@ function frame(now){
   if(!portrait()){
     G.tick+=dt;
     padPoll();vinPushDir();
-    pullTick();defTick();
+    pullTick();defTick();momentTick();
     if(inDefense()&&!ddrag&&defMan())G.cdir=VIN.ang!==null?{x:Math.cos(VIN.ang),y:Math.sin(VIN.ang)}:null;   // tastiera o stick: guida il difensore cerchiato
     if(drag&&drag.sl&&!drag.was&&!drag.iso&&G.tick-drag.s>0.5){drag.iso=true;quickCall(drag.tw,true);}   // pressione lunga su un compagno: isolamento
     syncCall();

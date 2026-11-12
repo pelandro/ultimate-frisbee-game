@@ -40,6 +40,7 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `30-carriera/16-bilancio.js` | Bilancio previsionale (`budgetForecast`, `budgetPayback`, `budgetHTML`) |
 | `30-carriera/17-statistiche-campionato.js` | Statistiche individuali persistenti del girone (`lsMatch`, `o.ss`/`o.cs` sui giocatori avversari, `leadersHTML`); `seriesStats` le usa per i premi |
 | `30-carriera/18-motivazioni.js` | Motivazioni sul mercato (`m.mot`, `motBlock`, `mkReprice`) e compatibilità tattica (`fitOf`) |
+| `30-carriera/19-presentazioni.js`, `20-ui/13-momenti.js` | `matchStakes` decide se una partita «conta» (finale, derby, ultima giornata, addio di un veterano); `showIntro` mostra il cartello, `momentTick` annuncia match point e universe point |
 | `30-carriera/14-maturita.js` | `talentGrow`: ogni estate chi ha raggiunto il limite può superarlo (talento +1, `p.ext`, massimo `EXT_MAX`) |
 | `17-durata.js` | Durata della partita: `LEN_OPTS` (7, 11, 15 punti), `G.target`, `halfAt()`, `lenK()` (l'esperienza non cresce con le partite lunghe). `simMatch(…, tgt)` usa lo stesso traguardo |
 | `11b-specializzazioni.js`, `11c-intesa.js` | Indirizzi di sviluppo dei giocatori (`SPECS`, `specBonus`) e intesa tra coppie (`G.duo`, `duoOf`) |
