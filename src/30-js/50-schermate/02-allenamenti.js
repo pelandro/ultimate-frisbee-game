@@ -69,6 +69,8 @@ $('eBody').addEventListener('click',e=>{
 });
 for(const [b,sc] of [['rBack','home'],['eBack','home'],['tBack','home']])$(b).addEventListener('click',()=>showScreen(sc));
 $('rBox').addEventListener('click',e=>{
+  const rf=e.target.closest('[data-rf]');if(rf){rFilt=rf.dataset.rf;renderRoster();return;}
+  const dt=e.target.closest('[data-dtab]');if(dt){const p=SQ[+dt.dataset.pid];if(p)detTab[p.full]=dt.dataset.dtab;renderRoster();return;}
   const sp=e.target.closest('[data-spec]');
   if(sp){const p=SQ[+sp.dataset.pid];if(p){rosterMsg=setSpec(p,sp.dataset.spec);persist();}renderRoster();return;}
   const lb=e.target.closest('.lb');

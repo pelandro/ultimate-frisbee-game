@@ -44,3 +44,24 @@
 .cmp b{font-weight:400;text-align:right}.cmp i{font-style:normal;text-align:right;color:#9fb0de}.cmp i.up{color:var(--good,#4fe58f)}.cmp i.dn{color:var(--bad,#ff6b70)}
 .cmpsel{font-size:14px;padding:2px 4px;max-width:260px}
 .slotb{text-align:left;min-width:150px}.slotb small{display:block;font-size:12px;opacity:.85}.slotb.on{outline:2px solid var(--gold)}
+/* ---- Rosa e Mercato: filtri, ordinamento, scheda in tre parti ---- */
+.rbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0 0 8px}
+.rbar .seg{flex:1 1 320px;flex-wrap:wrap;gap:4px}
+.rbar .sg{flex:1 1 auto;font-size:15px;padding:5px 8px;min-height:34px}
+.rbar .sg:disabled{opacity:.4;cursor:default}
+.rsort,.rchk{display:flex;align-items:center;gap:6px;font-size:15px;color:#c2cbe6;white-space:nowrap}
+.rsort .qs{width:auto;min-width:118px;padding:4px 6px;font-size:15px}
+.rchk input{width:20px;height:20px;accent-color:#ffd23f;flex:none}
+.rchk{min-height:34px;cursor:pointer}
+.dtabs{margin:0 0 6px;max-width:420px}
+.dtabs .sg{font-size:15px;padding:4px 6px;min-height:32px}
+.dperf{display:grid;grid-template-columns:auto repeat(5,minmax(44px,auto));gap:1px 14px;font-size:15px;color:#fff;margin:2px 0 4px;justify-content:start}
+.dperf span.hd{color:#9fb0de;font-size:13px}
+.dperf span:nth-child(6n+1){color:#c2cbe6}
+#hNews.nw{color:#ffd23f}
+/* tasto «?» accanto al titolo delle schermate di carriera: apre la guida sul punto che riguarda quella schermata */
+.shelp{margin-left:auto;font:inherit;font-size:16px;min-width:38px;min-height:34px;padding:2px 10px;background:#29366f;color:#fff;border:3px solid #000;cursor:pointer}
+.gsec li.ghi{outline:2px solid #ffd23f;outline-offset:3px;background:rgba(255,210,63,.08)}
+@media (max-height:480px){.rbar{margin-bottom:5px}.rbar .sg{min-height:30px;padding:3px 7px}.dperf{gap:0 12px}}
+/* bersagli del tocco: i tasti dentro la scheda del giocatore erano alti 27 px */
+.dact .sec,.dact .go,.dspec button,tr.dt .sec{min-height:34px}

@@ -13,6 +13,10 @@ function renderAlerts(){
   }).join(''):'<p class="note">Ancora nessun avviso.</p>';
 }
 function openAlerts(){renderAlerts();$('alerts').classList.remove('hidden');}
+/* Tre livelli di avviso. EMERGENZE (infortuni, addii) e DECISIONI (ritiro annunciato, offerta, richiesta di cessione, sfide) aprono il riquadro da sole, una volta.
+   Le NOTIZIE (crescita, rientri, umore tornato, club) non interrompono: accendono il numero sulla campanella e una riga sul cruscotto. */
+const AL_URGENT={inj:1,bye:1,off:1};
+const urgentAlerts=()=>(SV.alerts||[]).filter(a=>!a.seen&&(AL_URGENT[a.k]||a.act)).length;
 function pendingAlerts(){return (SV.alerts||[]).filter(a=>{if(a.done)return false;const p=a.full?byFull(a.full):null;return p&&((a.act==='stay'&&p.ret===1)||(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)||(a.act==='unhappy'&&p.mood===2));}).length;}
 $('hBell').addEventListener('click',openAlerts);
 $('alX').addEventListener('click',()=>{for(const a of SV.alerts)a.seen=1;$('alerts').classList.add('hidden');persist();renderHome();});
@@ -43,12 +47,16 @@ $('opDiff').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)r
 $('opSet').addEventListener('click',()=>{$('opts').classList.add('hidden');setFrom='home';showScreen('settings');});
 /* ---- GUIDA a schede: si apre dal menu iniziale, dal cruscotto e dalla pausa, senza uscire da dove si e' ---- */
 let guideBack=null;
-function openGuide(tab,back){
+// key: parola con cui comincia la voce da mostrare (guida contestuale: dal tasto «?» di una schermata si arriva al punto che la riguarda)
+function openGuide(tab,back,key){
   guideBack=back||null;
   for(const b of $('gdTabs').children)b.classList.toggle('on',+b.dataset.g===tab);
   for(const u of $('gdBody').children)u.classList.toggle('hidden',+u.dataset.g!==tab);
   $('gdBody').scrollTop=0;$('guide').classList.remove('hidden');
+  for(const li of $('gdBody').querySelectorAll('li.ghi'))li.classList.remove('ghi');
+  if(key){const sec=[...$('gdBody').children].find(u=>+u.dataset.g===tab),li=sec&&[...sec.children].find(x=>x.textContent.trim().toLowerCase().startsWith(key.toLowerCase()));if(li){li.classList.add('ghi');li.scrollIntoView({block:'start'});}}
 }
+document.addEventListener('click',e=>{const b=e.target.closest('.shelp');if(b)openGuide(5,null,b.dataset.help);});
 $('gdTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)openGuide(+b.dataset.g,guideBack);});
 $('gdX').addEventListener('click',()=>{$('guide').classList.add('hidden');const f=guideBack;guideBack=null;if(f)f();});
 /* ---- PAUSA: un solo tasto in alto a destra durante la partita. La partita si ferma davvero; da qui si riprende, si simula la meta, si apre la guida o si esce ---- */
