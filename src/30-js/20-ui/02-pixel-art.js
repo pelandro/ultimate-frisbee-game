@@ -257,10 +257,13 @@ function drawRoutes(){
     const called=!!(G.call&&G.call.q===p),x0=sxw(p.x),y0=syw(p.y)-2,x1=sxw(p.rt.x),y1=syw(p.rt.y)-2,d=hyp(x1-x0,y1-y0);
     if(d<9)continue;
     const c=called?PAL.sky:'#3ddc5a',ux=(x1-x0)/d,uy=(y1-y0)/d;
-    pline(x0+ux*6,y0+uy*6,x1,y1,PAL.out,4);pline(x0+ux*6,y0+uy*6,x1,y1,c,2);
+    // conta lo scatto iniziale, non il punto preciso dove arrivera': si disegna solo il primo tratto (circa il 40% del percorso, tra 4,5 e 7,5 metri)
+    const L=Math.min(d,clamp(d*0.4,4.5*S,7.5*S)),xe=x0+ux*L,ye=y0+uy*L;
+    if(L<12)continue;
+    pline(x0+ux*6,y0+uy*6,xe,ye,PAL.out,4);pline(x0+ux*6,y0+uy*6,xe,ye,c,2);
     const ax=Math.abs(ux)>Math.abs(uy);
-    parrow(x1+(ax?(ux>0?1:-1):0),y1+(ax?0:(uy>0?1:-1)),ax?(ux>0?0:2):(uy>0?1:3),PAL.out,5);
-    parrow(x1+(ax?(ux>0?1:-1):0),y1+(ax?0:(uy>0?1:-1)),ax?(ux>0?0:2):(uy>0?1:3),c,4);
+    parrow(xe+(ax?(ux>0?1:-1):0),ye+(ax?0:(uy>0?1:-1)),ax?(ux>0?0:2):(uy>0?1:3),PAL.out,5);
+    parrow(xe+(ax?(ux>0?1:-1):0),ye+(ax?0:(uy>0?1:-1)),ax?(ux>0?0:2):(uy>0?1:3),c,4);
   }
 }
 function drawPlayers(dt){

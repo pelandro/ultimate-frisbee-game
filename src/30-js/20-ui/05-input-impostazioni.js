@@ -14,8 +14,8 @@ const SL_SENS=[1.3,1.14,1,0.86],DSL=['Molto bassa','Bassa','Media','Alta'];   //
 const slFull=()=>0.5*CH*SL_SENS[SETT.ds];          // px di trascinamento per il lancio massimo (55 m): meta' dell'altezza dello schermo
 // distanza in metri: cresce piano all'inizio (i passaggi corti sono precisi) e in fretta alla fine (gli spari)
 function slDist(len){const u=clamp((len-SL_DEAD)/(slFull()-SL_DEAD),0,1);return 3.5+(CH_MAX-3.5)*(0.45*u+0.55*u*u);}
-let throwStyle=0;                                  // tipo di lancio scelto col pulsante in basso a destra: 0 piatto, 1 alto (scoober o hammer), 2 blade
-const STYLE_LBL=['PIATTO','ALTO','BLADE'];
+// Tipo di lancio: si sceglie con le DITA. Una sola dita = piatto (rovescio o dritto); due dita insieme = lancio alto (scoober o hammer, il rovesciato); tre = blade.
+// G.high vale 0, 1 o 2 e puo' solo salire mentre si mira: se una dita si stacca il lancio resta quello scelto. Con la tastiera: Maiusc (o K) = alto, L = blade.
 // CHIAMATE RAPIDE: tocco su un compagno = taglio (profondo se e' vicino, di rientro se e' lontano); pressione lunga = isolamento; tocco sul portatore = clear
 function nearMate(w,team,r){let b=null,bd=r;for(const q of T[team]){const d=hyp(q.x-w.x,q.y-1.4-w.y);if(d<bd){bd=d;b=q;}}return b;}
 function quickCall(w,long){
@@ -47,14 +47,25 @@ cv.addEventListener('pointerdown',e=>{
     if(!ddrag)ddrag={ox:e.clientX,oy:e.clientY,fx:e.clientX,fy:e.clientY,pid:e.pointerId,t0:G.tick,mv:false};return;
   }
   if(sprintNow)return;
+  if(drag&&drag.sl&&e.pointerId!==aimPid){fingerAdd(e.pointerId);return;}   // un'altra dita mentre si mira: cambia il tipo di lancio
   const h=G.holder;
   if(h&&h.t===0&&!G.flight&&!drag){
     aimPid=e.pointerId;
     const tb=cssToBuf(e.clientX,e.clientY);
-    drag={btn:throwStyle?'hammer':'throw',sl:true,ox:e.clientX,oy:e.clientY,fx:e.clientX,fy:e.clientY,s:G.tick,D:0,dirOk:false,ang:0,x:sxw(h.x),y:syw(h.y),tw:toWorld(tb[0],tb[1])};
-    G.high=throwStyle;
+    drag={btn:'throw',sl:true,ox:e.clientX,oy:e.clientY,fx:e.clientX,fy:e.clientY,s:G.tick,D:0,dirOk:false,ang:0,x:sxw(h.x),y:syw(h.y),tw:toWorld(tb[0],tb[1]),pids:new Set([e.pointerId]),multi:false};
+    G.high=0;
   }
 });
+// piu' dita sul campo durante la mira: due = alto, tre = blade (il tipo non scende mai: se una dita si stacca il lancio resta quello scelto)
+function fingerAdd(id){
+  if(!drag||!drag.pids)return;
+  drag.pids.add(id);drag.multi=true;
+  const n=drag.pids.size,st=n>=3?2:(n===2?1:0);
+  if(st>(G.high|0)){G.high=st;drag.btn='hammer';shownAlto++;HOOKS.vibe(10);HOOKS.sfx('ui');}
+}
+// iPhone: il pizzico con due o tre dita non deve ingrandire la pagina (il campo ha gia' touch-action:none)
+for(const ev of ['gesturestart','gesturechange'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
+function fingerDrop(id){if(drag&&drag.pids&&id!==aimPid)drag.pids.delete(id);}
 cv.addEventListener('pointermove',e=>{
   if(ddrag&&e.pointerId===ddrag.pid){
     ddrag.fx=e.clientX;ddrag.fy=e.clientY;const vx=e.clientX-ddrag.ox,vy=e.clientY-ddrag.oy,len=hyp(vx,vy);
@@ -65,11 +76,11 @@ cv.addEventListener('pointermove',e=>{
   if(drag&&drag.sl)slMove(e);
 });
 cv.addEventListener('pointercancel',e=>{
-  tap=null;ddrag=null;G.cdir=null;G.hold=false;
+  fingerDrop(e.pointerId);tap=null;ddrag=null;G.cdir=null;G.hold=false;
   if(e.pointerId===aimPid&&drag&&drag.sl){drag=null;aimPid=null;G.high=false;}
 });
 cv.addEventListener('pointerup',e=>{
-  G.hold=false;tap=null;
+  fingerDrop(e.pointerId);G.hold=false;tap=null;
   if(ddrag&&e.pointerId===ddrag.pid){
     if(!ddrag.mv&&G.tick-ddrag.t0<0.35&&inDefense()){const b=cssToBuf(e.clientX,e.clientY),q=nearMate(toWorld(b[0],b[1]),0,3.4);if(q){G.ctrl=q;G.ctrlBy=true;HOOKS.sfx('ui');HOOKS.vibe(8);}}
     ddrag=null;G.cdir=null;return;

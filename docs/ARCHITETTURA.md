@@ -31,7 +31,7 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `04-ia-attacco.js`, `04b-ia-coordinazione.js`, `05-ia-difesa.js` | IA dei compagni senza disco (tagli in coppia `pairCut`, give-and-go `giveGo`, isolamenti dell'IA `aiIso`) e dei difensori (lettura degli schemi ripetuti `playRead`, marcatura sul pericolo `dangerMark`); chiamate rapide; difensore guidato dal giocatore |
 | `06-campo-allenamento.js` | Regole di tutorial, allenamento libero e sfide (`G.drill`) |
 | `07-lanci.js`, `07b-intercetti.js`, `08-prese-duelli.js` | Tipi di lancio, traiettorie, precisione, handblock; intercetti lungo il volo (`laneRead`, `laneCheck`); prese, duelli, tuffi, turnover (con `G.walk`: chi raccoglie corre al disco), uscite dal campo (`oobSpot`) |
-| `09-ia-lanciatore-pull.js`, `10-punto-update.js` | IA di chi ha il disco, pull, meta, half time, identità tattica, ciclo `update(dt)` |
+| `09-ia-lanciatore-pull.js`, `10-punto-update.js` | IA di chi ha il disco, pull, meta, half time, identità tattica, ciclo `update(dt)`. Il pull: bravura di chi tira (`pullSkill`, `pullPeriod`), qualità del pull (`pullQuality`: brick, corto, buono, gran pull) e vantaggio per qualche secondo (`PULL_EDGE`, `G.edge`: stall di partenza, partenza dei tagliatori, velocità e precisione dei lanci) |
 | `11-progressione.js`, `12-allenamenti-rose.js` | Potenziale, esperienza e crescita, allenamenti, generazione delle rose, roster reali, infortuni, forma |
 | `13-partite-simulate.js`, `14-test.js` | Modello delle partite simulate; suite di test (`selfTestPlan`, `selfTestRun`) |
 | `16-pacchetti.js` | Rarità dei pacchetti di Ultimate Team per qualità (`UT_PQ`, `utPackTiers`, garanzie, paracadute `UT_PITY`) |

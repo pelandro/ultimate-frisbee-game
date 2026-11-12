@@ -80,16 +80,19 @@ function drawPull(){
   const n=Math.max(4,ri(hyp(ex-cx,ey-cy)/7)),arc=Math.min(46,hyp(ex-cx,ey-cy)*0.25),flow=(G.tick*1.6)%1;
   for(let i=1;i<n;i++){const u=(i+flow)/n,x=ri(lerp(cx,ex,u)),y=ri(lerp(cy,ey,u)-arc*4*u*(1-u));px(x-2,y-2,4,4,PAL.out);px(x-1,y-1,2,2,col);}
   pring(ex,ey,7,5,PAL.out,3);pring(ex,ey,7,5,col,1);
-  if(out)ptext('FUORI',clamp(ex,24,VW-24),clamp(ey-20,BAR+2,VH-12),{f:'p',c:PAL.red});
+  // che pull sarebbe (pullQuality nel motore): FUORI, CORTO, BUON PULL, GRAN PULL (lontano, in fondo alla meta: la difesa parte avvantaggiata)
+  const rq=pullQuality(out,L,1),lab=out?'FUORI':(rq<=1?'CORTO':(rq===2?'BUON PULL':'GRAN PULL'));
+  ptext(lab,clamp(ex,30,VW-30),clamp(ey-20,BAR+2,VH-12),{f:'p',c:out?PAL.red:(rq===3?PAL.gold:(rq===2?PAL.green:'#ffffff'))});
   // i due indicatori, in basso al centro, sopra la fila dei pulsanti (alti circa 50 px sullo schermo). I colori si ricavano dal punto d'arrivo vero,
   // campione per campione: con il vento alle spalle il verde della potenza si sposta a sinistra, col vento di lato quello della direzione si sposta
   const W=Math.min(168,VW-150),x0=ri(VW/2-W/2),hB=7,y1=VH-ri(60*UIZ*DPR/PXS)-hB,y0=y1-17;
-  const bar=(y,lab,kindAt,pos,on)=>{
+  const bar=(y,lab,kindAt,pos,on,val)=>{
     ptext(lab,x0-4,y-1,{f:'t',a:'r',c:on?'#ffffff':'#9aa3b8'});
+    if(val!==undefined)ptext(String(Math.round(val)),x0+W+7,y-1,{f:'t',c:PAL.gold});   // il valore di Sparo o Lancio di chi tira: piu' e' alto, piu' piano va la barra
     px(x0-2,y-2,W+4,hB+4,PAL.out);
     for(let i=0;i<PM_N;i++){const xa=x0+ri(i*W/PM_N),xb=x0+ri((i+1)*W/PM_N);px(xa,y,xb-xa,hB,PM_COL[kindAt((i+0.5)/PM_N)]);}
     const mx=x0+ri(clamp(pos,0,1)*W);px(mx-2,y-4,5,hB+8,PAL.out);px(mx-1,y-3,3,hB+6,on?'#ffffff':'#c9cfdd');
   };
-  bar(y0,'POTENZA',u=>u>PULL_TH?3:pullKind(pullLand(p,u,fwd),0),c,!pm.ph);   // oltre la tacca e' sempre rosso: anche se resta in campo, il controllo crolla
-  if(pm.ph)bar(y1,'DIREZIONE',u=>{const k=pullKind(pullLand(p,pm.c,fwd+(u*2-1)*PULL_SW),0);return k===3?3:(pullKind(pullLand(p,pm.c,fwd+(u*2-1)*PULL_SW),3.5)===3?1:2);},(v+1)/2,true);   // giallo: in campo ma a meno di 3,5 m dalla linea laterale
+  bar(y0,'POTENZA',u=>u>PULL_TH?3:pullKind(pullLand(p,u,fwd),0),c,!pm.ph,p.s.spa);   // oltre la tacca e' sempre rosso: anche se resta in campo, il controllo crolla
+  if(pm.ph)bar(y1,'DIREZIONE',u=>{const k=pullKind(pullLand(p,pm.c,fwd+(u*2-1)*PULL_SW),0);return k===3?3:(pullKind(pullLand(p,pm.c,fwd+(u*2-1)*PULL_SW),3.5)===3?1:2);},(v+1)/2,true,p.s.lan);   // giallo: in campo ma a meno di 3,5 m dalla linea laterale
 }

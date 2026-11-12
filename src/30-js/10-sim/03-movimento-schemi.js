@@ -1,6 +1,7 @@
 /* ---- movimento ---- */
 const fatigue=p=>0.82+0.18*clamp(p.st/70,0,1);   // stanco = piu' lento
-const vmaxOf=p=>(5.2+p.s.vel*0.045)*fatigue(p);     // velocità: scatti lunghi
+const edgeOf=p=>G.edge&&G.edge.t>0&&p.t===G.edge.team?1+G.edge.k:1;   // vantaggio del pull per qualche secondo (PULL_EDGE)
+const vmaxOf=p=>(5.2+p.s.vel*0.045)*fatigue(p)*edgeOf(p);     // velocità: scatti lunghi
 const accOf=p=>(3.5+p.s.sca*0.085)*fatigue(p)*(hasT(p,'explosive')?1.08:1);
 const SPRINT_COST=1.8,REST_FIELD=5,REST_BENCH=12;   // con i cambi di direzione netti gli scatti sono piu' frequenti: ognuno costa un po' meno
 // scatto sui lanci lunghi (sparo): il corridore (ricevitore in attacco, difensore piu' vicino in difesa) scatta tenendo premuto, ma si stanca in fretta
@@ -163,7 +164,7 @@ function placeTeams(rec){
   for(const q of def){q.x=px;q.y=q===puller?MID:ys[k++];}
   for(const p of atk.concat(def)){p.vx=p.vy=0;p.fl=null;p.flD=0;p.boost=0;p.cs='set';p.cutT=rnd(0.6,2);p.mark=null;p.ph=0;p.wT=0;p.nT=0;p.nx=0;p.ny=0;p.cmd=null;}
   G.puller=puller;G.pullTeam=pt;G.pull=null;G.holder=null;G.flight=null;G.marker=null;
-  G.stallT=0;G.zoneH=null;G.zoneT=0;G.call=null;G.sideA=undefined;G.snapQ=null;G.iso=null;G.ctrl=null;G.cdir=null;G.ctrlH=null;G.hold=false;G.sprint=null;G.aiSprint=[];G.brickWait=false;G.walk=null;G.diveWin=null;G.dive=null;G.slowTail=0;G.pb=[null,null];
+  G.edge=null;G.stallT=0;G.zoneH=null;G.zoneT=0;G.call=null;G.sideA=undefined;G.snapQ=null;G.iso=null;G.ctrl=null;G.cdir=null;G.ctrlH=null;G.hold=false;G.sprint=null;G.aiSprint=[];G.brickWait=false;G.walk=null;G.diveWin=null;G.dive=null;G.slowTail=0;G.pb=[null,null];
   G.disc.x=puller.x;G.disc.y=puller.y;G.disc.z=1;
   G.readyT=G.auto?0.3:3.2;G.freeze=0;G.high=false;G.mode='ready';
   assignMarks();

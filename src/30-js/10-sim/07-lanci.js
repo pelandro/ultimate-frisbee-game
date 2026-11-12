@@ -11,6 +11,7 @@ function throwInfo(th,vx,vy,dist){
   let skill=base*(1-0.65*c)+(th.s.buc+m)*0.65*c;
   if(c>0&&G.marker)skill-=(8+(G.marker.s.dif-60)*0.1)*c*(hasT(th,'break')?0.5:1);
   skill-=Math.max(0,G.stallT-6)*2.2*(hasT(th,'general')?0.55:1);
+  if(G.edge&&G.edge.t>0&&th.t===G.edge.rec)skill+=G.edge.thr;   // il pull appena tirato pesa sui primi lanci di chi riceve (PULL_EDGE)
   skill=clamp(skill,20,99);
   const keys=[sparo?'spa':'lan'];if(c>0.15)keys.push('buc');
   const label=(c>0.15?'Buco':(sparo?'Sparo':'Lancio'))+(c>0.15&&sparo?' + sparo':'');
@@ -262,9 +263,11 @@ function updateDisc(dt){
       d.x=lerp(pu.sx,pu.tx,u);d.y=lerp(pu.sy,pu.ty,u);d.z=lerp(1.2,0.2,u)+4*pu.H*u*(1-u);
       if(pu.t>=pu.T){
         pu.landed=true;pu.lt=0;d.z=0;d.x=pu.spot.x;d.y=pu.spot.y;
+        // la qualita' (pullQuality, 09-ia-lanciatore-pull.js) decide anche che cosa succede alla presa
         if(pu.oob)HOOKS.toast('Pull fuori! Si riparte dal brick',G.poss);
-        else{const dr=dirOf(G.poss),dep=((dr>0?EZ:FIELD_L-EZ)-pu.spot.x)*dr;   // metri dentro la meta di chi riceve (negativi: il disco e' caduto piu' avanti)
-          if(dep>=0)HOOKS.toast(dep>=6?'Gran pull!':'Buon pull',pu.team);else if(dep<-20)HOOKS.toast('Pull corto',G.poss);}
+        else if(pu.q===3)HOOKS.toast('Gran pull! Difesa già in posizione',pu.team);
+        else if(pu.q===2)HOOKS.toast('Buon pull',pu.team);
+        else HOOKS.toast(pu.q===1?'Pull corto: via libera all’attacco':'Pull cortissimo: attacco libero',G.poss);
       }
     }else{
       pu.lt+=dt;
@@ -278,9 +281,11 @@ function updateDisc(dt){
         if(inAir){d.x=c.x;d.y=c.y;}   // presa al volo: il disco e' a pochi centimetri dalla mano
         c.vx=c.vy=0;clearFl();
         if(!inAir){c.x=clamp(d.x,0,FIELD_L);c.y=clamp(d.y,0,FIELD_W);}
-        G.holder=c;G.pull=null;G.stallT=0;G.holdT=0;G.hbAtt=null;G.zoneH=null;G.hbOk=null;G.think=thinkFor(c.t,0.9,1.6,c);d.z=1;
+        const eg=PULL_EDGE[pu.q|0]||PULL_EDGE[2];   // vantaggio del pull: stall di partenza, partenza dei tagliatori, velocita' per qualche secondo
+        G.holder=c;G.pull=null;G.stallT=eg.stall;G.holdT=0;G.hbAtt=null;G.zoneH=null;G.hbOk=null;G.think=thinkFor(c.t,0.9,1.6,c);d.z=1;
         G.brickWait=!!pu.oob;G.brickT=0;G.walk=null;   // brick: l'attacco aspetta che la difesa si schieri
-        for(const q of T[G.poss]){q.cs='set';q.cutT=rnd(0.5,1.6);}
+        G.edge={team:eg.k>0?pu.team:G.poss,rec:G.poss,k:Math.abs(eg.k),thr:eg.thr,t:PULL_EDGE_T};
+        for(const q of T[G.poss]){q.cs='set';q.cutT=rnd(0.5,1.6)*eg.cut;}
         assignMarks();startPlay(G.poss);
       }
     }

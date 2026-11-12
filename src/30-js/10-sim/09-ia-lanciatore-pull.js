@@ -61,9 +61,11 @@ const PULL_TH=0.88,PULL_SPEED=1.12;   // PULL_SPEED: velocita' del disco in volo
 /* PULL A TEMPO: il pull e' un gesto difficile, non un lancio qualsiasi. Si decide in due tocchi su due indicatori che oscillano:
    1) POTENZA: la zona verde (da PULL_G0 alla tacca PULL_TH) manda il disco nella meta avversaria; prima e' corto, oltre la tacca rischia di uscire dal fondo;
    2) DIREZIONE: l'ago spazza il campo da una linea laterale all'altra e oltre (PULL_SW radianti per parte); solo la parte centrale resta in campo.
-   Gli indicatori vanno piu' piano per chi ha Sparo (potenza) e Lancio (direzione) alti. L'interfaccia legge queste costanti; il motore riceve carica e angolo. */
+   Gli indicatori vanno piano per chi ha Sparo (potenza) e Lancio (direzione) alti e in fretta per chi li ha bassi: con Sparo 20 la barra della potenza corre
+   a 0,7 s per spazzata, con 99 a 1,7 s. Anche il colpo e' meno pulito per i deboli (pullSkill). L'interfaccia legge queste costanti; il motore riceve carica e angolo. */
 const PULL_G0=0.74,PULL_Y0=0.62,PULL_SW=0.42;
-const pullPeriod=(p,k)=>k?0.62+p.s.lan*0.006:0.8+p.s.spa*0.007;   // secondi per una spazzata: 0 potenza, 1 direzione
+const pullPeriod=(p,k)=>k?0.36+p.s.lan*0.0112:0.42+p.s.spa*0.0128;   // secondi per una spazzata: 0 potenza (Sparo), 1 direzione (Lancio)
+const pullSkill=p=>clamp(p.s.spa*0.6+p.s.lan*0.4,20,99);            // la bravura nel pull: soprattutto Sparo (distanza), poi Lancio (precisione)
 const pullWave=(t,T)=>{const u=(t/T)%2;return u<1?u:2-u;};          // 0..1..0 a velocita' costante
 function pullAngle(team,ang){
   const fwd=dirOf(team)>0?0:Math.PI;
@@ -76,7 +78,21 @@ function pullPlan(p,team,charge,ang){
   const c=clamp(charge,0,1),over=clamp((c-PULL_TH)/(1-PULL_TH),0,1);
   const W=G.wind,wk=1+0.15*W.lv;   // il vento sposta il punto d'arrivo (wx, wy) e rende il pull un po' meno preciso
   return {c,over,dist:20+58*Math.min(c,PULL_TH)/PULL_TH+7*over,a:pullAngle(team,ang),wx:W.x*PULL_WK,wy:W.y*PULL_WK,
-    sa:(1.1+(100-p.s.spa)*0.03)*(1+2.2*over*over)*wk*Math.PI/180,sd:(1.2+(100-p.s.spa)*0.045)*(1+2*over)*wk};
+    sa:(0.6+(100-pullSkill(p))*0.06)*(1+2.2*over*over)*wk*Math.PI/180,sd:(0.7+(100-pullSkill(p))*0.09)*(1+2*over)*wk};
+}
+/* QUALITA' DEL PULL: dove cade rispetto alla meta di chi riceve. Un buon pull da' un vantaggio vero a chi lo tira (cioe' alla difesa):
+   3 GRAN PULL: in campo, a 7 m o piu' dentro la meta di chi riceve e lontano dalla linea laterale;  2 BUON PULL: in campo, dentro la meta;
+   1 CORTO: cade prima della meta, fino a 20 m;  0 BRICK: fuori dal campo oppure cortissimo (oltre 20 m prima della meta).
+   Alla presa, per ciascun livello (PULL_EDGE): stall di partenza di chi riceve (la difesa e' gia' addosso), quanto aspettano i tagliatori prima di partire
+   (moltiplicatore) e, per qualche secondo (PULL_EDGE_T), +k alla velocita' dei difensori (k > 0) oppure dei ricevitori (k < 0) e thr punti in piu' (o in meno)
+   ai lanci di chi riceve: sotto pressione sbaglia di piu', con via libera molto meno. In piu' c'e' la posizione stessa: piu' il disco cade in fondo, piu' strada devono fare per segnare. */
+const PULL_EDGE_T=6;
+const PULL_EDGE=[{stall:0,cut:0.6,k:-0.05,thr:6},{stall:0,cut:0.8,k:-0.03,thr:3.5},{stall:1.5,cut:1.15,k:0.03,thr:-3},{stall:3,cut:1.7,k:0.07,thr:-12}];   // thr: punti di Lancio/Sparo in piu' (o in meno) ai lanci di chi riceve
+function pullQuality(oob,spot,rec){
+  if(oob)return 0;
+  const dr=dirOf(rec),dep=((dr>0?EZ:FIELD_L-EZ)-spot.x)*dr;
+  if(dep<-20)return 0;if(dep<0)return 1;
+  return dep>=7&&Math.min(spot.y,FIELD_W-spot.y)>=4?3:2;
 }
 function doPull(charge,ang){
   const pt=G.pullTeam,p=G.puller,d=dirOf(pt),rec=G.poss,pp=pullPlan(p,pt,charge,ang);
@@ -91,7 +107,7 @@ function doPull(charge,ang){
   for(const q of atk.concat(T[pt])){q.fl=null;q.flD=0;q.boost=0;}
   const catcher=atk.slice().sort((a,b)=>ttr(a,spot.x,spot.y)-ttr(b,spot.x,spot.y))[0];
   catcher.fl={x:spot.x,y:spot.y};
-  G.pull={thrower:p,sx:p.x,sy:p.y,tx,ty,t:0,T:(1.8+dl/40)/PULL_SPEED,H:clamp(dl*0.16,5,12),team:pt,oob,landed:false,spot,catcher,lt:0};
+  G.pull={thrower:p,sx:p.x,sy:p.y,tx,ty,t:0,T:(1.8+dl/40)/PULL_SPEED,H:clamp(dl*0.16,5,12),team:pt,oob,landed:false,spot,catcher,lt:0,q:pullQuality(oob,spot,rec)};
   G.ref={x:spot.x,y:spot.y};
   G.puller=null;G.mode='play';
   assignMarks();
@@ -103,6 +119,7 @@ function aiPull(){
   // Il punto ideale e' 8 m dentro la meta avversaria, al centro; il vento lo corregge per due terzi.
   const p=G.puller,d=dirOf(G.pullTeam),W=G.wind,need=Math.abs((d>0?FIELD_L-EZ+8:EZ-8)-p.x)-W.x*PULL_WK*d*0.67;
   const c0=clamp((need-20)/58*PULL_TH,0.5,PULL_TH-0.03),rel0=-Math.asin(clamp(W.y*PULL_WK*0.67/Math.max(30,need),-0.4,0.4))*d;
-  doPull(clamp(c0+randn()*(0.07+(100-p.s.spa)*0.002),0.35,0.99),(d>0?0:Math.PI)+rel0+randn()*(0.09+(100-p.s.lan)*0.002));
+  const ps=pullSkill(p);
+  doPull(clamp(c0+randn()*(0.06+(100-ps)*0.0021),0.35,0.99),(d>0?0:Math.PI)+rel0+randn()*(0.08+(100-p.s.lan)*0.0023));
 }
 

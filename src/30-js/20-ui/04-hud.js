@@ -4,7 +4,7 @@ const hud=$('hud'),elScore0=$('s0'),elScore1=$('s1'),elPt=$('pt'),elStall=$('sta
 const cache=new Map();
 function setHTML(el,html){if(cache.get(el)!==html){cache.set(el,html);el.innerHTML=html;}}
 const ATT_NAME={vert:'Verticale',horz:'Orizzontale',hex:'Esagono',side:'Stack laterale',t1:'T1',weave:'Weave'},DEF_NAME={man_out:'Uomo, forza fuori',man_in:'Uomo, forza dentro',zone:'Zona',man_poach:'Uomo con aiuti'};
-let shownHint=0,shownPull=0,shownDef=0;
+let shownHint=0,shownPull=0,shownDef=0,shownAlto=0;
 // in difesa (l'avversario ha il disco o lo ha lanciato) i due pulsanti diventano handblock (destra) e tuffo (sinistra)
 const inDefense=()=>G.mode==='play'&&!G.pull&&!!((G.holder&&G.holder.t===1)||(G.flight&&G.flight.team===1));
 function updateHUD(dt){
@@ -24,12 +24,11 @@ function updateHUD(dt){
   const pullMine=G.mode==='ready'&&G.pullTeam===0&&!G.auto&&!G.schemeOpen&&!!G.puller;   // il pull si carica con il pulsante «Lancio»
   const defNow=inDefense(),man=defMan(),hbRdy=defNow&&!!hbWindow()&&!G.hbAtt,dvRdy=defNow&&!!(G.diveWin&&!G.diveWin.done);   // rdy: e' il momento di premere
   // difesa automatica: il tasto del tuffo compare solo nel momento del tuffo a tempo, quello dell'handblock mai
-  bThr.classList.toggle('hidden',!(mine||defNow));bThr.classList.toggle('def',defNow);bThr.classList.toggle('dis',mine&&!canThrow);bHammer.classList.toggle('hidden',!(mine||(defNow&&(man||dvRdy))));
-  bThrow.classList.toggle('hidden',!(defNow&&man));   // in attacco si lancia trascinando sullo schermo: resta solo l'interruttore Hammer
-  if(!mine)throwStyle=0;
-  $('stLab').textContent=STYLE_LBL[drag&&!drag.sl?(G.high|0):throwStyle];bHammer.classList.toggle('bl',mine&&(drag&&!drag.sl?G.high===2:throwStyle===2));
+  bThr.classList.toggle('hidden',!(mine||defNow));bThr.classList.toggle('def',defNow);bThr.classList.toggle('dis',mine&&!canThrow);bHammer.classList.toggle('hidden',!(defNow&&(man||dvRdy)));   // in attacco non c'e' piu': il lancio alto si fa con due dita
+  bThrow.classList.toggle('hidden',!(defNow&&man));   // in attacco si lancia trascinando sullo schermo (una dita piatto, due alto, tre blade): nessun pulsante
   bThrow.classList.toggle('rdy',hbRdy);bHammer.classList.toggle('rdy',dvRdy);
-  bThrow.classList.toggle('on',!!(drag&&drag.btn==='throw'));bHammer.classList.toggle('on',!!((mine&&throwStyle===1)||(drag&&drag.btn==='hammer'&&G.high!==2)));
+  bThrow.classList.toggle('on',!!(drag&&drag.btn==='throw'&&!drag.sl));bHammer.classList.toggle('on',!!(drag&&drag.btn==='hammer'&&!drag.sl&&G.high!==2));
+  cv.dataset.aim=drag&&drag.sl?['piatto','alto','blade'][G.high|0]:'';   // tipo di lancio in corso di mira (lo legge anche la prova nel browser)
   if(!mine&&drag){drag=null;aimPid=null;G.high=false;}   // il disco e' partito o cambiato mano: il mirino si annulla
   updRings();
   const spr=G.mode==='play'&&!!G.flight&&!!G.flight.sparo&&!!G.sprint&&!G.pull;   // SCATTO: solo sui lanci lunghi
@@ -46,6 +45,7 @@ function updateHUD(dt){
   if(!hint&&pullMine&&pm)hint=pm.ph?'Tocca per fermare la DIREZIONE dentro il campo':'PULL: tocca per fermare la POTENZA nel verde';
   if(!hint&&canThrow&&!drag&&shownHint<3)hint='Trascina all’indietro e rilascia per lanciare';
   if(!hint&&canThrow&&!drag&&shownHint>=3&&shownCall<2&&G.holdT>1.2)hint='Tocca un compagno per chiamargli il taglio';
+  if(!hint&&canThrow&&!drag&&shownHint>=2&&shownHint<9&&shownAlto<1&&G.holdT>1.8)hint='Trascina con due dita insieme per il lancio alto (rovesciato)';
   if(!hint&&dvRdy&&!man)hint='TUFFO! Tocca quando il cerchio si chiude';
   if(!hint&&defNow&&G.holder&&man&&shownCtrl<3)hint='Difesa: trascina per muovere il difensore azzurro';
   if(!hint&&defNow&&G.holder&&!man&&shownSkip<3)hint='Difesa automatica: tocca SALTA per andare avanti';
