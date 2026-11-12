@@ -32,17 +32,20 @@ function beginSeason(){
   if(SV.rost)SV.expOrd=names.slice().sort((a,b)=>teamPow(b)-teamPow(a));   // gerarchie a inizio stagione: servono al premio per l'allenatore dell'anno
   if(SV.cash!==undefined){setObjective();for(const p of SQ)if(p.car){p.car.yrs=(p.car.yrs|0)+(p.car.ss.mp>0?1:0);p.car.ls=p.car.ss;p.car.ss={mp:0,g:0,a:0,b:0};}}
 }
-function startCareer(name){
+function startCareer(name,opt){   // opt: {coach, relief} (24-allenatore.js)
+  opt=opt||{};
   const help=!!SV.help,slot=SV.slot||1;   // lo slot in cui nasce la carriera
   SV={v:SAVE_V,team:name,seed:Math.floor(Math.random()*1e9),sr:(TEAM[name]&&TEAM[name].series)||'C',season:1,event:'camp',eu:newEu(1),help,
       mem:{A:SERIES.A.slice(),B:SERIES.B.slice(),C:SERIES.C.slice()},realAB:1,rv:3,slot};
+  SV.coach=coachNorm(opt.coach);SV.start=opt.relief?'sub':'cuore';
   SV.rost={};for(const n in TEAM)if(n!==name)SV.rost[n]=aiRoster(n);
   // la rosa scelta va caricata PRIMA di beginSeason: le gerarchie di inizio stagione (SV.expOrd) leggono la forza della tua squadra,
   // e prima usavano quella della rosa rimasta in memoria (la squadra di prima, o quella iniziale)
   if(REAL[name]){SV.realv=2;setSquad(userRoster());}
   else{startLow();setLineup([0,1,2,3,4,5,6]);}
   beginSeason();
-  careerInit();news('Inizia la carriera con '+name+' in '+SERIES_NAME[SV.sr]+'.');
+  careerInit();
+  if(opt.relief)reliefStart();else news(`Inizia la carriera con ${name} in ${SERIES_NAME[SV.sr]}. In panchina: ${coachName()}.`);
   persist();
 }
 function loadSave(d0){
@@ -151,11 +154,12 @@ function newSeason(){
   SV.mem=SV.next.mem;SV.sr=SV.next.sr;SV.season++;
   SV.euUnlocked=!!SV.next.qual;if(SV.euUnlocked)SV.eu=newEu(SV.season);SV.event='camp';   // la stagione nuova riparte sempre dal campionato
   retireOwn();   // chi aveva annunciato l'addio lascia adesso
+  staffYear();   // lo staff invecchia e matura (25-staff-persone.js)
   achCheck();    // (Hall of Fame)
   for(const p of SQ){p.hist=p.hist||[];p.hist.push([SV.season-1,ovr(p)]);if(p.hist.length>14)p.hist.shift();}   // storico dei progressi: l'Overall con cui ha chiuso la stagione
   const was=new Map(SQ.map(p=>[p.full,ovr(p)]));
   agePlayers();
-  for(const p of SQ){p.sk=Math.min(3,(p.sk|0)+1);p.cond=100;}   // un anno insieme: conosci meglio il potenziale dei tuoi
+  for(const p of SQ){p.sk=Math.min(3,(p.sk|0)+1+(hasTr('ana','occ')?1:0));p.cond=100;}   // un anno insieme: conosci meglio il potenziale dei tuoi
   summerChanges(was);evolveLeague();
   SV.chem=clamp(50+(SV.chem-50)*0.6,0,100);SV.mor=clamp(60+(SV.mor-60)*0.5,0,100);   // estate: l'intesa si allenta un poco, l'umore torna verso la norma
   beginSeason();buildMarket();pickRival();
@@ -196,6 +200,7 @@ function recordResult(win,su,so){
   for(const p of SQ){   // nuova giornata: tornano gli allenamenti, gli infortunati recuperano; ogni infortunio e ogni rientro viene segnalato
     p.tr=false;
     if(p.injNew&&(SV.fisShield|0)>0&&p.inj>1){p.inj=Math.ceil(p.inj/2);SV.fisShield--;}   // prevenzione (fisioterapia tenuta almeno al livello 3)
+    if(p.injNew&&p.inj>1&&hasTr('fit','fis'))p.inj--;   // caratteristica del preparatore: «Fisioterapista»
     if(p.injNew){const big=p.inj>=5;if(big){p.injC=(p.injC|0)+1;p.injBig=1;}alertAdd('inj',`${pname(p)} si è infortunat${oa(p)}${big?' in modo serio':''}: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full});}
     else if(p.inj>0){p.inj--;if(p.inj===0){if(p.abs)p.abs=0;else healed(p);}}   // abs: assenza per impegni, non un infortunio
     p.injNew=false;
@@ -204,8 +209,8 @@ function recordResult(win,su,so){
   // incasso, morale, affiatamento, condizione: chi ha giocato si stanca, la settimana fa recuperare (di piu' con la fisioterapia)
   const inc=incPre,wg=wageBill();SV.cash+=inc-wg;SV.lastInc=inc-wg;SV.lastWage=wg;
   // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso gli stipendi arrivano in ritardo e l'umore cala
-  SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-(SV.cash<0?3:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede'),0,100);
-  for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+staffLv('fit'),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
+  SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-(SV.cash<0?3:0)+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede')+(hasTr('men','pap')?0.3:0),0,100);
+  for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
   lifeAfterMatch();dynAfterMatch();
   if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0)buildMarket();   // il mercato si rinnova ogni 5 giornate
   achCheck();   // traguardi (23-traguardi.js)

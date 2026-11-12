@@ -13,10 +13,10 @@ const STAFF_MAX=3,STAFF_WAGE=[0,1,3,6];
 const staffLv=k=>(SV&&SV.staff&&SV.staff[k])|0;
 const staffCost=k=>50*(staffLv(k)+1);
 const staffWage=()=>Object.keys(STAFF).reduce((a,k)=>a+STAFF_WAGE[staffLv(k)],0);
-function buyStaff(k){const c=staffCost(k);if(staffLv(k)>=STAFF_MAX||SV.cash<c)return false;SV.cash-=c;if(!SV.staff)SV.staff={};SV.staff[k]=staffLv(k)+1;news('Staff: '+STAFF[k].n+' al livello '+SV.staff[k]+'.');return true;}
+// buyStaff (migliorare chi hai gia'): 25-staff-persone.js
 // moltiplicatore degli allenamenti: campo, allenatore e mentore insieme non superano mai +50%
 const TRAIN_CAP=1.5;
-const trainMul=p=>Math.min(TRAIN_CAP,(1+0.1*facLv('camp'))*(1+0.05*staffLv('coach'))*(p.age<=23?1+0.07*staffLv('men'):1));
+const trainMul=p=>Math.min(TRAIN_CAP,(1+0.1*facLv('camp'))*(1+0.05*staffLv('coach'))*(p.age<=23?1+(0.07+(p.age<=21&&hasTr('men','tal')?0.035:0))*staffLv('men'):1));
 /* ---- SPECIALIZZAZIONI (le regole stanno in 10-sim/11b-specializzazioni.js) ---- */
 const specCost=p=>Math.round((40+2*Math.max(0,ovrX(p)-50))*(p.spec?1.5:1));
 function setSpec(p,id){

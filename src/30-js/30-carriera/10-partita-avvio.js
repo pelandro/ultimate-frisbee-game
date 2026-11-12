@@ -17,13 +17,13 @@ function startMatch(resume){   // resume: ripresa di una partita sospesa (niente
 }
 function quitMatch(){if(!QM.on&&SV&&SV.susp){SV.susp=null;persist();}   // abbandonata: niente da riprendere
   $('half').classList.add('hidden');$('pause').classList.add('hidden');G.paused=false;restoreForm();if(QM.on){exitQuick(quickNext());return;}G.schemeOpen=false;G.inMatch=false;$('menu').classList.add('hidden');$('over').classList.add('hidden');showScreen('home');}
-const SCREENS=['title','slots','quick','home','team','roster','event','train','market','club','school','tourn','settings','posedit','ut','utPack','utTeam'];
+const SCREENS=['title','slots','quick','home','team','coachsel','roster','event','train','market','club','school','tourn','settings','posedit','ut','utPack','utTeam'];
 function hideScreens(){for(const sc of SCREENS)$(sc).classList.add('hidden');}
 function showScreen(id){
   for(const sc of SCREENS)$(sc).classList.toggle('hidden',sc!==id);
   G.mode='home';
   if(['home','roster','market','club','train','event'].includes(id))setTimeout(()=>{if(!$(id).classList.contains('hidden'))tipOnce(id);},350);   // fumetto di primo accesso
-  if(id==='title')renderTitle();else if(id==='slots')renderCareers();else if(id==='quick')renderQuick();else if(id==='home')renderHome();else if(id==='team')renderTeams();else if(id==='roster'){rosterMsg='';sellArm=null;cardOpen=null;nickEdit=null;renderRoster();}else if(id==='event')renderEvent();else if(id==='settings')setSView('menu');else if(id==='posedit')layoutButtons();else if(id==='ut')renderUT();else if(id==='utPack')renderPack();else if(id==='utTeam')renderTeamUT();else if(id==='school')renderSchool();else if(id==='tourn')renderTourn();else if(id==='market'){mkMsg='';if(SV.mkSeen!==SV.mkN){SV.mkSeen=SV.mkN;persist();}renderMarket();}else if(id==='club'){clMsg='';renderClub();}else{trainSel.clear();trainRes=null;renderTrain();}
+  if(id==='title')renderTitle();else if(id==='slots')renderCareers();else if(id==='quick')renderQuick();else if(id==='home')renderHome();else if(id==='team')renderTeams();else if(id==='coachsel')renderCoach();else if(id==='roster'){rosterMsg='';sellArm=null;cardOpen=null;nickEdit=null;renderRoster();}else if(id==='event')renderEvent();else if(id==='settings')setSView('menu');else if(id==='posedit')layoutButtons();else if(id==='ut')renderUT();else if(id==='utPack')renderPack();else if(id==='utTeam')renderTeamUT();else if(id==='school')renderSchool();else if(id==='tourn')renderTourn();else if(id==='market'){mkMsg='';if(SV.mkSeen!==SV.mkN){SV.mkSeen=SV.mkN;persist();}renderMarket();}else if(id==='club'){clMsg='';renderClub();}else{trainSel.clear();trainRes=null;renderTrain();}
 }
 const evName=()=>SV.event==='camp'?'Campionato':'Campionato europeo';
 // difficolta' della carriera: ritmo degli allenamenti e forza delle avversarie
@@ -39,7 +39,7 @@ const trainOpen=()=>((SV.played||0)%carDiff().n)===0;       // la sessione e' di
 const trainWait=()=>{const n=carDiff().n;return n-((SV.played||0)%n);};
 // forza di una squadra = media delle statistiche dei suoi 7 migliori giocatori (3 handler e 4 cutter)
 const incTxt=()=>` Bilancio della giornata: ${SV.lastInc>=0?'+':''}${SV.lastInc} crediti (stipendi ${SV.lastWage|0}${SV.lastUp?', manutenzione e staff '+SV.lastUp:''}).`;
-const teamFormB=()=>clamp((SV.chem-50)/50*0.9+(SV.mor-50)/50*0.6+0.3*staffLv('ana'),-1.5,1.5);
+const teamFormB=()=>clamp((SV.chem-50)/50*0.9+(SV.mor-50)/50*0.6+0.3*staffLv('ana')+(hasTr('ana','str')?0.3:0),-1.5,1.5);
 const squadPower=()=>{const b=pickSeven(SQ,p=>p.role,mean9);return b.reduce((a,p)=>a+mean9(p),0)/b.length;};
 const teamPower=n=>n===SV.team?squadPower():(SV.rost&&SV.rost[n]?rosterPower(SV.rost[n])+carDiff().plus:null);
 // forza mostrata nella scelta della squadra: la stessa regola della rosa con cui si parte davvero (userRoster: 9 giocatori, un po' meno allenata delle avversarie)
@@ -50,18 +50,42 @@ function crest(name,px){
   const dir=['135deg','180deg','90deg','45deg'][(h>>4)%4];
   return `<span class="crest" style="width:${px}px;height:${Math.round(px*1.12)}px;font-size:${Math.round(px*0.4)}px;background:linear-gradient(${dir},hsl(${h1} 68% 46%) 0 50%,hsl(${h2} 72% 56%) 50% 100%)">${ini}</span>`;
 }
-// avatar del giocatore: busto con maglia, capelli e pelle del suo aspetto
+// ritratto del giocatore in pixel art (stile Retro Bowl): griglia 16x16 con contorno scuro, occhi a punto, capelli a blocchi e maglia della squadra.
+// Capelli, pelle, barba e fascia vengono dall'aspetto del giocatore (look). Ogni pixel e' un quadratino netto: la misura si arrotonda a un multiplo di 16.
 function avatar(p,px){
-  const lk=p.look||DEF_LOOK,un=UNI[p.t||0],hr=lk.hair,sk=lk.skin;
-  let hairBack='',hairTop='';
-  if(lk.style===2)hairBack=`<path d="M11 17c-2 7-1 13 2 16l4-7z M29 17c2 7 1 13-2 16l-4-7z" fill="${hr}"/>`;
-  if(lk.style===3)hairBack=`<circle cx="31" cy="21" r="3.6" fill="${hr}"/>`;
-  if(lk.style===4)hairTop=`<path d="M11.8 16a8.2 8.2 0 0 1 16.4 0c-2.5-2-5-3-8.2-3s-5.7 1-8.2 3z" fill="${shade(sk,-0.25)}"/>`;
-  else hairTop=`<path d="M11.2 17a8.8 8.8 0 0 1 17.6 0c-1.2-3.4-4.4-5-8.8-5s-7.6 1.6-8.8 5z" fill="${hr}"/>`+(lk.style===1?`<path d="M11 17c-.6 3-.4 5 1 6.4 0-3 .4-4.6 2-6.4z M29 17c.6 3 .4 5-1 6.4 0-3-.4-4.6-2-6.4z" fill="${hr}"/>`:'');
-  return `<svg class="av" viewBox="0 0 40 40" width="${px}" height="${px}" aria-hidden="true"><rect width="40" height="40" rx="9" fill="rgba(255,255,255,.12)"/>${hairBack}<path d="M5 40c0-9 6-13.5 15-13.5S35 31 35 40z" fill="${un.shirt}"/><path d="M15 27.5l5 5 5-5z" fill="${sk}"/><circle cx="20" cy="18.5" r="8.4" fill="${sk}"/>${hairTop}${lk.band?`<rect x="11.4" y="13.4" width="17.2" height="2.6" fill="${lk.band}"/>`:''}${lk.beard?`<path d="M12 20.5c.8 5 4 7.6 8 7.6s7.2-2.6 8-7.6c-2.2 2.4-4.8 3.2-8 3.2s-5.8-.8-8-3.2z" fill="${shade(hr,-0.15)}"/>`:''}<circle cx="23.2" cy="19" r="1" fill="#1b2433"/></svg>`;
+  const lk=p.look||DEF_LOOK,un=UNI[p.t||0]||UNI[0],hr=lk.hair,sk=lk.skin,O='#1a1020';
+  const skS=shade(sk,-0.14),skD=shade(sk,-0.32),hrD=shade(hr,-0.3),hrL=shade(hr,0.28),sh=un.shirt,shD=shade(sh,-0.28),shL=shade(sh,0.25);
+  const G=Array.from({length:16},()=>Array(16).fill(null));
+  const R=(x,y,w,h,c)=>{for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++)if(i>=0&&i<16&&j>=0&&j<16)G[j][i]=c;};
+  R(0,0,16,16,shade(sh,-0.62));   // sfondo: la divisa, molto scura
+  if(lk.style===2){R(2,4,1,9,O);R(13,4,1,9,O);R(3,3,2,10,hr);R(11,3,2,10,hr);R(3,5,1,6,hrD);R(12,5,1,6,hrD);}   // capelli lunghi: dietro le spalle
+  // busto: contorno, maglia, ombre ai lati, scollo a V
+  R(1,13,14,3,O);R(3,12,10,1,O);R(2,13,12,3,sh);R(2,13,1,3,shD);R(13,13,1,3,shD);R(4,13,2,1,shL);R(10,13,2,1,shL);R(7,13,2,1,sk);
+  // collo
+  R(5,11,1,2,O);R(10,11,1,2,O);R(6,11,4,2,sk);R(6,12,4,1,skS);
+  // testa: contorno (senza gli angoli), pelle, ombra a destra, orecchie
+  R(3,2,10,10,O);R(3,2,1,1,null);R(12,2,1,1,null);R(3,11,1,1,null);R(12,11,1,1,null);
+  R(4,3,8,8,sk);R(11,4,1,6,skS);R(4,10,8,1,skS);R(3,6,1,3,skS);R(12,6,1,3,skS);
+  // viso: sopracciglia, occhi, naso, bocca
+  const cap=lk.style!==4;
+  if(cap){R(5,5,2,1,hrD);R(9,5,2,1,hrD);}
+  R(6,6,1,2,O);R(9,6,1,2,O);R(8,8,1,1,skD);R(7,9,2,1,'#7a3b2e');
+  if(lk.beard){R(4,8,1,3,hrD);R(11,8,1,3,hrD);R(5,10,6,1,hrD);R(5,9,2,1,hrD);R(9,9,2,1,hrD);R(7,9,2,1,'#7a3b2e');}
+  // capelli: calotta a blocchi con frangia; stile 1 = basette, 3 = coda, 4 = rasato
+  if(lk.style===4){R(4,3,8,1,skS);R(5,3,6,1,skD);}
+  else{
+    R(4,1,8,1,O);R(4,2,8,2,hr);R(4,4,2,1,hr);R(10,4,2,1,hr);R(3,3,1,1,O);R(12,3,1,1,O);R(6,2,3,1,hrL);R(3,2,1,1,O);R(12,2,1,1,O);R(4,4,1,1,hrD);R(11,4,1,1,hrD);
+    if(lk.style===1){R(4,5,1,2,hrD);R(11,5,1,2,hrD);}
+    if(lk.style===3){R(13,5,1,5,O);R(14,5,1,5,O);R(13,4,2,1,O);R(13,10,2,1,O);R(13,5,1,5,hr);R(14,5,1,5,O);R(12,4,1,1,hr);}
+  }
+  if(lk.band)R(4,4,8,1,lk.band);
+  let o='';
+  for(let y=0;y<16;y++){let x=0;while(x<16){const c=G[y][x];let w=1;while(x+w<16&&G[y][x+w]===c)w++;if(c)o+=`<rect x="${x}" y="${y}" width="${w}" height="1" fill="${c}"/>`;x+=w;}}
+  const z=16*Math.max(1,Math.round(px/16));
+  return `<svg class="av" viewBox="0 0 16 16" width="${z}" height="${z}" shape-rendering="crispEdges" aria-hidden="true">${o}</svg>`;
 }
 let teamTab='C';
-function renderTeams(){for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamTab);$('tTeams').innerHTML=SERIES[teamTab].map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${n}</span></span><b class="tp">${Math.round(previewPower(n))}</b></button>`).join('');}
+function renderTeamList(){for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamTab);$('tTeams').innerHTML=SERIES[teamTab].map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${n}</span></span><b class="tp">${Math.round(previewPower(n))}</b></button>`).join('');}
 // ---- menu iniziale e partita veloce ----
 const QM={on:false,bak:null,a:null,b:null,s:1};   // s: la squadra che inizia in attacco (0 = tua/blu, 1 = avversaria/rossa)
 const hasCareer=()=>!!(SV&&SV.team);

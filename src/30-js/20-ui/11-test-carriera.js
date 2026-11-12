@@ -28,7 +28,10 @@ function careerSelfTest(seasons,seed){
           while(SQ.length>16){const old=SQ.map((p,i)=>[p,i]).sort((a,b)=>(b[0].age-a[0].age)||(ovrX(a[0])-ovrX(b[0])))[0];if(!sellPlayer(old[1]))break;}
         }
         for(const k of Object.keys(FAC).sort((x,y)=>facCost(x)-facCost(y)))if(SV.cash>facCost(k)+60&&facLv(k)<FAC_MAX){buyFac(k);break;}
-        for(const k of Object.keys(STAFF))if(SV.cash>staffCost(k)+90&&staffLv(k)<STAFF_MAX){buyStaff(k);break;}   // staff e indirizzi personali: si comprano quando c'e' margine
+        for(const k of Object.keys(STAFF)){   // staff: si assume il migliore che ci si puo' permettere nei ruoli vacanti, poi si migliora; indirizzi personali: quando c'e' margine
+          if(staffLv(k)<1||!stPerson(k)){const cs=staffCands(k);let b=-1;for(let i=0;i<cs.length;i++)if(SV.cash>STAFF_HIRE[cs[i].lv]+90)b=i;if(b>=0){staffHire(k,b);break;}}
+          else if(SV.cash>staffCost(k)+90&&buyStaff(k))break;
+        }
         for(const p of SQ)if(!p.spec&&p.age<=26&&SV.cash>specCost(p)+120){setSpec(p,Object.keys(SPECS)[Math.floor(Math.random()*6)]);spec++;break;}
         duoMax=Math.max(duoMax,...Object.values(SV.duo||{}),0);
         if(SV.po&&SV.po.on)poDays++;
@@ -97,6 +100,27 @@ function careerSelfTest(seasons,seed){
     {const c0=SV.cash,n0=Object.keys(SV.ach||{}).length;achCheck();achCheck();const g=achPct(),pg=ACH.map(achState),html=achHTML()+albHTML()+hofHTML()+(SV.hof||[]).slice(0,12).map(hofCard).join('');
      const okA=SV.cash===c0&&Object.keys(SV.ach).length===n0&&g.n===ACH.filter(a=>SV.ach[a[0]]).length&&pg.every(a=>a.pct>=0&&a.pct<=100&&(a.done?a.pct===100:a.pct<100))&&!/undefined|NaN|null/.test(html)&&roman(14)==='XIV'&&roman(1994)==='MCMXCIV';
      rows.push(row('Traguardi, albo d\u2019oro e Hall of Fame: percentuali giuste, premi dati una sola volta, schede complete',okA?`sì (${g.n} traguardi su ${g.tot}, ${(SV.hof||[]).length} nella Hall of Fame)`:'problemi',okA));}
+    {const bs=[];
+     for(const k of Object.keys(STAFF)){const lv=staffLv(k),s=stPerson(k);
+       if(lv<1){if(s)bs.push(k+': persona senza livello');continue;}
+       if(!s){bs.push(k+': livello senza persona');continue;}
+       if(!s.n||!(s.a>=20&&s.a<STAFF_RETIRE)||s.pot<lv||lv>STAFF_MAX||(s.tr&&(!STAFF_TR[s.tr]||STAFF_TR[s.tr].r!==k))||!s.lk||!s.lk.hair)bs.push(k+': dati non validi');}
+     const cs=staffCands('coach'),csOk=cs.length===3&&cs.every(c=>c.lv>=1&&c.lv<=STAFF_MAX&&c.pot>=c.lv&&c.pot<=STAFF_MAX&&c.n&&c.a>=20&&(!c.tr||STAFF_TR[c.tr].r==='coach'));
+     // salvataggio di prima dell'ondata 3 (senza allenatore e senza persone nello staff): careerInit li ricostruisce, sempre uguali, coi livelli gia' pagati
+     let migOk=true;{const lv0=Object.keys(STAFF).map(k=>staffLv(k)).join();SV.coach=undefined;SV.start=undefined;SV.stp=undefined;SV.cand=undefined;SV.candN=undefined;careerInit();const c1=JSON.stringify(SV.coach);SV.coach=undefined;careerInit();   // l'allenatore di default e' sempre lo stesso per la stessa carriera
+       migOk=!!SV.coach&&JSON.stringify(SV.coach)===c1&&SV.start==='cuore'&&Object.keys(STAFF).map(k=>staffLv(k)).join()===lv0&&Object.keys(STAFF).every(k=>staffLv(k)<1?!stPerson(k):(!!stPerson(k)&&stPerson(k).pot>=staffLv(k)&&stPerson(k).a>=34));}
+     // chi se ne va: perde un livello e, se ne resta uno, subentra un assistente; senza livello il posto e' vacante
+     const k0=Object.keys(STAFF).find(k=>staffLv(k)>=1),l0=k0?staffLv(k0):0;let lvOk=true;
+     if(k0){staffLeave(k0);const l1=staffLv(k0);lvOk=l1===l0-1&&(l1>=1?!!stPerson(k0)&&stPerson(k0).pot>=l1:!stPerson(k0));}
+     const hired=Object.keys(STAFF).filter(k=>stPerson(k)).length;
+     rows.push(row('Staff come persone: ruoli e livelli coerenti, candidati validi, chi se ne va viene sostituito, salvataggi vecchi',bs.length||!csOk||!lvOk||!migOk?(bs.slice(0,2).join('; ')||(csOk?'':'candidati non validi')||(lvOk?'salvataggio vecchio non ricostruito bene':'sostituzione non corretta')):`sì (${hired} ruoli su 4 coperti, salvataggi vecchi ricostruiti)`,!bs.length&&csOk&&lvOk&&migOk));}
+    {const bad3=[],c1=coachNorm({n:'  <b>Gi0>  ',s:'De  Santis!!',lk:null}),c2=coachNorm({n:'',s:'',lk:{hair:'#000000',skin:'#f0c9a4',style:2}});
+     if(!SV.coach||!SV.coach.n||!SV.coach.s||!SV.coach.lk||!SV.coach.lk.hair)bad3.push('allenatore mancante');
+     if(!/^[\p{L}' .-]+$/u.test(c1.n+c1.s)||c1.s!=='De Santis')bad3.push('nome non ripulito: '+c1.n+'|'+c1.s);
+     if(!c2.n||!c2.s||c2.lk.style!==2)bad3.push('valori mancanti non sostituiti');
+     if(coachFace(COACH_FACES[5])!==5)bad3.push('volto non riconosciuto');
+     if(!/^<svg/.test(avatar({look:SV.coach.lk,t:0},46))||/NaN|undefined/.test(avatar({look:SV.coach.lk,t:0},46)))bad3.push('ritratto non valido');
+     rows.push(row('Il tuo allenatore: nome e volto sempre validi, nomi ripuliti, ritratto in pixel art',bad3.length?bad3.join('; '):'sì ('+coachName()+')',!bad3.length));}
     rows.push(row('Stagioni giocate fino in fondo',seasonsDone+' su '+seasons,seasonsDone===seasons));
     rows.push(row('Valori sempre validi (statistiche, condizione, rosa, linee, strutture, crediti)',bad.length?bad.slice(0,3).join('; '):'sì',!bad.length));
     rows.push(row('Forza della squadra nelle stagioni',pw.map(v=>v.toFixed(0)).join(' → '),pw.every(v=>v>=35&&v<=97),'tra 35 e 97'));
@@ -118,6 +142,20 @@ function careerSelfTest(seasons,seed){
     rows.push(row('Giocatori che hanno superato il proprio limite (maturità)',String(talentGrow.n|0),(talentGrow.n|0)>=1,'almeno uno in tutto il test'));
     rows.push(row('Giovani promesse ingaggiate nel test',String(signed),true));
     rows.push(row('Indirizzi personali assegnati nel test',String(spec),spec>=1));
+    // partenza da subentrato: una squadra in crisi a una giornata dalla fine; si gioca l'ultima partita e si passa all'estate (cambia la carriera di prova: va per ultimo)
+    {const rb=[];
+     for(const sr of ['A','B','C'])for(let t=0;t<3;t++){
+       const nm=reliefOffer(sr);startCareer(nm,{relief:true,coach:{n:'Prova',s:'Test'}});
+       const names=SV.mem[SV.sr],R=SV.sched.length,rk=ranking(SV.tab,names).indexOf(SV.team)+1,tag=sr+t+' '+nm;
+       if(SV.start!=='sub'||SV.round!==R-1)rb.push(tag+': non a una giornata dalla fine');
+       if(rk<names.length-2)rb.push(tag+': non in crisi ('+rk+'ª)');
+       if(!SV.obj||SV.obj.tgt!==names.length-PROMO)rb.push(tag+': obiettivo');
+       if(Object.values(SV.tab).some(r=>r.w+r.l!==R-1))rb.push(tag+': giornate giocate sbagliate');
+       if(winsTot()!==0)rb.push(tag+': vittorie ereditate contate come tue ('+winsTot()+')');
+       if(!(SV.news[0]&&/ha nominato Prova Test/.test(SV.news[0].txt)))rb.push(tag+': manca la notizia di nomina');
+       if(t===0){simCareerMatch();hide();if(!SV.done)rb.push(tag+': la stagione non si chiude dopo l\u2019ultima partita');else{newSeason();if(SV.season!==2||SV.round!==0)rb.push(tag+': l\u2019estate non parte');}}
+     }
+     rows.push(row('Partenza da subentrato (A, B, C): a una giornata dalla fine, in crisi, vittorie ereditate non contate, poi si gioca e parte l\u2019estate',rb.length?rb.slice(0,3).join('; '):'sì (9 partenze)',!rb.length));}
   }catch(e){err=e&&e.message||String(e);rows.push(row('Errore durante il test',err,false));}
   finally{
     Math.random=R0;QM.on=q0;hide();
