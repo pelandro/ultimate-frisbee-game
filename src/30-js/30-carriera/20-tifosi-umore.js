@@ -7,7 +7,7 @@
 const fansOf=()=>clamp(SV&&SV.fans!==undefined?SV.fans:(SV&&SV.rep)||0,0,100);
 function fansBump(win,extra){
   const st=facLv('stad'),f=fansOf();
-  const d=(win?2.6+0.7*st:Math.min(-0.4,-3.2+0.7*st))+(extra||0)+(50-f)*0.02;   // il piatto della bilancia si sposta piano verso il centro: i tifosi non salgono all'infinito
+  const d=(win?2.6+0.7*st:Math.min(-0.4,-3.2+0.7*st))+(extra||0)+(win&&hasTr('coach','fan')?0.4:0)+(50-f)*0.02;   // il piatto della bilancia si sposta piano verso il centro: i tifosi non salgono all'infinito
   SV.fans=clamp(f+d,0,100);
 }
 function fansSeason(rank,nsr,sr){   // a fine stagione: scudetto, promozione, retrocessione

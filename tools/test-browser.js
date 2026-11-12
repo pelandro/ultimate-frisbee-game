@@ -54,7 +54,28 @@ catch(e){
     if(/Continua/.test(await page.locator('#tCareerS').innerText()))throw new Error('il test della carriera ha lasciato una carriera salvata');
   });
   await step('nuova carriera e cruscotto',async()=>{
-    await page.click('#tCareer');await vis('#team');await page.click('#tSr button[data-k="C"]');await page.click('.tteam >> nth=0');await page.waitForTimeout(300);await vis('#home');
+    await page.click('#tCareer');await vis('#team');await page.click('#tSr button[data-k="C"]');await page.click('.tteam >> nth=0');await vis('#coachsel');
+    // schermata dell'allenatore: personaggio casuale, volto e nomi scelti a mano, anteprima che segue
+    await page.click('#coRnd');if(!(await page.inputValue('#coN'))||!(await page.inputValue('#coS')))throw new Error('«Personaggio casuale» deve riempire nome e cognome');
+    if(await page.locator('#coFaces button').count()!==12)throw new Error('i volti devono essere dodici');
+    await page.click('#coFaces button >> nth=3');await page.fill('#coN','Giulia');await page.fill('#coS','Rossi');
+    if(!/Giulia Rossi/i.test(await page.locator('#coName').innerText()))throw new Error('l\'anteprima non segue il nome');
+    await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
+    if(!(await page.locator('#hCoach svg.av').count()))throw new Error('manca il volto dell\'allenatore nel cruscotto');
+  });
+  await step('allenatore e staff: cambio nome dal cruscotto, candidati, assunzione e rinnovo dell\'elenco',async()=>{
+    await page.click('#hCoach');await vis('#coachsel');await page.fill('#coS','Bianchi');await page.click('#coGo');await vis('#home');
+    if(!/Bianchi/.test(await page.locator('#hCoach').getAttribute('title')))throw new Error('il cambio di nome non arriva al cruscotto');
+    await page.click('#hClub');await vis('#club');
+    if(await page.locator('#clBox .scard.empty').count()!==4)throw new Error('a inizio carriera i quattro ruoli dello staff devono essere vacanti');
+    await page.click('#clBox [data-hire="coach"]');await vis('#hire');
+    if(await page.locator('#hireList .hcn').count()!==3)throw new Error('i candidati devono essere tre');
+    const first=await page.locator('#hireList .hcn .sr').first().innerText();
+    await page.click('#hireRenew');if(await page.locator('#hireList .hcn').count()!==3)throw new Error('dopo il rinnovo i candidati devono essere ancora tre');
+    await page.click('#hireList [data-hirei]:not([disabled]) >> nth=0');
+    if(await page.locator('#hire:not(.hidden)').count())throw new Error('assunto: la finestra deve chiudersi');
+    if(await page.locator('#clBox .scard:not(.empty)').count()!==1)throw new Error('dopo l\'assunzione deve esserci una persona nello staff');
+    await page.click('#clBack');await vis('#home');
   });
   await step('vento: si spegne e si riaccende dalle opzioni, il cruscotto si aggiorna',async()=>{
     const meteo=async()=>/Meteo:/.test(await page.locator('#home').innerText());
@@ -86,7 +107,7 @@ catch(e){
     await page.click('#clTabs button[data-k="hon"]');if(await page.locator('#clBox .trt').count()<7)throw new Error('manca la bacheca dei trofei');
     await page.click('#clTabs button[data-k="rec"]');if(await page.locator('#clBox .hofbox').count()!==1)throw new Error('manca la Hall of Fame');
     await page.click('#clTabs button[data-k="man"]');
-    if(await page.locator('#clBox [data-staff]').count()!==4)throw new Error('le figure dello staff devono essere quattro');
+    if(await page.locator('#clBox .scard').count()!==4||await page.locator('#clBox [data-hire]').count()<4)throw new Error('le figure dello staff devono essere quattro, ciascuna con «Cambia» o «Scegli chi assumere»');
     await page.click('#clTabs [data-k="hon"]');await page.click('#clTabs [data-k="rec"]');await page.click('#clBack');
     await page.click('#hEvent');await vis('#event');await page.click('#evTabs [data-sr="A"]');await page.click('#evTabs [data-sr="B"]');await vis('#eBody table.rt');
     const trs=await page.locator('#eBody table.rt tr').count();if(trs<8)throw new Error('classifica di un\'altra serie troppo corta: '+trs);
@@ -173,7 +194,7 @@ catch(e){
     const team1=(await page.locator('#tCareerS').innerText().catch(()=>''));
     await vis('#home');const name1=await page.locator('#home .dname').first().innerText();
     await page.click('#hOpt');await vis('#opts');if(await page.locator('#opSlots [data-slot]').count()!==3)throw new Error('gli slot devono essere tre');
-    await page.click('#opSlots [data-slot="2"]');await vis('#team');await page.click('#tSr button[data-k="B"]');await page.click('.tteam >> nth=3');await page.waitForTimeout(300);await vis('#home');
+    await page.click('#opSlots [data-slot="2"]');await vis('#team');await page.click('#tSr button[data-k="B"]');await page.click('.tteam >> nth=3');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     const name2=await page.locator('#home .dname').first().innerText();if(name2===name1)throw new Error('lo slot 2 ha la stessa squadra dello slot 1');
     await page.click('#hOpt');await page.click('#opSlots [data-slot="1"]');await page.waitForTimeout(300);await vis('#home');
     const back=await page.locator('#home .dname').first().innerText();if(back!==name1)throw new Error('tornando allo slot 1 la carriera non e\' quella di prima: '+back);
@@ -252,7 +273,11 @@ catch(e){
     const k=+(await empty.getAttribute('data-cnew'));await empty.click();await vis('#team');
     await page.click('#teamBack');await vis('#slots');   // ripensamento: la carriera di prima resta
     if(await page.locator('#csBox [data-cgo]').count()!==full)throw new Error('tornando indietro la carriera di prima e\' sparita');
-    await page.click('#csBox [data-cnew="'+k+'"]');await vis('#team');await page.click('#tSr button[data-k="B"]');await page.click('.tteam >> nth=2');await page.waitForTimeout(300);await vis('#home');
+    await page.click('#csBox [data-cnew="'+k+'"]');await vis('#team');
+    // seconda carriera: partenza da subentrato (squadra in crisi a una giornata dalla fine), con «Un'altra squadra»
+    await page.click('#tMode button[data-k="sub"]');await page.click('#tSr button[data-k="B"]');await vis('#tReAcc');await page.click('#tReAlt');await vis('#tReAcc');
+    await page.click('#tReAcc');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
+    if(!/posto/.test(await page.locator('#hInfo').innerText()))throw new Error('il subentro deve mostrare la posizione in classifica');
     await page.click('#hBack');await vis('#title');await page.click('#tSlots');
     if(await page.locator('#csBox [data-cgo]').count()!==full+1)throw new Error('la nuova carriera non e\' nello slot '+k);
     const other=await page.locator('#csBox [data-cgo]:not([data-cgo="'+k+'"])').first();await other.click();await vis('#home');

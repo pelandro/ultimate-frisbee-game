@@ -25,7 +25,12 @@ function hofCard(x){
     <span class="hcs"><span>Mete<i>${x.g}</i></span><span>Assist<i>${x.a}</i></span><span>Difese<i>${x.b}</i></span></span>
     ${md?`<span class="medals">${md}</span>`:''}</div>`;
 }
+// la carta dell'allenatore, prima dei ritirati: stagioni in panchina, vittorie, titoli, promozioni
+function coachCard(){
+  if(!SV.coach)return '';
+  return `<div class="hcard"><span class="hch"><b>IN PANCHINA</b><b>COACH</b></span><span class="pca">${avatar({look:SV.coach.lk,t:0},46)}</span><span class="pcn">${esc(coachName())}</span><span class="hcy">${SV.season} ${SV.season>1?'stagioni':'stagione'} con ${esc(SV.team)}</span><span class="hcs"><span>Vittorie<i>${winsTot()}</i></span><span>Titoli<i>${trTot()}</i></span><span>Promoz.<i>${(SV.troph&&SV.troph.promo)|0}</i></span></span></div>`;
+}
 function hofHTML(){
-  if(!SV.hof||!SV.hof.length)return '<p class="note">I grandi giocatori che si ritirano dopo una carriera speciale (molte partite e mete, due premi o tre titoli) entrano qui, con una carta dorata.</p>';
-  return `<div class="hofg">${SV.hof.slice(0,12).map(hofCard).join('')}</div>`;
+  const none=!SV.hof||!SV.hof.length;
+  return `<div class="hofg">${coachCard()}${none?'':SV.hof.slice(0,12).map(hofCard).join('')}</div>${none?'<p class="note">I grandi giocatori che si ritirano dopo una carriera speciale (molte partite e mete, due premi o tre titoli) entrano qui, con una carta dorata.</p>':''}`;
 }

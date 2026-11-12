@@ -2,6 +2,7 @@ function renderHome(){
   if(SV.prog&&SV.prog.on&&autoTrain())persist();   // programma di allenamento automatico: parte da solo quando c'e' una sessione disponibile
   const m=nextMatch(),names=SV.mem[SV.sr];
   $('hCrest').innerHTML=crest(SV.team,38);$('hEvt').textContent=SV.team;
+  if(SV.coach){$('hCoach').innerHTML=avatar({look:SV.coach.lk,t:0},34);$('hCoach').title=`${coachTitle()}: tocca per cambiare nome o volto`;$('hCoach').setAttribute('aria-label',`Il tuo allenatore, ${coachName()}: cambia nome o volto`);}
   $('hInfo').textContent=`${SERIES_NAME[SV.sr]} · Stagione ${SV.season}`+(SV.event==='camp'?(SV.done?' · conclusa':(SV.round>0?` · ${myRank()}° posto`:'')):' · Campionato europeo');
   let nx;
   if(m){

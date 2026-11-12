@@ -121,9 +121,9 @@ const EVT={
     o:a=>[['Premio di '+a.c+' crediti: +4 morale',()=>{SV.cash-=a.c;SV.mor=clamp(SV.mor+4,0,100);return 'Premio pagato: l’ambiente apprezza.';},()=>SV.cash>=a.c],['Non ora: −5 morale',()=>{SV.mor=clamp(SV.mor-5,0,100);return 'Richiesta respinta: qualche muso lungo.';}]]},
   maltempo:{w:2,ok:()=>!SV.tTeam&&trainOpen(),mk:()=>({}),t:a=>['Campo allagato','Ha piovuto tutta la settimana: l’allenamento di squadra di questa giornata salta. Restano i lavori individuali.'],
     o:a=>[['Pazienza',()=>{SV.tTeam=true;return 'Niente seduta di squadra fino alla prossima partita.';}]]},
-  staff:{w:2,ok:()=>Object.keys(STAFF).some(k=>staffLv(k)>=1),mk:()=>{const ks=Object.keys(STAFF).filter(k=>staffLv(k)>=1),k=ks[Math.floor(Math.random()*ks.length)];return {k,c:Math.round(20*evK()+STAFF_WAGE[staffLv(k)]*5)};},
-    t:a=>['Offerta per il tuo staff','Un altro club vuole portare via '+STAFF[a.k].n.toLowerCase()+' (livello '+staffLv(a.k)+').'],
-    o:a=>[['Trattieni con un premio di '+a.c+' crediti',()=>{SV.cash-=a.c;return 'Resta con voi.';},()=>SV.cash>=a.c],['Lascialo andare: perde un livello',()=>{SV.staff[a.k]=Math.max(0,staffLv(a.k)-1);return STAFF[a.k].n+' lascia il club: livello '+staffLv(a.k)+'.';}]]},
+  staff:{w:2,ok:()=>Object.keys(STAFF).some(k=>staffLv(k)>=1&&stPerson(k)),mk:()=>{const ks=Object.keys(STAFF).filter(k=>staffLv(k)>=1&&stPerson(k)),k=ks[Math.floor(Math.random()*ks.length)];return {k,c:Math.round((20*evK()+STAFF_WAGE[staffLv(k)]*5)*(staffMoodKey()==='s'?1.5:1))};},
+    t:a=>{const s=stPerson(a.k);return ['Offerta per il tuo staff',(s?s.n:'Un membro dello staff')+' ('+STAFF[a.k].n.toLowerCase()+', livello '+staffLv(a.k)+') è stato contattato da un altro club.'+(staffMoodKey()==='s'?' L’ambiente è teso e vuole di più per restare.':'')];},
+    o:a=>[['Trattieni con un premio di '+a.c+' crediti',()=>{SV.cash-=a.c;const s=stPerson(a.k);return (s?s.n:'Resta')+' resta con voi.';},()=>SV.cash>=a.c],['Lascialo andare: perdi un livello',()=>staffLeave(a.k)]]},
   spirito:{w:2,mk:()=>({}),t:a=>['Premio Spirit of the Game','Le avversarie vi hanno votato come la squadra più corretta dell’ultimo turno.'],
     o:a=>[['Grazie!',()=>{SV.rep=clamp(SV.rep+3,0,100);return '+3 reputazione.';}]]}
 };

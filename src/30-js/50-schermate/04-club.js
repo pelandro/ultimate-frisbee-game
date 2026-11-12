@@ -14,7 +14,7 @@ function renderClub(){
     h+=`<div class="ccard"><h3>Obiettivo</h3>${SV.obj?`<p><b>${SV.obj.txt}</b></p><p class="sub">Premio ${SV.obj.reward} crediti${SV.event==='camp'&&SV.round>0?` · ora ${myRank()}ª`:''}</p>`:'<p>Nessun obiettivo.</p>'}${SV.chal?`<h3 style="margin-top:8px">Sfida della dirigenza</h3><p><b>${esc(chalTxt())}</b></p><p class="sub">${SV.chal.done?(SV.chal.won?'Riuscita: premio incassato.':'Non riuscita in questa stagione.'):'Facoltativa: '+SV.chal.reward+' crediti e reputazione se riesce, niente se non riesce.'}</p>`:''}</div>`;
     h+=budgetHTML();
     h+=`<div class="ccard"><h3>Strutture</h3>${Object.keys(FAC).map(k=>{const lv=facLv(k),c=facCost(k),dd=(SV.facDays&&SV.facDays[k])|0,rn=SV.facRnd|0,pb=budgetPayback(k);return `<div class="fbar"><span class="fn">${FAC[k][0]}${inf('f'+k,`${FAC[k][1]}.${pb?(pb.n?` Il prossimo livello rende circa ${pb.gain.toFixed(1).replace('.',',')} crediti a partita: si ripaga in ${pb.n} partite.`:' Al prossimo livello la manutenzione in più supera l’incasso in più.'):''} Premio estivo (livello ${KEEP_LV}+ per almeno metà stagione): ${FAC_KEEP[k]}.${rn?` Finora ${dd} giornate su ${rn}.`:''}`)}</span>${tick(lv,FAC_MAX)}<button type="button" class="sec" data-fac="${k}"${lv>=FAC_MAX||SV.cash<c?' disabled':''}>${lv>=FAC_MAX?'Massimo':c}</button></div>`;}).join('')}<p class="sub">Manutenzione ${facUpkeep()} a partita. D’estate una struttura avanzata può perdere un livello.</p></div>`;
-    h+=`<div class="ccard"><h3>Staff ${inf('stf','Gli effetti sugli allenamenti non si sommano oltre +50% in totale (con il campo di allenamento).')}</h3><div class="staffg">${Object.keys(STAFF).map(k=>{const lv=staffLv(k),c=staffCost(k);return `<div class="scard"><b class="sr">${STAFF[k].n}</b>${starsHTML(lv/STAFF_MAX*5)}<small>${STAFF[k].d}</small><small class="sw">stipendio ${STAFF_WAGE[lv]} a partita</small><button type="button" class="sec" data-staff="${k}"${lv>=STAFF_MAX||SV.cash<c?' disabled':''}>${lv>=STAFF_MAX?'Massimo':(lv?'Migliora · ':'Ingaggia · ')+c}</button></div>`;}).join('')}</div><p class="sub">Stipendi dello staff: ${staffWage()} a partita.</p></div>`;
+    h+=staffHTML(inf);
     h+=`<div class="ccard">${goalsHTML()}</div>`;
     h+=`<div class="ccard" style="grid-column:1/-1"><h3>Notizie</h3>${SV.news.length?`<ul class="nlist">${SV.news.slice(0,8).map(n=>`<li><i>S${n.s}·G${n.r}</i>${esc(n.txt)}</li>`).join('')}</ul>`:'<p>Nessuna notizia.</p>'}</div></div>`;
   }else if(clTab==='hon'){
@@ -73,6 +73,7 @@ $('clBox').addEventListener('click',e=>{
   if(f){if(buyFac(f.dataset.fac)){clMsg='';persist();}renderClub();return;}
   const sf=e.target.closest('[data-staff]');
   if(sf){if(buyStaff(sf.dataset.staff)){clMsg='';persist();}renderClub();return;}
+  const hb=e.target.closest('[data-hire]');if(hb){openHire(hb.dataset.hire);return;}
 });
 $('clExp').addEventListener('click',()=>{$('opMsg').textContent=exportSave();});
 $('clImp').addEventListener('click',()=>{$('clFile').value='';$('clFile').click();});

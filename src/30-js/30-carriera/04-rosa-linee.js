@@ -66,6 +66,7 @@ function careerInit(){   // campi nuovi della carriera (anche per i salvataggi p
   if(!SV.market||SV.mkStars!==2){buildMarket();SV.mkStars=2;}
   leagueAnchors();
   for(const p of SQ)retAnchor(p);
+  coachInit();staffInit();
   if(!SV.ach){SV.ach={};if(SV.sched&&SV.mem)achCheck(true);}   // traguardi: quelli gia' raggiunti da una carriera vecchia si segnano senza premio
   if(!SV.alb)SV.alb=[];
   if(!SV.lifeV){SV.lifeV=1;if(SV.sched)retireCheck('start');}   // anche le carriere gia' avviate ricevono subito i primi avvisi
