@@ -208,7 +208,7 @@ document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('but
 window.addEventListener('keydown',()=>AUD.init(),{capture:true});
 for(const id of ['tSnd','sSnd','opSnd','paSnd'])$(id).addEventListener('click',()=>AUD.setOn(!AUD.isOn()));
 $('sRot').addEventListener('click',()=>{setRotPref(!rotPref);syncToggles();});
-$('opTips').addEventListener('click',()=>{const on=!tipsOn();try{localStorage.setItem('ultimate-suggerimenti',on?'1':'0');}catch(e){}if(on&&SV&&SV.tips)SV.tips={};syncToggles();});   // riaccesi, i fumetti si rivedono tutti
+$('opTips').addEventListener('click',()=>{const on=!tipsOn();try{localStorage.setItem('ultimate-suggerimenti',on?'1':'0');}catch(e){}if(on&&SV&&SV.tips)SV.tips={};if(on)ppReset();syncToggles();});   // riaccesi, i fumetti si rivedono tutti
 for(const id of ['sWind','opWind'])$(id).addEventListener('click',()=>{setWindOn(G.opt.wind===false);syncToggles();if(!$('home').classList.contains('hidden'))renderHome();});
 for(const id of ['sDef','opDef','paDef'])$(id).addEventListener('click',()=>{setDefMode((G.opt.def+1)%3);syncToggles();});
 for(const id of ['sCine','opCine','paCine'])$(id).addEventListener('click',()=>{G.opt.cine=!G.opt.cine;try{localStorage.setItem('ultimate-stacchi',G.opt.cine?'1':'0');}catch(e){}syncToggles();});
@@ -243,7 +243,7 @@ function frame(now){
   if(!portrait()||rotOn){   // in verticale il gioco si ferma, tranne quando si disegna ruotato da solo
     G.tick+=dt;
     padPoll();vinPushDir();
-    pullTick();defTick();momentTick();
+    pullTick();defTick();momentTick();ppTick();
     if(inDefense()&&!ddrag&&defMan())G.cdir=VIN.ang!==null?{x:Math.cos(VIN.ang),y:Math.sin(VIN.ang)}:null;   // tastiera o stick: guida il difensore cerchiato
     if(drag&&drag.sl&&!drag.was&&!drag.iso&&G.tick-drag.s>0.5){drag.iso=true;quickCall(drag.tw,true);}   // pressione lunga su un compagno: isolamento
     syncCall();

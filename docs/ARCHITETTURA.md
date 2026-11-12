@@ -47,6 +47,7 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `30-carriera/20-tifosi-umore.js` | Tifosi (`SV.fans`, `fansBump`), faccine (`moodKey`, `moodFace`) e stelle (`starsOf`, `starsHTML`) |
 | `30-carriera/21-azioni-giocatore.js` | Riposo, Colloquio, Soprannome (`p.nick`), ultima partita (`p.lm`), titoli (`p.ti`), medaglie |
 | `50-schermate/09-consigli-fumetti.js` | Linea delle giornate (con i nodi dei playoff), barra «Consiglio» e fumetti di primo accesso (`SV.tips`) |
+| `50-schermate/14-primi-passi.js` | Tutorial «Primi passi» nelle prime partite: `PP_STEPS` (schede con il momento in cui compaiono), `ppTick` (chiamato dal ciclo principale), `PP` salvato in `ultimate-primi`; ferma il gioco con `G.paused` |
 | `50-schermate/10-conferenza-stampa.js` | Conferenza stampa: `pressCtxOf` (la partita «ha storia»?), `pressFor` (tre risposte: squadra, tifosi, giocatore), `pressApply`, `openPress` |
 | `30-carriera/22-playoff.js` | Playoff: `SV.po` (tabellone in corso), `SV.poRes` (esito per `endSeason`), `poBegin`, `poPlay`, `poResolve`, `poBracketHTML`; titolo di Serie A e seconda promozione di B e C |
 | `30-carriera/24-allenatore.js`, `50-schermate/12-allenatore-scelta.js` | Il tuo allenatore (`SV.coach`, `COACH_FACES`, `coachNorm`, `coachRandom`), partenza da subentrato (`reliefOffer`, `reliefStart`, `SV.start`, `SV.w0`) e schermate «Scegli la tua squadra» (due modalità) e «Il tuo allenatore» |

@@ -70,7 +70,7 @@ const TIPS={
 const tipsOn=()=>{try{return localStorage.getItem('ultimate-suggerimenti')!=='0';}catch(e){return true;}};
 let tipAfter=null;
 // un fumetto non copre mai un altro riquadro (avvisi, imprevisti, risultati, pausa): se ce n'e' uno aperto aspetta la prossima volta
-const overlayBusy=()=>['alerts','evt','simres','over','pause','opts','guide','intro','press','hire'].some(id=>{const e=$(id);return e&&!e.classList.contains('hidden');});
+const overlayBusy=()=>['alerts','evt','simres','over','pause','opts','guide','intro','press','hire','pp'].some(id=>{const e=$(id);return e&&!e.classList.contains('hidden');});
 function tipOnce(key,after){
   if(!tipsOn()||!SV||!SV.team||QM.on||!TIPS[key]||(SV.tips&&SV.tips[key])||overlayBusy())return false;
   if(!SV.tips)SV.tips={};SV.tips[key]=1;persist();

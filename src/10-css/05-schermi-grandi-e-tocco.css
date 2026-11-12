@@ -2,7 +2,7 @@
    Il gioco e' disegnato per un telefono in orizzontale. Su PC, iPad Pro e schermi larghi menu, pannelli e pulsanti del campo restavano
    piccoli in un angolo: ora si ingrandiscono in blocco di un fattore --ui (1 su telefono e iPad, fino a 2,25 sui monitor grandi),
    calcolato in resize() a passi di un quarto per tenere nitidi i caratteri a pixel. Il campo si ingrandisce gia' da solo. */
-.screen,.overlay,#ctrl,#hint,#coach,#skip,#score,#stall,#bExit{zoom:var(--ui,1)}   /* la barra nera in alto cresce insieme (BAR in resize()) */
+.screen,.overlay,#ctrl,#hint,#coach,#skip,#score,#stall,#bExit,#pp{zoom:var(--ui,1)}   /* la barra nera in alto cresce insieme (BAR in resize()) */
 #hud::before{height:calc(28px*var(--ui,1))}
 #posedit{zoom:1}   /* l'editor della posizione dei pulsanti lavora in pixel dello schermo */
 /* versione del gioco sotto il titolo: serve a capire se si sta giocando l'ultima */
@@ -208,6 +208,15 @@ html.rotp #rot{display:none!important}
 .hcn .sr{font-weight:400;font-size:17px;color:#fff;line-height:1.1}.hcn small{font-size:13px;color:#9fb0de;line-height:1.2}.hcn .trd{color:#c2cbe6}
 .hcn .go{margin-top:auto;align-self:stretch}
 @media (max-width:560px){.hirelist{grid-template-columns:1fr}}
+/* primi passi: scheda del tutorial in partita, in alto sotto la barra, sopra al campo che resta visibile */
+#pp{position:absolute;left:0;right:0;top:34px;display:flex;justify-content:center;pointer-events:none;z-index:40}
+#pp.hidden{display:none}
+.ppc{pointer-events:auto;box-sizing:border-box;width:min(540px,94%);background:#0c1330;border:3px solid var(--gold);box-shadow:0 4px 0 #000;padding:9px 14px 10px;color:#fff}
+.ppc small{display:block;font-family:var(--pfont);font-size:8px;color:#7f8db8;text-transform:uppercase;line-height:1.5}
+.ppc h3{margin:2px 0 4px;font-family:var(--pfont);font-size:11px;font-weight:400;color:var(--gold);text-transform:uppercase;letter-spacing:0;line-height:1.4}
+.ppc p{margin:0 0 8px;font-size:17px;line-height:1.22;color:#e8ecf8}
+.ppc .schrow{margin:0;justify-content:flex-start}
+@media (max-height:420px){.ppc{width:min(500px,92%);padding:6px 12px 8px}.ppc p{font-size:15px;margin-bottom:6px}.ppc .go,.ppc .sec{min-height:34px;padding:4px 14px;font-size:15px}}
 .nkrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.nkrow input{font:inherit;font-size:16px;width:130px;padding:4px 6px;background:#0c1330;color:#fff;border:3px solid #000}
 @media (max-height:480px){.pcph{padding:5px 8px;gap:8px}.pcav svg{width:42px;height:42px}.pcti p{margin:1px 0;font-size:14px}.pcbd{padding:6px 8px 8px}.pgrid{grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}.pcard .pca svg{width:38px;height:38px}.pcn{font-size:15px}.pcti h3{font-size:19px}.pcpanel{border-width:3px}}
 @media (max-width:560px){.dp3{grid-template-columns:1fr}}
