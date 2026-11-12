@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Menu iniziale: sotto la versione compare «Il gioco è nato da un’idea di Turci e Spirit»
 - Primi passi: nelle prime tre partite compaiono schede di tutorial che spiegano come si gioca (obiettivo, pull, ricezione, lancio, chiamate, stall, lancio alto, difesa, dopo la meta), una alla volta e al momento giusto; fermano il gioco finché premi «Capito» e si possono saltare. Si rivedono spegnendo e riaccendendo «Suggerimenti» nelle Opzioni
 - Schermi: menu, pannelli e pulsanti di gioco si adattano alla dimensione dello schermo. Telefono invariato; su iPad (da 1,5 a 1,75 volte) e computer (fino a 2,5) tutto cresce e il pulsante di gioco arriva a 1,75 volte; sugli schermi grandi il cruscotto riempie l'altezza con pulsanti più alti. In Impostazioni › Dimensioni si può scegliere «Più piccola», «Automatica», «Più grande» o «Molto più grande» (nuova voce di impostazione `uz`). I messaggi lunghi sul campo non coprono più le etichette di vento e meteo
 - Lanci: tolto il blade (era una variante dell'alto più veloce ma molto più imprecisa e difficile da prendere, che quasi nessuno usava, anche l'IA). Restano due lanci: una dita piatto (rovescio, dritto, huck), due dita alto (scoober, hammer, il rovesciato). Tolto anche il tasto L della tastiera e il tasto Y del controller come lancio (Y resta «salta la difesa»)
