@@ -80,7 +80,7 @@ function seasonEndDyn(rank){
     else news('Sfida della dirigenza non riuscita: nessuna penalità.');
   }
   const d0=SV.dom|0;
-  if(SV.sr==='A'&&rank===1)SV.dom=Math.min(6,d0+1);else if(SV.sr!=='A'||rank>3)SV.dom=Math.max(0,d0-1);
+  if(SV.sr==='A'&&SV.next&&SV.next.tit)SV.dom=Math.min(6,d0+1);else if(SV.sr!=='A'||rank>3)SV.dom=Math.max(0,d0-1);
   if((SV.dom|0)>d0)news('Dopo il vostro scudetto le rivali di Serie A investono per fermarvi: la prossima stagione sarà più dura.');
 }
 // quanto si alza il livello a cui tendono le squadre di Serie A quando domini

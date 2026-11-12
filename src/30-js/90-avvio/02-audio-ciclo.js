@@ -228,7 +228,7 @@ function syncToggles(){   // audio e stacchi laterali si cambiano da piu' punti 
   $('sDefS').textContent=DEF_LBL[G.opt.def]+': '+DEF_TXT[G.opt.def];
   $('sRotS').textContent=rotPref?'Accesa: in verticale il gioco si gira da solo':'Spenta: in verticale compare «Gira lo schermo»';
   $('opTips').textContent='Suggerimenti: '+(tipsOn()?'sì':'no');
-  const wOn=G.opt.wind!==false;$('opWind').textContent='Vento: '+(wOn?'sì':'no');$('sWindS').textContent=wOn?'Acceso: ogni partita ha il suo meteo':'Spento: sempre calma';
+  const wOn=G.opt.wind!==false;$('opWind').textContent='Meteo: '+(wOn?'sì':'no');$('sWindS').textContent=wOn?'Acceso: vento, pioggia e neve a ogni partita':'Spento: sempre sereno e calmo';
 }
 syncToggles();
 HOOKS.sfx=(k,a,b)=>AUD.sfx(k,a,b);

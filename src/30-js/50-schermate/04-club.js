@@ -21,19 +21,22 @@ function renderClub(){
     // bacheca: i trofei si accendono quando li vinci
     const t=SV.troph,tile=(v,l)=>`<div class="trt${v?' on':''}"><b>${v|0}</b><span>${l}</span></div>`;
     h=`<div class="trgrid">${tile(t.A,'Scudetti<br>Serie A')}${tile(t.B,'Titoli<br>Serie B')}${tile(t.C,'Titoli<br>Serie C')}${tile(t.promo,'Promozioni')}${tile(t.eu,'Titoli<br>europei')}${tile(t.aw,'Premi<br>individuali')}${tile(t.b7,'Presenze in<br>squadra ideale')}</div>`;
+    h+=`<div class="ccard"><h3>Albo d’oro · Serie A</h3>${albHTML()}</div>`;
     h+=SV.hist.length?SV.hist.map(x=>{
       const aw=(x.aw||[]).map(awRow).join(''),b7=(x.best7||[]).map(q=>`${q.mine?'<b style="color:var(--gold)">':'<b>'}${esc(q.name)}</b> (${q.pos}, ${esc(q.team)})`).join(', ');
       const ch=x.champs?['A','B','C'].filter(k=>x.champs[k]).map(k=>`Serie ${k}: <b${x.champs[k]===SV.team?' style="color:var(--gold)"':''}>${esc(x.champs[k])}</b>`).join(' · '):'';
       return `<div class="seas"><h3>Stagione ${x.season} · Serie ${x.sr} · ${x.rank}° posto${x.n?' su '+x.n:''}</h3><p>${x.w} vinte, ${x.l} perse${x.obj?' · obiettivo raggiunto':''}${x.short?' · '+esc(x.short):''}</p>${ch?`<p>Campioni: ${ch}</p>`:''}${aw?`<ul class="awl">${aw}</ul>`:''}${b7?`<p>Squadra ideale: ${b7}</p>`:''}${x.mvp?`<p>MVP della tua squadra: <b>${esc(x.mvp)}</b>${x.mvpS?' ('+x.mvpS+')':''}</p>`:''}</div>`;
     }).join(''):'<p class="note">Qui compariranno, stagione per stagione, la tua posizione, i campioni delle tre serie, i premi del campionato (MVP, attaccante, difensore, capocannoniere, re degli assist, rivelazione, allenatore dell’anno) e la squadra ideale.</p>';
+  }else if(clTab==='ach'){
+    h=achHTML();
   }else{
     // classifiche di sempre del club: giocatori in rosa piu' chi e' stato ceduto o si e' ritirato
     const all=SQ.filter(p=>p.car&&p.car.mp>0).map(p=>({name:p.label||p.name,mp:p.car.mp,g:p.car.g,a:p.car.a,b:p.car.b,aw:(p.aw||[]).length,cur:true})).concat(SV.former||[]);
     const lb=(k,l)=>{const r=all.filter(q=>q[k]>0).sort((a,b)=>b[k]-a[k]).slice(0,6);return `<div class="ccard"><h3>${l}</h3>${r.length?`<ol>${r.map(q=>`<li><div class="lbr"><span${q.cur?'':' style="color:#7f8db8"'}>${esc(q.name)}</span><b>${q[k]}</b></div></li>`).join('')}</ol>`:'<p>Ancora nessun dato.</p>'}</div>`;};
     h=`<div class="lbg">${lb('g','Mete di sempre')}${lb('a','Assist di sempre')}${lb('b','Difese di sempre')}${lb('mp','Presenze')}${lb('aw','Premi vinti')}</div>`;
     const rec=['g','a','b'].filter(k=>SV.rec[k]).map(k=>`<li><i>Record di ${SV.rec[k].lab} in una stagione</i>${SV.rec[k].v} · ${esc(SV.rec[k].name)} (stagione ${SV.rec[k].season})</li>`).join('');
-    const hof=SV.hof.slice(0,12).map(x=>`<li><i>Hall of Fame</i>${esc(x.name)}: ${x.yrs} stagioni, ${x.mp} partite, ${x.g} mete, ${x.a} assist, ${x.b} difese${x.aw?', '+x.aw+(x.aw>1?' premi':' premio'):''}</li>`).join('');
-    h+=`<div class="ccard" style="margin-top:10px"><h3>Record e Hall of Fame</h3>${rec||hof?`<ul class="nlist">${rec}${hof}</ul>`:'<p>I record di una stagione e i grandi ritirati della squadra compariranno qui. In grigio, nelle classifiche, chi non è più in rosa.</p>'}</div>`;
+    h+=`<div class="ccard" style="margin-top:10px"><h3>Record di una stagione</h3>${rec?`<ul class="nlist">${rec}</ul>`:'<p>I record di una stagione compariranno qui. In grigio, nelle classifiche, chi non è più in rosa.</p>'}</div>`;
+    h+=`<div class="ccard hofbox" style="margin-top:10px"><h3>Hall of Fame</h3>${hofHTML()}</div>`;
   }
   $('clBox').innerHTML=h;
 }

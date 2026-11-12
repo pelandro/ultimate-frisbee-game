@@ -81,6 +81,7 @@ const ranking=(tab,names)=>names.slice().sort((a,b)=>tab[b].pts-tab[a].pts||(tab
 const myRank=()=>ranking(SV.tab,SV.mem[SV.sr]).indexOf(SV.team)+1;
 const totalRounds=()=>SV.sched.length;
 function nextMatch(){
+  if(SV.event==='camp'&&SV.po&&SV.po.on)return {name:SV.po.opp,roster:SV.rost[SV.po.opp],label:poLabel()};   // playoff: l'avversaria del turno
   if(SV.event==='camp'){
     if(SV.done)return null;
     const names=SV.mem[SV.sr],ui=names.indexOf(SV.team),pr=SV.sched[SV.round].find(m=>m[0]===ui||m[1]===ui),on=names[pr[0]===ui?pr[1]:pr[0]];
@@ -107,31 +108,38 @@ function endSeason(){
   const order={};
   leagueAdvance();   // le altre serie finiscono le giornate che mancano
   for(const sr of ['A','B','C'])order[sr]=sr===SV.sr?ranking(SV.tab,SV.mem[sr]):(SV.lg&&SV.lg[sr]&&SV.lg[sr].round>=SV.lg[sr].sched.length?ranking(SV.lg[sr].tab,SV.mem[sr]):simSeasonOrder(SV.mem[sr]));
-  leagueEndStories(order);
+  const res={};for(const sr of ['A','B','C'])res[sr]=poResolve(sr,order);   // tabelloni playoff: il tuo e' gia' stato giocato, gli altri si simulano adesso
+  leagueEndStories(order,res);
   const rank=order[SV.sr].indexOf(SV.team)+1,P=PROMO,nm={};
-  nm.A=order.A.slice(0,order.A.length-P).concat(order.B.slice(0,P));
-  nm.B=order.B.slice(P,order.B.length-P).concat(order.A.slice(order.A.length-P),order.C.slice(0,P));
-  nm.C=order.C.slice(P).concat(order.B.slice(order.B.length-P));
+  // promossi: il primo sale sempre; la seconda promozione la decide lo spareggio (dal 2° al 5° posto). Retrocesse: sempre le ultime due
+  const upB=[order.B[0],res.B?res.B.win:order.B[1]],upC=[order.C[0],res.C?res.C.win:order.C[1]],dnA=order.A.slice(-P),dnB=order.B.slice(-P);
+  nm.A=order.A.filter(t=>!dnA.includes(t)).concat(upB);
+  nm.B=order.B.filter(t=>!upB.includes(t)&&!dnB.includes(t)).concat(dnA,upC);
+  nm.C=order.C.filter(t=>!upC.includes(t)).concat(dnB);
+  const champA=res.A?res.A.win:order.A[0],tit=SV.sr==='A'?champA===SV.team:rank===1;   // titolo: in Serie A lo vince chi vince i playoff
+  if(res.A)SV.alb=[{s:SV.season,champ:res.A.win,run:res.A.runner,sc:[res.A.fin[2],res.A.fin[3]],ft:res.A.fin[4]===res.A.fin[0]?[res.A.fin[2],res.A.fin[3]]:[res.A.fin[3],res.A.fin[2]]}].concat(SV.alb||[]).slice(0,60);
   let nsr=SV.sr;for(const sr of ['A','B','C'])if(nm[sr].includes(SV.team))nsr=sr;
   let short;
-  if(SV.sr==='A'&&rank===1)short='Siete campioni d’Italia!';
+  if(tit&&SV.sr==='A')short='Siete campioni d’Italia!';
   else if(nsr<SV.sr)short=`Promossi in ${SERIES_NAME[nsr]}!`;
   else if(nsr>SV.sr)short=`Retrocessi in ${SERIES_NAME[nsr]}.`;
   else short=`Restate in ${SERIES_NAME[nsr]}.`;
   const qual=SV.sr==='A'&&rank<=3;
   if(qual)short+=' Per la prossima stagione si sblocca il Campionato europeo.';
   chalEval();   // la sfida della dirigenza si giudica adesso, PRIMA dei premi: «Conti in ordine» guarda il saldo con cui arrivi in fondo, non quello gonfiato dai premi
-  SV.done=true;SV.next={mem:nm,sr:nsr,rank,short,qual};
+  SV.done=true;SV.next={mem:nm,sr:nsr,rank,short,qual,tit,champs:{A:champA,B:order.B[0],C:order.C[0]},po:res[SV.sr]||null};
+  SV.po=null;SV.poRes=null;
   // premi di fine stagione: classifica, obiettivo, reputazione, premi individuali
   const n=SV.mem[SV.sr].length,prize=Math.round((n-rank+1)*3*SR_K[SV.sr]);SV.cash+=prize;
   const ok=SV.obj&&rank<=SV.obj.tgt;
   if(SV.obj){if(ok){SV.cash+=SV.obj.reward;SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}
   if(nsr<SV.sr)SV.rep=clamp(SV.rep+6,0,100);else if(nsr>SV.sr)SV.rep=clamp(SV.rep-8,0,100);
-  if(SV.sr==='A'&&rank===1)SV.rep=clamp(SV.rep+6,0,100);
-  fansSeason(rank,nsr,SV.sr);
+  if(tit&&SV.sr==='A')SV.rep=clamp(SV.rep+6,0,100);
+  fansSeason(tit&&SV.sr==='A'?1:rank,nsr,SV.sr);
   SV.next.prize=prize;SV.next.objOk=!!ok;
   seasonEndDyn(rank);   // sfida della dirigenza, reazione delle rivali
   seasonAwards(rank,order);
+  achCheck();
   news('Stagione '+SV.season+' conclusa al '+rank+'° posto: premio di '+prize+' crediti'+(SV.obj?(ok?', obiettivo raggiunto (+'+SV.obj.reward+')':', obiettivo mancato'):'')+'.');
 }
 // nuova stagione: tutti i giocatori (anche i tuoi) invecchiano di un anno e le statistiche cambiano di conseguenza
@@ -143,6 +151,7 @@ function newSeason(){
   SV.mem=SV.next.mem;SV.sr=SV.next.sr;SV.season++;
   SV.euUnlocked=!!SV.next.qual;if(SV.euUnlocked)SV.eu=newEu(SV.season);SV.event='camp';   // la stagione nuova riparte sempre dal campionato
   retireOwn();   // chi aveva annunciato l'addio lascia adesso
+  achCheck();    // (Hall of Fame)
   for(const p of SQ){p.hist=p.hist||[];p.hist.push([SV.season-1,ovr(p)]);if(p.hist.length>14)p.hist.shift();}   // storico dei progressi: l'Overall con cui ha chiuso la stagione
   const was=new Map(SQ.map(p=>[p.full,ovr(p)]));
   agePlayers();
@@ -158,7 +167,9 @@ function recordResult(win,su,so){
   SV.susp=null;   // la partita e' finita: niente piu' da riprendere
   let msg='';SV.played=(SV.played||0)+1;
   const incPre=matchIncome(win);   // l'incasso di questa partita si calcola con i tifosi di prima del risultato
-  if(SV.event==='camp'){
+  if(SV.event==='camp'&&SV.po&&SV.po.on){
+    fansBump(win,win?1:0);msg=poRecord(win,su,so);   // partita di playoff (22-playoff.js)
+  }else if(SV.event==='camp'){
     const names=SV.mem[SV.sr],ui=names.indexOf(SV.team);let opp0='';
     for(const [i,j] of SV.sched[SV.round]){
       const a=names[i],b=names[j];
@@ -168,11 +179,10 @@ function recordResult(win,su,so){
     }
     SV.round++;
     leagueAdvance();   // giocano anche le altre serie
-    const inc0=matchIncome(win);fansBump(win,SV.riv&&opp0===SV.riv?(win?1.5:-1):0);   // i tifosi cambiano dopo la partita; l'incasso di questa si calcola con quelli di prima
-    fansBump(win,SV.riv&&opp0===SV.riv?(win?1.5:-1):0);
+    fansBump(win,SV.riv&&opp0===SV.riv?(win?1.5:-1):0);   // i tifosi cambiano dopo la partita (una volta sola); l'incasso di questa e' gia' calcolato (incPre)
     const dby=derbyAfter(opp0,win);   // rivalita': incasso, morale e reputazione
     if(SV.round===Math.floor(SV.sched.length/2)){retireCheck('mid');leagueRetAnnounce();leagueHalf();}   // a meta' stagione arrivano gli annunci di ritiro
-    if(SV.round>=SV.sched.length){endSeason();msg=`Stagione ${SV.season} conclusa: ${SV.next.rank}° posto. ${SV.next.short}`+dby;}
+    if(SV.round>=SV.sched.length){poBegin();msg=SV.po&&SV.po.on?`Stagione regolare conclusa: ${myRank()}° posto. ${PO_NAME[SV.po.kind]}: semifinale contro ${SV.po.opp}.`+dby:`Stagione ${SV.season} conclusa: ${SV.next.rank}° posto. ${SV.next.short}`+dby;}
     else msg=`Giornata ${SV.round} di ${totalRounds()} conclusa: ${myRank()}° in classifica. Prossima: ${nextMatch().name}.`+dby;
   }else{
     fansBump(win,win?1:0);   // anche la coppa europea muove i tifosi
@@ -197,6 +207,7 @@ function recordResult(win,su,so){
   SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-(SV.cash<0?3:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede'),0,100);
   for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+staffLv('fit'),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
   lifeAfterMatch();dynAfterMatch();
-  if(SV.event==='camp'&&!SV.done&&SV.round%5===0)buildMarket();   // il mercato si rinnova ogni 5 giornate
+  if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0)buildMarket();   // il mercato si rinnova ogni 5 giornate
+  achCheck();   // traguardi (23-traguardi.js)
   persist();return msg;
 }

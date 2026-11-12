@@ -62,7 +62,7 @@ function showOver(){
   const w=G.score[0]>G.score[1],on=G.oppName||'Rossi';
   let msg='',grow=[];
   const hurt=QM.on?[]:SQ.filter(p=>p.injNew);
-  if(G.inMatch&&!G.recorded){G.recorded=true;restoreForm();if(!QM.on){grow=matchGrowth(0);recordMatchStats();msg=recordResult(w,G.score[0],G.score[1])+incTxt();}else if(UT.on)msg=utRecord(w);else if(TN.on)msg=tnRecord(w,G.score[0],G.score[1]);else msg='Partita veloce: non cambia la carriera.';}
+  if(G.inMatch&&!G.recorded){G.recorded=true;restoreForm();if(!QM.on){grow=matchGrowth(0);recordMatchStats();msg=recordResult(w,G.score[0],G.score[1])+incTxt();pressPending=null;if(!G.forfeit)pressNext=pressCtxOf(w,G.score[0],G.score[1],G.oppName);}else if(UT.on)msg=utRecord(w);else if(TN.on)msg=tnRecord(w,G.score[0],G.score[1]);else msg='Partita veloce: non cambia la carriera.';}
   // crescita in partita, raggruppata per giocatore
   let gh='';
   if(!QM.on){
@@ -86,5 +86,5 @@ $('bGo').addEventListener('click',()=>{
   $('menu').classList.add('hidden');G.schemeOpen=false;
   if(G.mode==='ready')placeTeams(G.poss);
 });
-$('bAgain').addEventListener('click',()=>{if(QM.on){exitQuick(quickNext());return;}$('over').classList.add('hidden');G.inMatch=false;showScreen('home');});
+$('bAgain').addEventListener('click',()=>{if(QM.on){exitQuick(quickNext());return;}$('over').classList.add('hidden');G.inMatch=false;showScreen('home');const pc=pressNext;pressNext=null;if(pc)setTimeout(()=>openPress(pc),250);});
 

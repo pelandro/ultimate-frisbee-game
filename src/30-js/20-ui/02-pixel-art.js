@@ -95,6 +95,17 @@ function matchLook(){
   Object.assign(UNI[1],KITS[1][on&&G.oppName?hashStr('kit|'+G.oppName)%KITS[1].length:0]);
   Object.assign(PAL,VENUES[on&&G.oppName?hashStr('campo|'+G.oppName+'|'+(G.myName||''))%VENUES.length:0]);grassPat=null;
 }
+// STEMMA a pixel (lo stesso scudetto a due colori del cruscotto, dal nome della squadra): a centrocampo e' quello della squadra di casa, in trasparenza
+function crestPx(cx,cy,w,name,alpha){
+  const h=hashStr('crest|'+name),h1=h%360,h2=(h1+130+(h>>8)%90)%360,hh=ri(w*1.15),ini=name.replace(/[^A-Za-zÀ-ÿ0-9 ]/g,'').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+  const c1=`hsla(${h1},68%,46%,${alpha})`,c2=`hsla(${h2},72%,56%,${alpha})`,ln=`rgba(246,248,242,${alpha})`,top=ri(cy-hh/2);
+  for(let r=0;r<hh;r++){
+    const t=r/hh,rw=ri(w*(t<0.6?1:Math.max(0.1,1-(t-0.6)/0.4*0.9))),x=ri(cx-rw/2),half=ri(rw/2);
+    px(x,top+r,half,1,c1);px(x+half,top+r,rw-half,1,c2);
+    if(r===0||r===hh-1||rw<3){px(x,top+r,rw,1,ln);}else{px(x,top+r,1,1,ln);px(x+rw-1,top+r,1,1,ln);}
+  }
+  ptext(ini,cx,top+ri(hh*0.3),{f:w>=40?'P':'p',c:`rgba(255,255,255,${Math.min(1,alpha*2.2)})`,o:false});
+}
 function drawField(){
   matchLook();
   const x0=sxw(0),x1=sxw(FIELD_L),y0=syw(0),y1=syw(FIELD_W),H=y1-y0,gl=sxw(EZ),gr=sxw(FIELD_L-EZ);
@@ -107,10 +118,15 @@ function drawField(){
   px(x0,y0,gl-x0,H,blueRight?PAL.redZ:PAL.blueZ);px(gr,y0,x1-gr,H,blueRight?PAL.blueZ:PAL.redZ);
   const pat=grassPattern();
   if(pat){ctx.save();ctx.translate(-(((CX%16)+16)%16),((OYi%16)+16)%16-16);ctx.fillStyle=pat;ctx.fillRect(0,0,VW+32,VH+32);ctx.restore();}
-  // scritta nelle mete
-  for(const z of [[EZ/2,blueRight?'ROSSI':'BLU',-1],[FIELD_L-EZ/2,blueRight?'BLU':'ROSSI',1]]){
+  // stemma della squadra di casa a centrocampo (solo in partita, con i nomi delle squadre)
+  if(G.inMatch&&G.myName&&!G.drill)crestPx(sxw(FIELD_L/2),syw(MID),ri(10*S),G.myName,0.3);
+  // scritta nelle mete: il nome della squadra che segna in quella meta (Blu e Rossi quando i nomi non ci sono)
+  const nmB=G.inMatch&&G.myName?G.myName:'BLU',nmR=G.inMatch&&G.oppName?G.oppName:'ROSSI';
+  for(const z of [[EZ/2,blueRight?nmR:nmB,-1],[FIELD_L-EZ/2,blueRight?nmB:nmR,1]]){
+    let nm=String(z[1]).replace(/ \([ABC]\)$/,'').toUpperCase();if(nm.length>18)nm=nm.slice(0,17)+'…';
     ctx.save();ctx.translate(sxw(z[0]),syw(MID));ctx.rotate(z[2]*Math.PI/2);
-    ptext('META '+z[1],0,-8,{f:S>5.4?'P':'p',c:'rgba(255,255,255,.55)',o:false});ctx.restore();
+    const f=S>5.4&&ptw(nm,'P')<FIELD_W*S*0.9?'P':'p';
+    ptext(nm,0,f==='P'?-8:-4,{f,c:'rgba(255,255,255,.55)',o:false});ctx.restore();
   }
   // linee ogni 8 m con la distanza dalla linea di meta piu' vicina (aiuta a misurare i lanci), tacche ogni 2 m
   const big=S>5.4;

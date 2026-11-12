@@ -6,7 +6,7 @@ const reachOf=(f,p)=>f.kind==='blade'?1.25+p.s.sal*0.006:(f.high?1.2+p.s.sal*0.0
 function catchInfo(f,o,def){
   const p=o.p,edge=clamp(o.d/reachOf(f,p),0,1),sp=hyp(p.vx,p.vy);
   let nd=9;for(const q of def)nd=Math.min(nd,hyp(q.x-p.x,q.y-p.y));
-  const diff=f.sp.cd+0.12*edge*edge+0.03*clamp(sp/8,0,1)+0.06*clamp(1-(nd-1)/2.5,0,1)+0.035*clamp((45-p.st)/45,0,1);
+  const diff=f.sp.cd+(WX_CATCH[G.wx|0]||0)+0.12*edge*edge+0.03*clamp(sp/8,0,1)+0.06*clamp(1-(nd-1)/2.5,0,1)+0.035*clamp((45-p.st)/45,0,1);
   const kind=f.high&&edge>0.55?'salto':(edge>0.78?'mano':(nd<1.9?'contesa':(sp>4.5?'corsa':'semplice')));
   return {edge,sp,nd,diff,kind};
 }

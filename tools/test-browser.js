@@ -24,6 +24,8 @@ catch(e){
   await page.addLocatorHandler(page.locator('#tip:not(.hidden) #tipOk'),async()=>{await page.click('#tipOk');});
   // il cartello di presentazione delle partite che contano (derby, finali) si chiude con un tocco
   await page.addLocatorHandler(page.locator('#intro:not(.hidden) #inGo'),async()=>{await page.click('#inGo');});
+  // la conferenza stampa dopo le partite che contano si salta con un tocco
+  await page.addLocatorHandler(page.locator('#press:not(.hidden) #prSkip'),async()=>{await page.click('#prSkip');});
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
   const step=async(name,fn)=>{try{await fn();done.push(name);}catch(e){errs.push(name+': '+e.message.split('\n')[0]);}};
   const playOut=async()=>{   // gioca la partita in corso simulando una meta alla volta, gestendo schemi, cambi obbligati e half time
@@ -79,6 +81,11 @@ catch(e){
     await page.click('#tTeamBox [data-prog]');await page.click('#tBack');
     await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#mkBack');
     await page.click('#hClub');await vis('#club');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==6||await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci sei strutture e quattro figure dello staff');
+    // le altre linguette del Club: traguardi (venti schede, percentuale), albo d'oro e Hall of Fame
+    await page.click('#clTabs button[data-k="ach"]');if(await page.locator('#clBox .ach').count()!==20||!/%/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi devono essere venti, con la percentuale');
+    await page.click('#clTabs button[data-k="hon"]');if(await page.locator('#clBox .trt').count()<7)throw new Error('manca la bacheca dei trofei');
+    await page.click('#clTabs button[data-k="rec"]');if(await page.locator('#clBox .hofbox').count()!==1)throw new Error('manca la Hall of Fame');
+    await page.click('#clTabs button[data-k="man"]');
     if(await page.locator('#clBox [data-staff]').count()!==4)throw new Error('le figure dello staff devono essere quattro');
     await page.click('#clTabs [data-k="hon"]');await page.click('#clTabs [data-k="rec"]');await page.click('#clBack');
     await page.click('#hEvent');await vis('#event');await page.click('#evTabs [data-sr="A"]');await page.click('#evTabs [data-sr="B"]');await vis('#eBody table.rt');

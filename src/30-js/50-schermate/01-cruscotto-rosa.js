@@ -6,7 +6,7 @@ function renderHome(){
   let nx;
   if(m){
     const op=Math.round((m.roster?rosterPower(m.roster):m.power)+carDiff().plus),me=Math.round(squadPower()),idn=m.roster?teamIdentity(m.name,bestSeven(m.roster)):null;
-    nx=timelineHTML()+`<div class="dvs"><span>${crest(m.name,26)}<b>${esc(m.name)}</b></span><span class="dpw"><i>tu</i> ${me} <i>·</i> ${op} <i>loro</i></span></div>`+(G.opt.wind===false?'':`<small class="dtag dtag1">Meteo: ${esc(windTxt(careerWind(m)[0]).toLowerCase())}</small>`);
+    nx=timelineHTML()+`<div class="dvs"><span>${crest(m.name,26)}<b>${esc(m.name)}</b></span><span class="dpw"><i>tu</i> ${me} <i>·</i> ${op} <i>loro</i></span></div>`+(G.opt.wind===false?'':`<small class="dtag dtag1">Meteo: ${esc(meteoTxt(m))}</small>`);
   }else if(SV.event==='camp')nx=timelineHTML()+`<div class="dvs"><span><b>${SV.next?esc(SV.next.short):''}</b></span></div><small class="dtag">Premi e riepilogo in Classifica: da lì parte la nuova stagione</small>`;
   else nx=timelineHTML()+`<div class="dvs"><span><b>${euEndTxt()}</b></span></div><small class="dtag">${SV.done?'La prossima edizione, se vi qualificate, è nella nuova stagione':'Si torna al campionato: la prossima edizione è tra una stagione, se vi qualificate'}</small>`;
   $('hNext').innerHTML=nx;
@@ -38,7 +38,7 @@ function renderHome(){
   $('hBellB').textContent=nwA||pdA;$('hBellB').classList.toggle('hidden',!(nwA||pdA));
   if(urgentAlerts()&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openAlerts();   // si apre da solo soltanto per le decisioni e le emergenze; le notizie restano nella campanella
   else if(SV.evt&&$('evt').classList.contains('hidden')&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openEvt();   // un imprevisto aspetta una risposta
-  $('hEventS').textContent=SV.event==='camp'?(SV.done?'Stagione conclusa: premi e ripartenza':`Giornata ${SV.round+1} di ${totalRounds()}`):(SV.eu.state==='on'?'Campionato europeo: '+EU_ROUND[SV.eu.round].toLowerCase():'Campionato europeo concluso');
+  $('hEventS').textContent=SV.event==='camp'?(SV.done?'Stagione conclusa: premi e ripartenza':(SV.po&&SV.po.on?PO_NAME[SV.po.kind]+(SV.po.round?' · finale':' · semifinale'):`Giornata ${SV.round+1} di ${totalRounds()}`)):(SV.eu.state==='on'?'Campionato europeo: '+EU_ROUND[SV.eu.round].toLowerCase():'Campionato europeo concluso');
 }
 const euEndTxt=()=>SV.eu.state==='champ'?'Campioni d’Europa!':(SV.eu.state==='out'?'Eliminati: '+EU_ROUND[Math.min(2,SV.eu.round)].toLowerCase()+' persa':'');
 // ---- pezzi comuni delle schermate di carriera ----
@@ -188,7 +188,7 @@ function standingsHTML(sr){
 let evSr='';
 $('eBody').addEventListener('click',e=>{const b=e.target.closest('#evTabs [data-sr]');if(!b)return;evSr=b.dataset.sr;renderEvent();});
 function renderEvent(){
-  const cs=SV.done?`${SERIES_NAME[SV.sr]}, stagione conclusa`:`${SERIES_NAME[SV.sr]}, giornata ${SV.round+1} di ${totalRounds()}`;
+  const cs=SV.done?`${SERIES_NAME[SV.sr]}, stagione conclusa`:(SV.po&&SV.po.on?`${SERIES_NAME[SV.sr]}, ${PO_NAME[SV.po.kind].toLowerCase()}`:`${SERIES_NAME[SV.sr]}, giornata ${SV.round+1} di ${totalRounds()}`);
   const es=SV.eu.state==='champ'?'Campioni':(SV.eu.state==='out'?'Eliminati':EU_ROUND[SV.eu.round]);
   $('eCards').innerHTML=
     `<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>Campionato</strong><small>Serie A, B e C: tutte contro tutte, salgono le prime 2 e scendono le ultime 2. ${cs}.</small></button>`+
@@ -203,6 +203,8 @@ function renderEvent(){
     body+=endH;   // a stagione conclusa il riepilogo, i premi e il tasto per ripartire stanno in cima: prima erano in fondo a una pagina lunga
     body+=`<div class="seg" id="evTabs">${['A','B','C'].map(s=>`<button type="button" class="sg${evSr===s?' on':''}" data-sr="${s}">${SERIES_NAME[s]}${s===SV.sr?' (tua)':''}</button>`).join('')}</div>`;
     body+=`<p class="estat">${SERIES_NAME[evSr]}, stagione ${SV.season}${evSr!=='A'?', in verde chi sale':''}${evSr!=='C'?`${evSr!=='A'?' e in rosso':', in rosso'} chi scende`:''}${evSr!==SV.sr&&SV.lg[evSr]?` · giornata ${SV.lg[evSr].round} di ${SV.lg[evSr].sched.length}`:''}</p>`;
+    if(SV.po&&SV.po.on&&evSr===SV.sr)body+=`<h3 class="eh">${PO_NAME[SV.po.kind]}</h3>${poBracketHTML(SV.po)}`;
+    else if(SV.done&&SV.next&&SV.next.po&&evSr===SV.sr)body+=`<h3 class="eh">${PO_NAME[SV.next.po.kind]}</h3>${poBracketHTML(null,SV.next.po)}`;
     body+=standingsHTML(evSr);
     if(evSr!==SV.sr&&SV.lg[evSr]&&SV.lg[evSr].last.length)body+=`<h3 class="eh">Ultima giornata in ${SERIES_NAME[evSr]}</h3><ul class="elist">${SV.lg[evSr].last.map(m=>`<li class="${m[2]>m[3]?'w':'l'}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('')}</ul>`;
     if(evSr===SV.sr)body+=leadersHTML();

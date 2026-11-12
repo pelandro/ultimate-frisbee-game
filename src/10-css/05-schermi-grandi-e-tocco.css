@@ -151,6 +151,24 @@ html.rotp #rot{display:none!important}
 .medals{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}
 .md2{display:inline-flex;align-items:center;gap:5px;padding:2px 8px 2px 2px;background:#0c1330;border:2px solid var(--mc);color:#c2cbe6;font-size:14px}
 .md2 i{font-style:normal;min-width:22px;text-align:center;background:var(--mc);color:#1a1c2c;padding:1px 4px;font-size:15px}
+/* traguardi, albo d'oro (numeri romani) e Hall of Fame a carte dorate */
+.achtop{margin-bottom:10px}.achbig{display:flex;align-items:baseline;gap:10px}.achbig b{font-family:var(--pfont);font-size:22px;font-weight:400;color:var(--gold);text-shadow:2px 2px 0 #000}.achbig span{font-size:16px;color:#c2cbe6}
+.achbar{height:10px;background:#000;border:2px solid #000;margin:5px 0 3px}.achbar i{display:block;height:100%;background:#2f7bff}
+.achg{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.ach{background:#141a36;border:3px solid #000;padding:6px 9px 7px;min-width:0}.ach h4{margin:0;font-family:var(--pfont);font-size:10px;font-weight:400;color:#fff;line-height:1.5;text-transform:uppercase;letter-spacing:0}.ach h4 em{font-style:normal;color:var(--gold)}
+.ach p{margin:3px 0 2px;font-size:15px;color:#c2cbe6;line-height:1.15}.ach span{font-size:14px;color:#7f8db8}
+.ach.on{border-color:var(--gold)}.ach.on .achbar i{background:var(--gold)}.ach.on span{color:var(--gold)}
+.albl{margin:0;padding:0;list-style:none;font-size:16px;color:#c2cbe6}
+.albl li{display:flex;align-items:center;gap:8px;padding:3px 0;border-top:2px solid rgba(0,0,0,.35);min-width:0}.albl li:first-child{border-top:0}
+.albl li i{flex:none;min-width:52px;font-style:normal;font-family:var(--pfont);font-size:10px;color:#7f8db8;text-align:right}
+.albl li b{font-weight:400;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}.albl li .sc{margin-left:auto;flex:none;font-size:14px;color:#7f8db8}
+.albl li.me b,.albl li.me i{color:var(--gold)}
+.hofg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.hcard{display:flex;flex-direction:column;align-items:center;gap:3px;padding:0 0 7px;background:linear-gradient(#3a3014,#1d1a12);border:3px solid var(--gold);box-shadow:0 3px 0 #000;color:#fff;min-width:0;text-align:center}
+.hch{align-self:stretch;display:flex;justify-content:space-between;align-items:center;background:var(--gold);color:#1a1c2c;padding:1px 5px;font-family:var(--pfont);font-size:8px;line-height:12px}.hch b{font-weight:400}
+.hcy{font-size:14px;color:#d9c98f}
+.hcs{display:flex;gap:9px;font-size:13px;color:#c2cbe6}.hcs span{display:flex;flex-direction:column;align-items:center;line-height:1.05}.hcs i{font-style:normal;font-size:17px;color:#fff}
+.hcard .medals{justify-content:center;margin:1px 0 0}
 .nkrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.nkrow input{font:inherit;font-size:16px;width:130px;padding:4px 6px;background:#0c1330;color:#fff;border:3px solid #000}
 @media (max-height:480px){.pcph{padding:5px 8px;gap:8px}.pcav svg{width:42px;height:42px}.pcti p{margin:1px 0;font-size:14px}.pcbd{padding:6px 8px 8px}.pgrid{grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}.pcard .pca svg{width:38px;height:38px}.pcn{font-size:15px}.pcti h3{font-size:19px}.pcpanel{border-width:3px}}
 @media (max-width:560px){.dp3{grid-template-columns:1fr}}
@@ -189,3 +207,15 @@ html.rotp #rot{display:none!important}
 .scard .sr{font-weight:400;font-size:17px;color:#fff;line-height:1.1}.scard small{font-size:13px;color:#9fb0de;line-height:1.2}.scard .sw{color:#7f8db8}
 .scard .sec{margin-top:auto;min-height:34px;font-size:15px;padding:3px 8px}
 #tout .hs{max-width:min(560px,92vw)}
+/* ---- conferenza stampa ---- */
+#press{z-index:43}
+.presspanel{max-width:min(600px,94vw);border:4px solid #fff!important;text-align:center}
+.presspanel h3{margin:0 0 6px;font-size:14px;color:var(--gold);letter-spacing:.06em;text-transform:uppercase}
+.presspanel #prQ{margin:0 0 10px;font-size:19px;line-height:1.25;color:#fff}
+.prOpts{display:grid;gap:8px;margin-bottom:8px}
+.pro{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;font:inherit;color:#fff;background:#29366f;border:3px solid #000;padding:6px 10px;cursor:pointer;min-height:44px;box-shadow:inset 2px 2px 0 rgba(255,255,255,.14),0 3px 0 #000}
+.pro small{font-family:var(--pfont);font-size:8px;color:var(--gold);text-transform:uppercase;letter-spacing:.05em}
+.pro span{font-size:17px;line-height:1.2}
+.pro:active{transform:translateY(2px)}
+.prRes{margin:4px 0 10px;font-size:19px;color:#4fe58f}
+@media (max-height:480px){.presspanel #prQ{font-size:16px;margin-bottom:6px}.pro{padding:4px 8px;min-height:38px}.pro span{font-size:15px}.prOpts{gap:5px}}

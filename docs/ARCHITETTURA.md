@@ -13,7 +13,7 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `src/10-css/` | Stili: font incorporati, base, tema retro, schermate di carriera e pannelli, schermi grandi e tocco (`--ui`) |
 | `src/20-html/` | Struttura della pagina: campo e HUD, menu, schermate, pannelli, guida. **L'ultimo file (`08-…`) apre `<script>`**: un file HTML nuovo deve venire prima in ordine alfabetico (per esempio `07b-imprevisti.html`) |
 | `src/30-js/10-sim/` | **Motore di gioco** (tra `/*SIM_START*/` e `/*SIM_END*/`): nessun accesso alla pagina |
-| `src/30-js/20-ui/` | Disegno a pixel, stacchi, HUD, input (trascinamento, tastiera, controller), impostazioni, schemi, fine partita, difesa automatica e pull a tempo (`09-difesa-pull.js`), indicatore del vento (`10-vento.js`), test della carriera in Diagnostica (`11-test-carriera.js`, `careerSelfTest`), replay delle mete spettacolari (`12-replay.js`) |
+| `src/30-js/20-ui/` | Disegno a pixel, stacchi, HUD, input (trascinamento, tastiera, controller), impostazioni, schemi, fine partita, difesa automatica e pull a tempo (`09-difesa-pull.js`), indicatore del vento e del meteo (`10-vento.js`: `drawWeather`), stemma e nomi in campo (`crestPx` in `02-pixel-art.js`), test della carriera in Diagnostica (`11-test-carriera.js`, `careerSelfTest`), replay delle mete spettacolari (`12-replay.js`) |
 | `src/30-js/30-carriera/` | Salvataggio, squadre e roster, stagione, rosa e linee, economia, mercato, premi, evoluzione del campionato, vita dei giocatori, avvio partita e navigazione, staff, intesa, obiettivi personali, scouting e specializzazioni (`12-progressione-club.js`), campionati persistenti, rivalità e storie (`13-campionati.js`), carriera dinamica (`11-carriera-dinamica.js`: intensità degli allenamenti, manutenzione e usura delle strutture, imprevisti `EVT`, sfida della dirigenza, dominio) |
 | `src/30-js/40-modalita/` | Ultimate Team, partite simulate, campo di allenamento (tutorial, sfide), torneo |
 | `src/30-js/50-schermate/` | Schermate della carriera: cruscotto, rosa (con confronti), allenamenti, mercato, club, avvisi, opzioni, guida, pausa, imprevisti, partite sospese (`07-sospendi.js`: `SV.susp`, `suspSnap`, `resumeMatch`), slot carriera (`08-slot.js`) |
@@ -46,11 +46,14 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `10-sim/18-timeout.js` | Timeout (`callTimeout`, `canTimeout`, `G.tmo`) ed etichetta della situazione (`situationLabel`) |
 | `30-carriera/20-tifosi-umore.js` | Tifosi (`SV.fans`, `fansBump`), faccine (`moodKey`, `moodFace`) e stelle (`starsOf`, `starsHTML`) |
 | `30-carriera/21-azioni-giocatore.js` | Riposo, Colloquio, Soprannome (`p.nick`), ultima partita (`p.lm`), titoli (`p.ti`), medaglie |
-| `50-schermate/09-consigli-fumetti.js` | Linea delle giornate, barra «Consiglio» e fumetti di primo accesso (`SV.tips`) |
+| `50-schermate/09-consigli-fumetti.js` | Linea delle giornate (con i nodi dei playoff), barra «Consiglio» e fumetti di primo accesso (`SV.tips`) |
+| `50-schermate/10-conferenza-stampa.js` | Conferenza stampa: `pressCtxOf` (la partita «ha storia»?), `pressFor` (tre risposte: squadra, tifosi, giocatore), `pressApply`, `openPress` |
+| `30-carriera/22-playoff.js` | Playoff: `SV.po` (tabellone in corso), `SV.poRes` (esito per `endSeason`), `poBegin`, `poPlay`, `poResolve`, `poBracketHTML`; titolo di Serie A e seconda promozione di B e C |
+| `30-carriera/23-traguardi.js`, `50-schermate/11-traguardi-albo.js` | Traguardi (`ACH`, `SV.ach`, `achCheck`, `achPct`), albo d’oro della Serie A (`SV.alb`, `roman`, `albHTML`) e Hall of Fame a carte (`SV.hof`, `hofCard`) |
 | `30-carriera/14-maturita.js` | `talentGrow`: ogni estate chi ha raggiunto il limite può superarlo (talento +1, `p.ext`, massimo `EXT_MAX`) |
 | `17-durata.js` | Durata della partita: `LEN_OPTS` (7, 11, 15 punti), `G.target`, `halfAt()`, `lenK()` (l'esperienza non cresce con le partite lunghe). `simMatch(…, tgt)` usa lo stesso traguardo |
 | `11b-specializzazioni.js`, `11c-intesa.js` | Indirizzi di sviluppo dei giocatori (`SPECS`, `specBonus`) e intesa tra coppie (`G.duo`, `duoOf`) |
-| `15-vento.js` | Vento della partita (`G.wind`, `setWind`, `rollWind`, `windOn`): deriva, dispersione e gittata dei lanci |
+| `15-vento.js` | Vento e meteo della partita (`G.wind`, `setWind`, `rollWind`, `windOn`; `G.wx`, `weatherFor`, `setWx`): deriva, dispersione e gittata dei lanci; pioggia e neve peggiorano un po' le prese e la precisione |
 
 ## Come parlano le parti
 

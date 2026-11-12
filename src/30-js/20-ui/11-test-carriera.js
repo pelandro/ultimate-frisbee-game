@@ -6,9 +6,10 @@ function careerSelfTest(seasons,seed){
   const bak=hasCareer()?(persist(),JSON.stringify(SV)):null,R0=Math.random,q0=QM.on,rows=[],row=(name,val,ok,note)=>({name,val,ok:!!ok,note:note||''});
   Math.random=mulberry32(seed||2026);QM.on=true;talentGrow.n=0;
   const hide=()=>{for(const id of ['simres','alerts','evt'])$(id).classList.add('hidden');};
-  let lgBad=[],stories=0,derby=0,spec=0,goalsOk=0,goalsKo=0,duoMax=0,err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,worn=0,keep=0,signed=0;
+  let lgBad=[],stories=0,derby=0,spec=0,goalsOk=0,goalsKo=0,duoMax=0,err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,worn=0,keep=0,signed=0,poDays=0,poTit=0,sizeBad=[],sz0=null;
   try{
     startCareer(SERIES.C[2]);
+    sz0={A:SV.mem.A.length,B:SV.mem.B.length,C:SV.mem.C.length};
     // gerarchie di inizio carriera: calcolate con la rosa scelta, non con quella rimasta in memoria
     const eo0=SV.mem[SV.sr].slice().sort((a,b)=>teamPow(b)-teamPow(a)),expOk=!!SV.expOrd&&SV.expOrd.indexOf(SV.team)===eo0.indexOf(SV.team);
     // sfida «Conti in ordine»: deve essere giudicata prima dei premi di fine stagione (SV.next nasce subito dopo il giudizio e prima dei premi)
@@ -30,6 +31,7 @@ function careerSelfTest(seasons,seed){
         for(const k of Object.keys(STAFF))if(SV.cash>staffCost(k)+90&&staffLv(k)<STAFF_MAX){buyStaff(k);break;}   // staff e indirizzi personali: si comprano quando c'e' margine
         for(const p of SQ)if(!p.spec&&p.age<=26&&SV.cash>specCost(p)+120){setSpec(p,Object.keys(SPECS)[Math.floor(Math.random()*6)]);spec++;break;}
         duoMax=Math.max(duoMax,...Object.values(SV.duo||{}),0);
+        if(SV.po&&SV.po.on)poDays++;
         const a0=SV.alN|0;simCareerMatch();hide();
         inj+=(SV.alerts||[]).filter(a=>a.id>a0&&a.k==='inj').length;   // gli infortuni di questa giornata (in partita e in allenamento)
         if(SV.evt){evts++;const e=SV.evt,ops=EVT[e.id].o(e.a),ok=ops.map((o,i)=>(!o[2]||o[2]())?i:-1).filter(i=>i>=0);evtAnswer(ok[Math.floor(Math.random()*ok.length)]);}
@@ -47,6 +49,8 @@ function careerSelfTest(seasons,seed){
       for(const p of SQ)if(p.goal&&p.goal.s===SV.season){if(goalOk(p))goalsOk++;else goalsKo++;}
       if(SV.sr==='A'&&SV.next.rank===1)champ++;if(SV.next.sr<SV.sr)promo++;
       pw.push(squadPower());
+      if(SV.next&&SV.next.tit&&SV.sr==='A')poTit++;
+      {const nxt=SV.next.mem,all=[].concat(nxt.A,nxt.B,nxt.C);if(nxt.A.length!==sz0.A||nxt.B.length!==sz0.B||nxt.C.length!==sz0.C||new Set(all).size!==all.length)sizeBad.push('S'+s);}   // promozioni e retrocessioni (anche dopo i playoff): nessuna squadra persa o doppia
       // statistiche individuali del girone: le mete dei giocatori di una squadra avversaria devono tornare con quelle in classifica (salvo chi e' stato ceduto durante l'anno)
       {const on=SV.mem[SV.sr].find(n=>n!==SV.team),sg=(SV.rost[on]||[]).reduce((a,o)=>a+(o.ss?o.ss.g:0),0),pf=SV.tab[on].pf;lsChk.push(lsLive()&&sg<=pf&&sg>=pf*0.8);}
       if(s===1)anc0=Object.assign({},SV.anc||{});
@@ -71,6 +75,11 @@ function careerSelfTest(seasons,seed){
     const hOk=seasons<3||(SQ.some(p=>(p.hist||[]).length>=2)&&SQ.every(p=>(p.hist||[]).length<=14));
     rows.push(row('Programma automatico: fa la seduta di squadra e i 3 lavori individuali, una volta sola',progOk?'sì':'no'+(at?'':' (non parte)'),progOk));
     rows.push(row('Bilancio previsionale: partite rimaste, vittorie attese e saldo finale coerenti',bOk?`sì (${bf.left} partite, ${Math.round(bf.winP*100)}% vittorie, saldo ${bf.end})`:'no',bOk));
+    // conferenza stampa: tre risposte per ogni tipo di partita, effetti contenuti e nei limiti
+    {const cs=[{win:true,su:7,so:3,opp:'x',diff:4,derby:false,upset:false,heavy:true,close:false,last:false,big:false,seed:3},{win:false,su:5,so:7,opp:'y',diff:2,derby:true,upset:false,heavy:false,close:true,last:false,big:false,seed:4},{win:true,su:7,so:6,opp:'z',diff:1,derby:false,upset:true,heavy:false,close:true,last:true,big:false,seed:5}];
+     const m0=SV.mor,f0=SV.fans;let ok=true,eff=[];
+     for(const c of cs){const pr=pressFor(c);if(pr.opts.length!==3||!pr.q)ok=false;for(const o of pr.opts){SV.mor=60;SV.fans=50;pressApply(o);if(!(SV.mor>=58&&SV.mor<=62&&SV.fans>=50&&SV.fans<=53.5))ok=false;eff.push(o.k+':'+(SV.mor-60)+'/'+(SV.fans-50));}}
+     SV.mor=m0;SV.fans=f0;rows.push(row('Conferenza stampa: tre risposte per ogni partita, con effetti piccoli e dichiarati',ok?'sì':'no',ok,'morale ±2, tifosi fino a +3'));}
     rows.push(row('Storico dei progressi dei giocatori',hOk?'sì':'no',hOk));
     // presentazioni: un derby e una partita europea sono «partite che contano», una giornata qualunque no
     {const nm=nextMatch(),riv0=SV.riv;SV.riv='';const plain=matchStakes(nm);SV.riv=nm.name;const dby=matchStakes(nm);SV.riv=riv0;
@@ -84,6 +93,10 @@ function careerSelfTest(seasons,seed){
      rows.push(row('Mercato: motivazioni dei giocatori rispettate',withMot+' con una motivazione su '+mm.length+(bad?', '+bad+' non rispettate':''),mm.length>0&&bad===0));}
     rows.push(row('Gerarchie di inizio carriera calcolate con la rosa scelta',expOk?'sì':'no',expOk));
     rows.push(row('Sfida «Conti in ordine» giudicata prima dei premi',chalWhen.length?(chalWhen.every(x=>x==='prima')?'sì':'no')+' ('+chalWhen.length+' volte)':'mai capitata',chalWhen.length>0&&chalWhen.every(x=>x==='prima')));
+    rows.push(row('Playoff: squadre sempre complete dopo promozioni e retrocessioni, albo d\u2019oro aggiornato',sizeBad.length?'problemi: '+sizeBad.join(', '):`sì (${poDays} partite di playoff giocate dalla tua squadra, ${(SV.alb||[]).length} edizioni nell\u2019albo)`,!sizeBad.length&&(SV.alb||[]).length>=Math.min(seasonsDone,60)));
+    {const c0=SV.cash,n0=Object.keys(SV.ach||{}).length;achCheck();achCheck();const g=achPct(),pg=ACH.map(achState),html=achHTML()+albHTML()+hofHTML()+(SV.hof||[]).slice(0,12).map(hofCard).join('');
+     const okA=SV.cash===c0&&Object.keys(SV.ach).length===n0&&g.n===ACH.filter(a=>SV.ach[a[0]]).length&&pg.every(a=>a.pct>=0&&a.pct<=100&&(a.done?a.pct===100:a.pct<100))&&!/undefined|NaN|null/.test(html)&&roman(14)==='XIV'&&roman(1994)==='MCMXCIV';
+     rows.push(row('Traguardi, albo d\u2019oro e Hall of Fame: percentuali giuste, premi dati una sola volta, schede complete',okA?`sì (${g.n} traguardi su ${g.tot}, ${(SV.hof||[]).length} nella Hall of Fame)`:'problemi',okA));}
     rows.push(row('Stagioni giocate fino in fondo',seasonsDone+' su '+seasons,seasonsDone===seasons));
     rows.push(row('Valori sempre validi (statistiche, condizione, rosa, linee, strutture, crediti)',bad.length?bad.slice(0,3).join('; '):'sì',!bad.length));
     rows.push(row('Forza della squadra nelle stagioni',pw.map(v=>v.toFixed(0)).join(' → '),pw.every(v=>v>=35&&v<=97),'tra 35 e 97'));
