@@ -44,6 +44,24 @@ catch(e){
     await vis('#title');await page.click('#tHelp');await vis('#guide');await page.click('#gdX');
     await page.click('#tSet');await vis('#settings');await page.click('#sBack');await vis('#title');
   });
+  await step('schermo: l\'interfaccia si adatta (telefono invariato, iPad e computer piu\' grandi) e si puo\' regolare',async()=>{
+    const ui=p=>p.evaluate(()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ui')));
+    const bz=p=>p.evaluate(()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bz')));
+    if(await ui(page)!==1||await bz(page)!==1)throw new Error('sul telefono (844x390) l\'ingrandimento deve restare 1');
+    for(const [w,h,min,max] of [[1180,820,1.5,1.75],[1366,1024,1.75,2],[1920,950,2,2.5]]){   // iPad, iPad Pro, computer
+      const c=await browser.newContext({viewport:{width:w,height:h}}),p=await c.newPage();
+      await p.goto('file://'+OUT);await p.waitForTimeout(400);
+      const u=await ui(p),b=await bz(p),big=await p.evaluate(()=>document.documentElement.dataset.big);
+      await c.close();
+      if(u<min||u>max||b<1.5||big!=='1')throw new Error(w+'x'+h+': ingrandimento '+u+' (atteso '+min+'-'+max+'), pulsanti '+b);
+    }
+    // scelta del giocatore: «Molto piu' grande» sul telefono = 1,5, poi si torna all'automatico
+    await page.click('#tSet');await vis('#settings');await page.click('#sGoBtns');await page.click('#sGoSize');
+    await page.click('#sUz button[data-i="3"]');await page.waitForTimeout(150);if(await ui(page)!==1.5)throw new Error('«Molto piu\' grande» deve portare il telefono a 1,5');
+    await page.click('#sUz button[data-i="0"]');await page.waitForTimeout(150);if(await ui(page)!==0.75)throw new Error('«Piu\' piccola» deve portare il telefono a 0,75');
+    await page.click('#sUz button[data-i="1"]');await page.waitForTimeout(150);if(await ui(page)!==1)throw new Error('«Automatica» deve riportare il telefono a 1');
+    await page.click('#sBack');await page.click('#sBack');await page.click('#sBack');await vis('#title');
+  });
   await step('diagnostica: carriera di prova di 12 stagioni',async()=>{
     await page.click('#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgCar');
     await page.waitForFunction(()=>/^Finito/.test(document.getElementById('dgState').textContent),null,{timeout:120000});

@@ -4,7 +4,8 @@ const cv=$('c'),octx=cv.getContext('2d');
 // il gioco si disegna in un buffer a bassa risoluzione (pcv) e poi si ingrandisce a pixel netti sul canvas vero (cv).
 // VW e VH sono le dimensioni del buffer in pixel di gioco; CW e CH quelle dello schermo in pixel CSS (servono per i pulsanti); PXS = pixel fisici per pixel di gioco
 const pcv=document.createElement('canvas'),ctx=pcv.getContext('2d');
-let VW=400,VH=224,CW=800,CH=400,PXS=2,BAR=12,DPR=1,S=9,OY=0,baseS=9,CX=0,OYi=0,UIZ=1;   // UIZ: ingrandimento di menu e pannelli sugli schermi grandi (--ui nel CSS)
+let VW=400,VH=224,CW=800,CH=400,PXS=2,BAR=12,DPR=1,S=9,OY=0,baseS=9,CX=0,OYi=0,UIZ=1,BZ=1,UZS=1;   // UIZ: ingrandimento di menu e pannelli (--ui nel CSS); BZ: ingrandimento dei pulsanti di gioco (--bz); UZS: scelta del giocatore (0 piu' piccola, 1 automatica, 2 piu' grande, 3 molto piu' grande)
+const UZ_STEP=[-1,0,1,2];   // passi di un quarto aggiunti all'ingrandimento automatico
 let uiReady=false;   // i pulsanti di gioco si posizionano solo dopo che l'interfaccia e' pronta
 const cam={x:0,y:FIELD_W/2,z:1,zF:1,zTo:1,zP:1,dz:0,snap:true};
 const ZOOM_T=1.6;   // secondi per passare da uno zoom all'altro
@@ -25,7 +26,13 @@ const portrait=()=>typeof matchMedia==='function'&&matchMedia('(orientation: por
 function resize(){
   const r={width:cv.clientWidth,height:cv.clientHeight};DPR=Math.min(window.devicePixelRatio||1,3);
   CW=Math.max(1,r.width);CH=Math.max(1,r.height);
-  UIZ=clamp(Math.floor(Math.min(CW/1000,CH/560)*4)/4,1,2.25);document.documentElement.style.setProperty('--ui',UIZ);
+  // ADATTAMENTO ALLO SCHERMO: il gioco e' pensato per un riquadro di circa 800x450 (telefono in orizzontale: ingrandimento 1). Su iPad e computer il riquadro
+  // e' molto piu' grande e menu, pannelli e pulsanti crescono in proporzione (fino a 2,5), a passi di un quarto per tenere nitidi i caratteri a pixel.
+  // Il giocatore puo' rimpicciolire o ingrandire ancora (Impostazioni > Dimensioni). Con 1 il telefono resta com'era.
+  const uq=Math.min(10,Math.max(4,Math.round(Math.min(CW/800,CH/450)*4)));
+  UIZ=clamp((uq+UZ_STEP[UZS|0])/4,0.75,3);BZ=clamp(UIZ,1,1.75);   // i pulsanti di gioco crescono un po' meno del resto: sotto il dito bastano 90 px
+  document.documentElement.style.setProperty('--ui',UIZ);document.documentElement.style.setProperty('--bz',BZ);
+  document.documentElement.dataset.big=UIZ>=1.5?'1':'';   // iPad e computer: il cruscotto riempie meglio l'altezza (05-schermi-grandi-e-tocco.css)
   cv.width=Math.round(CW*DPR);cv.height=Math.round(CH*DPR);
   PXS=Math.max(1,Math.round(cv.height/224));   // circa 224 pixel di gioco in altezza, ingrandimento sempre intero
   VW=Math.ceil(cv.width/PXS);VH=Math.ceil(cv.height/PXS);pcv.width=VW;pcv.height=VH;

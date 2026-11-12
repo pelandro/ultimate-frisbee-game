@@ -458,7 +458,10 @@ function drawToasts(dt){
     const w=ptw(t.txt,'p')+14,x=ri(VW/2-w/2),y=(band?ri(VH*0.24)+31:(elHint.classList.contains('hidden')?BAR+5:ri(70*UIZ*DPR/PXS)))+i*16,   // sotto il suggerimento, se c'e'
       col=t.benefit===0?PAL.green:(t.benefit===1?PAL.red:'#ffffff');
     if(t.t<0.2&&((G.tick*24|0)&1))return;
-    pbox(x,y,w,13,'#000000');px(x+3,y+4,4,5,col);ptext(t.txt,x+10,y+3,{f:'p',a:'l',c:'#ffffff',o:false});
+    // le etichette di vento e meteo stanno in alto a destra: un messaggio lungo che le toccherebbe scende sotto di loro
+    const wl=G.inMatch&&G.wind&&G.wind.lv?ptw(WIND_N[G.wind.lv].toUpperCase(),'t')+24:0,xl=G.inMatch&&(G.wx|0)?ptw(WX_N[G.wx|0].toUpperCase(),'t')+10:0,lh=(wl?18:0)+(xl?18:0),lw=Math.max(wl,xl);
+    const yy=lh&&!band&&x+w>VW-lw-8&&y<BAR+4+lh?BAR+4+lh+2+i*16:y;
+    pbox(x,yy,w,13,'#000000');px(x+3,yy+4,4,5,col);ptext(t.txt,x+10,yy+3,{f:'p',a:'l',c:'#ffffff',o:false});
   });
 }
 // meta: fascia nera, scritta grande nel colore della squadra, coriandoli a quadretti

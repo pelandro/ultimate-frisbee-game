@@ -103,10 +103,11 @@ const CH_D1=20,CH_MAX=55,CH_DEAD=12;   // fino a 20 m la carica va alla velocita
 // IMPOSTAZIONI del giocatore (schermata principale): due regolazioni a 4 livelli [molto lento, lento, veloce, molto veloce]
 const CH_SPEEDS=[14,18,23,28];                          // velocita' iniziale (m/s) fino a 20 m
 const CH_SLOWS=[[1,0.93],[0.92,0.72],[0.64,0.1],[0.52,0.07]];   // rallentamento oltre i 20 m: [velocita' a 20 m, velocita' a 55 m] come frazione di quella iniziale. ritoccati il 9/11 con un rallentamento un po' minore; «molto veloce» rallenta di piu'
-const LVL=['Molto lento','Lento','Veloce','Molto veloce'];
+const LVL=['Molto lento','Lento','Veloce','Molto veloce'],UZL=['Più piccola','Automatica','Più grande','Molto più grande'];
 const SET_KEY='ultimate-settings';
-let SETT={ci:2,cs:1,bs:2,ds:2,pos:null};   // pos: centro di ogni pulsante come frazione dello schermo (null = posizione predefinita)   // predefinito: velocita' iniziale veloce (23 m/s), rallentamento lento (30 m a 1,4 s, 40 m a 2,0 s, 55 m a 3,0 s)
-try{const o=JSON.parse(localStorage.getItem(SET_KEY)||'null');if(o&&o.ci>=0&&o.ci<4&&o.cs>=0&&o.cs<4)SETT={ci:o.ci|0,cs:o.cs|0,bs:(o.bs>=0&&o.bs<5)?o.bs|0:2,ds:(o.ds>=0&&o.ds<4)?o.ds|0:2,pos:validPos(o.pos)};}catch(e){}
+let SETT={ci:2,cs:1,bs:2,ds:2,uz:1,pos:null};   // pos: centro di ogni pulsante come frazione dello schermo (null = posizione predefinita)   // predefinito: velocita' iniziale veloce (23 m/s), rallentamento lento (30 m a 1,4 s, 40 m a 2,0 s, 55 m a 3,0 s)
+try{const o=JSON.parse(localStorage.getItem(SET_KEY)||'null');if(o&&o.ci>=0&&o.ci<4&&o.cs>=0&&o.cs<4)SETT={ci:o.ci|0,cs:o.cs|0,bs:(o.bs>=0&&o.bs<5)?o.bs|0:2,ds:(o.ds>=0&&o.ds<4)?o.ds|0:2,uz:(o.uz>=0&&o.uz<4)?o.uz|0:1,pos:validPos(o.pos)};}catch(e){}
+UZS=SETT.uz;   // scelta dell'ingrandimento dell'interfaccia (UZ_STEP)
 // dimensione dei pulsanti di gioco: 5 livelli con piccole differenze (circa 7%); «medi» = 50 px come prima
 function validPos(p){
   if(!p||typeof p!=='object')return null;
@@ -118,7 +119,7 @@ const BSCALE=[0.86,0.93,1,1.07,1.14],BLBL=['Molto piccoli','Piccoli','Medi','Gra
 const applyBtnSize=()=>{document.documentElement.style.setProperty('--bsc',BSCALE[SETT.bs]);layoutButtons();};
 applyBtnSize();
 // ---- posizione dei pulsanti di gioco: predefinita (angolo in basso a destra, SCATTO nell'angolo e Lancio, Hammer a sinistra) oppure scelta dal giocatore ----
-const tbPx=()=>Math.min(54,Math.max(46,0.155*CH))*BSCALE[SETT.bs];   // stessa formula del CSS: clamp(46px,15.5vh,54px) * --bsc
+const tbPx=()=>Math.min(54,Math.max(46,0.155*CH))*BSCALE[SETT.bs]*BZ;   // stessa formula del CSS: clamp(46px,15.5vh,54px) * --bsc * --bz
 function defCenter(name){
   const tb=tbPx(),sai=layRect($('sai')),rr=Math.max(24,sai.width),bb=Math.max(12,sai.height);
   const y=CH-bb-tb/2,xs=CW-rr-tb/2;
@@ -168,18 +169,18 @@ function timeTo(d){for(let t=0;t<9;t+=0.01)if(chargeDist(t)>=d-0.01)return t;ret
 let sView='menu';
 function setSView(v){
   sView=v;$('sMenu').classList.toggle('hidden',v!=='menu');$('sBtns').classList.toggle('hidden',v!=='btns');$('sCharge').classList.toggle('hidden',v!=='charge');$('sSize').classList.toggle('hidden',v!=='size');$('sDiag').classList.toggle('hidden',v!=='diag');
-  $('sTitle').textContent=v==='diag'?'Diagnostica':v==='charge'?'Lancio':(v==='btns'?'Pulsanti':(v==='size'?'Dimensione pulsanti':'Impostazioni'));renderSettings();
+  $('sTitle').textContent=v==='diag'?'Diagnostica':v==='charge'?'Lancio':(v==='btns'?'Pulsanti':(v==='size'?'Dimensioni':'Impostazioni'));renderSettings();
 }
 function renderSettings(){
-  for(const [id,key,names] of [['sDs','ds',DSL],['sSpd','ci',LVL],['sSlow','cs',LVL],['sBsz','bs',BLBL]])$(id).innerHTML=names.map((n,i)=>`<button type="button" class="sg${SETT[key]===i?' on':''}" data-k="${key}" data-i="${i}">${n}</button>`).join('');
+  for(const [id,key,names] of [['sDs','ds',DSL],['sSpd','ci',LVL],['sSlow','cs',LVL],['sBsz','bs',BLBL],['sUz','uz',UZL]])$(id).innerHTML=names.map((n,i)=>`<button type="button" class="sg${SETT[key]===i?' on':''}" data-k="${key}" data-i="${i}">${n}</button>`).join('');
   const f=d=>{const t=timeTo(d);return t===null?'oltre 9 s':t.toFixed(1).replace('.',',')+' s';};
   $('sPrev').textContent=`20 m in ${f(20)} · 30 m in ${f(30)} · 40 m in ${f(40)} · 55 m in ${f(55)}`;
   $('sSumC').textContent=`Trascinamento: sensibilità ${DSL[SETT.ds].toLowerCase()}`;
-  $('sSumS').textContent=BLBL[SETT.bs];
+  $('sSumS').textContent=`Interfaccia ${UZL[SETT.uz].toLowerCase()} · pulsanti ${BLBL[SETT.bs].toLowerCase()}`;
   $('sSumP').textContent=SETT.pos?'Personalizzata':'Predefinita';
   $('sSumB').textContent=`Dimensione: ${BLBL[SETT.bs].toLowerCase()} · posizione: ${SETT.pos?'personalizzata':'predefinita'}`;
 }
-$('settings').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)return;SETT[b.dataset.k]=+b.dataset.i;saveSett();if(b.dataset.k==='bs')applyBtnSize();renderSettings();});
+$('settings').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)return;SETT[b.dataset.k]=+b.dataset.i;saveSett();if(b.dataset.k==='bs')applyBtnSize();if(b.dataset.k==='uz'){UZS=SETT.uz;resize();}renderSettings();});
 $('sGoCharge').addEventListener('click',()=>setSView('charge'));
 $('sGoBtns').addEventListener('click',()=>setSView('btns'));
 $('sGoDiag').addEventListener('click',()=>setSView('diag'));
