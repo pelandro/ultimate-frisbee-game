@@ -18,7 +18,10 @@ function renderHome(){
   $('hTab').innerHTML=`<small>${SV.event==='camp'?'CLASSIFICA':'CAMPIONATO EUROPEO'}<span class="dform">${form}</span></small>${tab}`;
   $('hBars').innerHTML=`<div class="dcash"><span>Crediti</span><b>${SV.cash}</b></div>`+statBar('Reputazione',SV.rep,'#ffd23f')+statBar('Morale',SV.mor,'#4fe58f')+statBar('Affiatamento',SV.chem,'#5ac8ff');
   $('hObj').textContent=SV.obj?`Obiettivo: ${SV.obj.txt} (premio ${SV.obj.reward}).`:'';
-  $('hNews').textContent=SV.news.length?'Ultime: '+SV.news[0].txt:'';
+  // le notizie che non interrompono compaiono qui: l'ultima non letta, e quante altre aspettano nella campanella
+  {const un=(SV.alerts||[]).filter(a=>!a.seen&&!(AL_URGENT[a.k]||a.act));
+   $('hNews').textContent=un.length?'Novità: '+un[0].txt+(un.length>1?` (+${un.length-1} negli Avvisi)`:''):(SV.news.length?'Ultime: '+SV.news[0].txt:'');
+   $('hNews').classList.toggle('nw',un.length>0);}
   // l'azione principale e' sempre quella che serve adesso: giocare, oppure aprire la nuova stagione (o il nuovo torneo europeo)
   const su=suspOk();
   // a competizione conclusa il tasto dice che cosa succede davvero: nuova stagione (se il campionato e' finito) oppure ritorno al campionato (coppa finita)
@@ -27,17 +30,17 @@ function renderHome(){
   $('hPlayS').textContent=su?`Sospesa sul ${SV.susp.score[0]}–${SV.susp.score[1]} contro ${m.name}`:(m?`Contro ${m.name} · ${carDiff().name}`:(toCamp?`Giornata ${SV.round+1} di ${totalRounds()}`:'Riepilogo, premi e ripartenza'));
   $('hSim').classList.toggle('hidden',!m||su);   // una partita sospesa si riprende, non si simula
   const left=3-SQ.filter(p=>p.tr).length,hurt=SQ.filter(p=>p.inj).length,low=SQ.filter(p=>p.cond<50).length;
-  $('hTrainS').textContent=!trainOpen()?`Prossima sessione tra ${trainWait()} ${trainWait()>1?'partite':'partita'}`:`Squadra ${SV.tTeam?'fatta':'da fare'} · singoli ${left}/3`;
-  $('hRosterS').textContent=`${SQ.length} giocatori · forza ${Math.round(squadPower())}`+(hurt?` · ${hurt} inf.`:(low?` · ${low} scarichi`:''));
-  $('hMarketS').textContent=`${SV.market.length} giocatori · ${SV.cash} crediti`;
-  $('hClubS').textContent=SV.chal&&!SV.chal.done?'Strutture, obiettivo, sfida della dirigenza':'Strutture, obiettivo, albo d’oro';
+  $('hTrainS').textContent=!trainOpen()?`Tra ${trainWait()} ${trainWait()>1?'partite':'partita'}`:!SV.tTeam?'Da fare':(left?`Restano ${left} singoli`:'Fatti');   // testi brevi: sul telefono i lunghi venivano troncati
+  $('hRosterS').textContent=`Forza ${Math.round(squadPower())}`+(hurt?` · ${hurt} infort.`:(low?` · ${low} scarichi`:` · ${SQ.length} in rosa`));
+  $('hMarketS').textContent=`${SV.market.filter(m=>!canSign(m)).length} alla portata`;
+  $('hClubS').textContent=SV.chal&&!SV.chal.done?'Strutture, sfida':'Strutture, staff';
   const lineBad=SV.lineO.length<7||SV.lineD.length<7||SQ.some(p=>p.inj&&(SV.lineO.includes(p.full)||SV.lineD.includes(p.full)));
   $('hRosterB').classList.toggle('hidden',!lineBad);
   $('hTrainB').classList.toggle('hidden',!(trainOpen()&&(!SV.tTeam||left>0)));
   $('hMarketB').classList.toggle('hidden',SV.mkSeen===SV.mkN);
   const nwA=(SV.alerts||[]).filter(a=>!a.seen).length,pdA=pendingAlerts();
   $('hBellB').textContent=nwA||pdA;$('hBellB').classList.toggle('hidden',!(nwA||pdA));
-  if(nwA&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openAlerts();   // c'e' una novita': la mostro subito
+  if(urgentAlerts()&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openAlerts();   // si apre da solo soltanto per le decisioni e le emergenze; le notizie restano nella campanella
   else if(SV.evt&&$('evt').classList.contains('hidden')&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openEvt();   // un imprevisto aspetta una risposta
   $('hEventS').textContent=SV.event==='camp'?(SV.done?'Stagione conclusa: premi e ripartenza':`Giornata ${SV.round+1} di ${totalRounds()}`):(SV.eu.state==='on'?'Campionato europeo: '+EU_ROUND[SV.eu.round].toLowerCase():'Campionato europeo concluso');
 }
@@ -64,6 +67,10 @@ function tapSwap(id){
   }else swapSel=id;
 }
 const openDet=new Set();
+// filtri e ordinamenti della Rosa: con 20 e piu' giocatori servono per trovare subito chi cerchi
+let rFilt='all',rSort='ovr';
+const R_FILT={all:['Tutti',()=>true],H:['Handler',p=>posOf(p)==='H'],C:['Cutter',p=>posOf(p)==='C'],D:['Defender',p=>posOf(p)==='D'],out:['Fuori linea',p=>!SV.lineO.includes(p.full)&&!SV.lineD.includes(p.full)],ko:['Da gestire',p=>!!p.inj||p.cond<50||p.mood>0||p.ret===1]};
+const R_SORT={ovr:['Overall',(a,b)=>ovrX(b)-ovrX(a)],pot:['Potenziale',(a,b)=>{const x=potRange(a),y=potRange(b);return (y[0]+y[1])-(x[0]+x[1]);}],age:['Età',(a,b)=>a.age-b.age],cond:['Condizione',(a,b)=>a.cond-b.cond],wage:['Stipendio',(a,b)=>wageOf(b)-wageOf(a)],ssn:['Rendimento',(a,b)=>seasonScore(b.car)-seasonScore(a.car)]};
 let rosterMsg='',sellArm=null;
 function lineToggle(p,k){
   const L=SV[k],i=L.indexOf(p.full);
@@ -80,18 +87,35 @@ function rosterCmp(p){
   const q=byFull(cmpWith[p.full])||others[0];
   return `<div class="dst"><b style="color:var(--gold);font-weight:400">Confronta con</b> <select class="qs cmpsel" data-cmp="${p.id}">${others.map(o=>`<option value="${esc(o.full)}"${o===q?' selected':''}>${esc(pname(o))} · ${POS_NAME[posOf(o)]} ${ovr(o)}</option>`).join('')}</select></div>${compareHTML(p,q,pname(p),pname(q))}`;
 }
+// SCHEDA DEL GIOCATORE in tre parti: Attributi (che cosa sa fare), Prestazioni (che cosa ha fatto), Sviluppo (dove puo' arrivare). Prima era un unico elenco lungo
+const DET_TABS=[['att','Attributi'],['pre','Prestazioni'],['svi','Sviluppo']],detTab={};
 function detailHTML(p){
-  const sure=(p.sk|0)>=3,c=p.car,ss=c?c.ss:null,pos=posOf(p);
-  const stats=CATS.map(ct=>`<div class="dgr"><b>${ct.name} ${catLevel(p,ct)}</b>`+ct.keys.map(k=>`<span>${LBL[k]} ${p.s[k]}${sure?`<small>/${capX(p,k)}</small>`:''}</span>`).join('')+'</div>').join('');
-  const rr=['H','C','D'].map(r=>`<span class="${pos===r?'on':''}">${POS_NAME[r]} ${Math.round(rate(p.s,r))}</span>`).join('');
-  const tr=p.trait&&TRAITS[p.trait]?`<div class="dtr"><b>${TRAITS[p.trait][0]}</b>: ${TRAITS[p.trait][1].toLowerCase()}.</div>`:'';
-  const st=c&&c.mp?`<div class="dst">Stagione: ${ss.mp} partite, ${ss.g} mete, ${ss.a} assist, ${ss.b} difese · Carriera: ${c.mp} partite, ${c.g} mete, ${c.a} assist, ${c.b} difese</div>`:'<div class="dst">Ancora nessuna partita con questa squadra.</div>';
-  return `<div class="drole">${rr}</div>${tr}<div class="dst">Potenziale ${potTxt(p)}${sure?' (certo)':''} · crescita ${(p.sk|0)>=2?devLabel(p.dev):'da osservare'} · condizione ${Math.round(p.cond)} · stipendio ${Math.round(wageOf(p))} a stagione${p.ret===1?' · <b style="color:#c9a0ff;font-weight:400">si ritira a fine stagione</b>':(retScore(p)>-1.5?' · <b style="color:#c9a0ff;font-weight:400">pensa al ritiro</b>':(p.age>=30?' · ritiro lontano':''))}${(p.injC|0)?' · infortuni seri: '+p.injC:''}</div><div class="dg">${stats}</div>${st}${goalLineHTML(p)}${duoHTML(p)}${p.aw&&p.aw.length?`<div class="dst"><b style="color:var(--gold);font-weight:400">Premi</b>: ${p.aw.map(a=>esc(a.k)+' (S'+a.s+')').join(', ')}</div>`:''}${specHTML(p)}<div class="dst scr">${scoutReport(p)}</div>${rosterCmp(p)}<div class="dact">${sure?'':`<button type="button" class="sec" data-scout="${p.id}"${SV.cash<scoutCost()?' disabled':''}>Osserva (${scoutCost()} crediti)</button>`}<button type="button" class="sec" data-sell="${p.id}"${SQ.length>SQ_MIN?'':' disabled'}>${sellArm===p.id?'Conferma la cessione':'Cedi'} (+${sellValue(p)})</button></div>`;
+  const sure=(p.sk|0)>=3,c=p.car,ss=c?c.ss:null,pos=posOf(p),tab=detTab[p.full]||'att';
+  const tabs=`<div class="seg dtabs">${DET_TABS.map(t=>`<button type="button" class="sg${tab===t[0]?' on':''}" data-dtab="${t[0]}" data-pid="${p.id}">${t[1]}</button>`).join('')}</div>`;
+  let body='';
+  if(tab==='att'){
+    const stats=CATS.map(ct=>`<div class="dgr"><b>${ct.name} ${catLevel(p,ct)}</b>`+ct.keys.map(k=>`<span>${LBL[k]} ${p.s[k]}${sure?`<small>/${capX(p,k)}</small>`:''}</span>`).join('')+'</div>').join('');
+    const rr=['H','C','D'].map(r=>`<span class="${pos===r?'on':''}">${POS_NAME[r]} ${Math.round(rate(p.s,r))}</span>`).join('');
+    const tr=p.trait&&TRAITS[p.trait]?`<div class="dtr"><b>${TRAITS[p.trait][0]}</b>: ${TRAITS[p.trait][1].toLowerCase()}.</div>`:'';
+    body=`<div class="drole">${rr}</div>${tr}<div class="dg">${stats}</div>${rosterCmp(p)}`;
+  }else if(tab==='pre'){
+    const per=(x,n)=>n?(x/n).toFixed(1):'–';
+    const line=(lab,x)=>`<span>${lab}</span><span>${x.mp}</span><span>${x.g}</span><span>${x.a}</span><span>${x.b}</span><span>${per(x.g*2+x.a*2+x.b*3,x.mp)}</span>`;
+    const st=c&&c.mp?`<div class="dperf"><span class="hd"></span><span class="hd">Partite</span><span class="hd">Mete</span><span class="hd">Assist</span><span class="hd">Difese</span><span class="hd">Voto</span>${line('Stagione',ss)}${c.ls&&c.ls.mp?line('Scorsa',c.ls):''}${line('Carriera',c)}</div>`:'<div class="dst">Ancora nessuna partita con questa squadra.</div>';
+    const mood=p.mood===2?'chiede la cessione':(p.mood===1?'scontent'+oa(p):(p.idle>=4?'gioca poco ('+p.idle+' partite fuori)':'sereno'));
+    body=`${st}<div class="dst">Condizione ${Math.round(p.cond)} · umore: ${mood} · stipendio ${Math.round(wageOf(p))} a stagione${(p.injC|0)?' · infortuni seri: '+p.injC:''}${p.inj?` · <b style="color:var(--bad);font-weight:400">infortunato, ${p.inj} ${p.inj>1?'partite':'partita'}</b>`:''}</div>${goalLineHTML(p)}${duoHTML(p)}${p.aw&&p.aw.length?`<div class="dst"><b style="color:var(--gold);font-weight:400">Premi</b>: ${p.aw.map(a=>esc(a.k)+' (S'+a.s+')').join(', ')}</div>`:''}`;
+  }else{
+    const ret=p.ret===1?'<b style="color:#c9a0ff;font-weight:400">si ritira a fine stagione</b>':(retScore(p)>-1.5?'<b style="color:#c9a0ff;font-weight:400">pensa al ritiro</b>':(p.age>=30?'ritiro lontano':''));
+    body=`<div class="dst">Potenziale ${potTxt(p)}${sure?' (certo)':''} · crescita ${(p.sk|0)>=2?devLabel(p.dev):'da osservare'} · ${p.age} anni${ret?' · '+ret:''}${(p.ext|0)?` · ha superato il proprio limite ${p.ext} ${p.ext>1?'volte':'volta'} su ${EXT_MAX}`:''}</div>${specHTML(p)}<div class="dst scr">${scoutReport(p)}</div>`;
+  }
+  return `${tabs}${body}<div class="dact">${sure?'':`<button type="button" class="sec" data-scout="${p.id}"${SV.cash<scoutCost()?' disabled':''}>Osserva (${scoutCost()} crediti)</button>`}<button type="button" class="sec" data-sell="${p.id}"${SQ.length>SQ_MIN?'':' disabled'}>${sellArm===p.id?'Conferma la cessione':'Cedi'} (+${sellValue(p)})</button></div>`;
 }
-$('rBox').addEventListener('change',e=>{const s=e.target.closest('[data-cmp]');if(!s)return;const p=SQ[+s.dataset.cmp];if(p){cmpWith[p.full]=s.value;renderRoster();}});
+$('rBox').addEventListener('change',e=>{const so=e.target.closest('[data-rsort]');if(so){rSort=so.value;renderRoster();return;}const s=e.target.closest('[data-cmp]');if(!s)return;const p=SQ[+s.dataset.cmp];if(p){cmpWith[p.full]=s.value;renderRoster();}});
 function renderRoster(){
   const inO=new Set(SV.lineO),inD=new Set(SV.lineD);
-  const ord=SQ.slice().sort((a,b)=>ovrX(b)-ovrX(a)||a.name.localeCompare(b.name));
+  const ord=SQ.filter(R_FILT[rFilt]?R_FILT[rFilt][1]:()=>true).sort((a,b)=>R_SORT[rSort][1](a,b)||ovrX(b)-ovrX(a)||a.name.localeCompare(b.name));
+  const cnt=k=>SQ.filter(R_FILT[k][1]).length;
+  const bar=`<div class="rbar"><div class="seg">${Object.keys(R_FILT).filter(k=>k==='all'||k===rFilt||cnt(k)).map(k=>`<button type="button" class="sg${rFilt===k?' on':''}" data-rf="${k}">${R_FILT[k][0]}${k==='all'?'':' '+cnt(k)}</button>`).join('')}</div><label class="rsort">Ordina per <select class="qs" data-rsort="1">${Object.keys(R_SORT).map(k=>`<option value="${k}"${rSort===k?' selected':''}>${R_SORT[k][0]}</option>`).join('')}</select></label></div>`;
   $('rTop').innerHTML=`<span>Rosa <b>${SQ.length}</b>/${SQ_MAX}</span><span class="${SV.lineO.length===7?'':'bad'}">Attacco <b>${SV.lineO.length}</b>/7</span><span class="${SV.lineD.length===7?'':'bad'}">Difesa <b>${SV.lineD.length}</b>/7</span><span>Crediti <b>${SV.cash}</b></span><button type="button" class="sec" id="rAuto">Linee consigliate</button><button type="button" class="sec" id="rSmart">Cambi intelligenti: ${SV.autoSub?'sì':'no'}</button>`;
   const head='<tr><th>Giocatore</th><th>OVR</th><th>POT</th><th>Cond</th><th>Linee</th><th></th></tr>';
   const row=p=>{
@@ -99,7 +123,7 @@ function renderRoster(){
     return `<tr class="pl" data-id="${p.id}"><td><span class="rn">${avatar(p,30)}<span>${esc(p.label||p.name)}${p.star?'<span class="stb">★</span>':''}${traitBadge(p)}${p.ret===1?'<span class="tg r">ultima stagione</span>':''}${p.mood===2?'<span class="tg m">chiede la cessione</span>':(p.mood===1?`<span class="tg m">scontent${oa(p)}</span>`:'')}<small class="rl${p.inj?' bad':''}">${p.ae?'circa ':''}${p.age} anni · ${POS_NAME[posOf(p)]}${p.aw&&p.aw.length?' · '+p.aw.length+(p.aw.length>1?' premi':' premio'):''}${p.inj?` · infortunato ${p.inj} ${p.inj>1?'partite':'partita'}`:''}</small></span></span></td><td><b class="ov ${ovrCls(v)}">${v}</b></td><td class="pot">${potTxt(p)}</td><td>${condBar(p.cond)}</td><td class="lnb"><button type="button" class="lb${inO.has(p.full)?' on':''}" data-line="lineO" data-id="${p.id}">ATT</button><button type="button" class="lb d${inD.has(p.full)?' on':''}" data-line="lineD" data-id="${p.id}">DIF</button></td><td><button type="button" class="dbtn" data-d="${p.id}" aria-label="Scheda">${op?'▴':'▾'}</button></td></tr>`+(op?`<tr class="dt"><td colspan="6">${detailHTML(p)}</td></tr>`:'');
   };
   const warn=(SV.lineO.length<7||SV.lineD.length<7)?'Una linea ha meno di 7 giocatori: alla partita verrà completata con i migliori disponibili.':(SQ.some(p=>p.inj&&(inO.has(p.full)||inD.has(p.full)))?'Un giocatore in linea è infortunato: finché non guarisce gioca al suo posto il migliore disponibile dello stesso ruolo.':'');
-  $('rBox').innerHTML=`${rosterMsg||warn?`<p class="rmsg">${rosterMsg||warn}</p>`:''}<table class="rt">${head}${ord.map(row).join('')}</table>`;
+  $('rBox').innerHTML=`${rosterMsg||warn?`<p class="rmsg">${rosterMsg||warn}</p>`:''}${bar}${ord.length?`<table class="rt">${head}${ord.map(row).join('')}</table>`:'<p class="note">Nessun giocatore con questo filtro.</p>'}`;
 }
 const barColor=st=>`hsl(${Math.round(Math.max(0,Math.min(100,st))*1.2)},70%,45%)`;
 let forcedSubs=false;

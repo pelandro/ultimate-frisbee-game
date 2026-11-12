@@ -61,7 +61,7 @@ catch(e){
     await page.click('#opX');if(!(await meteo()))throw new Error('riacceso il vento il meteo deve tornare');
   });
   await step('rosa, allenamenti, mercato, club, classifica, opzioni',async()=>{
-    await page.click('#hRoster');await vis('#roster');await page.click('tr.pl >> nth=0');await vis('tr.dt');
+    await page.click('#hRoster');await vis('#roster');await page.click('tr.pl >> nth=0');await vis('tr.dt');await page.click('#rBox [data-dtab="svi"]');   // gli indirizzi e il rapporto degli osservatori stanno nella parte «Sviluppo» della scheda
     if(await page.locator('.dspec button[data-spec]').count()!==6)throw new Error('gli indirizzi di sviluppo devono essere sei');
     if(!(await page.locator('tr.dt .scr').isVisible()))throw new Error('manca il rapporto di scouting nella scheda');
     await page.click('#rBack');
@@ -77,6 +77,25 @@ catch(e){
     await page.click('#eBack');
     await page.click('#hOpt');await vis('#opts');await page.click('#opX');
     await page.click('#hBell');await vis('#alerts');   // lo chiude il gestore qui sopra alla prossima azione
+  });
+  await step('rosa: filtri, ordinamento e scheda in tre parti; mercato: filtro e ordinamento; guida contestuale',async()=>{
+    await vis('#home');await page.click('#hRoster');await vis('#roster');
+    const all=await page.locator('#rBox tr.pl').count();
+    await page.click('#rBox [data-rf="H"]');const hs=await page.locator('#rBox tr.pl').count();
+    if(!(hs>0&&hs<all))throw new Error('il filtro Handler non restringe la rosa ('+hs+' su '+all+')');
+    await page.click('#rBox [data-rf="all"]');await page.selectOption('#rBox [data-rsort]','age');
+    const ages=(await page.locator('#rBox tr.pl small.rl').allInnerTexts()).map(t=>+(t.match(/(\d+) anni/)||[0,0])[1]);
+    if(ages.some((a,i)=>i&&a<ages[i-1]))throw new Error('ordinamento per età non rispettato: '+ages.join(','));
+    await page.click('#rBox .dbtn >> nth=0');
+    for(const t of ['pre','svi','att']){await page.click('#rBox [data-dtab="'+t+'"] >> nth=0');await vis('#rBox [data-dtab="'+t+'"].on >> nth=0');}   // puo' esserci piu' di una scheda aperta
+    await page.click('#roster .shelp');await vis('#guide');if(!(await page.locator('#gdBody li.ghi').count()))throw new Error('la guida contestuale non evidenzia la voce della Rosa');
+    await page.click('#gdX');await page.click('#rBack');
+    await page.click('#hMarket');await vis('#market');const m0=await page.locator('#mkBox tr').count();
+    await page.check('#mkBox [data-mkonly]');const m1=await page.locator('#mkBox tr').count();if(m1>m0)throw new Error('il filtro del mercato aggiunge righe');
+    await page.uncheck('#mkBox [data-mkonly]');await page.selectOption('#mkBox [data-mksort]','price');
+    const pr=(await page.locator('#mkBox table.rt tr td:nth-child(4)').allInnerTexts()).map(Number).filter(x=>!isNaN(x));
+    if(pr.length<3||pr.some((a,i)=>i&&a<pr[i-1]))throw new Error('ordinamento per prezzo non rispettato: '+pr.join(','));
+    await page.click('#mkBack');await vis('#home');
   });
   await step('partite simulate dal cruscotto',async()=>{
     for(let i=0;i<2;i++){await page.click('#hSim');await vis('#simres');await page.click('#srOk');await page.waitForTimeout(100);}
