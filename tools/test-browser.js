@@ -211,7 +211,7 @@ catch(e){
     await page.click('#tQuick');await vis('#quick');await page.selectOption('#qS','0');await page.click('#qPlay');await page.waitForTimeout(600);
     if(await page.locator('#menu').isVisible())await page.click('#bGo');
     await page.waitForSelector('#bTO:not(.hidden)',{timeout:40000});   // compare quando hai il disco in mano
-    // tipo di lancio con le dita: una = piatto, due = alto (il rovesciato), tre = blade; niente pulsante in attacco. Si annulla riportando il dito al punto di partenza
+    // tipo di lancio con le dita: una = piatto, due (o piu') = alto (il rovesciato); niente pulsante in attacco. Si annulla riportando il dito al punto di partenza
     if(await page.locator('#bHammer:not(.hidden)').count())throw new Error('in attacco non deve esserci il pulsante dei tipi di lancio');
     {const cdp=await page.context().newCDPSession(page),TT=(type,pts)=>cdp.send('Input.dispatchTouchEvent',{type,touchPoints:pts}),aim=async()=>await page.locator('canvas').first().getAttribute('data-aim');
      await TT('touchStart',[{x:420,y:250,id:1}]);await TT('touchMove',[{x:380,y:240,id:1}]);await page.waitForTimeout(150);
@@ -219,7 +219,7 @@ catch(e){
      await TT('touchStart',[{x:380,y:240,id:1},{x:300,y:300,id:2}]);await page.waitForTimeout(150);
      if(await aim()!=='alto')throw new Error('due dita: il lancio deve essere alto ('+await aim()+')');
      await TT('touchStart',[{x:380,y:240,id:1},{x:300,y:300,id:2},{x:200,y:300,id:3}]);await page.waitForTimeout(150);
-     if(await aim()!=='blade')throw new Error('tre dita: il lancio deve essere blade ('+await aim()+')');
+     if(await aim()!=='alto')throw new Error('tre dita: il lancio resta alto, non esiste altro ('+await aim()+')');
      await TT('touchMove',[{x:420,y:250,id:1}]);await page.waitForTimeout(100);await TT('touchEnd',[]);await page.waitForTimeout(200);   // dito al punto di partenza: nessun lancio
      if(await aim())throw new Error('finita la mira il tipo di lancio deve sparire');
      if(!(await page.locator('#bTO:not(.hidden)').count()))throw new Error('il lancio doveva annullarsi: il disco e\' partito');}

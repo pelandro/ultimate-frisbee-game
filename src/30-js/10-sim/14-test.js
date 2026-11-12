@@ -152,7 +152,8 @@ function selfTestPlan(opt){
   }]);
   S.steps.push(['Durata della partita',()=>{
     // partita Competitiva (11 punti): finisce a 11, half time al sesto punto, esperienza per partita vicina a quella di una partita ai 7
-    const ra=ros(62,'a'),rb=ros(62,'b'),k=Math.max(2,Math.min(3,n)),ms=run(ra,rb,k,{len:11});
+    // almeno 8 partite: con 2-3 il rumore del campione portava l'esperienza fuori dalla finestra anche senza cambiare nulla nel gioco
+    const ra=ros(62,'a'),rb=ros(62,'b'),k=Math.max(8,n),ms=run(ra,rb,k,{len:11});
     const endOk=ms.every(m=>Math.max(m.score[0],m.score[1])===11&&Math.min(m.score[0],m.score[1])<11&&!m.stuck&&!m.nan),halfOk=ms.every(m=>m.halfAt===6);
     const xpL=avg(ms.map(m=>m.xp)),xp7=S.base?avg(S.base.map(m=>m.xp)):xpL;
     // partite simulate: stessa durata, e chi e' piu' forte vince piu' spesso su una partita lunga (meno caso)

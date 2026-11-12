@@ -19,11 +19,10 @@ function throwInfo(th,vx,vy,dist){
 }
 const sigmaOf=(skill,dist)=>(100-skill)/100*(0.8+dist*0.14);
 /* ---- TIPI DI LANCIO ----
-   Stile scelto dal giocatore: 0 = piatto, 1 = sopra la testa, 2 = blade. Il gioco ne ricava il lancio:
+   Stile scelto dal giocatore: 0 = piatto, 1 = sopra la testa. Il gioco ne ricava il lancio:
    - piatto: ROVESCIO o DRITTO, secondo il lato da cui conviene rilasciare (quello lontano dal marcatore, cosi' la curva gli gira attorno).
      Il rovescio e' il piu' preciso; il dritto parte prima (meno handblock) e viaggia piu' veloce, ma perde precisione sulla distanza. Da 30 m e' un HUCK: lungo e galleggiante.
    - sopra la testa: SCOOBER fino a 14 m (rapido, scavalca le mani del marcatore), HAMMER oltre (arco alto: nessuno lo intercetta lungo la linea, ma e' impreciso e lento).
-   - BLADE: disco di taglio, altissimo e velocissimo: arriva prima che la difesa si muova, ma e' il piu' impreciso e il piu' difficile da prendere.
    v = velocita' media (m/s), sig = dispersione, hb = handblock del marcatore, lane = intercetto lungo la linea, curve = curvatura laterale (frazione della distanza),
    ease = quanto rallenta in volo (>1 galleggia alla fine, <1 accelera in picchiata), cd = difficolta' della presa, hi = arriva dall'alto (si salta) */
 const SCOOB_D=14;
@@ -32,18 +31,17 @@ const THROWS={
   forehand:{name:'Dritto',v:26.5,sig:1.03,hb:0.85,lane:1,curve:0.06,ease:1.06,cd:0.012,hi:false},
   scoober:{name:'Scoober',v:19,sig:1.3,hb:0.35,lane:0.45,curve:0.03,ease:1,cd:0.035,hi:false},
   hammer:{name:'Hammer',v:17.9,sig:1.6,hb:0.5,lane:0,curve:0,ease:1.08,cd:0.06,hi:true},
-  huck:{name:'Huck',v:23.4,sig:1,hb:1,lane:0,curve:0.1,ease:1.45,cd:0.025,hi:true},
-  blade:{name:'Blade',v:30,sig:1.85,hb:0.7,lane:0,curve:0,ease:0.8,cd:0.14,hi:true}
+  huck:{name:'Huck',v:23.4,sig:1,hb:1,lane:0,curve:0.1,ease:1.45,cd:0.025,hi:true}
 };
-const throwH=(kind,d)=>kind==='backhand'||kind==='forehand'?clamp(d*0.06,0.6,2.4):(kind==='scoober'?clamp(d*0.2,2,3.4):(kind==='blade'?clamp(d*0.32,5,13):clamp(d*0.17,4.5,9)));
-const flightTime=(dist,high,sparo)=>Math.max(0.45,dist/(high===2?30:(sparo?23.4:(high?(dist<SCOOB_D?19:17.9):23))));
+const throwH=(kind,d)=>kind==='backhand'||kind==='forehand'?clamp(d*0.06,0.6,2.4):(kind==='scoober'?clamp(d*0.2,2,3.4):clamp(d*0.17,4.5,9));
+const flightTime=(dist,high,sparo)=>Math.max(0.45,dist/(sparo?23.4:(high?(dist<SCOOB_D?19:17.9):23)));
 // punto del disco lungo il volo (s = 0..1): linea retta piu' la curva laterale
 const flightAt=(f,s)=>({x:lerp(f.sx,f.tx,s)+f.cx*4*s*(1-s),y:lerp(f.sy,f.ty,s)+f.cy*4*s*(1-s)});
 const flightS=(f,u)=>f.e>=1?1-Math.pow(1-u,f.e):Math.pow(u,1/f.e);
 function pathDist(q,f){let b=1e9;for(let i=1;i<10;i++){const P=flightAt(f,i/10);b=Math.min(b,hyp(q.x-P.x,q.y-P.y));}return b;}
 // progetto del lancio: tipo, lato del rilascio, dispersione, tempo. Lo usano il lancio vero, l'anteprima della mira e le scelte dell'IA
 function planThrow(th,ax,ay,style,exec){
-  style=style===true?1:(style|0);
+  style=style?1:0;   // 0 piatto, 1 alto
   // gittata: oltre la distanza massima che il suo Sparo permette il disco non arriva, cade corto (vedi 07c-gittata.js)
   const mxR=throwMax(th),d0=hyp(ax-th.x,ay-th.y),short=d0>mxR;
   if(short){const f=mxR/d0;ax=th.x+(ax-th.x)*f;ay=th.y+(ay-th.y)*f;}
@@ -52,12 +50,11 @@ function planThrow(th,ax,ay,style,exec){
   let side=-1;const mk=G.marker;
   if(mk&&mk.t!==th.t&&hyp(mk.x-th.x,mk.y-th.y)<4)side=((mk.x-th.x)*rx+(mk.y-th.y)*ry)>0?-1:1;   // rilascio dal lato opposto al marcatore
   else{let bd=4,bq=null;for(const q of T[1-th.t]){const d=segDist(q.x,q.y,th.x,th.y,ax,ay);if(d<bd){bd=d;bq=q;}}if(bq)side=((bq.x-th.x)*rx+(bq.y-th.y)*ry)>0?-1:1;}
-  const kind=style===2?'blade':(style===1?(dist<SCOOB_D?'scoober':(info.sparo?'huck':'hammer')):(info.sparo?'huck':(side>0?'forehand':'backhand')));
+  const kind=style===1?(dist<SCOOB_D?'scoober':(info.sparo?'huck':'hammer')):(info.sparo?'huck':(side>0?'forehand':'backhand'));
   const sp=THROWS[kind];
   let k=sp.sig;
   if(kind==='forehand')k*=1+0.012*Math.max(0,dist-16);
   if(kind==='scoober')k*=1+0.1*Math.max(0,dist-11);
-  if(kind==='blade')k*=1+0.03*Math.max(0,dist-30)+0.05*Math.max(0,12-dist);
   const wn=windOn(info.skill,dx,dy,dist,Math.max(0.45,dist/sp.v),sp.hi,kind==='scoober');   // vento: deriva, dispersione, gittata
   const comf=throwComf(th)+(wn?wn.along*WIND_RANGE:0);if(dist>comf)k*=1+0.09*(dist-comf);   // gittata comoda: oltre la distanza che il lanciatore regge (dipende dallo Sparo e dal vento) la precisione crolla
   if(wn)k*=wn.k;
@@ -295,7 +292,7 @@ function updateDisc(dt){
     if(G.walk&&!G.walk.stage){d.x=G.walk.pick.x;d.y=G.walk.pick.y;d.z=0;return;}   // il disco resta a terra finche' non viene raccolto
     if(G.holder){d.x=G.holder.x;d.y=G.holder.y;d.z=1;}return;
   }
-  f.t+=dt;const u=Math.min(1,f.t/f.T),fs=flightS(f,u),P=flightAt(f,fs);   // il disco parte veloce e rallenta (o, per il blade, accelera in picchiata) e segue la sua curva
+  f.t+=dt;const u=Math.min(1,f.t/f.T),fs=flightS(f,u),P=flightAt(f,fs);   // il disco parte veloce e rallenta e segue la sua curva
   d.x=P.x;d.y=P.y;d.z=discZ(f,fs);
   if(f.t<f.T&&laneCheck(f,P,d.z))return;   // toccato da un difensore lungo il volo
   if(f.t>=f.T)landDisc();
