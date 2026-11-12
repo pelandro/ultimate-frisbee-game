@@ -1,11 +1,12 @@
 function renderHome(){
+  if(SV.prog&&SV.prog.on&&autoTrain())persist();   // programma di allenamento automatico: parte da solo quando c'e' una sessione disponibile
   const m=nextMatch(),names=SV.mem[SV.sr];
   $('hCrest').innerHTML=crest(SV.team,38);$('hEvt').textContent=SV.team;
   $('hInfo').textContent=`${SERIES_NAME[SV.sr]} · Stagione ${SV.season}`+(SV.event==='camp'?(SV.done?' · conclusa':(SV.round>0?` · ${myRank()}° posto`:'')):' · Campionato europeo');
   let nx;
   if(m){
     const op=Math.round((m.roster?rosterPower(m.roster):m.power)+carDiff().plus),me=Math.round(squadPower()),idn=m.roster?teamIdentity(m.name,bestSeven(m.roster)):null;
-    nx=`<small>PROSSIMA · ${m.label}</small><div class="dvs"><span>${crest(m.name,26)}<b>${esc(m.name)}</b></span><span class="dpw"><i>tu</i> ${me} <i>·</i> ${op} <i>loro</i></span></div>`+(idn&&idn.tags.length?`<small class="dtag">Stile: ${idn.tags.join(', ')}</small>`:'')+(G.opt.wind===false?'':`<small class="dtag">Meteo: ${windTxt(careerWind(m)[0]).toLowerCase()}</small>`);
+    nx=`<small>PROSSIMA · ${m.label}</small><div class="dvs"><span>${crest(m.name,26)}<b>${esc(m.name)}</b></span><span class="dpw"><i>tu</i> ${me} <i>·</i> ${op} <i>loro</i></span></div>`+(idn?`<small class="dtag">Stile: ${idn.tags.concat([clubPol(m.name)[1]]).join(', ')}</small>`:'')+(G.opt.wind===false?'':`<small class="dtag">Meteo: ${windTxt(careerWind(m)[0]).toLowerCase()}</small>`);
   }else if(SV.event==='camp')nx=`<small>STAGIONE CONCLUSA</small><div class="dvs"><span><b>${SV.next?esc(SV.next.short):''}</b></span></div><small class="dtag">Premi e riepilogo in Classifica: da lì parte la nuova stagione</small>`;
   else nx=`<small>CAMPIONATO EUROPEO CONCLUSO</small><div class="dvs"><span><b>${euEndTxt()}</b></span></div><small class="dtag">${SV.done?'La prossima edizione, se vi qualificate, è nella nuova stagione':'Si torna al campionato: la prossima edizione è tra una stagione, se vi qualificate'}</small>`;
   $('hNext').innerHTML=nx;
@@ -87,6 +88,18 @@ function rosterCmp(p){
   const q=byFull(cmpWith[p.full])||others[0];
   return `<div class="dst"><b style="color:var(--gold);font-weight:400">Confronta con</b> <select class="qs cmpsel" data-cmp="${p.id}">${others.map(o=>`<option value="${esc(o.full)}"${o===q?' selected':''}>${esc(pname(o))} · ${POS_NAME[posOf(o)]} ${ovr(o)}</option>`).join('')}</select></div>${compareHTML(p,q,pname(p),pname(q))}`;
 }
+// storico dei progressi: l'Overall a fine di ogni stagione passata con te, e quello di adesso
+function histHTML(p){
+  const h=p.hist||[],now=ovr(p);
+  if(!h.length)return `<div class="dst"><b style="color:var(--gold);font-weight:400">Storico</b>: prima stagione con te (Overall ${now}).</div>`;
+  const pk=Math.max(now,...h.map(x=>x[1]));
+  return `<div class="dst"><b style="color:var(--gold);font-weight:400">Storico</b>: <span class="hsl">${h.map((x,i)=>`<i class="${i&&x[1]>h[i-1][1]?'u':(i&&x[1]<h[i-1][1]?'d':'')}">S${x[0]} ${x[1]}</i>`).join('')}<i class="now ${now>h[h.length-1][1]?'u':(now<h[h.length-1][1]?'d':'')}">ora ${now}</i></span>${pk>now?` · massimo toccato ${pk}`:''}</div>`;
+}
+// margine di crescita per categoria: quanto manca al limite (lo si conosce solo dopo aver osservato il giocatore a fondo)
+function roomHTML(p,sure){
+  if(!sure)return `<div class="dst"><b style="color:var(--gold);font-weight:400">Limiti</b>: ancora da scoprire: osservalo (o tienilo in rosa: ogni stagione lo conosci meglio).</div>`;
+  return `<div class="dst"><b style="color:var(--gold);font-weight:400">Limiti</b>: ${CATS.map(c=>{const room=c.keys.reduce((a,k)=>a+Math.max(0,capX(p,k)-p.s[k]),0);return `${c.name} ${room?'+'+room:'al massimo'}`;}).join(' · ')} (punti ancora raggiungibili)</div>`;
+}
 // SCHEDA DEL GIOCATORE in tre parti: Attributi (che cosa sa fare), Prestazioni (che cosa ha fatto), Sviluppo (dove puo' arrivare). Prima era un unico elenco lungo
 const DET_TABS=[['att','Attributi'],['pre','Prestazioni'],['svi','Sviluppo']],detTab={};
 function detailHTML(p){
@@ -106,8 +119,9 @@ function detailHTML(p){
     body=`${st}<div class="dst">Condizione ${Math.round(p.cond)} · umore: ${mood} · stipendio ${Math.round(wageOf(p))} a stagione${(p.injC|0)?' · infortuni seri: '+p.injC:''}${p.inj?` · <b style="color:var(--bad);font-weight:400">infortunato, ${p.inj} ${p.inj>1?'partite':'partita'}</b>`:''}</div>${goalLineHTML(p)}${duoHTML(p)}${p.aw&&p.aw.length?`<div class="dst"><b style="color:var(--gold);font-weight:400">Premi</b>: ${p.aw.map(a=>esc(a.k)+' (S'+a.s+')').join(', ')}</div>`:''}`;
   }else{
     const ret=p.ret===1?'<b style="color:#c9a0ff;font-weight:400">si ritira a fine stagione</b>':(retScore(p)>-1.5?'<b style="color:#c9a0ff;font-weight:400">pensa al ritiro</b>':(p.age>=30?'ritiro lontano':''));
-    body=`<div class="dst">Potenziale ${potTxt(p)}${sure?' (certo)':''} · crescita ${(p.sk|0)>=2?devLabel(p.dev):'da osservare'} · ${p.age} anni${ret?' · '+ret:''}${(p.ext|0)?` · ha superato il proprio limite ${p.ext} ${p.ext>1?'volte':'volta'} su ${EXT_MAX}`:''}</div>${specHTML(p)}<div class="dst scr">${scoutReport(p)}</div>`;
+    body=`<div class="dst">Potenziale ${potTxt(p)}${sure?' (certo)':''} · crescita ${(p.sk|0)>=2?devLabel(p.dev):'da osservare'} · ${p.age} anni${ret?' · '+ret:''}${(p.ext|0)?` · ha superato il proprio limite ${p.ext} ${p.ext>1?'volte':'volta'} su ${EXT_MAX}`:''}</div>${histHTML(p)}${roomHTML(p,sure)}${specHTML(p)}<div class="dst scr">${scoutReport(p)}</div>`;
   }
+  if(tab==='svi')body+=`<div class="dst"><b style="color:#7fd8ff;font-weight:400">Allenamento</b>: <button type="button" class="sec${p.pri?' onb':''}" data-pri="${p.id}">${p.pri?'★ Priorità del programma':'Segna come priorità'}</button> <span>${p.pri?'il programma automatico gli riserva un lavoro individuale':'fino a 3 giocatori: il programma automatico allena prima loro'}</span></div>`;
   return `${tabs}${body}<div class="dact">${sure?'':`<button type="button" class="sec" data-scout="${p.id}"${SV.cash<scoutCost()?' disabled':''}>Osserva (${scoutCost()} crediti)</button>`}<button type="button" class="sec" data-sell="${p.id}"${SQ.length>SQ_MIN?'':' disabled'}>${sellArm===p.id?'Conferma la cessione':'Cedi'} (+${sellValue(p)})</button></div>`;
 }
 $('rBox').addEventListener('change',e=>{const so=e.target.closest('[data-rsort]');if(so){rSort=so.value;renderRoster();return;}const s=e.target.closest('[data-cmp]');if(!s)return;const p=SQ[+s.dataset.cmp];if(p){cmpWith[p.full]=s.value;renderRoster();}});
@@ -173,6 +187,7 @@ function renderEvent(){
     body+=`<p class="estat">${SERIES_NAME[evSr]}, stagione ${SV.season}${evSr!=='A'?', in verde chi sale':''}${evSr!=='C'?`${evSr!=='A'?' e in rosso':', in rosso'} chi scende`:''}${evSr!==SV.sr&&SV.lg[evSr]?` · giornata ${SV.lg[evSr].round} di ${SV.lg[evSr].sched.length}`:''}</p>`;
     body+=standingsHTML(evSr);
     if(evSr!==SV.sr&&SV.lg[evSr]&&SV.lg[evSr].last.length)body+=`<h3 class="eh">Ultima giornata in ${SERIES_NAME[evSr]}</h3><ul class="elist">${SV.lg[evSr].last.map(m=>`<li class="${m[2]>m[3]?'w':'l'}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('')}</ul>`;
+    if(evSr===SV.sr)body+=leadersHTML();
     if(evSr===SV.sr&&SV.riv)body+=`<p class="note" style="margin:8px 0 0">${derbyTxt()}.</p>`;
     if(SV.story&&SV.story.length)body+=`<h3 class="eh">Dal campionato</h3><ul class="elist">${SV.story.slice(0,6).map(x=>`<li><span>${esc(x.txt)}</span><span>S${x.s}·G${x.r}</span></li>`).join('')}</ul>`;
     const done=SV.res.slice(-6).map((r,i)=>{const g=SV.res.length-Math.min(6,SV.res.length)+i+1;return `<li class="${r.su>r.so?'w':'l'}"><span>Giornata ${g} contro ${r.opp}</span><span>${r.su} – ${r.so}</span></li>`;});

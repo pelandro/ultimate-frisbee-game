@@ -28,6 +28,7 @@ function beginSeason(){
   const names=SV.mem[SV.sr];
   SV.sched=roundRobin(names.length);SV.round=0;SV.tab=freshTab(names);SV.res=[];SV.done=false;SV.next=null;
   leagueBegin();   // le altre due serie hanno ora un calendario vero
+  if(SV.rost)lsSeasonStart();   // statistiche individuali del girone: la stagione scorsa passa alla carriera, il contatore riparte
   if(SV.rost)SV.expOrd=names.slice().sort((a,b)=>teamPow(b)-teamPow(a));   // gerarchie a inizio stagione: servono al premio per l'allenatore dell'anno
   if(SV.cash!==undefined){setObjective();for(const p of SQ)if(p.car){p.car.yrs=(p.car.yrs|0)+(p.car.ss.mp>0?1:0);p.car.ls=p.car.ss;p.car.ss={mp:0,g:0,a:0,b:0};}}
 }
@@ -141,6 +142,7 @@ function newSeason(){
   SV.mem=SV.next.mem;SV.sr=SV.next.sr;SV.season++;
   SV.euUnlocked=!!SV.next.qual;if(SV.euUnlocked)SV.eu=newEu(SV.season);SV.event='camp';   // la stagione nuova riparte sempre dal campionato
   retireOwn();   // chi aveva annunciato l'addio lascia adesso
+  for(const p of SQ){p.hist=p.hist||[];p.hist.push([SV.season-1,ovr(p)]);if(p.hist.length>14)p.hist.shift();}   // storico dei progressi: l'Overall con cui ha chiuso la stagione
   const was=new Map(SQ.map(p=>[p.full,ovr(p)]));
   agePlayers();
   for(const p of SQ){p.sk=Math.min(3,(p.sk|0)+1);p.cond=100;}   // un anno insieme: conosci meglio il potenziale dei tuoi
@@ -158,9 +160,9 @@ function recordResult(win,su,so){
     const names=SV.mem[SV.sr],ui=names.indexOf(SV.team);let opp0='';
     for(const [i,j] of SV.sched[SV.round]){
       const a=names[i],b=names[j];
-      if(i===ui){addRes(SV.tab,a,b,su,so);SV.res.push({opp:b,su,so});opp0=b;}
-      else if(j===ui){addRes(SV.tab,a,b,so,su);SV.res.push({opp:a,su,so});opp0=a;}
-      else{const [sa,sb]=simPower(a,b);addRes(SV.tab,a,b,sa,sb);}
+      if(i===ui){addRes(SV.tab,a,b,su,so);SV.res.push({opp:b,su,so});opp0=b;if(lsLive())lsMatch(b,so);}
+      else if(j===ui){addRes(SV.tab,a,b,so,su);SV.res.push({opp:a,su,so});opp0=a;if(lsLive())lsMatch(a,so);}
+      else{const [sa,sb]=simPower(a,b);addRes(SV.tab,a,b,sa,sb);if(lsLive()){lsMatch(a,sa);lsMatch(b,sb);}}   // statistiche individuali del girone, partita per partita
     }
     SV.round++;
     leagueAdvance();   // giocano anche le altre serie

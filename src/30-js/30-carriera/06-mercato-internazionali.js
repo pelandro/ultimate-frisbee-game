@@ -63,17 +63,17 @@ function buildMarket(){
     const r=pool.splice(Math.floor(R()*pool.length),1)[0],o=starPlayer(r,mulberry32(hashStr(SV.seed+'|star|'+r[0]+r[1])));
     out.push({o,kind:ovr(o)>=86?'Stella internazionale':'Giocatore internazionale',from:null,nat:r[5],star:true});
   }
-  for(const m of out)m.price=Math.round(priceOf(m.o)*(m.from?1.3:(m.star?1.15:1)));
-  SV.market=out;
+  for(const m of out){m.price=Math.round(priceOf(m.o)*(m.from?1.3:(m.star?1.15:1)));m.base=m.price;motAssign(m,R);}
+  SV.market=out;mkReprice();   // motivazioni e prezzi che ne dipendono (18-motivazioni.js)
 }
-function canSign(m){return SV.cash<0?'Crediti insufficienti':SQ.length>=SQ_MAX?'Rosa al completo ('+SQ_MAX+')':(SV.cash<m.price?'Crediti insufficienti':(ovr(m.o)>repCap()?'Non interessato: serve più reputazione':''));}
+function canSign(m){return SV.cash<0?'Crediti insufficienti':SQ.length>=SQ_MAX?'Rosa al completo ('+SQ_MAX+')':(SV.cash<m.price?'Crediti insufficienti':(ovr(m.o)>repCap()?'Non interessato: serve più reputazione':motBlock(m)));}
 function signPlayer(i){
   const m=SV.market[i];if(!m||canSign(m))return false;
   SV.cash-=m.price;SV.market.splice(i,1);
   if(m.from&&SV.rost[m.from]){const ro=SV.rost[m.from],k=ro.findIndex(x=>x===m.o||(x.full&&x.full===m.o.full));if(k>=0)ro.splice(k,1);if(ro.length<14)ro.push(genPlayer(rosterPower(ro)-8,17+Math.floor(Math.random()*4),SV.seed+'|rep|'+m.from+'|'+SV.season+'|'+ro.length));}
   const o=Object.assign({},m.o,{sk:Math.max(1,m.o.sk|0),cond:100,car:null,s:Object.assign({},m.o.s)});
   const list=squadData();list.push(o);const lO=SV.lineO,lD=SV.lineD;setSquad(list);SV.lineO=lO;SV.lineD=lD;fixLines();
-  SV.chem=Math.max(0,SV.chem-4);news('Acquistato '+o.label+' ('+POS_NAME[posOf(o)]+', '+ovr(o)+') per '+m.price+' crediti'+(m.from?' da '+m.from:'')+'.');
+  SV.chem=Math.max(0,SV.chem-(4-2*fitOf(o)));news('Acquistato '+o.label+' ('+POS_NAME[posOf(o)]+', '+ovr(o)+') per '+m.price+' crediti'+(m.from?' da '+m.from:'')+'.');
   return true;
 }
 // chi lascia la squadra (ceduto o ritirato) resta nelle classifiche di sempre del club

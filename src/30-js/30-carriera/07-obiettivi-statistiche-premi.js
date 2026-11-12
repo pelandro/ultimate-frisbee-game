@@ -26,6 +26,7 @@ function simMatchStats(goals){   // dopo una partita simulata: mete e assist dis
    Le statistiche dei tuoi giocatori sono quelle vere (partite giocate e simulate); quelle delle altre squadre vengono ricostruite dai risultati:
    ogni meta segnata in classifica ha un marcatore e un assistman, scelti secondo ruolo e qualita' tra i giocatori che scendono in campo. */
 function seriesStats(sr){
+  if(lsLive()&&sr===SV.sr)return lsAll(sr);   // numeri veri, accumulati partita per partita (17-statistiche-campionato.js)
   const out=[];
   for(const n of SV.mem[sr]){
     const t=SV.tab[n]||{pf:0,w:0,l:0},mp=t.w+t.l;
