@@ -110,10 +110,10 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 .stest .tbtn{--tb:60px;position:relative;margin:12px 0 14px}
 .stest .sd{font-size:20px;font-weight:800;color:#fff;min-height:24px;text-align:center}
 @media (max-height:340px){.sh3{margin:0 0 4px;font-size:13px}.srow{margin:0 0 5px}.srow label{font-size:12px;margin:0 0 2px}.srow label small{font-size:11px}.sg{padding:5px 2px;font-size:12px}.stest .tbtn{--tb:52px;margin:8px 0 10px}.stest .sd{font-size:17px}.sgrid{gap:12px}}
-#half{z-index:38;flex-direction:column;gap:clamp(4px,2vh,12px);text-align:center}
-#half .ht{margin:0;font-size:clamp(46px,21vh,104px);line-height:1;font-weight:900;letter-spacing:.05em;color:#ffd23f;text-shadow:0 4px 0 #8a5a00,0 10px 26px rgba(0,0,0,.55);text-transform:uppercase}
-#half .hs{margin:0;font-size:clamp(16px,6vh,26px);font-weight:800;color:#fff}
-#half .hbs{display:flex;gap:12px;margin-top:clamp(6px,3vh,16px)}
+#half,#tout{z-index:38;flex-direction:column;gap:clamp(4px,2vh,12px);text-align:center}
+#half .ht,#tout .ht{margin:0;font-size:clamp(46px,21vh,104px);line-height:1;font-weight:900;letter-spacing:.05em;color:#ffd23f;text-shadow:0 4px 0 #8a5a00,0 10px 26px rgba(0,0,0,.55);text-transform:uppercase}
+#half .hs,#tout .hs{margin:0;font-size:clamp(16px,6vh,26px);font-weight:800;color:#fff}
+#half .hbs,#tout .hbs{display:flex;gap:12px;margin-top:clamp(6px,3vh,16px)}
 .tbtn.sprint,#thr .tbtn{position:absolute}   /* SCATTO: sempre tondo, nell'angolo in basso a destra */
 #thr .id{display:none}#thr.def .id{display:block}#thr.def .ia{display:none}   /* in difesa: simboli di handblock (mano) e tuffo, pulsanti rossi */
 #thr.def .tbtn{background:rgba(176,38,50,.92);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.32)}

@@ -116,3 +116,76 @@ html.rotp #rot{display:none!important}
 .tprog2 i{display:block;height:100%;background:var(--gold)}.tprog2 b{font-weight:400;color:#fff;font-size:16px}
 .tles{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.tles .sec{font-size:14px;padding:4px 8px;min-height:34px}.tles .sec.ok{color:#4fe58f}
 @media (max-height:480px){.smenu.g2 .sgh{margin-top:3px;font-size:10px}}
+/* ---- Rosa a carte (stile Retro Bowl): griglia di carte, stelle, faccine, scheda a tutto schermo ---- */
+.stars{display:inline-flex;gap:1px;vertical-align:middle}
+.st{display:inline-block;width:10px;height:10px;background:#3a4478;clip-path:polygon(50% 0,62% 36%,100% 38%,70% 60%,80% 100%,50% 76%,20% 100%,30% 60%,0 38%,38% 36%)}
+.st.f{background:#ffd23f}.st.h{background:linear-gradient(90deg,#ffd23f 50%,#3a4478 50%)}
+.mf{display:inline-block!important;flex:none;vertical-align:-2px;image-rendering:pixelated}
+.rview{flex:0 0 auto!important;min-width:150px}.rview .sg{min-height:34px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.pcard{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:0 0 6px;font:inherit;color:#fff;background:#16204a;border:3px solid var(--rc,#2f7bff);cursor:pointer;min-width:0;box-shadow:0 3px 0 #000}
+.pcard:active{transform:translateY(2px);box-shadow:0 1px 0 #000}
+.pcard.on{background:#1d2b60}.pcard.inj{filter:saturate(.55)}
+.pch{align-self:stretch;display:flex;justify-content:space-between;align-items:center;background:var(--rc);color:#fff;padding:1px 5px;font-family:var(--pfont);font-size:8px;line-height:12px}
+.pch b{font-weight:400}.pca{position:relative;margin-top:2px;line-height:0}.pca .stb{position:absolute;right:-8px;top:-3px;font-size:12px}
+.pcn{max-width:92%;font-size:16px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pcard .cbar{width:84%;height:8px}
+.pcl{display:flex;gap:4px;align-items:center;min-height:16px}
+.pcl i{font-style:normal;font-family:var(--pfont);font-size:8px;line-height:11px;padding:1px 4px;border:2px solid #000;background:#222a55;color:#6674a8}
+.pcl i.a{background:#2f7bff;color:#fff}.pcl i.d{background:#e0483a;color:#fff}
+.pcl em{font-style:normal;font-family:var(--pfont);font-size:8px;padding:1px 4px;background:var(--bad);color:#fff;border:2px solid #000}.pcl em.r{background:#7a4cc4}
+/* scheda del giocatore a tutto schermo */
+.pcov{position:fixed;inset:0;z-index:36;display:flex;align-items:center;justify-content:center;background:rgba(6,10,28,.82);padding:8px max(10px,env(safe-area-inset-right,0px)) 8px max(10px,env(safe-area-inset-left,0px))}
+.pcpanel{width:min(760px,100%);max-height:100%;display:flex;flex-direction:column;background:#101a44;border:4px solid var(--rc,#2f7bff);box-shadow:0 0 0 4px #000}
+.pcph{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--rc);position:relative}
+.pcav{background:rgba(0,0,0,.25);border:3px solid #000;line-height:0}
+.pcti{flex:1;min-width:0}.pcti h3{margin:0;font-size:22px;font-weight:400;line-height:1.1;color:#fff}.pcti h3 small{font-size:16px;color:#ffe9a8}
+.pcti p{margin:2px 0;font-size:15px;color:#fff}.pcti .pot{color:#ffe9a8;font-size:15px}
+.pcln{display:flex;gap:6px}.pcln .lb{min-height:34px;min-width:50px}
+.pcx{position:absolute;right:6px;top:6px;min-width:34px;min-height:34px;font:inherit;color:#fff;background:#000;border:3px solid #fff;cursor:pointer;line-height:1}
+.pcph .pcln{margin-right:44px}
+.pcbd{overflow:auto;padding:8px 10px 10px}
+.dp3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 6px}
+.dpc{background:#0c1330;border:3px solid #000;padding:5px 8px}.dpc b{display:block;font-weight:400;color:var(--gold);font-size:14px;margin-bottom:2px}
+.dpc span{display:flex;justify-content:space-between;font-size:15px;color:#c2cbe6}.dpc i{font-style:normal;color:#fff}.dpc small{color:#7f8db8;font-size:14px}
+.medals{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}
+.md2{display:inline-flex;align-items:center;gap:5px;padding:2px 8px 2px 2px;background:#0c1330;border:2px solid var(--mc);color:#c2cbe6;font-size:14px}
+.md2 i{font-style:normal;min-width:22px;text-align:center;background:var(--mc);color:#1a1c2c;padding:1px 4px;font-size:15px}
+.nkrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.nkrow input{font:inherit;font-size:16px;width:130px;padding:4px 6px;background:#0c1330;color:#fff;border:3px solid #000}
+@media (max-height:480px){.pcph{padding:5px 8px;gap:8px}.pcav svg{width:42px;height:42px}.pcti p{margin:1px 0;font-size:14px}.pcbd{padding:6px 8px 8px}.pgrid{grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}.pcard .pca svg{width:38px;height:38px}.pcn{font-size:15px}.pcti h3{font-size:19px}.pcpanel{border-width:3px}}
+@media (max-width:560px){.dp3{grid-template-columns:1fr}}
+/* ---- cruscotto: linea delle giornate, barra Consiglio, fumetti ---- */
+.tline{position:relative;display:flex;justify-content:space-between;gap:4px;margin:0 0 5px;padding:4px 6px 3px;background:#0c1330;border:3px solid #000;border-bottom-width:3px}
+.tline::before{content:"";position:absolute;left:8%;right:8%;top:13px;height:3px;background:#3a4478}
+.tl{position:relative;flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;line-height:1.1}
+.tl i{position:relative;width:12px;height:12px;background:#3a4478;border:3px solid #000;border-radius:50%;margin-bottom:2px;box-sizing:content-box}
+.tl.w i{background:#4fe58f}.tl.l i{background:#ff6b70}.tl.n i{background:#fff;box-shadow:0 0 0 2px var(--gold)}
+.tl b{font-weight:400;font-size:15px;color:#c2cbe6;white-space:nowrap}.tl.n b{color:#fff}.tl.w b{color:#4fe58f}.tl.l b{color:#ff8a8a}
+.tl small{font-size:12px;color:#7f8db8;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}.tl.n small{color:#c2cbe6}
+.dtick{overflow:hidden;white-space:nowrap;background:#0c1330;border:3px solid #000;padding:2px 0;color:#ffd23f;font-size:15px}
+.dtick span{display:inline-block;padding-left:100%;animation:tk 30s linear infinite}
+.dtick.nw{color:#7fd8ff}
+@keyframes tk{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+@media (prefers-reduced-motion:reduce){.dtick{white-space:normal}.dtick span{padding-left:6px;animation:none}}
+.dst2 span:first-child{width:86px}
+.tippanel{max-width:min(520px,92vw);text-align:center;border:4px solid #fff!important}.tippanel p{margin:0 0 10px;font-size:18px;line-height:1.25;color:#fff}
+#tip{z-index:44}
+@media (max-height:480px){.tline{padding:3px 5px 2px;margin-bottom:3px}.tl b{font-size:14px}.tl small{font-size:11px}.tippanel p{font-size:16px;margin-bottom:6px}}
+.dtag1{display:block!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdash .dcard{padding-top:4px;padding-bottom:4px}
+.hdash .dbars{gap:2px 12px}
+@media (max-height:420px){.hdash .dhead{gap:7px}.hdash .dcard>small{font-size:13px}.hdash .dvs{font-size:18px}}
+/* ---- Club (Gestione): schede pulite, strutture a barre, staff a carte, spiegazioni dietro il tasto «i» ---- */
+.inf{display:inline-grid;place-items:center;width:22px;height:22px;margin-left:6px;vertical-align:middle;font:inherit;font-size:14px;line-height:1;color:#fff;background:#29366f;border:2px solid #000;cursor:pointer;padding:0}
+.inf.on{background:var(--gold);color:#1a1c2c}
+.infp{margin:4px 0 6px;font-size:14px;line-height:1.25;color:#c2cbe6;font-weight:400}
+.ccard .sub{margin:3px 0 0;font-size:14px;color:#9fb0de}.ccard p.bad{color:var(--bad);margin:2px 0}
+.fbar{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:4px 10px;padding:4px 0;border-top:2px solid rgba(0,0,0,.35)}
+.fbar:first-of-type{border-top:0}.fbar .fn{font-size:17px;color:#fff;grid-column:1}.fbar .infp{grid-column:1/-1;margin:0}
+.fbar .sec{min-width:66px;min-height:34px;font-size:15px;padding:3px 8px}
+.tk{display:inline-flex;gap:3px}.tk i{width:14px;height:14px;background:#0c1330;border:2px solid #000}.tk i.on{background:var(--gold)}
+.staffg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.scard{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:6px 8px;background:#0c1330;border:3px solid #000}
+.scard .sr{font-weight:400;font-size:17px;color:#fff;line-height:1.1}.scard small{font-size:13px;color:#9fb0de;line-height:1.2}.scard .sw{color:#7f8db8}
+.scard .sec{margin-top:auto;min-height:34px;font-size:15px;padding:3px 8px}
+#tout .hs{max-width:min(560px,92vw)}

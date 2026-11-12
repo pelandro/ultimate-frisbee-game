@@ -128,6 +128,7 @@ function endSeason(){
   if(SV.obj){if(ok){SV.cash+=SV.obj.reward;SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}
   if(nsr<SV.sr)SV.rep=clamp(SV.rep+6,0,100);else if(nsr>SV.sr)SV.rep=clamp(SV.rep-8,0,100);
   if(SV.sr==='A'&&rank===1)SV.rep=clamp(SV.rep+6,0,100);
+  fansSeason(rank,nsr,SV.sr);
   SV.next.prize=prize;SV.next.objOk=!!ok;
   seasonEndDyn(rank);   // sfida della dirigenza, reazione delle rivali
   seasonAwards(rank,order);
@@ -156,6 +157,7 @@ function newSeason(){
 function recordResult(win,su,so){
   SV.susp=null;   // la partita e' finita: niente piu' da riprendere
   let msg='';SV.played=(SV.played||0)+1;
+  const incPre=matchIncome(win);   // l'incasso di questa partita si calcola con i tifosi di prima del risultato
   if(SV.event==='camp'){
     const names=SV.mem[SV.sr],ui=names.indexOf(SV.team);let opp0='';
     for(const [i,j] of SV.sched[SV.round]){
@@ -166,11 +168,14 @@ function recordResult(win,su,so){
     }
     SV.round++;
     leagueAdvance();   // giocano anche le altre serie
+    const inc0=matchIncome(win);fansBump(win,SV.riv&&opp0===SV.riv?(win?1.5:-1):0);   // i tifosi cambiano dopo la partita; l'incasso di questa si calcola con quelli di prima
+    fansBump(win,SV.riv&&opp0===SV.riv?(win?1.5:-1):0);
     const dby=derbyAfter(opp0,win);   // rivalita': incasso, morale e reputazione
     if(SV.round===Math.floor(SV.sched.length/2)){retireCheck('mid');leagueRetAnnounce();leagueHalf();}   // a meta' stagione arrivano gli annunci di ritiro
     if(SV.round>=SV.sched.length){endSeason();msg=`Stagione ${SV.season} conclusa: ${SV.next.rank}° posto. ${SV.next.short}`+dby;}
     else msg=`Giornata ${SV.round} di ${totalRounds()} conclusa: ${myRank()}° in classifica. Prossima: ${nextMatch().name}.`+dby;
   }else{
+    fansBump(win,win?1:0);   // anche la coppa europea muove i tifosi
     if(win){
       {const pz=Math.round(EU_PRIZE[Math.min(2,SV.eu.round)]*SR_K.A);SV.cash+=pz;SV.eu.cash=(SV.eu.cash|0)+pz;}   // premio del turno superato
       SV.eu.round++;
@@ -187,7 +192,7 @@ function recordResult(win,su,so){
   }
   SV.tTeam=false;
   // incasso, morale, affiatamento, condizione: chi ha giocato si stanca, la settimana fa recuperare (di piu' con la fisioterapia)
-  const inc=matchIncome(win),wg=wageBill();SV.cash+=inc-wg;SV.lastInc=inc-wg;SV.lastWage=wg;
+  const inc=incPre,wg=wageBill();SV.cash+=inc-wg;SV.lastInc=inc-wg;SV.lastWage=wg;
   // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso gli stipendi arrivano in ritardo e l'umore cala
   SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-(SV.cash<0?3:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede'),0,100);
   for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+staffLv('fit'),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare

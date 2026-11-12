@@ -157,6 +157,7 @@ function shortSur(sur){if(!sur||sur.length<=13)return sur||'';const w=sur.split(
 function applySurnames(list){
   const cnt={};for(const p of list)if(p.sur)cnt[shortSur(p.sur)]=(cnt[shortSur(p.sur)]||0)+1;
   for(const p of list){
+    if(p.nick){p.name=p.nick;continue;}   // il soprannome scelto da te vale al posto del cognome
     if(!p.sur)continue;
     const lb=p.label||'',fn=(lb.endsWith(p.sur)?lb.slice(0,lb.length-p.sur.length):lb).trim().split(' ')[0]||'';
     const ss=shortSur(p.sur);p.name=cnt[ss]>1&&fn?ss+' '+fn[0]+'.':ss;
@@ -165,7 +166,7 @@ function applySurnames(list){
 // la tua squadra: 7 in campo scelti tra i migliori, gli altri in panchina
 function setSquad(list){
   SQ.length=0;
-  list.forEach((o,i)=>{const p=newPlayer(0,i,{name:o.n,label:o.label,full:o.full,gen:o.gen,f:o.f,role:o.r,tl:o.tl,tf:o.tf,tv:o.tv,age:o.age,s:Object.assign({},o.s),trait:o.trait,dev:o.dev,cond:o.cond,sk:o.sk,car:o.car,pos:o.pos});p.sur=o.sur;p.inj=o.inj|0;p.tr=!!o.tr;if(o.star){p.star=true;p.nat=o.nat;}if(o.ae)p.ae=1;p.aw=o.aw||[];p.ra=o.ra;p.ret=o.ret|0;p.retHold=o.retHold|0;p.injC=o.injC|0;p.injBig=o.injBig|0;p.idle=o.idle|0;p.mood=o.mood|0;p.prom=o.prom|0;p.rw=o.rw|0;if(o.spec&&SPECS[o.spec])p.spec=o.spec;if(o.goal)p.goal=o.goal;p.sad=o.sad|0;p.ext=o.ex|0;p.pri=o.pri?1:0;p.hist=Array.isArray(o.hi)?o.hi:[];SQ.push(p);});
+  list.forEach((o,i)=>{const p=newPlayer(0,i,{name:o.n,label:o.label,full:o.full,gen:o.gen,f:o.f,role:o.r,tl:o.tl,tf:o.tf,tv:o.tv,age:o.age,s:Object.assign({},o.s),trait:o.trait,dev:o.dev,cond:o.cond,sk:o.sk,car:o.car,pos:o.pos});p.sur=o.sur;p.inj=o.inj|0;p.tr=!!o.tr;if(o.star){p.star=true;p.nat=o.nat;}if(o.ae)p.ae=1;p.aw=o.aw||[];p.ra=o.ra;p.ret=o.ret|0;p.retHold=o.retHold|0;p.injC=o.injC|0;p.injBig=o.injBig|0;p.idle=o.idle|0;p.mood=o.mood|0;p.prom=o.prom|0;p.rw=o.rw|0;if(o.spec&&SPECS[o.spec])p.spec=o.spec;if(o.goal)p.goal=o.goal;p.sad=o.sad|0;p.ext=o.ex|0;p.nick=o.nk||'';p.lm=o.lm||null;p.ti=o.ti|0;p.tk=o.tk||0;p.pri=o.pri?1:0;p.hist=Array.isArray(o.hi)?o.hi:[];SQ.push(p);});
   applySurnames(SQ);
   setLineup(pickSeven(SQ,p=>p.role,mean9).map(p=>p.id));
 }
@@ -234,5 +235,5 @@ function applyForm(){
 }
 function restoreForm(){for(const p of SQ.concat(T[1]))if(p.b){p.s=p.b;p.b=null;}}
 function newGame(){G.injured=[];for(const p of SQ.concat(T[1])){p.st=p.t===0&&p.cond!==undefined?Math.round(62+0.38*p.cond):100;   // chi arriva stanco dalla settimana parte con meno energia
-  p.spr=false;p.run=0;p.miss=0;p.hot=false;p.cold=false;p.m=newCounters();}G.score=[0,0];G.pointNo=1;G.nextRec=1;G.startRec=1;G.halfDone=false;G.dir=[1,-1];G.seen={att:{},def:{}};G.obs={u:0,d:0,n:0};G.resetH=null;G.duo={};G.forfeit=false;G.target=MATCH_TARGET;setWind(0,0);resetStats();}
+  p.spr=false;p.run=0;p.miss=0;p.hot=false;p.cold=false;p.m=newCounters();}G.score=[0,0];G.pointNo=1;G.nextRec=1;G.startRec=1;G.halfDone=false;G.dir=[1,-1];G.seen={att:{},def:{}};G.obs={u:0,d:0,n:0};G.resetH=null;G.duo={};G.forfeit=false;G.target=MATCH_TARGET;G.tmo=[0,0];setWind(0,0);resetStats();}
 

@@ -108,10 +108,7 @@ function scoutReport(o){
 // dopo ogni partita: intesa; a inizio stagione: obiettivi, decadimento dell'intesa
 function progAfterMatch(){duoBump();}
 function progSeasonStart(){duoDecay();goalsAssign();}
-// pannelli (usati dal Club e dalla Rosa)
-function staffHTML(){
-  return `<h3>Staff tecnico</h3>${Object.keys(STAFF).map(k=>{const lv=staffLv(k),c=staffCost(k);return `<div class="fac"><div><b>${STAFF[k].n}</b> <span class="lv">${'■'.repeat(lv)}${'□'.repeat(STAFF_MAX-lv)}</span><small>${STAFF[k].d}. Stipendio ${STAFF_WAGE[lv]} a partita${lv<STAFF_MAX?` (con il livello successivo ${STAFF_WAGE[lv+1]})`:''}.</small></div><button type="button" class="sec" data-staff="${k}"${lv>=STAFF_MAX||SV.cash<c?' disabled':''}>${lv>=STAFF_MAX?'Massimo':(lv?'Migliora · ':'Ingaggia · ')+c}</button></div>`;}).join('')}<p class="fup">Gli effetti sugli allenamenti non si sommano oltre +50% in totale (con il campo di allenamento). Stipendi dello staff a partita: ${staffWage()}.</p>`;
-}
+// pannelli (usati dal Club e dalla Rosa; lo staff e' disegnato in 04-club.js)
 function goalsHTML(){
   const L=SQ.filter(p=>p.goal&&p.goal.s===SV.season);
   if(!L.length)return '<h3>Obiettivi dei giocatori</h3><p>Nessun obiettivo in questa stagione.</p>';

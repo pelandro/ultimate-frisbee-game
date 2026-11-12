@@ -95,6 +95,21 @@ function simPoint(){
   return true;
 }
 $('bSimPt').addEventListener('click',()=>{if(G.mode==='ready')simPoint();});
+/* TIMEOUT (10-sim/18-timeout.js): il campo si ferma, lo stall riparte da zero e si puo' cambiare lo schema d'attacco */
+let toSch0=null;
+$('bTO').addEventListener('click',()=>{
+  if(!callTimeout(0))return;
+  G.paused=true;G.schemeOpen=true;drag=null;aimPid=null;G.high=false;toSch0=G.sch.att;
+  $('toTxt').textContent=`Energia +${TMO_REST} · stall a zero · uno a partita`;
+  $('tout').classList.remove('hidden');
+});
+$('toSch').addEventListener('click',()=>{$('tout').classList.add('hidden');openSchemes(false,true);$('mSub').textContent='Timeout: il nuovo schema d’attacco vale da subito.';$('hDef').parentElement.classList.add('hidden');});
+function toResume(){
+  $('tout').classList.add('hidden');if(!$('menu').classList.contains('hidden'))$('menu').classList.add('hidden');
+  if(toSch0!==null&&toSch0!==G.sch.att)timeoutRescheme();
+  toSch0=null;G.paused=false;G.schemeOpen=false;
+}
+$('toGo').addEventListener('click',toResume);
 for(const [b,sc] of [['mkBack','home'],['clBack','home'],['hMarket','market'],['hClub','club']])$(b).addEventListener('click',()=>showScreen(sc));
 const bSub=$('bSub');
 $('subBox').addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;tapSwap(+b.dataset.id);renderLineupBox();});

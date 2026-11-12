@@ -36,6 +36,7 @@ function careerSelfTest(seasons,seed){
         cashMax=Math.max(cashMax,SV.cash);cashMin=Math.min(cashMin,SV.cash);
         // ogni giornata: niente valori impossibili
         for(const p of SQ){if(!isFinite(ovrX(p))||KEYS.some(k=>!(p.s[k]>=25&&p.s[k]<=99))||!(p.cond>=0&&p.cond<=100))bad.push(`S${s}: ${pname(p)}`);}
+        if(!(fansOf()>=0&&fansOf()<=100)||!isFinite(fansOf()))bad.push(`S${s}: tifosi fuori scala`);
         if(SQ.length<7||SQ.length>28||SV.lineO.length!==7||SV.lineD.length!==7)bad.push(`S${s}: rosa o linee non valide (${SQ.length})`);
         if(Object.keys(FAC).some(k=>facLv(k)<0||facLv(k)>FAC_MAX))bad.push(`S${s}: livello di una struttura fuori scala`);
         if(!isFinite(SV.cash))bad.push(`S${s}: crediti non validi`);
@@ -58,6 +59,11 @@ function careerSelfTest(seasons,seed){
     const capRow=Math.round(100*atCap/Math.max(1,nst))+'% al massimo, età media '+(ageS/Math.max(1,top7.length)).toFixed(1);
     const others=Object.values(SV.rost).filter(r=>r&&r.length).map(r=>rosterPower(r));
     BCHAL.bil.ok=bilOk0;
+    // tifosi: una vittoria li alza piu' di quanto una sconfitta li abbassi con Tribune alte, e a parita' di risultato le Tribune aiutano
+    {const st0=SV.fac.stad,f0=SV.fans,bump=(lv,win)=>{SV.fac.stad=lv;SV.fans=50;fansBump(win);return SV.fans-50;};
+     const w0=bump(0,true),w5=bump(5,true),l0=bump(0,false),l5=bump(5,false);SV.fac.stad=st0;SV.fans=f0;
+     const ok=w5>w0&&l5>l0&&l5<=0&&l0<-1&&w0>1;
+     rows.push(row('Tifosi: vittoria e sconfitta con Tribune al livello 0 e al livello 5',`+${w0.toFixed(1)}/${l0.toFixed(1)} e +${w5.toFixed(1)}/${l5.toFixed(1)}`,ok,'le Tribune alzano le vittorie e ammorbidiscono le sconfitte'));}
     // programma automatico, bilancio previsionale, storico dei progressi (la stagione nuova e' appena cominciata: c'e' una sessione disponibile)
     SV.prog={on:true,team:'auto'};for(const p of SQ)p.tr=false;SV.tTeam=false;SV.played=0;
     const at=autoTrain(),progOk=!!at&&SV.tTeam&&SQ.filter(p=>p.tr).length===Math.min(3,SQ.length)&&autoTrain()===null;

@@ -76,6 +76,14 @@ $('eBody').addEventListener('click',e=>{
 });
 for(const [b,sc] of [['rBack','home'],['eBack','home'],['tBack','home']])$(b).addEventListener('click',()=>showScreen(sc));
 $('rBox').addEventListener('click',e=>{
+  const rv=e.target.closest('[data-rv]');if(rv){rView=rv.dataset.rv;cardOpen=null;try{localStorage.setItem('ultimate-vista-rosa',rView);}catch(_){}renderRoster();return;}
+  const cd=e.target.closest('[data-card]');if(cd){cardOpen=+cd.dataset.card;sellArm=null;nickEdit=null;rosterMsg='';renderRoster();return;}
+  if(e.target.closest('.pcx')||(e.target.classList&&e.target.classList.contains('pcov'))){cardOpen=null;sellArm=null;nickEdit=null;rosterMsg='';renderRoster();return;}
+  const rs=e.target.closest('[data-rest]');if(rs){const p=SQ[+rs.dataset.rest];if(p){rosterMsg=restPlayer(p);persist();}renderRoster();return;}
+  const tk=e.target.closest('[data-talk]');if(tk){const p=SQ[+tk.dataset.talk];if(p){rosterMsg=talkPlayer(p);persist();}renderRoster();return;}
+  const nk=e.target.closest('[data-nick]');if(nk){nickEdit=nickEdit===+nk.dataset.nick?null:+nk.dataset.nick;renderRoster();const i=$('nkIn');if(i){i.focus();i.select();}return;}
+  const nx=e.target.closest('[data-nkx]');if(nx){nickEdit=null;renderRoster();return;}
+  const no=e.target.closest('[data-nkok]');if(no){const p=SQ[+no.dataset.nkok],i=$('nkIn');if(p&&i){setNick(p,i.value);rosterMsg=p.nick?`Da adesso ${pname(p)} è «${p.nick}» in campo.`:`${pname(p)} torna a chiamarsi per cognome.`;persist();}nickEdit=null;renderRoster();return;}
   const pri=e.target.closest('[data-pri]');if(pri){const p=SQ[+pri.dataset.pri];if(p){if(p.pri)p.pri=0;else if(SQ.filter(q=>q.pri).length>=3)rosterMsg='Le priorità di allenamento sono già 3: togline una prima di aggiungerne un’altra.';else p.pri=1;persist();}renderRoster();return;}
   const rf=e.target.closest('[data-rf]');if(rf){rFilt=rf.dataset.rf;renderRoster();return;}
   const dt=e.target.closest('[data-dtab]');if(dt){const p=SQ[+dt.dataset.pid];if(p)detTab[p.full]=dt.dataset.dtab;renderRoster();return;}
@@ -88,7 +96,7 @@ $('rBox').addEventListener('click',e=>{
   const se=e.target.closest('[data-sell]');
   if(se){
     const id=+se.dataset.sell;if(sellArm!==id){sellArm=id;renderRoster();return;}
-    sellArm=null;const nm=SQ[id].label||SQ[id].name,v=sellValue(SQ[id]);openDet.clear();
+    sellArm=null;cardOpen=null;const nm=SQ[id].label||SQ[id].name,v=sellValue(SQ[id]);openDet.clear();
     if(sellPlayer(id)){rosterMsg=`${nm} ceduto per ${v} crediti.`;persist();}
     renderRoster();return;
   }

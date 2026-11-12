@@ -77,7 +77,7 @@ function signPlayer(i){
   return true;
 }
 // chi lascia la squadra (ceduto o ritirato) resta nelle classifiche di sempre del club
-function keepFormer(p){const c=p.car;if(!c||!c.mp)return;SV.former.push({name:p.label||p.name,mp:c.mp,g:c.g,a:c.a,b:c.b,aw:(p.aw||[]).length});if(SV.former.length>80)SV.former.sort((a,b)=>(b.g+b.a+b.b)-(a.g+a.a+a.b)).length=80;}
+function keepFormer(p){const c=p.car;if(!c||!c.mp)return;SV.former.push({name:(p.label||p.name)+(p.nick?' «'+p.nick+'»':''),mp:c.mp,g:c.g,a:c.a,b:c.b,aw:(p.aw||[]).length});if(SV.former.length>80)SV.former.sort((a,b)=>(b.g+b.a+b.b)-(a.g+a.a+a.b)).length=80;}
 function sellPlayer(id){
   const p=SQ[id];if(!p||SQ.length<=SQ_MIN)return false;
   keepFormer(p);

@@ -14,7 +14,7 @@ function genPlayer(level,age,seedStr,potB){
   return {n:nm,label:nm+' '+sur,full,sur,r:role,age,tl,tf,tv,s:st,gen:true,f:FEM_N.has(nm),trait:traitFor(full,st,role),dev:devOf(full),sk:0,cond:100,car:null};
 }
 // la rosa come dati (cio' che si salva): una scheda per giocatore
-const squadData=()=>SQ.map(p=>({n:p.name,label:p.label,full:p.full,sur:p.sur||'',r:p.role,age:p.age,tl:p.tl,tf:p.tf,tv:p.tv,s:Object.assign({},p.b||p.s),gen:p.gen,f:!!p.f,trait:p.trait,dev:p.dev,sk:p.sk,cond:Math.round(p.cond),inj:p.inj|0,tr:!!p.tr,car:p.car||null,star:p.star||undefined,nat:p.nat||undefined,pos:p.pos||undefined,ae:p.ae||undefined,aw:p.aw&&p.aw.length?p.aw:undefined,ra:p.ra,ret:p.ret||undefined,retHold:p.retHold||undefined,injC:p.injC||undefined,injBig:p.injBig||undefined,idle:p.idle||undefined,mood:p.mood||undefined,prom:p.prom||undefined,rw:p.rw||undefined,spec:p.spec||undefined,goal:p.goal||undefined,sad:p.sad||undefined,ex:p.ext||undefined,pri:p.pri||undefined,hi:p.hist&&p.hist.length?p.hist:undefined}));
+const squadData=()=>SQ.map(p=>({n:p.name,label:p.label,full:p.full,sur:p.sur||'',r:p.role,age:p.age,tl:p.tl,tf:p.tf,tv:p.tv,s:Object.assign({},p.b||p.s),gen:p.gen,f:!!p.f,trait:p.trait,dev:p.dev,sk:p.sk,cond:Math.round(p.cond),inj:p.inj|0,tr:!!p.tr,car:p.car||null,star:p.star||undefined,nat:p.nat||undefined,pos:p.pos||undefined,ae:p.ae||undefined,aw:p.aw&&p.aw.length?p.aw:undefined,ra:p.ra,ret:p.ret||undefined,retHold:p.retHold||undefined,injC:p.injC||undefined,injBig:p.injBig||undefined,idle:p.idle||undefined,mood:p.mood||undefined,prom:p.prom||undefined,rw:p.rw||undefined,spec:p.spec||undefined,goal:p.goal||undefined,sad:p.sad||undefined,ex:p.ext||undefined,nk:p.nick||undefined,lm:p.lm||undefined,ti:p.ti||undefined,tk:p.tk||undefined,pri:p.pri||undefined,hi:p.hist&&p.hist.length?p.hist:undefined}));
 const byFull=f=>SQ.find(p=>p.full===f);
 const idsOf=names=>(names||[]).map(byFull).filter(Boolean).map(p=>p.id);
 const namesOf=ids=>ids.map(id=>SQ[id]&&SQ[id].full).filter(Boolean);
@@ -51,6 +51,8 @@ function careerInit(){   // campi nuovi della carriera (anche per i salvataggi p
   if(SV.rep===undefined)SV.rep=SV.sr==='A'?60:(SV.sr==='B'?40:20);
   if(!SV.fac)SV.fac={camp:0,fis:0,viv:0};
   if(!SV.staff)SV.staff={};if(!SV.duo)SV.duo={};if(SV.tInt===undefined)SV.tInt=1;if(!SV.facKeep)SV.facKeep={};if(SV.dom===undefined)SV.dom=0;if(SV.facRnd===undefined){SV.facRnd=SV.event==='camp'?(SV.round|0):0;SV.facDays={};for(const k in (SV.fac||{}))if((SV.fac[k]|0)>=3)SV.facDays[k]=SV.facRnd;}   // salvataggi di prima: le strutture gia' al livello 3 contano come mantenute da inizio stagione   // carriera dinamica: intensita' normale, nessun premio di mantenimento maturato, nessun dominio
+  if(SV.fans===undefined)SV.fans=SV.rep;
+  if(!SV.tips)SV.tips={};
   if(SV.chem===undefined)SV.chem=50;if(SV.mor===undefined)SV.mor=60;
   if(!SV.alerts)SV.alerts=[];
   if(!SV.news)SV.news=[];if(!SV.hist)SV.hist=[];if(!SV.hof)SV.hof=[];if(!SV.rec)SV.rec={};if(!SV.troph)SV.troph={};if(!SV.former)SV.former=[];

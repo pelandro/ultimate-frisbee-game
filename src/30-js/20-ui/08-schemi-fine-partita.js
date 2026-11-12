@@ -82,6 +82,7 @@ function showOver(){
   $('over').classList.remove('hidden');
 }
 $('bGo').addEventListener('click',()=>{
+  if(toSch0!==null){toResume();return;}   // dal timeout: si riprende la partita
   $('menu').classList.add('hidden');G.schemeOpen=false;
   if(G.mode==='ready')placeTeams(G.poss);
 });

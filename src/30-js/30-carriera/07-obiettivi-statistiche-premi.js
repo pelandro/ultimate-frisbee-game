@@ -12,7 +12,7 @@ const carOf=p=>p.car||(p.car={mp:0,g:0,a:0,b:0,ss:{mp:0,g:0,a:0,b:0},yrs:0});
 function addStats(p,g,a,b){const c=carOf(p);c.mp++;c.g+=g;c.a+=a;c.b+=b;c.ss.mp++;c.ss.g+=g;c.ss.a+=a;c.ss.b+=b;}
 const seasonScore=c=>c?c.ss.g*2+c.ss.a*2+c.ss.b*3:0;
 function recordMatchStats(){   // dopo una partita giocata: mete, assist e difese vere
-  for(const p of SQ)if(p.m.pts>0)addStats(p,p.m.g|0,p.m.a|0,p.m.dif|0);
+  for(const p of SQ){if(p.m.pts>0){addStats(p,p.m.g|0,p.m.a|0,p.m.dif|0);p.lm={g:p.m.g|0,a:p.m.a|0,b:p.m.dif|0};}else p.lm=null;}   // lm: l'ultima partita, per la scheda
 }
 const BLK_MATCH=5;
 function simMatchStats(goals){   // dopo una partita simulata: mete e assist distribuiti tra chi sarebbe sceso in campo, secondo ruolo e qualita'
@@ -20,7 +20,8 @@ function simMatchStats(goals){   // dopo una partita simulata: mete e assist dis
   const g={},a={},wp=(arr,w)=>{let t=0;const ws=arr.map(x=>{const v=Math.max(0.1,w(x));t+=v;return v;});let r=Math.random()*t;for(let i=0;i<arr.length;i++){r-=ws[i];if(r<=0)return arr[i];}return arr[0];};
   for(let i=0;i<goals;i++){const sc=wp(set,p=>(p.role==='H'?0.5:1.5)*(rate(p.s,'C')-30)),as=wp(set.filter(p=>p!==sc),p=>(p.role==='H'?1.6:0.6)*(rate(p.s,'H')-30));g[sc.full]=(g[sc.full]||0)+1;a[as.full]=(a[as.full]||0)+1;}
   const b={};for(let i=0;i<Math.round(BLK_MATCH*carLen()/MATCH_TARGET);i++){const d=wp(set,p=>rate(p.s,'D')-35);b[d.full]=(b[d.full]||0)+1;}   // difese: in media quante in una partita giocata
-  for(const p of set)addStats(p,g[p.full]|0,a[p.full]|0,b[p.full]|0);
+  for(const p of SQ)p.lm=null;
+  for(const p of set){addStats(p,g[p.full]|0,a[p.full]|0,b[p.full]|0);p.lm={g:g[p.full]|0,a:a[p.full]|0,b:b[p.full]|0};}
 }
 /* ---- PREMI DI FINE STAGIONE (del tuo campionato) ----
    Le statistiche dei tuoi giocatori sono quelle vere (partite giocate e simulate); quelle delle altre squadre vengono ricostruite dai risultati:
@@ -65,6 +66,7 @@ function seasonAwards(rank,order){   // a fine stagione: premi del campionato, s
   let mine=0;
   for(const a of aw)if(a.mine){mine++;SV.rep=clamp(SV.rep+2,0,100);SV.cash+=10;const p=a.full?byFull(a.full):null;if(p){p.aw=p.aw||[];p.aw.push({s:SV.season,k:a.k});}}
   for(const q of best7)if(q.mine){const p=byFull(q.full);if(p){p.aw=p.aw||[];p.aw.push({s:SV.season,k:'Squadra ideale'});}}
+  if(rank===1)for(const p of SQ)if(p.car&&p.car.ss.mp>=3)p.ti=(p.ti|0)+1;   // chi ha contribuito al titolo lo porta nella scheda
   const tr=SV.troph;if(rank===1)tr[SV.sr]=(tr[SV.sr]|0)+1;if(SV.next&&SV.next.sr<SV.sr)tr.promo=(tr.promo|0)+1;tr.aw=(tr.aw|0)+mine;tr.b7=(tr.b7|0)+best7.filter(q=>q.mine).length;
   const champs={};if(order)for(const sr of ['A','B','C'])champs[sr]=order[sr][0];
   SV.hist.unshift({season:SV.season,sr:SV.sr,rank,n,w:t.w,l:t.l,mvp:mvp?(mvp.label||mvp.name):'',mvpS:mvp&&mvp.car?`${mvp.car.ss.g} mete, ${mvp.car.ss.a} assist, ${mvp.car.ss.b} difese`:'',obj:SV.obj?rank<=SV.obj.tgt:false,short:SV.next?SV.next.short:'',aw,best7,champs});

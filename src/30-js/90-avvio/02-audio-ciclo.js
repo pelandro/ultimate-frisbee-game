@@ -208,6 +208,7 @@ document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('but
 window.addEventListener('keydown',()=>AUD.init(),{capture:true});
 for(const id of ['tSnd','sSnd','opSnd','paSnd'])$(id).addEventListener('click',()=>AUD.setOn(!AUD.isOn()));
 $('sRot').addEventListener('click',()=>{setRotPref(!rotPref);syncToggles();});
+$('opTips').addEventListener('click',()=>{const on=!tipsOn();try{localStorage.setItem('ultimate-suggerimenti',on?'1':'0');}catch(e){}if(on&&SV&&SV.tips)SV.tips={};syncToggles();});   // riaccesi, i fumetti si rivedono tutti
 for(const id of ['sWind','opWind'])$(id).addEventListener('click',()=>{setWindOn(G.opt.wind===false);syncToggles();if(!$('home').classList.contains('hidden'))renderHome();});
 for(const id of ['sDef','opDef','paDef'])$(id).addEventListener('click',()=>{setDefMode((G.opt.def+1)%3);syncToggles();});
 for(const id of ['sCine','opCine','paCine'])$(id).addEventListener('click',()=>{G.opt.cine=!G.opt.cine;try{localStorage.setItem('ultimate-stacchi',G.opt.cine?'1':'0');}catch(e){}syncToggles();});
@@ -226,6 +227,7 @@ function syncToggles(){   // audio e stacchi laterali si cambiano da piu' punti 
   for(const id of ['opDef','paDef'])$(id).textContent='Difesa: '+DEF_LBL[G.opt.def].toLowerCase();
   $('sDefS').textContent=DEF_LBL[G.opt.def]+': '+DEF_TXT[G.opt.def];
   $('sRotS').textContent=rotPref?'Accesa: in verticale il gioco si gira da solo':'Spenta: in verticale compare «Gira lo schermo»';
+  $('opTips').textContent='Suggerimenti: '+(tipsOn()?'sì':'no');
   const wOn=G.opt.wind!==false;$('opWind').textContent='Vento: '+(wOn?'sì':'no');$('sWindS').textContent=wOn?'Acceso: ogni partita ha il suo meteo':'Spento: sempre calma';
 }
 syncToggles();

@@ -20,6 +20,8 @@ catch(e){
   await page.addLocatorHandler(page.locator('#alerts:not(.hidden) #alX'),async()=>{await page.click('#alX');});
   // anche gli imprevisti compaiono da soli (di rado): scelgo la prima risposta possibile e chiudo
   await page.addLocatorHandler(page.locator('#evt:not(.hidden)'),async()=>{if(!(await page.locator('#evOk').isVisible()))await page.click('#evOpts button:not([disabled]) >> nth=0');await page.click('#evOk');});   // risponde e chiude: Playwright aspetta che il riquadro sparisca
+  // i fumetti di primo accesso della carriera (Rosa, Mercato, Club...) si chiudono con «OK»
+  await page.addLocatorHandler(page.locator('#tip:not(.hidden) #tipOk'),async()=>{await page.click('#tipOk');});
   // il cartello di presentazione delle partite che contano (derby, finali) si chiude con un tocco
   await page.addLocatorHandler(page.locator('#intro:not(.hidden) #inGo'),async()=>{await page.click('#inGo');});
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
@@ -63,7 +65,7 @@ catch(e){
     await page.click('#opX');if(!(await meteo()))throw new Error('riacceso il vento il meteo deve tornare');
   });
   await step('rosa, allenamenti, mercato, club, classifica, opzioni',async()=>{
-    await page.click('#hRoster');await vis('#roster');await page.click('tr.pl >> nth=0');await vis('tr.dt');await page.click('#rBox [data-dtab="svi"]');   // gli indirizzi e il rapporto degli osservatori stanno nella parte «Sviluppo» della scheda
+    await page.click('#hRoster');await vis('#roster');await page.click('#rBox [data-rv="t"]');await page.click('tr.pl >> nth=0');await vis('tr.dt');await page.click('#rBox [data-dtab="svi"]');   // gli indirizzi e il rapporto degli osservatori stanno nella parte «Sviluppo» della scheda
     if(await page.locator('.dspec button[data-spec]').count()!==6)throw new Error('gli indirizzi di sviluppo devono essere sei');
     if(!(await page.locator('tr.dt .scr').isVisible()))throw new Error('manca il rapporto di scouting nella scheda');
     await page.click('#rBack');
@@ -76,7 +78,7 @@ catch(e){
     if(await page.locator('#tList .prow:not([disabled])').count()>await page.locator('#tList .prow').count()-3)throw new Error('il programma automatico non ha fatto i lavori individuali');
     await page.click('#tTeamBox [data-prog]');await page.click('#tBack');
     await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#mkBack');
-    await page.click('#hClub');await vis('#club');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fac').count()!==10)throw new Error('devono esserci sei strutture e quattro figure dello staff');
+    await page.click('#hClub');await vis('#club');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==6||await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci sei strutture e quattro figure dello staff');
     if(await page.locator('#clBox [data-staff]').count()!==4)throw new Error('le figure dello staff devono essere quattro');
     await page.click('#clTabs [data-k="hon"]');await page.click('#clTabs [data-k="rec"]');await page.click('#clBack');
     await page.click('#hEvent');await vis('#event');await page.click('#evTabs [data-sr="A"]');await page.click('#evTabs [data-sr="B"]');await vis('#eBody table.rt');
@@ -87,6 +89,9 @@ catch(e){
   });
   await step('rosa: filtri, ordinamento e scheda in tre parti; mercato: filtro e ordinamento; guida contestuale',async()=>{
     await vis('#home');await page.click('#hRoster');await vis('#roster');
+    await page.click('#rBox [data-rv="c"]');   // la vista scelta resta salvata: qui si controllano le carte
+    if(await page.locator('#rBox .pgrid .pcard').count()<7)throw new Error('la vista a carte non mostra la rosa');
+    await page.click('#rBox [data-rv="t"]');   // il resto del percorso usa la tabella
     const all=await page.locator('#rBox tr.pl').count();
     await page.click('#rBox [data-rf="H"]');const hs=await page.locator('#rBox tr.pl').count();
     if(!(hs>0&&hs<all))throw new Error('il filtro Handler non restringe la rosa ('+hs+' su '+all+')');
@@ -95,6 +100,13 @@ catch(e){
     if(ages.some((a,i)=>i&&a<ages[i-1]))throw new Error('ordinamento per età non rispettato: '+ages.join(','));
     await page.click('#rBox .dbtn >> nth=0');
     for(const t of ['pre','svi','att']){await page.click('#rBox [data-dtab="'+t+'"] >> nth=0');await vis('#rBox [data-dtab="'+t+'"].on >> nth=0');}   // puo' esserci piu' di una scheda aperta
+    // vista a carte: scheda a tutto schermo, azioni e soprannome
+    await page.click('#rBox [data-rv="c"]');await page.click('#rBox [data-card] >> nth=0');await vis('#rBox .pcpanel');
+    for(const a of ['rest','talk','nick'])if(!(await page.locator('#rBox [data-'+a+']').count()))throw new Error('manca l\'azione '+a+' nella scheda');
+    await page.click('#rBox [data-nick]');await page.fill('#nkIn','Zio');await page.click('#rBox [data-nkok]');
+    if(!/Zio/.test(await page.locator('#rBox .pcti h3').innerText()))throw new Error('il soprannome non compare nella scheda');
+    await page.click('#rBox [data-dtab="pre"]');if(await page.locator('#rBox .dp3 .dpc').count()!==3)throw new Error('le statistiche non sono in tre colonne');
+    await page.click('#rBox .pcx');
     await page.click('#roster .shelp');await vis('#guide');if(!(await page.locator('#gdBody li.ghi').count()))throw new Error('la guida contestuale non evidenzia la voce della Rosa');
     await page.click('#gdX');await page.click('#rBack');
     await page.click('#hMarket');await vis('#market');const m0=await page.locator('#mkBox tr').count();
@@ -165,6 +177,18 @@ catch(e){
   });
   await step('partita veloce: avvio, pausa, abbandono',async()=>{
     await page.click('#tQuick');await vis('#quick');await page.click('#qPlay');await page.waitForTimeout(500);
+    await page.keyboard.press('Escape');await vis('#pause');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
+  });
+  await step('timeout: uno a partita, ferma il gioco e si riprende',async()=>{
+    await page.click('#tQuick');await vis('#quick');await page.selectOption('#qS','0');await page.click('#qPlay');await page.waitForTimeout(600);
+    if(await page.locator('#menu').isVisible())await page.click('#bGo');
+    await page.waitForSelector('#bTO:not(.hidden)',{timeout:40000});   // compare quando hai il disco in mano
+    await page.click('#bTO');await vis('#tout');
+    const t0=await page.locator('#stall').isVisible();   // ferma: l'orologio dello stall non avanza mentre il riquadro e' aperto
+    await page.waitForTimeout(1200);if(!(await page.locator('#tout').isVisible()))throw new Error('il riquadro del timeout si e\' chiuso da solo');
+    await page.click('#toGo');await page.waitForTimeout(300);
+    if(await page.locator('#tout').isVisible())throw new Error('dopo «Riprendi» il riquadro resta aperto');
+    await page.waitForTimeout(500);if(await page.locator('#bTO:not(.hidden)').count())throw new Error('il secondo timeout non dovrebbe essere disponibile');
     await page.keyboard.press('Escape');await vis('#pause');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
   });
   await step('pull a tempo, difesa automatica e tasto «Salta»',async()=>{

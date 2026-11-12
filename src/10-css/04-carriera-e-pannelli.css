@@ -167,7 +167,7 @@
 .ali .schrow{margin-top:5px}.ali .schrow .sec,.ali .schrow .go{font-size:15px;padding:4px 10px}
 .tg{display:inline-block;font-size:12px;line-height:1;padding:2px 5px;margin-left:5px;border:2px solid #000;vertical-align:middle;white-space:nowrap}
 .tg.r{background:#c9a0ff;color:#1a1c2c}.tg.m{background:#ff9a3a;color:#1a1c2c}
-#half .hbs .sec{font-size:19px;padding:9px 18px}
+#half .hbs .sec,#tout .hbs .sec{font-size:19px;padding:9px 18px}
 @media (min-width:700px){#ut .spanel{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);column-gap:18px;align-items:start}
 #ut .spanel>*{grid-column:1/-1}#ut #uMenu{grid-column:1;grid-row:4/span 4;margin-top:0}
 #ut .spanel>.schrow,#ut #uObj,#ut .spanel>.orow,#ut #uDiffN{grid-column:2;margin-top:0}#ut #uObj .chal:first-child{border-top:0;padding-top:0}}

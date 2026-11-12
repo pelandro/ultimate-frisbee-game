@@ -7,8 +7,7 @@
       <div class="dcard" id="hNext"></div>
       <div class="dcard" id="hTab"></div>
       <div class="dbars" id="hBars"></div>
-      <p class="dnews" id="hObj"></p>
-      <p class="dnews" id="hNews"></p>
+      <div class="dtick" id="hTick"><span></span></div>
     </div>
     <div class="hr">
       <div class="hrow"><button class="hbtn hp" id="hPlay" type="button"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><ellipse cx="16" cy="16" rx="13" ry="6.5"/><ellipse cx="16" cy="16" rx="6" ry="2.8"/></svg><span><strong id="hPlayT">Inizia partita</strong><small id="hPlayS"></small></span></button><button class="hbtn hsim" id="hSim" type="button" aria-label="Simula partita"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l9 8-9 8zM17 8l9 8-9 8z"/></svg><span><strong>Simula</strong><small>partita</small></span></button></div>
@@ -23,6 +22,7 @@
   </div>
 </div>
 
+<div id="tip" class="overlay hidden"><div class="panel tippanel"><p id="tipTxt"></p><div class="schrow"><button id="tipOk" class="go" type="button">OK</button></div></div></div>
 <div id="slots" class="screen hidden"><div class="spanel">
   <div class="shead"><button class="back" id="csBack" type="button">‹ Indietro</button><h2>Carriere</h2></div>
   <p class="note" style="margin:0 0 10px">Tre carriere separate sullo stesso dispositivo. Continua quella che vuoi o iniziane una nuova in uno slot: le altre restano come sono. Si salvano da sole.</p>
