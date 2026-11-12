@@ -40,6 +40,9 @@ catch(e){
     throw new Error('la partita non e\' arrivata alla fine');
   };
   await page.goto('file://'+OUT);await page.waitForTimeout(500);
+  // il tutorial «Primi passi» ferma il gioco con le sue schede: nella pagina di prova e' spento (tranne nella prova che lo verifica, in un contesto a parte).
+  // Si scrive a pagina caricata e poi si ricarica: uno script iniziale che scrive nel localStorage prima del caricamento, in Chromium, a volte fa perdere i dati dopo una ricarica
+  await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   await step('menu iniziale, guida e impostazioni',async()=>{
     await vis('#title');await page.click('#tHelp');await vis('#guide');await page.click('#gdX');
     await page.click('#tSet');await vis('#settings');await page.click('#sBack');await vis('#title');
@@ -249,6 +252,25 @@ catch(e){
     await page.waitForTimeout(500);if(await page.locator('#bTO:not(.hidden)').count())throw new Error('il secondo timeout non dovrebbe essere disponibile');
     await page.keyboard.press('Escape');await vis('#pause');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
   });
+  await step('primi passi: le schede compaiono nelle prime partite, ricordano cio\' che hai visto e si saltano',async()=>{
+    const c=await browser.newContext({viewport:{width:844,height:390}}),p=await c.newPage();
+    await p.goto('file://'+OUT);await p.waitForTimeout(400);
+    await p.click('#tQuick');await p.selectOption('#qS','0');await p.click('#qPlay');await p.waitForTimeout(600);
+    if(await p.locator('#menu').isVisible())await p.click('#bGo');
+    await p.waitForSelector('#pp:not(.hidden)',{timeout:15000});
+    if(!/come si gioca/i.test(await p.locator('#ppT').innerText()))throw new Error('la prima scheda deve spiegare come si gioca');
+    await p.keyboard.press('Escape');await p.waitForTimeout(150);if(await p.locator('#pause:not(.hidden)').count())throw new Error('con la scheda aperta Esc non deve aprire la pausa sotto');
+    await p.click('#ppOk');await p.waitForSelector('#pp:not(.hidden)',{timeout:15000});
+    if(!/ricevi/i.test(await p.locator('#ppT').innerText()))throw new Error('la seconda scheda deve spiegare la ricezione del pull');
+    await p.keyboard.press('Enter');await p.waitForTimeout(200);   // Invio = «Capito»
+    await p.waitForSelector('#pp:not(.hidden)',{timeout:20000});   // la scheda sul lancio compare quando hai il disco
+    if(!/lanciare/i.test(await p.locator('#ppT').innerText()))throw new Error('la terza scheda deve spiegare il lancio');
+    await p.click('#ppSkip');if(await p.locator('#pp:not(.hidden)').count())throw new Error('«Salta il tutorial» deve chiudere la scheda');
+    const st=await p.evaluate(()=>JSON.parse(localStorage.getItem('ultimate-primi')));
+    if(!st.off||st.d.length!==3)throw new Error('lo stato deve ricordare tre schede viste e il tutorial spento: '+JSON.stringify(st));
+    await p.waitForTimeout(2500);if(await p.locator('#pp:not(.hidden)').count())throw new Error('saltato il tutorial non devono comparire altre schede');
+    await c.close();
+  });
   await step('pull a tempo, difesa automatica e tasto «Salta»',async()=>{
     await page.click('#tQuick');await vis('#quick');await page.selectOption('#qS','1');await page.click('#qPlay');await page.waitForTimeout(500);
     if(await page.locator('#menu').isVisible())await page.click('#bGo');
@@ -319,6 +341,7 @@ catch(e){
     const ctx=await browser.newContext({viewport:{width:390,height:664},isMobile:true,hasTouch:true,deviceScaleFactor:1}),p=await ctx.newPage(),er=[];
     p.on('pageerror',e=>er.push(e.message));
     await p.goto('file://'+OUT);await p.waitForTimeout(500);
+    await p.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await p.reload();await p.waitForTimeout(500);   // tutorial spento (come nella pagina principale)
     const st=await p.evaluate(()=>({rot:document.documentElement.classList.contains('rotp'),cw:document.getElementById('c').clientWidth,ch:document.getElementById('c').clientHeight,msg:getComputedStyle(document.getElementById('rot')).display}));
     if(!st.rot||st.cw!==664||st.ch!==390||st.msg!=='none')throw new Error('rotazione non applicata: '+JSON.stringify(st));
     await p.click('#tQuick');await p.waitForSelector('#quick:not(.hidden)');await p.click('#qPlay');await p.waitForTimeout(600);
