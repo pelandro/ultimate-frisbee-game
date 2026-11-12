@@ -36,6 +36,7 @@ function updateHUD(dt){
   bSprint.classList.toggle('hidden',!spr);
   if(spr){const q=G.sprint.p;bSprint.classList.toggle('on',!!(G.hold&&q.st>3));const f=bSprint.querySelector('.rf');f.style.strokeDashoffset=(RING_C*(1-clamp(q.st/100,0,1))).toFixed(1);f.style.stroke=barColor(q.st);}
   bSch.classList.toggle('hidden',G.mode!=='ready'||!!G.drill);bSub.classList.toggle('hidden',G.mode!=='ready'||!!G.drill);$('bSimPt').classList.toggle('hidden',G.mode!=='ready'||!!G.drill);
+  $('bTO').classList.toggle('hidden',!(canTimeout(0)&&!G.paused&&!G.schemeOpen&&!G.auto&&G.freeze<=0&&!G.zoomHold));
   bSkipD.classList.toggle('hidden',!canSkipDef());
   bDef.classList.toggle('hidden',!defNow);bDef.classList.toggle('on',G.dmode[0]===1);bDef.textContent=G.dmode[0]?'Marcatura: anticipo':'Marcatura: contieni';
   if(!defNow&&(ddrag||G.cdir)){ddrag=null;G.cdir=null;}

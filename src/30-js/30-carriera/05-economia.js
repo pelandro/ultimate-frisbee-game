@@ -3,7 +3,7 @@ function priceOf(o){const v=ovrX(o),pr=potRange(o),pm=(pr[0]+pr[1])/2;return Mat
 // chi ha annunciato il ritiro vale poco (gli resta mezza stagione), un infortunato un po' meno: prima si incassava il prezzo pieno alla vigilia dell'addio
 const sellValue=o=>Math.round(priceOf(o)*0.6*(o.ret===1?0.35:1)*(o.inj?0.8:1));
 const repCap=()=>48+SV.rep*0.5;   // Overall massimo dei giocatori disposti a venire, in base alla reputazione
-const matchIncome=win=>Math.round((9+(win?8:0))*SR_K[SV.sr]*(1+SV.rep/200)*(1+0.07*facLv('stad')));   // le tribune portano pubblico
+const matchIncome=win=>Math.round((9+(win?8:0))*SR_K[SV.sr]*(1+fansOf()/200)*(1+0.07*facLv('stad')));   // l'incasso lo fanno i tifosi (20-tifosi-umore.js), non la reputazione   // le tribune portano pubblico
 // stipendi: ogni giocatore costa in base al suo Overall (a stagione); si pagano a ogni partita. Una rosa lunga e forte costa: tenere le riserve giuste e' una scelta
 const wageOf=o=>2+Math.pow(Math.max(0,ovrX(o)-40),2)/85;
 const wageBill=()=>Math.round(SQ.reduce((a,p)=>a+wageOf(p),0)/15);

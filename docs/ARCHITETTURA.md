@@ -43,6 +43,10 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `30-carriera/19-presentazioni.js`, `20-ui/13-momenti.js` | `matchStakes` decide se una partita «conta» (finale, derby, ultima giornata, addio di un veterano); `showIntro` mostra il cartello, `momentTick` annuncia match point e universe point |
 | `30-js/05-rotazione.js` | Rotazione automatica sui telefoni in verticale (`html.rotp`, `rotPt`, `layRect`, chiave `ultimate-rotazione`). Il build (`tools/build.js`, `rotReady`) duplica media query e unità vh/vw in container query sul `<body>`; `tools/icona.js` disegna l'icona (64 px nell'HTML; 180, 192, 512 e il manifest in `dist/`, copiati sulla pagina) |
 | `50-schermate/08-slot.js` | Slot carriera: schermata «Carriere» dal menu iniziale (`renderCareers`, `careerGo`, `careerNew`, `teamBack` con `slotUndo`) e i tasti delle Opzioni |
+| `10-sim/18-timeout.js` | Timeout (`callTimeout`, `canTimeout`, `G.tmo`) ed etichetta della situazione (`situationLabel`) |
+| `30-carriera/20-tifosi-umore.js` | Tifosi (`SV.fans`, `fansBump`), faccine (`moodKey`, `moodFace`) e stelle (`starsOf`, `starsHTML`) |
+| `30-carriera/21-azioni-giocatore.js` | Riposo, Colloquio, Soprannome (`p.nick`), ultima partita (`p.lm`), titoli (`p.ti`), medaglie |
+| `50-schermate/09-consigli-fumetti.js` | Linea delle giornate, barra «Consiglio» e fumetti di primo accesso (`SV.tips`) |
 | `30-carriera/14-maturita.js` | `talentGrow`: ogni estate chi ha raggiunto il limite può superarlo (talento +1, `p.ext`, massimo `EXT_MAX`) |
 | `17-durata.js` | Durata della partita: `LEN_OPTS` (7, 11, 15 punti), `G.target`, `halfAt()`, `lenK()` (l'esperienza non cresce con le partite lunghe). `simMatch(…, tgt)` usa lo stesso traguardo |
 | `11b-specializzazioni.js`, `11c-intesa.js` | Indirizzi di sviluppo dei giocatori (`SPECS`, `specBonus`) e intesa tra coppie (`G.duo`, `duoOf`) |

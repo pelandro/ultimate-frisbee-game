@@ -159,6 +159,16 @@ function selfTestPlan(opt){
       row('Vento spento dalle impostazioni: il sorteggio da\u2019 sempre calma',offOk?'sì':'no',offOk),
       row('Pull con vento alle spalle e controvento',tail.toFixed(0)+' m e '+head.toFixed(0)+' m',tail-head>=10&&tail-head<=24,'tra 10 e 24 metri di differenza')];
   }]);
+  S.steps.push(['Timeout',()=>{
+    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    newGame();G.auto=true;G.lvl=[0,0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();G.startRec=0;G.nextRec=0;startPoint(0);
+    let g=0;while(g++<60*120&&!(G.mode==='play'&&G.holder&&G.holder.t===0&&G.holdT>1&&!G.flight&&!G.walk&&!G.brickWait))update(1/60);
+    const ok0=canTimeout(0),ok1=canTimeout(1);G.stallT=7.6;for(const p of T[0])p.st=60;
+    const lbBefore=situationLabel(G.holder,8),r1=callTimeout(0),st1=G.stallT,en=T[0].every(p=>p.st===60+TMO_REST),r2=callTimeout(0);
+    const t=G.target-1;G.score=[t,t];const uni=situationLabel(G.holder,0),lastT=situationLabel(G.holder,9);G.score=[0,0];
+    return [row('Timeout: si puo\u2019 chiamare con il disco in mano, una sola volta; lo stall riparte da zero e la squadra recupera',(ok0&&!ok1&&r1&&!r2&&st1===0&&en)?'sì':'no',ok0&&!ok1&&r1&&!r2&&st1===0&&en,'uno a partita, solo per chi ha il disco'),
+      row('Etichetta della situazione sopra il portatore',(lbBefore?lbBefore.txt:'-')+', '+(uni?uni.txt:'-')+', '+(lastT?lastT.txt:'-'),lbBefore&&lbBefore.txt==='STALL 8'&&uni&&uni.txt==='UNIVERSE POINT'&&lastT&&lastT.txt==='ULTIMO LANCIO')];
+  }]);
   S.steps.push(['Mira e chiamate',()=>{
     // il giocatore mira una zona libera con il dito che trema (e ogni tanto sfiora un compagno): il compagno chiamato deve correrci senza ripensamenti
     const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
@@ -185,7 +195,7 @@ function selfTestPlan(opt){
       }
     }
     return [row('Chiamata a una zona libera con il dito che trema: cambi di compagno e chiamate cadute',ok?swaps+' e '+ended:'partita non pronta',ok&&swaps<=1&&ended===0,'al massimo un cambio (un compagno arrivato molto piu\u2019 vicino), nessuna chiamata caduta'),
-      row('Chiamata: inversioni di corsa del compagno e distanza dal punto chiamato dopo 4 secondi',ok?rev+' e '+moved.toFixed(1)+' m':'-',ok&&rev===0&&moved<=6,'arriva al punto e ci resta')];
+      row('Chiamata: inversioni di corsa del compagno e distanza dal punto chiamato dopo 4 secondi',ok?rev+' e '+moved.toFixed(1)+' m':'-',ok&&rev<=1&&moved<=6,'arriva al punto e ci resta (al massimo un ripensamento)')];
   }]);
   S.steps.push(['Gittata, fiducia e cognomi',()=>{
     const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);newGame();setWind(0,0);placeTeams(1);

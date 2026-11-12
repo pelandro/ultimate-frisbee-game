@@ -62,6 +62,7 @@ function healed(p){   // rientro da un infortunio; dopo uno stop lungo si puo' p
 }
 function leaveSquad(list){if(!list.length)return;setSquad(squadData().filter(o=>!list.some(p=>p.full===o.full)));fixLines();}
 function lifeAfterMatch(){   // dopo ogni partita: minutaggio e umore, offerte
+  talkCool();
   if(SV.offer&&SV.round>SV.offer.round){const a=SV.alerts.find(x=>x.act==='offer'&&!x.done&&x.full===SV.offer.full);if(a){a.done=1;a.res='Offerta scaduta.';}SV.offer=null;}
   const ref=squadPower(),gone=[];
   for(const p of SQ){

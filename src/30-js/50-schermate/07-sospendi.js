@@ -14,7 +14,7 @@ function suspSnap(){
   }else if(G.mode==='half'){fresh=true;dir=[-dir[0],-dir[1]];pno=G.pointNo+1;rec=G.nextRec;half=true;}
   else if(!(G.mode==='play'||G.mode==='ready'||G.mode==='cine'))return null;
   const cp=o=>JSON.parse(JSON.stringify(o));
-  return {v:1,key:m.label+'|'+m.name,tg:G.target,score:G.score.slice(),pno,half,rec,dir,fresh,startRec:G.startRec,st:cp(G.st),seen:cp(G.seen||{att:{},def:{}}),obs:cp(G.obs||{u:0,d:0,n:0}),
+  return {v:1,key:m.label+'|'+m.name,tg:G.target,tmo:(G.tmo||[0,0]).slice(),score:G.score.slice(),pno,half,rec,dir,fresh,startRec:G.startRec,st:cp(G.st),seen:cp(G.seen||{att:{},def:{}}),obs:cp(G.obs||{u:0,d:0,n:0}),
     aiRec:cp(G.aiRec||{}),sch:cp(G.sch),opp:cp(G.opp),dmode:G.dmode.slice(),
     my:SQ.map(p=>({f:p.full,st:Math.round(p.st),m:cp(p.m),inj:p.injNew?p.inj:0})),
     op:T[1].map(q=>({ro:OPP.list.indexOf(q.ro),st:Math.round(q.st),m:cp(q.m)})),ol:OPP.list.map(o=>o.st===undefined?100:Math.round(o.st))};
@@ -30,6 +30,7 @@ function resumeMatch(){
   if(!suspOk()){SV.susp=null;persist();return false;}
   const s=SV.susp;
   startMatch(true);   // squadre, forma, vento, linee e intesa come all'inizio: poi si rimette lo stato salvato
+  G.tmo=Array.isArray(s.tmo)?s.tmo.slice():[0,0];   // il timeout gia' usato resta usato
   G.target=lenOk(s.tg|0);   // la partita sospesa finisce al punteggio con cui era cominciata, anche se nel frattempo hai cambiato la durata
   G.score=s.score.slice();G.pointNo=s.pno;G.halfDone=s.half;G.startRec=s.startRec;G.nextRec=s.rec;G.dir=s.dir.slice();
   G.st=s.st;G.seen=s.seen;G.obs=s.obs;G.aiRec=s.aiRec;Object.assign(G.sch,s.sch);Object.assign(G.opp,s.opp);G.dmode=s.dmode.slice();

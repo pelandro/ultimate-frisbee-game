@@ -291,11 +291,11 @@ function drawPlayers(dt){
   }
   // i giocatori simbolo (stelle internazionali e chi ha vinto premi) hanno il nome dorato
   for(const p of names)ptext(p.name,sxw(p.x),syw(p.y)-h-10-(p.dv?4:0),{f:'t',c:(p.star||(p.aw&&p.aw.length)||(p.ro&&p.ro.star))?PAL.gold:(p.t===0?'#ffffff':'#ffd9d9')});
-  // stall: da 6 in su il conteggio compare anche sopra chi ha il disco (rosso e lampeggiante da 8)
+  // ETICHETTA DELLA SITUAZIONE sopra chi ha il disco, in un riquadro nero come il «2nd & 10» di Retro Bowl: stall da 6, ultimo lancio, match point, universe point
   const hh=G.holder;
-  if(hh&&!G.flight&&G.marker&&G.mode==='play'&&hyp(G.marker.x-hh.x,G.marker.y-hh.y)<3.8){
-    const n=Math.min(10,Math.floor(G.stallT)+1);
-    if(n>=6&&(n<8||Math.sin(G.tick*18)>-0.4))ptext(String(n),sxw(hh.x),syw(hh.y)-h-28,{f:'P',c:n>=8?PAL.red:PAL.gold});
+  if(hh&&!G.flight&&G.mode==='play'){
+    const n=G.marker&&hyp(G.marker.x-hh.x,G.marker.y-hh.y)<3.8?Math.min(10,Math.floor(G.stallT)+1):0,lb=situationLabel(hh,n);
+    if(lb&&(!lb.hot||Math.sin(G.tick*18)>-0.4)){const tw=ptw(lb.txt,'p')+8,bx=clamp(sxw(hh.x)-ri(tw/2),2,VW-tw-2),by=syw(hh.y)-h-34;pbox(bx,by,tw,12,'#000000',lb.hot?PAL.red:'#ffffff');ptext(lb.txt,bx+4,by+2,{f:'p',a:'l',c:lb.hot?PAL.red:'#ffffff',o:false});}
   }
 }
 function drawDisc(){
