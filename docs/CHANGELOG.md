@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Telefono e tablet: toccare più volte i pulsanti non ingrandisce più le schermate (niente zoom con doppio tocco o pizzico; scorrere funziona come prima).
 - EUCF: il Campionato europeo ha il formato dei veri European Ultimate Club Finals (16 club in 4 gironi da 4, prequarti 2ª-3ª, quarti, semifinali, finale) con le prime 3 italiane e 13 club europei inventati; il motore dei tornei a 16 è lo stesso dei Nationals USA.
 - Staff: alla scelta di un candidato e nella scheda, l'abilità speciale ha nome e spiegazione per esteso (prima il nome era un'etichetta minuscola e l'effetto stava dentro la «i»).
 - Lancio lungo: per caricare lo Sparo basta trascinare un terzo dell'altezza dello schermo (prima la metà).
