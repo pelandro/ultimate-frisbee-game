@@ -36,7 +36,7 @@ function startCareer(name,opt){   // opt: {coach, relief} (24-allenatore.js)
   opt=opt||{};
   if(US_TEAM[name])return usStartCareer(name,opt);   // campionato USA: 35-usa/
   const help=!!SV.help,slot=SV.slot||1;   // lo slot in cui nasce la carriera
-  SV={v:SAVE_V,team:name,seed:Math.floor(Math.random()*1e9),sr:(TEAM[name]&&TEAM[name].series)||'C',season:1,event:'camp',eu:newEu(1),help,
+  SV={v:SAVE_V,team:name,seed:Math.floor(Math.random()*1e9),sr:(TEAM[name]&&TEAM[name].series)||'C',season:opt.season||1,event:'camp',eu:newEu(opt.season||1),help,
       mem:{A:SERIES.A.slice(),B:SERIES.B.slice(),C:SERIES.C.slice()},realAB:1,rv:3,slot};
   SV.coach=coachNorm(opt.coach);SV.start=opt.relief?'sub':'cuore';
   SV.rost={};for(const n in TEAM)if(n!==name)SV.rost[n]=aiRoster(n);
@@ -45,6 +45,7 @@ function startCareer(name,opt){   // opt: {coach, relief} (24-allenatore.js)
   if(REAL[name]){SV.realv=2;setSquad(userRoster());}
   else{startLow();setLineup([0,1,2,3,4,5,6]);}
   beginSeason();
+  Object.assign(SV,opt.carry||{});   // se arrivi dal campionato USA: allenatore, storico e traguardi restano tuoi (35-usa/05-lega-incrociata.js)
   careerInit();
   if(opt.relief)reliefStart();else news(`Inizia la carriera con ${name} in ${SERIES_NAME[SV.sr]}. In panchina: ${coachName()}.`);
   persist();

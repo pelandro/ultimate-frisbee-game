@@ -4,7 +4,8 @@ function renderAlerts(){
   $('alSub').textContent=L.length?(nw?`${nw} novità · le scelte in sospeso restano qui finché non rispondi`:'Nessuna novità: qui resta la cronologia'):'Qui compare tutto ciò che succede ai tuoi giocatori.';
   $('alBody').innerHTML=L.length?L.map(a=>{
     const kd=AL_KIND[a.k]||['Avviso','#c2cbe6'],p=a.full?byFull(a.full):null;let act='';
-    if(!a.done&&p){
+    if(!a.done&&(a.act==='job'||a.act==='trade'))act=crossLgButtons(a);   // offerte dell'altra lega (35-usa/05-lega-incrociata.js)
+    else if(!a.done&&p){
       if(a.act==='stay'&&p.ret===1)act=`<button type="button" class="sec" data-al="${a.id}" data-do="stay">Chiedigli un altro anno (${stayCost(p)} crediti)</button>`;
       else if(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)act=`<button type="button" class="go" data-al="${a.id}" data-do="yes">Accetta (+${SV.offer.price})</button><button type="button" class="sec" data-al="${a.id}" data-do="no">Rifiuta</button>`;
       else if(a.act==='unhappy'&&p.mood===2)act=`<button type="button" class="sec" data-al="${a.id}" data-do="prom">Promettigli spazio</button><button type="button" class="sec" data-al="${a.id}" data-do="sell">Cedilo (+${sellValue(p)})</button>`;
@@ -17,12 +18,14 @@ function openAlerts(){renderAlerts();$('alerts').classList.remove('hidden');}
    Le NOTIZIE (crescita, rientri, umore tornato, club) non interrompono: accendono il numero sulla campanella e una riga sul cruscotto. */
 const AL_URGENT={inj:1,bye:1,off:1};
 const urgentAlerts=()=>(SV.alerts||[]).filter(a=>!a.seen&&(AL_URGENT[a.k]||a.act)).length;
-function pendingAlerts(){return (SV.alerts||[]).filter(a=>{if(a.done)return false;const p=a.full?byFull(a.full):null;return p&&((a.act==='stay'&&p.ret===1)||(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)||(a.act==='unhappy'&&p.mood===2));}).length;}
+function pendingAlerts(){return (SV.alerts||[]).filter(a=>{if(a.done)return false;if(a.act==='job'||a.act==='trade')return true;const p=a.full?byFull(a.full):null;return p&&((a.act==='stay'&&p.ret===1)||(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)||(a.act==='unhappy'&&p.mood===2));}).length;}
 $('hBell').addEventListener('click',openAlerts);
 $('alX').addEventListener('click',()=>{for(const a of SV.alerts)a.seen=1;$('alerts').classList.add('hidden');persist();renderHome();});
 $('alBody').addEventListener('click',e=>{
   const b=e.target.closest('[data-al]');if(!b)return;
-  const a=SV.alerts.find(x=>x.id===+b.dataset.al),p=a&&a.full?byFull(a.full):null;if(!a||!p)return;
+  const a=SV.alerts.find(x=>x.id===+b.dataset.al),p=a&&a.full?byFull(a.full):null;
+  if(a&&(a.act==='job'||a.act==='trade')){a.res=crossLgAnswer(a,b.dataset.do);a.done=1;persist();renderAlerts();renderHome();return;}
+  if(!a||!p)return;
   const d=b.dataset.do;
   if(d==='stay'){const r=retPersuade(p);a.res=r.txt;if(!r.again)a.done=1;}
   else if(d==='yes'||d==='no'){a.res=offerAnswer(d==='yes');a.done=1;}

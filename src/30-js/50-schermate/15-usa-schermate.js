@@ -68,13 +68,14 @@ function usStakes(m){
 }
 // ---- scelta del campionato e della Conference (schermata «Scegli la tua squadra») ----
 let teamLg='IT',teamCf='W';
+const usPrevCache={},usPreview=n=>usPrevCache[n]||(usPrevCache[n]=Math.round(rosterPower(usRoster(n,'preview|'+n,{low:true}))));   // forza con cui si parte davvero (rosa un po' meno allenata)
 function renderTeamsUS(){
   for(const b of $('tLg').children)b.classList.toggle('on',b.dataset.k===teamLg);
   $('tMode').classList.add('hidden');$('tRelief').classList.add('hidden');$('tTeams').classList.remove('hidden');
   $('tSr').innerHTML=US_CK.map(c=>`<button type="button" data-k="${c}">${US_CONF[c]}</button>`).join('');
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamCf);
   $('tNote').textContent='Men’s Club USA: 32 club veri in 4 Conference geografiche da 8. Si gioca nella propria Conference (7 giornate), poi Play-in e Nationals a 16 squadre. Le Conference non cambiano mai: niente promozioni e retrocessioni. Il numero accanto al nome è la forza del club; i più prestigiosi partono più forti, ma le gerarchie cambiano negli anni.';
-  $('tTeams').innerHTML=US_BYCONF[teamCf].slice().sort((a,b)=>US_TEAM[a].rank-US_TEAM[b].rank).map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${esc(n)}<small class="tcity">${esc(US_TEAM[n].city)} · n° ${US_TEAM[n].rank}</small></span></span><b class="tp">${Math.round(US_TEAM[n].power)}</b></button>`).join('');
+  $('tTeams').innerHTML=US_BYCONF[teamCf].slice().sort((a,b)=>US_TEAM[a].rank-US_TEAM[b].rank).map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${esc(n)}<small class="tcity">${esc(US_TEAM[n].city)} · n° ${US_TEAM[n].rank}</small></span></span><b class="tp">${usPreview(n)}</b></button>`).join('');
 }
 $('tLg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;teamLg=b.dataset.k;reliefName=null;if(teamLg==='IT')teamMode='cuore';renderTeams();});
 // ---- Classifica ----
