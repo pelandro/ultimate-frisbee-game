@@ -187,3 +187,10 @@
 .lgfav{display:block;margin-top:5px;font-size:14px;color:var(--gold)}
 .rpbody{overflow:auto;flex:1;min-height:0;margin-bottom:8px}
 #rpT .crest{vertical-align:-3px;margin-right:4px}
+/* abilita' speciale di un membro dello staff: nome e effetto per esteso */
+.hab{display:flex;flex-direction:column;gap:1px;margin:4px 0;padding:3px 7px;border-left:4px solid var(--gold);background:rgba(255,255,255,.06);align-self:stretch}
+.hab span{font-size:11px;color:#9fb0de;text-transform:uppercase;letter-spacing:.04em}
+.hab b{font-weight:400;font-size:16px;color:var(--gold);line-height:1.1}
+.hab em{font-style:normal;font-size:14px;color:#dfe6fb;line-height:1.2}
+.hab.no b{display:none}
+#clTabs{flex-wrap:wrap}#clTabs button{min-width:30%}

@@ -13,8 +13,7 @@ function timelineHTML(){
   const node=(cls,top,bot)=>`<span class="tl ${cls}"><i></i><b>${esc(top)}</b><small>${esc(bot)}</small></span>`;
   let nodes;
   if(SV.event==='eu'){
-    nodes=EU_ROUND.map((n,i)=>{const done=SV.eu.state==='champ'||i<SV.eu.round,out=i===SV.eu.round&&SV.eu.state==='out',now=i===SV.eu.round&&SV.eu.state==='on';
-      return node(done?'w':(out?'l':(now?'n':'f')),n,shortN(SV.eu.opps[i]));});
+    return euTimeline(node);   // EUCF: 18-eucf-schermate.js
   }else if(isUS()){
     return usTimelineHTML(node);   // campionato USA: 15-usa-schermate.js
   }else{

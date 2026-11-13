@@ -268,3 +268,5 @@ html.rotp #rot{display:none!important}
 .pro:active{transform:translateY(2px)}
 .prRes{margin:4px 0 10px;font-size:19px;color:#4fe58f}
 @media (max-height:480px){.presspanel #prQ{font-size:16px;margin-bottom:6px}.pro{padding:4px 8px;min-height:38px}.pro span{font-size:15px}.prOpts{gap:5px}}
+/* niente zoom con doppio tocco o pizzico: toccare piu' volte i pulsanti ingrandiva le schermate (il campo ha gia' touch-action:none) */
+html,body,.screen,.overlay,.panel,button,select,label{touch-action:pan-x pan-y}

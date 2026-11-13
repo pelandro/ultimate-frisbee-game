@@ -16,7 +16,7 @@ function renderHome(){
   else if(SV.event==='camp'){
     const ord=ranking(SV.tab,names),me=ord.indexOf(SV.team),a=clamp(me-1,0,Math.max(0,ord.length-3));
     tab=ord.slice(a,a+3).map((n,i)=>`<div class="${n===SV.team?'me':''}"><span>${a+i+1}. ${esc(n)}</span><b>${SV.tab[n].pts}</b></div>`).join('');
-  }else tab=`<div class="me"><span>${SV.eu.state==='champ'?'Campioni d’Europa':(SV.eu.state==='out'?'Eliminati':EU_ROUND[Math.min(2,SV.eu.round)])}</span><b></b></div>`;
+  }else tab=euHomeTab();
   $('hTab').innerHTML=tab;
   $('hBars').innerHTML=`<div class="dcash"><span>Crediti</span><b>${SV.cash}</b></div>`+statBar('Tifosi',fansOf(),'#ff9a3a','%')+`<div class="dbar"><span>Morale</span><span class="cbar"><i style="width:${Math.round(SV.mor)}%;background:#4fe58f"></i></span><b>${moodFace(teamMoodKey())}</b></div>`+statBar('Affiatamento',SV.chem,'#5ac8ff');
   renderTicker();   // consiglio o novità che scorre in fondo (09-consigli-fumetti.js)
@@ -40,9 +40,8 @@ function renderHome(){
   $('hBellB').textContent=nwA||pdA;$('hBellB').classList.toggle('hidden',!(nwA||pdA));
   if(urgentAlerts()&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openAlerts();   // si apre da solo soltanto per le decisioni e le emergenze; le notizie restano nella campanella
   else if(SV.evt&&$('evt').classList.contains('hidden')&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openEvt();   // un imprevisto aspetta una risposta
-  $('hEventS').textContent=isUS()?usEventSub():SV.event==='camp'?(SV.done?'Stagione conclusa: premi e ripartenza':(SV.po&&SV.po.on?PO_NAME[SV.po.kind]+(SV.po.round?' · finale':' · semifinale'):`Giornata ${SV.round+1} di ${totalRounds()}`)):(SV.eu.state==='on'?'Campionato europeo: '+EU_ROUND[SV.eu.round].toLowerCase():'Campionato europeo concluso');
+  $('hEventS').textContent=isUS()?usEventSub():SV.event==='camp'?(SV.done?'Stagione conclusa: premi e ripartenza':(SV.po&&SV.po.on?PO_NAME[SV.po.kind]+(SV.po.round?' · finale':' · semifinale'):`Giornata ${SV.round+1} di ${totalRounds()}`)):euEventSub();
 }
-const euEndTxt=()=>SV.eu.state==='champ'?'Campioni d’Europa!':(SV.eu.state==='out'?'Eliminati: '+EU_ROUND[Math.min(2,SV.eu.round)].toLowerCase()+' persa':'');
 // ---- pezzi comuni delle schermate di carriera ----
 const esc=x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 const ovrCls=v=>v>=80?'o5':(v>=70?'o4':(v>=60?'o3':(v>=50?'o2':'o1')));
@@ -192,11 +191,10 @@ $('eBody').addEventListener('click',e=>{const b=e.target.closest('#evTabs [data-
 function renderEvent(){
   if(isUS())return renderEventUS();   // Classifica del campionato USA: 15-usa-schermate.js
   const cs=SV.done?`${SERIES_NAME[SV.sr]}, stagione conclusa`:(SV.po&&SV.po.on?`${SERIES_NAME[SV.sr]}, ${PO_NAME[SV.po.kind].toLowerCase()}`:`${SERIES_NAME[SV.sr]}, giornata ${SV.round+1} di ${totalRounds()}`);
-  const es=SV.eu.state==='champ'?'Campioni':(SV.eu.state==='out'?'Eliminati':EU_ROUND[SV.eu.round]);
   $('eCards').innerHTML=
     `<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>Campionato</strong><small>Serie A, B e C: tutte contro tutte, salgono le prime 2 e scendono le ultime 2. ${cs}.</small></button>`+
     (SV.euUnlocked
-      ?`<button type="button" class="ecard${SV.event==='eu'?' on':''}" data-e="eu"><strong>Campionato europeo</strong><small>Eliminazione diretta: quarti, semifinale, finale. ${es}.</small></button>`
+      ?`<button type="button" class="ecard${SV.event==='eu'?' on':''}" data-e="eu"><strong>Campionato europeo (EUCF)</strong><small>16 club in 4 gironi da 4, poi prequarti, quarti, semifinali e finale. ${euCardSub()}</small></button>`
       :`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo</strong><small>Bloccato: serve chiudere la stagione tra le prime 3 della Serie A, e vale per la stagione dopo.</small></button>`);
   let body='';
   if(SV.event==='camp'){
@@ -218,14 +216,7 @@ function renderEvent(){
     if(nm)done.push(`<li class="n"><span>${nm.label} contro ${nm.name}</span><span>Prossima</span></li>`);
     body+=`<ul class="elist" style="margin-top:10px">${done.join('')}</ul>`;
   }else{
-    const items=EU_ROUND.map((n,i)=>{
-      const cls=(SV.eu.state==='champ'||i<SV.eu.round)?'w':(i===SV.eu.round&&SV.eu.state==='out'?'l':(i===SV.eu.round?'n':''));
-      const st=cls==='w'?'Vinta':(cls==='l'?'Persa':(cls==='n'?'Prossima':'Da giocare'));
-      return `<li class="${cls}"><span>${n} contro ${SV.eu.opps[i]}</span><span>${st}</span></li>`;
-    });
-    body+=`<ul class="elist">${items.join('')}</ul>`;
-    if(SV.eu.state!=='on')body+=`<p class="estat">${euEndTxt()}${SV.eu.cash?` · premi del torneo: ${SV.eu.cash} crediti`:''}</p><p class="note" style="margin:0 0 8px">Il Campionato europeo si gioca una volta a stagione: la prossima edizione è nella stagione dopo, se chiudete la Serie A tra le prime 3.</p><button type="button" class="go" id="eCamp">${SV.done?'Vai al campionato: nuova stagione':'Torna al campionato'}</button>`;
-    else body+=`<p class="note" style="margin:8px 0 0">Premi: ${EU_PRIZE.map((v,i)=>Math.round(v*SR_K.A)+' crediti ('+EU_ROUND[i].toLowerCase()+')').join(', ')}. Una sola edizione a stagione.</p>`;
+    body+=euView();   // EUCF: gironi e tabellone (18-eucf-schermate.js)
   }
   $('eBody').innerHTML=body;
 }

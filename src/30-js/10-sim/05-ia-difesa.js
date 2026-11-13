@@ -35,6 +35,12 @@ function playRead(dTeam){
   for(const r of ph.pass||[]){const a=pb.rp[r],way=ph.go[r];if(!a||!way)continue;const w=way[way.length-1];m.set(a,pbPos(pb,P,w[0],w[1],w[2]));}
   return m.size?m:null;
 }
+// filtro sul punto da raggiungere di un marcatore: un salto grande (cambio di uomo, nuova meta) lo porta subito, i piccoli spostamenti lo fanno scorrere
+function markTgt(q,x,y,dt){
+  if(q.mx===undefined||hyp(q.mx-x,q.my-y)>9||q.mkA!==q.mark){q.mx=x;q.my=y;q.mkA=q.mark;}
+  else{const k=1-Math.exp(-dt*2.6);q.mx+=(x-q.mx)*k;q.my+=(y-q.my)*k;}
+  return {x:q.mx,y:q.my};
+}
 function updateDefenders(dt){
   const P=G.poss,dT=T[1-P],aT=T[P],d=dirOf(P),Hh=G.holder;
   const sch=P===0?G.opp.def:G.sch.def;
@@ -101,7 +107,7 @@ function updateDefenders(dt){
       }
       if(rd&&rd.has(a)&&Hd){const e=rd.get(a);px=lerp(px,e.x,0.55);py=lerp(py,e.y,0.55);}   // ha riconosciuto lo schema: si mette sulla traiettoria del taglio previsto
       const close=hyp(q.x-a.x,q.y-a.y)<8;
-      const mt=Hd?awayFrom(Hd,px,py,MIN_DEF):{x:px,y:py};
+      const mt0=Hd?awayFrom(Hd,px,py,MIN_DEF):{x:px,y:py},mt=markTgt(q,mt0.x,mt0.y,dt);   // il punto del marcatore scorre piano (filtro), cosi' non scatta a ogni cambio dell'attaccante
       moveTo(q,mt.x,mt.y,dt,Hd&&hyp(q.x-Hd.x,q.y-Hd.y)<MIN_DEF?1.7:(close?0.85+q.s.dif/180:1));
     }
   }

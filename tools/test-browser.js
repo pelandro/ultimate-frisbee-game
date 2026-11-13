@@ -116,7 +116,7 @@ catch(e){
     await page.click('#hCoach');await vis('#coachsel');await page.fill('#coS','Bianchi');await page.click('#coGo');await vis('#home');
     if(!/Bianchi/.test(await page.locator('#hCoach').getAttribute('title')))throw new Error('il cambio di nome non arriva al cruscotto');
     await page.click('#hClub');await vis('#club');
-    if(await page.locator('#clBox .scard.empty').count()!==4)throw new Error('a inizio carriera i quattro ruoli dello staff devono essere vacanti');
+    await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard.empty').count()!==4)throw new Error('a inizio carriera i quattro ruoli dello staff devono essere vacanti');
     await page.click('#clBox [data-hire="coach"]');await vis('#hire');
     if(await page.locator('#hireList .hcn').count()!==3)throw new Error('i candidati devono essere tre');
     const first=await page.locator('#hireList .hcn .sr').first().innerText();
@@ -150,12 +150,12 @@ catch(e){
     if(await page.locator('#tList .prow:not([disabled])').count()>await page.locator('#tList .prow').count()-3)throw new Error('il programma automatico non ha fatto i lavori individuali');
     await page.click('#tTeamBox [data-prog]');await page.click('#tBack');
     await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#mkBack');
-    await page.click('#hClub');await vis('#club');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==6||await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci sei strutture e quattro figure dello staff');
+    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==6)throw new Error('devono esserci sei strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci quattro figure dello staff');
     // le altre linguette del Club: traguardi (ventuno schede, percentuale), albo d'oro e Hall of Fame
     await page.click('#clTabs button[data-k="ach"]');if(await page.locator('#clBox .ach').count()!==21||!/%/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi devono essere ventuno, con la percentuale');
     await page.click('#clTabs button[data-k="hon"]');if(await page.locator('#clBox .trt').count()<7)throw new Error('manca la bacheca dei trofei');
     await page.click('#clTabs button[data-k="rec"]');if(await page.locator('#clBox .hofbox').count()!==1)throw new Error('manca la Hall of Fame');
-    await page.click('#clTabs button[data-k="man"]');
+    await page.click('#clTabs button[data-k="stf"]');
     if(await page.locator('#clBox .scard').count()!==4||await page.locator('#clBox [data-hire]').count()<4)throw new Error('le figure dello staff devono essere quattro, ciascuna con «Cambia» o «Scegli chi assumere»');
     await page.click('#clTabs [data-k="hon"]');await page.click('#clTabs [data-k="rec"]');await page.click('#clBack');
     await page.click('#hEvent');await vis('#event');await page.click('#evTabs [data-sr="A"]');await page.click('#evTabs [data-sr="B"]');await vis('#eBody table.rt');
@@ -188,7 +188,7 @@ catch(e){
     await page.click('#gdX');await page.click('#rBack');
     await page.click('#hMarket');await vis('#market');const m0=await page.locator('#mkBox tr').count();
     await page.check('#mkBox [data-mkonly]');const m1=await page.locator('#mkBox tr').count();if(m1>m0)throw new Error('il filtro del mercato aggiunge righe');
-    await page.uncheck('#mkBox [data-mkonly]');await page.selectOption('#mkBox [data-mksort]','price');
+    await page.uncheck('#mkBox [data-mkonly]');await page.click('#mkTabs [data-k="all"]');await page.selectOption('#mkBox [data-mksort]','price');
     const pr=(await page.locator('#mkBox table.rt tr td:nth-child(4)').allInnerTexts()).map(Number).filter(x=>!isNaN(x));
     if(pr.length<3||pr.some((a,i)=>i&&a<pr[i-1]))throw new Error('ordinamento per prezzo non rispettato: '+pr.join(','));
     await page.click('#mkBack');await vis('#home');
@@ -229,9 +229,10 @@ catch(e){
   });
   await step('Campionato europeo: una sola edizione a stagione, poi si torna al campionato',async()=>{
     // la coppa si sblocca solo dalla Serie A: per provarla si modifica il salvataggio (come se la squadra si fosse qualificata) e si ricarica
-    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(localStorage.getItem(k));d.euUnlocked=true;d.event='eu';d.eu={round:0,state:'on',s:d.season,opps:['Berlino','Parigi','Madrid']};d.susp=null;localStorage.setItem(k,JSON.stringify(d));if(d.slot)localStorage.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(localStorage.getItem(k));d.euUnlocked=true;d.event='eu';d.eu={round:0,state:'on',s:d.season,opps:['Berlino','Parigi','Madrid']};   // formato vecchio: l'edizione riparte come EUCF
+    d.susp=null;localStorage.setItem(k,JSON.stringify(d));if(d.slot)localStorage.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
     await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
-    for(let i=0;i<3&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim');await vis('#simres');await page.click('#srOk');await page.waitForTimeout(150);}
+    for(let i=0;i<12&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim');await vis('#simres');await page.click('#srOk');await page.waitForTimeout(150);if(/Torna al campionato/.test(await page.locator('#hPlayT').innerText()))break;}
     const t=await page.locator('#hPlayT').innerText();if(!/Torna al campionato/.test(t))throw new Error('a coppa conclusa il tasto principale dice «'+t+'»');
     if(/nuova stagione/i.test(await page.locator('#hNext').innerText()))throw new Error('a coppa conclusa il cruscotto parla di nuova stagione');
     await page.click('#hEvent');await vis('#event');

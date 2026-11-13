@@ -11,10 +11,9 @@ const realOpt=(n,min)=>({min,low:false,flavor:flavorOf(n),target:TEAM[n]&&TEAM[n
 const flavorOf=n=>/U17/.test(n)?'u17':(/U20/.test(n)?'u20':(/NewGen|NextGen|Next Gen|Rookies/.test(n)?'newgen':(/Wise/.test(n)?'wise':'')));
 const aiRoster=n=>REAL[n]?realRoster(REAL[n],SV.seed+'|'+n,realOpt(n,7)):makeRoster(TEAM[n].power,SV.seed+'|'+n);
 const userRoster=()=>realRoster(REAL[SV.team]||[],SV.seed+'|user',Object.assign(realOpt(SV.team,9),{low:true}));   // la tua rosa: quella vera, un po' meno allenata delle avversarie
-const EU_NAMES=['Berlino','Parigi','Madrid','Amsterdam','Londra','Praga','Vienna','Lisbona'],EU_POW=[80,86,91],EU_ROUND=['Quarti di finale','Semifinale','Finale'];
-// una sola edizione a stagione (s = stagione dell'edizione): prima il torneo concluso si poteva far ripartire all'infinito, accumulando trofei e incassi
-const newEu=season=>({round:0,state:'on',s:season|0,opps:EU_NAMES.slice().sort(()=>Math.random()-0.5).slice(0,3)});
-const EU_PRIZE=[12,22,60];   // crediti (per il coefficiente della Serie A) a ogni turno superato: quarti, semifinale, finale
+// una sola edizione a stagione (s = stagione dell'edizione): prima il torneo concluso si poteva far ripartire all'infinito, accumulando trofei e incassi.
+// L'EUCF (gironi da 4, prequarti, quarti, semifinali, finale) sta in 36-europa/01-eucf.js
+const newEu=season=>euNew(season);
 function roundRobin(n){
   const arr=[...Array(n).keys()],rounds=[];
   for(let r=0;r<n-1;r++){
@@ -54,7 +53,7 @@ function loadSave(d0){
   let d=d0||null;
   if(!d){try{const r=localStorage.getItem(SAVE_KEY);if(r)d=JSON.parse(r);}catch(e){}}
   if(d&&d.team&&d.mem&&d.sched&&d.tab){
-    SV=d;if(SV.rost)for(const n in SV.rost)for(const o of SV.rost[n])if(o&&o.s)fillStats(o.s);SV.tTeam=!!SV.tTeam;if(!SV.eu||!SV.eu.opps)SV.eu=newEu(SV.season);if(!SV.event||(SV.event==='eu'&&!SV.euUnlocked))SV.event='camp';
+    SV=d;if(SV.rost)for(const n in SV.rost)for(const o of SV.rost[n])if(o&&o.s)fillStats(o.s);SV.tTeam=!!SV.tTeam;if(!SV.eu)SV.eu=newEu(SV.season);else if(!SV.eu.nat&&SV.eu.state==='on'&&!SV.eu.rk)SV.eu=Object.assign(newEu(SV.season),{s:SV.eu.s|0});if(!SV.event||(SV.event==='eu'&&!SV.euUnlocked))SV.event='camp';
     const mig=SV.realv===1;   // carriera iniziata con i vecchi roster: la rosa diventa quella ufficiale; gli allenamenti dei giocatori veri restano
     if(Array.isArray(SV.squad)&&SV.squad.length>=7){for(const o of SV.squad)if(o&&o.s)fillStats(o.s);setSquad(SV.squad);}   // versione 3: la rosa e' salvata per intero (acquisti e cessioni compresi)
     else if(SV.realv&&REAL[SV.team])setSquad(userRoster());
@@ -92,8 +91,7 @@ function nextMatch(){
     const names=SV.mem[SV.sr],ui=names.indexOf(SV.team),pr=SV.sched[SV.round].find(m=>m[0]===ui||m[1]===ui),on=names[pr[0]===ui?pr[1]:pr[0]];
     return {name:on,roster:SV.rost[on],label:`Giornata ${SV.round+1} di ${totalRounds()}`+(on===SV.riv?' · Derby':'')};
   }
-  if(SV.eu.state!=='on')return null;
-  const r=SV.eu.round;return {name:SV.eu.opps[r],power:EU_POW[r]+euPlus(),label:EU_ROUND[r]};   // ogni coppa vinta alza il livello delle avversarie
+  return euOpponent();   // EUCF: 36-europa/01-eucf.js
 }
 function simPower(a,b){
   const r=simMatch(teamPow(a),teamPow(b),0,carLen());   // stesse regole delle partite vere: si arriva al punteggio scelto, punto per punto
@@ -133,7 +131,7 @@ function endSeason(){
   const qual=SV.sr==='A'&&rank<=3;
   if(qual)short+=' Per la prossima stagione si sblocca il Campionato europeo.';
   chalEval();   // la sfida della dirigenza si giudica adesso, PRIMA dei premi: «Conti in ordine» guarda il saldo con cui arrivi in fondo, non quello gonfiato dai premi
-  SV.done=true;SV.next={mem:nm,sr:nsr,rank,short,qual,tit,champs:{A:champA,B:order.B[0],C:order.C[0]},po:res[SV.sr]||null};
+  SV.done=true;SV.next={euQ:order.A.slice(0,3),mem:nm,sr:nsr,rank,short,qual,tit,champs:{A:champA,B:order.B[0],C:order.C[0]},po:res[SV.sr]||null};
   SV.po=null;SV.poRes=null;
   // premi di fine stagione: classifica, obiettivo, reputazione, premi individuali
   const n=SV.mem[SV.sr].length,prize=Math.round((n-rank+1)*3*SR_K[SV.sr]);SV.cash+=prize;
@@ -195,12 +193,7 @@ function recordResult(win,su,so){
     else msg=`Giornata ${SV.round} di ${totalRounds()} conclusa: ${myRank()}° in classifica. Prossima: ${nextMatch().name}.`+dby;
   }else{
     fansBump(win,win?1:0);   // anche la coppa europea muove i tifosi
-    if(win){
-      {const pz=Math.round(EU_PRIZE[Math.min(2,SV.eu.round)]*SR_K.A);SV.cash+=pz;SV.eu.cash=(SV.eu.cash|0)+pz;}   // premio del turno superato
-      SV.eu.round++;
-      if(SV.eu.round>=3){SV.eu.state='champ';msg='Siete campioni d’Europa!';SV.troph.eu=(SV.troph.eu|0)+1;SV.rep=clamp(SV.rep+5,0,100);news('Campioni d’Europa nella stagione '+SV.season+'! Premi del torneo: '+SV.eu.cash+' crediti.');}
-      else msg=`Si avanza: ${EU_ROUND[SV.eu.round].toLowerCase()} contro ${SV.eu.opps[SV.eu.round]}.`;
-    }else{SV.eu.state='out';msg=`Eliminati: ${EU_ROUND[SV.eu.round].toLowerCase()} persa.`;}
+    msg=euRecord(win,su,so);   // EUCF: gironi, prequarti, quarti, semifinali, finale (36-europa/01-eucf.js)
   }
   for(const p of SQ){   // nuova giornata: tornano gli allenamenti, gli infortunati recuperano; ogni infortunio e ogni rientro viene segnalato
     p.tr=false;

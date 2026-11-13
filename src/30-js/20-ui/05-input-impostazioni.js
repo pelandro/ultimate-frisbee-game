@@ -11,7 +11,7 @@ function nearestPlayer(px,py,maxd,team){
    di partenza il lancio si annulla. Non c'e' nessun pulsante di lancio. Il pull e' un evento a parte, a due tocchi (09-difesa-pull.js). ---- */
 const SL_DEAD=14;                                  // px: sotto questa lunghezza non c'e' direzione e il rilascio annulla
 const SL_SENS=[1.3,1.14,1,0.86],DSL=['Molto bassa','Bassa','Media','Alta'];   // sensibilita' (Impostazioni): piu' e' alta, meno bisogna trascinare
-const slFull=()=>0.5*CH*SL_SENS[SETT.ds];          // px di trascinamento per il lancio massimo (55 m): meta' dell'altezza dello schermo
+const slFull=()=>0.34*CH*SL_SENS[SETT.ds];         // px di trascinamento per il lancio massimo (55 m): un terzo dell'altezza dello schermo (era la meta': gli spari lunghi erano faticosi da caricare)
 // distanza in metri: cresce piano all'inizio (i passaggi corti sono precisi) e in fretta alla fine (gli spari)
 function slDist(len){const u=clamp((len-SL_DEAD)/(slFull()-SL_DEAD),0,1);return 3.5+(CH_MAX-3.5)*(0.45*u+0.55*u*u);}
 // Tipo di lancio: si sceglie con le DITA. Una sola dita = piatto (rovescio o dritto); due dita insieme (o piu') = lancio alto (scoober o hammer, il rovesciato).

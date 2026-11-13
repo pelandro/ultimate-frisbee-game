@@ -3,7 +3,7 @@
    peso della forza e degli attributi, coerenza tra partite simulate e giocate, crescita dei giocatori, prestazioni.
    Ogni passo usa un generatore casuale con seme fisso: con lo stesso seme e lo stesso numero di partite i risultati sono identici a ogni esecuzione.
    Si lancia da Impostazioni > Diagnostica oppure da riga di comando (node test_ultimate_frisbee.js). */
-const REV_MAX=10;   // prima delle correzioni (tagli liberi che dondolano, lato dell'attacco che si scambia) erano circa 13 al minuto; ora circa 7
+const REV_MAX=6;   // prima delle correzioni (tagli liberi che dondolano, lato dell'attacco che si scambia) erano circa 13 al minuto; poi circa 7; con attese piu' lunghe tra un taglio e l'altro circa 4
 function testMatch(ra,rb,o){   // una partita IA contro IA: ritorna punteggio, statistiche e controlli
   o=o||{};
   setSquad(ra);applyRoster(rb);
