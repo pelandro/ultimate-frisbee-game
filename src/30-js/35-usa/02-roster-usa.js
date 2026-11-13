@@ -1,29 +1,82 @@
 /* ===================== USA MEN'S CLUB: ROSTER =====================
-   Giocatori veri: nome, eta' e ruolo. Le fonti pubbliche (annunci dei roster 2024-2025 di Ultiworld e classifiche USAU/Ultiworld) non danno una lista
-   completa e aggiornata per tutti i 32 club: dove manca, la rosa e' completata con giocatori generati (gen:true, nomi americani), tarati sulla forza del club.
-   Le eta' dei giocatori di US_CORE sono stime (compaiono con «circa»); i ruoli sono stimati dal gioco. Per aggiornare un club basta modificare la sua riga.
-   US_CORE = giocatori veri non presenti tra i «giocatori internazionali» del mercato: [cognome, nome, eta', ruolo H|C|D], dal migliore al meno forte. */
+   Giocatori veri: i nomi sono quelli identificati nelle fonti pubbliche della stagione 2026 (anteprime Ultiworld dei Regionals e dei Nationals, classifiche USAU),
+   ricevuti in una tabella. Non sono i roster ufficiali completi: 9 club non hanno nomi verificati e gli altri ne hanno solo alcuni. Dove manca, la rosa e' completata
+   con giocatori generati (gen:true, nomi americani), tarati sulla forza del club. Eta' e ruolo dei giocatori di US_CORE sono stime (compaiono con «circa»);
+   il quinto numero e' un bonus di livello per chi e' tra i leader dei Nationals 2026 (mete, assist o difese).
+   US_CORE = giocatori veri non presenti tra i «giocatori internazionali» del mercato: [cognome, nome, eta', ruolo H|C|D, bonus]. */
 const US_CORE={
-  'San Francisco Revolver':[['Orme','Anton',27,'C'],['Liu','Byron',26,'H'],['Chuck','Colby',27,'C'],['Lew','Kyle',29,'H']],
-  'Raleigh Ring of Fire':[['Li','Andrew',27,'C'],['McKelvey','Andrew',28,'H'],['Davis','Alex',27,'C'],['Dameron','Ben',26,'H'],['Snell','Ben',28,'C']],
-  'Chicago Machine':[['White','Joe',29,'H'],['Arters','Paul',30,'C'],['Luo','Vic',25,'H']],
-  'Portland Rhino Slam!':[['Hall-Witt','Alex',26,'C'],['Massey','Max',27,'H'],['Stuart','Nick',26,'C'],['Kaplan','Aaron',28,'H'],['McNichols','Adam',27,'C'],['Boyd-Fliegel','Chander',27,'H'],['Hancock','Kyle',27,'C']],
-  'Seattle Sockeye':[['Dixon','Brice',27,'H'],['Hines','Cedar',26,'C'],['Beidler','Marcus',26,'H'],['Lantz','Asher',25,'C'],['Foster','Christian',27,'C'],['Zhou','David',25,'H']],
-  'Denver Johnny Bravo':[['Olson','Connor',29,'C'],['Marshall','Kai',27,'H']],
-  'Atlanta Chain Lightning':[['Downey','Aidan',27,'C'],['Thai','Andrew',26,'H'],['Taylor','Kenni',28,'H']],
-  'Minneapolis Sub Zero':[['Lomen','Aiden',26,'C'],['King','Austin',28,'H'],['Krapfl','Blake',27,'C'],['Macho','Brandon',27,'H']]
+  'New York PoNY':[['Dameron','Ben',27,'H',0],['Miller','Declan',25,'C',0],['Labar','Matt',25,'H',0],['Little','Sam',30,'H',0],['Alladi','Shashank',23,'C',0]],
+  'Boston DiG':[['Yuan','Albert',29,'H',0],['Stoughton','Calvin',26,'H',0],['Decraene','Lander',25,'H',0],['Cable','Orion',24,'C',0],['Graff','Oscar',25,'C',0],['Boerth','Peter',27,'C',0],['Carapella','Simon',27,'C',0]],
+  'Philadelphia Pacmen':[['Beidler-Shenk','Ezra',23,'C',0],['Piercy','Logan',31,'D',4],['Tran','Max',31,'C',0],['Erdman','Owen',28,'C',0]],
+  'Washington DC Truck Stop':[['Fall','Alexandre',31,'C',0],['Nissen','Jacques',25,'C',0],['Betrancourt','Louis',24,'C',0],['Bontemps','Sofiene',26,'H',0]],
+  'Portland Red Tide':[['Kelley','Stewart',25,'H',0]],
+  'Amherst Sprout':[['Stang-Osborne','Jonah',26,'C',0]],
+  'San Francisco Revolver':[['Nelson','Alex',28,'C',0],['Orme','Anton',30,'C',0],['Vallee','Jason',31,'C',0],['Prior','Nathan',27,'H',0],['Adkins','Raekwon',31,'H',0],['Vickers-Batzdorf','Robin',29,'H',0],['Higgins','Simon',28,'C',0]],
+  'Portland Rhino Slam!':[['Hall-Witt','Alex',30,'C',0],['Bosworth','Callahan',27,'C',0],['Boyd-Fliegel','Chander',26,'C',0],['Lee','Daniel',28,'H',0],['Sealand','David',31,'C',0],['Ing','Henry',31,'H',0],['Glass','Mica',29,'H',4]],
+  'Denver Johnny Bravo':[['Tatum','Alex',30,'H',0],['Bechis','Dennison',24,'C',0],['Min-Fink','Nanda',24,'H',0],['Kalmus','Tucker',23,'C',0]],
+  'Seattle Sockeye':[['Bayer','Carter',32,'C',4],['Hines','Cedar',28,'H',0],['Chen','DY',32,'C',0],['Diamond','Elijah',25,'C',0],['Stone','Mason',25,'H',0],['Shigley','Ryan',32,'C',0],['Fuzat','Xavier',25,'C',0],['Ishikawa-Szabo','Zoli',29,'H',0]],
+  'Eugene Dark Star':[['Thoennes','Ben',25,'C',0],['Casper','Eli',27,'C',0],['Impas','Orlando',28,'H',0]],
+  'SoCal Condors':[['Koo','KJ',24,'C',0],['Combs','Max',32,'C',0],['Gibson','Max',31,'C',0]],
+  'Bay Area Wavestorms':[['Shargel','Bodie',26,'H',0],['Warren','Toby',24,'H',0]],
+  'Chicago Machine':[['Bartlett','Aaron',32,'C',0],['Hawkins','Elliot',31,'C',0],['Bansfield','Johnny',26,'H',0],['Smith','Rutledge',29,'H',0],['Schoch','Tim',27,'H',0],['Thoreson','Zeke',28,'C',0]],
+  'Minneapolis Sub Zero':[['Lacy','Cam',26,'C',0],['Davis','Micah',28,'C',0],['De Morgan','Nathan',31,'H',4],['Mans','Peter',25,'H',0],['Morton','Zach',23,'C',4]],
+  'Madison Mad Men':[['Carne','Arthur',27,'C',0],['Sjostrom','Eric',27,'C',0],['Ranhabat','Nico',23,'C',0]],
+  'Chicago Haymaker':[['Cercello','Joe',25,'C',0]],
+  'Toronto GOAT':[['Sehgal','Araav',28,'C',0],['McHale','Connor',30,'C',0],['Ancelin','Gaël',24,'C',0],['Lewis','James',27,'C',0],['Podnar','Justin',29,'C',0],['Comire','Luc',32,'C',0],['Gallant','Marty',27,'C',0],['Pettenuzzo','Max',26,'C',0],['MacKenzie','Mike',27,'C',0],['Stonehouse','Oscar',29,'H',0],['Turner','Phil',25,'H',0]],
+  'Vancouver Furious George':[['O’Donnell','Kai',31,'C',0],['Underhill','Kevin',28,'C',0],['Bryson','Malcolm',31,'H',0],['Auger-Semmar','Malik',25,'C',0],['Hibbert','Morgon',31,'H',0],['Debroux','Neo',26,'C',0],['Lebbell','Nyle',31,'C',0],['Snider','Quinn',27,'H',0],['Yuen','Rex',24,'H',0],['Ramirez Ortiz','Simon',24,'C',0],['Tsang','Tim',32,'C',0],['Vasiliyev','Toly',29,'C',0]],
+  'Raleigh Ring of Fire':[['Morrison','Brayden',24,'H',0],['Belus','Christian',24,'C',0],['Fried','Eli',25,'C',0],['Lessard','Henri',28,'H',0],['McDonnell','John',30,'H',0],['Singleton','Josh',27,'H',0],['Williams','Justin-Cooper',29,'D',4],['Searles-Bohs','Liam',23,'H',0],['Barcellos','Matthew',24,'H',0],['Stout','Owen',24,'C',0],['Brooks','Tobias',24,'C',0]],
+  'Atlanta Chain Lightning':[['Richman','Grady',30,'C',0],['Austin-Knab','Hayden',26,'C',0],['Evans','Jason',28,'D',4],['Poe','Michael',27,'C',0],['Spiva','Nicky',29,'C',0],['McCall','Stefan',32,'C',4]],
+  'Austin Doublewide':[['Armour','Matthew',26,'H',0]],
+  'Raleigh-Durham United':[['Laberteaux','Bailey',30,'C',0]]
 };
 // giocatori internazionali del mercato (STARS, 06-mercato-internazionali.js) che giocano anche per questi club: nelle carriere USA stanno nel club e non
 // compaiono piu' sul mercato. La chiave e' «cognome|nome» come in STARS.
 const US_STAR_CLUB={
-  'Juengst|Anders':'Raleigh Ring of Fire','Gouchoe-Hanas|Matt':'Raleigh Ring of Fire','Yanuck|Solomon':'Raleigh Ring of Fire','Laviolette|Allan':'Raleigh Ring of Fire',
-  'Boxley|Christian':'Washington DC Truck Stop','Malks|Jonny':'Washington DC Truck Stop','Holland|Troy':'Washington DC Truck Stop','Merriman|AJ':'Washington DC Truck Stop',
-  'Nethercutt|Jonathan':'Denver Johnny Bravo','Kerr|Jordan':'Denver Johnny Bravo','Dillon|Trent':'Seattle Sockeye',
-  'Ing|Michael':'San Francisco Revolver','Kerns|Elijah':'San Francisco Revolver','Rees|Adam':'San Francisco Revolver','Ritthaler|Daniel':'San Francisco Revolver','Magsig|Evan':'San Francisco Revolver',
-  'Mieser|Jibran':'New York PoNY','Wariner|Cameron':'New York PoNY','Kocher|Chris':'New York PoNY',
-  'De Marrée|Daan':'Chicago Machine','Goff|Nate':'Chicago Machine','Gibson|Kurt':'Chicago Machine','Wettengel|William':'Chicago Machine','Payne|Xavier':'Chicago Machine',
-  'Hecht|Malcolm':'Boston DiG','Decraene|Tobe':'Boston DiG','Hayes|Raphy':'Portland Rhino Slam!','Ambrose|Lukas':'Portland Rhino Slam!',
-  'Hulsmeyer|Brett':'Atlanta Chain Lightning','Miller|Adam':'Atlanta Chain Lightning','Taylor|Austin':'Atlanta Chain Lightning','McClamrock|Lukas':'Atlanta Chain Lightning','Randall|Tyler':'Atlanta Chain Lightning'
+  'Juengst|Anders':'New York PoNY',
+  'Jagt|Ben':'New York PoNY',
+  'Wariner|Cameron':'New York PoNY',
+  'Kocher|Chris':'New York PoNY',
+  'Mickle|Jimmy':'New York PoNY',
+  'Randolph|John':'New York PoNY',
+  'Heyman|Scott':'New York PoNY',
+  'Babbitt|Jeff':'Boston DiG',
+  'Janas|Pawel':'Boston DiG',
+  'Bonnaud|Quentin':'Boston DiG',
+  'Edmonds|Thomas':'Boston DiG',
+  'Decraene|Tobe':'Boston DiG',
+  'Atkins|Alex':'Philadelphia Pacmen',
+  'Grossberg|Sam':'Philadelphia Pacmen',
+  'Merriman|AJ':'Washington DC Truck Stop',
+  'Boxley|Christian':'Washington DC Truck Stop',
+  'Bonnet|Elliot':'Washington DC Truck Stop',
+  'Rees|Adam':'San Francisco Revolver',
+  'Hulsmeyer|Brett':'San Francisco Revolver',
+  'Ritthaler|Daniel':'San Francisco Revolver',
+  'Kerns|Elijah':'San Francisco Revolver',
+  'Gordon|Leo':'San Francisco Revolver',
+  'Hecht|Malcolm':'San Francisco Revolver',
+  'Ing|Michael':'San Francisco Revolver',
+  'Frankenberg|Walker':'San Francisco Revolver',
+  'Ambrose|Lukas':'Portland Rhino Slam!',
+  'Hayes|Raphy':'Portland Rhino Slam!',
+  'Nethercutt|Jonathan':'Denver Johnny Bravo',
+  'Kerr|Jordan':'Denver Johnny Bravo',
+  'Finer|Quinn':'Denver Johnny Bravo',
+  'Martin|Garrett':'Seattle Sockeye',
+  'Dillon|Trent':'Seattle Sockeye',
+  'De Marrée|Daan':'Chicago Machine',
+  'Goff|Nate':'Chicago Machine',
+  'Wettengel|William':'Chicago Machine',
+  'Larson|Gordon':'Minneapolis Sub Zero',
+  'Hanson|Noah':'Minneapolis Sub Zero',
+  'Krenik|Paul':'Minneapolis Sub Zero',
+  'Brandt|Will':'Minneapolis Sub Zero',
+  'Gouchoe-Hanas|Matt':'Raleigh Ring of Fire',
+  'Yanuck|Solomon':'Raleigh Ring of Fire',
+  'Miller|Adam':'Atlanta Chain Lightning',
+  'Selfridge|Will':'Atlanta Chain Lightning',
+  'Henke|Mark':'Austin Doublewide',
+  'Laviolette|Allan':'Raleigh-Durham United'
 };
 const usStarKey=r=>r[0]+'|'+r[1];
 const usStarTaken=r=>isUS()&&!!US_STAR_CLUB[usStarKey(r)];   // usato dal mercato (buildMarket)
@@ -36,11 +89,12 @@ function usCard(sur,nm,age,role,ovr0,rng,extra){
 }
 // la rosa di un club: giocatori internazionali del mercato che ci giocano, giocatori veri e riempimento generato, poi si sposta il livello di tutti tranne le stelle
 // finche' la media dei 7 migliori e' quella del club (power). opt.low: la rosa che parte tua, un po' meno allenata; opt.n: giocatori in rosa
+const specs0=club=>STARS.filter(r=>US_STAR_CLUB[usStarKey(r)]===club).length+(US_CORE[club]||[]).length;
 function usRoster(club,seedStr,opt){
-  opt=opt||{};const P=opt.low?US_TEAM[club].power*0.9+5.5:US_TEAM[club].power,N=opt.n||16,rg=mulberry32(hashStr(seedStr+'|usr|'+club));
+  opt=opt||{};const P=opt.low?US_TEAM[club].power*0.9+5.5:US_TEAM[club].power,nReal=specs0(club),N=Math.min(22,Math.max(opt.n||16,nReal+2)),rg=mulberry32(hashStr(seedStr+'|usr|'+club));
   const specs=[];
   for(const r of STARS)if(US_STAR_CLUB[usStarKey(r)]===club)specs.push({k:'s',row:r});
-  (US_CORE[club]||[]).forEach((r,i)=>specs.push({k:'r',row:r,base:4-i*1.4}));
+  (US_CORE[club]||[]).forEach(r=>specs.push({k:'r',row:r,base:-1+(r[4]|0)}));
   const used=new Set(specs.map(s=>s.row[0]+s.row[1]));
   for(let i=0;specs.length<N;i++){   // riempimento: nomi americani, ruoli bilanciati (almeno 6 handler), livello decrescente
     let sur,nm;do{sur=US_LN[Math.floor(rg()*US_LN.length)];nm=US_FN[Math.floor(rg()*US_FN.length)];}while(used.has(sur+nm));used.add(sur+nm);
@@ -52,7 +106,7 @@ function usRoster(club,seedStr,opt){
     out=specs.map((s,j)=>{
       const [sur,nm,age,role]=s.row,rng=mulberry32(hashStr(seedStr+'|'+club+'|'+sur+nm));
       if(s.k==='s'){const o=starPlayer(s.row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
-      return usCard(sur,nm,age,role,clamp(P+s.base+off,36,97),rng,s.k==='g'?{gen:true}:{ae:1});
+      return usCard(sur,nm,age,role,clamp(P+s.base+off,36,93),rng,s.k==='g'?{gen:true}:{ae:1});
     });
     const d=P-rosterPower(out);if(Math.abs(d)<0.35)break;off=clamp(off+d,-34,16);
   }
