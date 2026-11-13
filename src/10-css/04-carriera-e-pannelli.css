@@ -180,3 +180,10 @@
 /* campionato USA: zona Play-in nelle classifiche (verde = Nationals diretti, rosso = eliminate: stili gia' esistenti) e citta' sotto il nome del club */
 .rt tr.pi td:first-child{box-shadow:inset 3px 0 #ffd23f}
 .tcity{display:block;font-size:.62em;font-weight:500;opacity:.7;margin-top:1px}
+/* scelta del campionato e roster del club (prima di sceglierlo) */
+.lgcards{display:flex;flex-direction:column;gap:10px}
+.lgcard{width:100%}
+.lgtxt{display:block;margin-top:5px;font-size:14px;line-height:1.25;color:#c2cbe6}
+.lgfav{display:block;margin-top:5px;font-size:14px;color:var(--gold)}
+.rpbody{overflow:auto;flex:1;min-height:0;margin-bottom:8px}
+#rpT .crest{vertical-align:-3px;margin-right:4px}

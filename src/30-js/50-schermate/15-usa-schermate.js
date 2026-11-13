@@ -70,14 +70,12 @@ function usStakes(m){
 let teamLg='IT',teamCf='W';
 const usPrevCache={},usPreview=n=>usPrevCache[n]||(usPrevCache[n]=Math.round(rosterPower(usRoster(n,'preview|'+n,{low:true}))));   // forza con cui si parte davvero (rosa un po' meno allenata)
 function renderTeamsUS(){
-  for(const b of $('tLg').children)b.classList.toggle('on',b.dataset.k===teamLg);
   $('tMode').classList.add('hidden');$('tRelief').classList.add('hidden');$('tTeams').classList.remove('hidden');
   $('tSr').innerHTML=US_CK.map(c=>`<button type="button" data-k="${c}">${US_CONF[c]}</button>`).join('');
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamCf);
   $('tNote').textContent='Men’s Club USA: 32 club veri in 4 Conference geografiche da 8. Si gioca nella propria Conference (7 giornate), poi Play-in e Nationals a 16 squadre. Le Conference non cambiano mai: niente promozioni e retrocessioni. Il numero accanto al nome è la forza del club; i più prestigiosi partono più forti, ma le gerarchie cambiano negli anni.';
-  $('tTeams').innerHTML=US_BYCONF[teamCf].slice().sort((a,b)=>US_TEAM[a].rank-US_TEAM[b].rank).map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${esc(n)}<small class="tcity">${esc(US_TEAM[n].city)} · n° ${US_TEAM[n].rank}</small></span></span><b class="tp">${usPreview(n)}</b></button>`).join('');
+  $('tTeams').innerHTML=US_BYCONF[teamCf].slice().sort((a,b)=>favFirst(a,b)||US_TEAM[a].rank-US_TEAM[b].rank).map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${favMark(n)}${esc(n)}<small class="tcity">${esc(US_TEAM[n].city)} · n° ${US_TEAM[n].rank}</small></span></span><b class="tp">${usPreview(n)}</b></button>`).join('');
 }
-$('tLg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;teamLg=b.dataset.k;reliefName=null;if(teamLg==='IT')teamMode='cuore';renderTeams();});
 // ---- Classifica ----
 const usRow=(nm,t,cls)=>`<tr${cls?` class="${cls}"`:''}><td>${crest(nm,15)} ${esc(nm)}<span class="tp">${Math.round(teamPower(nm)||0)}</span></td><td>${t.w+t.l}</td><td>${t.w}</td><td>${t.l}</td><td>${t.pf-t.pa>0?'+':''}${t.pf-t.pa}</td></tr>`;
 const usHead='<tr><th>Squadra e forza</th><th>G</th><th>V</th><th>S</th><th>Diff</th></tr>';

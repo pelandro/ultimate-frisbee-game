@@ -64,7 +64,7 @@ $('tTeamBox').addEventListener('click',e=>{
 $('tSr').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(teamLg==='US')teamCf=b.dataset.k;else teamTab=b.dataset.k;reliefName=null;renderTeams();});
 $('tTeams').addEventListener('click',e=>{
   const b=e.target.closest('.tteam');if(!b)return;
-  openCoach({mode:'new',team:b.dataset.n,relief:false});   // prima del via: nome e volto dell'allenatore
+  openRosterPreview(b.dataset.n);   // prima di scegliere: roster e squadra del cuore (16-scelta-campionato.js); poi nome e volto dell'allenatore
 });
 $('eCards').addEventListener('click',e=>{const b=e.target.closest('.ecard');if(!b)return;SV.event=b.dataset.e;persist();renderEvent();});
 $('eBody').addEventListener('click',e=>{

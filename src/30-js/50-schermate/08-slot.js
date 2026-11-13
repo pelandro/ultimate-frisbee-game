@@ -17,7 +17,7 @@ function switchSlot(k){
   let d=null;try{d=JSON.parse(localStorage.getItem(slotKey(k))||'null');}catch(e){}
   $('opts').classList.add('hidden');
   if(d&&d.team){SV={};if(loadSave(d)){SV.slot=k;persist();showScreen('home');return;}}
-  slotUndo=SV&&SV.team?(SV.slot||1):null;const help=SV.help;SV={help,slot:k};try{localStorage.removeItem(SAVE_KEY);}catch(e){}showScreen('team');   // slot vuoto: si sceglie la squadra (indietro: torna la carriera di prima)
+  slotUndo=SV&&SV.team?(SV.slot||1):null;const help=SV.help;SV={help,slot:k};try{localStorage.removeItem(SAVE_KEY);}catch(e){}showScreen('league');   // slot vuoto: si sceglie la squadra (indietro: torna la carriera di prima)
 }
 $('opSlots').addEventListener('click',e=>{const b=e.target.closest('[data-slot]');if(!b||b.disabled)return;switchSlot(+b.dataset.slot);});
 /* ---- SCHERMATA «CARRIERE» (dal menu iniziale) ----
@@ -49,7 +49,7 @@ function careerNew(k){
   if(prev)persist();   // la carriera attuale resta nel suo slot
   slotUndo=prev&&prev!==k?prev:null;
   try{localStorage.removeItem(slotKey(k));localStorage.removeItem(SAVE_KEY);}catch(e){}
-  const help=SV&&SV.help;SV={help,slot:k};showScreen('team');
+  const help=SV&&SV.help;SV={help,slot:k};showScreen('league');
 }
 // indietro dalla scelta della squadra: se avevi lasciato un'altra carriera per iniziarne una nuova, torna quella
 function teamBack(){

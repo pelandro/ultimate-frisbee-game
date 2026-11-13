@@ -84,22 +84,26 @@ catch(e){
     if(/Continua/.test(await page.locator('#tCareerS').innerText()))throw new Error('il test USA ha lasciato una carriera salvata');
   });
   await step('carriera USA dall\'interfaccia: Italia/USA, Conference, club, allenatore, Classifica a tre viste, partita simulata',async()=>{
-    await page.click('#tCareer');await vis('#team');await page.click('#tLg button[data-k="US"]');
+    await page.click('#tCareer');await vis('#league');if(await page.locator('#lgList .lgcard').count()<2)throw new Error('servono le schede dei campionati');await page.click('#lgList [data-lg="US"]');await vis('#team');
     if(await page.locator('#tSr button').count()!==4)throw new Error('servono le 4 Conference');
     await page.click('#tSr button[data-k="E"]');
     if(await page.locator('.tteam').count()!==8)throw new Error('ogni Conference ha 8 club');
-    await page.click('.tteam >> nth=0');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
+    await page.click('.tteam >> nth=1');await vis('#rpv');
+    if(await page.locator('#rpBody tr').count()<15)throw new Error('il roster del club deve elencare i giocatori');
+    await page.click('#rpFav');await page.click('#rpX');
+    if(!/★/.test(await page.locator('.tteam >> nth=0').innerText()))throw new Error('la squadra del cuore deve stare in cima, con la stella');
+    await page.click('.tteam >> nth=0');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     if(!/Conference/.test(await page.locator('#hInfo').innerText()))throw new Error('il cruscotto non mostra la Conference');
     await page.click('#hEvent');await vis('#event');
     if(await page.locator('#eBody .rt tr.up').count()!==2||await page.locator('#eBody .rt tr.pi').count()!==4||await page.locator('#eBody .rt tr.dn').count()!==2)throw new Error('zone Nationals / Play-in / eliminate non evidenziate (2/4/2)');
     for(const k of ['nat','rank','conf'])await page.click('#usTabs [data-ut="'+k+'"]');
     await page.click('#eBack');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
     await page.click('#hOpt');await page.click('#opX');
-    await page.evaluate(()=>{localStorage.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])localStorage.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
+    await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');localStorage.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])localStorage.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
     await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   });
   await step('nuova carriera e cruscotto',async()=>{
-    await page.click('#tCareer');await vis('#team');await page.click('#tSr button[data-k="C"]');await page.click('.tteam >> nth=0');await vis('#coachsel');
+    await page.click('#tCareer');await vis('#league');await page.click('#lgList [data-lg="IT"]');await vis('#team');await page.click('#tSr button[data-k="C"]');await page.click('.tteam >> nth=0');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');
     // schermata dell'allenatore: personaggio casuale, volto e nomi scelti a mano, anteprima che segue
     await page.click('#coRnd');if(!(await page.inputValue('#coN'))||!(await page.inputValue('#coS')))throw new Error('«Personaggio casuale» deve riempire nome e cognome');
     if(await page.locator('#coFaces button').count()!==12)throw new Error('i volti devono essere dodici');
@@ -239,7 +243,7 @@ catch(e){
     const team1=(await page.locator('#tCareerS').innerText().catch(()=>''));
     await vis('#home');const name1=await page.locator('#home .dname').first().innerText();
     await page.click('#hOpt');await vis('#opts');if(await page.locator('#opSlots [data-slot]').count()!==3)throw new Error('gli slot devono essere tre');
-    await page.click('#opSlots [data-slot="2"]');await vis('#team');await page.click('#tSr button[data-k="B"]');await page.click('.tteam >> nth=3');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
+    await page.click('#opSlots [data-slot="2"]');await await vis('#league');await page.click('#lgList [data-lg="IT"]');await vis('#team');await page.click('#tSr button[data-k="B"]');await page.click('.tteam >> nth=3');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     const name2=await page.locator('#home .dname').first().innerText();if(name2===name1)throw new Error('lo slot 2 ha la stessa squadra dello slot 1');
     await page.click('#hOpt');await page.click('#opSlots [data-slot="1"]');await page.waitForTimeout(300);await vis('#home');
     const back=await page.locator('#home .dname').first().innerText();if(back!==name1)throw new Error('tornando allo slot 1 la carriera non e\' quella di prima: '+back);
@@ -346,10 +350,9 @@ catch(e){
     await page.click('#tSlots');await vis('#slots');
     const full=await page.locator('#csBox [data-cgo]').count();if(full<1)throw new Error('la carriera esistente non compare tra gli slot');
     const empty=await page.locator('#csBox .csl:not(:has([data-cgo])) [data-cnew]').first();
-    const k=+(await empty.getAttribute('data-cnew'));await empty.click();await vis('#team');
-    await page.click('#teamBack');await vis('#slots');   // ripensamento: la carriera di prima resta
+    const k=+(await empty.getAttribute('data-cnew'));await empty.click();await vis('#league');await page.click('#lgBack');await vis('#slots');   // ripensamento: la carriera di prima resta
     if(await page.locator('#csBox [data-cgo]').count()!==full)throw new Error('tornando indietro la carriera di prima e\' sparita');
-    await page.click('#csBox [data-cnew="'+k+'"]');await vis('#team');
+    await page.click('#csBox [data-cnew="'+k+'"]');await vis('#league');await page.click('#lgList [data-lg="IT"]');await vis('#team');
     // seconda carriera: partenza da subentrato (squadra in crisi a una giornata dalla fine), con «Un'altra squadra»
     await page.click('#tMode button[data-k="sub"]');await page.click('#tSr button[data-k="B"]');await vis('#tReAcc');await page.click('#tReAlt');await vis('#tReAcc');
     await page.click('#tReAcc');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');

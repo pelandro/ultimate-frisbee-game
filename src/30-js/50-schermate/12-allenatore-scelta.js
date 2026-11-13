@@ -5,13 +5,13 @@
 let teamMode='cuore',reliefName=null;
 const TSR_IT=$('tSr').innerHTML;   // le linguette Serie A/B/C: tornano quando dal campionato USA si ripassa all'Italia
 function renderTeams(){
-  for(const b of $('tLg').children)b.classList.toggle('on',b.dataset.k===teamLg);
+  $('tLgName').textContent=lgOf().name;
   if(teamLg==='US')return renderTeamsUS();   // campionato USA: 15-usa-schermate.js
   $('tMode').classList.remove('hidden');$('tSr').innerHTML=TSR_IT;
   for(const b of $('tMode').children)b.classList.toggle('on',b.dataset.k===teamMode);
   const sub=teamMode==='sub';
   $('tTeams').classList.toggle('hidden',sub);$('tRelief').classList.toggle('hidden',!sub);
-  if(!sub){$('tNote').textContent='Scegli la serie e la squadra: puoi partire dalla Serie C e salire, oppure direttamente dalla B o dalla A, dove le avversarie sono più forti. La rosa è quella vera della squadra (nomi ed età reali), ancora poco allenata; il talento dei giocatori è già fissato. Il numero accanto al nome è la forza della squadra: la media dei suoi 7 migliori giocatori.';renderTeamList();return;}
+  if(!sub){$('tNote').textContent='Scegli la serie e tocca una squadra per vederne il roster, poi decidi se allenarla. Puoi partire dalla Serie C e salire, oppure direttamente dalla B o dalla A, dove le avversarie sono più forti. La rosa è quella vera della squadra (nomi ed età reali), ancora poco allenata. Il numero accanto al nome è la forza della squadra: la media dei suoi 7 migliori giocatori.';renderTeamList();return;}
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamTab);
   $('tNote').textContent='Scegli la serie: una squadra in crisi ti chiama a una giornata dalla fine del campionato. Hai una sola partita per salvarla; poi comincia l’estate.';
   if(!reliefName||!TEAM[reliefName]||TEAM[reliefName].series!==teamTab)reliefName=reliefOffer(teamTab);
