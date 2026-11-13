@@ -19,7 +19,9 @@ function usaSelfTest(seasons,seed){
       chk('lega',SV.lk==='US'&&SV.sr==='U'&&SV.sched.length===7,'avvio '+club);
       for(let s=0;s<seasons;s++){
         let g=0;
-        while(!SV.done&&g++<40){const m=nextMatch();if(!m){chk('flusso',false,'partita mancante');break;}const r=simPower(SV.team,m.name);recordResult(r[0]>r[1],r[0],r[1]);hide();games++;}
+        while(!SV.done&&g++<40){const m=nextMatch();if(!m){chk('flusso',false,'partita mancante');break;}const r=simPower(SV.team,m.name);recordResult(r[0]>r[1],r[0],r[1]);hide();games++;
+          // le tre viste della Classifica si aprono in ogni fase (i gironi dei Nationals esistono solo dopo la stagione regolare)
+          for(const v of ['nat','rank','conf']){usTabSel=v;try{renderEvent();}catch(e){chk('viste',false,v+' fase '+SV.us.ph+': '+e.message);}}}
         chk('flusso',SV.done&&g<=20,'stagione non chiusa o troppo lunga '+g);
         const U=SV.us,N=U.nat;if(!N||!U.q){chk('flusso',false,'Nationals mancanti');break;}
         chk('qualif',U.q.length===16&&new Set(U.q).size===16,'16 ai Nationals');
@@ -100,6 +102,7 @@ function usaSelfTest(seasons,seed){
   r('Overall dai dati Fantasy dei Nationals: il migliore di ogni club sta in testa, i giocatori di rendimento sono in rosa, le stelle non scendono sotto la fama, rose da 20','fantasy','sì');
   r('Età dalle schede pubbliche UFA e dai limiti delle convocazioni giovanili U20/U24: in rosa, esatte dove note, mai oltre il limite','eta','sì');
   r('Premiati All-UFA 2026 almeno a metà della propria rosa','premi','sì');
+  r('Classifica USA: le viste Conference, Nationals (gironi e tabellone) e Ranking si aprono in ogni fase della stagione','viste','sì');
   r('Cambio di lega Italia ↔ USA: allenatore e trofei restano','lega','sì');
   r('Campionato italiano invariato','italia','sì');
   return rows;

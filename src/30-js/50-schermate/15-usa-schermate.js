@@ -132,7 +132,7 @@ function usNatView(){
   }
   let h=`<p class="estat">${N.out?(N.champ?'Nationals conclusi':'Non siete più in corsa'):'Nationals in corso'} · <b style="color:#4fe58f">verde</b>: quarti · <b style="color:#ffd23f">giallo</b>: prequarti · <b style="color:#ff7b80">rosso</b>: fuori</p>`;
   if(N.ord||N.rd>=3||N.ko.length)h+=usBracketHTML();
-  h+=[0,1,2,3].map(usPoolHTML).join('');
+  h+=[0,1,2,3].map(p=>usPoolHTML(p)).join('');   // senza la freccia, map passerebbe l'indice come secondo argomento (la tabella N)
   return h;
 }
 function usRankView(){
