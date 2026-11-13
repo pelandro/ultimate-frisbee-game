@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- USA: la vista «Nationals» della Classifica si apre di nuovo anche durante e dopo i Nationals (prima, quando i gironi esistevano, dava errore e il pulsante sembrava non rispondere). Il Test USA ora apre le tre viste in ogni fase della stagione.
 - USA: età reali (dalle schede pubbliche della UFA) per 114 giocatori dei roster, e limiti di età dalle convocazioni nelle nazionali giovanili U20/U24 per altri 47; chi ha vinto un premio All-UFA 2026 non scende sotto un livello minimo. Le età restano «circa» solo per chi non è in nessuna fonte.
 - USA: gli Overall dei giocatori dei 16 club dei Nationals seguono i dati di Fantasy Ultimate (punti a partita e costo dei 409 giocatori), uguali per tutti i club: un campione in una squadra scarsa resta un campione, e chi ha un costo alto o è una stella nota non scende di molto se ha giocato male. Il ruolo (handler, cutter, difensore) viene dai punteggi per ruolo; la forza dei club resta quella del rating, spostata al massimo di 4 punti dal talento della rosa.
 - Telefono e tablet: toccare più volte i pulsanti non ingrandisce più le schermate (niente zoom con doppio tocco o pizzico; scorrere funziona come prima).
