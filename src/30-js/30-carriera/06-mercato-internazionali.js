@@ -42,7 +42,7 @@ const STARS=[
   ['Smith','Brodie',39,'H',74,'USA','break'],['Brownlee','Marques',33,'D',72,'New York Empire','hands',1]
 ];
 function starPlayer(r,rng){   // scheda del giocatore vero: statistiche dal ruolo e dall'Overall, eta' vera piu' le stagioni di carriera gia' passate
-  const [sur,nm,age0,role,ov,from,trait]=r,st=utStats(role,ov,rng),rr=role==='H'?'H':'C',full=sur+' '+nm,age=age0+Math.max(0,(SV.season|0)-1);
+  const [sur,nm,age1,role,ov,from,trait]=r,age0=usAgeOf(sur,nm,age1)[0],st=utStats(role,ov,rng),rr=role==='H'?'H':'C',full=sur+' '+nm,age=age0+Math.max(0,(SV.season|0)-1);
   const top=Math.max(...KEYS.map(k=>st[k])),cap=clamp(top+(age0<=25?7:(age0<=29?3:1)),60,99);
   const o={n:nm,label:nm+' '+sur,full,sur,r:rr,age:age0,tl:cap,tf:cap,tv:cap,s:st,gen:false,star:true,f:false,trait,dev:age0<=25?1.3:1,sk:2,cond:100,car:null,nat:from,pos:role==='D'?'D':undefined,ae:r[7]?undefined:1};
   for(let y=age0;y<age;y++)agePlayer(o,rng);   // gli anni passano anche per loro

@@ -6,6 +6,8 @@
    livello rispetto al club (da -4 a +6) in base al rendimento ai Nationals 2026 (mete + assist + 1,5 difese). Per i 16 club dei Nationals prevalgono pero' i dati
    di Fantasy Ultimate (00-fantasy.js): livello assoluto (usFFabs, da punti a partita, costo e, per le stelle, fama di mercato) e ruolo (usFFrole, dai punteggi per ruolo) valgono anche per le stelle del
    mercato, e chi e' nei dati ma non in US_CORE entra in rosa se rende abbastanza (usFFextra). Per le stelle di un club senza dati vale l'Overall del mercato.
+   Le eta' possono essere esatte (schede pubbliche UFA), limitate dalle convocazioni giovanili U20/U24 o stimate: vedi 00-eta-ufa.js e usAgeOf. I premi All-UFA 2026
+   danno un pavimento di livello (usAward).
    US_CORE = giocatori veri non presenti tra i «giocatori internazionali» del mercato: [cognome, nome, eta', ruolo H|C|D, bonus]. */
 const US_CORE={
   'New York PoNY':[['Dameron','Ben',27,'H',6],['Whitlock','Nicholas',27,'C',5],['Little','Samuel',25,'C',3],['Cowan','Jacob',26,'C',2],['Miller','Declan',25,'H',2],['LaBar','Matt',23,'C',0],['Valsaraj','Vinay',25,'C',-1],['Stevens-Stein','Joshua',26,'H',-1],['Kaplan','Isaac',23,'H',-1],['Lhamo','Nima',26,'C',-2],['Alladi','Shashank',23,'H',-2],['Lieman','Ethan',28,'H',-2]],
@@ -122,7 +124,15 @@ function usFFval(f){
 }
 // Overall assoluto (uguale per tutti i club, non relativo al club): un fuoriclasse in una squadra scarsa resta un fuoriclasse. Le stelle del mercato hanno
 // anche la fama del loro Overall di mercato (m), che fa da pavimento (-3) quando il torneo e' andato male.
-const usFFabs=(f,m)=>{const a=62+30*usFFval(f);return clamp(m?Math.max(a,m-3):a,40,98);};
+// Il premio All-UFA 2026 (US_UFA_AWARD, 1-3) da' un altro pavimento: chi e' tra i migliori della lega non e' un giocatore mediocre nemmeno se ai Nationals ha reso poco.
+const usAward=(sur,nm)=>US_UFA_AWARD[usNameKey(nm+' '+sur)]|0;
+const usFFabs=(f,m,aw)=>{const a=62+30*usFFval(f);return clamp(Math.max(a,m?m-3:0,[0,92,89,82][aw|0]),40,98);};
+// eta' nel 2026: esatta se e' nelle schede UFA, altrimenti il limite delle convocazioni giovanili quando la stima lo supera, altrimenti la stima. Ritorna [eta', esatta?]
+function usAgeOf(sur,nm,def){
+  const k=usNameKey(nm+' '+sur),h=US_AGE_HI[k];
+  if(US_AGE[k])return [US_AGE[k],true];
+  return h&&def>h?[h-1,false]:[def,false];
+}
 // ruolo dai punteggi per ruolo: si cambia solo se uno e' nettamente avanti e il campione non e' minuscolo
 function usFFrole(f){
   const a=[['C',f[4]],['H',f[5]],['D',f[6]]].sort((x,y)=>y[1]-x[1]);
@@ -146,8 +156,8 @@ function usFFskew(club){
   if(!usFFdev){
     usFFdev={};let sum=0,n=0;
     for(const c of US_NAMES){
-      const ab=[...STARS.filter(r=>US_STAR_CLUB[usStarKey(r)]===c).map(r=>{const f=usFFof(c,r[0],r[1]);return f&&usFFabs(f,r[4]);}),
-        ...(US_CORE[c]||[]).map(r=>{const f=usFFof(c,r[0],r[1]);return f&&usFFabs(f);}),...usFFextra(c).map(x=>usFFabs(x.f))].filter(a=>a).sort((a,b)=>b-a);
+      const ab=[...STARS.filter(r=>US_STAR_CLUB[usStarKey(r)]===c).map(r=>{const f=usFFof(c,r[0],r[1]);return f&&usFFabs(f,r[4],usAward(r[0],r[1]));}),
+        ...(US_CORE[c]||[]).map(r=>{const f=usFFof(c,r[0],r[1]);return f&&usFFabs(f,0,usAward(r[0],r[1]));}),...usFFextra(c).map(x=>usFFabs(x.f,0,usAward(x.sur,x.nm)))].filter(a=>a).sort((a,b)=>b-a);
       if(ab.length>=7){usFFdev[c]=ab.slice(0,7).reduce((x,y)=>x+y,0)/7-US_TEAM[c].power;sum+=usFFdev[c];n++;}
     }
     for(const c in usFFdev)usFFdev[c]-=sum/n;
@@ -161,11 +171,11 @@ function usRoster(club,seedStr,opt){
   const specs=[];
   // le stelle del mercato che hanno i dati Fantasy (k:'sf') prendono livello e ruolo dal rendimento come gli altri, ma restano loro (tratto, aspetto, eta');
   // le altre (k:'s') tengono l'Overall del mercato
-  for(const r of STARS)if(US_STAR_CLUB[usStarKey(r)]===club){const f=usFFof(club,r[0],r[1]);specs.push(f?{k:'sf',row:r,ab:usFFabs(f,r[4]),role:usFFrole(f)}:{k:'s',row:r});}
+  for(const r of STARS)if(US_STAR_CLUB[usStarKey(r)]===club){const f=usFFof(club,r[0],r[1]);specs.push(f?{k:'sf',row:r,ab:usFFabs(f,r[4],usAward(r[0],r[1])),role:usFFrole(f)}:{k:'s',row:r});}
   // giocatori veri: dove ci sono i dati Fantasy contano quelli (livello assoluto e ruolo), altrimenti il bonus di US_CORE rispetto al club
   const real=[];
-  (US_CORE[club]||[]).forEach(r=>{const f=usFFof(club,r[0],r[1]),ro=f&&usFFrole(f);real.push({k:'r',row:ro?[r[0],r[1],r[2],ro,r[4]]:r,ab:f?usFFabs(f):null,base:-1+(r[4]|0)});});
-  usFFextra(club).forEach(x=>real.push({k:'r',row:[x.sur,x.nm,22+hashStr(x.f[0])%12,usFFrole(x.f)||'C',0],ab:usFFabs(x.f),base:0}));
+  (US_CORE[club]||[]).forEach(r=>{const f=usFFof(club,r[0],r[1]),ro=f&&usFFrole(f);const ag=usAgeOf(r[0],r[1],r[2]);real.push({k:'r',row:[r[0],r[1],ag[0],ro||r[3],r[4]],ex:ag[1],ab:f?usFFabs(f,0,usAward(r[0],r[1])):null,base:-1+(r[4]|0)});});
+  usFFextra(club).forEach(x=>{const ag=usAgeOf(x.sur,x.nm,22+hashStr(x.f[0])%12);real.push({k:'r',row:[x.sur,x.nm,ag[0],usFFrole(x.f)||'C',0],ex:ag[1],ab:usFFabs(x.f,0,usAward(x.sur,x.nm)),base:0});});
   // una rosa ha al massimo 20 giocatori: le stelle restano sempre, poi i veri migliori
   const key=s=>s.ab!=null?s.ab:P+s.base;
   real.sort((a,b)=>key(b)-key(a)).slice(0,Math.max(0,20-specs.length)).forEach(s=>specs.push(s));
@@ -184,8 +194,8 @@ function usRoster(club,seedStr,opt){
   for(let it=0;it<7;it++){
     out=specs.map((s,j)=>{
       const [sur,nm,age,role]=s.row,rng=mulberry32(hashStr(seedStr+'|'+club+'|'+sur+nm));
-      if(s.k==='s'||s.k==='sf'){const row=s.k==='sf'?s.row.slice():s.row;if(s.k==='sf'){row[3]=s.role||row[3];row[4]=Math.round(lv(s,off));}const o=starPlayer(row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
-      return usCard(sur,nm,age,role,lv(s,off),rng,s.k==='g'?{gen:true}:{ae:1});
+      if(s.k==='s'||s.k==='sf'){const row=s.k==='sf'?s.row.slice():s.row;if(s.k==='sf'){row[3]=s.role||row[3];row[4]=Math.round(lv(s,off));}const o=starPlayer(row,rng);if(US_AGE[usNameKey(o.label)])o.ae=undefined;o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
+      return usCard(sur,nm,age,role,lv(s,off),rng,s.k==='g'?{gen:true}:(s.ex?{}:{ae:1}));
     });
     const d=T-rosterPower(out);if(Math.abs(d)<0.35)break;off=clamp(off+d,-34,16);
   }

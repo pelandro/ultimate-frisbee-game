@@ -1,7 +1,7 @@
 /* ---- DIAGNOSTICA: TEST DEL CAMPIONATO USA ----
    Gioca piu' stagioni di seguito in carriere USA di prova (club forte, medio e debole) e controlla il formato: 32 club, 4 Conference da 8, 7 giornate,
    8 qualificate dirette + 8 dal Play-in = 16 ai Nationals, 4 gironi da 4 (una squadra per fascia, Conference separate), 3 partite a girone,
-   prequarti 2ª-3ª di gironi diversi, quarti, semifinali e finale senza accoppiamenti duplicati. Poi salvataggio, cambio di lega, stelle tolte dal mercato e Overall dai dati Fantasy.
+   prequarti 2ª-3ª di gironi diversi, quarti, semifinali e finale senza accoppiamenti duplicati. Poi salvataggio, cambio di lega, stelle tolte dal mercato Overall dai dati Fantasy ed età/premi UFA.
    La carriera vera non viene toccata (QM.on blocca persist e alla fine si rimette com'era). Seme fisso: risultati ripetibili. */
 function usaSelfTest(seasons,seed){
   const bak=hasCareer()?(persist(),JSON.stringify(SV)):null,R0=Math.random,q0=QM.on,rows=[],row=(name,val,ok,note)=>({name,val,ok:!!ok,note:note||''});
@@ -62,6 +62,14 @@ function usaSelfTest(seasons,seed){
       // fama: una stella con un torneo storto non scende molto sotto il suo Overall di mercato; i club con i campioni non perdono il loro rating
       for(const o of ros)if(o.star){const r=STARS.find(x=>x[0]+' '+x[1]===o.full);chk('fantasy',!r||ovr(o)>=r[4]-4,'stella troppo sotto il mercato: '+o.full);}
       chk('fantasy',Math.abs(rosterPower(ros)-US_TEAM[c].power)<=4.5,'forza della rosa lontana dal rating: '+t);}
+    // eta' e fama dai dati pubblici UFA: l'eta' delle tabelle arriva in rosa, i convocati giovanili non superano il limite, i premiati All-UFA non restano in fondo
+    let agN=0,awN=0;
+    for(const c of US_NAMES){const ros=usRoster(c,'t'),ord=ros.map(ovr).sort((x,y)=>y-x),med=ord[Math.floor(ord.length/2)];
+      for(const o of ros){const k=usNameKey(o.label||o.n),ex=US_AGE[k],hi=US_AGE_HI[k];
+        if(ex){agN++;chk('eta',o.age===ex,'eta\' diversa dalla scheda: '+o.label);chk('eta',!o.ae,'eta\' esatta segnata come stima: '+o.label);}
+        else if(hi)chk('eta',o.age<=hi,'oltre il limite giovanile: '+o.label+' '+o.age+'>'+hi);
+        if(US_UFA_AWARD[k]){awN++;chk('premi',ovr(o)>=med,'premiato All-UFA sotto la mediana: '+o.label);}}}
+    chk('eta',agN>=60,'poche eta\' dalle schede UFA: '+agN);chk('premi',awN>=15,'pochi premiati in rosa: '+awN);
     chk('fantasy',ffIn>=ffAll*0.9,'giocatori di rendimento mancanti nelle rose: '+ffIn+'/'+ffAll);
     // cambio di lega e ritorno
     SV.job={club:SERIES.A[0],lk:'IT',season:SV.season,round:0};const t1=SV.troph;crossLgAnswer({act:'job'},'yes');
@@ -90,6 +98,8 @@ function usaSelfTest(seasons,seed){
   r('Salvataggio: ricarica a metà stagione','salvataggio','sì');
   r('Stelle del mercato presenti nei club USA: nel club, non sul mercato','stelle','sì');
   r('Overall dai dati Fantasy dei Nationals: il migliore di ogni club sta in testa, i giocatori di rendimento sono in rosa, le stelle non scendono sotto la fama, rose da 20','fantasy','sì');
+  r('Età dalle schede pubbliche UFA e dai limiti delle convocazioni giovanili U20/U24: in rosa, esatte dove note, mai oltre il limite','eta','sì');
+  r('Premiati All-UFA 2026 almeno a metà della propria rosa','premi','sì');
   r('Cambio di lega Italia ↔ USA: allenatore e trofei restano','lega','sì');
   r('Campionato italiano invariato','italia','sì');
   return rows;
