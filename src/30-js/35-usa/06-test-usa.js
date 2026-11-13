@@ -1,7 +1,7 @@
 /* ---- DIAGNOSTICA: TEST DEL CAMPIONATO USA ----
    Gioca piu' stagioni di seguito in carriere USA di prova (club forte, medio e debole) e controlla il formato: 32 club, 4 Conference da 8, 7 giornate,
    8 qualificate dirette + 8 dal Play-in = 16 ai Nationals, 4 gironi da 4 (una squadra per fascia, Conference separate), 3 partite a girone,
-   prequarti 2ª-3ª di gironi diversi, quarti, semifinali e finale senza accoppiamenti duplicati. Poi salvataggio, cambio di lega e stelle tolte dal mercato.
+   prequarti 2ª-3ª di gironi diversi, quarti, semifinali e finale senza accoppiamenti duplicati. Poi salvataggio, cambio di lega, stelle tolte dal mercato e Overall dai dati Fantasy.
    La carriera vera non viene toccata (QM.on blocca persist e alla fine si rimette com'era). Seme fisso: risultati ripetibili. */
 function usaSelfTest(seasons,seed){
   const bak=hasCareer()?(persist(),JSON.stringify(SV)):null,R0=Math.random,q0=QM.on,rows=[],row=(name,val,ok,note)=>({name,val,ok:!!ok,note:note||''});
@@ -51,6 +51,18 @@ function usaSelfTest(seasons,seed){
     let onMk=0,inClub=0;for(const r of STARS)if(US_STAR_CLUB[usStarKey(r)]){inClub++;chk('stelle',US_TEAM[US_STAR_CLUB[usStarKey(r)]]!==undefined,'club inesistente');chk('stelle',usRoster(US_STAR_CLUB[usStarKey(r)],'t').some(o=>o.full===r[0]+' '+r[1]),'manca nel club: '+r[0]);}
     for(let i=0;i<25;i++){buildMarket();for(const m of SV.market)if(m.star){const r=STARS.find(x=>x[0]+' '+x[1]===m.o.full);if(r&&usStarTaken(r))onMk++;}}
     chk('stelle',onMk===0,'stelle dei club sul mercato USA');
+    // Overall dai dati Fantasy: ogni giocatore dei dati e' nella rosa del suo club (o fuori dal tetto di 20), chi ha reso di piu' sta davanti a chi non ha reso
+    let ffIn=0,ffAll=0;
+    for(const t in US_FF){const c=US_NAMES.find(n=>n.endsWith(t));chk('fantasy',!!c,'club dei dati inesistente: '+t);if(!c)continue;
+      const ros=usRoster(c,'t'),by=o=>ovr(o),keys=new Set(ros.map(o=>usNameKey(o.label||o.n)));
+      const best=US_FF[t].slice().sort((a,b)=>usFFval(b)-usFFval(a))[0],bo=ros.find(o=>usNameKey(o.label||o.n)===usNameKey(best[0]));
+      ffAll++;chk('fantasy',!!bo&&ros.filter(o=>by(o)>by(bo)).length<=2,'il migliore di '+t+' non e\' tra i primi 3: '+best[0]);
+      for(const f of US_FF[t])if(usFFval(f)>0.45){ffAll++;if(keys.has(usNameKey(f[0])))ffIn++;}
+      chk('fantasy',ros.length===20&&ros.every(o=>ovr(o)>=36&&ovr(o)<=99),'rosa '+t+' fuori misura');
+      // fama: una stella con un torneo storto non scende molto sotto il suo Overall di mercato; i club con i campioni non perdono il loro rating
+      for(const o of ros)if(o.star){const r=STARS.find(x=>x[0]+' '+x[1]===o.full);chk('fantasy',!r||ovr(o)>=r[4]-4,'stella troppo sotto il mercato: '+o.full);}
+      chk('fantasy',Math.abs(rosterPower(ros)-US_TEAM[c].power)<=4.5,'forza della rosa lontana dal rating: '+t);}
+    chk('fantasy',ffIn>=ffAll*0.9,'giocatori di rendimento mancanti nelle rose: '+ffIn+'/'+ffAll);
     // cambio di lega e ritorno
     SV.job={club:SERIES.A[0],lk:'IT',season:SV.season,round:0};const t1=SV.troph;crossLgAnswer({act:'job'},'yes');
     chk('lega',!isUS()&&SV.sr==='A'&&SV.troph===t1&&!!SV.coach,'da USA a Italia');
@@ -77,6 +89,7 @@ function usaSelfTest(seasons,seed){
   r('Ranking nazionale numerico e storico di stagione','ranking','sì');r('Storico della stagione con esito USA','storico','sì');
   r('Salvataggio: ricarica a metà stagione','salvataggio','sì');
   r('Stelle del mercato presenti nei club USA: nel club, non sul mercato','stelle','sì');
+  r('Overall dai dati Fantasy dei Nationals: il migliore di ogni club sta in testa, i giocatori di rendimento sono in rosa, le stelle non scendono sotto la fama, rose da 20','fantasy','sì');
   r('Cambio di lega Italia ↔ USA: allenatore e trofei restano','lega','sì');
   r('Campionato italiano invariato','italia','sì');
   return rows;

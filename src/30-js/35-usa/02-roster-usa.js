@@ -3,8 +3,9 @@
    i giocatori identificati nelle fonti pubbliche per gli altri club. Non sono roster ufficiali completi: 8 club hanno pochi nomi o nessuno. Dove manca, la rosa
    e' completata con giocatori generati (gen:true, nomi americani), tarati sulla forza del club. Una rosa ha al massimo 20 giocatori (i primi per rendimento).
    Eta' e ruolo dei giocatori di US_CORE sono stime (compaiono con «circa»; il ruolo e' handler se hanno piu' assist che mete); il quinto numero e' il bonus di
-   livello rispetto al club (da -4 a +6) in base al rendimento ai Nationals 2026 (mete + assist + 1,5 difese). Per chi e' nel mercato internazionale (US_STAR_CLUB)
-   vale l'Overall del mercato.
+   livello rispetto al club (da -4 a +6) in base al rendimento ai Nationals 2026 (mete + assist + 1,5 difese). Per i 16 club dei Nationals prevalgono pero' i dati
+   di Fantasy Ultimate (00-fantasy.js): livello assoluto (usFFabs, da punti a partita, costo e, per le stelle, fama di mercato) e ruolo (usFFrole, dai punteggi per ruolo) valgono anche per le stelle del
+   mercato, e chi e' nei dati ma non in US_CORE entra in rosa se rende abbastanza (usFFextra). Per le stelle di un club senza dati vale l'Overall del mercato.
    US_CORE = giocatori veri non presenti tra i «giocatori internazionali» del mercato: [cognome, nome, eta', ruolo H|C|D, bonus]. */
 const US_CORE={
   'New York PoNY':[['Dameron','Ben',27,'H',6],['Whitlock','Nicholas',27,'C',5],['Little','Samuel',25,'C',3],['Cowan','Jacob',26,'C',2],['Miller','Declan',25,'H',2],['LaBar','Matt',23,'C',0],['Valsaraj','Vinay',25,'C',-1],['Stevens-Stein','Joshua',26,'H',-1],['Kaplan','Isaac',23,'H',-1],['Lhamo','Nima',26,'C',-2],['Alladi','Shashank',23,'H',-2],['Lieman','Ethan',28,'H',-2]],
@@ -105,28 +106,88 @@ function usCard(sur,nm,age,role,ovr0,rng,extra){
   const st=utStats(role,ovr0,rng),top=Math.max(...KEYS.map(k=>st[k])),cap=clamp(top+(age<=24?8:(age<=29?4:2))+Math.floor(rng()*4),60,99),full=sur+' '+nm+(extra&&extra.gen?' '+String.fromCharCode(65+hashStr(sur+nm)%26)+(hashStr(sur+nm+'x')%90+10):''),rr=role==='H'?'H':'C';
   return Object.assign({n:sur,label:nm+' '+sur,full,sur,r:rr,age,tl:cap,tf:cap,tv:cap,s:st,gen:false,f:false,trait:traitFor(full,st,rr),dev:age<=24?1.2:1,sk:0,cond:100,car:null,pos:role==='D'?'D':undefined},extra||{});
 }
+// ---- Fantasy Ultimate (00-fantasy.js): Overall e ruolo dal rendimento ai Nationals 2026 ----
+// i nomi si confrontano senza accenti, maiuscole e ordine (le fonti scrivono «Tim Schoch» o «Schoch, Timothy» in modi diversi)
+const usNameKey=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z ]/g,' ').split(/\s+/).filter(Boolean).sort().join(' ');
+let usFFmap=null;   // club -> {chiave nome: voce}, costruita alla prima lettura
+function usFFof(club,sur,nm){
+  if(!usFFmap){usFFmap={};for(const t in US_FF){const c=US_NAMES.find(n=>n.endsWith(t));if(!c)continue;usFFmap[c]={};for(const f of US_FF[t])usFFmap[c][usNameKey(f[0])]=f;}}
+  const m=usFFmap[club];return m?m[usNameKey(nm+' '+sur)]||null:null;
+}
+// valore 0..1,3: 70% rendimento (punti a partita, radice per non far dominare i pochi fuoriclasse) e 30% costo (la stima di prima del torneo). Il costo
+// e' anche un pavimento (80%): chi ha un costo alto e ha reso poco ai Nationals e' di solito una stella con un torneo storto, non un giocatore mediocre.
+function usFFval(f){
+  const pg=f[3]/Math.max(1,f[2]),perf=pg>0?Math.sqrt(pg/15):pg/20,cost=Math.min(1.3,Math.sqrt(Math.max(0,f[1]-3)/19));
+  return Math.max(0.7*Math.min(1.25,perf)+0.3*cost,0.8*cost);
+}
+// Overall assoluto (uguale per tutti i club, non relativo al club): un fuoriclasse in una squadra scarsa resta un fuoriclasse. Le stelle del mercato hanno
+// anche la fama del loro Overall di mercato (m), che fa da pavimento (-3) quando il torneo e' andato male.
+const usFFabs=(f,m)=>{const a=62+30*usFFval(f);return clamp(m?Math.max(a,m-3):a,40,98);};
+// ruolo dai punteggi per ruolo: si cambia solo se uno e' nettamente avanti e il campione non e' minuscolo
+function usFFrole(f){
+  const a=[['C',f[4]],['H',f[5]],['D',f[6]]].sort((x,y)=>y[1]-x[1]);
+  return a[0][1]>=10&&a[0][1]>=1.4*a[1][1]?a[0][0]:null;
+}
+// cognome e nome da «nome cognome»: il cognome parte da una particella (van, de, di...) oppure e' l'ultima parola
+function usFFsplit(full){
+  const w=full.split(' '),i=w.findIndex((x,k)=>k>0&&/^(van|von|de|del|della|da|di|le|la|st)$/i.test(x)),k=i>0?i:w.length-1;
+  return [w.slice(k).join(' '),w.slice(0,k).join(' ')];
+}
+// chi e' nei dati Fantasy del club ma non tra i giocatori che abbiamo gia' (stelle del mercato o US_CORE)
+function usFFextra(club){
+  const t=Object.keys(US_FF).find(x=>club.endsWith(x));if(!t)return[];
+  const have=new Set([...STARS.filter(r=>US_STAR_CLUB[usStarKey(r)]===club),...(US_CORE[club]||[])].map(r=>usNameKey(r[1]+' '+r[0])));
+  return US_FF[t].filter(f=>!have.has(usNameKey(f[0]))).map(f=>{const [sur,nm]=usFFsplit(f[0]);return {f,sur,nm};});
+}
+// quanto i migliori 7 di un club (Overall assoluto dei dati Fantasy) stanno sopra o sotto il suo rating, meno la media di tutti i club con dati: positivo = piu'
+// talento di quanto dica il rating. Serve a dare a un club con campioni un po' piu' di forza e a uno con pochi un po' meno.
+let usFFdev=null;
+function usFFskew(club){
+  if(!usFFdev){
+    usFFdev={};let sum=0,n=0;
+    for(const c of US_NAMES){
+      const ab=[...STARS.filter(r=>US_STAR_CLUB[usStarKey(r)]===c).map(r=>{const f=usFFof(c,r[0],r[1]);return f&&usFFabs(f,r[4]);}),
+        ...(US_CORE[c]||[]).map(r=>{const f=usFFof(c,r[0],r[1]);return f&&usFFabs(f);}),...usFFextra(c).map(x=>usFFabs(x.f))].filter(a=>a).sort((a,b)=>b-a);
+      if(ab.length>=7){usFFdev[c]=ab.slice(0,7).reduce((x,y)=>x+y,0)/7-US_TEAM[c].power;sum+=usFFdev[c];n++;}
+    }
+    for(const c in usFFdev)usFFdev[c]-=sum/n;
+  }
+  return usFFdev[club]||0;
+}
 // la rosa di un club: giocatori internazionali del mercato che ci giocano, giocatori veri e riempimento generato, poi si sposta il livello di tutti tranne le stelle
 // finche' la media dei 7 migliori e' quella del club (power). opt.low: la rosa che parte tua, un po' meno allenata; opt.n: giocatori in rosa
-const specs0=club=>STARS.filter(r=>US_STAR_CLUB[usStarKey(r)]===club).length+(US_CORE[club]||[]).length;
 function usRoster(club,seedStr,opt){
-  opt=opt||{};const P=opt.low?US_TEAM[club].power*0.9+5.5:US_TEAM[club].power,nReal=specs0(club),N=Math.min(20,Math.max(opt.n||16,nReal)),rg=mulberry32(hashStr(seedStr+'|usr|'+club));
+  opt=opt||{};const P=opt.low?US_TEAM[club].power*0.9+5.5:US_TEAM[club].power,rg=mulberry32(hashStr(seedStr+'|usr|'+club));
   const specs=[];
-  for(const r of STARS)if(US_STAR_CLUB[usStarKey(r)]===club)specs.push({k:'s',row:r});
-  (US_CORE[club]||[]).forEach(r=>specs.push({k:'r',row:r,base:-1+(r[4]|0)}));
+  // le stelle del mercato che hanno i dati Fantasy (k:'sf') prendono livello e ruolo dal rendimento come gli altri, ma restano loro (tratto, aspetto, eta');
+  // le altre (k:'s') tengono l'Overall del mercato
+  for(const r of STARS)if(US_STAR_CLUB[usStarKey(r)]===club){const f=usFFof(club,r[0],r[1]);specs.push(f?{k:'sf',row:r,ab:usFFabs(f,r[4]),role:usFFrole(f)}:{k:'s',row:r});}
+  // giocatori veri: dove ci sono i dati Fantasy contano quelli (livello assoluto e ruolo), altrimenti il bonus di US_CORE rispetto al club
+  const real=[];
+  (US_CORE[club]||[]).forEach(r=>{const f=usFFof(club,r[0],r[1]),ro=f&&usFFrole(f);real.push({k:'r',row:ro?[r[0],r[1],r[2],ro,r[4]]:r,ab:f?usFFabs(f):null,base:-1+(r[4]|0)});});
+  usFFextra(club).forEach(x=>real.push({k:'r',row:[x.sur,x.nm,22+hashStr(x.f[0])%12,usFFrole(x.f)||'C',0],ab:usFFabs(x.f),base:0}));
+  // una rosa ha al massimo 20 giocatori: le stelle restano sempre, poi i veri migliori
+  const key=s=>s.ab!=null?s.ab:P+s.base;
+  real.sort((a,b)=>key(b)-key(a)).slice(0,Math.max(0,20-specs.length)).forEach(s=>specs.push(s));
+  const N=Math.min(20,Math.max(opt.n||16,specs.length));
   const used=new Set(specs.map(s=>s.row[0]+s.row[1]));
   for(let i=0;specs.length<N;i++){   // riempimento: nomi americani, ruoli bilanciati (almeno 6 handler), livello decrescente
     let sur,nm;do{sur=US_LN[Math.floor(rg()*US_LN.length)];nm=US_FN[Math.floor(rg()*US_FN.length)];}while(used.has(sur+nm));used.add(sur+nm);
     const h=specs.filter(s=>s.row[3]==='H').length,role=h<6?'H':(rg()<0.2?'D':'C');
     specs.push({k:'g',row:[sur,nm,19+Math.floor(rg()*13),role],base:-2-i*1.3-rg()*3});
   }
+  // obiettivo del club: la sua forza (power) spostata di meta' verso il talento vero dei suoi migliori 7 (al massimo 4 punti, vedi usFFskew): una squadra
+  // con campioni e' un po' piu' forte del suo rating, una con pochi un po' piu' debole. Il resto della differenza resta nel rating.
+  const T=P+clamp(0.5*usFFskew(club),-4,4);
+  const lv=(s,off)=>clamp(s.ab!=null?s.ab+off:P+s.base+off,36,95);
   let off=0,out=[];
   for(let it=0;it<7;it++){
     out=specs.map((s,j)=>{
       const [sur,nm,age,role]=s.row,rng=mulberry32(hashStr(seedStr+'|'+club+'|'+sur+nm));
-      if(s.k==='s'){const o=starPlayer(s.row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
-      return usCard(sur,nm,age,role,clamp(P+s.base+off,36,95),rng,s.k==='g'?{gen:true}:{ae:1});
+      if(s.k==='s'||s.k==='sf'){const row=s.k==='sf'?s.row.slice():s.row;if(s.k==='sf'){row[3]=s.role||row[3];row[4]=Math.round(lv(s,off));}const o=starPlayer(row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
+      return usCard(sur,nm,age,role,lv(s,off),rng,s.k==='g'?{gen:true}:{ae:1});
     });
-    const d=P-rosterPower(out);if(Math.abs(d)<0.35)break;off=clamp(off+d,-34,16);
+    const d=T-rosterPower(out);if(Math.abs(d)<0.35)break;off=clamp(off+d,-34,16);
   }
   const cnt={};for(const o of out)cnt[o.n]=(cnt[o.n]||0)+1;
   for(const o of out)if(cnt[o.n]>1)o.n=o.sur+' '+(o.label||'?')[0]+'.';   // due compagni con lo stesso cognome: si aggiunge l'iniziale
