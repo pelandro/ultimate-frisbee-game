@@ -13,7 +13,7 @@ function usaSelfTest(seasons,seed){
     chk('club',US_NAMES.length===32&&new Set(US_NAMES).size===32,'32 club distinti');
     for(const c of US_CK)chk('conf',US_BYCONF[c].length===8,'Conference '+c);
     chk('conf',US_CK.length===4,'4 Conference');
-    const clubs=['Cincinnati Omen','Raleigh Ring of Fire','Austin Doublewide','Boston DiG'];
+    const clubs=['Toronto GOAT','Raleigh Ring of Fire','Austin Doublewide','Boston DiG'];
     for(const club of clubs){
       startCareer(club,{});
       chk('lega',SV.lk==='US'&&SV.sr==='U'&&SV.sched.length===7,'avvio '+club);
