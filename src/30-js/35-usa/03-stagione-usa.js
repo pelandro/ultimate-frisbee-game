@@ -128,66 +128,17 @@ function usPinRecord(win,su,so){
   return `Play-in vinto contro ${opp}: siete ai Nationals! ${usNatNext()}`;
 }
 // ---- Nationals ----
-function usPerms(n){if(n===1)return [[0]];const out=[];for(const p of usPerms(n-1))for(let i=0;i<=p.length;i++)out.push(p.slice(0,i).concat(n-1,p.slice(i)));return out;}
-const US_PERMS4=usPerms(4);
+const usCtx=()=>({rate:t=>SV.us.pr[t],grp:usConfOf,play:usOfficial});
 function usNatBegin(){
   const U=SV.us,q=[];
   for(const c of US_CK){const o=U.fin[c],P=U.pin[c];q.push(o[0],o[1],P.r[0][4],P.r[1][4]);}
   U.q=q;U.ph='nat';
-  const seed=q.slice().sort((x,y)=>U.pr[y]-U.pr[x]||(x<y?-1:1));
-  // quattro fasce del ranking nazionale (1-4, 5-8, 9-12, 13-16): ogni girone ne prende una per fascia (le prime 4 sono le teste di serie).
-  // Tra tutti i sorteggi possibili si sceglie quello con meno club della stessa Conference nello stesso girone e, a parita', i gironi piu' bilanciati
-  let pools=null,bs=Infinity;
-  for(const a of US_PERMS4)for(const b of US_PERMS4)for(const c of US_PERMS4){
-    const pl=[0,1,2,3].map(i=>[seed[i]]);
-    [[1,a],[2,b],[3,c]].forEach(([f,pm])=>seed.slice(f*4,f*4+4).forEach((t,i)=>pl[pm[i]].push(t)));
-    let conf=0;for(const p of pl){const cs=p.map(usConfOf);conf+=cs.length-new Set(cs).size;}
-    const sums=pl.map(p=>p.reduce((x,t)=>x+U.pr[t],0)),m=(sums[0]+sums[1]+sums[2]+sums[3])/4,v=sums.reduce((x,y)=>x+(y-m)*(y-m),0),sc=conf*1e9+v;
-    if(sc<bs){bs=sc;pools=pl;}
-  }
-  const sched=roundRobin(4);
-  SV.us.nat={seed,pools,tabs:pools.map(pl=>usFreshTab(pl)),sched,pg:pools.map(()=>[]),rd:0,ord:null,ko:[],champ:null,out:!q.includes(SV.team)};
-  if(q.includes(SV.team))news(`Nationals: il sorteggio vi mette nel girone ${US_POOL[pools.findIndex(pl=>pl.includes(SV.team))]}.`);
+  U.nat=t16Begin(usCtx(),q,SV.team);
+  if(q.includes(SV.team))news(`Nationals: il sorteggio vi mette nel girone ${US_POOL[usNatPool(SV.team)]}.`);
 }
-const usNatPool=t=>SV.us.nat.pools.findIndex(pl=>pl.includes(t));
-function usNatUser(){   // la tua partita nel turno in corso: {opp} oppure null
-  const N=SV.us.nat,me=SV.team,rd=N.rd;if(rd>6||N.out)return null;
-  if(rd<3){const p=usNatPool(me);if(p<0)return null;const pl=N.pools[p];for(const [i,j] of N.sched[rd])if(pl[i]===me||pl[j]===me)return {opp:pl[i]===me?pl[j]:pl[i]};return null;}
-  const L=N.ko[rd-3];if(!L)return null;
-  const m=L.find(x=>x[0]===me||x[1]===me);return m?{opp:m[0]===me?m[1]:m[0]}:null;
-}
-// gioca il turno in corso: la tua partita (rec, gia' giocata e gia' contata nel ranking) e tutte le altre, simulate
-function usNatPlayRound(rec){
-  const N=SV.us.nat,rd=N.rd,play=(a,b)=>rec&&((rec[0]===a&&rec[1]===b)||(rec[0]===b&&rec[1]===a))?(rec[0]===a?rec:[a,b,rec[3],rec[2],rec[4]]):usOfficial(a,b);   // l'ordine delle squadre resta quello del tabellone
-  if(rd<3){
-    N.pools.forEach((pl,p)=>{N.pg[p][rd]=N.sched[rd].map(([i,j])=>{const m=play(pl[i],pl[j]);usAddRes(N.tabs[p],m[0],m[1],m[2],m[3]);return m;});});
-    if(rd===2){   // gironi finiti: prime ai quarti, seconde e terze ai prequarti (2ª contro 3ª di un altro girone), quarte fuori
-      N.ord=N.pools.map((pl,p)=>usRanking(N.tabs[p],pl));
-      N.ko=[[0,1,2,3].map(p=>[N.ord[p][1],N.ord[(p+1)%4][2],null,null,null])];
-    }
-  }else{
-    const L=N.ko[rd-3];for(let k=0;k<L.length;k++)L[k]=play(L[k][0],L[k][1]);
-    if(rd===3)usNatQuarters();
-    else if(rd===4)N.ko[2]=[[N.ko[1][0][4],N.ko[1][1][4],null,null,null],[N.ko[1][2][4],N.ko[1][3][4],null,null,null]];
-    else if(rd===5)N.ko[3]=[[N.ko[2][0][4],N.ko[2][1][4],null,null,null]];
-    else N.champ=N.ko[3][0][4];
-  }
-  N.rd++;
-}
-// quarti: le 4 prime dei gironi (teste di serie per punti e differenza mete) contro le vincitrici dei prequarti. Nessuna rivincita di girone;
-// due vincitrici dei prequarti dello stesso girone finiscono in meta' tabellone diverse (non si incontrano prima della finale)
-function usNatQuarters(){
-  const N=SV.us.nat,pr=SV.us.pr,heads=N.ord.map((o,p)=>({t:o[0],p,s:N.tabs[p][o[0]]})).sort((a,b)=>b.s.pts-a.s.pts||(b.s.pf-b.s.pa)-(a.s.pf-a.s.pa)||pr[b.t]-pr[a.t]).map(x=>x.t);
-  const w=N.ko[0].map(m=>m[4]);let best=null,bs=Infinity;
-  for(const pm of US_PERMS4){   // pm[i] = quale vincitrice dei prequarti incontra la testa di serie i; slot del tabellone: 1ª, 4ª, 3ª, 2ª
-    const slot=[0,3,2,1];let c=0;
-    heads.forEach((h,i)=>{if(usNatPool(h)===usNatPool(w[pm[i]]))c+=1e6;c+=pr[h]*pr[w[pm[i]]]/1e4;});
-    for(let a=0;a<4;a++)for(let b=a+1;b<4;b++)if(usNatPool(w[pm[a]])===usNatPool(w[pm[b]])&&((slot[a]<2)===(slot[b]<2)))c+=1e3;
-    if(c<bs){bs=c;best=pm;}
-  }
-  const q=[];[0,3,2,1].forEach((s,k)=>{const i=s;q[k]=[heads[i],w[best[i]],null,null,null];});   // slot 0: testa 1 · slot 1: testa 4 · slot 2: testa 3 · slot 3: testa 2
-  N.ko[1]=q;
-}
+const usNatPool=t=>t16Pool(SV.us.nat,t);
+const usNatUser=()=>t16User(SV.us.nat,SV.team);
+const usNatPlayRound=rec=>t16Round(usCtx(),SV.us.nat,rec);
 // prepara la tua prossima partita dei Nationals, simulando i turni in cui non giochi; ritorna il messaggio. Se non hai altre partite, chiude Nationals e stagione
 function usNatNext(){
   const N=SV.us.nat;

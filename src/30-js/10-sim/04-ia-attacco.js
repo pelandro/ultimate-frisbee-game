@@ -9,7 +9,8 @@ function pickCut(p,H,d,sch,w){
   const deepP=hand?0.05:clamp(clamp((sch==='vert'||sch==='t1'||sch==='side'?0.24:(sch==='horz'?0.22:0.18))+(speedy-55)/100*0.8,0.05,0.8)*deepAppetite(p,th),0.03,0.85);   // chi lancia non spara: pochi tagli lunghi; sparo da tutto campo e intesa: molti
   let tx,ty,deep=false;
   if(Math.random()<deepP){deep=true;const dm=deepRun(p,th);tx=H.x+d*rnd(Math.min(24,dm*0.8),Math.max(24,dm));ty=rnd(4,FIELD_W-4);}
-  else{const dx=hand?rnd(-6,4):rnd(8,14),sg=Math.random()<0.5?1:-1;tx=H.x+d*dx;ty=H.y+sg*rnd(hand?5:4,hand?10:12);}
+  else{const dx=hand?rnd(-6,4):rnd(8,14),sg=p.cSide=(p.cSide&&Math.random()<0.68)?p.cSide:-(p.cSide||(Math.random()<0.5?1:-1));   // il lato dei tagli successivi resta lo stesso piu' spesso: meno andirivieni da un lato all'altro
+    tx=H.x+d*dx;ty=H.y+sg*rnd(hand?5:4,hand?10:12);}
   return {x:clamp(tx,1,FIELD_L-1),y:clamp(ty,2.5,FIELD_W-2.5),deep};
 }
 // quanti tagli possono essere in corso insieme: visione alta 2, altrimenti 3 (prima senza limite sotto Visione 70: tutti partivano insieme verso il portatore)
@@ -116,7 +117,8 @@ function updateAttackers(dt){
           const big=tight<2.5?1.4:1;
           if(out){p.fx=clamp(tg.post.x+d*rnd(3,7)*big,1,FIELD_L-1);p.fy=clamp(tg.post.y+p.fs*rnd(3,6)*big,2.5,FIELD_W-2.5);}
           else{p.fx=tg.post.x;p.fy=tg.post.y;}
-          p.fT=rnd(1.4,2.2);
+          p.fT=rnd(4.5,7);   // un nuovo piccolo taglio ogni 5-6 secondi circa (prima 1,4-2,2: il giocatore andava e veniva di continuo)
+          if(Math.random()<0.5){p.fx=p.x;p.fy=p.y;}   // ogni tanto resta dov'e': un momento fermo tra un movimento e l'altro
         }
         moveTo(p,p.fx,p.fy,dt);
       }
@@ -143,17 +145,17 @@ function updateAttackers(dt){
       }
     }else if(p.cs==='cut'){
       p.rt={x:p.tx,y:p.ty};moveTo(p,p.tx,p.ty,dt);
-      if(hyp(p.x-p.tx,p.y-p.ty)<1.2||p.cutT<=0){p.cs='hold';p.cutT=rnd(0.5,1.3)*(1.5-v);}
+      if(hyp(p.x-p.tx,p.y-p.ty)<1.2||p.cutT<=0){p.cs='hold';p.cutT=rnd(1.2,2.2);}   // dopo il taglio si ferma un momento: prima chi vedeva bene ripartiva subito (0,3-0,8 s) e il campo era un via vai
     }else if(p.cs==='hold'){
       moveTo(p,p.x,p.y,dt);
       if(p.cutT<=0){
         if(Math.random()<clamp(v*1.15,0,1))p.cs='clear';
-        else{p.cs='set';p.cutT=rnd(0.3+0.7*v,3-0.6*v);}
+        else{p.cs='set';p.cutT=rnd(1.5+0.9*v,4);}
       }
     }else{                                                    // clear: torna nella formazione dello schema
       const a0=anchor(sch,p.slot,H,d,side),a1=spreadFrom(p,a0.x,a0.y,atk,SPREAD_R,SPREAD_K),a2=awayFrom(H,a1.x,a1.y,MIN_ATT),a3=isoT?awayFrom(isoT,a2.x,a2.y,10):a2,a=settleTgt(p,a3.x,a3.y,dt),close=hyp(p.x-H.x,p.y-H.y)<MIN_ATT;
       moveTo(p,a.x,a.y,dt,close?1.7:1,close?1.2:1);
-      if(hyp(p.x-a.x,p.y-a.y)<2.5){p.cs='set';p.cutT=rnd(0.3+0.7*v,3-0.6*v);}
+      if(hyp(p.x-a.x,p.y-a.y)<2.5){p.cs='set';p.cutT=rnd(1.5+0.9*v,4);}   // in formazione si aspetta di piu' prima del taglio successivo: meno scatti e inversioni, piu' leggibili
     }
   }
 }

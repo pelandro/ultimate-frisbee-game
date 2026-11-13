@@ -77,7 +77,7 @@ function renderTeamsUS(){
   $('tTeams').innerHTML=US_BYCONF[teamCf].slice().sort((a,b)=>favFirst(a,b)||US_TEAM[a].rank-US_TEAM[b].rank).map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${favMark(n)}${esc(n)}<small class="tcity">${esc(US_TEAM[n].city)} · n° ${US_TEAM[n].rank}</small></span></span><b class="tp">${usPreview(n)}</b></button>`).join('');
 }
 // ---- Classifica ----
-const usRow=(nm,t,cls)=>`<tr${cls?` class="${cls}"`:''}><td>${crest(nm,15)} ${esc(nm)}<span class="tp">${Math.round(teamPower(nm)||0)}</span></td><td>${t.w+t.l}</td><td>${t.w}</td><td>${t.l}</td><td>${t.pf-t.pa>0?'+':''}${t.pf-t.pa}</td></tr>`;
+const usRow=(nm,t,cls)=>`<tr${cls?` class="${cls}"`:''}><td>${crest(nm,15)} ${esc(nm)}<span class="tp">${Math.round(teamPower(nm)||(typeof euPowOf==='function'?euPowOf(nm):0)||0)}</span></td><td>${t.w+t.l}</td><td>${t.w}</td><td>${t.l}</td><td>${t.pf-t.pa>0?'+':''}${t.pf-t.pa}</td></tr>`;
 const usHead='<tr><th>Squadra e forza</th><th>G</th><th>V</th><th>S</th><th>Diff</th></tr>';
 function usConfTable(c){
   const names=SV.us.conf[c],t=usTab(c),ord=usRanking(t,names);
@@ -108,15 +108,15 @@ function usConfView(){
   return h;
 }
 // tabellone: prequarti, quarti, semifinali e finale (si riempie man mano che i turni sono decisi)
-function usBracketHTML(){
-  const N=SV.us.nat,row=(n,sc,w)=>`<div class="${w?'w':''}${n===SV.team?' me':''}"><span title="${esc(n)}">${crest(n,13)} ${esc(n)}</span><b>${sc===null||sc===undefined?'':sc}</b></div>`;
+function usBracketHTML(N){
+  N=N||SV.us.nat;const row=(n,sc,w)=>`<div class="${w?'w':''}${n===SV.team?' me':''}"><span title="${esc(n)}">${crest(n,13)} ${esc(n)}</span><b>${sc===null||sc===undefined?'':sc}</b></div>`;
   const box=m=>`<div class="tnm${m[2]===null?' cur':''}">${row(m[0],m[2],m[4]===m[0])}${row(m[1],m[3],m[4]===m[1])}</div>`;
   const T=['Prequarti','Quarti','Semifinali','Finale'];
   const cols=N.ko.map((L,i)=>`<div class="tncol"><h3>${T[i]}</h3>${L.map(box).join('')}</div>`).join('');
   return `<div class="tncols">${cols}</div>`+(N.champ?`<p class="estat">Campione degli Stati Uniti: ${esc(N.champ)}</p>`:'');
 }
-function usPoolHTML(p){
-  const N=SV.us.nat,pl=N.pools[p],t=N.tabs[p],ord=usRanking(t,pl);
+function usPoolHTML(p,N){
+  N=N||SV.us.nat;const pl=N.pools[p],t=N.tabs[p],ord=usRanking(t,pl);
   const rows=ord.map((nm,i)=>usRow(nm,t[nm],[nm===SV.team?'me':'',i===0?'up':(i<3?'pi':'dn')].filter(Boolean).join(' '))).join('');
   const games=[].concat(...N.pg[p]).map(m=>`<li class="${m[4]===SV.team?'w':(m[0]===SV.team||m[1]===SV.team?'l':'')}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('');
   return `<h3 class="eh">Girone ${US_POOL[p]}</h3><div style="overflow-x:auto"><table class="rt">${usHead}${rows}</table></div>${games?`<ul class="elist">${games}</ul>`:''}`;

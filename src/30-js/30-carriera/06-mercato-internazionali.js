@@ -48,21 +48,25 @@ function starPlayer(r,rng){   // scheda del giocatore vero: statistiche dal ruol
   for(let y=age0;y<age;y++)agePlayer(o,rng);   // gli anni passano anche per loro
   return o;
 }
+const MARKET_N=15;   // giocatori sul mercato
 function buildMarket(){
-  const lv=squadPower(),sd=SV.seed+'|mk|'+SV.season+'|'+(SV.mkN=(SV.mkN||0)+1),R=mulberry32(hashStr(sd)),out=[],viv=SV.fac.viv|0;
-  for(let i=0;i<4+viv;i++){const o=genPlayer(lv-11+R()*7+viv,16+Math.floor(R()*4),sd+'y'+i,lv+6+R()*26+viv*2);out.push({o,kind:'Giovane promessa',from:null});}
-  for(let i=0;i<4;i++){const o=genPlayer(lv-5+R()*9,23+Math.floor(R()*11),sd+'f'+i);out.push({o,kind:'Svincolato',from:null});}
+  // 15 giocatori in tutto, di livello vicino al tuo: giovani (4, fino a 6 col vivaio), 3 in vendita da altre squadre, 2 o 3 internazionali veri (3 con molta
+  // reputazione), il resto svincolati. Prima i fuoriclasse erano 5-6 su 20 e il mercato sembrava pieno di campioni irraggiungibili.
+  const lv=squadPower(),sd=SV.seed+'|mk|'+SV.season+'|'+(SV.mkN=(SV.mkN||0)+1),R=mulberry32(hashStr(sd)),out=[],viv=SV.fac.viv|0,nY=4+Math.min(viv,2),nSale=3,nStar=SV.rep>=60?3:2,nFree=MARKET_N-nY-nSale-nStar;
+  for(let i=0;i<nY;i++){const o=genPlayer(lv-11+R()*7+viv,16+Math.floor(R()*4),sd+'y'+i,lv+6+R()*26+viv*2);out.push({o,kind:'Giovane promessa',from:null});}
+  for(let i=0;i<nFree;i++){const o=genPlayer(lv-5+R()*9,23+Math.floor(R()*11),sd+'f'+i);out.push({o,kind:'Svincolato',from:null});}
   const teams=Object.keys(SV.rost).filter(n=>SV.rost[n]&&SV.rost[n].length>14);
-  for(let i=0;i<6&&teams.length;i++){
+  for(let i=0;i<nSale&&teams.length;i++){
     const n=teams[Math.floor(R()*teams.length)],ro=SV.rost[n].slice().sort((a,b)=>ovrX(b)-ovrX(a)),o=ro[4+Math.floor(R()*Math.max(1,ro.length-4))];
     if(o&&!out.some(m=>m.o===o)){if(o.sk===undefined)o.sk=0;out.push({o,kind:'In vendita',from:n});}
   }
-  // due o tre giocatori internazionali veri (quattro con molta reputazione), mai gli stessi: chi e' gia' in rosa non ricompare
-  const have=new Set(SQ.map(p=>p.full)),pool=STARS.filter(r=>!have.has(r[0]+' '+r[1])&&!usStarTaken(r)&&r[2]+Math.max(0,(SV.season|0)-1)<=starLimit(r)),nS=Math.min(pool.length,(SV.rep>=60?6:5));
-  for(let i=0;i<nS;i++){
+  // internazionali veri: mai gli stessi, chi e' gia' in rosa non ricompare; si scelgono tra quelli piu' vicini al livello a cui puoi aspirare (il tuo piu' 12)
+  const have=new Set(SQ.map(p=>p.full)),pool=STARS.filter(r=>!have.has(r[0]+' '+r[1])&&!usStarTaken(r)&&r[2]+Math.max(0,(SV.season|0)-1)<=starLimit(r)).sort((a,b)=>Math.abs(a[4]-(lv+12))-Math.abs(b[4]-(lv+12))).slice(0,14);
+  for(let i=0;i<nStar&&pool.length;i++){
     const r=pool.splice(Math.floor(R()*pool.length),1)[0],o=starPlayer(r,mulberry32(hashStr(SV.seed+'|star|'+r[0]+r[1])));
     out.push({o,kind:ovr(o)>=86?'Stella internazionale':'Giocatore internazionale',from:null,nat:r[5],star:true});
   }
+  for(let i=0;out.length<MARKET_N;i++){const o=genPlayer(lv-5+R()*9,23+Math.floor(R()*11),sd+'x'+i);out.push({o,kind:'Svincolato',from:null});}   // se una squadra non ha dato il suo giocatore, si completa con uno svincolato
   for(const m of out){m.price=Math.round(priceOf(m.o)*(m.from?1.3:(m.star?1.15:1)));m.base=m.price;motAssign(m,R);}
   SV.market=out;mkReprice();   // motivazioni e prezzi che ne dipendono (18-motivazioni.js)
 }
