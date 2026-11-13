@@ -4,7 +4,7 @@
 Object.assign(AL_KIND,{ach:['Traguardo','#ffd23f']});
 const clubTot=k=>{let n=0;for(const p of SQ)if(p.car)n+=p.car[k]|0;for(const q of SV.former||[])n+=q[k]|0;return n;};   // mete/assist/difese di sempre: rosa attuale + chi ha lasciato
 const winsTot=()=>{let n=0;for(const x of SV.hist||[])n+=x.w|0;const t=SV.tab&&SV.tab[SV.team];if(t&&!SV.done)n+=t.w|0;return Math.max(0,n-(SV.w0|0));};   // a stagione chiusa la tabella e' gia' nello storico: non si conta due volte; SV.w0 = vittorie avute prima del subentro
-const trTot=()=>{const t=SV.troph||{};return (t.A|0)+(t.B|0)+(t.C|0);};
+const trTot=()=>{const t=SV.troph||{};return (t.A|0)+(t.B|0)+(t.C|0)+(t.U|0);};
 const ACH=[
   ['w10','Si comincia','Vinci 10 partite',10,15,winsTot],
   ['w50','Squadra rodata','Vinci 50 partite',50,40,winsTot],

@@ -58,7 +58,7 @@ function buildMarket(){
     if(o&&!out.some(m=>m.o===o)){if(o.sk===undefined)o.sk=0;out.push({o,kind:'In vendita',from:n});}
   }
   // due o tre giocatori internazionali veri (quattro con molta reputazione), mai gli stessi: chi e' gia' in rosa non ricompare
-  const have=new Set(SQ.map(p=>p.full)),pool=STARS.filter(r=>!have.has(r[0]+' '+r[1])&&r[2]+Math.max(0,(SV.season|0)-1)<=starLimit(r)),nS=Math.min(pool.length,(SV.rep>=60?6:5));
+  const have=new Set(SQ.map(p=>p.full)),pool=STARS.filter(r=>!have.has(r[0]+' '+r[1])&&!usStarTaken(r)&&r[2]+Math.max(0,(SV.season|0)-1)<=starLimit(r)),nS=Math.min(pool.length,(SV.rep>=60?6:5));
   for(let i=0;i<nS;i++){
     const r=pool.splice(Math.floor(R()*pool.length),1)[0],o=starPlayer(r,mulberry32(hashStr(SV.seed+'|star|'+r[0]+r[1])));
     out.push({o,kind:ovr(o)>=86?'Stella internazionale':'Giocatore internazionale',from:null,nat:r[5],star:true});

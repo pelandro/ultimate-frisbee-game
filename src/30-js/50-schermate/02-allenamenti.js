@@ -61,7 +61,7 @@ $('tTeamBox').addEventListener('click',e=>{
   if(opt.id==='rec'){SV.mor=clamp(SV.mor+2,0,100);out.note='Morale +2.';}
   trainSel.clear();trainRes=out;fixLines();persist();renderTrain();
 });
-$('tSr').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;teamTab=b.dataset.k;reliefName=null;renderTeams();});
+$('tSr').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(teamLg==='US')teamCf=b.dataset.k;else teamTab=b.dataset.k;reliefName=null;renderTeams();});
 $('tTeams').addEventListener('click',e=>{
   const b=e.target.closest('.tteam');if(!b)return;
   openCoach({mode:'new',team:b.dataset.n,relief:false});   // prima del via: nome e volto dell'allenatore

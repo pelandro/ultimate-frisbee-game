@@ -17,6 +17,7 @@ function budgetForecast(){
   const n=names.length,rank=myRank();
   out.prize=Math.round((n-rank+1)*3*SR_K[SV.sr]);out.rank=rank;
   out.obj=SV.obj&&rank<=SV.obj.tgt?SV.obj.reward:0;
+  if(isUS()){const st=usExpectStage(rank);out.prize=Math.round(US_PRIZE[st]*SR_K.U);out.obj=SV.obj&&st>=SV.obj.lvl?SV.obj.reward:0;}   // USA: il premio dipende da quanto si va avanti, non dalla classifica
   out.inc=Math.round(out.inc);
   out.end=Math.round(SV.cash+out.inc-out.wage-out.up);          // saldo all'ultima giornata (quello che guarda la sfida «Conti in ordine»)
   out.after=out.end+out.prize+out.obj;                          // dopo i premi di fine stagione
@@ -31,7 +32,7 @@ function budgetPayback(k){
 }
 function budgetHTML(){
   const f=budgetForecast(),sg=v=>(v>=0?'+':'−')+Math.abs(Math.round(v));
-  if(!f.left)return `<div class="ccard"><h3>Bilancio previsionale</h3><p>${SV.event==='eu'?'Si calcola durante il campionato.':'Campionato concluso: i conti ripartono con la nuova stagione.'}</p></div>`;
+  if(!f.left)return `<div class="ccard"><h3>Bilancio previsionale</h3><p>${SV.event==='eu'?'Si calcola durante il campionato.':(isUS()&&!SV.done?'Stagione regolare conclusa: restano i Play-in e i Nationals.':'Campionato concluso: i conti ripartono con la nuova stagione.')}</p></div>`;
   const row=(l,v,c)=>`<div class="bgr${c?' '+c:''}"><span>${l}</span><b>${v}</b></div>`;
   return `<div class="ccard"><h3>Bilancio previsionale</h3><p>Da qui alla fine del campionato: ${f.left} ${f.left>1?'partite':'partita'}, con circa il ${Math.round(f.winP*100)}% di vittorie attese.</p>`+
     row('Crediti adesso',f.now)+row('Incassi attesi',sg(f.inc))+row('Stipendi',sg(-f.wage))+row('Manutenzione e staff',sg(-f.up))+

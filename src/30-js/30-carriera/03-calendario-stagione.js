@@ -26,7 +26,7 @@ function roundRobin(n){
 function freshTab(names){const t={};for(const n of names)t[n]={pts:0,w:0,l:0,pf:0,pa:0};return t;}
 function beginSeason(){
   const names=SV.mem[SV.sr];
-  SV.sched=roundRobin(names.length);SV.round=0;SV.tab=freshTab(names);SV.res=[];SV.done=false;SV.next=null;
+  SV.sched=roundRobin(names.length);SV.round=0;SV.tab=isUS()?usFreshTab(names):freshTab(names);SV.res=[];SV.done=false;SV.next=null;
   leagueBegin();   // le altre due serie hanno ora un calendario vero
   if(SV.rost)lsSeasonStart();   // statistiche individuali del girone: la stagione scorsa passa alla carriera, il contatore riparte
   if(SV.rost)SV.expOrd=names.slice().sort((a,b)=>teamPow(b)-teamPow(a));   // gerarchie a inizio stagione: servono al premio per l'allenatore dell'anno
@@ -34,6 +34,7 @@ function beginSeason(){
 }
 function startCareer(name,opt){   // opt: {coach, relief} (24-allenatore.js)
   opt=opt||{};
+  if(US_TEAM[name])return usStartCareer(name,opt);   // campionato USA: 35-usa/
   const help=!!SV.help,slot=SV.slot||1;   // lo slot in cui nasce la carriera
   SV={v:SAVE_V,team:name,seed:Math.floor(Math.random()*1e9),sr:(TEAM[name]&&TEAM[name].series)||'C',season:1,event:'camp',eu:newEu(1),help,
       mem:{A:SERIES.A.slice(),B:SERIES.B.slice(),C:SERIES.C.slice()},realAB:1,rv:3,slot};
@@ -80,7 +81,7 @@ function persist(){
   SV.v=SAVE_V;SV.squad=squadData();delete SV.players;SV.lineup=lineupIds();SV.savedAt=Date.now();
   try{const prev=localStorage.getItem(SAVE_KEY);if(prev&&prev.length<3e6&&+((prev.match(/"slot":(\d)/)||[0,'1'])[1])===(SV.slot||1))localStorage.setItem(SAVE_KEY+'-bak',prev);localStorage.setItem(SAVE_KEY,JSON.stringify(SV));if(SV.team)localStorage.setItem(slotKey(SV.slot||1),JSON.stringify(SV));}catch(e){}   // la versione precedente resta come copia di sicurezza (solo se e' della stessa carriera, cioe' dello stesso slot)
 }
-const ranking=(tab,names)=>names.slice().sort((a,b)=>tab[b].pts-tab[a].pts||(tab[b].pf-tab[b].pa)-(tab[a].pf-tab[a].pa)||tab[b].pf-tab[a].pf);
+const ranking=(tab,names)=>names.length&&tab[names[0]]&&tab[names[0]].h?usRanking(tab,names):names.slice().sort((a,b)=>tab[b].pts-tab[a].pts||(tab[b].pf-tab[b].pa)-(tab[a].pf-tab[a].pa)||tab[b].pf-tab[a].pf);   // tabelle USA (con gli scontri diretti, h): 35-usa/03-stagione-usa.js
 const myRank=()=>ranking(SV.tab,SV.mem[SV.sr]).indexOf(SV.team)+1;
 const totalRounds=()=>SV.sched.length;
 function nextMatch(){
@@ -108,6 +109,7 @@ function simSeasonOrder(names){
 }
 // fine stagione: le prime 2 salgono, le ultime 2 scendono (le serie non coinvolte vengono simulate)
 function endSeason(){
+  if(isUS())return usEndSeason();   // campionato USA: 35-usa/04-carriera-usa.js
   const order={};
   leagueAdvance();   // le altre serie finiscono le giornate che mancano
   for(const sr of ['A','B','C'])order[sr]=sr===SV.sr?ranking(SV.tab,SV.mem[sr]):(SV.lg&&SV.lg[sr]&&SV.lg[sr].round>=SV.lg[sr].sched.length?ranking(SV.lg[sr].tab,SV.mem[sr]):simSeasonOrder(SV.mem[sr]));
@@ -171,7 +173,9 @@ function recordResult(win,su,so){
   SV.susp=null;   // la partita e' finita: niente piu' da riprendere
   let msg='';SV.played=(SV.played||0)+1;
   const incPre=matchIncome(win);   // l'incasso di questa partita si calcola con i tifosi di prima del risultato
-  if(SV.event==='camp'&&SV.po&&SV.po.on){
+  if(isUS()&&SV.event==='camp'){
+    fansBump(win,win?1:0);msg=usRecord(win,su,so);   // campionato USA: stagione regolare, Play-in, Nationals (35-usa/03-stagione-usa.js)
+  }else if(SV.event==='camp'&&SV.po&&SV.po.on){
     fansBump(win,win?1:0);msg=poRecord(win,su,so);   // partita di playoff (22-playoff.js)
   }else if(SV.event==='camp'){
     const names=SV.mem[SV.sr],ui=names.indexOf(SV.team);let opp0='';

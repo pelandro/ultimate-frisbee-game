@@ -177,3 +177,6 @@
 #score b,#stall,.panel h1,.shead h2{font-size-adjust:none}
 .qs,button.qs{background:#29366f;color:#fff;border:3px solid #000;box-shadow:inset 2px 2px 0 rgba(255,255,255,.16),0 3px 0 #000;font-weight:400}
 :focus-visible{outline:3px solid var(--gold)!important;outline-offset:2px}
+/* campionato USA: zona Play-in nelle classifiche (verde = Nationals diretti, rosso = eliminate: stili gia' esistenti) e citta' sotto il nome del club */
+.rt tr.pi td:first-child{box-shadow:inset 3px 0 #ffd23f}
+.tcity{display:block;font-size:.62em;font-weight:500;opacity:.7;margin-top:1px}

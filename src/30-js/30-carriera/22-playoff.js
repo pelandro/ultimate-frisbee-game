@@ -31,7 +31,7 @@ function poBegin(){
   SV.po={on:true,kind:z.kind,teams:t,round:0,mi,opp:pair[0]===SV.team?pair[1]:pair[0],other:poPlay(other[0],other[1]),semi:[null,null],fin:null,last:null,need:mi===0||mi===3?'':''};
   SV.poRes=null;news(`${PO_NAME[z.kind]}: ${me+(z.kind==='tit'?1:2)}ª in classifica, la semifinale è contro ${SV.po.opp}.`);
 }
-function poLabel(){const po=SV.po;return PO_NAME[po.kind]+' · '+(po.round===0?'Semifinale':'Finale');}
+function poLabel(){if(isUS())return usLabel();const po=SV.po;return PO_NAME[po.kind]+' · '+(po.round===0?'Semifinale':'Finale');}
 // risultato di una tua partita di playoff (giocata o simulata); ritorna il messaggio
 function poRecord(win,su,so){
   const po=SV.po,opp=po.opp,rec=[SV.team,opp,su,so,win?SV.team:opp];

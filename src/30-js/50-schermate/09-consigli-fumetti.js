@@ -15,6 +15,8 @@ function timelineHTML(){
   if(SV.event==='eu'){
     nodes=EU_ROUND.map((n,i)=>{const done=SV.eu.state==='champ'||i<SV.eu.round,out=i===SV.eu.round&&SV.eu.state==='out',now=i===SV.eu.round&&SV.eu.state==='on';
       return node(done?'w':(out?'l':(now?'n':'f')),n,shortN(SV.eu.opps[i]));});
+  }else if(isUS()){
+    return usTimelineHTML(node);   // campionato USA: 15-usa-schermate.js
   }else{
     if(SV.po&&SV.po.on){   // playoff: l'ultima partita, il turno di adesso e quello dopo
       const l=SV.po.last,r0=SV.res[SV.res.length-1];

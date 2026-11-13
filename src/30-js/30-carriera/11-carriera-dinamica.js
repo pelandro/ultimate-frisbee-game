@@ -62,7 +62,7 @@ const BCHAL={
 };
 function pickChallenge(){
   SV.chal=null;
-  if(!(SV.sr==='A'||SV.rep>=55)||!SV.sched)return;   // solo per i club affermati: prima c'e' gia' abbastanza da fare
+  if(!(SV.sr==='A'||SV.sr==='U'||SV.rep>=55)||!SV.sched)return;   // solo per i club affermati: prima c'e' gia' abbastanza da fare
   const ids=Object.keys(BCHAL),id=ids[Math.floor(Math.random()*ids.length)],n=SV.sched.length;
   SV.chal={id,base:SV.cash,x:id==='bil'?Math.round(45*SR_K[SV.sr]):Math.round(n*6.2*carLen()/MATCH_TARGET),reward:Math.round(45*SR_K[SV.sr])};
 }

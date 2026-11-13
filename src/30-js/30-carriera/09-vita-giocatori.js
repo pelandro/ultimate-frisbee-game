@@ -82,11 +82,11 @@ function lifeAfterMatch(){   // dopo ogni partita: minutaggio e umore, offerte
   // offerte: ogni tanto una squadra di serie superiore (o della Serie A) chiede uno dei tuoi migliori
   if(SV.event==='camp'&&!SV.done&&!SV.offer&&SQ.length>SQ_MIN+1&&Math.random()<0.07){
     const c=SQ.filter(p=>!p.inj&&p.ret!==1&&p.age<=31&&p.car&&p.car.ss.mp>=3).sort((a,b)=>seasonScore(b.car)-seasonScore(a.car)).slice(0,4);
-    const up=SV.sr==='C'?'B':'A',teams=SV.mem[up].filter(n=>n!==SV.team&&SV.rost[n]&&SV.rost[n].length<22);
+    const up=SV.sr==='C'?'B':'A',teams=isUS()?usOfferTeams():SV.mem[up].filter(n=>n!==SV.team&&SV.rost[n]&&SV.rost[n].length<22);
     if(c.length&&teams.length){
       const p=c[Math.floor(Math.random()*c.length)],team=teams[Math.floor(Math.random()*teams.length)],price=Math.round(priceOf(p)*1.35)+5;
       SV.offer={full:p.full,team,price,round:SV.round};
-      alertAdd('off',`${team} (${SERIES_NAME[up]}) offre ${price} crediti per ${pname(p)} (Overall ${ovr(p)}). L’offerta vale fino alla prossima partita.`,{full:p.full,act:'offer',data:{team,price}});
+      alertAdd('off',`${team} (${isUS()?usConfName(usConfOf(team)):SERIES_NAME[up]}) offre ${price} crediti per ${pname(p)} (Overall ${ovr(p)}). L’offerta vale fino alla prossima partita.`,{full:p.full,act:'offer',data:{team,price}});
     }
   }
 }
