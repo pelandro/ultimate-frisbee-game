@@ -3,7 +3,11 @@
    (reliefOffer) a una giornata dalla fine. Poi la schermata «Il tuo allenatore»: nome, cognome e volto, con «Personaggio casuale».
    La stessa schermata serve per cambiare allenatore dopo (tocco sul volto, in alto a destra nel cruscotto). Le regole stanno in 24-allenatore.js. */
 let teamMode='cuore',reliefName=null;
+const TSR_IT=$('tSr').innerHTML;   // le linguette Serie A/B/C: tornano quando dal campionato USA si ripassa all'Italia
 function renderTeams(){
+  for(const b of $('tLg').children)b.classList.toggle('on',b.dataset.k===teamLg);
+  if(teamLg==='US')return renderTeamsUS();   // campionato USA: 15-usa-schermate.js
+  $('tMode').classList.remove('hidden');$('tSr').innerHTML=TSR_IT;
   for(const b of $('tMode').children)b.classList.toggle('on',b.dataset.k===teamMode);
   const sub=teamMode==='sub';
   $('tTeams').classList.toggle('hidden',sub);$('tRelief').classList.toggle('hidden',!sub);

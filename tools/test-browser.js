@@ -74,6 +74,30 @@ catch(e){
     if(n<8)throw new Error('il test della carriera ha dato pochi risultati');
     if(/Continua/.test(await page.locator('#tCareerS').innerText()))throw new Error('il test della carriera ha lasciato una carriera salvata');
   });
+  await step('diagnostica: campionato USA (32 club, 4 Conference, Play-in, Nationals, 4 carriere da 6 stagioni)',async()=>{
+    await page.click('#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgUs');
+    await page.waitForFunction(()=>/^Finito/.test(document.getElementById('dgState').textContent),null,{timeout:120000});
+    const no=await page.locator('#dgOut li').filter({hasText:/^NO/}).allInnerTexts(),n=await page.locator('#dgOut li').count();
+    await page.click('#sBack');await page.click('#sBack').catch(()=>{});await vis('#title');
+    if(no.length)throw new Error('controlli del campionato USA falliti: '+no.join(' | '));
+    if(n<12)throw new Error('il test USA ha dato pochi risultati');
+    if(/Continua/.test(await page.locator('#tCareerS').innerText()))throw new Error('il test USA ha lasciato una carriera salvata');
+  });
+  await step('carriera USA dall\'interfaccia: Italia/USA, Conference, club, allenatore, Classifica a tre viste, partita simulata',async()=>{
+    await page.click('#tCareer');await vis('#team');await page.click('#tLg button[data-k="US"]');
+    if(await page.locator('#tSr button').count()!==4)throw new Error('servono le 4 Conference');
+    await page.click('#tSr button[data-k="E"]');
+    if(await page.locator('.tteam').count()!==8)throw new Error('ogni Conference ha 8 club');
+    await page.click('.tteam >> nth=0');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
+    if(!/Conference/.test(await page.locator('#hInfo').innerText()))throw new Error('il cruscotto non mostra la Conference');
+    await page.click('#hEvent');await vis('#event');
+    if(await page.locator('#eBody .rt tr.up').count()!==2||await page.locator('#eBody .rt tr.pi').count()!==4||await page.locator('#eBody .rt tr.dn').count()!==2)throw new Error('zone Nationals / Play-in / eliminate non evidenziate (2/4/2)');
+    for(const k of ['nat','rank','conf'])await page.click('#usTabs [data-ut="'+k+'"]');
+    await page.click('#eBack');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
+    await page.click('#hOpt');await page.click('#opX');
+    await page.evaluate(()=>{localStorage.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])localStorage.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
+    await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
+  });
   await step('nuova carriera e cruscotto',async()=>{
     await page.click('#tCareer');await vis('#team');await page.click('#tSr button[data-k="C"]');await page.click('.tteam >> nth=0');await vis('#coachsel');
     // schermata dell'allenatore: personaggio casuale, volto e nomi scelti a mano, anteprima che segue
@@ -123,8 +147,8 @@ catch(e){
     await page.click('#tTeamBox [data-prog]');await page.click('#tBack');
     await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#mkBack');
     await page.click('#hClub');await vis('#club');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==6||await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci sei strutture e quattro figure dello staff');
-    // le altre linguette del Club: traguardi (venti schede, percentuale), albo d'oro e Hall of Fame
-    await page.click('#clTabs button[data-k="ach"]');if(await page.locator('#clBox .ach').count()!==20||!/%/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi devono essere venti, con la percentuale');
+    // le altre linguette del Club: traguardi (ventuno schede, percentuale), albo d'oro e Hall of Fame
+    await page.click('#clTabs button[data-k="ach"]');if(await page.locator('#clBox .ach').count()!==21||!/%/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi devono essere ventuno, con la percentuale');
     await page.click('#clTabs button[data-k="hon"]');if(await page.locator('#clBox .trt').count()<7)throw new Error('manca la bacheca dei trofei');
     await page.click('#clTabs button[data-k="rec"]');if(await page.locator('#clBox .hofbox').count()!==1)throw new Error('manca la Hall of Fame');
     await page.click('#clTabs button[data-k="man"]');
