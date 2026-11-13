@@ -141,12 +141,12 @@ HOOKS.injury=list=>{
 $('hSim').addEventListener('click',simCareerMatch);
 $('hPlay').addEventListener('click',()=>{if(suspOk())resumeMatch();else if(nextMatch())startMatch();else if(SV.event==='eu'&&!SV.done){SV.event='camp';persist();renderHome();}else{SV.event='camp';showScreen('event');}});
 $('hRoster').addEventListener('click',()=>showScreen('roster'));
-$('tCareer').addEventListener('click',()=>showScreen(hasCareer()?'home':'team'));
+$('tCareer').addEventListener('click',()=>showScreen(hasCareer()?'home':'league'));
 $('tQuick').addEventListener('click',()=>showScreen('quick'));
 $('tSet').addEventListener('click',()=>showScreen('settings'));
 $('sBack').addEventListener('click',()=>{if(sView==='size')setSView('btns');else if(sView!=='menu')setSView('menu');else{const to=setFrom;setFrom='title';showScreen(to);}});
 $('hBack').addEventListener('click',()=>showScreen('title'));
-$('teamBack').addEventListener('click',teamBack);
+$('teamBack').addEventListener('click',()=>showScreen('league'));
 $('qBack').addEventListener('click',()=>showScreen('title'));
 $('qL').addEventListener('change',updateQuick);$('qD').addEventListener('change',updateQuick);$('qS').addEventListener('change',updateQuick);
 $('qA').addEventListener('click',()=>openPick('a'));$('qB').addEventListener('click',()=>openPick('b'));
@@ -170,7 +170,7 @@ function armed(btn,label,idle,fn){
 $('hNew').addEventListener('click',()=>armed($('hNew'),'Conferma: cancella la carriera','Nuova carriera',()=>{
   $('opts').classList.add('hidden');
   const slot=SV.slot||1;try{localStorage.removeItem(SAVE_KEY);localStorage.removeItem(slotKey(slot));}catch(e){}
-  const help=SV.help;SV={help,slot};showScreen('team');   // la nuova carriera resta nello stesso slot
+  const help=SV.help;SV={help,slot};showScreen('league');   // la nuova carriera resta nello stesso slot
 }));
 bExit.addEventListener('click',()=>openPause());
 

@@ -30,14 +30,24 @@
   <p class="note" style="margin:0 0 10px">Tre carriere separate sullo stesso dispositivo. Continua quella che vuoi o iniziane una nuova in uno slot: le altre restano come sono. Si salvano da sole.</p>
   <div class="csgrid" id="csBox"></div>
 </div></div>
+<div id="league" class="screen hidden"><div class="spanel">
+  <div class="shead"><button class="back" id="lgBack" type="button">‹ Indietro</button><h2>Scegli il campionato</h2></div>
+  <p class="note" style="margin:0 0 10px">Dove vuoi allenare? Poi scegli la squadra: prima di sceglierla puoi vederne il roster. Più avanti puoi ricevere offerte anche dagli altri campionati.</p>
+  <div class="lgcards" id="lgList"></div>
+</div></div>
 <div id="team" class="screen hidden"><div class="spanel">
   <div class="shead"><button class="back" id="teamBack" type="button">‹ Indietro</button><h2>Scegli la tua squadra</h2></div>
-  <div class="qtabs" id="tLg"><button type="button" data-k="IT">Italia</button><button type="button" data-k="US">USA</button></div>
-  <div class="qtabs" id="tMode"><button type="button" data-k="cuore">Squadra del cuore</button><button type="button" data-k="sub">Subentrato</button></div>
+  <p class="estat" id="tLgName"></p>
+  <div class="qtabs" id="tMode"><button type="button" data-k="cuore">Scegli la squadra</button><button type="button" data-k="sub">Subentrato</button></div>
   <div class="qtabs" id="tSr"><button type="button" data-k="A">Serie A</button><button type="button" data-k="B">Serie B</button><button type="button" data-k="C">Serie C</button></div>
   <p class="note" id="tNote" style="margin:0 0 10px">Scegli la serie e la squadra: puoi partire dalla Serie C e salire, oppure direttamente dalla B o dalla A, dove le avversarie sono più forti. La rosa è quella vera della squadra (nomi ed età reali), ancora poco allenata; il talento dei giocatori è già fissato. Il numero accanto al nome è la forza della squadra: la media dei suoi 7 migliori giocatori.</p>
   <div class="tteams" id="tTeams"></div>
   <div id="tRelief" class="hidden"></div>
+</div></div>
+<div id="rpv" class="overlay hidden"><div class="panel gpanel" style="max-width:720px">
+  <div class="mh"><div><h1 id="rpT"></h1><p id="rpS"></p></div><button id="rpX" class="sec" type="button">Chiudi</button></div>
+  <div id="rpBody" class="rpbody"></div>
+  <div class="schrow"><button type="button" class="sec" id="rpFav">☆ Squadra del cuore</button><button type="button" class="go" id="rpGo">Allena questa squadra</button></div>
 </div></div>
 <div id="coachsel" class="screen hidden"><div class="spanel">
   <div class="shead"><button class="back" id="coBack" type="button">‹ Indietro</button><h2>Il tuo allenatore</h2></div>
