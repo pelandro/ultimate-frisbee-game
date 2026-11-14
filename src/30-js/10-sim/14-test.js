@@ -339,6 +339,11 @@ function selfTestPlan(opt){
     const hu=utoUnpack(hostile,'h'),cleaned=!!hu&&hu.length===14&&hu.every(o=>KEYS.every(k=>o.s[k]>=25&&o.s[k]<=99))&&hu.slice(0,7).every(o=>!/[<>]/.test(o.n)&&o.n.length<=20&&o.r==='C'&&o.trait===null);
     const six=hostile.slice(0,6).concat([{n:'y',r:'H',s:{lan:'abc'}}]);
     const junk=utoUnpack(six,'j')===null&&utoUnpack('boom','j')===null&&utoUnpack(null,'j')===null;
+    // premi: gettoni (di piu' battendo chi ha piu' punti, mai perdendo) e traguardi di punti con pacchetti sempre migliori
+    const cw=d=>{const c=utoCoins(1000,1000+d,true);return c.base+c.bonus;},cs=[0,25,50,100,150,400].map(cw),cl=utoCoins(1000,1400,false);
+    const coinOk=cs.every((v,i)=>!i||v>cs[i-1]||(i===5&&v===cs[4]))&&cs[0]===UTO_COIN_W&&cw(-200)===UTO_COIN_W&&cw(2000)===cs[5]&&cl.bonus===0&&cl.base===UTO_COIN_L&&cl.base<UTO_COIN_W;
+    const mq=[1,2,3,4,5,9].map(i=>utoMilePack(i)),mileOk=utoMiles(UTO_START)===0&&utoMiles(UTO_START+UTO_MILE-1)===0&&utoMiles(UTO_START+UTO_MILE)===1&&utoMiles(0)===0&&utoMilePts(1)===UTO_START+UTO_MILE
+      &&mq.every((v,i)=>!i||(v%10>=mq[i-1]%10&&Math.floor(v/10)>=Math.floor(mq[i-1]/10)))&&mq[0]%10>=2&&mq[4]%10===6&&mq[5]===mq[4]&&mq.every(v=>Math.floor(v/10)>=5&&Math.floor(v/10)<=9);
     return [row('Punti Elo: contro un avversario più forte si vince di più, contro uno più debole di meno',`+${up} / +${eqW} / +${dn}`,up>eqW&&eqW>dn&&eqW===-eqL,'+16 a parità, simmetrico'),
       row('Punti Elo: ogni partita sposta da 1 a '+UTO_K+' punti, a qualsiasi livello',bounds?'sì':'no',bounds),
       row('Avversario scelto: punti vicini ai tuoi (differenza media su 300 giocatori), mai te stesso',Math.round(dsum/K)+' punti',bad===0&&dsum/K<=150,'al massimo 150'),
@@ -346,7 +351,9 @@ function selfTestPlan(opt){
       row('L’ultimo avversario si evita se c’è un’alternativa; con un solo candidato lo si prende; da soli, nessuno',`${repeat} ripetizioni su 40`,repeat===0&&!!lone&&lone.id==='a'&&none===null),
       row('Squadra caricata e scaricata: 14 giocatori con le stesse statistiche e la stessa forza',un?`${un.length} giocatori, forza ${pw7} contro ${pk.pw}`:'non valida',same&&Math.abs(pw7-pk.pw)<=1),
       row('Dati ostili da internet: statistiche nei limiti 25-99, nomi senza simboli, ruolo e tratto validi',cleaned?'ripuliti':'no',cleaned),
-      row('Squadre incomplete o che non sono squadre: rifiutate',junk?'sì':'no',junk)];
+      row('Squadre incomplete o che non sono squadre: rifiutate',junk?'sì':'no',junk),
+      row('Gettoni: vittoria con avversario a +0, +25, +50, +100, +150, +400 punti; sconfitta',cs.join(', ')+'; '+cl.base,coinOk,'crescono con la differenza fino a un massimo, nessun bonus a chi perde'),
+      row('Traguardi di punti: pacchetti (qualità + 10 × carte) dal primo al quinto e oltre',mq.join(', '),mileOk,'sempre migliori e più grandi, super bustina dal quinto')];
   }]);
   S.steps.push(['Prestazioni',()=>{
     const gt=S.base?avg(S.base.map(m=>m.time)):0,k=gt/Math.max(0.001,S.ms/1000);

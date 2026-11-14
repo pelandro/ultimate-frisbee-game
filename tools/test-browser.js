@@ -332,8 +332,39 @@ catch(e){
   });
   await step('Ultimate Team: Real player (senza configurazione online) e ritorno al menu',async()=>{
     await page.click('#tUT');await vis('#utMode');await page.click('#umReal');await vis('#utReal');
-    if(!(await page.locator('#urPlay').isDisabled()))throw new Error('senza configurazione online «Inizia partita» deve essere spento');
+    if(!(await page.locator('#urPlay').isDisabled()))throw new Error('senza nome «Inizia partita» deve essere spento');
     await page.click('#urBack');await vis('#utMode');await page.click('#umBack');await vis('#title');
+  });
+  await step('Ultimate Team: Real player ha una squadra sua, premi dei traguardi e nome non modificabile',async()=>{
+    const cols=()=>page.evaluate(()=>['ultimate-ut','ultimate-ut-real'].map(k=>{const o=JSON.parse(localStorage.getItem(k)||'null');return o?{n:o.col.length,c:o.coins|0,pk:(o.packs||[]).slice(),ms:o.ms|0}:null;}));
+    const cpu0=(await cols())[0];if(!cpu0||cpu0.n<10)throw new Error('la squadra contro il computer dovrebbe esistere gia\'');
+    await page.click('#tUT');await vis('#utMode');await page.click('#umReal');await vis('#utReal');
+    if(await page.locator('#urRename').count())throw new Error('il pulsante «Cambia nome» non deve piu\' esistere');
+    if(await page.locator('#urTeam').isVisible())throw new Error('Real player deve partire senza giocatori, non con quelli del torneo');
+    await page.click('#urPack');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await vis('#utReal');
+    let [cpu,real]=await cols();
+    if(!real||real.n!==10)throw new Error('pacchetto iniziale di Real player: attesi 10 giocatori, trovati '+(real&&real.n));
+    if(cpu.n!==cpu0.n||cpu.c!==cpu0.c)throw new Error('aprire il pacchetto di Real player ha cambiato la squadra del torneo');
+    await page.click('#urTeam');await vis('#utTeam');await page.click('#tmMode [data-m="up"]');
+    if(!/1100 punti/.test(await page.locator('#tmInfo').innerText()))throw new Error('sotto i 1100 punti i potenziamenti devono essere bloccati');
+    await page.click('#tmList .urow[data-i] >> nth=0');if(await page.locator('#tmUp').isVisible())throw new Error('con i potenziamenti bloccati il riquadro non deve aprirsi');
+    await page.click('#tmBack');await vis('#utReal');await page.click('#urBack');await page.click('#umBack');
+    // un profilo con 1230 punti (finto, nessuna rete): due traguardi = due pacchetti premio (bronzo da 5, argento da 6) e potenziamenti sbloccati
+    await page.evaluate(()=>localStorage.setItem('ultimate-ut-online',JSON.stringify({id:'prova',name:'Prova',p:1230,w:9,l:1,g:10,rt:'x',dirty:false,fresh:false,last:'',op:null})));
+    await page.reload();await page.waitForTimeout(500);
+    await page.click('#tUT');await vis('#utMode');await page.click('#umReal');await vis('#utReal');
+    if(await page.locator('#urNameBox').isVisible())throw new Error('con il nome gia\' scelto il riquadro del nome non deve comparire');
+    real=(await cols())[1];if(real.ms!==2||real.pk.join()!=='52,63')throw new Error('traguardi: attesi i pacchetti 52 e 63, trovati '+real.pk.join()+' (ms '+real.ms+')');
+    if(!/1300 punti/.test(await page.locator('#urGoal').innerText()))throw new Error('il prossimo traguardo dovrebbe essere a 1300 punti: '+await page.locator('#urGoal').innerText());
+    await page.click('#urPack');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(2200);await page.click('#pkGo');await page.click('#pkGo');await page.waitForTimeout(2600);await page.click('#pkGo');await vis('#utReal');
+    real=(await cols())[1];if(real.n!==21||real.pk.length)throw new Error('dopo i due pacchetti premio attesi 21 giocatori, trovati '+real.n);
+    await page.click('#urTeam');await vis('#utTeam');await page.click('#tmMode [data-m="up"]');await page.click('#tmList .urow[data-i] >> nth=0');await vis('#tmUp');
+    await page.click('#tmBack');await page.click('#urBack');await vis('#utMode');
+    // rientrando nel torneo contro il computer si ritrova la sua squadra, intatta
+    await page.click('#umCpu');await vis('#ut');cpu=(await cols())[0];
+    if(cpu.n!==cpu0.n||cpu.c!==cpu0.c||!new RegExp('Rosa: '+cpu0.n+' ').test(await page.locator('#uStats').innerText()))throw new Error('la squadra del torneo e\' cambiata dopo Real player');
+    await page.click('#uBack');await page.click('#umBack');await vis('#title');
+    await page.evaluate(()=>{localStorage.removeItem('ultimate-ut-online');localStorage.removeItem('ultimate-ut-real');});await page.reload();await page.waitForTimeout(500);
   });
   await step('Ultimate Team: potenziamenti specializzati',async()=>{
     await page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut')||'null');if(o){o.coins=900;localStorage.setItem('ultimate-ut',JSON.stringify(o));}});
