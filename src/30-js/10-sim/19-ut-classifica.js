@@ -21,6 +21,21 @@ function utoPickOpp(list,me,pts,last,rng){
   const near=c.slice().sort((a,b)=>Math.abs(a.p-pts)-Math.abs(b.p-pts));
   return pick(near.slice(0,Math.min(5,near.length)));
 }
+// PREMI DI REAL PLAYER. Gettoni a ogni partita; chi batte un avversario con piu' punti ne riceve di piu' (le fasce stanno dentro la finestra di
+// ricerca dell'avversario, 150 punti: oltre capita solo con pochi iscritti). Il pacchetto costa piu' che contro il computer: misurato con i pacchetti
+// veri, vincendo sempre si arriva a una media di 70 in circa 12 partite (con 90 gettoni erano 8)
+const UTO_PACK=130,UTO_COIN_W=40,UTO_COIN_L=15,UTO_UPSET=[[150,60],[100,40],[50,20],[25,10]];
+function utoCoins(mine,opp,win){
+  if(!win)return {base:UTO_COIN_L,bonus:0};
+  const d=opp-mine,f=UTO_UPSET.find(x=>d>=x[0]);
+  return {base:UTO_COIN_W,bonus:f?f[1]:0};
+}
+// traguardi di punti: uno ogni UTO_MILE punti sopra quelli iniziali. Ognuno regala un pacchetto, sempre migliore e con piu' carte; dal quinto
+// (1500 punti) e' la «super bustina» dei campioni. Il valore e' nel formato dei pacchetti in attesa: qualita' + 10 x numero di carte
+const UTO_MILE=100,UTO_MILE_PK=[[2,5],[3,6],[4,7],[5,8],[6,9]];
+const utoMiles=p=>Math.max(0,Math.floor((p-UTO_START)/UTO_MILE));
+const utoMilePts=i=>UTO_START+i*UTO_MILE;                                  // punti del traguardo numero i (1 = il primo)
+const utoMilePack=i=>{const m=UTO_MILE_PK[clamp(i,1,UTO_MILE_PK.length)-1];return m[0]+m[1]*10;};
 // la tua squadra come si carica online: 7 titolari e fino a 7 riserve (le migliori), statistiche per nome
 function utoPack(col,sel){
   const st=sel.map(i=>col[i]).filter(Boolean);
