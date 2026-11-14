@@ -10,6 +10,7 @@ function story(txt,toNews){
 }
 function leagueBegin(){
   if(isUS())return usLeagueBegin();
+  if(isLN())return lnLeagueBegin();
   SV.lg={};
   for(const sr of ['A','B','C'])if(sr!==SV.sr&&SV.mem[sr]&&SV.mem[sr].length){const n=SV.mem[sr];SV.lg[sr]={sched:roundRobin(n.length),round:0,tab:freshTab(n),last:[],streak:{}};}
 }
@@ -22,6 +23,7 @@ function leagueNote(sr,L,a,b,sa,sb){
 // porta le altre serie al punto della stagione che hai raggiunto tu
 function leagueAdvance(){
   if(isUS())return usLeagueAdvance();
+  if(isLN())return lnLeagueAdvance();
   if(!SV.lg||!SV.sched)return;
   const R=SV.sched.length;
   for(const sr in SV.lg){

@@ -12,6 +12,7 @@ const foreignRoster=(n,seed)=>US_TEAM[n]?usRoster(n,seed):realRoster(REAL[n],see
 const clubLeagueTxt=n=>US_TEAM[n]?`Men’s Club USA, ${usConfName(US_TEAM[n].conf)}`:SERIES_NAME[TEAM[n].series];
 // ---- offerta di lavoro, a inizio stagione ----
 function crossLgOffer(){
+  if(isLN())return;   // le leghe europee nazionali non hanno offerte dall'altra lega
   if(!SV.hist||SV.hist.length<1||SV.job||(SV.jobLast&&SV.season-SV.jobLast<3))return;
   const h=SV.hist[0],good=!!(h&&(h.obj||(h.rank|0)<=2)),tit=!!(SV.next&&SV.next.tit),p=clamp(0.05+(SV.rep-40)/250+(good?0.1:0)+(tit?0.15:0),0.03,0.45);
   if(Math.random()>p)return;
@@ -23,6 +24,7 @@ function crossLgOffer(){
 }
 // ---- scambio di giocatori ----
 function crossLgTrade(){
+  if(isLN())return;
   if(SV.trade||SV.job||SV.event!=='camp'||SV.done||SQ.length<=SQ_MIN+1)return;
   const mine=SQ.filter(p=>!p.inj&&p.ret!==1&&p.age<=33&&ovr(p)>=squadPower()-14).sort(()=>Math.random()-0.5)[0];if(!mine)return;
   const clubs=foreignClubs().sort(()=>Math.random()-0.5);

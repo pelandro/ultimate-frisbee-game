@@ -16,6 +16,8 @@ function timelineHTML(){
     return euTimeline(node);   // EUCF: 18-eucf-schermate.js
   }else if(isUS()){
     return usTimelineHTML(node);   // campionato USA: 15-usa-schermate.js
+  }else if(isLN()){
+    return lnTimelineHTML(node);   // leghe europee: 19-leghe-schermate.js
   }else{
     if(SV.po&&SV.po.on){   // playoff: l'ultima partita, il turno di adesso e quello dopo
       const l=SV.po.last,r0=SV.res[SV.res.length-1];

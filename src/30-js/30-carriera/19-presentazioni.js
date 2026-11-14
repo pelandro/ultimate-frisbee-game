@@ -7,6 +7,8 @@ function matchStakes(m){
   const lines=[];let tag='',title='';
   if(isUS()&&SV.event==='camp'){
     const u=usStakes(m);tag=u.tag;title=u.title;lines.push(...u.lines);   // campionato USA: 15-usa-schermate.js
+  }else if(isLN()&&SV.event==='camp'){
+    const u=lnStakes(m);tag=u.tag;title=u.title;lines.push(...u.lines);   // leghe europee: 19-leghe-schermate.js
   }else if(SV.po&&SV.po.on&&SV.event==='camp'){
     tag=PO_NAME[SV.po.kind];title=SV.po.round===0?'Semifinale':'Finale';
     lines.push(SV.po.kind==='tit'?(SV.po.round?'Chi vince è campione d’Italia: trofeo e reputazione.':'Chi vince va in finale per lo scudetto: partita secca.'):(SV.po.round?'Chi vince sale di categoria insieme alla prima della classe.':'Chi vince va alla finale per la seconda promozione: partita secca.'));

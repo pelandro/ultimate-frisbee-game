@@ -1,6 +1,7 @@
 /* ---- obiettivo stagionale e reputazione ---- */
 function setObjective(){
   if(isUS())return usObjective();   // obiettivi del campionato USA: 35-usa/04-carriera-usa.js
+  if(isLN())return lnObjective();   // leghe europee: 37-leghe/04-carriera-lega.js
   const names=SV.mem[SV.sr],ord=names.slice().sort((a,b)=>teamPow(b)-teamPow(a)),exp=ord.indexOf(SV.team)+1,n=names.length;
   let tgt,txt;
   if(exp<=3){tgt=3;txt=SV.sr==='A'?'Podio: finisci tra le prime 3':'Zona promozione: finisci tra le prime 3';}

@@ -7,6 +7,7 @@ const TSR_IT=$('tSr').innerHTML;   // le linguette Serie A/B/C: tornano quando d
 function renderTeams(){
   $('tLgName').textContent=lgOf().name;
   if(teamLg==='US')return renderTeamsUS();   // campionato USA: 15-usa-schermate.js
+  if(LN_DEF[teamLg])return renderTeamsLN();   // leghe europee: 19-leghe-schermate.js
   $('tMode').classList.remove('hidden');$('tSr').innerHTML=TSR_IT;
   for(const b of $('tMode').children)b.classList.toggle('on',b.dataset.k===teamMode);
   const sub=teamMode==='sub';
