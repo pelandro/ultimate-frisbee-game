@@ -14,18 +14,19 @@ const userRoster=()=>realRoster(REAL[SV.team]||[],SV.seed+'|user',Object.assign(
 // una sola edizione a stagione (s = stagione dell'edizione): prima il torneo concluso si poteva far ripartire all'infinito, accumulando trofei e incassi.
 // L'EUCF (gironi da 4, prequarti, quarti, semifinali, finale) sta in 36-europa/01-eucf.js
 const newEu=season=>euNew(season);
-function roundRobin(n){
-  const arr=[...Array(n).keys()],rounds=[];
-  for(let r=0;r<n-1;r++){
-    const m=[];for(let i=0;i<n/2;i++)m.push([arr[i],arr[n-1-i]]);
-    rounds.push(m);arr.splice(1,0,arr.pop());
+function roundRobin(n){   // con un numero dispari di squadre ognuna riposa a turno (i riposi non compaiono nelle giornate)
+  const m=n%2?n+1:n,arr=[...Array(m).keys()],rounds=[];
+  for(let r=0;r<m-1;r++){
+    const x=[];for(let i=0;i<m/2;i++){const a=arr[i],b=arr[m-1-i];if(a<n&&b<n)x.push([a,b]);}
+    rounds.push(x);arr.splice(1,0,arr.pop());
   }
   return rounds;
 }
 function freshTab(names){const t={};for(const n of names)t[n]={pts:0,w:0,l:0,pf:0,pa:0};return t;}
 function beginSeason(){
+  if(isLN())lnPrepSeason();   // leghe europee: promozioni e retrocessioni, gironi, il tuo girone (37-leghe/)
   const names=SV.mem[SV.sr];
-  SV.sched=roundRobin(names.length);SV.round=0;SV.tab=isUS()?usFreshTab(names):freshTab(names);SV.res=[];SV.done=false;SV.next=null;
+  SV.sched=roundRobin(names.length);SV.round=0;SV.tab=isUS()||isLN()?usFreshTab(names):freshTab(names);SV.res=[];SV.done=false;SV.next=null;
   leagueBegin();   // le altre due serie hanno ora un calendario vero
   if(SV.rost)lsSeasonStart();   // statistiche individuali del girone: la stagione scorsa passa alla carriera, il contatore riparte
   if(SV.rost)SV.expOrd=names.slice().sort((a,b)=>teamPow(b)-teamPow(a));   // gerarchie a inizio stagione: servono al premio per l'allenatore dell'anno
@@ -34,6 +35,7 @@ function beginSeason(){
 function startCareer(name,opt){   // opt: {coach, relief} (24-allenatore.js)
   opt=opt||{};
   if(US_TEAM[name])return usStartCareer(name,opt);   // campionato USA: 35-usa/
+  if(LN_BY[name])return lnStartCareer(name,opt);     // Belgio, Francia, Germania, Regno Unito: 37-leghe/
   const help=!!SV.help,slot=SV.slot||1;   // lo slot in cui nasce la carriera
   SV={v:SAVE_V,team:name,seed:Math.floor(Math.random()*1e9),sr:(TEAM[name]&&TEAM[name].series)||'C',season:opt.season||1,event:'camp',eu:newEu(opt.season||1),help,
       mem:{A:SERIES.A.slice(),B:SERIES.B.slice(),C:SERIES.C.slice()},realAB:1,rv:3,slot};
@@ -70,6 +72,7 @@ function loadSave(d0){
       SV.rv=3;SV.realAB=1;SV.realAI=1;
     }
     for(const n in SV.rost)for(const o of SV.rost[n])if(o){if(o.trait===undefined)o.trait=traitFor(o.full||o.n,o.s,o.r);if(!o.dev)o.dev=devOf(o.full||o.n);}
+    if(isUS())usMigrate();   // salvataggio USA con 32 club e 4 Conference: la stagione riparte con 48 club e 8 Conference (35-usa/04-carriera-usa.js)
     SV.v=SAVE_V;careerInit();   // campi della nuova carriera, anche sui salvataggi precedenti
     setLineup(idsOf(SV.lineO).length===7?idsOf(SV.lineO):lineupIds());
     return true;
@@ -109,6 +112,7 @@ function simSeasonOrder(names){
 // fine stagione: le prime 2 salgono, le ultime 2 scendono (le serie non coinvolte vengono simulate)
 function endSeason(){
   if(isUS())return usEndSeason();   // campionato USA: 35-usa/04-carriera-usa.js
+  if(isLN())return lnEndSeason();   // leghe europee: 37-leghe/03-stagione-lega.js
   const order={};
   leagueAdvance();   // le altre serie finiscono le giornate che mancano
   for(const sr of ['A','B','C'])order[sr]=sr===SV.sr?ranking(SV.tab,SV.mem[sr]):(SV.lg&&SV.lg[sr]&&SV.lg[sr].round>=SV.lg[sr].sched.length?ranking(SV.lg[sr].tab,SV.mem[sr]):simSeasonOrder(SV.mem[sr]));
@@ -174,6 +178,8 @@ function recordResult(win,su,so){
   const incPre=matchIncome(win);   // l'incasso di questa partita si calcola con i tifosi di prima del risultato
   if(isUS()&&SV.event==='camp'){
     fansBump(win,win?1:0);msg=usRecord(win,su,so);   // campionato USA: stagione regolare, Play-in, Nationals (35-usa/03-stagione-usa.js)
+  }else if(isLN()&&SV.event==='camp'){
+    fansBump(win,win?1:0);msg=lnRecord(win,su,so);   // leghe europee: gironi e fasi finali (37-leghe/03-stagione-lega.js)
   }else if(SV.event==='camp'&&SV.po&&SV.po.on){
     fansBump(win,win?1:0);msg=poRecord(win,su,so);   // partita di playoff (22-playoff.js)
   }else if(SV.event==='camp'){

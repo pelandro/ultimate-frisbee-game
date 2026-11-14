@@ -3,7 +3,7 @@ function renderHome(){
   const m=nextMatch(),names=SV.mem[SV.sr];
   $('hCrest').innerHTML=crest(SV.team,38);$('hEvt').textContent=SV.team;
   if(SV.coach){$('hCoach').innerHTML=avatar({look:SV.coach.lk,t:0},34);$('hCoach').title=`${coachTitle()}: tocca per cambiare nome o volto`;$('hCoach').setAttribute('aria-label',`Il tuo allenatore, ${coachName()}: cambia nome o volto`);}
-  $('hInfo').textContent=isUS()?usInfo():`${SERIES_NAME[SV.sr]} · Stagione ${SV.season}`+(SV.event==='camp'?(SV.done?' · conclusa':(SV.round>0?` · ${myRank()}° posto`:'')):' · Campionato europeo');
+  $('hInfo').textContent=isUS()?usInfo():isLN()?lnInfo():`${SERIES_NAME[SV.sr]} · Stagione ${SV.season}`+(SV.event==='camp'?(SV.done?' · conclusa':(SV.round>0?` · ${myRank()}° posto`:'')):' · Campionato europeo');
   let nx;
   if(m){
     const op=Math.round((m.roster?rosterPower(m.roster):m.power)+carDiff().plus),me=Math.round(squadPower()),idn=m.roster?teamIdentity(m.name,bestSeven(m.roster)):null;
@@ -13,6 +13,7 @@ function renderHome(){
   $('hNext').innerHTML=nx;
   let tab;
   if(isUS()&&!SV.done&&SV.us.ph!=='reg')tab=usHomeTab();   // Play-in e Nationals (15-usa-schermate.js)
+  else if(isLN()&&SV.event==='camp'&&!SV.done&&SV.ln.ph!=='grp')tab=lnHomeTab();   // fasi finali delle leghe europee (19-leghe-schermate.js)
   else if(SV.event==='camp'){
     const ord=ranking(SV.tab,names),me=ord.indexOf(SV.team),a=clamp(me-1,0,Math.max(0,ord.length-3));
     tab=ord.slice(a,a+3).map((n,i)=>`<div class="${n===SV.team?'me':''}"><span>${a+i+1}. ${esc(n)}</span><b>${SV.tab[n].pts}</b></div>`).join('');
@@ -40,7 +41,7 @@ function renderHome(){
   $('hBellB').textContent=nwA||pdA;$('hBellB').classList.toggle('hidden',!(nwA||pdA));
   if(urgentAlerts()&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openAlerts();   // si apre da solo soltanto per le decisioni e le emergenze; le notizie restano nella campanella
   else if(SV.evt&&$('evt').classList.contains('hidden')&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openEvt();   // un imprevisto aspetta una risposta
-  $('hEventS').textContent=isUS()?usEventSub():SV.event==='camp'?(SV.done?'Stagione conclusa: premi e ripartenza':(SV.po&&SV.po.on?PO_NAME[SV.po.kind]+(SV.po.round?' · finale':' · semifinale'):`Giornata ${SV.round+1} di ${totalRounds()}`)):euEventSub();
+  $('hEventS').textContent=isUS()?usEventSub():(isLN()&&SV.event==='camp')?(SV.done?'Stagione conclusa: premi e ripartenza':lnShort()):SV.event==='camp'?(SV.done?'Stagione conclusa: premi e ripartenza':(SV.po&&SV.po.on?PO_NAME[SV.po.kind]+(SV.po.round?' · finale':' · semifinale'):`Giornata ${SV.round+1} di ${totalRounds()}`)):euEventSub();
 }
 // ---- pezzi comuni delle schermate di carriera ----
 const esc=x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
@@ -190,6 +191,7 @@ let evSr='';
 $('eBody').addEventListener('click',e=>{const b=e.target.closest('#evTabs [data-sr]');if(!b)return;evSr=b.dataset.sr;renderEvent();});
 function renderEvent(){
   if(isUS())return renderEventUS();   // Classifica del campionato USA: 15-usa-schermate.js
+  if(isLN())return renderEventLN();   // Classifica delle leghe europee: 19-leghe-schermate.js
   const cs=SV.done?`${SERIES_NAME[SV.sr]}, stagione conclusa`:(SV.po&&SV.po.on?`${SERIES_NAME[SV.sr]}, ${PO_NAME[SV.po.kind].toLowerCase()}`:`${SERIES_NAME[SV.sr]}, giornata ${SV.round+1} di ${totalRounds()}`);
   $('eCards').innerHTML=
     `<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>Campionato</strong><small>Serie A, B e C: tutte contro tutte, salgono le prime 2 e scendono le ultime 2. ${cs}.</small></button>`+

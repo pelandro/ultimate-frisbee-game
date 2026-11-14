@@ -6,12 +6,13 @@
    Le offerte arrivano come Avvisi (act 'job' / 'trade') e scadono alla prossima partita. */
 const lgName=lk=>lk==='US'?'Men’s Club USA':'campionato italiano';
 const lgNow=()=>isUS()?'US':'IT';
-const clubLvl=n=>US_TEAM[n]?1-(US_TEAM[n].rank-1)/31:(TEAM[n]?1-(TEAM[n].rank-1)/45:0.5);   // 0..1: quanto e' prestigioso il club nella sua lega
+const clubLvl=n=>US_TEAM[n]?1-(US_TEAM[n].rank-1)/(US_NAMES.length-1):(TEAM[n]?1-(TEAM[n].rank-1)/45:0.5);   // 0..1: quanto e' prestigioso il club nella sua lega
 const foreignClubs=()=>(isUS()?[].concat(SERIES.A,SERIES.B,SERIES.C).filter(n=>REAL[n]):US_NAMES);
 const foreignRoster=(n,seed)=>US_TEAM[n]?usRoster(n,seed):realRoster(REAL[n],seed+'|'+n,realOpt(n,9));
 const clubLeagueTxt=n=>US_TEAM[n]?`Men’s Club USA, ${usConfName(US_TEAM[n].conf)}`:SERIES_NAME[TEAM[n].series];
 // ---- offerta di lavoro, a inizio stagione ----
 function crossLgOffer(){
+  if(isLN())return;   // le leghe europee nazionali non hanno offerte dall'altra lega
   if(!SV.hist||SV.hist.length<1||SV.job||(SV.jobLast&&SV.season-SV.jobLast<3))return;
   const h=SV.hist[0],good=!!(h&&(h.obj||(h.rank|0)<=2)),tit=!!(SV.next&&SV.next.tit),p=clamp(0.05+(SV.rep-40)/250+(good?0.1:0)+(tit?0.15:0),0.03,0.45);
   if(Math.random()>p)return;
@@ -23,6 +24,7 @@ function crossLgOffer(){
 }
 // ---- scambio di giocatori ----
 function crossLgTrade(){
+  if(isLN())return;
   if(SV.trade||SV.job||SV.event!=='camp'||SV.done||SQ.length<=SQ_MIN+1)return;
   const mine=SQ.filter(p=>!p.inj&&p.ret!==1&&p.age<=33&&ovr(p)>=squadPower()-14).sort(()=>Math.random()-0.5)[0];if(!mine)return;
   const clubs=foreignClubs().sort(()=>Math.random()-0.5);

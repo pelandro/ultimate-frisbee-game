@@ -15,16 +15,16 @@ function usStartCareer(name,opt){
   news(`Inizia la carriera con ${name} nella ${usConfName(SV.us.cf)} dei Men’s Club USA. In panchina: ${coachName()}.`);
   persist();
 }
-const usRepStart=()=>Math.round(20+(33-US_TEAM[SV.team].rank)/31*40);   // i club piu' prestigiosi partono con piu' reputazione (da 21 a 60)
-// ---- obiettivi della dirigenza: secondo il livello del club tra i 32 ----
+const usRepStart=()=>Math.round(20+(US_NAMES.length-US_TEAM[SV.team].rank)/(US_NAMES.length-1)*40);   // i club piu' prestigiosi partono con piu' reputazione (da 21 a 60)
+// ---- obiettivi della dirigenza: secondo il livello del club tra i 48 ----
 const US_OBJ=[
-  {id:'pin',lvl:1,txt:'Qualificarsi ai Play-in: chiudere tra le prime 6 della Conference',tgt:6,rw:30},
+  {id:'pin',lvl:1,txt:'Qualificarsi ai Play-in: chiudere tra le prime 3 della Conference',tgt:3,rw:30},
   {id:'nat',lvl:2,txt:'Raggiungere i Nationals',tgt:4,rw:44},
   {id:'sf',lvl:5,txt:'Arrivare alle semifinali dei Nationals',tgt:2,rw:62},
   {id:'tit',lvl:7,txt:'Vincere il titolo nazionale',tgt:1,rw:90}
 ];
 function usObjective(){
-  const ord=US_NAMES.slice().sort((a,b)=>teamPow(b)-teamPow(a)),exp=ord.indexOf(SV.team)+1,o=US_OBJ[exp<=4?3:(exp<=10?2:(exp<=20?1:0))];
+  const ord=US_NAMES.slice().sort((a,b)=>teamPow(b)-teamPow(a)),exp=ord.indexOf(SV.team)+1,o=US_OBJ[exp<=6?3:(exp<=15?2:(exp<=30?1:0))];
   SV.obj={id:o.id,lvl:o.lvl,tgt:o.tgt,txt:o.txt,exp,reward:Math.round(o.rw*SR_K.U/1.65)};
 }
 const usObjOk=()=>!!(SV.obj&&(SV.us.stage|0)>=SV.obj.lvl);
@@ -55,6 +55,17 @@ function usOfferTeams(){
   const up=US_NAMES.filter(n=>n!==SV.team&&US_TEAM[n].rank<me&&SV.rost[n]&&SV.rost[n].length<22);
   return up.length?up:US_NAMES.filter(n=>n!==SV.team&&SV.rost[n]&&SV.rost[n].length<22);
 }
+// salvataggi della prima versione (32 club, Conference E/W/C/S): la stagione riparte nel nuovo formato (48 club, 8 Conference da 6), con le stesse rose e la stessa storia
+function usMigrate(){
+  if(!isUS()||!SV.us||!SV.us.conf||SV.us.conf.NE)return false;
+  SV.rost=SV.rost||{};
+  for(const n of US_NAMES)if(n!==SV.team&&!SV.rost[n])SV.rost[n]=usRoster(n,SV.seed);
+  for(const n in SV.rost)if(!US_TEAM[n])delete SV.rost[n];
+  usInit(SV.team);SV.po=null;SV.done=false;SV.next=null;SV.anc=null;
+  beginSeason();
+  news('Il campionato USA è cresciuto: 48 club in 8 Conference da 6. La stagione riparte nel nuovo formato.');
+  return true;
+}
 ACH.push(['usa','Campioni d’America','Vinci i Nationals USA',1,100,()=>SV.troph.U|0]);
-// fase che ci si aspetta di raggiungere con la posizione di adesso (stima per il bilancio previsionale): 1ª-2ª Nationals, 3ª-6ª Play-in, poi fuori
-const usExpectStage=rank=>rank<=2?3:(rank<=6?1:0);
+// fase che ci si aspetta di raggiungere con la posizione di adesso (stima per il bilancio previsionale): 1ª Nationals, 2ª-3ª Play-in, poi fuori
+const usExpectStage=rank=>rank===1?3:(rank<=3?1:0);
