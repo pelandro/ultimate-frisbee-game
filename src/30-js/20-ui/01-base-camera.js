@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id);
 const cv=$('c'),octx=cv.getContext('2d');
 // il gioco si disegna in un buffer a bassa risoluzione (pcv) e poi si ingrandisce a pixel netti sul canvas vero (cv).
 // VW e VH sono le dimensioni del buffer in pixel di gioco; CW e CH quelle dello schermo in pixel CSS (servono per i pulsanti); PXS = pixel fisici per pixel di gioco
-const pcv=document.createElement('canvas'),ctx=pcv.getContext('2d');
+const pcv=document.createElement('canvas');let ctx=pcv.getContext('2d');   // let: gli stacchi (03-stacchi.js) disegnano per un attimo le figure in un buffer a parte e poi lo rimettono
 let VW=400,VH=224,CW=800,CH=400,PXS=2,BAR=12,DPR=1,S=9,OY=0,baseS=9,CX=0,OYi=0,UIZ=1,BZ=1,UZS=1;   // UIZ: ingrandimento di menu e pannelli (--ui nel CSS); BZ: ingrandimento dei pulsanti di gioco (--bz); UZS: scelta del giocatore (0 piu' piccola, 1 automatica, 2 piu' grande, 3 molto piu' grande)
 const UZ_STEP=[-1,0,1,2];   // passi di un quarto aggiunti all'ingrandimento automatico
 let uiReady=false;   // i pulsanti di gioco si posizionano solo dopo che l'interfaccia e' pronta

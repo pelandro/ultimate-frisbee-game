@@ -148,13 +148,6 @@ function drawField(){
   drawCrowd(y0-13,true);
   for(const c of [[0,0],[0,FIELD_W],[FIELD_L,0],[FIELD_L,FIELD_W],[EZ,0],[EZ,FIELD_W],[FIELD_L-EZ,0],[FIELD_L-EZ,FIELD_W]])cone(sxw(c[0]),syw(c[1]));
 }
-function discShape(x,y,r,spin,tilt){   // usato negli stacchi laterali
-  ctx.save();ctx.translate(x,y);ctx.rotate(tilt);
-  ctx.fillStyle=PAL.out;ctx.beginPath();ctx.ellipse(0,0,r+1,r*0.42+1,0,0,6.283);ctx.fill();
-  ctx.fillStyle='#f4f7f2';ctx.beginPath();ctx.ellipse(0,0,r,r*0.42,0,0,6.283);ctx.fill();
-  ctx.fillStyle='#b9c6d8';ctx.beginPath();ctx.ellipse(0,r*0.1,r*0.7,r*0.2,0,0,6.283);ctx.fill();
-  ctx.restore();
-}
 function pdiscSprite(x,y,spin){   // disco a pixel: 9x4 con contorno, riflesso che gira
   x=ri(x);y=ri(y);
   px(x-4,y-1,9,3,PAL.out);px(x-3,y-2,7,5,PAL.out);
