@@ -71,6 +71,11 @@ function usaSelfTest(seasons,seed){
         if(ex){agN++;chk('eta',o.age===ex,'eta\' diversa dalla scheda: '+o.label);chk('eta',!o.ae,'eta\' esatta segnata come stima: '+o.label);}
         else if(hi)chk('eta',o.age<=hi,'oltre il limite giovanile: '+o.label+' '+o.age+'>'+hi);
         if(US_UFA_AWARD[k]){awN++;chk('premi',ovr(o)>=med,'premiato All-UFA sotto la mediana: '+o.label);}}}
+    // internazionali del mercato: la provenienza non e' mai una squadra UFA (solo club dei Nationals USA, club europei del gioco o un paese), niente doppioni, e l'Overall non sta sotto ai premi
+    const PAESI=new Set(['USA','Nord America','Paesi Bassi','Lettonia','Repubblica Ceca','Germania']),starKeys=new Set();
+    for(const r of STARS){const k=usNameKey(r[1]+' '+r[0]);chk('stelle',!starKeys.has(k),'stella ripetuta: '+r[1]+' '+r[0]);starKeys.add(k);
+      chk('stelle',US_NAMES.includes(r[5])||LN_NAMES.includes(r[5])||PAESI.has(r[5]),'provenienza non valida (squadra UFA?): '+r[1]+' '+r[0]+' -> '+r[5]);
+      chk('stelle',r[4]>=usAward(r[0],r[1]),'Overall sotto ai premi: '+r[1]+' '+r[0]);}
     chk('eta',agN>=60,'poche eta\' dalle schede UFA: '+agN);chk('premi',awN>=15,'pochi premiati in rosa: '+awN);
     chk('fantasy',ffIn>=ffAll*0.9,'giocatori di rendimento mancanti nelle rose: '+ffIn+'/'+ffAll);
     // cambio di lega e ritorno
@@ -102,6 +107,7 @@ function usaSelfTest(seasons,seed){
   r('Overall dai dati Fantasy dei Nationals: il migliore di ogni club sta in testa, i giocatori di rendimento sono in rosa, le stelle non scendono sotto la fama, rose da 20','fantasy','sì');
   r('Età dalle schede pubbliche UFA e dai limiti delle convocazioni giovanili U20/U24: in rosa, esatte dove note, mai oltre il limite','eta','sì');
   r('Premiati All-UFA 2026 almeno a metà della propria rosa','premi','sì');
+  r('Internazionali del mercato: provenienza solo da club dei Nationals/europei o paese (mai squadre UFA), senza doppioni, Overall coerente con i premi','stelle',`sì (${STARS.length} giocatori)`);
   r('Classifica USA: le viste Conference, Nationals (gironi e tabellone) e Ranking si aprono in ogni fase della stagione','viste','sì');
   r('Cambio di lega Italia ↔ USA: allenatore e trofei restano','lega','sì');
   r('Campionato italiano invariato','italia','sì');
