@@ -62,7 +62,7 @@ function showOver(){
   const w=G.score[0]>G.score[1],on=G.oppName||'Rossi';
   let msg='',grow=[];
   const hurt=QM.on?[]:SQ.filter(p=>p.injNew);
-  if(G.inMatch&&!G.recorded){G.recorded=true;restoreForm();if(!QM.on){grow=matchGrowth(0);recordMatchStats();msg=recordResult(w,G.score[0],G.score[1])+incTxt();pressPending=null;if(!G.forfeit)pressNext=pressCtxOf(w,G.score[0],G.score[1],G.oppName);}else if(UT.on)msg=utRecord(w);else if(TN.on)msg=tnRecord(w,G.score[0],G.score[1]);else msg='Partita veloce: non cambia la carriera.';}
+  if(G.inMatch&&!G.recorded){G.recorded=true;restoreForm();if(!QM.on){grow=matchGrowth(0);recordMatchStats();msg=recordResult(w,G.score[0],G.score[1])+incTxt();pressPending=null;if(!G.forfeit)pressNext=pressCtxOf(w,G.score[0],G.score[1],G.oppName);}else if(UT.on)msg=UO.on?uoRecord(w):utRecord(w);else if(TN.on)msg=tnRecord(w,G.score[0],G.score[1]);else msg='Partita veloce: non cambia la carriera.';}
   // crescita in partita, raggruppata per giocatore
   let gh='';
   if(!QM.on){
