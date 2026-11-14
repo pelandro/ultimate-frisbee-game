@@ -102,6 +102,31 @@ catch(e){
     await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');localStorage.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])localStorage.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
     await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   });
+  await step('diagnostica: leghe europee (Belgio, Francia, Germania, Regno Unito: dati, rose, formati, promozioni, coppa europea)',async()=>{
+    await page.click('#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgLn');
+    await page.waitForFunction(()=>/^Finito/.test(document.getElementById('dgState').textContent),null,{timeout:240000});
+    const no=await page.locator('#dgOut li').filter({hasText:/^NO/}).allInnerTexts(),n=await page.locator('#dgOut li').count();
+    await page.click('#sBack');await page.click('#sBack').catch(()=>{});await vis('#title');
+    if(no.length)throw new Error('controlli delle leghe europee falliti: '+no.join(' | '));
+    if(n<12)throw new Error('il test delle leghe europee ha dato pochi risultati');
+    if(/Continua/.test(await page.locator('#tCareerS').innerText()))throw new Error('il test delle leghe europee ha lasciato una carriera salvata');
+  });
+  await step('carriera in Belgio dall\'interfaccia: paese, livello, club, roster, allenatore, Classifica a tre viste, partita simulata',async()=>{
+    await page.click('#tCareer');await vis('#league');if(await page.locator('#lgList .lgcard').count()<6)throw new Error('servono le schede dei sei campionati');await page.click('#lgList [data-lg="BE"]');await vis('#team');
+    if(await page.locator('#tSr button').count()!==6)throw new Error('servono i 6 livelli belgi');
+    await page.click('#tSr button[data-k="N1"]');
+    if(await page.locator('.tteam').count()!==8)throw new Error('la N1 belga ha 8 club');
+    await page.click('.tteam >> nth=0');await vis('#rpv');
+    if(await page.locator('#rpBody tr').count()<15)throw new Error('il roster del club deve elencare i giocatori');
+    await page.click('#rpGo');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
+    if(!/Belgio/.test(await page.locator('#hInfo').innerText()))throw new Error('il cruscotto non mostra il campionato');
+    await page.click('#hEvent');await vis('#event');
+    if(await page.locator('#eBody .rt tr.up').count()!==4)throw new Error('il girone da 4 deve avere tutte le squadre nella zona del tabellone');
+    for(const k of ['fin','tiers','grp'])await page.click('#lnTabs [data-lt="'+k+'"]');
+    await page.click('#eBack');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
+    await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');localStorage.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])localStorage.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
+    await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
+  });
   await step('nuova carriera e cruscotto',async()=>{
     await page.click('#tCareer');await vis('#league');await page.click('#lgList [data-lg="IT"]');await vis('#team');await page.click('#tSr button[data-k="C"]');await page.click('.tteam >> nth=0');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');
     // schermata dell'allenatore: personaggio casuale, volto e nomi scelti a mano, anteprima che segue

@@ -11,6 +11,21 @@ const LN_STAR_CLUB={
   'Foord|Justin':'Clapham Ultimate','Abrams|Tom':'Clapham Ultimate','Yeo|Ashley':'Clapham Ultimate','Poitte-Sokolsky|Sacha':'Tchac','Bonnet|Elliot':'Tchac'
 };
 const lnStarTaken=r=>isLN()&&!!LN_STAR_CLUB[usStarKey(r)]&&!!LN_BY[LN_STAR_CLUB[usStarKey(r)]]&&LN_BY[LN_STAR_CLUB[usStarKey(r)]].lk===SV.lk;   // usato dal mercato (buildMarket)
+// contesto europeo: chi in Europa e' un punto di riferimento non diventa mediocre in America per un torneo storto. Per chi compare in un club di queste leghe (stella o dalle
+// tabelle) si stima l'Overall europeo; le carriere USA lo usano come livello minimo (usRoster). I nomi comuni non si uniscono: sono persone diverse.
+const LN_HOMONYM=new Set(['Connor McHale','Joe Miller','Chris Allen','Sam Hill'].map(usNameKey));
+let lnKeyClub=null;const lnCtxRo={};
+function lnCtxOvr(k){
+  if(LN_HOMONYM.has(k))return 0;
+  if(!lnKeyClub){
+    lnKeyClub={};
+    for(const lk of LN_IDS)for(const club in LN_PL[lk])for(const r of LN_PL[lk][club]){const key=usNameKey(r[1]+' '+r[0]);if(!lnKeyClub[key])lnKeyClub[key]=club;}
+    for(const r of STARS){const club=LN_STAR_CLUB[usStarKey(r)];if(club)lnKeyClub[usNameKey(r[1]+' '+r[0])]=club;}
+  }
+  const club=lnKeyClub[k];if(!club)return 0;
+  const ro=lnCtxRo[club]||(lnCtxRo[club]=lnRoster(club,'ctx')),o=ro.find(x=>usNameKey(x.label||x.n)===k);   // l'Overall che ha davvero nel suo club europeo
+  return o?ovr(o):0;
+}
 // nomi per il riempimento
 const LN_POOL={
   BE:{f:['Thomas','Maxime','Lucas','Nathan','Arthur','Simon','Louis','Jules','Hugo','Victor','Noah','Milan','Arne','Bram','Jens','Senne','Wout','Tuur','Lars','Pieter','Jonas','Stijn','Robbe','Matthias','Quentin','Florian'],
