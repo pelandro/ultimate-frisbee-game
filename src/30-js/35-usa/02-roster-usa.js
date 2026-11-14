@@ -49,17 +49,14 @@ const US_STAR_CLUB={
   'Babbitt|Jeff':'Boston DiG',
   'Janas|Pawel':'Boston DiG',
   'Bonnaud|Quentin':'Boston DiG',
-  'Edmonds|Thomas':'Boston DiG',
   'Decraene|Tobe':'Boston DiG',
   'Atkins|Alex':'Philadelphia Pacmen',
   'Davis|Antoine':'Philadelphia Pacmen',
-  'Barzasi|David':'Philadelphia Pacmen',
   'Little|Nate':'Philadelphia Pacmen',
   'Grossberg|Sam':'Philadelphia Pacmen',
   'Merriman|AJ':'Washington DC Truck Stop',
   'Boxley|Christian':'Washington DC Truck Stop',
   'Jurek|Cole':'Washington DC Truck Stop',
-  'Bonnet|Elliot':'Washington DC Truck Stop',
   'Mott|Sean':'Washington DC Truck Stop',
   'Rees|Adam':'San Francisco Revolver',
   'Hulsmeyer|Brett':'San Francisco Revolver',
@@ -80,7 +77,6 @@ const US_STAR_CLUB={
   'Coolman|Noah':'Seattle Sockeye',
   'Dillon|Trent':'Seattle Sockeye',
   'Holland|Troy':'Seattle Sockeye',
-  'De Marrée|Daan':'Chicago Machine',
   'Goff|Nate':'Chicago Machine',
   'Wettengel|William':'Chicago Machine',
   'Payne|Xavier':'Chicago Machine',
@@ -128,6 +124,9 @@ function usFFval(f){
 // Ritorna direttamente il livello minimo (0 = nessuno): il maggiore tra il premio 2026 e la reputazione su piu' anni (US_REP, 03-reputazione.js).
 const usAward=(sur,nm)=>{const k=usNameKey(nm+' '+sur);return Math.max([0,92,89,82][US_UFA_AWARD[k]|0],usRepFloor(k));};
 // contesto europeo (37-leghe/): chi gioca anche in un club europeo e li' e' un punto di riferimento ha come livello minimo quello europeo (meno 1)
+// giocatori che giocano sia in Europa sia in America e che il gioco tiene solo in Europa (le stelle sono tolte anche da US_STAR_CLUB; Orion Cable fa il contrario, vedi LN_OUT)
+const US_OUT=new Set(['Lander Decraene','Sofiène Bontemps','Louis Betrancourt','Gael Ancelin','Daan De Marrée','David Barzasi','Thomas Edmonds','Elliot Bonnet'].map(usNameKey));
+const usOut=(sur,nm)=>US_OUT.has(usNameKey(nm+' '+sur));
 const usEuCtx=(sur,nm)=>{const e=lnCtxOvr(usNameKey(nm+' '+sur));return e>0?e+2:0;};
 const usFFabs=(f,m,aw)=>{const a=62+30*usFFval(f);return clamp(Math.max(a,m?m-3:0,aw|0),40,98);};
 // eta' nel 2026: esatta se e' nelle schede UFA, altrimenti il limite delle convocazioni giovanili quando la stima lo supera, altrimenti la stima. Ritorna [eta', esatta?]
@@ -150,7 +149,7 @@ function usFFsplit(full){
 function usFFextra(club){
   const t=Object.keys(US_FF).find(x=>club.endsWith(x));if(!t)return[];
   const have=new Set([...STARS.filter(r=>US_STAR_CLUB[usStarKey(r)]===club),...(US_CORE[club]||[])].map(r=>usNameKey(r[1]+' '+r[0])));
-  return US_FF[t].filter(f=>!have.has(usNameKey(f[0]))).map(f=>{const [sur,nm]=usFFsplit(f[0]);return {f,sur,nm};});
+  return US_FF[t].filter(f=>!have.has(usNameKey(f[0]))&&!US_OUT.has(usNameKey(f[0]))).map(f=>{const [sur,nm]=usFFsplit(f[0]);return {f,sur,nm};});
 }
 // quanto i migliori 7 di un club (Overall assoluto dei dati Fantasy) stanno sopra o sotto il suo rating, meno la media di tutti i club con dati: positivo = piu'
 // talento di quanto dica il rating. Serve a dare a un club con campioni un po' piu' di forza e a uno con pochi un po' meno.
@@ -160,7 +159,7 @@ function usFFskew(club){
     usFFdev={};let sum=0,n=0;
     for(const c of US_NAMES){
       const ab=[...STARS.filter(r=>US_STAR_CLUB[usStarKey(r)]===c).map(r=>{const f=usFFof(c,r[0],r[1]);return f&&usFFabs(f,r[4],usAward(r[0],r[1]));}),
-        ...(US_CORE[c]||[]).map(r=>{const f=usFFof(c,r[0],r[1]);return f&&usFFabs(f,0,usAward(r[0],r[1]));}),...usFFextra(c).map(x=>usFFabs(x.f,0,usAward(x.sur,x.nm)))].filter(a=>a).sort((a,b)=>b-a);
+        ...(US_CORE[c]||[]).filter(r=>!usOut(r[0],r[1])).map(r=>{const f=usFFof(c,r[0],r[1]);return f&&usFFabs(f,0,usAward(r[0],r[1]));}),...usFFextra(c).map(x=>usFFabs(x.f,0,usAward(x.sur,x.nm)))].filter(a=>a).sort((a,b)=>b-a);
       if(ab.length>=7){usFFdev[c]=ab.slice(0,7).reduce((x,y)=>x+y,0)/7-US_TEAM[c].power;sum+=usFFdev[c];n++;}
     }
     for(const c in usFFdev)usFFdev[c]-=sum/n;
@@ -177,7 +176,7 @@ function usRoster(club,seedStr,opt){
   for(const r of STARS)if(US_STAR_CLUB[usStarKey(r)]===club){const f=usFFof(club,r[0],r[1]);specs.push(f?{k:'sf',row:r,ab:usFFabs(f,Math.max(r[4],usEuCtx(r[0],r[1])),usAward(r[0],r[1])),role:usFFrole(f)}:{k:'s',row:r});}
   // giocatori veri: dove ci sono i dati Fantasy contano quelli (livello assoluto e ruolo), altrimenti il bonus di US_CORE rispetto al club
   const real=[];
-  (US_CORE[club]||[]).forEach(r=>{const f=usFFof(club,r[0],r[1]),ro=f&&usFFrole(f);const ag=usAgeOf(r[0],r[1],r[2]);real.push({k:'r',row:[r[0],r[1],ag[0],ro||r[3],r[4]],ex:ag[1],ab:f?usFFabs(f,usEuCtx(r[0],r[1]),usAward(r[0],r[1])):null,base:-1+(r[4]|0)});});
+  (US_CORE[club]||[]).filter(r=>!usOut(r[0],r[1])).forEach(r=>{const f=usFFof(club,r[0],r[1]),ro=f&&usFFrole(f);const ag=usAgeOf(r[0],r[1],r[2]);real.push({k:'r',row:[r[0],r[1],ag[0],ro||r[3],r[4]],ex:ag[1],ab:f?usFFabs(f,usEuCtx(r[0],r[1]),usAward(r[0],r[1])):null,base:-1+(r[4]|0)});});
   usFFextra(club).forEach(x=>{const ag=usAgeOf(x.sur,x.nm,22+hashStr(x.f[0])%12);real.push({k:'r',row:[x.sur,x.nm,ag[0],usFFrole(x.f)||'C',0],ex:ag[1],ab:usFFabs(x.f,usEuCtx(x.sur,x.nm),usAward(x.sur,x.nm)),base:0});});
   // una rosa ha al massimo 20 giocatori: le stelle restano sempre, poi i veri migliori
   const key=s=>s.ab!=null?s.ab:P+s.base;
