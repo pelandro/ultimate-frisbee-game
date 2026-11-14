@@ -2,11 +2,13 @@
    Partite a distanza contro le squadre di altri giocatori, senza che siano online insieme: ognuno carica la propria squadra (7 titolari e le migliori
    7 riserve) su Firebase Realtime Database; «Inizia partita» sceglie la squadra di un giocatore con punti Elo vicini ai tuoi e la fa giocare all'IA.
    I punti cambiano solo a chi gioca (logica in 10-sim/19-ut-classifica.js) e finiscono nella classifica online.
+   La squadra di Real player e' separata da quella del torneo contro il computer (utUse): ha i suoi giocatori, i suoi gettoni e i suoi pacchetti.
+   Il nome si sceglie una volta sola.
    Solo richieste web semplici (fetch, nessuna libreria): senza connessione il resto del gioco funziona come sempre.
    Per attivarlo servono il progetto Firebase e le regole di sicurezza: docs/ULTIMATE-TEAM-ONLINE.md e docs/firebase-rules.json. */
 const UTO_CFG={db:'https://ultimate-frisbee-e640e-default-rtdb.europe-west1.firebasedatabase.app',key:'AIzaSyC3r-oo8RQ5__-428NDT-PdzjTaiUoGbFg'};   // databaseURL e apiKey del progetto Firebase: per natura pubblici, la sicurezza sta nelle regole del database
 const UTO_KEY='ultimate-ut-online';
-const UO={on:false,opp:null,busy:false,flush:false,tried:0,msg:'',nameEdit:false};
+const UO={on:false,opp:null,busy:false,flush:false,tried:0,msg:''};
 // profilo locale: id (utente anonimo di Firebase), nome, punti, partite, token di rinnovo; dirty = risultato non ancora inviato; fresh = il nodo online non esiste ancora;
 // op = punti dell'avversario di una partita iniziata e non finita (se chiudi il gioco a meta' conta come sconfitta)
 let UOP=null;
@@ -115,9 +117,26 @@ async function uoStart(){
 // fine partita (chiamata da showOver, anche per l'abbandono): punti Elo contro i punti che l'avversario aveva quando e' stato scelto
 function uoRecord(win){
   const d=utoDelta(UOP.p,UO.opp.p,win),np=clamp(UOP.p+d,0,UTO_MAXP),real=np-UOP.p;
+  const c=utoCoins(UOP.p,UO.opp.p,win);   // il bonus guarda i punti di prima della partita
   UOP.p=np;UOP.g++;if(win)UOP.w++;else UOP.l++;UOP.dirty=true;UOP.op=null;uoSaveP();
-  const msg=`Real player · ${win?'vittoria':'sconfitta'} contro ${UO.opp.n} (${UO.opp.p} punti): ${real>=0?'+':''}${real} punti, ora ne hai ${np}.`;
+  UT.coins+=c.base+c.bonus;if(win)UT.stat.w++;
+  const grown=utGrowCards(),pk=uoMiles();utSave();
+  const msg=`Real player · ${win?'vittoria':'sconfitta'} contro ${UO.opp.n} (${UO.opp.p} punti): ${real>=0?'+':''}${real} punti, ora ne hai ${np}. +${c.base+c.bonus} gettoni${c.bonus?` (${c.bonus} in più perché l’avversario aveva più punti di te)`:''}.`
+    +(pk?` Traguardo dei ${utoMilePts(UT.ms)} punti raggiunto: ${pk>1?pk+' pacchetti premio':'un pacchetto premio'} da aprire${UT.ms===pk?', e da ora puoi potenziare le carte':''}.`:'')
+    +(grown.length?` ${grown.length===1?grown[0]+' è cresciuto':grown.length+' carte sono cresciute'} giocando.`:'');
   UO.msg=msg;uoPush();return msg;
+}
+// traguardi di punti non ancora premiati: un pacchetto per ognuno. Contano una volta sola (UT.ms sale e basta): se scendi e risali non si ripetono
+function uoMiles(){
+  if(!UOP||!UT.rp)return 0;
+  let n=0;while((UT.ms|0)<utoMiles(UOP.p)){UT.ms=(UT.ms|0)+1;UT.packs.push(utoMilePack(UT.ms));n++;}
+  return n;
+}
+// ingresso in Real player: si carica la sua squadra (quella del torneo resta salvata com'e') e, la prima volta, arriva il pacchetto iniziale
+function uoEnter(){
+  utUse(true);
+  if(!UT.col.length&&!UT.packs.length)UT.packs=[0];
+  uoMiles();utSave();
 }
 function uoSettle(){   // partita lasciata a meta' (gioco chiuso): sconfitta
   if(!UOP||UOP.op===null||UOP.op===undefined||UO.on)return;
@@ -128,36 +147,41 @@ function uoSettle(){   // partita lasciata a meta' (gioco chiuso): sconfitta
 // ---- schermate ----
 function renderUtReal(){
   uoSettle();
-  const off=!uoOk(),has=UT.col.length>0&&UT.sel.length===7,net=uoOffline(),need=!UOP||UO.nameEdit;
-  $('urNameBox').classList.toggle('hidden',!need);$('urRename').classList.toggle('hidden',need||off);
-  if(need&&!$('urName').value)$('urName').value=UOP?UOP.name:'';
-  $('urInfo').innerHTML=off?'Real player non è ancora attivo: manca la configurazione online (docs/ULTIMATE-TEAM-ONLINE.md).':(UOP?`<b>${esc(UOP.name)}</b> · Punti: <b>${UOP.p}</b> · Vittorie ${UOP.w} · Sconfitte ${UOP.l}${has?` · Forza: <b>${utPower()}</b>`:''}${UOP.dirty?' · risultato da inviare':''}`:'Scegli il tuo nome per entrare in classifica.');
-  $('urPlay').disabled=off||!UOP||!has||UO.busy||net||UO.nameEdit;
+  const off=!uoOk(),has=UT.col.length>0&&UT.sel.length===7,net=uoOffline(),pend=UT.packs.length,nx=(UT.ms|0)+1;
+  $('urNameBox').classList.toggle('hidden',!!UOP||off);   // il nome si sceglie una volta sola: poi il riquadro non torna piu'
+  $('urInfo').innerHTML=off?'Real player non è ancora attivo: manca la configurazione online (docs/ULTIMATE-TEAM-ONLINE.md).':(UOP?`<b>${esc(UOP.name)}</b> · Punti: <b>${UOP.p}</b> · Vittorie ${UOP.w} · Sconfitte ${UOP.l}${has?` · Forza: <b>${utPower()}</b>`:''}${UT.col.length?` · Gettoni: <b>${UT.coins}</b>`:''}${UOP.dirty?' · risultato da inviare':''}`:'Scegli il tuo nome per entrare in classifica. Attenzione: una volta confermato non si può più cambiare.');
+  $('urPlay').disabled=off||!UOP||!has||UO.busy||net;
   $('urPlayS').textContent=net?'Serve internet':(!has?'Prima completa la tua squadra (7 titolari)':'Contro un giocatore con punti simili ai tuoi');
-  $('urTeamT').textContent=UT.col.length?'La tua squadra':'Crea la tua squadra';
-  $('urTeamS').textContent=UT.col.length?`${UT.col.length} giocatori · titolari ${UT.sel.length}/7`:'Apri il pacchetto iniziale';
+  $('urPack').classList.toggle('hidden',!pend);
+  $('urPackT').textContent=pend?(utPkQ(UT.packs[0])===0&&!UT.col.length?'Apri il pacchetto iniziale':`Apri: ${utPackName(UT.packs[0])}${pend>1?' (+'+(pend-1)+')':''}`):'';
+  $('urPackS').textContent=pend?`${utPackSize(UT.packs[0])} giocatori · ${utPackTip(UT.packs[0])}`:'';
+  $('urTeam').classList.toggle('hidden',!UT.col.length);
+  $('urTeamS').textContent=`${UT.col.length} giocatori · titolari ${UT.sel.length}/7`;
+  $('urBuy').classList.toggle('hidden',!UT.col.length);$('urBuy').textContent=`Compra un pacchetto (${UTO_PACK} gettoni)`;$('urBuy').disabled=UT.coins<UTO_PACK;
+  $('urGoal').textContent=UT.col.length?`Prossimo traguardo: ${utoMilePts(nx)} punti → ${utPkQ(utoMilePack(nx))===6?'Super bustina':UT_PQN[utPkQ(utoMilePack(nx))]} da ${utPackSize(utoMilePack(nx))} giocatori${nx===1?' e potenziamenti sbloccati':''}. Vittoria ${UTO_COIN_W} gettoni (fino a +${UTO_UPSET[0][1]} se l’avversario ha più punti), sconfitta ${UTO_COIN_L}.`:'';
   $('urBoard').disabled=off||net;
   $('urMsg').textContent=net&&!UO.msg?'Nessuna connessione: Real player ha bisogno di internet. Il resto del gioco funziona anche offline.':UO.msg;
   if(UOP&&UOP.dirty&&!UO.busy&&Date.now()-UO.tried>15000)uoPush();   // ogni tanto, non in continuazione se la rete non risponde
 }
 $('umBack').addEventListener('click',()=>showScreen('title'));
-$('umCpu').addEventListener('click',utEnter);
-$('umReal').addEventListener('click',()=>{UO.msg='';UO.nameEdit=false;showScreen('utReal');});
+$('umCpu').addEventListener('click',()=>{utUse(false);utEnter();});
+$('umReal').addEventListener('click',()=>{UO.msg='';uoEnter();showScreen('utReal');});
 $('urBack').addEventListener('click',()=>showScreen('utMode'));
 $('urPlay').addEventListener('click',uoStart);
-$('urTeam').addEventListener('click',()=>{if(!UT.col.length){utEnter();return;}utTeamBack='utReal';showScreen('utTeam');});
+$('urTeam').addEventListener('click',()=>{utTeamBack='utReal';showScreen('utTeam');});
+$('urPack').addEventListener('click',()=>{if(!UT.packs.length)return;UT.stage='closed';showScreen('utPack');});
+$('urBuy').addEventListener('click',()=>{if(UT.coins<UTO_PACK)return;UT.coins-=UTO_PACK;UT.packs.push(1);utSave();renderUtReal();});
 $('urBoard').addEventListener('click',()=>{showScreen('utBoard');});
-$('urRename').addEventListener('click',()=>{UO.nameEdit=true;$('urName').value=UOP?UOP.name:'';renderUtReal();$('urName').focus();});
 $('urNameOk').addEventListener('click',async()=>{
+  if(UOP){renderUtReal();return;}   // il nome non si cambia
   const nm=utoName($('urName').value);
   if(nm.length<2){UO.msg='Il nome deve avere almeno 2 lettere.';renderUtReal();return;}
   if(UO.busy)return;
   if(!uoOk()){renderUtReal();return;}
   UO.busy=true;UO.msg='Salvo il nome…';renderUtReal();
   try{
-    if(!UOP){const a=await uoSignUp();UOP={id:a.id,name:nm,p:UTO_START,w:0,l:0,g:0,rt:a.rt,dirty:false,fresh:true,last:'',op:null};}
-    else UOP.name=nm;
-    uoSaveP();UO.nameEdit=false;
+    const a=await uoSignUp();UOP={id:a.id,name:nm,p:UTO_START,w:0,l:0,g:0,rt:a.rt,dirty:false,fresh:true,last:'',op:null};
+    uoSaveP();
     try{await uoSync();UO.msg='Nome salvato: '+nm+'.';}catch(e){UO.msg=UT.sel.length===7?uoErr(e):'Nome salvato. Completa la tua squadra per giocare.';}
   }catch(e){UO.msg=uoErr(e);}
   finally{UO.busy=false;renderUtReal();}

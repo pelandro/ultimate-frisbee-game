@@ -26,6 +26,8 @@ L'indirizzo e la chiave API **non sono segreti**: stanno in ogni sito che usa Fi
 
 - **Inizia partita**: il gioco carica la tua squadra, cerca tra i giocatori con punti vicini ai tuoi (prima ±150, poi ±500, poi ±2000, poi il più vicino) e fa giocare l'IA con la squadra scelta. L'ultimo avversario si evita se c'è un'alternativa.
 - **Punti Elo**: si parte da 1000; a ogni partita si guadagna o perde da 1 a 32 punti, secondo la differenza di punti con l'avversario. Cambiano solo i punti di chi gioca.
+- **Nome**: si sceglie una volta sola, poi non si può più cambiare (il blocco è nel gioco; le regole del database non lo impongono).
+- **Squadra e premi**: la squadra di Real player è separata da quella del torneo contro il computer e resta nel browser (`ultimate-ut-real`). Gettoni a ogni partita, bonus contro chi ha più punti, pacchetti premio ai traguardi ogni 100 punti: i numeri sono in `10-sim/19-ut-classifica.js`. Sono calcolati sul dispositivo di chi gioca: non c'è un server che li controlla.
 - **Abbandono o chiusura a metà partita**: sconfitta a tavolino, come nel resto del gioco.
 - **Senza internet**: Real player si spegne con un messaggio; un risultato che non è stato possibile inviare resta in coda e parte alla prima occasione.
 
