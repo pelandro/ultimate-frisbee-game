@@ -320,6 +320,34 @@ function selfTestPlan(opt){
       row('Overall guadagnato con 4 potenziamenti, in media',(gain>=0?'+':'')+gain.toFixed(1),gain>=2&&gain<=9,'tra +2 e +9'),
       row('Due carte della stessa forza con potenziamenti diversi: differenza media per statistica',diff.toFixed(1),diff>=1.5,'almeno 1,5 punti: restano diverse')];
   }]);
+  S.steps.push(['Real player di Ultimate Team',()=>{
+    // punti Elo, scelta dell'avversario per punti e squadre scaricate da internet (dati di cui non ci si fida)
+    const pts=[0,500,1000,2500,4900],bounds=pts.every(a=>pts.every(b=>{const w=utoDelta(a,b,true),l=utoDelta(a,b,false);return w>=1&&w<=UTO_K&&l<=-1&&l>=-UTO_K;}));
+    const up=utoDelta(1000,1400,true),dn=utoDelta(1000,600,true),eqW=utoDelta(1000,1000,true),eqL=utoDelta(1000,1000,false);
+    const pool=[];for(let i=0;i<300;i++)pool.push({id:'u'+i,p:Math.round(Math.random()*3000),pw:60});
+    let dsum=0,bad=0;const K=400;
+    for(let i=0;i<K;i++){const me=pool[i%pool.length],o=utoPickOpp(pool,me.id,me.p,'',Math.random);if(!o||o.id===me.id)bad++;else dsum+=Math.abs(o.p-me.p);}
+    const avgOpp=p=>{let t=0;for(let i=0;i<200;i++)t+=utoPickOpp(pool,'me',p,'',Math.random).p;return t/200;};
+    const a1=avgOpp(500),a2=avgOpp(1500),a3=avgOpp(2500);
+    const two=[{id:'a',p:1000,pw:60},{id:'b',p:1010,pw:60}];let repeat=0;for(let i=0;i<40;i++)if(utoPickOpp(two,'me',1000,'a',Math.random).id==='a')repeat++;
+    const lone=utoPickOpp([{id:'a',p:4000,pw:60}],'me',100,'',Math.random),none=utoPickOpp([{id:'me',p:100,pw:60}],'me',100,'',Math.random);
+    const col=makeRoster(66,'uto|t1'),pk=utoPack(col,[0,1,2,3,4,5,6]),un=utoUnpack(JSON.parse(JSON.stringify(pk.m)),'x');
+    const same=!!un&&pk.m.length===14&&un.length===14&&un.every((o,i)=>KEYS.every(k=>o.s[k]===pk.m[i].s[k]));
+    const pw7=un?Math.round(un.slice(0,7).reduce((a,o)=>a+ovrX(o),0)/7):-1;
+    const hs={};for(const k of KEYS)hs[k]=9999;const hs2=Object.assign({},hs,{lan:-50});
+    const hostile=[];for(let i=0;i<7;i++)hostile.push({n:'<b>x</b>'+'a'.repeat(60),r:'Z',a:-5,x:'hack',s:i?hs:hs2});
+    const hu=utoUnpack(hostile,'h'),cleaned=!!hu&&hu.length===14&&hu.every(o=>KEYS.every(k=>o.s[k]>=25&&o.s[k]<=99))&&hu.slice(0,7).every(o=>!/[<>]/.test(o.n)&&o.n.length<=20&&o.r==='C'&&o.trait===null);
+    const six=hostile.slice(0,6).concat([{n:'y',r:'H',s:{lan:'abc'}}]);
+    const junk=utoUnpack(six,'j')===null&&utoUnpack('boom','j')===null&&utoUnpack(null,'j')===null;
+    return [row('Punti Elo: contro un avversario più forte si vince di più, contro uno più debole di meno',`+${up} / +${eqW} / +${dn}`,up>eqW&&eqW>dn&&eqW===-eqL,'+16 a parità, simmetrico'),
+      row('Punti Elo: ogni partita sposta da 1 a '+UTO_K+' punti, a qualsiasi livello',bounds?'sì':'no',bounds),
+      row('Avversario scelto: punti vicini ai tuoi (differenza media su 300 giocatori), mai te stesso',Math.round(dsum/K)+' punti',bad===0&&dsum/K<=150,'al massimo 150'),
+      row('Più punti hai, più forti sono gli avversari (punti medi a 500, 1500, 2500)',[a1,a2,a3].map(Math.round).join(', '),a1<a2-500&&a2<a3-500,'salgono di oltre 500 a ogni passo'),
+      row('L’ultimo avversario si evita se c’è un’alternativa; con un solo candidato lo si prende; da soli, nessuno',`${repeat} ripetizioni su 40`,repeat===0&&!!lone&&lone.id==='a'&&none===null),
+      row('Squadra caricata e scaricata: 14 giocatori con le stesse statistiche e la stessa forza',un?`${un.length} giocatori, forza ${pw7} contro ${pk.pw}`:'non valida',same&&Math.abs(pw7-pk.pw)<=1),
+      row('Dati ostili da internet: statistiche nei limiti 25-99, nomi senza simboli, ruolo e tratto validi',cleaned?'ripuliti':'no',cleaned),
+      row('Squadre incomplete o che non sono squadre: rifiutate',junk?'sì':'no',junk)];
+  }]);
   S.steps.push(['Prestazioni',()=>{
     const gt=S.base?avg(S.base.map(m=>m.time)):0,k=gt/Math.max(0.001,S.ms/1000);
     return [row('Velocità di simulazione',Math.round(S.ms)+' ms a partita ('+Math.round(k)+' volte il tempo reale)',k>=15,'almeno 15 volte')];
