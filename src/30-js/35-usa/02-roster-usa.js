@@ -131,9 +131,9 @@ const usEuCtx=(sur,nm)=>{const e=lnCtxOvr(usNameKey(nm+' '+sur));return e>0?e+2:
 const usFFabs=(f,m,aw)=>{const a=62+30*usFFval(f);return clamp(Math.max(a,m?m-3:0,[0,92,89,82][aw|0]),40,98);};
 // eta' nel 2026: esatta se e' nelle schede UFA, altrimenti il limite delle convocazioni giovanili quando la stima lo supera, altrimenti la stima. Ritorna [eta', esatta?]
 function usAgeOf(sur,nm,def){
-  const k=usNameKey(nm+' '+sur),h=US_AGE_HI[k];
+  const k=usNameKey(nm+' '+sur),h0=lnHiOf(k),h=Math.min(US_AGE_HI[k]||99,h0||99);   // anche i limiti delle convocazioni giovanili europee (37-leghe/)
   if(US_AGE[k])return [US_AGE[k],true];
-  return h&&def>h?[h-1,false]:[def,false];
+  return h<99&&def>h?[h-1,false]:[def,false];
 }
 // ruolo dai punteggi per ruolo: si cambia solo se uno e' nettamente avanti e il campione non e' minuscolo
 function usFFrole(f){

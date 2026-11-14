@@ -37,11 +37,20 @@ const LN_POOL={
   UK:{f:['Oliver','George','Harry','Jack','Jacob','Noah','Charlie','Thomas','Oscar','William','James','Henry','Alfie','Joshua','Freddie','Archie','Ethan','Isaac','Joseph','Samuel','Callum','Ryan','Liam','Connor'],
       l:['Smith','Jones','Taylor','Brown','Williams','Wilson','Johnson','Davies','Robinson','Wright','Thompson','Evans','Walker','White','Roberts','Green','Hall','Wood','Jackson','Clarke','Patel','Khan','Lewis','Harrison']}
 };
-// eta': esatta se nota; se c'e' un limite delle nazionali giovanili (U20/U24) e la stima lo supera, il limite meno uno; altrimenti stima 22-33. Ritorna [eta', esatta?]
+// eta': esatta se nota (anche dalle schede UFA, se il giocatore gioca pure in America); altrimenti la stima USA se c'e', o 22-33; se c'e' un limite delle nazionali giovanili
+// (U20/U24, di qui o di la') e la stima lo supera, il limite meno uno. Chi gioca in entrambe le leghe ha cosi' la stessa eta' in tutte e due. Ritorna [eta', esatta?]
+let lnUsAge=null,lnHiMap=null;
+function lnHiOf(k){   // limite d'eta' dalle convocazioni giovanili nei dati europei (0 = nessuno)
+  if(!lnHiMap){lnHiMap={};for(const lk of LN_IDS)for(const club in LN_PL[lk])for(const r of LN_PL[lk][club])if(r[3]>0){const key=usNameKey(r[1]+' '+r[0]);lnHiMap[key]=Math.min(lnHiMap[key]||99,r[3]);}}
+  return lnHiMap[k]||0;
+}
 function lnAgeOf(full,age,hi){
   if(age>0)return [age,true];
-  const est=22+hashStr('ln|'+full)%12;
-  return [hi>0&&est>hi?Math.max(16,hi-1):est,false];
+  const k=usNameKey(full);
+  if(US_AGE[k])return [US_AGE[k],true];
+  if(!lnUsAge){lnUsAge={};for(const c in US_CORE)for(const r of US_CORE[c])lnUsAge[usNameKey(r[1]+' '+r[0])]=r[2];}
+  const est=lnUsAge[k]||22+hashStr('ln|'+full)%12,h=Math.min(hi>0?hi:99,US_AGE_HI[k]||99);
+  return [h<99&&est>h?Math.max(16,h-1):est,false];
 }
 function lnRoster(club,seedStr,opt){
   opt=opt||{};const B=LN_BY[club],P=opt.p!==undefined?opt.p:(opt.low?B.p*0.9+5.5:B.p),rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
