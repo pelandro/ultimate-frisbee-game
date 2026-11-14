@@ -7,7 +7,7 @@
 const LEAGUES=[
   {id:'IT',name:'Campionato italiano',sub:'Serie A, B e C · 46 squadre',txt:'Le squadre vere dei Campionati Italiani Ultimate Open 2026. Si sale e si scende, con playoff scudetto e Coppa europea; si può anche subentrare a una squadra in crisi.',
     clubs:()=>[].concat(SERIES.A,SERIES.B,SERIES.C),roster:n=>realRoster(REAL[n]||[],'preview|'+n,Object.assign(realOpt(n,9),{low:true})),sub2:n=>SERIES_NAME[TEAM[n].series]},
-  {id:'US',name:'USA Men’s Club',sub:'32 club · 4 Conference',txt:'I club veri della divisione Men’s di USA Ultimate: 4 Conference da 8, Play-in e Nationals a 16 squadre. Niente promozioni né retrocessioni.',
+  {id:'US',name:'USA Men’s Club',sub:'48 club · 8 Conference',txt:'I club veri della divisione Men’s di USA Ultimate: 8 Conference (le regioni vere) da 6, Play-in e Nationals a 16 squadre. Niente promozioni né retrocessioni.',
     clubs:()=>US_NAMES,roster:n=>usRoster(n,'preview|'+n,{low:true}),sub2:n=>`${US_TEAM[n].city} · ${usConfName(US_TEAM[n].conf)}`}
 ].concat(LN_IDS.map(lk=>({id:lk,name:LN_DEF[lk].name,sub:LN_DEF[lk].sub,txt:LN_DEF[lk].txt,
     clubs:()=>lnClubs(lk,true),roster:n=>lnRoster(n,'preview|'+n,{low:true}),sub2:n=>`${LN_DEF[lk].cc} · ${LN_DEF[LN_BY[n].lk].tiers.find(t=>t.id===LN_BY[n].t).name}`})));   // leghe europee (37-leghe/): una scheda per paese

@@ -73,7 +73,7 @@ function lnSelfTest(seasons,seed){
     startCareer(SERIES.C[2],{});
     chk('italia',!isLN()&&!isUS()&&SV.sr==='C'&&SV.sched.length===15&&Object.keys(SV.mem).join()==='A,B,C'&&!SV.ln,'carriera italiana invariata');
     startCareer('Seattle Sockeye',{});
-    chk('usa',isUS()&&SV.sr==='U'&&SV.sched.length===7&&!SV.ln,'carriera USA invariata');
+    chk('usa',isUS()&&SV.sr==='U'&&SV.sched.length===5&&!SV.ln,'carriera USA invariata');
   }catch(e){err=e&&e.message||String(e);rows.push(row('Errore durante il test',err,false));}
   finally{
     Math.random=R0;QM.on=q0;hide();

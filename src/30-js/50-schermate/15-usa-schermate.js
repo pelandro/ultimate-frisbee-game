@@ -62,18 +62,18 @@ function usStakes(m){
   }else{
     const names=SV.mem.U,ord=ranking(SV.tab,names),rk=ord.indexOf(SV.team)+1,last=SV.round===SV.sched.length-1;
     if(m.name===SV.riv){tag='Rivalità';title='Derby';const rr=SV.rivRec||{w:0,l:0};lines.push(`Contro ${m.name} vale di più: incasso, morale e reputazione.${rr.w+rr.l?` Finora ${rr.w} ${rr.w===1?'vinto':'vinti'} e ${rr.l} ${rr.l===1?'perso':'persi'}.`:''}`);}
-    if(last){tag=tag||'Ultima giornata';title=title||(rk<=2?'Ai Nationals senza Play-in':(rk<=6?'Play-in in palio':'Ultima chiamata'));lines.push(rk<=2?'Siete in zona qualificazione diretta: una vittoria la blinda.':(rk<=6?'Siete in zona Play-in: una vittoria può valere il 2º posto.':'Siete fuori dai Play-in: serve vincere e sperare.'));}
+    if(last){tag=tag||'Ultima giornata';title=title||(rk===1?'Ai Nationals senza Play-in':(rk<=3?'Play-in in palio':'Ultima chiamata'));lines.push(rk===1?'Siete primi: una vittoria blinda la qualificazione diretta ai Nationals.':(rk<=3?'Siete in zona Play-in: una vittoria può valere il 1º posto, la sconfitta il 3º.':'Siete fuori dai Play-in: serve vincere e sperare.'));}
   }
   return {tag,title,lines};
 }
 // ---- scelta del campionato e della Conference (schermata «Scegli la tua squadra») ----
-let teamLg='IT',teamCf='W';
+let teamLg='IT',teamCf='NE';
 const usPrevCache={},usPreview=n=>usPrevCache[n]||(usPrevCache[n]=Math.round(rosterPower(usRoster(n,'preview|'+n,{low:true}))));   // forza con cui si parte davvero (rosa un po' meno allenata)
 function renderTeamsUS(){
   $('tMode').classList.add('hidden');$('tRelief').classList.add('hidden');$('tTeams').classList.remove('hidden');
   $('tSr').innerHTML=US_CK.map(c=>`<button type="button" data-k="${c}">${US_CONF[c]}</button>`).join('');
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamCf);
-  $('tNote').textContent='Men’s Club USA: 32 club veri in 4 Conference geografiche da 8. Si gioca nella propria Conference (7 giornate), poi Play-in e Nationals a 16 squadre. Le Conference non cambiano mai: niente promozioni e retrocessioni. Il numero accanto al nome è la forza del club; i più prestigiosi partono più forti, ma le gerarchie cambiano negli anni.';
+  $('tNote').textContent='Men’s Club USA: 48 club veri nelle 8 regioni di USA Ultimate, 6 per Conference. Si gioca nella propria Conference (5 giornate), poi Play-in e Nationals a 16 squadre. Le Conference non cambiano mai: niente promozioni e retrocessioni. Il numero accanto al nome è la forza del club; i più prestigiosi partono più forti, ma le gerarchie cambiano negli anni.';
   $('tTeams').innerHTML=US_BYCONF[teamCf].slice().sort((a,b)=>favFirst(a,b)||US_TEAM[a].rank-US_TEAM[b].rank).map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${favMark(n)}${esc(n)}<small class="tcity">${esc(US_TEAM[n].city)} · n° ${US_TEAM[n].rank}</small></span></span><b class="tp">${usPreview(n)}</b></button>`).join('');
 }
 // ---- Classifica ----
@@ -81,20 +81,20 @@ const usRow=(nm,t,cls)=>`<tr${cls?` class="${cls}"`:''}><td>${crest(nm,15)} ${es
 const usHead='<tr><th>Squadra e forza</th><th>G</th><th>V</th><th>S</th><th>Diff</th></tr>';
 function usConfTable(c){
   const names=SV.us.conf[c],t=usTab(c),ord=usRanking(t,names);
-  const rows=ord.map((nm,i)=>usRow(nm,t[nm],[nm===SV.team?'me':'',i<2?'up':(i<6?'pi':'dn')].filter(Boolean).join(' '))).join('');
+  const rows=ord.map((nm,i)=>usRow(nm,t[nm],[nm===SV.team?'me':'',i<1?'up':(i<3?'pi':'dn')].filter(Boolean).join(' '))).join('');
   return `<div style="overflow-x:auto"><table class="rt">${usHead}${rows}</table></div>`;
 }
 const usMatchRow=m=>`<li class="${m[4]===SV.team?'w':(m[0]===SV.team||m[1]===SV.team?'l':'')}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]===null?'da giocare':m[2]+' – '+m[3]}</span></li>`;
 function usPinHTML(c){
   const U=SV.us,P=U.pin&&U.pin[c];if(!P)return '';
-  const lab=['3ª contro 6ª','4ª contro 5ª'];
+  const lab=['2ª contro 3ª'];
   return `<h3 class="eh">Play-in · ${usConfName(c)}</h3><ul class="elist">${P.m.map((m,i)=>{const r=P.r[i];return r?`<li class="${r[4]===SV.team?'w':(m.includes(SV.team)?'l':'')}"><span>${lab[i]}: ${esc(r[0])} – ${esc(r[1])}</span><span>${r[2]} – ${r[3]}</span></li>`:`<li class="${m.includes(SV.team)?'n':''}"><span>${lab[i]}: ${esc(m[0])} – ${esc(m[1])}</span><span>${m.includes(SV.team)?'Prossima':'da giocare'}</span></li>`;}).join('')}</ul>`;
 }
 function usConfView(){
   const U=SV.us;if(!usConfSel||!U.conf[usConfSel])usConfSel=U.cf;
   const c=usConfSel;let h=`<div class="seg" id="usConfs">${US_CK.map(k=>`<button type="button" class="sg${c===k?' on':''}" data-uc="${k}">${US_CONF[k]}${k===U.cf?' (tua)':''}</button>`).join('')}</div>`;
   const L=c!==U.cf&&SV.lg[c];
-  h+=`<p class="estat">${usConfName(c)}, stagione ${SV.season}${L?` · giornata ${L.round} di ${L.sched.length}`:''}</p><p class="note" style="margin:0 0 6px"><b style="color:#4fe58f">Verde</b>: Nationals diretti (1ª e 2ª) · <b style="color:#ffd23f">Giallo</b>: Play-in (3ª-6ª) · <b style="color:#ff7b80">Rosso</b>: eliminate (7ª e 8ª). A parità di vittorie contano gli scontri diretti, poi la differenza mete.</p>`;
+  h+=`<p class="estat">${usConfName(c)}, stagione ${SV.season}${L?` · giornata ${L.round} di ${L.sched.length}`:''}</p><p class="note" style="margin:0 0 6px"><b style="color:#4fe58f">Verde</b>: Nationals diretti (1ª) · <b style="color:#ffd23f">Giallo</b>: Play-in (2ª contro 3ª) · <b style="color:#ff7b80">Rosso</b>: eliminate (4ª-6ª). A parità di vittorie contano gli scontri diretti, poi la differenza mete.</p>`;
   h+=usConfTable(c)+usPinHTML(c);
   if(L&&L.last.length)h+=`<h3 class="eh">Ultima giornata in ${usConfName(c)}</h3><ul class="elist">${L.last.map(m=>`<li class="${m[2]>m[3]?'w':'l'}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('')}</ul>`;
   if(c===U.cf){
@@ -124,9 +124,9 @@ function usPoolHTML(p,N){
 function usNatView(){
   const U=SV.us,N=U.nat;
   if(!N){
-    let h=`<p class="estat">Nationals · 16 squadre</p><p class="note" style="margin:0 0 8px">Ci vanno la 1ª e la 2ª di ogni Conference (8 squadre) e le 4 vincitrici dei Play-in (3ª-6ª e 4ª-5ª, altre 8). Gironi da 4 formati con le fasce del ranking nazionale, senza club della stessa Conference nello stesso girone se possibile. Le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono eliminate. Poi quarti, semifinali e finale.</p>`;
+    let h=`<p class="estat">Nationals · 16 squadre</p><p class="note" style="margin:0 0 8px">Ci vanno la 1ª di ogni Conference (8 squadre) e le 8 vincitrici dei Play-in (2ª contro 3ª). Gironi da 4 formati con le fasce del ranking nazionale, senza club della stessa Conference nello stesso girone se possibile. Le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono eliminate. Poi quarti, semifinali e finale.</p>`;
     if(U.fin){
-      h+=US_CK.map(c=>{const o=U.fin[c];return `<h3 class="eh">${usConfName(c)}</h3><ul class="elist"><li><span>Diretta: ${esc(o[0])}, ${esc(o[1])}</span><span>${o.slice(0,2).includes(SV.team)?'Voi':''}</span></li></ul>`;}).join('');
+      h+=US_CK.map(c=>{const o=U.fin[c];return `<h3 class="eh">${usConfName(c)}</h3><ul class="elist"><li><span>Diretta: ${esc(o[0])}</span><span>${o[0]===SV.team?'Voi':''}</span></li></ul>`;}).join('');
     }else h+='<p class="note">I qualificati si conoscono alla fine della stagione regolare.</p>';
     return h;
   }
@@ -143,7 +143,7 @@ function usRankView(){
 }
 function renderEventUS(){
   const U=SV.us,sub=SV.done?'Stagione conclusa.':(U.ph==='reg'?`Giornata ${SV.round+1} di ${totalRounds()}.`:US_PHASE_NAME[U.ph]+'.');
-  $('eCards').innerHTML=`<button type="button" class="ecard on" data-e="camp"><strong>Men’s Club USA</strong><small>32 club, 4 Conference da 8: 7 giornate, Play-in e Nationals a 16 squadre. ${sub}</small></button>`;
+  $('eCards').innerHTML=`<button type="button" class="ecard on" data-e="camp"><strong>Men’s Club USA</strong><small>48 club, 8 Conference da 6: 5 giornate, Play-in e Nationals a 16 squadre. ${sub}</small></button>`;
   if(usTabPh!==U.ph){usTabPh=U.ph;usTabSel=(U.ph==='nat'||U.ph==='done')?'nat':'conf';}
   let body='';
   if(SV.done&&SV.next){

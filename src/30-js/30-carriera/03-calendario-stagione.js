@@ -72,6 +72,7 @@ function loadSave(d0){
       SV.rv=3;SV.realAB=1;SV.realAI=1;
     }
     for(const n in SV.rost)for(const o of SV.rost[n])if(o){if(o.trait===undefined)o.trait=traitFor(o.full||o.n,o.s,o.r);if(!o.dev)o.dev=devOf(o.full||o.n);}
+    if(isUS())usMigrate();   // salvataggio USA con 32 club e 4 Conference: la stagione riparte con 48 club e 8 Conference (35-usa/04-carriera-usa.js)
     SV.v=SAVE_V;careerInit();   // campi della nuova carriera, anche sui salvataggi precedenti
     setLineup(idsOf(SV.lineO).length===7?idsOf(SV.lineO):lineupIds());
     return true;

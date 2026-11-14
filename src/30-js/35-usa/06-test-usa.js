@@ -1,5 +1,5 @@
 /* ---- DIAGNOSTICA: TEST DEL CAMPIONATO USA ----
-   Gioca piu' stagioni di seguito in carriere USA di prova (club forte, medio e debole) e controlla il formato: 32 club, 4 Conference da 8, 7 giornate,
+   Gioca piu' stagioni di seguito in carriere USA di prova (club forte, medio e debole) e controlla il formato: 48 club, 8 Conference da 6, 5 giornate,
    8 qualificate dirette + 8 dal Play-in = 16 ai Nationals, 4 gironi da 4 (una squadra per fascia, Conference separate), 3 partite a girone,
    prequarti 2ª-3ª di gironi diversi, quarti, semifinali e finale senza accoppiamenti duplicati. Poi salvataggio, cambio di lega, stelle tolte dal mercato Overall dai dati Fantasy ed età/premi UFA.
    La carriera vera non viene toccata (QM.on blocca persist e alla fine si rimette com'era). Seme fisso: risultati ripetibili. */
@@ -10,13 +10,13 @@ function usaSelfTest(seasons,seed){
   let err='',conflicts=0,pools=0,seasonsDone=0,champs=new Set(),stages=new Set(),games=0;
   const hide=()=>{for(const id of ['simres','alerts','evt'])$(id).classList.add('hidden');};
   try{
-    chk('club',US_NAMES.length===32&&new Set(US_NAMES).size===32,'32 club distinti');
-    for(const c of US_CK)chk('conf',US_BYCONF[c].length===8,'Conference '+c);
-    chk('conf',US_CK.length===4,'4 Conference');
+    chk('club',US_NAMES.length===48&&new Set(US_NAMES).size===48,'48 club distinti');
+    for(const c of US_CK)chk('conf',US_BYCONF[c].length===6,'Conference '+c);
+    chk('conf',US_CK.length===8&&Object.keys(US_CONF).length===8,'8 Conference');
     const clubs=['Toronto GOAT','Raleigh Ring of Fire','Austin Doublewide','Boston DiG'];
     for(const club of clubs){
       startCareer(club,{});
-      chk('lega',SV.lk==='US'&&SV.sr==='U'&&SV.sched.length===7,'avvio '+club);
+      chk('lega',SV.lk==='US'&&SV.sr==='U'&&SV.sched.length===5,'avvio '+club);
       for(let s=0;s<seasons;s++){
         let g=0;
         while(!SV.done&&g++<40){const m=nextMatch();if(!m){chk('flusso',false,'partita mancante');break;}const r=simPower(SV.team,m.name);recordResult(r[0]>r[1],r[0],r[1]);hide();games++;
@@ -25,9 +25,9 @@ function usaSelfTest(seasons,seed){
         chk('flusso',SV.done&&g<=20,'stagione non chiusa o troppo lunga '+g);
         const U=SV.us,N=U.nat;if(!N||!U.q){chk('flusso',false,'Nationals mancanti');break;}
         chk('qualif',U.q.length===16&&new Set(U.q).size===16,'16 ai Nationals');
-        const dir=[],pin=[];for(const c of US_CK){const o=U.fin[c];dir.push(o[0],o[1]);pin.push(U.pin[c].r[0][4],U.pin[c].r[1][4]);
-          chk('playin',U.pin[c].m[0][0]===o[2]&&U.pin[c].m[0][1]===o[5]&&U.pin[c].m[1][0]===o[3]&&U.pin[c].m[1][1]===o[4],'3ª-6ª e 4ª-5ª');
-          chk('playin',!U.q.includes(o[6])&&!U.q.includes(o[7]),'7ª e 8ª fuori');}
+        const dir=[],pin=[];for(const c of US_CK){const o=U.fin[c];dir.push(o[0]);pin.push(U.pin[c].r[0][4]);
+          chk('playin',U.pin[c].m.length===1&&U.pin[c].m[0][0]===o[1]&&U.pin[c].m[0][1]===o[2],'2ª contro 3ª');
+          chk('playin',o.length===6&&!U.q.includes(o[3])&&!U.q.includes(o[4])&&!U.q.includes(o[5]),'dalla 4ª alla 6ª fuori');}
         chk('qualif',dir.length===8&&pin.length===8&&dir.every(t=>U.q.includes(t))&&pin.every(t=>U.q.includes(t)),'8 dirette + 8 Play-in');
         chk('gironi',N.pools.length===4&&N.pools.every(p=>p.length===4)&&new Set(N.pools.flat()).size===16,'4 gironi da 4');
         N.pools.forEach((pl,i)=>{pools++;chk('gironi',pl.map(t=>Math.floor(N.seed.indexOf(t)/4)).sort().join('')==='0123','una squadra per fascia');
@@ -41,7 +41,7 @@ function usaSelfTest(seasons,seed){
         chk('tabellone',N.champ===N.ko[3][0][4],'campione');champs.add(N.champ);stages.add(U.stage);
         chk('storico',!!(SV.hist[0]&&SV.hist[0].us),'storico della stagione');
         chk('ranking',US_NAMES.every(n=>typeof U.pr[n]==='number'&&isFinite(U.pr[n])),'ranking numerico');
-        if(s<seasons-1){newSeason();hide();chk('flusso',!SV.done&&SV.round===0&&U.ph==='reg'&&Object.keys(SV.rost).length===31,'nuova stagione');}
+        if(s<seasons-1){newSeason();hide();chk('flusso',!SV.done&&SV.round===0&&U.ph==='reg'&&Object.keys(SV.rost).length===47,'nuova stagione');}
       }
       seasonsDone+=seasons;
     }
@@ -67,7 +67,7 @@ function usaSelfTest(seasons,seed){
     // eta' e fama dai dati pubblici UFA: l'eta' delle tabelle arriva in rosa, i convocati giovanili non superano il limite, i premiati All-UFA non restano in fondo
     let agN=0,awN=0;
     for(const c of US_NAMES){const ros=usRoster(c,'t'),ord=ros.map(ovr).sort((x,y)=>y-x),med=ord[Math.floor(ord.length/2)];
-      for(const o of ros){const k=usNameKey(o.label||o.n),ex=US_AGE[k],hi=US_AGE_HI[k];
+      for(const o of ros){if(o.gen)continue;const k=usNameKey(o.label||o.n),ex=US_AGE[k],hi=US_AGE_HI[k];   // i riempimenti generati possono avere il nome di un giocatore vero: non contano
         if(ex){agN++;chk('eta',o.age===ex,'eta\' diversa dalla scheda: '+o.label);chk('eta',!o.ae,'eta\' esatta segnata come stima: '+o.label);}
         else if(hi)chk('eta',o.age<=hi,'oltre il limite giovanile: '+o.label+' '+o.age+'>'+hi);
         if(US_UFA_AWARD[k]){awN++;chk('premi',ovr(o)>=med,'premiato All-UFA sotto la mediana: '+o.label);}}}
@@ -88,10 +88,10 @@ function usaSelfTest(seasons,seed){
     G.inMatch=false;
   }
   const r=(name,k,okTxt)=>rows.push(row(name,bad[k]?bad[k].slice(0,2).join('; '):okTxt,!bad[k]));
-  r('Formato: 32 club distinti in 4 Conference da 8','club','sì');rows[rows.length-1].ok=rows[rows.length-1].ok&&!bad.conf;
-  r('Stagione regolare: 7 giornate, stagione che si chiude in al massimo 20 partite tue','flusso',`sì (${seasonsDone} stagioni, ${games} partite)`);
-  r('Qualificate: 8 dirette (1ª e 2ª) + 8 dal Play-in (3ª-6ª, 4ª-5ª) = 16 ai Nationals, 7ª e 8ª fuori','qualif','sì');
-  r('Play-in: 3ª contro 6ª e 4ª contro 5ª in ogni Conference','playin','sì');
+  r('Formato: 48 club distinti in 8 Conference (regioni USAU) da 6','club','sì');rows[rows.length-1].ok=rows[rows.length-1].ok&&!bad.conf;
+  r('Stagione regolare: 5 giornate, stagione che si chiude in al massimo 20 partite tue','flusso',`sì (${seasonsDone} stagioni, ${games} partite)`);
+  r('Qualificate: 8 dirette (1ª) + 8 dal Play-in (2ª contro 3ª) = 16 ai Nationals, dalla 4ª alla 6ª fuori','qualif','sì');
+  r('Play-in: 2ª contro 3ª in ogni Conference','playin','sì');
   r('Nationals: 4 gironi da 4, una squadra per fascia del ranking, 3 partite a girone','gironi',`sì (${pools} gironi)`);
   rows.push(row('Nationals: Conference diverse nello stesso girone quando si puo\'',conflicts+' accoppiamenti della stessa Conference su '+pools+' gironi',conflicts<=Math.ceil(pools*0.1)));
   r('Tabellone: prequarti 2ª-3ª di altri gironi, quarti, semifinali e finale senza accoppiamenti duplicati','tabellone','sì');
