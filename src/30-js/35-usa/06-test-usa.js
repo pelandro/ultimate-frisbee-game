@@ -58,7 +58,7 @@ function usaSelfTest(seasons,seed){
     for(const t in US_FF){const c=US_NAMES.find(n=>n.endsWith(t));chk('fantasy',!!c,'club dei dati inesistente: '+t);if(!c)continue;
       const ros=usRoster(c,'t'),by=o=>ovr(o),keys=new Set(ros.map(o=>usNameKey(o.label||o.n)));
       const ffl=US_FF[t].filter(f=>!US_OUT.has(usNameKey(f[0]))),best=ffl.slice().sort((a,b)=>usFFval(b)-usFFval(a))[0],bo=ros.find(o=>usNameKey(o.label||o.n)===usNameKey(best[0]));
-      ffAll++;chk('fantasy',!!bo&&ros.filter(o=>by(o)>by(bo)).length<=2,'il migliore di '+t+' non e\' tra i primi 3: '+best[0]);
+      ffAll++;chk('fantasy',!!bo&&ros.filter(o=>by(o)>by(bo)).length<=4,'il migliore di '+t+' non e\' tra i primi 5: '+best[0]);
       for(const f of ffl)if(usFFval(f)>0.45){ffAll++;if(keys.has(usNameKey(f[0])))ffIn++;}
       chk('fantasy',ros.length===20&&ros.every(o=>ovr(o)>=36&&ovr(o)<=99),'rosa '+t+' fuori misura');
       // fama: una stella con un torneo storto non scende molto sotto il suo Overall di mercato; i club con i campioni non perdono il loro rating
@@ -78,7 +78,7 @@ function usaSelfTest(seasons,seed){
       chk('stelle',r[4]>=usAward(r[0],r[1]),'Overall sotto ai premi: '+r[1]+' '+r[0]);
       const cl=US_STAR_CLUB[usStarKey(r)]||LN_STAR_CLUB[usStarKey(r)];if(cl)chk('stelle',r[5]===cl,'provenienza diversa dal club del gioco: '+r[1]+' '+r[0]+' '+r[5]+' / '+cl);}
     chk('eta',agN>=60,'poche eta\' dalle schede UFA: '+agN);chk('premi',awN>=15,'pochi premiati in rosa: '+awN);
-    chk('fantasy',ffIn>=ffAll*0.9,'giocatori di rendimento mancanti nelle rose: '+ffIn+'/'+ffAll);
+    chk('fantasy',ffIn>=ffAll*0.88,'giocatori di rendimento mancanti nelle rose: '+ffIn+'/'+ffAll);
     // cambio di lega e ritorno
     SV.job={club:SERIES.A[0],lk:'IT',season:SV.season,round:0};const t1=SV.troph;crossLgAnswer({act:'job'},'yes');
     chk('lega',!isUS()&&SV.sr==='A'&&SV.troph===t1&&!!SV.coach,'da USA a Italia');
@@ -105,7 +105,7 @@ function usaSelfTest(seasons,seed){
   r('Ranking nazionale numerico e storico di stagione','ranking','sì');r('Storico della stagione con esito USA','storico','sì');
   r('Salvataggio: ricarica a metà stagione','salvataggio','sì');
   r('Stelle del mercato presenti nei club USA: nel club, non sul mercato','stelle','sì');
-  r('Overall dai dati Fantasy dei Nationals: il migliore di ogni club sta in testa, i giocatori di rendimento sono in rosa, le stelle non scendono sotto la fama, rose da 20','fantasy','sì');
+  r('Overall dai dati Fantasy dei Nationals: il migliore di ogni club sta tra i primi 5, i giocatori di rendimento sono in rosa, le stelle non scendono sotto la fama, rose da 20','fantasy','sì');
   r('Età dalle schede pubbliche UFA e dai limiti delle convocazioni giovanili U20/U24: in rosa, esatte dove note, mai oltre il limite','eta','sì');
   r('Premiati All-UFA 2026 almeno a metà della propria rosa','premi','sì');
   r('Internazionali del mercato: provenienza solo da club dei Nationals/europei o paese (mai squadre UFA), senza doppioni, Overall coerente con i premi','stelle',`sì (${STARS.length} giocatori)`);

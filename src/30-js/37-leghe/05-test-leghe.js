@@ -66,7 +66,7 @@ function lnSelfTest(seasons,seed){
       }
     }
     // ---- coppa europea con i club dei nuovi paesi ----
-    for(const club of [LN_NAMES.find(n=>LN_BY[n].lk==='BE'&&LN_BY[n].p>85),'Grem']){
+    for(const club of [LN_NAMES.filter(n=>LN_BY[n].lk==='BE').sort((a,b)=>LN_BY[b].p-LN_BY[a].p)[0],'Grem']){
       startCareer(club,{});SV.euUnlocked=true;SV.eu=newEu(SV.season);SV.eu.it=null;SV.event='eu';const N=euEnsure(),teams=N.pools.flat();
       const cc={};for(const t of teams)cc[euCountry(t)]=(cc[euCountry(t)]|0)+1;
       chk('eucf',teams.length===16&&new Set(teams).size===16&&teams.includes(SV.team),'campo della coppa europea');
