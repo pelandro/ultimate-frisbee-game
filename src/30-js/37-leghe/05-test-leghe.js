@@ -32,6 +32,14 @@ function lnSelfTest(seasons,seed){
       chk('rose',Math.abs(pw-LN_BY[n].p)<=(sv?7:2),'forza di '+n+': '+pw.toFixed(1)+' contro '+LN_BY[n].p);
       for(const o of ro){nAll++;if(!o.gen){nReal++;if(!o.ae)nExact++;}}   // eta' esatta: le stelle del mercato e le poche schede pubbliche
     }
+    // forza dei giocatori coerente con quella del club: dentro ogni livello, chi ha un club piu' forte ha giocatori piu' forti (anche in fondo alla rosa)
+    {const by={};for(const n of LN_NAMES){const ro=lnRoster(n,'t').map(ovr).sort((a,b)=>b-a);(by[LN_BY[n].lk+LN_BY[n].t]=by[LN_BY[n].lk+LN_BY[n].t]||[]).push([LN_BY[n].p,ro.reduce((a,b)=>a+b,0)/ro.length,ro.slice(7,14).reduce((a,b)=>a+b,0)/7]);}
+     const cor=(a,b)=>{const n=a.length,ma=a.reduce((x,y)=>x+y,0)/n,mb=b.reduce((x,y)=>x+y,0)/n;let c=0,va=0,vb=0;for(let i=0;i<n;i++){c+=(a[i]-ma)*(b[i]-mb);va+=(a[i]-ma)**2;vb+=(b[i]-mb)**2;}return va&&vb?c/Math.sqrt(va*vb):1;};
+     for(const k in by)if(by[k].length>=5){const rm=cor(by[k].map(x=>x[0]),by[k].map(x=>x[1])),rd=cor(by[k].map(x=>x[0]),by[k].map(x=>x[2]));chk('profondita',rm>=0.6&&rd>=0.7,k+': media rosa '+rm.toFixed(2)+', fondo '+rd.toFixed(2));}}
+    // chi gioca sia in Europa sia in America: solo in Europa (con il valore piu' alto fissato in LN_DUAL), tranne Orion Cable che resta in America
+    for(const n in LN_DUAL){const k=usNameKey(n);let f=0;for(const c of LN_NAMES){const o=lnRoster(c,'t').find(x=>usNameKey(x.label||x.n)===k);if(o){f++;chk('doppioni',ovr(o)>=LN_DUAL[n]-1.5,n+': '+Math.round(ovr(o))+' invece di '+LN_DUAL[n]);}}chk('doppioni',f===1,n+' in '+f+' club europei');}
+    for(const c of US_NAMES)for(const o of usRoster(c,'t')){const k=usNameKey(o.label||o.n);chk('doppioni',!US_OUT.has(k)&&!Object.keys(LN_DUAL).some(n=>usNameKey(n)===k),(o.label||o.n)+' e\' in un club USA');}
+    {const k=usNameKey('Orion Cable');let eu=0,us=0;for(const c of LN_NAMES)if(lnRoster(c,'t').some(x=>usNameKey(x.label||x.n)===k))eu++;for(const c of US_NAMES)if(usRoster(c,'t').some(x=>usNameKey(x.label||x.n)===k))us++;chk('doppioni',eu===0&&us===1,'Orion Cable: '+eu+' club europei e '+us+' USA');}
     chk('rose',nReal>=800,'pochi giocatori veri in rosa: '+nReal);
     chk('eta',nExact>=1,'nessuna eta\' esatta applicata');
     // ---- stagioni: un club forte, uno medio e uno debole per paese ----
@@ -84,6 +92,8 @@ function lnSelfTest(seasons,seed){
   r('Dati: 46 club belgi, 54 francesi, 49 tedeschi, 11 britannici, nomi distinti da Italia, USA ed EUCF, forza e livelli validi','dati','sì');
   r('Rose di tutti i club: 14-20 giocatori, Overall e età nei limiti, forza uguale a quella dei dati (stelle escluse)','rose','sì');
   r('Età esatte dove note e giocatori veri presenti','eta',`sì (${nExact} esatte)`);
+  r('Forza dei giocatori coerente con quella del club (media della rosa e fondo della rosa) in ogni livello','profondita','sì');
+  r('Giocatori in Europa e in America: solo in Europa con il valore piu\' alto (Orion Cable solo in America)','doppioni','sì');
   r('Formati: gironi e fasi finali di ogni livello, stagione chiusa in al massimo 20 partite tue, posizione valida','flusso',`sì (${seasonsDone} stagioni, ${games} partite)`);
   r('Promozioni e retrocessioni: nessun doppione, nessun club perso, dimensione costante dei livelli','promozioni',`sì (${moved} cambi di livello del tuo club)`);
   rows.push(row('Campioni diversi tra le stagioni (le gerarchie cambiano)',titles.size+' campioni',titles.size>=3));

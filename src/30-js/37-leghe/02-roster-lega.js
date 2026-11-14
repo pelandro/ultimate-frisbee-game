@@ -14,12 +14,20 @@ const lnStarTaken=r=>isLN()&&!!LN_STAR_CLUB[usStarKey(r)]&&!!LN_BY[LN_STAR_CLUB[
 // contesto europeo: chi in Europa e' un punto di riferimento non diventa mediocre in America per un torneo storto. Per chi compare in un club di queste leghe (stella o dalle
 // tabelle) si stima l'Overall europeo; le carriere USA lo usano come livello minimo (usRoster). I nomi comuni non si uniscono: sono persone diverse.
 const LN_HOMONYM=new Set(['Connor McHale','Joe Miller','Chris Allen','Sam Hill'].map(usNameKey));
+// chi gioca sia in Europa sia in America: il gioco lo tiene in Europa (scelta del progetto), tranne Orion Cable che resta in America (LN_OUT: non compare nei club europei).
+// LN_DUAL = Overall del giocatore in Europa: il piu' alto tra il valore europeo e quello americano (Fantasy dei Nationals), ma l'America non lo alza di piu' di 5 punti e
+// nessuno supera 94 (un solo torneo non fa un fuoriclasse: la regola e' la stessa di US_REP). I quattro che erano stelle del mercato alzano anche il loro Overall in STARS.
+const LN_OUT=new Set(['Orion Cable'].map(usNameKey));
+const LN_DUAL={'Lander Decraene':89,'Sofiène Bontemps':90,'Louis Betrancourt':84,'Gael Ancelin':83,'Daan De Marrée':96,'David Barzasi':94,'Thomas Edmonds':94,'Elliot Bonnet':94};
+let lnDualMap=null;
+const lnDual=(sur,nm)=>{if(!lnDualMap){lnDualMap={};for(const n in LN_DUAL)lnDualMap[usNameKey(n)]=LN_DUAL[n];}return lnDualMap[usNameKey(nm+' '+sur)]|0;};
+for(const r of STARS)r[4]=Math.max(r[4],lnDual(r[0],r[1]));
 let lnKeyClub=null;const lnCtxRo={};
 function lnCtxOvr(k){
   if(LN_HOMONYM.has(k))return 0;
   if(!lnKeyClub){
     lnKeyClub={};
-    for(const lk of LN_IDS)for(const club in LN_PL[lk])for(const r of LN_PL[lk][club]){const key=usNameKey(r[1]+' '+r[0]);if(!lnKeyClub[key])lnKeyClub[key]=club;}
+    for(const lk of LN_IDS)for(const club in LN_PL[lk])for(const r of LN_PL[lk][club]){const key=usNameKey(r[1]+' '+r[0]);if(!lnKeyClub[key]&&!LN_OUT.has(key))lnKeyClub[key]=club;}
     for(const r of STARS){const club=LN_STAR_CLUB[usStarKey(r)];if(club)lnKeyClub[usNameKey(r[1]+' '+r[0])]=club;}
   }
   const club=lnKeyClub[k];if(!club)return 0;
@@ -49,30 +57,43 @@ function lnAgeOf(full,age,hi){
   const k=usNameKey(full);
   if(US_AGE[k])return [US_AGE[k],true];
   if(!lnUsAge){lnUsAge={};for(const c in US_CORE)for(const r of US_CORE[c])lnUsAge[usNameKey(r[1]+' '+r[0])]=r[2];}
-  const est=lnUsAge[k]||22+hashStr('ln|'+full)%12,h=Math.min(hi>0?hi:99,US_AGE_HI[k]||99);
+  const hh=hashStr('ln|'+full),est=lnUsAge[k]||20+hh%5+Math.floor(hh/5)%5+Math.floor(hh/25)%5+Math.floor(hh/125)%4,h=Math.min(hi>0?hi:99,US_AGE_HI[k]||99);   // 20-35 anni, con la media intorno ai 27
   return [h<99&&est>h?Math.max(16,h-1):est,false];
 }
+// forma della rosa: il giocatore al posto j (0 = il migliore) sta a P + lnShape(j). I primi 7 hanno media 0, cosi' la forza della rosa e' quella del club; il fondo scende piano.
+// I giocatori fissi (stelle del mercato e doppioni) tengono il loro Overall e occupano meta' dei posti in alto: chi gioca con loro non scende sotto il livello del club.
+const lnShape=j=>j<7?4.2-1.45*j:-4.5-0.65*(j-6);
 function lnRoster(club,seedStr,opt){
   opt=opt||{};const B=LN_BY[club],P=opt.p!==undefined?opt.p:(opt.low?B.p*0.9+5.5:B.p),rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
   for(const r of STARS)if(LN_STAR_CLUB[usStarKey(r)]===club)specs.push({k:'s',row:r});
   const star=new Set(specs.map(s=>usNameKey(s.row[1]+' '+s.row[0])));   // chi e' gia' una stella non si ripete dalle tabelle
-  const real=(LN_PL[B.lk][club]||[]).filter(r=>!star.has(usNameKey(r[1]+' '+r[0]))).map(r=>{const ag=lnAgeOf(r[1]+' '+r[0],r[2],r[3]);return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+r[5]};});
+  const real=(LN_PL[B.lk][club]||[]).filter(r=>{const k=usNameKey(r[1]+' '+r[0]);return !star.has(k)&&!LN_OUT.has(k);}).map(r=>{const ag=lnAgeOf(r[1]+' '+r[0],r[2],r[3]);return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+r[5],fx:lnDual(r[0],r[1])};});
   real.sort((a,b)=>b.base-a.base).slice(0,Math.max(0,20-specs.length)).forEach(s=>specs.push(s));   // una rosa ha al massimo 20 giocatori
   const N=Math.min(20,Math.max(opt.n||16,specs.length)),used=new Set(specs.map(s=>s.row[0]+s.row[1])),pool=LN_POOL[B.lk];
   for(let i=0;specs.length<N;i++){   // riempimento: nomi del paese, ruoli bilanciati (almeno 6 handler), livello decrescente
     let sur,nm;do{sur=pool.l[Math.floor(rg()*pool.l.length)];nm=pool.f[Math.floor(rg()*pool.f.length)];}while(used.has(sur+nm));used.add(sur+nm);
     const h=specs.filter(s=>s.row[3]==='H').length,role=h<6?'H':(rg()<0.2?'D':'C');
-    specs.push({k:'g',row:[sur,nm,19+Math.floor(rg()*14),role],base:-2-i*1.3-rg()*3});
+    specs.push({k:'g',row:[sur,nm,19+Math.floor(rg()*5)+Math.floor(rg()*5)+Math.floor(rg()*5)+Math.floor(rg()*4),role],base:-2-i*1.3-rg()*3});   // eta' 19-34 a campana (media 27)
   }
+  // posti: i fissi (stelle e doppioni) tengono il loro livello; gli altri si ordinano per rendimento (base) e prendono il livello del loro posto, a partire da meta' dei fissi
+  // Senza statistiche (bonus sotto -3: niente mete ne' assist nei dati) l'ordine non dice nulla: le differenze si accorciano e l'ordine e' sorteggiato dal nome; i
+  // generati vengono sempre dopo i veri. Con almeno 5 giocatori con statistiche le differenze sono intere.
+  const fixed=s=>s.k==='s'||s.fx>0,jr=mulberry32(hashStr(seedStr+'|jit|'+club)),nFix=specs.filter(fixed).length,j0=Math.floor(nFix/2);
+  const rl=specs.filter(s=>!fixed(s)&&s.k==='r'),kn=rl.filter(s=>s.base>-4).length,sc=kn>=5?1:0.5+0.1*kn;
+  rl.forEach(s=>{s.jk=s.base+(s.base>-4?0:3*(jr()-0.5));});
+  const free=rl.sort((a,b)=>b.jk-a.jk).concat(specs.filter(s=>s.k==='g'));
+  free.forEach((s,j)=>{const jj=j0+j;s.lv=(jj<7?sc:1)*lnShape(jj)+(jj<7&&s.k==='r'&&s.base>-4?clamp(0.12*s.base,-1,1):0);});   // il fondo della rosa segue sempre la stessa curva: club piu' forte = fondo piu' forte
   let off=0,out=[];
   for(let it=0;it<7;it++){
     out=specs.map(s=>{
       const [sur,nm,age,role]=s.row,rng=mulberry32(hashStr(seedStr+'|'+club+'|'+sur+nm));
       // una stella tiene l'Overall del mercato, ma in un club forte non sta sotto la media dei compagni (a Elliot Bonnet un torneo storto in America non toglie il ruolo di leader in Francia)
-      if(s.k==='s'){const row=s.row.slice();row[4]=Math.min(95,Math.max(row[4],Math.round(P+3)));const o=starPlayer(row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
-      return usCard(sur,nm,age,role,clamp(P+s.base+off,36,95),rng,s.k==='g'?{gen:true}:(s.ex?{}:{ae:1}));
+      if(s.k==='s'){const row=s.row.slice();row[4]=Math.max(row[4],Math.min(95,Math.round(P+3)));const o=starPlayer(row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
+      if(s.fx>0)return usCard(sur,nm,age,role,s.fx,rng,s.ex?{}:{ae:1});
+      return usCard(sur,nm,age,role,clamp(P+s.lv+off,36,95),rng,s.k==='g'?{gen:true}:(s.ex?{}:{ae:1}));
     });
-    const d=P-rosterPower(out);if(Math.abs(d)<0.35)break;off=clamp(off+d,-34,16);
+    const d=P-rosterPower(out);if(Math.abs(d)<0.35)break;
+    off=nFix?clamp(off+d,0,4):clamp(off+d,-8,8);   // con i fissi si puo' solo alzare (se i fissi portano la rosa sopra il club, resta sopra)
   }
   const cnt={};for(const o of out)cnt[o.n]=(cnt[o.n]||0)+1;
   for(const o of out)if(cnt[o.n]>1)o.n=o.sur+' '+(o.label||'?')[0]+'.';   // due compagni con lo stesso cognome: si aggiunge l'iniziale
