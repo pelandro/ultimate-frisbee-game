@@ -15,10 +15,10 @@ const lnStarTaken=r=>isLN()&&!!LN_STAR_CLUB[usStarKey(r)]&&!!LN_BY[LN_STAR_CLUB[
 // tabelle) si stima l'Overall europeo; le carriere USA lo usano come livello minimo (usRoster). I nomi comuni non si uniscono: sono persone diverse.
 const LN_HOMONYM=US_HOMONYM;
 // chi gioca sia in Europa sia in America: il gioco lo tiene in Europa (scelta del progetto), tranne Orion Cable che resta in America (LN_OUT: non compare nei club europei).
-// LN_DUAL = Overall del giocatore in Europa: il piu' alto tra il valore europeo e quello americano (Fantasy dei Nationals), ma l'America non lo alza di piu' di 3 punti e
-// nessuno supera 90 tranne De Marrée (un solo torneo non fa un fuoriclasse: la regola e' la stessa di US_REP). McHale e Hill sono stati assegnati ai Clapham per scelta del progetto. I quattro che erano stelle del mercato alzano anche il loro Overall in STARS.
+// LN_DUAL = Overall del giocatore in Europa: il piu' alto tra il valore europeo e quello americano (Fantasy dei Nationals), ma l'America non lo alza di piu' di 5 punti e
+// nessuno supera 92 tranne De Marrée (un solo torneo non fa un fuoriclasse: la regola e' la stessa di US_REP). McHale e Hill sono stati assegnati ai Clapham per scelta del progetto. I quattro che erano stelle del mercato alzano anche il loro Overall in STARS.
 const LN_OUT=new Set(['Orion Cable'].map(usNameKey));
-const LN_DUAL={'Lander Decraene':87,'Sofiène Bontemps':88,'Louis Betrancourt':82,'Gael Ancelin':81,'Daan De Marrée':96,'David Barzasi':89,'Thomas Edmonds':89,'Elliot Bonnet':90,'Connor McHale':84,'Sam Hill':76};
+const LN_DUAL={'Lander Decraene':89,'Sofiène Bontemps':90,'Louis Betrancourt':84,'Gael Ancelin':83,'Daan De Marrée':96,'David Barzasi':92,'Thomas Edmonds':92,'Elliot Bonnet':92,'Connor McHale':84,'Sam Hill':76};
 let lnDualMap=null;
 const lnDual=(sur,nm)=>{if(!lnDualMap){lnDualMap={};for(const n in LN_DUAL)lnDualMap[usNameKey(n)]=LN_DUAL[n];}return lnDualMap[usNameKey(nm+' '+sur)]|0;};
 for(const r of STARS)r[4]=Math.max(r[4],lnDual(r[0],r[1]));
