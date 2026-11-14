@@ -29,9 +29,10 @@ function lnAgeOf(full,age,hi){
   return [hi>0&&est>hi?Math.max(16,hi-1):est,false];
 }
 function lnRoster(club,seedStr,opt){
-  opt=opt||{};const B=LN_BY[club],P=opt.low?B.p*0.9+5.5:B.p,rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
+  opt=opt||{};const B=LN_BY[club],P=opt.p!==undefined?opt.p:(opt.low?B.p*0.9+5.5:B.p),rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
   for(const r of STARS)if(LN_STAR_CLUB[usStarKey(r)]===club)specs.push({k:'s',row:r});
-  const real=(LN_PL[B.lk][club]||[]).map(r=>{const ag=lnAgeOf(r[1]+' '+r[0],r[2],r[3]);return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+r[5]};});
+  const star=new Set(specs.map(s=>usNameKey(s.row[1]+' '+s.row[0])));   // chi e' gia' una stella non si ripete dalle tabelle
+  const real=(LN_PL[B.lk][club]||[]).filter(r=>!star.has(usNameKey(r[1]+' '+r[0]))).map(r=>{const ag=lnAgeOf(r[1]+' '+r[0],r[2],r[3]);return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+r[5]};});
   real.sort((a,b)=>b.base-a.base).slice(0,Math.max(0,20-specs.length)).forEach(s=>specs.push(s));   // una rosa ha al massimo 20 giocatori
   const N=Math.min(20,Math.max(opt.n||16,specs.length)),used=new Set(specs.map(s=>s.row[0]+s.row[1])),pool=LN_POOL[B.lk];
   for(let i=0;specs.length<N;i++){   // riempimento: nomi del paese, ruoli bilanciati (almeno 6 handler), livello decrescente
@@ -43,7 +44,8 @@ function lnRoster(club,seedStr,opt){
   for(let it=0;it<7;it++){
     out=specs.map(s=>{
       const [sur,nm,age,role]=s.row,rng=mulberry32(hashStr(seedStr+'|'+club+'|'+sur+nm));
-      if(s.k==='s'){const o=starPlayer(s.row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
+      // una stella tiene l'Overall del mercato, ma in un club forte non sta sotto la media dei compagni (a Elliot Bonnet un torneo storto in America non toglie il ruolo di leader in Francia)
+      if(s.k==='s'){const row=s.row.slice();row[4]=Math.min(95,Math.max(row[4],Math.round(P+3)));const o=starPlayer(row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
       return usCard(sur,nm,age,role,clamp(P+s.base+off,36,95),rng,s.k==='g'?{gen:true}:(s.ex?{}:{ae:1}));
     });
     const d=P-rosterPower(out);if(Math.abs(d)<0.35)break;off=clamp(off+d,-34,16);
