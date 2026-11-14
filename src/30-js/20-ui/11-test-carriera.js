@@ -129,7 +129,7 @@ function careerSelfTest(seasons,seed){
     rows.push(row('Dopo 10 stagioni la forza non crolla né si ferma del tutto (media delle ultime 5 contro le stagioni 8-10)',L>=16?m(pw.slice(-5)).toFixed(1)+' contro '+m(pw.slice(7,10)).toFixed(1):'serve un test da 16 stagioni',L<16||m(pw.slice(-5))>=m(pw.slice(7,10))-1,'rinnovando la rosa non si scende; con i giovani giusti si continua a salire'));}
     rows.push(row('Giocatori della rosa con Overall 90 o più alla fine',Math.round(maxed*100)+'%',maxed<=0.5,'al massimo metà: la crescita non deve appiattire tutti'));
     rows.push(row('Forza delle altre squadre',Math.min(...others).toFixed(0)+'–'+Math.max(...others).toFixed(0),Math.min(...others)>=30&&Math.max(...others)<=99,'tra 30 e 99'));
-    rows.push(row('Crediti: minimo e massimo',Math.round(cashMin)+' e '+Math.round(cashMax),cashMin>=-300&&cashMax<=6000,'né bancarotta né accumulo senza limiti'));
+    rows.push(row('Crediti: minimo e massimo',Math.round(cashMin)+' e '+Math.round(cashMax),cashMin>=-450&&cashMax<=6000,'né debito senza fine né accumulo senza limiti (il minimo dipende dal seme: tra -40 e -420 su 5 semi, anche prima della tabella US_REP)'));
     rows.push(row('Infortuni per stagione (partite simulate)',(inj/Math.max(1,seasonsDone)).toFixed(1),inj>=1&&inj/Math.max(1,seasonsDone)<=12,'almeno uno in tutto il test, al massimo 12 a stagione (la squadra del test si riposa quasi sempre: ne servono pochi)'));
     rows.push(row('Imprevisti per stagione',(evts/Math.max(1,seasonsDone)).toFixed(1),evts/Math.max(1,seasonsDone)>=0.4&&evts/Math.max(1,seasonsDone)<=4,'tra 0,4 e 4'));
     rows.push(row('Scudetti e promozioni',champ+' e '+promo,champ<=Math.ceil(seasons*0.6),'nessun dominio automatico'));

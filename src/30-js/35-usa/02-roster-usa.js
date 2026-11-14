@@ -125,10 +125,11 @@ function usFFval(f){
 // Overall assoluto (uguale per tutti i club, non relativo al club): un fuoriclasse in una squadra scarsa resta un fuoriclasse. Le stelle del mercato hanno
 // anche la fama del loro Overall di mercato (m), che fa da pavimento (-3) quando il torneo e' andato male.
 // Il premio All-UFA 2026 (US_UFA_AWARD, 1-3) da' un altro pavimento: chi e' tra i migliori della lega non e' un giocatore mediocre nemmeno se ai Nationals ha reso poco.
-const usAward=(sur,nm)=>US_UFA_AWARD[usNameKey(nm+' '+sur)]|0;
+// Ritorna direttamente il livello minimo (0 = nessuno): il maggiore tra il premio 2026 e la reputazione su piu' anni (US_REP, 03-reputazione.js).
+const usAward=(sur,nm)=>{const k=usNameKey(nm+' '+sur);return Math.max([0,92,89,82][US_UFA_AWARD[k]|0],usRepFloor(k));};
 // contesto europeo (37-leghe/): chi gioca anche in un club europeo e li' e' un punto di riferimento ha come livello minimo quello europeo (meno 1)
 const usEuCtx=(sur,nm)=>{const e=lnCtxOvr(usNameKey(nm+' '+sur));return e>0?e+2:0;};
-const usFFabs=(f,m,aw)=>{const a=62+30*usFFval(f);return clamp(Math.max(a,m?m-3:0,[0,92,89,82][aw|0]),40,98);};
+const usFFabs=(f,m,aw)=>{const a=62+30*usFFval(f);return clamp(Math.max(a,m?m-3:0,aw|0),40,98);};
 // eta' nel 2026: esatta se e' nelle schede UFA, altrimenti il limite delle convocazioni giovanili quando la stima lo supera, altrimenti la stima. Ritorna [eta', esatta?]
 function usAgeOf(sur,nm,def){
   const k=usNameKey(nm+' '+sur),h0=lnHiOf(k),h=Math.min(US_AGE_HI[k]||99,h0||99);   // anche i limiti delle convocazioni giovanili europee (37-leghe/)
