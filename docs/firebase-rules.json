@@ -1,0 +1,46 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "ut": {
+      "players": {
+        ".read": true,
+        ".indexOn": ["p"],
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "newData.hasChildren(['n','p','w','l','g','pw','u']) && (data.exists() ? (newData.child('g').val() >= data.child('g').val() && (newData.child('p').val() === data.child('p').val() || (newData.child('g').val() === data.child('g').val() + 1 && newData.child('p').val() - data.child('p').val() <= 32 && data.child('p').val() - newData.child('p').val() <= 32))) : (newData.child('p').val() === 1000 && newData.child('g').val() === 0))",
+          "n": { ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 16" },
+          "p": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 5000" },
+          "w": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000" },
+          "l": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000" },
+          "g": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 200000" },
+          "pw": { ".validate": "newData.isNumber() && newData.val() >= 25 && newData.val() <= 99" },
+          "u": { ".validate": "newData.isNumber() && newData.val() <= now + 60000" },
+          "$other": { ".validate": false }
+        }
+      },
+      "teams": {
+        ".read": true,
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "newData.hasChild('m')",
+          "m": {
+            "$i": {
+              ".validate": "$i.matches(/^([0-9]|1[0-3])$/) && newData.hasChildren(['n','r','a','s'])",
+              "n": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 20" },
+              "r": { ".validate": "newData.val() === 'H' || newData.val() === 'C'" },
+              "a": { ".validate": "newData.isNumber() && newData.val() >= 16 && newData.val() <= 60" },
+              "x": { ".validate": "newData.isString() && newData.val().length <= 12" },
+              "s": {
+                ".validate": "newData.hasChildren(['lan','buc','spa','dif','sal','sca','tuf','vel','vis','res','pre','agi'])",
+                "$k": { ".validate": "$k.matches(/^(lan|buc|spa|dif|sal|sca|tuf|vel|vis|res|pre|agi)$/) && newData.isNumber() && newData.val() >= 25 && newData.val() <= 99" }
+              },
+              "$other": { ".validate": false }
+            }
+          },
+          "$other": { ".validate": false }
+        }
+      }
+    }
+  }
+}

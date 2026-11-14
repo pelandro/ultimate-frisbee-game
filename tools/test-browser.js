@@ -326,19 +326,24 @@ catch(e){
     await page.click('#tnBack');
   });
   await step('Ultimate Team: apertura del pacchetto',async()=>{
-    await page.click('#tUT');await vis('#ut');
+    await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');await vis('#ut');
     if(await page.locator('#uPack').isVisible()){await page.click('#uPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await page.waitForTimeout(200);}
-    await vis('#ut');await page.click('#uBack');
+    await vis('#ut');await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
+  });
+  await step('Ultimate Team: Real player (senza configurazione online) e ritorno al menu',async()=>{
+    await page.click('#tUT');await vis('#utMode');await page.click('#umReal');await vis('#utReal');
+    if(!(await page.locator('#urPlay').isDisabled()))throw new Error('senza configurazione online «Inizia partita» deve essere spento');
+    await page.click('#urBack');await vis('#utMode');await page.click('#umBack');await vis('#title');
   });
   await step('Ultimate Team: potenziamenti specializzati',async()=>{
     await page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut')||'null');if(o){o.coins=900;localStorage.setItem('ultimate-ut',JSON.stringify(o));}});
     await page.reload();await page.waitForTimeout(500);
-    await page.click('#tUT');await vis('#ut');await page.click('#uTeam');await vis('#utTeam');
+    await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');await vis('#ut');await page.click('#uTeam');await vis('#utTeam');
     await page.click('#tmMode [data-m="up"]');await page.click('#tmList .urow[data-i] >> nth=0');await vis('#tmUp');
     if(await page.locator('#tmUp [data-ul]').count()!==4)throw new Error('i potenziamenti devono essere quattro (Tiro, Atletico, Difesa, Mani e testa)');
     await page.click('#tmUp [data-ul="d"]');
     if(!/potenziato \(Difesa\)/.test(await page.locator('#tmInfo').innerText()))throw new Error('il potenziamento non e\' stato applicato: '+await page.locator('#tmInfo').innerText());
-    await page.click('#tmBack');await page.click('#uBack');
+    await page.click('#tmBack');await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
   });
   await step('allenamento: il tutorial parte e si esce dalla pausa',async()=>{
     await page.click('#tSchool');await vis('#school');if(await page.locator('.tles [data-step]').count()!==7)throw new Error('mancano le sette lezioni del tutorial');

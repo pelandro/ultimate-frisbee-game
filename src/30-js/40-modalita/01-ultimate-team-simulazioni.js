@@ -84,10 +84,11 @@ function renderUT(){
   $('uDiff').innerHTML=UT_DIFF.map((d,i)=>`<button type="button" class="sg${i===UT.d?' on':''}" data-d="${i}">${d.name}</button>`).join('');$('uDiffN').textContent=UT_DIFF[UT.d].txt+' Le avversarie hanno sempre la forza del turno.';
   $('uMsg').textContent=UT.res||'';
 }
-$('tUT').addEventListener('click',utEnter);
-$('uBack').addEventListener('click',()=>showScreen('title'));
+$('tUT').addEventListener('click',()=>showScreen('utMode'));   // prima si sceglie: Computer (questa pagina) o Real player (04-ut-online.js)
+$('uBack').addEventListener('click',()=>showScreen('utMode'));
 $('uPack').addEventListener('click',()=>{UT.stage='closed';showScreen('utPack');});
-$('uTeam').addEventListener('click',()=>showScreen('utTeam'));
+let utTeamBack='ut';   // la squadra si apre sia dal torneo contro il computer sia da Real player: «Indietro» torna da dove sei venuto
+$('uTeam').addEventListener('click',()=>{utTeamBack='ut';showScreen('utTeam');});
 $('uPlay').addEventListener('click',startUT);
 $('uDiff').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)return;UT.d=+b.dataset.d;utSave();renderUT();});
 $('uSim').addEventListener('click',simUTMatch);
@@ -151,7 +152,7 @@ $('tmList').addEventListener('click',e=>{
   renderTeamUT();
 });
 $('tmAuto').addEventListener('click',()=>{UT.manual=false;utAuto();utSave();renderTeamUT();});
-$('tmBack').addEventListener('click',()=>showScreen('ut'));
+$('tmBack').addEventListener('click',()=>showScreen(utTeamBack));
 // ---- partita del torneo ----
 // ---- SIMULA PARTITA (carriera, torneo, Ultimate Team): il risultato dipende dalla forza delle due squadre e dalla difficolta' dell'IA,
 //  con la scala misurata sulle partite giocate (simPointP e SIM_DIFF in 10-sim/13-partite-simulate.js). Si gioca ai 7 punti, come la partita vera.
@@ -226,10 +227,10 @@ function utRecord(win){
 }
 utLoad();
 
-const quickNext=()=>DR.on?'school':(TN.on?'tourn':(UT.on?'ut':'quick'));
+const quickNext=()=>DR.on?'school':(TN.on?'tourn':(UT.on?(UO.on?'utReal':'ut'):'quick'));
 function exitQuick(next){
   DR.on=false;TN.on=false;G.drill=null;$('coach').classList.add('hidden');$('drEnd').classList.add('hidden');
-  QM.on=false;UT.on=false;G.inMatch=false;G.schemeOpen=false;$('menu').classList.add('hidden');$('over').classList.add('hidden');
+  QM.on=false;UT.on=false;UO.on=false;G.inMatch=false;G.schemeOpen=false;$('menu').classList.add('hidden');$('over').classList.add('hidden');
   if(QM.bak){SV={};loadSave(JSON.parse(QM.bak));}else{SV={};initTeams();}   // rimetto la rosa della carriera (o quella iniziale)
   QM.bak=null;showScreen(next||'title');
 }

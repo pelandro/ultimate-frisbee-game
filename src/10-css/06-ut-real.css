@@ -1,0 +1,8 @@
+/* Real player di Ultimate Team: nome e classifica online */
+#urName{flex:1 1 auto;min-width:0}
+#urNameBox{gap:8px;align-items:center}
+.ubrow{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:6px 8px;border-bottom:2px solid rgba(255,255,255,.12);font-size:16px}
+.ubrow .un{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ubrow b{color:var(--gold)}
+.ubrow small{opacity:.75}
+.ubrow.me{background:rgba(255,214,64,.16)}
