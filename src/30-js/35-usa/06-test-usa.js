@@ -75,7 +75,8 @@ function usaSelfTest(seasons,seed){
     const PAESI=new Set(['USA','Nord America','Paesi Bassi','Lettonia','Repubblica Ceca','Germania']),starKeys=new Set();
     for(const r of STARS){const k=usNameKey(r[1]+' '+r[0]);chk('stelle',!starKeys.has(k),'stella ripetuta: '+r[1]+' '+r[0]);starKeys.add(k);
       chk('stelle',US_NAMES.includes(r[5])||LN_NAMES.includes(r[5])||PAESI.has(r[5]),'provenienza non valida (squadra UFA?): '+r[1]+' '+r[0]+' -> '+r[5]);
-      chk('stelle',r[4]>=usAward(r[0],r[1]),'Overall sotto ai premi: '+r[1]+' '+r[0]);}
+      chk('stelle',r[4]>=usAward(r[0],r[1]),'Overall sotto ai premi: '+r[1]+' '+r[0]);
+      const cl=US_STAR_CLUB[usStarKey(r)]||LN_STAR_CLUB[usStarKey(r)];if(cl)chk('stelle',r[5]===cl,'provenienza diversa dal club del gioco: '+r[1]+' '+r[0]+' '+r[5]+' / '+cl);}
     chk('eta',agN>=60,'poche eta\' dalle schede UFA: '+agN);chk('premi',awN>=15,'pochi premiati in rosa: '+awN);
     chk('fantasy',ffIn>=ffAll*0.9,'giocatori di rendimento mancanti nelle rose: '+ffIn+'/'+ffAll);
     // cambio di lega e ritorno
