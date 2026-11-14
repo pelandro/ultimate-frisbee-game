@@ -39,6 +39,7 @@ const US_CORE={
 // compaiono piu' sul mercato. La chiave e' «cognome|nome» come in STARS.
 const US_STAR_CLUB={
   'Juengst|Anders':'New York PoNY',
+  'Brooks|Tobias':'Raleigh Ring of Fire',
   'Jagt|Ben':'New York PoNY',
   'Wariner|Cameron':'New York PoNY',
   'Kocher|Chris':'New York PoNY',
@@ -120,12 +121,14 @@ function usFFval(f){
 }
 // Overall assoluto (uguale per tutti i club, non relativo al club): un fuoriclasse in una squadra scarsa resta un fuoriclasse. Le stelle del mercato hanno
 // anche la fama del loro Overall di mercato (m), che fa da pavimento (-3) quando il torneo e' andato male.
-// Il premio All-UFA 2026 (US_UFA_AWARD, 1-3) da' un altro pavimento: chi e' tra i migliori della lega non e' un giocatore mediocre nemmeno se ai Nationals ha reso poco.
+// Livelli minimi: il premio All-UFA 2026 (US_UFA_AWARD, 1-3), la reputazione su piu' anni (US_REP) l'essere in una rosa UFA (US_UFA_ROSTER, 78) e i premi UFA su piu' stagioni (US_UFA_HIST) — chi ha questi titoli: chi e' tra i migliori della lega non e' un giocatore mediocre nemmeno se ai Nationals ha reso poco.
 // Ritorna direttamente il livello minimo (0 = nessuno): il maggiore tra il premio 2026 e la reputazione su piu' anni (US_REP, 03-reputazione.js).
-const usAward=(sur,nm)=>{const k=usNameKey(nm+' '+sur);return Math.max([0,92,89,82][US_UFA_AWARD[k]|0],usRepFloor(k));};
+// nomi comuni che sono persone diverse in leghe diverse: non prendono i livelli minimi di un altro (usato anche da LN_HOMONYM, 37-leghe/)
+const US_HOMONYM=new Set(['Joe Miller','Chris Allen'].map(usNameKey));
+const usAward=(sur,nm)=>{const k=usNameKey(nm+' '+sur);if(US_HOMONYM.has(k))return 0;return Math.max([0,92,89,82][US_UFA_AWARD[k]|0],usRepFloor(k),US_UFA_ROSTER.has(k)?78:0,usHistFloor(k));};
 // contesto europeo (37-leghe/): chi gioca anche in un club europeo e li' e' un punto di riferimento ha come livello minimo quello europeo (meno 1)
 // giocatori che giocano sia in Europa sia in America e che il gioco tiene solo in Europa (le stelle sono tolte anche da US_STAR_CLUB; Orion Cable fa il contrario, vedi LN_OUT)
-const US_OUT=new Set(['Lander Decraene','Sofiène Bontemps','Louis Betrancourt','Gael Ancelin','Daan De Marrée','David Barzasi','Thomas Edmonds','Elliot Bonnet'].map(usNameKey));
+const US_OUT=new Set(['Lander Decraene','Sofiène Bontemps','Louis Betrancourt','Gael Ancelin','Daan De Marrée','David Barzasi','Thomas Edmonds','Elliot Bonnet','Connor McHale','Sam Hill'].map(usNameKey));
 const usOut=(sur,nm)=>US_OUT.has(usNameKey(nm+' '+sur));
 const usEuCtx=(sur,nm)=>{const e=lnCtxOvr(usNameKey(nm+' '+sur));return e>0?e+2:0;};
 const usFFabs=(f,m,aw)=>{const a=62+30*usFFval(f);return clamp(Math.max(a,m?m-3:0,aw|0),40,98);};
@@ -191,7 +194,7 @@ function usRoster(club,seedStr,opt){
   // obiettivo del club: la sua forza (power) spostata di meta' verso il talento vero dei suoi migliori 7 (al massimo 4 punti, vedi usFFskew): una squadra
   // con campioni e' un po' piu' forte del suo rating, una con pochi un po' piu' debole. Il resto della differenza resta nel rating.
   const T=P+clamp(0.5*usFFskew(club),-4,4);
-  const lv=(s,off)=>clamp(s.ab!=null?s.ab+off:P+s.base+off,36,95);
+  const lv=(s,off)=>clamp(s.ab!=null?s.ab+off:P+s.base+off,36,99);   // tetto 99: con 95 i migliori dei club più forti finivano tutti allo stesso valore
   let off=0,out=[];
   for(let it=0;it<7;it++){
     out=specs.map((s,j)=>{

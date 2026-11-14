@@ -31,7 +31,7 @@ const STARS=[
   ['Mueller','Mathieu',26,'C',84,'Mooncatchers','hands'],['Yeo','Ashley',33,'H',84,'Clapham Ultimate',null],['Beuttenmüller','Holger',34,'H',84,'Bad Skid',null],
   ['Orlovskis','Arvīds',31,'H',84,'Lettonia',null],['Wettengel','William',26,'D',83,'Chicago Machine',null],['Payne','Xavier',27,'D',83,'Chicago Machine',null],
   ['Lyle','Jonathan',24,'H',83,'USA',null],['Edmonds','Thomas',30,'C',83,'Mooncatchers',null],['Dillon','Trent',34,'D',83,'Seattle Sockeye','lock'],
-  ['Rýdlo','Ondřej',26,'C',83,'Repubblica Ceca',null],['Champoux','Nathan',28,'D',82,'USA',null],['Goff','Nate',30,'D',82,'Chicago Machine',null],
+  ['Rýdlo','Ondřej',26,'C',83,'Wall City',null],['Champoux','Nathan',28,'D',82,'USA',null],['Goff','Nate',30,'D',82,'Chicago Machine',null],
   ['Holland','Troy',29,'D',82,'Seattle Sockeye',null],['Ing','Michael',27,'C',82,'San Francisco Revolver',null],['Kerns','Elijah',27,'D',82,'San Francisco Revolver',null],
   ['Mieser','Jibran',26,'D',82,'USA',null],['Wariner','Cameron',29,'D',82,'New York PoNY',null],['Kocher','Chris',37,'C',82,'New York PoNY',null],
   ['Janas','Pawel',32,'H',82,'Boston DiG','break'],['Guay','Charles',27,'D',82,'Montréal Mephisto',null],['Little','Nate',28,'D',82,'Philadelphia Pacmen',null],
@@ -59,6 +59,8 @@ const STARS=[
   ['Armstrong','Carson',20,'C',80,'USA',null],
   ['Belfield','Conor',23,'C',79,'USA',null],
   ['Wildavsky','Saul',23,'C',80,'USA',null]
+  // Tobias Brooks (Carolina Flyers in UFA, Raleigh Ring of Fire nei club): 21 anni a gennaio 2026, tra i migliori lanciatori e ricevitori della lega (watchufa.com)
+  ,['Brooks','Tobias',22,'H',90,'Raleigh Ring of Fire','general']
 ];
 function starPlayer(r,rng){   // scheda del giocatore vero: statistiche dal ruolo e dall'Overall, eta' vera piu' le stagioni di carriera gia' passate
   const [sur,nm,age1,role,ov,from,trait]=r,age0=usAgeOf(sur,nm,age1)[0],st=utStats(role,ov,rng),rr=role==='H'?'H':'C',full=sur+' '+nm,age=age0+Math.max(0,(SV.season|0)-1);
