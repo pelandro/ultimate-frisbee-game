@@ -311,7 +311,7 @@ catch(e){
   });
   await step('partita veloce: avvio, pausa, abbandono',async()=>{
     await page.click('#tQuick');await vis('#quick');await page.click('#qPlay');await page.waitForTimeout(500);
-    await page.keyboard.press('Escape');await vis('#pause');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
+    await page.keyboard.press('Escape');await vis('#pause');await vis('#paFs');if(!/Schermo intero/.test(await page.locator('#paFs').innerText()))throw new Error('il menu pausa deve avere il pulsante dello schermo intero');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
   });
   await step('timeout: uno a partita, ferma il gioco e si riprende',async()=>{
     await page.click('#tQuick');await vis('#quick');await page.selectOption('#qS','0');await page.click('#qPlay');await page.waitForTimeout(600);
