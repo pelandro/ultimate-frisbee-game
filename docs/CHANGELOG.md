@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Mirino su una zona libera: la distanza massima a cui un compagno viene chiamato a correrci ora dipende dalla Visione di chi ha il disco (10 m fino a 40, 14 m a 60, 20 m da 90 in su; prima era sempre 14), e viene chiamato uno solo, quello che ci arriva prima (non il più vicino in linea retta: uno lento perde contro uno veloce un po' più lontano).
 - Schermo intero anche dal menu pausa della partita: il pulsante «Schermo intero: sì/no» accanto alla Difesa attiva o chiude lo schermo intero senza uscire dalla partita (sugli iPhone, dove il browser non lo permette, il pulsante non compare).
 - Real player, traguardi ben visibili: nella schermata di Real player, a destra del menu, c'è il riquadro «Traguardi» con i cinque dischi premio (1100 bronzo, 1200 argento, 1300 oro, 1400 platino, 1500 Super pacchetto), quelli già ottenuti spuntati, il prossimo evidenziato con i punti che mancano e un segno «Tu» che mostra dove sei. Prima c'era solo una riga di testo in fondo alla pagina.
 - Real player: la difficoltà è fissa e vale Difficile (prima era Media): l'IA che guida la squadra avversaria sceglie e reagisce meglio e ha 3 punti in più a ogni statistica, uguale per tutti così i punti restano confrontabili. Con la difficoltà alta le linee dei percorsi non compaiono più.
