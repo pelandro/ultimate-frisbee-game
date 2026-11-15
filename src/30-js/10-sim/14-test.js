@@ -186,12 +186,41 @@ function selfTestPlan(opt){
   S.steps.push(['Timeout',()=>{
     const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
     newGame();G.auto=true;G.lvl=[0,0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();G.startRec=0;G.nextRec=0;startPoint(0);
-    let g=0;while(g++<60*120&&!(G.mode==='play'&&G.holder&&G.holder.t===0&&G.holdT>1&&!G.flight&&!G.walk&&!G.brickWait))update(1/60);
+    let g=0;while(g++<60*120&&!(G.mode==='play'&&G.holder&&G.holder.t===0&&G.holdT>1&&!G.flight&&!G.walk))update(1/60);
     const ok0=canTimeout(0),ok1=canTimeout(1);G.stallT=7.6;for(const p of T[0])p.st=60;
     const lbBefore=situationLabel(G.holder,8),r1=callTimeout(0),st1=G.stallT,en=T[0].every(p=>p.st===60+TMO_REST),r2=callTimeout(0);
     const t=G.target-1;G.score=[t,t];const uni=situationLabel(G.holder,0),lastT=situationLabel(G.holder,9);G.score=[0,0];
     return [row('Timeout: si puo\u2019 chiamare con il disco in mano, una sola volta; lo stall riparte da zero e la squadra recupera',(ok0&&!ok1&&r1&&!r2&&st1===0&&en)?'sì':'no',ok0&&!ok1&&r1&&!r2&&st1===0&&en,'uno a partita, solo per chi ha il disco'),
       row('Etichetta della situazione sopra il portatore',(lbBefore?lbBefore.txt:'-')+', '+(uni?uni.txt:'-')+', '+(lastT?lastT.txt:'-'),lbBefore&&lbBefore.txt==='STALL 8'&&uni&&uni.txt==='UNIVERSE POINT'&&lastT&&lastT.txt==='ULTIMO LANCIO')];
+  }]);
+  S.steps.push(['Brick e passaggio d\u2019apertura dopo il pull',()=>{
+    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    newGame();G.auto=true;G.lvl=[0,0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();setWind(0,0);
+    const fwd=dirOf(0)>0?0:Math.PI,K=12,tick=(max,stop)=>{let g=0;while(g++<max&&!stop())update(1/60);return g/60;};
+    // BRICK: pull fuori dal campo (di lato). Appena il disco e' preso tutti sono al loro posto: i difensori accanto al loro uomo, nessuna attesa
+    let bOk=0,bFar=0,bWait=0;
+    for(let i=0;i<K;i++){
+      placeTeams(1);doPull(0.99,fwd+(i%2?1.25:-1.25));if(!G.pull||!G.pull.oob)continue;
+      tick(60*12,()=>!G.pull&&!!G.holder);
+      const h=G.holder,d=T[1-G.poss];if(!h||!G.brick||G.open)continue;
+      bOk++;if(d.some(q=>!q.mark||hyp(q.x-q.mark.x,q.y-q.mark.y)>3.2))bFar++;
+      const t=tick(60*3,()=>!!G.flight||G.mode!=='play');if(t>=2.9)bWait++;   // l'IA lancia entro pochi secondi, non aspetta la difesa
+    }
+    // PASSAGGIO D'APERTURA: l'IA che riceve un pull normale lancia subito in avanti, verso il centro, poi parte lo schema
+    let oN=0,oT=0,oG=0,oC=0,oSch=0,oOpen=0;
+    for(let i=0;i<K;i++){
+      placeTeams(1);doPull(0.8,fwd);if(!G.pull||G.pull.oob)continue;
+      tick(60*12,()=>!G.pull&&!!G.holder);if(!G.holder||G.holder.t!==1||!G.open)continue;
+      oOpen++;const h=G.holder,x0=h.x;
+      const t=tick(60*6,()=>!!G.flight);if(!G.flight)continue;
+      oN++;oT+=t;oG+=(G.flight.tx-x0)*dirOf(1);oC+=Math.abs(G.flight.ty-MID);
+      tick(60*6,()=>!G.flight);if(G.holder&&G.holder.t===1&&!G.open)oSch++;
+    }
+    return [row('Brick: difensori accanto al loro uomo appena si riparte, e l\u2019attacco lancia entro 3 secondi',bOk+' brick, '+bFar+' difese fuori posto, '+bWait+' attese',bOk>=Math.max(2,K/2-2)&&bFar===0&&bWait===0,'nessuna attesa'),
+      row('Dopo il pull l\u2019IA prepara il passaggio d\u2019apertura (nessuno schema finché non è preso)',oOpen+' su '+K,oOpen>=K-2,'tutti i pull non usciti'),
+      row('Passaggio d\u2019apertura: tempo dalla presa al lancio',oN?(oT/oN).toFixed(2)+' s':'-',oN>0&&oT/oN<=1.3,'al massimo 1,3 s'),
+      row('Passaggio d\u2019apertura: metri guadagnati e distanza dal centro del ricevitore',oN?(oG/oN).toFixed(0)+' m, '+(oC/oN).toFixed(1)+' m':'-',oN>0&&oG/oN>=12&&oC/oN<=7,'almeno 12 m in avanti, al massimo 7 m dal centro'),
+      row('Dopo il passaggio d\u2019apertura parte lo schema',oSch+' su '+oN,oN>0&&oSch>=oN*0.7,'quando il passaggio è preso')];
   }]);
   S.steps.push(['Mira e chiamate',()=>{
     // il giocatore mira una zona libera con il dito che trema (e ogni tanto sfiora un compagno): il compagno chiamato deve correrci senza ripensamenti
@@ -263,7 +292,7 @@ function selfTestPlan(opt){
     const good=duelScore(fl(0.3),o(A),o(D),R),bad=duelScore(fl(4),o(A),o(D),R);
     A.vx=7;const runUp=duelScore(fl(0.3),o(A),o(D),R);A.vx=0;
     // 1b. chiamata rapida a un handler alle spalle del disco: scarico (reset) dietro al disco, non un taglio lungo
-    const hd=T[0].find(q=>q.role==='H'&&q!==T[0][0])||T[0][1],h0=T[0][0],d0=dirOf(0);G.holder=h0;G.flight=null;G.walk=null;G.brickWait=false;G.poss=0;
+    const hd=T[0].find(q=>q.role==='H'&&q!==T[0][0])||T[0][1],h0=T[0][0],d0=dirOf(0);G.holder=h0;G.flight=null;G.walk=null;G.poss=0;
     h0.x=40;h0.y=MID;hd.x=h0.x-d0*5;hd.y=MID+7;const rk=callCut(hd,'auto'),rOk=rk==='reset'&&hd.cmd&&(hd.cmd.x-h0.x)*d0<0&&Math.abs(hd.cmd.y-h0.y)>=5;hd.cmd=null;G.holder=null;
     // 2. IA difficile (squadra rossa) con il disco: un compagno libero a 36 m e uno libero a 12 m. Avanti di 3 punti, sotto di 3, vento forte alle spalle, vento forte contro
     G.lvl=[0,2];const th=T[1][0],dr=dirOf(1),far=T[1][1],near=T[1][2];th.s.spa=88;

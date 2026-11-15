@@ -29,6 +29,7 @@ function aiPick(th){
     if(inEZ(q,P))sc+=3;
     {const own=d>0?q.x:FIELD_L-q.x;if(own<EZ+10&&open<5)sc-=8;}   // vicino alla propria meta (quella che difende) un intercetto regala il punto all'avversario: prudenza
     if(fwd<-3)sc-=2;   // un lancio all'indietro serve solo se non c'e' di meglio
+    if(G.open&&G.poss===P)sc+=clamp(fwd,-6,18)*0.18+clamp(3-Math.abs(q.y-MID)*0.2,-2,3)+(q.role==='H'?0.8:0);   // passaggio d'apertura dopo il pull: avanti e verso il centro, di preferenza a un handler
     if(G.stallT>6.5&&fwd<0)sc+=3;
     if(sc>bs){bs=sc;best=q;}
   }

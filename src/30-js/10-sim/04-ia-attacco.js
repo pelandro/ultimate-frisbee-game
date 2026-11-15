@@ -56,7 +56,7 @@ function awayFrom(H,x,y,R){
 }
 /* ---- CHIAMATE RAPIDE (tocco su un compagno): taglio profondo, taglio di rientro, isolamento, clear ---- */
 function callCut(p,kind){   // kind: 'deep', 'under', 'reset' oppure 'auto' (un handler dietro o di fianco al disco fa il RESET; un cutter va profondo se e' vicino al disco, di rientro se e' gia' lontano)
-  const h=G.holder;if(!h||h.t!==p.t||p===h||G.flight||G.walk||G.brickWait)return null;
+  const h=G.holder;if(!h||h.t!==p.t||p===h||G.flight||G.walk)return null;
   const d=dirOf(p.t),fw=(p.x-h.x)*d;
   if(kind==='auto')kind=(p.role==='H'&&fw<6)?'reset':(fw>15?'under':'deep');   // prima anche l'handler alle spalle veniva mandato lungo: adesso offre lo scarico
   let x,y;

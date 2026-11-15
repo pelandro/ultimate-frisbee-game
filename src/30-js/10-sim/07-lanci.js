@@ -208,7 +208,7 @@ function registerThrow(p,ok,cat){
 const hbDur=(h,mk)=>clamp(0.85+(mk.s.dif-hbSkill(h))*0.0102,0.5,1.3);
 function hbWindow(){
   const h=G.holder,mk=G.marker;
-  if(G.mode!=='play'||G.flight||G.brickWait||G.walk||!h||h.t!==1||!mk||mk.t!==0||!defMan()||G.skip)return null;
+  if(G.mode!=='play'||G.flight||G.walk||!h||h.t!==1||!mk||mk.t!==0||!defMan()||G.skip)return null;
   if(hyp(mk.x-h.x,mk.y-h.y)>3.8||G.think<=0)return null;
   const Wd=hbDur(h,mk),rem=G.think/(G.k||K_DEF);   // secondi reali al lancio
   if(rem>Wd)return null;   // il cerchio compare quando mancano Wd secondi al lancio: la velocita' dipende solo dalle statistiche
@@ -274,16 +274,21 @@ function updateDisc(dt){
       const near=nearestTo(rc,d.x,d.y);
       if(!pu.picker||hyp(pu.picker.x-d.x,pu.picker.y-d.y)>hyp(near.x-d.x,near.y-d.y)+2)pu.picker=near;
       const c=pu.picker,dist=hyp(c.x-d.x,c.y-d.y),inAir=pu.lt<0.3&&dist<=1.5;   // presa al volo solo se il disco atterra praticamente in mano
-      if(inAir||dist<0.8||pu.lt>30){
+      if(inAir||dist<0.8||pu.lt>30||pu.oob){   // brick: il disco e' gia' al segno, chi lo prende ci e' subito
         if(inAir){d.x=c.x;d.y=c.y;}   // presa al volo: il disco e' a pochi centimetri dalla mano
         c.vx=c.vy=0;clearFl();
         if(!inAir){c.x=clamp(d.x,0,FIELD_L);c.y=clamp(d.y,0,FIELD_W);}
         const eg=PULL_EDGE[pu.q|0]||PULL_EDGE[2];   // vantaggio del pull: stall di partenza, partenza dei tagliatori, velocita' per qualche secondo
         G.holder=c;G.pull=null;G.stallT=eg.stall;G.holdT=0;G.hbAtt=null;G.zoneH=null;G.hbOk=null;G.think=thinkFor(c.t,0.9,1.6,c);d.z=1;
-        G.brickWait=!!pu.oob;G.brickT=0;G.walk=null;   // brick: l'attacco aspetta che la difesa si schieri
+        G.brick=!!pu.oob;G.open=false;G.walk=null;
         G.edge={team:eg.k>0?pu.team:G.poss,rec:G.poss,k:Math.abs(eg.k),thr:eg.thr,t:PULL_EDGE_T};
         for(const q of T[G.poss]){q.cs='set';q.cutT=rnd(0.5,1.6)*eg.cut;}
-        assignMarks();startPlay(G.poss);
+        assignMarks();
+        // l'IA che riceve il pull non aspetta lo schema: prima lancia subito in avanti, verso il centro, per guadagnare metri mentre la difesa
+        // sta ancora arrivando, e lo schema parte da chi riceve quel passaggio (catchBy). Con il brick si riparte gia' dal segno: schema subito
+        if(!pu.oob&&(G.poss===1||G.auto)){G.open=true;G.pb[G.poss]=null;G.think=thinkFor(c.t,0.35,0.7,c);}
+        else startPlay(G.poss);
+        if(pu.oob)brickSet();
       }
     }
     return;

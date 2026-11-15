@@ -28,7 +28,7 @@ function giveGo(th,dist){
   th.cmd={k:'go',x,y,t:2.6};th.cs='cut';th.tx=x;th.ty=y;G.st.gg[th.t]++;
 }
 function aiIso(P,Hh,dt){
-  if(!aiTeam(P)||!Hh||G.flight||G.iso||G.walk||G.brickWait||G.holdT<0.6)return;
+  if(!aiTeam(P)||!Hh||G.flight||G.iso||G.walk||G.holdT<0.6)return;
   const lv=AIK(P);if(Math.random()>dt*0.15*lv.smart)return;   // circa uno ogni 7-10 secondi di possesso al livello alto, se c'e' un mismatch
   let best=null,bs=10;   // almeno 10 punti di Velocita' (o Scatto) in piu' del marcatore
   for(const q of T[P]){if(q===Hh||q.cmd||q.fl)continue;const mk=T[1-P].find(x=>x.mark===q);if(!mk)continue;const s=Math.max(q.s.vel-mk.s.vel,q.s.sca-mk.s.sca);if(s>bs){bs=s;best=q;}}

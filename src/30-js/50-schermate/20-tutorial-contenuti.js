@@ -48,7 +48,7 @@ les:[
 [`Prima la barra della <b>POTENZA</b>: il cursore sale e scende, tocca (o Spazio) per fermarlo. <b>Verde</b> = il disco arriva nella meta avversaria; giallo o prima = corto; rosso = rischia di uscire dal fondo.`,
 `Poi la barra della <b>DIREZIONE</b>: spazza il campo da una linea laterale all’altra, ferma nel verde (al centro) o almeno nel giallo. Nel rosso esce di lato.`],
 `Sul campo vedi dove cadrebbe il disco: <b>FUORI</b> (rosso), <b>CORTO</b> (bianco), <b>BUON PULL</b> (verde) o <b>GRAN PULL</b> (oro, ben in fondo alla meta).`,
-`Con un gran pull chi riceve parte con lo stall già a 3 e i suoi tagliatori aspettano di più; con un pull corto o fuori l’attacco avversario ha via libera. Se il pull esce si riparte dal brick (il segno × al centro, a 18 m dalla meta).`],
+`Con un gran pull chi riceve parte con lo stall già a 3 e i suoi tagliatori aspettano di più; con un pull corto o fuori l’attacco avversario ha via libera. Se il pull esce si riparte dal brick (il segno × al centro, a 18 m dalla meta) e tutti vanno subito al loro posto.`],
 tip:`Chi tira conta: con Lancio e Sparo alti le barre vanno piano. Scegli come tiratore chi ha i valori migliori.`},
 {id:'att-lancio',t:'Il lancio a trascinamento',b:[
 `Non c’è nessun pulsante: quando hai il disco <b>tocca dove vuoi, trascina il dito all’indietro e rilascia</b>. Il disco parte nella direzione opposta al trascinamento e tanto più lontano quanto più lo allunghi.`,

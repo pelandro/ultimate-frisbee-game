@@ -51,8 +51,9 @@ function landDisc(){
 function catchBy(f,p,msg,ck){
   registerThrow(f.thrower,true,f.cat);
   if(f.sparo)p.m.vel++;else p.m.sca++;
-  G.brickWait=false;G.walk=null;playOnCatch(f.team,p);
+  G.walk=null;playOnCatch(f.team,p);
   G.holder=p;G.poss=f.team;p.vx=p.vy=0;G.stallT=0;G.holdT=0;G.hbAtt=null;G.zoneH=null;G.hbOk=null;G.think=thinkFor(p.t,0.8,1.6,p);
+  if(G.open){G.open=false;startPlay(f.team);}   // il passaggio d'apertura dopo il pull e' arrivato: adesso parte lo schema, da dove si trova il portatore
   G.st.cmp[f.team]++;
   if(f.team===0&&!G.auto&&G.obs){const gn=(p.x-f.sx)*dirOf(0);G.obs.n++;if(gn>=22)G.obs.d++;else if(gn>=3&&gn<18)G.obs.u++;}   // cio' che l'avversario osserva del tuo gioco
   for(const q of T[f.team]){q.cs='set';q.cutT=rnd(0.4,1.6);}
@@ -93,7 +94,7 @@ function turnover(newTeam,x,y,picker,msg,benefit){
   if(ez){const dr=dirOf(newTeam),line=dr>0?FIELD_L-EZ:EZ;G.walk={pick:{x:spot.x,y:spot.y},line:{x:line-dr*0.6,y:clamp(spot.y,2.5,FIELD_W-2.5)},stage:0};pk.vx=pk.vy=0;}
   else if(hyp(pk.x-spot.x,pk.y-spot.y)>0.8){G.walk={pick:{x:spot.x,y:spot.y},line:null,stage:0};pk.vx=pk.vy=0;}
   else{pk.x=spot.x;pk.y=spot.y;pk.vx=pk.vy=0;G.walk=null;}
-  G.brickWait=false;
+  G.open=false;
   G.st.to[1-newTeam]++;
   if(1-newTeam===1){const k=G.opp.att,r=G.aiRec||(G.aiRec={});(r[k]||(r[k]=[0,0]))[1]++;}   // l'IA tiene il conto dei dischi persi con ogni schema
   G.poss=newTeam;G.holder=pk;G.flight=null;G.marker=null;G.stallT=0;G.holdT=0;G.hbAtt=null;G.zoneH=null;G.zoneT=0;G.call=null;
