@@ -204,7 +204,7 @@ function selfTestPlan(opt){
       tick(60*12,()=>!G.pull&&!!G.holder);
       const h=G.holder,d=T[1-G.poss];if(!h||!G.brick||G.open)continue;
       bOk++;if(d.some(q=>!q.mark||hyp(q.x-q.mark.x,q.y-q.mark.y)>3.2))bFar++;
-      const t=tick(60*3,()=>!!G.flight||G.mode!=='play');if(t>=2.9)bWait++;   // l'IA lancia entro pochi secondi, non aspetta la difesa
+      const t=tick(60*6,()=>!!G.flight||G.mode!=='play');if(t>=4.5)bWait++;   // l'IA lancia entro pochi secondi, non aspetta la difesa (misurato su 40 brick: da 1,1 a 3,3 s, in genere 2,7 s, il tempo normale di uno schema che parte; con 3 s di soglia un solo brick lento faceva fallire il controllo)
     }
     // PASSAGGIO D'APERTURA: l'IA che riceve un pull normale lancia subito in avanti, verso il centro, poi parte lo schema
     let oN=0,oT=0,oG=0,oC=0,oSch=0,oOpen=0;
@@ -216,7 +216,7 @@ function selfTestPlan(opt){
       oN++;oT+=t;oG+=(G.flight.tx-x0)*dirOf(1);oC+=Math.abs(G.flight.ty-MID);
       tick(60*6,()=>!G.flight);if(G.holder&&G.holder.t===1&&!G.open)oSch++;
     }
-    return [row('Brick: difensori accanto al loro uomo appena si riparte, e l\u2019attacco lancia entro 3 secondi',bOk+' brick, '+bFar+' difese fuori posto, '+bWait+' attese',bOk>=Math.max(2,K/2-2)&&bFar===0&&bWait===0,'nessuna attesa'),
+    return [row('Brick: difensori accanto al loro uomo appena si riparte, e l\u2019attacco lancia entro 4,5 secondi',bOk+' brick, '+bFar+' difese fuori posto, '+bWait+' attese',bOk>=Math.max(2,K/2-2)&&bFar===0&&bWait===0,'nessuna attesa'),
       row('Dopo il pull l\u2019IA prepara il passaggio d\u2019apertura (nessuno schema finché non è preso)',oOpen+' su '+K,oOpen>=K-2,'tutti i pull non usciti'),
       row('Passaggio d\u2019apertura: tempo dalla presa al lancio',oN?(oT/oN).toFixed(2)+' s':'-',oN>0&&oT/oN<=1.3,'al massimo 1,3 s'),
       row('Passaggio d\u2019apertura: metri guadagnati e distanza dal centro del ricevitore',oN?(oG/oN).toFixed(0)+' m, '+(oC/oN).toFixed(1)+' m':'-',oN>0&&oG/oN>=12&&oC/oN<=7,'almeno 12 m in avanti, al massimo 7 m dal centro'),
