@@ -82,6 +82,8 @@ catch(e){
     await page.click('#sUz button[data-i="3"]');await page.waitForTimeout(150);if(await ui(page)!==1.5)throw new Error('«Molto piu\' grande» deve portare il telefono a 1,5');
     await page.click('#sUz button[data-i="0"]');await page.waitForTimeout(150);if(await ui(page)!==0.75)throw new Error('«Piu\' piccola» deve portare il telefono a 0,75');
     await page.click('#sUz button[data-i="1"]');await page.waitForTimeout(150);if(await ui(page)!==1)throw new Error('«Automatica» deve riportare il telefono a 1');
+    await page.click('#sRl button[data-i="1"]');if(await page.evaluate(()=>document.documentElement.dataset.rail)!=='r')throw new Error('«A destra» deve spostare la colonna della carriera');
+    await page.click('#sRl button[data-i="0"]');if(await page.evaluate(()=>document.documentElement.dataset.rail)!=='l')throw new Error('«A sinistra» deve riportare la colonna a sinistra');
     await page.click('#sBack');await page.click('#sBack');await page.click('#sBack');await vis('#title');
   });
   await step('diagnostica: carriera di prova di 12 stagioni',async()=>{
