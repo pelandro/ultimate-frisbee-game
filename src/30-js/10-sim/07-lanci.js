@@ -104,7 +104,8 @@ function computeAim(th,wx,wy,high,nc){
   return {x:clamp(best.x+best.vx*tt*0.8,0.5,FIELD_L-0.5),y:clamp(best.y+best.vy*tt*0.8,0.5,FIELD_W-0.5),intended:best,snapR};
 }
 // il mirino punta una zona senza compagni vicini: e' come dire al compagno piu' vicino a quella zona di correre li'
-const CALL_MAX=14;   // distanza massima (m) tra la zona indicata e il compagno che viene chiamato a correrci
+// distanza massima (m) tra la zona indicata e il compagno che viene chiamato a correrci: dipende dalla Visione di chi ha il disco (10 m fino a 40, 14 m a 60, 20 m da 90 in su)
+const callMax=th=>clamp(10+(th.s.vis-40)*0.2,10,20);
 // il compagno chiamato smette di correre verso la zona: si ferma un attimo dov'e' (non torna a vagare a caso) e poi riprende il suo gioco
 function endCall(){const c=G.call;if(!c)return;G.call=null;if(!c.q.fl){c.q.cs='hold';c.q.cutT=rnd(0.5,0.9);}}
 const CALL_DEAD=3,CALL_GRACE=0.45;   // il punto della chiamata segue il dito solo oltre 3 m di spostamento; se il mirino esce dalla zona per un attimo la chiamata non cade subito
@@ -113,11 +114,12 @@ function updateCall(th,wx,wy,high,exact){
   const lose=()=>{const c=G.call;if(!c)return;if(exact){endCall();return;}if(c.off===undefined)c.off=G.tick;if(G.tick-c.off>CALL_GRACE)endCall();};   // un tentennamento del mirino non fa fermare chi sta correndo
   if(G.flight||G.holder!==th){endCall();return;}
   if(hyp(wx-th.x,wy-th.y)<6||computeAim(th,wx,wy,high,true).intended){lose();return;}
-  let best=null,bd=1e9;
-  for(const q of T[th.t]){if(q===th)continue;const d=hyp(q.x-wx,q.y-wy);if(d<bd){bd=d;best=q;}}
-  if(bd>CALL_MAX){lose();return;}   // zona lontana da tutti i compagni: lancio libero, nessuno viene chiamato
+  // un solo compagno e' chiamato: tra quelli entro la portata, chi arriva per primo alla zona (non il piu' vicino in linea retta: uno lento o lanciato altrove perde)
+  let best=null,bt=1e9;const R=callMax(th);
+  for(const q of T[th.t]){if(q===th||hyp(q.x-wx,q.y-wy)>R)continue;const t=ttr(q,wx,wy);if(t<bt){bt=t;best=q;}}
+  if(!best){lose();return;}   // zona lontana da tutti i compagni: lancio libero, nessuno viene chiamato
   const cur=G.call&&G.call.q;
-  if(cur&&cur!==best&&hyp(cur.x-wx,cur.y-wy)<bd+4)best=cur;   // isteresi: non cambia compagno per un soffio
+  if(cur&&cur!==best&&hyp(cur.x-wx,cur.y-wy)<=R&&ttr(cur,wx,wy)<bt+0.6)best=cur;   // isteresi: non cambia compagno per un soffio (meno di 0,6 s)
   if(cur&&cur!==best)endCall();
   const px=clamp(wx,1,FIELD_L-1),py=clamp(wy,1.5,FIELD_W-1.5),c=G.call;
   if(c&&c.q===best){

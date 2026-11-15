@@ -14,7 +14,7 @@ catch(e){
   const browser=await chromium.launch(),errs=[],done=[];
   const page=await (await browser.newContext({viewport:{width:844,height:390}})).newPage();
   page.setDefaultTimeout(15000);
-  page.on('pageerror',e=>errs.push('errore JavaScript: '+e.message));
+  page.on('pageerror',e=>errs.push('errore JavaScript: '+e.message+' ('+String(e.stack||'').split('\n').slice(1,3).map(x=>x.trim().replace(/^at /,'').replace(/\(.*[\/\\]/,'(')).join(' < ')+')'));   // anche dove succede: gli errori casuali si possono cercare
   page.on('console',m=>{if(m.type()==='error'&&!/font|net::ERR|Failed to load resource/i.test(m.text()))errs.push('console: '+m.text());});
   // gli avvisi della carriera si aprono da soli: li chiudo quando coprono cio' che sto per toccare
   await page.addLocatorHandler(page.locator('#alerts:not(.hidden) #alX'),async()=>{await page.click('#alX');});
