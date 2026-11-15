@@ -54,3 +54,18 @@ function renderTodo(){
   $('hTodo').innerHTML=L.length?L.map(([c,t,g])=>`<li><button type="button" class="tdi ${c}" data-go="${g}"><i></i><span>${esc(t)}</span></button></li>`).join(''):`<li class="tdok">${m?'Tutto in ordine: puoi giocare.':'Niente da sistemare per ora.'}</li>`;
 }
 $('hTodo').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;const g=b.dataset.go;if(g==='alerts')openAlerts();else showScreen(g);});
+
+// ---- informazioni a scomparsa: le spiegazioni lunghe stanno dietro un pulsante «i» (chiuse all'apertura della pagina), cosi' si vede subito cio' che serve ----
+// infoB(k) = il pulsante, infoX(k,html) = il riquadro che si apre sotto; lo stato (aperto/chiuso) resta anche quando la schermata si ridisegna
+const INFO_ON=new Set();
+const infoB=k=>`<button type="button" class="infb${INFO_ON.has(k)?' on':''}" data-info="${k}" aria-label="Informazioni" aria-expanded="${INFO_ON.has(k)}">i</button>`;
+const infoX=(k,html)=>`<div class="infbox${INFO_ON.has(k)?'':' hidden'}" data-infobox="${k}">${html}</div>`;
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-info]');if(!b)return;const k=b.dataset.info,on=!INFO_ON.has(k);
+  if(on)INFO_ON.add(k);else INFO_ON.delete(k);
+  for(const x of document.querySelectorAll('[data-info="'+k+'"]')){x.classList.toggle('on',on);x.setAttribute('aria-expanded',String(on));}
+  for(const x of document.querySelectorAll('[data-infobox="'+k+'"]'))x.classList.toggle('hidden',!on);
+});
+
+// testi delle spiegazioni lunghe di Squadra e Mercato (prima erano paragrafi in fondo alla pagina)
+const ROST_INFO=`<b>OVR</b> è il valore del giocatore nel suo ruolo migliore: per un Handler contano lanci e visione, per un Cutter presa, velocità, scatto, agilità e salto, per un Defender difesa e atletismo. <b>POT</b> è il potenziale stimato: all’inizio è un intervallo, che si stringe facendo osservare il giocatore o tenendolo in rosa (dopo tre stagioni è certo). <b>Cond</b> è la condizione fisica: scende con partite e allenamenti, risale con il riposo e il Recupero; chi è scarico parte con meno energia e si infortuna più facilmente. <b>ATT</b> e <b>DIF</b> sono le due linee: l’attacco gioca le mete in cui ricevi il pull, la difesa quelle in cui lo tiri (un giocatore può stare in entrambe, ma si stanca di più). Con i cambi intelligenti chi è stanco esce da solo per una meta. Tocca un giocatore per aprire la scheda: ruoli, tratto, statistiche, numeri della stagione, osservazione e cessione.`,MK_INFO=`Sul mercato trovi giovani promesse, svincolati, giocatori messi in vendita dalle altre squadre (costano il 30% in più) e, con la stella, giocatori internazionali veri: campioni della lega americana e d’Europa, ma anche buoni giocatori e veterani a fine carriera. Del potenziale vedi solo un intervallo: ogni osservazione lo stringe. I giocatori più forti vengono solo se la società ha abbastanza reputazione. L’elenco si rinnova ogni 5 giornate e a ogni nuova stagione. Per cedere un giocatore apri la sua scheda nella Rosa.`;
