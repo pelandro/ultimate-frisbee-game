@@ -159,12 +159,14 @@ catch(e){
     if(!(await page.locator('#hCoach svg.av').count()))throw new Error('manca il volto dell\'allenatore nel cruscotto');
     if(!(await page.locator('.dcash .cr .coin').count()))throw new Error('manca la moneta di fianco a «Crediti» nel cruscotto');
   });
-  await step('tutorial completo dal cruscotto: fumetto «Scopri di più» e tasto Tutorial',async()=>{
-    if(await page.locator('#tip:not(.hidden)').count()){   // il fumetto del cruscotto porta alla sua lezione
-      await page.click('#tipMore');await vis('#tut');
-      if(!/cruscotto/i.test(await page.locator('#tuH').innerText()))throw new Error('«Scopri di più» deve aprire la lezione sul cruscotto: '+await page.locator('#tuH').innerText());
-      await page.click('#tuX');
-    }
+  await step('tutorial completo dal cruscotto: il fumetto della schermata Partita viene prima di sponsor e Posta, «Scopri di più» e tasto Tutorial',async()=>{
+    // carriera appena iniziata: si apre per primo il fumetto della schermata Partita; sponsor e Posta aspettano che si chiuda
+    if(!(await page.locator('#tip:not(.hidden)').count()))throw new Error('a carriera appena iniziata deve aprirsi per primo il fumetto della schermata Partita');
+    if(await page.locator('#evt:not(.hidden), #alerts:not(.hidden)').count())throw new Error('sponsor o Posta aperti insieme al fumetto della schermata Partita');
+    await page.evaluate(()=>document.getElementById('tipMore').click());await vis('#tut');   // click dalla pagina: il gestore automatico dei fumetti chiuderebbe il fumetto con «OK»
+    if(!/schermata Partita/i.test(await page.locator('#tuH').innerText()))throw new Error('«Scopri di più» deve aprire la lezione sulla schermata Partita: '+await page.locator('#tuH').innerText());
+    await page.evaluate(()=>document.getElementById('tuX').click());await page.waitForTimeout(300);
+    if(!(await page.locator('#evt:not(.hidden)').count()))throw new Error('chiuso il fumetto deve arrivare la scelta dello sponsor');
     await vis('#home');await menu('#hTut');await vis('#tut');await page.click('#tuX');await vis('#home');
   });
   await step('allenatore e staff: cambio nome dal cruscotto, candidati, assunzione e rinnovo dell\'elenco',async()=>{

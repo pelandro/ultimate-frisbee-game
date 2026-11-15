@@ -39,9 +39,14 @@ function renderHome(){
   if(!SV.evt&&SV.sp&&SV.sp.off)SV.evt={id:'spons',a:{}};   // inizio stagione: la scelta dello sponsor aspetta una risposta, come un imprevisto
   const nwA=(SV.alerts||[]).filter(a=>!a.seen).length,pdA=pendingAlerts();
   $('hBellB').textContent=nwA||pdA;$('hBellB').classList.toggle('hidden',!(nwA||pdA));
-  if(urgentAlerts()&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openAlerts();   // si apre da solo soltanto per le decisioni e le emergenze; le notizie restano nella campanella
-  else if(SV.fired&&$('fired').classList.contains('hidden')&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('over').classList.contains('hidden')&&$('simres').classList.contains('hidden'))openFired();   // esonerato: bisogna scegliere un altro club
-  else if(SV.evt&&$('evt').classList.contains('hidden')&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openEvt();   // un imprevisto aspetta una risposta
+  // ordine delle finestre che si aprono da sole: prima il fumetto della schermata Partita (alla prima visita), poi sponsor e imprevisti
+  // (sono scelte), poi la Posta con decisioni ed emergenze; ognuna si apre quando si chiude la precedente (tipAfter, evOk, alX richiamano renderHome)
+  const homeOn=!$('home').classList.contains('hidden'),free=homeOn&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden');
+  if(!$('tip').classList.contains('hidden')||(homeOn&&tipOnce('home',()=>{if(!$('home').classList.contains('hidden'))renderHome();}))){}   // fumetto aperto: il resto aspetta
+  else if(SV.evt&&!SV.fired&&$('evt').classList.contains('hidden')&&$('alerts').classList.contains('hidden')&&free)openEvt();   // uno sponsor o un imprevisto aspetta una risposta
+  else if(urgentAlerts()&&$('alerts').classList.contains('hidden')&&$('evt').classList.contains('hidden')&&free)openAlerts();   // si apre da solo soltanto per le decisioni e le emergenze; le notizie restano nella campanella
+  else if(SV.fired&&$('fired').classList.contains('hidden')&&$('alerts').classList.contains('hidden')&&homeOn&&$('over').classList.contains('hidden')&&$('simres').classList.contains('hidden'))openFired();   // esonerato: bisogna scegliere un altro club
+  else if(SV.evt&&$('evt').classList.contains('hidden')&&$('alerts').classList.contains('hidden')&&free)openEvt();
   $('hEventS').textContent=isUS()?usEventSub():(isLN()&&SV.event==='camp')?(SV.done?'Stagione conclusa: premi e ripartenza':lnShort()):SV.event==='camp'?(SV.done?'Stagione conclusa: premi e ripartenza':(SV.po&&SV.po.on?PO_NAME[SV.po.kind]+(SV.po.round?' · finale':' · semifinale'):`Giornata ${SV.round+1} di ${totalRounds()}`)):euEventSub();
 }
 // ---- pezzi comuni delle schermate di carriera ----
