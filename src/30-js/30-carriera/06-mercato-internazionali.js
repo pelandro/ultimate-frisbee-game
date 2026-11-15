@@ -113,5 +113,5 @@ function sellPlayer(id){
   const list=squadData();list.splice(id,1);setSquad(list);fixLines();SV.chem=Math.max(0,SV.chem-2);
   news('Ceduto '+(p.label||p.name)+' per '+v+' crediti.');return true;
 }
-const SCOUT_COST=6;
-function scoutPlayer(x){if(!x||(x.sk|0)>=3||SV.cash<scoutCost())return false;SV.cash-=scoutCost();x.sk=(x.sk|0)+1;return true;}
+const SCOUT_COST=4;   // parte fissa del costo di un'osservazione (scoutCost, 11-carriera-dinamica.js)
+function scoutPlayer(x){if(!x||(x.sk|0)>=3||SV.cash<scoutCost(x))return false;SV.cash-=scoutCost(x);x.sk=(x.sk|0)+1;return true;}

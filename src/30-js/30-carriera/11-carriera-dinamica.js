@@ -11,9 +11,10 @@ Object.assign(AL_KIND,{club:['Club','#5ac8ff'],evt:['Imprevisto','#ffb347'],tire
 const TR_INT=[{n:'Leggero',g:0.6,c:0.5,r:0.5,t:'metà fatica, crescita ridotta'},{n:'Normale',g:1,c:1,r:1,t:'l’equilibrio di sempre'},{n:'Intenso',g:1.45,c:1.7,r:1.8,t:'si cresce di più, ma costa molta condizione e aumenta il rischio di infortuni'}];
 const trInt=()=>TR_INT[clamp(SV.tInt===undefined?1:SV.tInt|0,0,2)];
 const TIRED_AT=35;   // sotto questa condizione un giocatore e' «molto affaticato»: rischia l'infortunio anche in partita
-const scoutCost=()=>Math.max(2,SCOUT_COST-facLv('oss'));
+// osservare costa secondo il valore del giocatore (prima 6 crediti per tutti): un ragazzo di Serie C circa 6, un giocatore da 230 crediti circa 22. Gli Osservatori tolgono il 15% per livello
+const scoutCost=x=>Math.max(2,Math.round((SCOUT_COST+0.08*(x?priceOf(x):0))*(1-0.15*facLv('oss'))));
 // manutenzione a partita: cresce piu' che in proporzione, cosi' tenere tutto al massimo e' una scelta e non un obbligo
-const facUpkeep=()=>Math.round(Object.keys(FAC).reduce((a,k)=>a+facLv(k)*(facLv(k)+1)/2,0)*0.25);
+const facUpkeep=()=>Math.round(Object.keys(FAC).reduce((a,k)=>a+facLv(k)*(facLv(k)+1)/2,0)*0.2);   // era 0,25: ora pesano gli stipendi dei giocatori
 const KEEP_LV=3;
 const FAC_KEEP={camp:'ritiro estivo: i giocatori fino a 23 anni migliorano',fis:'prevenzione: i primi due infortuni della stagione durano la metà',viv:'un giovane del vivaio sale in prima squadra',
   stad:'abbonamenti: crediti a inizio stagione',oss:'rapporto estivo: potenziale già noto per tutto il mercato',sede:'ambiente: reputazione e morale in più'};
