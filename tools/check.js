@@ -27,6 +27,12 @@ else{
   const DYN=['tnSize','tnPool','tnD','tnLen'];   // id creati da codice con un modello (non compaiono come id="..." nel sorgente)
   const miss=[...new Set([...js.matchAll(/\$\('([A-Za-z0-9_]+)'\)/g)].map(m=>m[1]))].filter(x=>!all.has(x)&&!DYN.includes(x));
   if(miss.length)errs.push("$('id') verso elementi che non esistono: "+miss.join(', '));
+  // tutorial completo: id delle lezioni unici e fumetti collegati a lezioni che esistono
+  const les=[...js.matchAll(/\{id:'((?:ini|att|dif|sch|car|lega|mod|tr)-[a-z0-9]+)',t:/g)].map(m=>m[1]);
+  const ldup=[...new Set(les.filter((x,i)=>les.indexOf(x)!==i))];
+  if(ldup.length)errs.push('id di lezioni del tutorial duplicati: '+ldup.join(', '));
+  const tl=js.match(/const TIP_LES=\{([^}]*)\}/);
+  if(tl)for(const m of tl[1].matchAll(/:'([^']+)'/g))if(!les.includes(m[1]))errs.push('TIP_LES punta a una lezione che non esiste: '+m[1]);
   if(!/const SAVE_V=\d+/.test(js))errs.push('manca la versione del salvataggio (SAVE_V)');
 }
 for(const w of warn)console.log('  avviso: '+w);
