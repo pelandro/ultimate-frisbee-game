@@ -2,7 +2,7 @@
    Tutte le schermate della carriera (Partita, Squadra, Settimana, Mercato, Campionato, Societa') stanno dentro lo stesso guscio: la barra in alto dice dove sei e quanto hai,
    la colonna a sinistra porta ovunque con un tocco. Le schermate hanno la classe .csc: il guscio e' fisso e loro lasciano lo spazio con --ctop e --rail.
    Misure: telefono in orizzontale (844x390) 38px di barra e 62px di colonna. Su iPad e computer il gioco ingrandisce tutto con --ui (zoom): il layout e' lo stesso. */
-:root{--ctop:38px;--rail:62px}
+:root{--ctop:38px;--rail:calc(62px + var(--sal))}   /* la colonna comprende il margine sicuro a sinistra (isola dinamica, notch): lo sfondo arriva al bordo, i pulsanti no */
 #cshell{position:absolute;inset:0;z-index:35;pointer-events:none;zoom:var(--ui,1)}
 #cshell>*{pointer-events:auto}
 #ctop{position:absolute;top:0;left:0;right:0;height:var(--ctop);display:flex;align-items:center;gap:6px;padding:0 max(8px,var(--sar)) 0 max(8px,var(--sal));background:#10172f;border-bottom:3px solid #000;box-shadow:0 3px 0 rgba(0,0,0,.35)}
@@ -23,7 +23,7 @@
 .cmi svg{width:17px;height:17px;flex:none}.cmi:active{transform:translateY(1px)}
 .cmi:hover,.cmi:focus-visible{background:#2a3a7c}
 /* navigazione laterale */
-#rail{position:absolute;left:0;top:var(--ctop);bottom:0;width:var(--rail);display:flex;flex-direction:column;background:#10172f;border-right:3px solid #000;padding:4px 3px;gap:4px;overflow:hidden}
+#rail{position:absolute;left:0;top:var(--ctop);bottom:0;width:var(--rail);display:flex;flex-direction:column;background:#10172f;border-right:3px solid #000;padding:4px 3px 4px calc(3px + var(--sal));gap:4px;overflow:hidden}
 .rb{position:relative;flex:1;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:inherit;color:#9fb0de;background:#17204a;border:3px solid #000;box-shadow:inset 2px 2px 0 rgba(255,255,255,.08);cursor:pointer;padding:2px}
 .rb svg{width:22px;height:22px;flex:none}
 .rb>span{display:flex;flex-direction:column;align-items:center;min-width:0;max-width:100%;line-height:1.05}
