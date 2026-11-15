@@ -5,7 +5,7 @@ const vmaxOf=p=>(5.2+p.s.vel*0.045)*fatigue(p)*edgeOf(p);     // velocità: scat
 const accOf=p=>(3.5+p.s.sca*0.085)*fatigue(p)*(hasT(p,'explosive')?1.08:1);
 const SPRINT_COST=1.8,REST_FIELD=5,REST_BENCH=12;   // con i cambi di direzione netti gli scatti sono piu' frequenti: ognuno costa un po' meno
 // scatto sui lanci lunghi (sparo): il corridore (ricevitore in attacco, difensore piu' vicino in difesa) scatta tenendo premuto, ma si stanca in fretta
-const SPRINT_VM=1.15,SPRINT_AM=1.25,SPRINT_DRAIN=7;
+const SPRINT_VM=1.15,SPRINT_AM=1.25,SPRINT_DRAIN=7,AI_SPRINT_COST=0.5;   // AI_SPRINT_COST: chi e' guidato dall'IA consuma la meta' dell'energia nello scatto
 const sprinting=p=>!!(G.flight&&p.st>3&&((G.sprint&&G.sprint.p===p&&G.hold)||(G.aiSprint&&G.aiSprint.includes(p))));
 const sprintCost=p=>SPRINT_COST*(1.5-p.s.res/100)*(hasT(p,'iron')?0.65:1);      // scatto: accelerazione, scatti corti
 function moveTo(p,tx,ty,dt,am=1,vm=1){

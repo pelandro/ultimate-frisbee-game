@@ -384,6 +384,17 @@ function selfTestPlan(opt){
       row('Gettoni: vittoria con avversario a +0, +25, +50, +100, +150, +400 punti; sconfitta',cs.join(', ')+'; '+cl.base,coinOk,'crescono con la differenza fino a un massimo, nessun bonus a chi perde'),
       row('Traguardi di punti: pacchetti (qualità + 10 × carte) dal primo al quinto e oltre',mq.join(', '),mileOk,'sempre migliori e più grandi, super bustina dal quinto')];
   }]);
+  S.steps.push(['Livelli dell\u2019IA',()=>{
+    // 4 livelli (Facile, Medio, Difficile, Estrema): il comportamento migliora a ogni passo e ogni livello aggiunge un bonus alle statistiche dei 7 avversari
+    const ra=ros(62,'a'),rb=ros(62,'b'),mean=()=>T[1].reduce((a,q)=>a+KEYS.reduce((x,k)=>x+q.s[k],0)/KEYS.length,0)/T[1].length;
+    const gain=DIFF_PLUS.map(pl=>{setSquad(ra);applyRoster(rb);const m0=mean();oppBoost(pl);return mean()-m0;});
+    const up=(k,dir)=>DIFF_AI.every((l,i)=>!i||(dir>0?l[k]>=DIFF_AI[i-1][k]:l[k]<=DIFF_AI[i-1][k]));
+    const beh=DIFF_AI.length===4&&up('smart',1)&&up('react',-1)&&up('mark',-1)&&up('sprint',1)&&DIFF_PLUS.length===4&&DIFF_PLUS.every((v,i)=>!i?v===0:v>DIFF_PLUS[i-1]);
+    const ok=gain.every((g,i)=>Math.abs(g-DIFF_PLUS[i])<=0.35);
+    G.oppPlus=0;
+    return [row('Livelli dell\u2019IA: quattro, con attenzione, reazione, marcatura e scatto che crescono a ogni passo',DIFF_AI.length+' livelli',beh,'Facile, Medio, Difficile, Estrema'),
+      row('Bonus di statistiche agli avversari per livello (Facile, Medio, Difficile, Estrema)',gain.map(g=>'+'+g.toFixed(1)).join(', '),ok,DIFF_PLUS.map(v=>'+'+v).join(', ')+' alla media dei 7 in campo')];
+  }]);
   S.steps.push(['Prestazioni',()=>{
     const gt=S.base?avg(S.base.map(m=>m.time)):0,k=gt/Math.max(0.001,S.ms/1000);
     return [row('Velocità di simulazione',Math.round(S.ms)+' ms a partita ('+Math.round(k)+' volte il tempo reale)',k>=15,'almeno 15 volte')];
