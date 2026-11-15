@@ -90,12 +90,12 @@ function uoLaunch(o,ros){
   QM.on=true;UT.on=true;UO.on=true;UO.opp=o;
   UOP.op=o.p;uoSaveP();   // se il gioco si chiude prima della fine, alla prossima apertura conta come sconfitta (come abbandonare)
   setSquad(UT.col);setLineup(UT.sel.slice());
-  applyRoster(ros);
+  applyRoster(ros);oppBoost(DIFF_PLUS[UTO_DIFF]);
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;
   G.oppName=o.n;G.myName=UOP.name;G.matchLabel='Real player · '+UOP.p+' punti';
-  // difficolta' uguale per tutti (Medio) cosi' i punti sono confrontabili; la squadra avversaria e' quella vera dell'altro giocatore
-  newGame();rollWind();G.lvl=[0,1];G.oppPlus=0;G.idn=[null,teamIdentity(o.n,T[1])];G.xtr=false;G.hint=false;G.routes=true;G.inMatch=true;G.recorded=false;
+  // difficolta' fissa (Difficile, come nelle altre modalita': IA e bonus alle statistiche) uguale per tutti, cosi' i punti sono confrontabili; la squadra avversaria e' quella vera dell'altro giocatore
+  newGame();rollWind();G.lvl=[0,UTO_DIFF];G.oppPlus=DIFF_PLUS[UTO_DIFF];G.idn=[null,teamIdentity(o.n,T[1])];G.xtr=false;G.hint=false;G.routes=false;G.inMatch=true;G.recorded=false;
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
 }
