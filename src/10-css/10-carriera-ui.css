@@ -1,0 +1,145 @@
+/* ---- CARRIERA: guscio comune (barra in alto + navigazione laterale) e cruscotto «Partita» ----
+   Tutte le schermate della carriera (Partita, Squadra, Settimana, Mercato, Campionato, Societa') stanno dentro lo stesso guscio: la barra in alto dice dove sei e quanto hai,
+   la colonna a sinistra porta ovunque con un tocco. Le schermate hanno la classe .csc: il guscio e' fisso e loro lasciano lo spazio con --ctop e --rail.
+   Misure: telefono in orizzontale (844x390) 38px di barra e 62px di colonna. Su iPad e computer il gioco ingrandisce tutto con --ui (zoom): il layout e' lo stesso. */
+:root{--ctop:38px;--rail:62px}
+#cshell{position:absolute;inset:0;z-index:35;pointer-events:none;zoom:var(--ui,1)}
+#cshell>*{pointer-events:auto}
+#ctop{position:absolute;top:0;left:0;right:0;height:var(--ctop);display:flex;align-items:center;gap:6px;padding:0 max(8px,env(safe-area-inset-right,0px)) 0 max(8px,env(safe-area-inset-left,0px));background:#10172f;border-bottom:3px solid #000;box-shadow:0 3px 0 rgba(0,0,0,.35)}
+.ctclub{display:flex;align-items:center;gap:8px;min-width:0;background:none;border:0;color:#fff;font:inherit;cursor:pointer;padding:0;text-align:left}
+.ctclub .crest{flex:none}
+.ctn{display:flex;flex-direction:column;min-width:0;line-height:1.05}
+.ctn b{font-family:var(--pfont);font-weight:400;font-size:11px;font-size-adjust:none;color:var(--gold);text-shadow:2px 2px 0 #000;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}
+.ctn small{font-size:13px;color:#9fb0de;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}
+.ctgap{flex:1}
+.ctcash{display:inline-flex;align-items:center;gap:2px;padding:2px 8px;background:#0b0f22;border:2px solid #000;font-size:18px;color:var(--gold);white-space:nowrap}
+.ctcash .coin{margin:0 0 0 2px;width:1em;height:1em;order:2}
+#ctop .ibtn{padding:4px 8px;font-size:15px}
+#ctop .hcoach{width:30px;height:30px;padding:0;border:2px solid #000;background:#0b0f22;cursor:pointer;display:grid;place-items:center}
+#ctop .hcoach .av,#ctop .hcoach canvas,#ctop .hcoach svg{width:26px;height:26px}
+#cmenu{position:absolute;top:calc(var(--ctop) + 2px);right:max(8px,env(safe-area-inset-right,0px));min-width:190px;background:#10172f;border:3px solid #000;box-shadow:4px 4px 0 rgba(0,0,0,.5);display:flex;flex-direction:column;padding:4px}
+#cmenu.hidden{display:none}
+.cmi{display:flex;align-items:center;gap:10px;font:inherit;font-size:17px;color:#fff;background:#1b2550;border:2px solid #000;margin:2px;padding:8px 10px;cursor:pointer;text-align:left}
+.cmi svg{width:17px;height:17px;flex:none}.cmi:active{transform:translateY(1px)}
+.cmi:hover,.cmi:focus-visible{background:#2a3a7c}
+/* navigazione laterale */
+#rail{position:absolute;left:0;top:var(--ctop);bottom:0;width:var(--rail);display:flex;flex-direction:column;background:#10172f;border-right:3px solid #000;padding:4px 3px;gap:4px;overflow:hidden}
+.rb{position:relative;flex:1;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:inherit;color:#9fb0de;background:#17204a;border:3px solid #000;box-shadow:inset 2px 2px 0 rgba(255,255,255,.08);cursor:pointer;padding:2px}
+.rb svg{width:22px;height:22px;flex:none}
+.rb>span{display:flex;flex-direction:column;align-items:center;min-width:0;max-width:100%;line-height:1.05}
+.rb strong{font-weight:400;font-size:12px;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.rb small{display:none;font-size:12px;color:#7f8db8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.rb:hover{color:#fff;background:#202c5e}.rb:active{transform:translateY(2px)}
+.rb.on{color:#1a1c2c;background:var(--gold);box-shadow:inset 2px 2px 0 rgba(255,255,255,.5)}
+.rb.on small{color:#4a3a00}
+.rb .bdg{position:absolute;top:1px;right:1px;font-style:normal;font-family:var(--pfont);font-size:7px;font-size-adjust:none;line-height:1;padding:2px 3px;background:var(--bad);color:#fff;border:2px solid #000}
+.rb .bdg.ok{background:var(--good);color:#06240f}
+.rb:focus-visible,#ctop button:focus-visible,.cmi:focus-visible{outline:3px solid #fff;outline-offset:1px}
+/* le schermate lasciano lo spazio al guscio */
+.screen.csc{padding-top:calc(var(--ctop) + 8px);padding-left:calc(var(--rail) + 10px)}
+.screen.csc .shead .back{display:none}   /* si torna indietro con la colonna: niente «‹ Indietro» */
+.screen.csc .shead{position:static;background:none;margin-bottom:6px}
+.screen.csc .shead h2{font-size:clamp(14px,5vh,22px)}
+/* ---- Partita (cruscotto) ---- */
+#home .hdash{padding-top:0}
+html #home .hdash .hl{padding-top:0;padding-bottom:0;gap:8px;justify-content:flex-start}
+html[data-big] #home .hdash .hr{padding-top:0;padding-bottom:0}
+html #home .hdash .hr{padding-top:0;display:flex;flex-direction:column;gap:8px}
+#home .hbtn.hp{min-height:78px}
+.todo{padding:6px 9px}
+.todo h3{margin:0 0 4px;font-family:var(--pfont);font-weight:400;font-size:9px;font-size-adjust:none;color:var(--gold);letter-spacing:0;text-transform:uppercase}
+#hTodo{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+#hTodo li{margin:0}
+.tdi{display:flex;align-items:center;gap:8px;width:100%;font:inherit;font-size:17px;color:#fff;background:#1b2550;border:2px solid #000;padding:5px 8px;cursor:pointer;text-align:left;line-height:1.1}
+.tdi i{flex:none;width:10px;height:10px;border:2px solid #000;background:#9fb0de}
+.tdi.warn i{background:#ffb83f}.tdi.bad i{background:var(--bad)}.tdi.ok i{background:var(--good)}
+.tdi span{flex:1;min-width:0}
+.tdi:after{content:"›";color:#7f8db8;font-size:20px;line-height:1}
+.tdi:hover{background:#27337a}.tdi:active{transform:translateY(1px)}
+.tdok{font-size:17px;color:#9fe3b3;padding:4px 2px}
+@media (max-height:420px){
+  :root{--ctop:34px}
+  .rb{min-height:40px}.rb svg{width:20px;height:20px}
+  #home .hbtn.hp{min-height:64px}
+  .tdi{font-size:16px;padding:3px 7px}
+}
+/* feedback: il numero dei crediti saltella quando cambia */
+@keyframes csbump{0%{transform:translateY(0)}35%{transform:translateY(-3px)}100%{transform:translateY(0)}}
+.ctcash.bump{animation:csbump .28s steps(3)}
+@media (prefers-reduced-motion:reduce){.ctcash.bump{animation:none}}
+/* il consiglio del giorno non scorre piu': e' una riga di testo fissa sotto «Questa settimana» */
+#home .dtick{white-space:normal;padding:5px 9px;font-size:16px;line-height:1.2}
+#home .dtick span{display:block;padding-left:0;animation:none}
+#home .dtick:before{content:"Consiglio · ";color:#9fb0de}
+#home .dtick.nw:before{content:""}
+/* ---- Squadra: carte con Overall, scheda con barre ---- */
+.pch .pov{min-width:28px;font-size:10px;line-height:12px;padding:3px 2px;margin:-1px -3px -1px 0}
+.pcl svg,.pcl .mood{width:14px;height:14px}
+.pcl i{font-size:9px;line-height:13px;padding:1px 5px}
+.ovbig{min-width:40px;font-size:17px;padding:7px 5px;box-shadow:0 3px 0 #000}
+.pcnv{position:absolute;right:92px;top:50%;transform:translateY(-50%);width:34px;height:34px;font:inherit;font-size:24px;line-height:1;color:#fff;background:rgba(0,0,0,.35);border:3px solid #000;cursor:pointer;padding:0}
+.pcnv.nx{right:54px}
+.pcnv:active{transform:translateY(-50%) translateY(2px)}
+.pcph .pcln{margin-right:130px}
+.abgrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px}
+.abg h4{margin:0 0 2px;font-size:15px;font-weight:400;color:var(--gold);font-family:inherit}.abg h4 b{color:#fff;font-weight:400}
+.ab{display:flex;align-items:center;gap:6px;font-size:15px;line-height:1.35}
+.ab>span:first-child{width:76px;flex:none;color:#c2cbe6}
+.abb{position:relative;flex:1;height:9px;background:#000;border:1px solid #000;min-width:30px}
+.abb i{display:block;height:100%}
+.abb u{position:absolute;top:-3px;bottom:-3px;width:3px;margin-left:-1px;background:#fff;opacity:.85}
+.ab b{width:24px;text-align:right;font-weight:400}
+@media (max-width:560px){.abgrid{grid-template-columns:1fr}}
+/* la scheda del giocatore apre dentro la cornice: la barra in alto e la colonna restano visibili */
+.screen.csc .pcov{top:var(--ctop);left:var(--rail)}
+/* ---- Allena: stato della settimana in due pastiglie, seduta di squadra a sinistra e lavori individuali a destra ---- */
+.tstrip{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:0 0 8px}
+.tstrip small{flex:1 1 220px;font-size:14px;color:#9fb0de;line-height:1.2}
+.tchs{display:flex;gap:6px}
+.tch{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;background:#141a36;border:3px solid #000;font-size:16px;color:#c2cbe6;white-space:nowrap}
+.tch b{font-weight:400;color:#fff}
+.tch i{width:10px;height:10px;border:2px solid #000;background:#9fb0de}
+.tch.todo i{background:#ffb83f}.tch.ok i{background:var(--good)}.tch.blk i{background:#59627f}
+#train .tgrid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+#train .tgrid>div:last-child{order:-1}
+/* ---- Mercato: schede dei giocatori al posto della tabella ---- */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.mcard{display:flex;flex-direction:column;gap:5px;padding:6px 8px 8px;background:#16204a;border:3px solid var(--rc,#2f7bff);box-shadow:0 3px 0 #000;min-width:0}
+.mcard.star{box-shadow:0 3px 0 #000,inset 0 0 0 2px var(--gold)}
+.mcard.lk{filter:saturate(.7)}
+.mch{display:flex;align-items:center;gap:8px;min-width:0}
+.mav{line-height:0;border:2px solid #000;background:rgba(0,0,0,.25);flex:none}
+.mn{flex:1;min-width:0;line-height:1.1}
+.mn b{display:block;font-weight:400;font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mn small{display:block;font-size:13px;color:#9fb0de;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mst{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap;font-size:15px;color:#c2cbe6}
+.mst b{font-weight:400;color:var(--gold)}
+.mrp{padding:1px 6px;background:#0b0f22;border:2px solid #000;font-size:14px}.mrp.up{color:#8cf0a8}.mrp.dn{color:#ff8a8d}
+.mpr{margin-left:auto;font-size:19px;color:var(--gold);display:inline-flex;align-items:center}
+.mpr .coin{margin-left:3px}
+.mcard .mka{display:flex;gap:6px}
+.mcard .mka button{flex:1;min-height:36px}
+.mdt{border-top:2px solid #000;padding-top:5px;font-size:15px}
+.mdt .dst{margin:3px 0}
+/* ---- Societa': schede di gestione e Bacheca ---- */
+.csub{margin:0 0 8px;max-width:520px}
+#club .qtabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+/* ---- Lega (classifica): campionato e coppa come due linguette sottili; la descrizione compare solo su quella attiva ---- */
+#event .ecards{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:8px}
+#event .ecard{padding:5px 10px}
+#event .ecard strong{font-size:17px;font-weight:400}
+#event .ecard small{display:none;font-size:13px;line-height:1.15}
+#event .ecard.on small{display:block}
+#event .ecard:disabled strong:after{content:" 🔒";font-size:13px}
+@media (max-height:420px){#event .ecard.on small{display:none}}
+/* ---- Posta: gruppi Da decidere / Novita' / Cronologia ---- */
+.alg{margin:10px 0 4px;font-family:var(--pfont);font-weight:400;font-size:9px;font-size-adjust:none;color:var(--gold);text-transform:uppercase;letter-spacing:0;display:flex;align-items:center;gap:8px}
+.alg b{font-weight:400;background:#0b0f22;border:2px solid #000;color:#fff;padding:1px 6px}
+.alg:first-child{margin-top:0}
+/* ---- Nuova carriera: tre passi (Campionato > Squadra > Allenatore) ---- */
+.steps{display:flex;gap:4px;margin-left:auto;align-items:center}
+.steps i{display:inline-flex;align-items:center;gap:5px;font-style:normal;font-size:14px;color:#7f8db8;padding:2px 7px;background:#141a36;border:2px solid #000}
+.steps i b{font-family:var(--pfont);font-weight:400;font-size:8px;font-size-adjust:none;background:#29366f;color:#fff;border:2px solid #000;padding:2px 4px}
+.steps i.on{color:#1a1c2c;background:var(--gold)}.steps i.on b{background:#fff;color:#1a1c2c}
+.steps i.done{color:#9fe3b3}.steps i.done b{background:var(--good);color:#06240f}
+@media (max-width:560px){.steps i em{display:none}}

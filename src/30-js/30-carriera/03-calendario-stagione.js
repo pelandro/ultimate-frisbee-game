@@ -82,6 +82,7 @@ function loadSave(d0){
 function persist(){
   if(QM.on)return;   // partita veloce: la carriera non si tocca
   SV.v=SAVE_V;SV.squad=squadData();delete SV.players;SV.lineup=lineupIds();SV.savedAt=Date.now();
+  if(typeof renderShell==='function'&&!QM.on&&csCur)renderShell();   // crediti e posta nella barra in alto sempre aggiornati
   try{const prev=localStorage.getItem(SAVE_KEY);if(prev&&prev.length<3e6&&+((prev.match(/"slot":(\d)/)||[0,'1'])[1])===(SV.slot||1))localStorage.setItem(SAVE_KEY+'-bak',prev);localStorage.setItem(SAVE_KEY,JSON.stringify(SV));if(SV.team)localStorage.setItem(slotKey(SV.slot||1),JSON.stringify(SV));}catch(e){}   // la versione precedente resta come copia di sicurezza (solo se e' della stessa carriera, cioe' dello stesso slot)
 }
 const ranking=(tab,names)=>names.length&&tab[names[0]]&&tab[names[0]].h?usRanking(tab,names):names.slice().sort((a,b)=>tab[b].pts-tab[a].pts||(tab[b].pf-tab[b].pa)-(tab[a].pf-tab[a].pa)||tab[b].pf-tab[a].pf);   // tabelle USA (con gli scontri diretti, h): 35-usa/03-stagione-usa.js

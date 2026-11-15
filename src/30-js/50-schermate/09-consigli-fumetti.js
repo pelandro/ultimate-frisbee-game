@@ -57,18 +57,18 @@ function adviceText(){
 }
 function renderTicker(){
   const un=(SV.alerts||[]).filter(a=>!a.seen&&!(AL_URGENT[a.k]||a.act)),el=$('hTick'),sp=el.firstElementChild;
-  const txt=un.length?'Novità: '+un[0].txt+(un.length>1?` (+${un.length-1} negli Avvisi)`:''):'Consiglio: '+adviceText();
+  const txt=un.length?'Novità: '+un[0].txt+(un.length>1?` (+${un.length-1} nella Posta)`:''):'Consiglio: '+adviceText();
   if(sp.dataset.t!==txt){sp.dataset.t=txt;sp.textContent=txt;sp.style.animationDuration=Math.max(14,txt.length*0.2)+'s';}
   el.classList.toggle('nw',un.length>0);
 }
 /* ---- fumetti ---- */
 const TIPS={
-  home:'Benvenuto nella tua carriera! Dal cruscotto vedi la prossima partita, la classifica e come stanno squadra e tifosi. Il tasto giallo fa giocare la partita, «Simula» la fa giocare al posto tuo. In basso scorre un consiglio.',
+  home:'Benvenuto nella tua carriera! Qui, nella schermata Partita, vedi la prossima partita, «Questa settimana» (cosa serve adesso) e come stanno squadra e tifosi. A sinistra la colonna ti porta in Squadra, Allena, Mercato, Lega e Società. Il tasto giallo fa giocare la partita, «Simula» la fa giocare al posto tuo. In basso scorre un consiglio.',
   roster:'Qui conosci i tuoi giocatori. Le stelle dicono quanto sono forti, la barra verde la condizione, la faccina l’umore. Tocca una carta per aprire la scheda: attributi, prestazioni e sviluppo, e le azioni Riposo, Colloquio e Soprannome. Con A e D scegli chi gioca in attacco e in difesa.',
   market:'Il mercato si rinnova ogni 5 giornate. Giovani promesse, svincolati e giocatori in vendita: osservali per scoprirne il potenziale. Alcuni hanno una motivazione (vuole giocare, ambizioso…) scritta sotto il nome. «Solo chi posso prendere» nasconde chi costa troppo.',
-  club:'Il Club è la tua società: strutture (campo, fisio, vivaio, tribune, osservatori, sede), staff e conti. Ogni livello costa di più ma dà un vantaggio che si vede. Con il tasto «i» accanto a ogni voce leggi cosa fa.',
+  club:'La Società è il tuo club: strutture (campo, fisio, vivaio, tribune, osservatori, sede), staff e conti. Ogni livello costa di più ma dà un vantaggio che si vede. Con il tasto «i» accanto a ogni voce leggi cosa fa.',
   train:'Allenarsi è il modo per far crescere la squadra. Scegli l’intensità e l’indirizzo: sopra i tasti vedi quanti punti ti aspetti e quanta condizione costa. Il programma automatico lo fa al posto tuo.',
-  event:'In Classifica trovi la tua serie, le altre e i migliori marcatori. A fine stagione qui ci sono premi e riepilogo, e da qui parte la stagione nuova.'
+  event:'In Lega trovi la tua serie, le altre e i migliori marcatori. A fine stagione qui ci sono premi e riepilogo, e da qui parte la stagione nuova.'
 };
 const tipsOn=()=>{try{return localStorage.getItem('ultimate-suggerimenti')!=='0';}catch(e){return true;}};
 let tipAfter=null,tipKey='';   // tipKey: quale fumetto e' aperto (per «Scopri di più», 21-tutorial.js)
