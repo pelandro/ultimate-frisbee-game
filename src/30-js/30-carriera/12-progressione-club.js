@@ -5,18 +5,20 @@ Object.assign(AL_KIND,{goal:['Obiettivo','#7fd8ff']});
 /* ---- STAFF ---- */
 const STAFF={
   coach:{n:'Allenatore',d:'Gli allenamenti rendono il 5% in più per livello'},
-  fit:{n:'Preparatore atletico',d:'Più recupero (+1 a giornata e +2 col Recupero per livello) e meno infortuni in allenamento (−10% per livello)'},
-  ana:{n:'Analista tattico',d:'+0,3 di forma di squadra per livello e il rapporto sulla prossima avversaria'},
+  fit:{n:'Preparatore atletico',d:'Più recupero (+2 a giornata e +4 col Recupero per livello) e meno infortuni in allenamento (−10% per livello)'},
+  ana:{n:'Analista tattico',d:'+0,5 di forma di squadra per livello e il rapporto sulla prossima avversaria'},
   men:{n:'Mentore dei giovani',d:'Chi ha fino a 23 anni cresce il 7% in più per livello; gli obiettivi personali pagano di più'}
 };
-const STAFF_MAX=3,STAFF_WAGE=[0,1,3,6];
+const STAFF_MAX=3,STAFF_WAGE=[0,1,2,4];   // a partita, per ruolo (era 0,1,3,6: ora pesano gli stipendi dei giocatori, wageOf)
 const staffLv=k=>(SV&&SV.staff&&SV.staff[k])|0;
 const staffCost=k=>50*(staffLv(k)+1);
 const staffWage=()=>Object.keys(STAFF).reduce((a,k)=>a+STAFF_WAGE[staffLv(k)],0);
 // buyStaff (migliorare chi hai gia'): 25-staff-persone.js
-// moltiplicatore degli allenamenti: campo, allenatore e mentore insieme non superano mai +50%
+// fatica degli allenamenti: il Campo la riduce del 6% per livello
+const trCostK=()=>1-0.06*facLv('camp');
+// moltiplicatore degli allenamenti: campo, allenatore e mentore insieme non superano mai +50% (il Campo da' il 6% per livello: prima il 10%, e con Campo 3 e Allenatore 3 il resto non serviva piu')
 const TRAIN_CAP=1.5;
-const trainMul=p=>carGrowK()*Math.min(TRAIN_CAP,(1+0.1*facLv('camp'))*(1+0.05*staffLv('coach'))*(p.age<=23?1+(0.07+(p.age<=21&&hasTr('men','tal')?0.035:0))*staffLv('men'):1));
+const trainMul=p=>carGrowK()*Math.min(TRAIN_CAP,(1+0.06*facLv('camp'))*(1+0.05*staffLv('coach'))*(p.age<=23?1+(0.07+(p.age<=21&&hasTr('men','tal')?0.035:0))*staffLv('men'):1));
 /* ---- SPECIALIZZAZIONI (le regole stanno in 10-sim/11b-specializzazioni.js) ---- */
 const specCost=p=>Math.round((40+2*Math.max(0,ovrX(p)-50))*(p.spec?1.5:1));
 function setSpec(p,id){
