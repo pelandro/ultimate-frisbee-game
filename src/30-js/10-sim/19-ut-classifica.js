@@ -24,6 +24,7 @@ function utoPickOpp(list,me,pts,last,rng){
 // PREMI DI REAL PLAYER. Gettoni a ogni partita; chi batte un avversario con piu' punti ne riceve di piu' (le fasce stanno dentro la finestra di
 // ricerca dell'avversario, 150 punti: oltre capita solo con pochi iscritti). Il pacchetto costa piu' che contro il computer: misurato con i pacchetti
 // veri, vincendo sempre si arriva a una media di 70 in circa 12 partite (con 90 gettoni erano 8)
+const UTO_DIFF=2;   // difficolta' fissa di Real player: Difficile (indice di DIFF_AI e DIFF_PLUS), uguale per tutti
 const UTO_PACK=130,UTO_COIN_W=40,UTO_COIN_L=15,UTO_UPSET=[[150,60],[100,40],[50,20],[25,10]];
 function utoCoins(mine,opp,win){
   if(!win)return {base:UTO_COIN_L,bonus:0};

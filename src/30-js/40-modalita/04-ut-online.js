@@ -90,12 +90,12 @@ function uoLaunch(o,ros){
   QM.on=true;UT.on=true;UO.on=true;UO.opp=o;
   UOP.op=o.p;uoSaveP();   // se il gioco si chiude prima della fine, alla prossima apertura conta come sconfitta (come abbandonare)
   setSquad(UT.col);setLineup(UT.sel.slice());
-  applyRoster(ros);
+  applyRoster(ros);oppBoost(DIFF_PLUS[UTO_DIFF]);
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;
   G.oppName=o.n;G.myName=UOP.name;G.matchLabel='Real player · '+UOP.p+' punti';
-  // difficolta' uguale per tutti (Medio) cosi' i punti sono confrontabili; la squadra avversaria e' quella vera dell'altro giocatore
-  newGame();rollWind();G.lvl=[0,1];G.oppPlus=0;G.idn=[null,teamIdentity(o.n,T[1])];G.xtr=false;G.hint=false;G.routes=true;G.inMatch=true;G.recorded=false;
+  // difficolta' fissa (Difficile, come nelle altre modalita': IA e bonus alle statistiche) uguale per tutti, cosi' i punti sono confrontabili; la squadra avversaria e' quella vera dell'altro giocatore
+  newGame();rollWind();G.lvl=[0,UTO_DIFF];G.oppPlus=DIFF_PLUS[UTO_DIFF];G.idn=[null,teamIdentity(o.n,T[1])];G.xtr=false;G.hint=false;G.routes=false;G.inMatch=true;G.recorded=false;
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
 }
@@ -145,6 +145,20 @@ function uoSettle(){   // partita lasciata a meta' (gioco chiuso): sconfitta
   UOP.p=np;UOP.g++;UOP.l++;UOP.dirty=true;UOP.op=null;uoSaveP();
 }
 // ---- schermate ----
+// i traguardi di punti, dal piu' alto in cima: disco del premio, punti, quante carte; il segno «Tu» sta tra l'ultimo raggiunto e il prossimo
+function renderMiles(){
+  const p=UOP?UOP.p:UTO_START,got=UT.ms|0,N=UTO_MILE_PK.length,nx=got+1;
+  let h='<div class="urmh">Traguardi</div>',me=false;
+  const you=()=>{me=true;return `<div class="urmy">Tu: <b>${p}</b> punti</div>`;};
+  for(let i=N;i>=1;i--){
+    const pk=utoMilePack(i),q=utPkQ(pk),n=utPackSize(pk),pt=utoMilePts(i),st=i<=got?'done':(i===nx?'next':'');
+    if(!me&&p>=pt)h+=you();
+    h+=`<div class="urmr ${st}">${utDisc(q,n,'')}<span><b>${pt} punti</b><small>${q===6?'Super pacchetto':UT_PQN[q]} · ${n} giocatori${i===1?' · potenziamenti':''}</small></span><em>${st==='done'?'✓ ottenuto':(st==='next'?'mancano '+Math.max(0,pt-p):'')}</em></div>`;
+  }
+  if(!me)h+=you();
+  h+=got>=N?`<p class="urmf">Poi un Super pacchetto ogni ${UTO_MILE} punti: il prossimo a ${utoMilePts(got+1)}.</p>`:'';
+  $('urMiles').innerHTML=h;
+}
 function renderUtReal(){
   uoSettle();
   const off=!uoOk(),has=UT.col.length>0&&UT.sel.length===7,net=uoOffline(),pend=UT.packs.length,nx=(UT.ms|0)+1;
@@ -158,7 +172,8 @@ function renderUtReal(){
   $('urTeam').classList.toggle('hidden',!UT.col.length);
   $('urTeamS').textContent=`${UT.col.length} giocatori · titolari ${UT.sel.length}/7`;
   $('urShop').classList.toggle('hidden',!UT.col.length);
-  $('urGoal').textContent=UT.col.length?`Prossimo traguardo: ${utoMilePts(nx)} punti → ${utPkQ(utoMilePack(nx))===6?'Super pacchetto':UT_PQN[utPkQ(utoMilePack(nx))]} da ${utPackSize(utoMilePack(nx))} giocatori${nx===1?' e potenziamenti sbloccati':''}. Vittoria ${UTO_COIN_W} gettoni (fino a +${UTO_UPSET[0][1]} se l’avversario ha più punti), sconfitta ${UTO_COIN_L}.`:'';
+  renderMiles();
+  $('urGoal').textContent=UT.col.length?`Vittoria ${UTO_COIN_W} gettoni (fino a +${UTO_UPSET[0][1]} se l’avversario ha più punti), sconfitta ${UTO_COIN_L}.`:'';
   $('urBoard').disabled=off||net;
   $('urMsg').textContent=net&&!UO.msg?'Nessuna connessione: Real player ha bisogno di internet. Il resto del gioco funziona anche offline.':UO.msg;
   if(UOP&&UOP.dirty&&!UO.busy&&Date.now()-UO.tried>15000)uoPush();   // ogni tanto, non in continuazione se la rete non risponde

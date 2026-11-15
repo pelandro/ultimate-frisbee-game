@@ -438,7 +438,8 @@ catch(e){
     await page.click('#tUT');await vis('#utMode');await page.click('#umReal');await vis('#utReal');
     if(await page.locator('#urNameBox').isVisible())throw new Error('con il nome gia\' scelto il riquadro del nome non deve comparire');
     real=(await cols())[1];if(real.ms!==2||real.pk.join()!=='52,63')throw new Error('traguardi: attesi i pacchetti 52 e 63, trovati '+real.pk.join()+' (ms '+real.ms+')');
-    if(!/1300 punti/.test(await page.locator('#urGoal').innerText()))throw new Error('il prossimo traguardo dovrebbe essere a 1300 punti: '+await page.locator('#urGoal').innerText());
+    if(!/1300 punti/.test(await page.locator('#urMiles .urmr.next').innerText()))throw new Error('il prossimo traguardo dovrebbe essere a 1300 punti: '+await page.locator('#urMiles').innerText());
+    if(await page.locator('#urMiles .urmr.done').count()!==2||await page.locator('#urMiles .urmr').count()!==5)throw new Error('i traguardi devono essere 5, con i primi due ottenuti');
     await page.click('#urPack');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(2200);await page.click('#pkGo');await page.click('#pkGo');await page.waitForTimeout(2600);await page.click('#pkGo');await vis('#utReal');
     real=(await cols())[1];if(real.n!==21||real.pk.length)throw new Error('dopo i due pacchetti premio attesi 21 giocatori, trovati '+real.n);
     await page.click('#urTeam');await vis('#utTeam');await page.click('#tmMode [data-m="up"]');await page.click('#tmList .urow[data-i] >> nth=0');await vis('#tmUp');
