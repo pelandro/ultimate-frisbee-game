@@ -18,7 +18,7 @@ const LN_HOMONYM=US_HOMONYM;
 // LN_DUAL = Overall del giocatore in Europa: il piu' alto tra il valore europeo e quello americano (Fantasy dei Nationals), ma l'America non lo alza di piu' di 5 punti e
 // nessuno supera 92 tranne De Marrée (97: il migliore del mondo) (un solo torneo non fa un fuoriclasse: la regola e' la stessa di US_REP). McHale e Hill sono stati assegnati ai Clapham per scelta del progetto. I quattro che erano stelle del mercato alzano anche il loro Overall in STARS.
 const LN_OUT=new Set(['Orion Cable'].map(usNameKey));
-const LN_DUAL={'Lander Decraene':89,'Sofiène Bontemps':90,'Louis Betrancourt':84,'Gael Ancelin':83,'Daan De Marrée':97,'David Barzasi':92,'Thomas Edmonds':92,'Elliot Bonnet':92,'Connor McHale':84,'Sam Hill':76};
+const LN_DUAL={'Lander Decraene':88,'Sofiène Bontemps':88,'Louis Betrancourt':83,'Gael Ancelin':82,'Daan De Marrée':97,'David Barzasi':89,'Thomas Edmonds':89,'Elliot Bonnet':90,'Connor McHale':84,'Sam Hill':76};
 let lnDualMap=null;
 const lnDual=(sur,nm)=>{if(!lnDualMap){lnDualMap={};for(const n in LN_DUAL)lnDualMap[usNameKey(n)]=LN_DUAL[n];}return lnDualMap[usNameKey(nm+' '+sur)]|0;};
 for(const r of STARS)r[4]=Math.max(r[4],lnDual(r[0],r[1]));
@@ -66,7 +66,7 @@ function lnAgeOf(full,age,hi){
 const LN_BOOST={'Freezzz Beezzz one':[4,4,3,3,2,2]};
 const lnShape=j=>j<7?4.2-1.45*j:-4.5-0.65*(j-6);
 function lnRoster(club,seedStr,opt){
-  opt=opt||{};const B=LN_BY[club],P=opt.p!==undefined?opt.p:(opt.low?B.p*0.9+5.5:B.p),rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
+  opt=opt||{};const B=LN_BY[club],P=opt.p!==undefined?opt.p:(opt.low?B.p*0.9+5.5:B.p),dl=opt.low?Math.max(0,B.p-P):0,rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
   for(const r of STARS)if(LN_STAR_CLUB[usStarKey(r)]===club)specs.push({k:'s',row:r});
   const star=new Set(specs.map(s=>usNameKey(s.row[1]+' '+s.row[0])));   // chi e' gia' una stella non si ripete dalle tabelle
   const real=(LN_PL[B.lk][club]||[]).filter(r=>{const k=usNameKey(r[1]+' '+r[0]);return !star.has(k)&&!LN_OUT.has(k);}).map(r=>{const ag=lnAgeOf(r[1]+' '+r[0],r[2],r[3]);return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+r[5],fx:lnDual(r[0],r[1])};});
@@ -86,14 +86,14 @@ function lnRoster(club,seedStr,opt){
   const free=rl.sort((a,b)=>b.jk-a.jk).concat(specs.filter(s=>s.k==='g'));
   free.forEach((s,j)=>{const jj=j0+j;s.lv=(jj<7?sc:1)*lnShape(jj)+(jj<7&&s.k==='r'&&s.base>-4?clamp(0.12*s.base,-1,1):0)+((LN_BOOST[club]||[])[j]||0);});   // il fondo della rosa segue sempre la stessa curva: club piu' forte = fondo piu' forte
   // la stella migliore del club resta la migliore: chi non e' fisso non la supera (un buon dato statistico non fa di un giocatore il numero uno del club)
-  const capFree=nFix?Math.max(...specs.filter(fixed).map(s=>s.k==='s'?Math.max(s.row[4],Math.min(95,Math.round(P+1))):s.fx))-1:99;
+  const capFree=nFix?Math.max(...specs.filter(fixed).map(s=>s.k==='s'?Math.max(Math.round(s.row[4]-dl),Math.min(95,Math.round(P+1))):s.fx-dl))-1:99;
   let off=0,out=[];
   for(let it=0;it<7;it++){
     out=specs.map(s=>{
       const [sur,nm,age,role]=s.row,rng=mulberry32(hashStr(seedStr+'|'+club+'|'+sur+nm));
       // una stella tiene l'Overall del mercato, ma in un club forte non sta sotto la media dei compagni (a Elliot Bonnet un torneo storto in America non toglie il ruolo di leader in Francia)
-      if(s.k==='s'){const row=s.row.slice();row[4]=Math.max(row[4],Math.min(95,Math.round(P+1)));const o=starPlayer(row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
-      if(s.fx>0)return usCard(sur,nm,age,role,s.fx,rng,s.ex?{}:{ae:1});
+      if(s.k==='s'){const row=s.row.slice();row[4]=Math.max(Math.round(row[4]-dl),Math.min(95,Math.round(P+1)));const o=starPlayer(row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
+      if(s.fx>0)return usCard(sur,nm,age,role,s.fx-dl,rng,s.ex?{}:{ae:1});
       return usCard(sur,nm,age,role,Math.min(capFree,Math.max(clamp(P+s.lv+off,36,95),usAward(sur,nm))),rng,s.k==='g'?{gen:true}:(s.ex?{}:{ae:1}));
     });
     const d=P-rosterPower(out);if(Math.abs(d)<0.35)break;
