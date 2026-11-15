@@ -59,7 +59,8 @@ function renderTeamsLN(){
 // descrizione breve di un livello: gironi e fasi finali
 function lnFormatTxt(tr){
   const g=tr.pools>1?`${tr.pools} gironi`:'girone unico',m={c8:'tabellone a 8 con tutte le finali di piazzamento',c4:'semifinali e finali',x8:'turno incrociato e finali di piazzamento',p:'finali di piazzamento a coppie',rr:'minigirone'};
-  return `${tr.comps>1?tr.comps+' competizioni, ':''}${g}, tutti contro tutti${tr.fin.length?', poi '+[...new Set(tr.fin.map(f=>m[f.m]))].join(' e '):''}`;
+  const lk=LN_IDS.find(k=>LN_DEF[k].tiers.includes(tr)),tg=lk?lnTierGames(lk,tr):null,legs=tg&&tg.g>tg.one?` (nel gioco più giri: ${tg.g} partite a testa, per arrivare ad almeno ${LN_MIN} in stagione)`:'';
+  return `${tr.comps>1?tr.comps+' competizioni, ':''}${g}, tutti contro tutti${legs}${tr.fin.length?', poi '+[...new Set(tr.fin.map(f=>m[f.m]))].join(' e '):''}`;
 }
 // ---- Classifica ----
 const lnZone=(r,tr)=>{const i=tr.fin.findIndex(f=>r>=f.f&&r<=f.t);return i<0?'':(i===0?'up':'pi');};

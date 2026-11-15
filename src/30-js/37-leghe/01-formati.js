@@ -11,7 +11,8 @@
    f..t = quali posizioni dei gironi entrano nella fase (da f a t). Le squadre che non hanno un avversario (gironi da 3 o 7) passano il turno senza giocare.
    Salgono e scendono n squadre tra un livello e il successivo (mv): sono stime dove il regolamento non e' pubblico (Francia: 3 tra N1 e N2 e 6 tra N2 e N3, come nei
    numeri dei gironi; Germania: 2 e 3; Belgio: 2 per livello; Regno Unito: 1). Le prime squadre di ciascun paese vanno all'EUCF (eu). Livelli con play:false sono
-   quelli di cui le fonti hanno solo una parte delle squadre: ci sono e si giocano, ma non si puo' partire da li'. */
+   quelli di cui le fonti hanno solo una parte delle squadre: ci sono e si giocano, ma non si puo' partire da li'.
+   Nel gioco i gironi hanno piu' giri dove servono, perche' chi arriva in fondo giochi almeno 11 partite (06-partite-minime.js). */
 const LN_DEF={
   BE:{id:'BE',cc:'Belgio',de:'del Belgio',name:'Belgio · BUOC',sub:'Belgian Ultimate Outdoor Championship · 6 livelli, 46 squadre',eu:3,mv:[2,2,2,2,2],
     txt:'Il campionato belga Open outdoor (BUOC): 6 livelli, N1-N6, da 8 squadre in due gironi da 4, poi playoff a tabellone con tutte le finali di piazzamento. Salgono e scendono due squadre per livello. Le prime tre della N1 vanno all’EUCF.',
