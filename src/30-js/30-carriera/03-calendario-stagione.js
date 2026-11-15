@@ -72,7 +72,7 @@ function loadSave(d0){
       SV.rv=3;SV.realAB=1;SV.realAI=1;
     }
     for(const n in SV.rost)for(const o of SV.rost[n])if(o){if(o.trait===undefined)o.trait=traitFor(o.full||o.n,o.s,o.r);if(!o.dev)o.dev=devOf(o.full||o.n);}
-    if(isUS())usMigrate();   // salvataggio USA con 32 club e 4 Conference: la stagione riparte con 48 club e 8 Conference (35-usa/04-carriera-usa.js)
+    if(isUS()){usMigrate();usCrossFix();}   // salvataggio USA con 32 club e 4 Conference: la stagione riparte con 48 club e 8 Conference (35-usa/04-carriera-usa.js)
     SV.v=SAVE_V;careerInit();   // campi della nuova carriera, anche sui salvataggi precedenti
     setLineup(idsOf(SV.lineO).length===7?idsOf(SV.lineO):lineupIds());
     return true;
@@ -91,6 +91,7 @@ function nextMatch(){
   if(SV.event==='camp'&&SV.po&&SV.po.on)return {name:SV.po.opp,roster:SV.rost[SV.po.opp],label:poLabel()};   // playoff: l'avversaria del turno
   if(SV.event==='camp'){
     if(SV.done)return null;
+    if(isUS()&&usCrossPending())return usCrossMatch();   // USA: interregionale (35-usa/03-stagione-usa.js)
     const names=SV.mem[SV.sr],ui=names.indexOf(SV.team),pr=SV.sched[SV.round].find(m=>m[0]===ui||m[1]===ui),on=names[pr[0]===ui?pr[1]:pr[0]];
     return {name:on,roster:SV.rost[on],label:`Giornata ${SV.round+1} di ${totalRounds()}`+(on===SV.riv?' · Derby':'')};
   }
@@ -176,6 +177,7 @@ function recordResult(win,su,so){
   SV.susp=null;   // la partita e' finita: niente piu' da riprendere
   let msg='';SV.played=(SV.played||0)+1;
   const incPre=matchIncome(win);   // l'incasso di questa partita si calcola con i tifosi di prima del risultato
+  const xm=!!(isUS()&&SV.event==='camp'&&usCrossPending());   // interregionale USA: stanca e conta per il ranking, ma niente incassi, stipendi, allenamenti, eventi e mercato
   if(isUS()&&SV.event==='camp'){
     fansBump(win,win?1:0);msg=usRecord(win,su,so);   // campionato USA: stagione regolare, Play-in, Nationals (35-usa/03-stagione-usa.js)
   }else if(isLN()&&SV.event==='camp'){
@@ -202,21 +204,21 @@ function recordResult(win,su,so){
     msg=euRecord(win,su,so);   // EUCF: gironi, prequarti, quarti, semifinali, finale (36-europa/01-eucf.js)
   }
   for(const p of SQ){   // nuova giornata: tornano gli allenamenti, gli infortunati recuperano; ogni infortunio e ogni rientro viene segnalato
-    p.tr=false;
+    if(!xm)p.tr=false;
     if(p.injNew&&(SV.fisShield|0)>0&&p.inj>1){p.inj=Math.ceil(p.inj/2);SV.fisShield--;}   // prevenzione (fisioterapia tenuta almeno al livello 3)
     if(p.injNew&&p.inj>1&&hasTr('fit','fis'))p.inj--;   // caratteristica del preparatore: «Fisioterapista»
     if(p.injNew){const big=p.inj>=5;if(big){p.injC=(p.injC|0)+1;p.injBig=1;}alertAdd('inj',`${pname(p)} si è infortunat${oa(p)}${big?' in modo serio':''}: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full});}
     else if(p.inj>0){p.inj--;if(p.inj===0){if(p.abs)p.abs=0;else healed(p);}}   // abs: assenza per impegni, non un infortunio
     p.injNew=false;
   }
-  SV.tTeam=false;
+  if(!xm)SV.tTeam=false;
   // incasso, morale, affiatamento, condizione: chi ha giocato si stanca, la settimana fa recuperare (di piu' con la fisioterapia)
-  const inc=incPre,wg=wageBill();SV.cash+=inc-wg;SV.lastInc=inc-wg;SV.lastWage=wg;
+  if(!xm){const inc=incPre,wg=wageBill();SV.cash+=inc-wg;SV.lastInc=inc-wg;SV.lastWage=wg;}
   // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso gli stipendi arrivano in ritardo e l'umore cala
   SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-(SV.cash<0?3:0)+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede')+(hasTr('men','pap')?0.3:0),0,100);
   for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
-  lifeAfterMatch();dynAfterMatch();
-  if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0)buildMarket();   // il mercato si rinnova ogni 5 giornate
+  if(!xm){lifeAfterMatch();dynAfterMatch();}
+  if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0&&!xm)buildMarket();   // il mercato si rinnova ogni 5 giornate
   achCheck();   // traguardi (23-traguardi.js)
   persist();return msg;
 }

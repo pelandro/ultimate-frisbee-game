@@ -25,10 +25,13 @@ function usaSelfTest(seasons,seed){
           const m=nextMatch();if(!m){chk('flusso',false,'partita mancante');break;}const r=simPower(SV.team,m.name);recordResult(r[0]>r[1],r[0],r[1]);hide();games++;
           // le tre viste della Classifica si aprono in ogni fase (i gironi dei Nationals esistono solo dopo la stagione regolare)
           for(const v of ['nat','rank','conf']){usTabSel=v;try{renderEvent();}catch(e){chk('viste',false,v+' fase '+SV.us.ph+': '+e.message);}}}
-        chk('flusso',SV.done&&g<=20,'stagione non chiusa o troppo lunga '+g);
+        chk('flusso',SV.done&&g<=24,'stagione non chiusa o troppo lunga '+g);
         bidChg+=chgS;bidSeas++;
         const U=SV.us,N=U.nat;
-        chk('interreg',U.xn===5&&!!U.xl&&U.xl.length===5&&U.xl.every((x,i)=>x.r===i+1&&usConfOf(x.opp)!==U.cf),'partite interregionali del tuo club: '+(U.xl?U.xl.length:'nessuna'));if(!N||!U.q){chk('flusso',false,'Nationals mancanti');break;}
+        chk('interreg',U.xn===7&&!!U.xl&&U.xl.length===7&&new Set(U.xl.map(x=>usConfOf(x.opp))).size===7&&U.xl.every((x,i)=>x.r===i+1&&usConfOf(x.opp)!==U.cf),'interregionali del tuo club: '+(U.xl?U.xl.map(x=>usConfOf(x.opp)).join(','):'nessuna'));
+        {const per={};for(const L of U.xp){chk('interreg',L.length===24,'strato di '+L.length+' partite');for(const [a,b] of L){(per[a]=per[a]||[]).push(usConfOf(b));(per[b]=per[b]||[]).push(usConfOf(a));}}
+          chk('interreg',US_NAMES.every(n=>per[n]&&per[n].length===7&&new Set(per[n]).size===7&&!per[n].includes(usConfOf(n))),'ogni club deve incontrare una volta ciascuna delle altre 7 Conference');}
+        chk('interreg',SV.res.length===5&&SV.round===5,'le interregionali non devono contare come giornate di Conference');
         chk('qualif',U.q.length===16&&new Set(U.q).size===16,'16 ai Nationals');
         // posti per regione (bid allocation USAU): 1 automatico + 8 di forza dal ranking, 16 in tutto, al massimo 4 per regione; ogni regione manda esattamente i suoi posti
         const B=U.bids;let tot=0;chk('posti',!!B&&US_CK.every(c=>B[c]>=1&&B[c]<=4),'posti per regione fuori misura');
@@ -107,7 +110,7 @@ function usaSelfTest(seasons,seed){
   r('Formato: 48 club distinti in 8 Conference (regioni USAU) da 6','club','sì');rows[rows.length-1].ok=rows[rows.length-1].ok&&!bad.conf;
   r('Stagione regolare: 5 giornate, stagione che si chiude in al massimo 20 partite tue','flusso',`sì (${seasonsDone} stagioni, ${games} partite)`);
   r('Posti ai Nationals per regione (bid allocation USAU): 1 automatico + 8 di forza dal ranking = 16, da 1 a 4 per Conference','posti','sì');
-  r('Interregionali: ogni giornata una partita fuori Conference (5 a stagione), che lega le Conference nel ranking','interreg','sì');
+  r('Interregionali: 7 a stagione (una contro ogni altra Conference), 12 partite in tutto, che legano le Conference nel ranking','interreg','sì');
   rows.push(row('Posti ai Nationals che cambiano durante la stagione regolare (ranking vivo)',bidChg+' cambi in '+bidSeas+' stagioni',bidChg>=bidSeas));
   r('Qualificate: ogni Conference manda esattamente i suoi posti (dirette + vincitrici del Play-in), 16 ai Nationals','qualif','sì');
   r('Play-in: gare secche tra le squadre dopo le dirette (2ª-3ª, oppure 2ª-5ª e 3ª-4ª, 3ª-6ª e 4ª-5ª), le altre fuori','playin','sì');

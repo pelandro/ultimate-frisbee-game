@@ -6,11 +6,13 @@
    3) NATIONALS: 16 club in 4 gironi da 4 (fasce del ranking nazionale, club della stessa Conference in gironi diversi quando si puo'). Le prime vanno ai quarti,
       le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono fuori. Poi quarti, semifinali e finale.
    4) RANKING NAZIONALE (SV.us.pr): punteggio Elo aggiornato dopo ogni partita ufficiale, contro la forza dell'avversario e col margine di mete.
-   5) PARTITE INTERREGIONALI: le Conference giocano solo al loro interno e un Elo aggiornato solo li' conserva la somma dei punti di ogni Conference, quindi i posti per
-      regione non reagirebbero mai ai risultati. Perche' il ranking sia vivo, a ogni giornata ogni club gioca anche una partita fuori Conference (come i tornei interregionali
-      veri): conta solo per il ranking (non per classifica, statistiche e giocatori) e quelle del tuo club si simulano da sole. Dopo ogni giornata i posti ai Nationals di ogni regione
-      si ricalcolano dal ranking (usBids): sono definitivi alla fine della stagione regolare, ma si muovono giornata dopo giornata (SV.us.bq = prima di questa giornata).
-   Stato: SV.us={cf, conf, ph, pr, pr0, fin, pin, bids, q, nat, stage, xn, xl, bq, pl}. SV.sr==='U', SV.mem.U = i club della tua Conference, SV.lg = le altre tre Conference.
+   5) PARTITE INTERREGIONALI: oltre alle 5 della propria Conference ogni club gioca una partita contro un club di ciascuna delle altre 7 Conference (12 partite in tutto, in
+      US_CAL: c = giornata di Conference, x = interregionale). Servono a legare le Conference nel ranking: un Elo aggiornato solo dentro la Conference ne conserva la somma e i
+      posti per regione non reagirebbero ai risultati. Le interregionali contano solo per il ranking (non per la classifica, le statistiche, gli incassi e gli eventi) e le giochi
+      o simuli come le altre. Si giocano 7 «strati» (usCrossPlan, a coppie di Conference con il metodo del cerchio): in ogni strato tutti i club giocano una partita, accoppiati per
+      forza; gli altri club le giocano quando le giochi tu. Dopo ogni partita i posti ai Nationals di ogni regione si ricalcolano dal ranking (usBids): sono definitivi alla fine
+      della stagione regolare, ma si muovono partita dopo partita (SV.us.bq = prima dell'ultima partita).
+   Stato: SV.us={cf, conf, ph, pr, pr0, fin, pin, bids, q, nat, stage, ci, xn, xp, xl, lp, bq, pl}. SV.sr==='U', SV.mem.U = i club della tua Conference, SV.lg = le altre tre Conference.
    nat={pools, tabs, sched, pg, rd, ord, ko, champ, out}: rd = turno in corso (0-2 gironi, 3 prequarti, 4 quarti, 5 semifinali, 6 finale, 7 concluso);
    ko[0..3] = prequarti, quarti, semifinali, finale: ogni partita e' [a,b,punti a,punti b,vincitrice]. */
 Object.assign(PO_NAME,{pin:'Play-in',nat:'Nationals'});
@@ -53,7 +55,7 @@ function usLeagueBegin(){   // chiamata da leagueBegin() a ogni inizio stagione
   for(const c of US_CK)if(c!==U.cf){const n=U.conf[c];SV.lg[c]={sched:roundRobin(n.length),round:0,tab:usFreshTab(n),last:[],streak:{}};}
   if(SV.season>1)for(const n of US_NAMES)U.pr[n]=0.5*U.pr[n]+0.5*usBaseRating(n);   // d'estate il ranking si riavvicina alla forza delle rose
   U.ph='reg';U.pin=null;U.q=null;U.nat=null;U.fin=null;U.bids=null;U.stage=0;U.pr0=Object.assign({},U.pr);
-  U.xn=0;U.xl=[];U.bq=usBids();U.pl=usPosMap();   // interregionali giocate, quelle del tuo club, posti e posizioni prima della giornata
+  U.ci=0;U.xn=0;U.xl=[];U.lp='';U.xp=usCrossPlan();U.bq=usBids();U.pl=usPosMap();   // calendario: partita di adesso, strati interregionali giocati e loro accoppiamenti, tue interregionali
 }
 function usLeagueAdvance(){   // le altre Conference giocano la loro giornata quando giochi la tua
   if(!SV.lg||!SV.sched)return;
@@ -70,33 +72,62 @@ function usLeagueAdvance(){   // le altre Conference giocano la loro giornata qu
       L.last=last;L.round++;
     }
   }
-  usCrossAdvance(SV.done||SV.round>=R?R:SV.round);
 }
-// ---- partite interregionali (punto 5): una a giornata per ogni club, contro un club di un'altra Conference di livello vicino ----
+// ---- partite interregionali (punto 5) ----
+const US_CAL=['c','x','x','c','x','c','x','x','c','x','x','c'];   // 5 giornate di Conference e 7 interregionali; finisce con una giornata di Conference (le altre parti del gioco leggono SV.round>=SV.sched.length come fine)
 const usPosMap=()=>{const m={};usRankList().forEach((n,i)=>{m[n]=i+1;});return m;};
-function usCrossRound(r){
-  const U=SV.us,free=US_NAMES.map(n=>[n,U.pr[n]+(Math.random()-0.5)*160]).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);   // accoppiati per ranking, con un po' di caso (non sono tornei a teste di serie)
-  while(free.length>1){
-    const a=free.shift(),k=free.findIndex(x=>usConfOf(x)!==usConfOf(a));if(k<0)continue;   // senza avversarie di altre Conference (fine dell'elenco) resta a riposo
-    const b=free.splice(k,1)[0],[sa,sb]=simPower(a,b);usRate(a,b,sa,sb);
-    if(a===SV.team||b===SV.team){if(!U.xl)U.xl=[];U.xl.push({r:r+1,opp:a===SV.team?b:a,su:a===SV.team?sa:sb,so:a===SV.team?sb:sa});}
+// accoppiamenti: 7 strati, in ognuno le 8 Conference si affrontano a coppie (metodo del cerchio: ogni Conference ne incontra una diversa per strato); dentro la coppia i sei club
+// dell'una giocano contro i sei dell'altra, accoppiati per ranking con un po' di caso
+function usCrossPlan(){
+  const U=SV.us,cs=US_CK.slice().sort(()=>Math.random()-0.5),plan=[];
+  for(let l=0;l<7;l++){
+    const ms=[];
+    for(let i=0;i<4;i++){
+      const A=cs[i],B=cs[7-i],ord=c=>U.conf[c].map(n=>[n,U.pr[n]+(Math.random()-0.5)*160]).sort((a,b)=>b[1]-a[1]).map(x=>x[0]),oa=ord(A),ob=ord(B);
+      for(let k=0;k<oa.length;k++)ms.push([oa[k],ob[k]]);
+    }
+    plan.push(ms);cs.splice(1,0,cs.pop());   // il primo resta fermo, gli altri girano
+  }
+  return plan;
+}
+const usCrossOpp=l=>{const m=SV.us.xp&&SV.us.xp[l]&&SV.us.xp[l].find(x=>x[0]===SV.team||x[1]===SV.team);return m?(m[0]===SV.team?m[1]:m[0]):'';};
+// la prossima partita e' un'interregionale? (solo in stagione regolare e con la stagione aperta)
+const usCrossPending=()=>!!(SV.us&&SV.us.ph==='reg'&&!SV.done&&(SV.us.ci|0)<US_CAL.length&&US_CAL[SV.us.ci|0]==='x'&&usCrossOpp(SV.us.xn|0));
+const usCrossMatch=()=>{const U=SV.us,l=U.xn|0,o=usCrossOpp(l);return {name:o,roster:SV.rost[o],label:`Interregionale ${l+1} di 7 · ${usConfName(usConfOf(o))}`};};
+// lo strato l: tutti i club giocano la loro partita (la tua, se c'e', con il risultato vero)
+function usCrossLayer(l,mine){
+  for(const [a,b] of SV.us.xp[l]){
+    if(mine&&mine[0]===a&&mine[1]===b){usRate(a,b,mine[2],mine[3]);continue;}
+    const [sa,sb]=simPower(a,b);usRate(a,b,sa,sb);
   }
 }
-function usCrossAdvance(upto){   // gioca le giornate interregionali che mancano fino a quella indicata (i salvataggi senza il campo ripartono da zero)
-  const U=SV.us;if(!U||U.ph!=='reg')return;
-  while((U.xn|0)<upto){usCrossRound(U.xn|0);U.xn=(U.xn|0)+1;}
+// salvataggi con il vecchio modello (una interregionale simulata a giornata): si ricostruisce il calendario dal punto in cui e' la tua stagione
+function usCrossFix(){
+  const U=SV.us;if(!U||U.ph!=='reg'||U.xp)return;
+  U.xp=usCrossPlan();U.xl=[];U.lp='';let c=0,i=0;while(i<US_CAL.length&&c<SV.round){if(US_CAL[i]==='c')c++;i++;}
+  U.ci=i;U.xn=0;for(let k=0;k<i;k++)if(US_CAL[k]==='x'){usCrossLayer(U.xn,null);U.xn++;}
+  U.bq=usBids();U.pl=usPosMap();
 }
-// dopo una giornata: i posti ai Nationals delle regioni che cambiano (notizie del campionato) e il testo per la tua Conference
+// dopo una partita: i posti ai Nationals delle regioni che cambiano (notizie del campionato) e il testo per la tua Conference
 function usBidsReport(){
   const U=SV.us,nb=usBids(),bq=U.bq||nb,out=[];
   for(const c of US_CK)if(nb[c]!==bq[c])story(`Ranking: ${usConfName(c)} passa da ${bq[c]} a ${nb[c]} ${nb[c]===1?'posto':'posti'} ai Nationals.`,c===U.cf);
-  const x=(U.xl||[]).slice(-1)[0];
-  if(x&&x.r===SV.round)out.push(`Interregionale: ${x.su>x.so?'battuta':'sconfitta da'} ${x.opp} ${Math.max(x.su,x.so)}–${Math.min(x.su,x.so)}.`);
   const pl=U.pl||{},p=usPos(SV.team),d=pl[SV.team]?pl[SV.team]-p:0;
   out.push(`Ranking nazionale: ${p}°${d?` (${d>0?'▲':'▼'}${Math.abs(d)})`:''}.`);
   if(nb[U.cf]!==bq[U.cf])out.push(`${usConfName(U.cf)}: da ${bq[U.cf]} a ${nb[U.cf]} ${nb[U.cf]===1?'posto':'posti'} ai Nationals.`);
   return out.join(' ');
 }
+// una tua interregionale (giocata o simulata): conta solo per il ranking
+function usCrossRecord(win,su,so){
+  const U=SV.us,l=U.xn|0,opp=usCrossOpp(l);
+  U.bq=usBids();U.pl=usPosMap();
+  usCrossLayer(l,[SV.team,opp,su,so]);
+  if(!U.xl)U.xl=[];U.xl.push({r:l+1,opp,su,so});U.xn=l+1;U.ci=(U.ci|0)+1;U.lp='x';
+  const nx=usNextTxt();
+  return `Interregionale ${l+1} di 7 ${win?'vinta':'persa'} contro ${opp} ${Math.max(su,so)}–${Math.min(su,so)}. ${usBidsReport()} ${nx}`;
+}
+// testo della prossima partita (giornata di Conference o interregionale)
+function usNextTxt(){const m=nextMatch();return m?`Prossima: ${m.name}${m.label&&/^Interreg/.test(m.label)?' (interregionale)':''}.`:'';}
 const usTab=c=>c===SV.us.cf?SV.tab:(SV.lg&&SV.lg[c]?SV.lg[c].tab:null);
 const usConfOrder=c=>{const t=usTab(c);return t?usRanking(t,SV.us.conf[c]):SV.us.conf[c].slice();};
 function usHalf(){   // giro di boa: la fotografia delle quattro Conference
@@ -105,7 +136,7 @@ function usHalf(){   // giro di boa: la fotografia delle quattro Conference
 // ---- stagione regolare: una tua partita (giocata o simulata) ----
 function usRecord(win,su,so){
   const U=SV.us;
-  if(U.ph==='reg')return usRegRecord(win,su,so);
+  if(U.ph==='reg')return usCrossPending()?usCrossRecord(win,su,so):usRegRecord(win,su,so);
   if(U.ph==='pin')return usPinRecord(win,su,so);
   return usNatRecord(win,su,so);
 }
@@ -118,13 +149,13 @@ function usRegRecord(win,su,so){
     else if(j===ui){usAddRes(SV.tab,a,b,so,su);usRate(a,b,so,su);SV.res.push({opp:a,su,so});opp0=a;if(lsLive())lsMatch(a,so);}
     else{const [sa,sb]=simPower(a,b);usAddRes(SV.tab,a,b,sa,sb);usRate(a,b,sa,sb);if(lsLive()){lsMatch(a,sa);lsMatch(b,sb);}}
   }
-  SV.round++;
+  SV.round++;SV.us.ci=(SV.us.ci|0)+1;SV.us.lp='c';
   leagueAdvance();
   fansBump(win,SV.riv&&opp0===SV.riv?(win?1.5:-1):0);
   const dby=derbyAfter(opp0,win);
   if(SV.round===Math.floor(SV.sched.length/2)){retireCheck('mid');leagueRetAnnounce();usHalf();}
   if(SV.round>=SV.sched.length)return usRegEnd(dby+' '+usBidsReport());
-  return `Giornata ${SV.round} di ${SV.sched.length} conclusa: ${myRank()}° nella ${usConfName(SV.us.cf)}. ${usBidsReport()} Prossima: ${nextMatch().name}.`+dby;
+  return `Giornata ${SV.round} di ${SV.sched.length} conclusa: ${myRank()}° nella ${usConfName(SV.us.cf)}. ${usBidsReport()} ${usNextTxt()}`+dby;
 }
 // ---- posti ai Nationals (bid allocation di USA Ultimate) ----
 // 16 posti: ogni regione (Conference) ne ha 1 automatico, gli altri 8 sono posti di forza assegnati dal ranking nazionale. Si scorre il ranking: la prima squadra di una regione
