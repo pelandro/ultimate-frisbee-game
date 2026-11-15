@@ -32,3 +32,27 @@ function layRect(el){
   const a=rotPt(r.left,r.top),c=rotPt(r.right,r.bottom),l=Math.min(a[0],c[0]),t=Math.min(a[1],c[1]);
   return {left:l,top:t,width:Math.abs(c[0]-a[0]),height:Math.abs(c[1]-a[1]),right:l+Math.abs(c[0]-a[0]),bottom:t+Math.abs(c[1]-a[1])};
 }
+// ---- RITAGLIO DELLO SCHERMO (isola dinamica, notch) ----
+// In orizzontale gli iPhone riservano lo stesso margine a sinistra e a destra, ma il ritaglio vero sta da una parte sola: quella dove e' la fotocamera.
+// Si riserva solo quel lato (html[data-cut]) e dall'altro lato si usa lo spazio libero, anche per la colonna della carriera (Opzioni > Colonna: Automatica).
+// In verticale (gioco ruotato) il ritaglio e' in alto sullo schermo = a sinistra nel gioco. Se l'orientamento non si legge, resta il margine su entrambi i lati.
+let cutSide='',railHook=null;   // cutSide: 'l' | 'r' (lato del gioco) | ''; railHook: la funzione che mette la colonna della carriera (20-ui/05-input-impostazioni.js)
+const cutProbe=document.createElement('div');
+cutProbe.style.cssText='position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';
+document.body.appendChild(cutProbe);
+function cutApply(){
+  let side='';
+  try{
+    const c=getComputedStyle(cutProbe),top=parseFloat(c.paddingTop)||0,right=parseFloat(c.paddingRight)||0,left=parseFloat(c.paddingLeft)||0;
+    if(rotOn){if(top>8)side='l';}
+    else if(left>8||right>8){
+      const a=(typeof screen!=='undefined'&&screen.orientation&&typeof screen.orientation.angle==='number')?screen.orientation.angle:(typeof window.orientation==='number'?window.orientation:null);
+      const n=a===null?-1:((a%360)+360)%360;
+      side=n===90?'l':(n===270?'r':'');
+    }
+  }catch(e){}
+  cutSide=side;document.documentElement.dataset.cut=side;
+  if(railHook)railHook();
+}
+window.addEventListener('resize',cutApply);window.addEventListener('orientationchange',()=>{setTimeout(cutApply,300);});
+cutApply();

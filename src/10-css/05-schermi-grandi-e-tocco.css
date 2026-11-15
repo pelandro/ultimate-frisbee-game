@@ -106,6 +106,9 @@ html[data-big] .hdash .hrow .hbtn{padding-top:20px;padding-bottom:20px}
 /* ---- rotazione automatica (90-avvio/00-rotazione.js): il body e' il contenitore delle container query generate dal build ---- */
 body{container:uf/size}
 html.rotp{padding:0;--sal:env(safe-area-inset-top,0px);--sar:max(env(safe-area-inset-bottom,0px),20px);--sat:env(safe-area-inset-right,0px);--sab:env(safe-area-inset-left,0px)}   /* ruotato: il lato sinistro del gioco e' in alto sullo schermo (notch), il destro in basso (barra home e angoli curvi) */
+/* ritaglio solo da un lato (05-rotazione.js, cutApply): dall'altro lato basta un margine piccolo per l'angolo arrotondato, il resto e' spazio utile */
+html[data-cut="l"]:not(.rotp){--sar:14px}
+html[data-cut="r"]:not(.rotp){--sal:14px}
 html.rotp body{position:fixed;left:0;top:0;transform-origin:0 0;transform:rotate(90deg) translateY(-100%)}
 html.rotp #rot{display:none!important}
 /* ---- menu iniziale: Carriera e, accanto, Carriere (slot); schermata Carriere ---- */
