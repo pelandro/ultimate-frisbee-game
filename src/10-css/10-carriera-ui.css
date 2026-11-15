@@ -5,7 +5,7 @@
 :root{--ctop:38px;--rail:62px}
 #cshell{position:absolute;inset:0;z-index:35;pointer-events:none;zoom:var(--ui,1)}
 #cshell>*{pointer-events:auto}
-#ctop{position:absolute;top:0;left:0;right:0;height:var(--ctop);display:flex;align-items:center;gap:6px;padding:0 max(8px,env(safe-area-inset-right,0px)) 0 max(8px,env(safe-area-inset-left,0px));background:#10172f;border-bottom:3px solid #000;box-shadow:0 3px 0 rgba(0,0,0,.35)}
+#ctop{position:absolute;top:0;left:0;right:0;height:var(--ctop);display:flex;align-items:center;gap:6px;padding:0 max(8px,var(--sar)) 0 max(8px,var(--sal));background:#10172f;border-bottom:3px solid #000;box-shadow:0 3px 0 rgba(0,0,0,.35)}
 .ctclub{display:flex;align-items:center;gap:8px;min-width:0;background:none;border:0;color:#fff;font:inherit;cursor:pointer;padding:0;text-align:left}
 .ctclub .crest{flex:none}
 .ctn{display:flex;flex-direction:column;min-width:0;line-height:1.05}
@@ -17,7 +17,7 @@
 #ctop .ibtn{padding:4px 8px;font-size:15px}
 #ctop .hcoach{width:30px;height:30px;padding:0;border:2px solid #000;background:#0b0f22;cursor:pointer;display:grid;place-items:center}
 #ctop .hcoach .av,#ctop .hcoach canvas,#ctop .hcoach svg{width:26px;height:26px}
-#cmenu{position:absolute;top:calc(var(--ctop) + 2px);right:max(8px,env(safe-area-inset-right,0px));min-width:190px;background:#10172f;border:3px solid #000;box-shadow:4px 4px 0 rgba(0,0,0,.5);display:flex;flex-direction:column;padding:4px}
+#cmenu{position:absolute;top:calc(var(--ctop) + 2px);right:max(8px,var(--sar));min-width:190px;background:#10172f;border:3px solid #000;box-shadow:4px 4px 0 rgba(0,0,0,.5);display:flex;flex-direction:column;padding:4px}
 #cmenu.hidden{display:none}
 .cmi{display:flex;align-items:center;gap:10px;font:inherit;font-size:17px;color:#fff;background:#1b2550;border:2px solid #000;margin:2px;padding:8px 10px;cursor:pointer;text-align:left}
 .cmi svg{width:17px;height:17px;flex:none}.cmi:active{transform:translateY(1px)}
@@ -143,3 +143,44 @@ html #home .hdash .hr{padding-top:0;display:flex;flex-direction:column;gap:8px}
 .steps i.on{color:#1a1c2c;background:var(--gold)}.steps i.on b{background:#fff;color:#1a1c2c}
 .steps i.done{color:#9fe3b3}.steps i.done b{background:var(--good);color:#06240f}
 @media (max-width:560px){.steps i em{display:none}}
+/* ---- informazioni a scomparsa («i»): chiuse di base, si aprono con un tocco ---- */
+.infb{font:inherit;font-family:var(--pfont);font-size:9px;font-size-adjust:none;line-height:1;width:24px;height:24px;margin-left:6px;padding:0;color:#fff;background:#29366f;border:3px solid #000;cursor:pointer;vertical-align:middle;flex:none}
+.infb.on{background:var(--gold);color:#1a1c2c}
+.infb:active{transform:translateY(1px)}
+.infbox{margin:0 0 8px;padding:6px 9px;background:#0f1530;border:3px solid #000;border-left-color:var(--gold);font-size:15px;line-height:1.25;color:#c2cbe6}
+.infbox.hidden{display:none}
+.infbox p{margin:0 0 4px}.infbox p:last-child{margin:0}
+.infbox small{font-size:15px;color:#c2cbe6}
+.rtop .infb{margin:0 6px 0 0}
+.estat .infb{margin-left:8px}
+/* legenda dei colori a pastiglie, una riga */
+.legrow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:0 0 6px;font-size:15px;color:#c2cbe6}
+.legb{font-size:16px;color:#fff}.legb b{font-weight:400;color:var(--gold)}
+.leg{display:inline-flex;align-items:center;gap:5px}
+.leg i{width:11px;height:11px;border:2px solid #000;background:#9fb0de}
+.leg i.g{background:#4fe58f}.leg i.y{background:#ffd23f}.leg i.r{background:#ff7b80}
+/* pulsante Simula: icona sopra e testo centrato (prima il testo toccava il bordo destro) */
+#home .hsim{flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:3px;padding:6px 8px}
+#home .hsim>span{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0}
+#home .hsim strong{font-size:clamp(17px,5.2vh,22px)}
+#home .hsim svg{width:26px;height:26px}
+/* il consiglio sotto «Questa settimana»: due righe al massimo, senza la parola ripetuta */
+#home .dtick{max-height:3.3em;overflow:hidden}
+#home .dtick:not(.nw):before{content:""}
+/* ---- fine stagione: scheda unica (25-fine-stagione.js) ---- */
+.endc{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:0 0 8px;padding:10px 12px;background:#141a36;border:3px solid #000;border-left-color:var(--gold)}
+.endc.tit{background:#2a2410;border-color:var(--gold)}
+.endm{flex:1 1 300px;min-width:0}
+.endm small{display:block;font-size:14px;color:#9fb0de;text-transform:uppercase;letter-spacing:.03em}
+.endm h2{margin:2px 0 6px;font-size:24px;line-height:1.15;color:var(--gold);font-weight:400}
+.endp{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.endp li{padding:3px 9px;background:#0b0f22;border:2px solid #000;font-size:16px;line-height:1.15;color:#fff}
+.endp li>i{display:block;font-style:normal;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#9fb0de}
+.endp li b{font-weight:400;white-space:nowrap}.endp li.ok b{color:#4fe58f}.endp li.ko b{color:#ff9a8a}
+.endg{flex:0 1 270px;display:flex;flex-direction:column;align-items:stretch;gap:4px;text-align:center}
+.endgo{width:100%;min-height:54px;font-size:20px;line-height:1.15;padding:10px 14px}
+.endn{margin:0;font-size:14px;color:#9fb0de}
+.endtog{display:flex;justify-content:space-between;align-items:center;width:100%;margin:0 0 8px;padding:8px 12px;font:inherit;font-size:17px;color:#fff;background:#141a36;border:3px solid #000;cursor:pointer;text-align:left}
+.endtog::after{content:'+';font-family:var(--pfont);font-size:12px;font-size-adjust:none;color:var(--gold)}
+.endtog.on{border-color:var(--gold)}.endtog.on::after{content:'–'}
+.endn .infb{margin-left:4px;width:20px;height:20px;font-size:8px;border-width:2px}

@@ -8,7 +8,7 @@ const MK_TABS=[['all','Tutti'],['int','Internazionali'],['you','Giovani'],['free
 const mkCat=m=>m.star?'int':(m.from?'sale':(m.kind==='Giovane promessa'?'you':'free'));
 function renderMarket(){
   mkReprice();
-  $('mkTop').innerHTML=`<span>Rosa <b>${SQ.length}</b>/${SQ_MAX}</span><span>Reputazione <b>${Math.round(SV.rep)}</b>: firmano giocatori fino a OVR <b>${Math.floor(repCap())}</b></span>`;
+  $('mkTop').innerHTML=`${infoB('mk')}<span>Rosa <b>${SQ.length}</b>/${SQ_MAX}</span><span>Reputazione <b>${Math.round(SV.rep)}</b>: firmano giocatori fino a OVR <b>${Math.floor(repCap())}</b></span>`;
   $('mkTabs').innerHTML=MK_TABS.map(t=>`<button type="button" data-k="${t[0]}" class="${mkTab===t[0]?'on':''}">${t[1]} <small>${t[0]==='all'?SV.market.length:SV.market.filter(m=>mkCat(m)===t[0]).length}</small></button>`).join('');
   const row=(m,i)=>{
     const o=m.o,why=canSign(m),v=ovr(o),pos=posOf(o),open=mkOpen.has(o.full||o.n);
@@ -24,7 +24,7 @@ function renderMarket(){
   if(MK_SORT[mkSort][1])rows.sort((x,y)=>MK_SORT[mkSort][1](x[0],y[0]));
   const can=SV.market.filter(m=>!canSign(m)).length;
   const bar=`<div class="rbar"><label class="rchk"><input type="checkbox" data-mkonly="1"${mkOnly?' checked':''}> Solo chi posso prendere (${can})</label><label class="rsort">Ordina per <select class="qs" data-mksort="1">${Object.keys(MK_SORT).map(k=>`<option value="${k}"${mkSort===k?' selected':''}>${MK_SORT[k][0]}</option>`).join('')}</select></label></div>`;
-  $('mkBox').innerHTML=(mkMsg?`<p class="rmsg">${mkMsg}</p>`:'')+bar+(rows.length?`<div class="mgrid">${rows.map(x=>row(x[0],x[1])).join('')}</div>`:`<p class="note">${mkOnly?'Nessuno che tu possa prendere adesso in questa categoria: servono più crediti, più reputazione o un posto in rosa.':'Nessun giocatore in questa categoria: il mercato si rinnova ogni 5 giornate.'}</p>`);
+  $('mkBox').innerHTML=infoX('mk',MK_INFO)+(mkMsg?`<p class="rmsg">${mkMsg}</p>`:'')+bar+(rows.length?`<div class="mgrid">${rows.map(x=>row(x[0],x[1])).join('')}</div>`:`<p class="note">${mkOnly?'Nessuno che tu possa prendere adesso in questa categoria: servono più crediti, più reputazione o un posto in rosa.':'Nessun giocatore in questa categoria: il mercato si rinnova ogni 5 giornate.'}</p>`);
 }
 $('mkTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;mkTab=b.dataset.k;mkMsg='';renderMarket();});
 $('mkBox').addEventListener('change',e=>{if(e.target.closest('[data-mksort]')){mkSort=e.target.value;renderMarket();}else if(e.target.closest('[data-mkonly]')){mkOnly=e.target.checked;renderMarket();}});

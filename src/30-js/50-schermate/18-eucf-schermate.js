@@ -29,10 +29,10 @@ function euView(){
   const E=SV.eu,N=euEnsure();let h='';
   const st=E.state==='champ'?'Siete campioni d’Europa!':(E.state==='out'?(N.rd>=7?'Siete fuori dall’EUCF.':'Eliminati.'):(E.cur?`${E.cur.label}: ${esc(E.cur.opp)}.`:''));
   h+=`<p class="estat">EUCF · stagione ${E.s} · ${st}</p>`;
-  h+=`<p class="note" style="margin:0 0 6px">${E.state==='on'?'16 club in 4 gironi da 4 (fasce del ranking europeo): tre partite a girone, le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono fuori. Poi quarti, semifinali e finale. ':''}Tre club italiani e 13 club europei inventati. <b style="color:#4fe58f">Verde</b>: quarti · <b style="color:#ffd23f">giallo</b>: prequarti · <b style="color:#ff7b80">rosso</b>: fuori.</p>`;
+  h+=`<div class="legrow"><span class="leg"><i class="g"></i>quarti</span><span class="leg"><i class="y"></i>prequarti</span><span class="leg"><i class="r"></i>fuori</span>${infoB('eucf')}</div>${infoX('eucf',`<p>${E.state==='on'?'16 club in 4 gironi da 4 (fasce del ranking europeo): tre partite a girone, le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono fuori. Poi quarti, semifinali e finale. ':''}Tre club italiani e 13 club europei inventati.</p>`)}`;
   if(N.ko.length)h+=usBracketHTML(N);
   h+=[0,1,2,3].map(p=>usPoolHTML(p,N)).join('');
-  if(E.state!=='on')h+=`${E.cash?`<p class="estat">Premi del torneo: ${E.cash} crediti</p>`:''}<p class="note" style="margin:0 0 8px">L’EUCF si gioca una volta a stagione: la prossima edizione è nella stagione dopo, se chiudete la Serie A tra le prime 3.</p><button type="button" class="go" id="eCamp">${SV.done?'Vai al campionato: nuova stagione':'Torna al campionato'}</button>`;
-  else h+=`<p class="note" style="margin:8px 0 0">Premi: ${EU_PRIZE.map((v,i)=>Math.round(v*SR_K.A)+' crediti ('+['qualificazione ai quarti','prequarti','quarti','semifinale','finale'][i]+')').join(', ')}. Una sola edizione a stagione.</p>`;
+  if(E.state!=='on')h+=`${E.cash?`<p class="estat">Premi del torneo: ${E.cash} crediti</p>`:''}<p class="note" style="margin:0 0 8px">Prossima edizione nella stagione dopo, se chiudete la Serie A tra le prime 3.</p><button type="button" class="go" id="eCamp">${SV.done?'Vai al campionato: nuova stagione':'Torna al campionato'}</button>`;
+  else h+=`<p class="note" style="margin:8px 0 0">${infoB('eupr')} Premi del torneo</p>${infoX('eupr',`<p>${EU_PRIZE.map((v,i)=>Math.round(v*SR_K.A)+' crediti ('+['qualificazione ai quarti','prequarti','quarti','semifinale','finale'][i]+')').join(', ')}. Una sola edizione a stagione.</p>`)}`;
   return h;
 }

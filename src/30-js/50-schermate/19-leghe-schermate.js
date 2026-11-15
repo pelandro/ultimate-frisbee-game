@@ -70,7 +70,7 @@ function lnPoolView(){
   let h=comp.pools.length>1?`<div class="seg" id="lnPools">${comp.pools.map((p,i)=>`<button type="button" class="sg${lnPoolSel===i?' on':''}" data-lp="${i}">Girone ${'AB'[i]}${i===L.pi?' (tuo)':''}</button>`).join('')}</div>`:'';
   const i=lnPoolSel,names=comp.pools[i],t=lnPoolTab(i),ord=usRanking(t,names),Lg=i!==L.pi&&SV.lg[i];
   h+=`<p class="estat">${esc(SERIES_NAME[SV.sr])}${tr.comps>1?' · gruppo '+esc(comp.id):''}, stagione ${SV.season}${Lg?` · giornata ${Lg.round} di ${Lg.sched.length}`:''}</p>`;
-  if(tr.fin.length)h+=`<p class="note" style="margin:0 0 6px"><b style="color:#4fe58f">Verde</b>: tabellone per i primi posti · <b style="color:#ffd23f">giallo</b>: finali di piazzamento. A parità di vittorie contano gli scontri diretti, poi la differenza mete.</p>`;
+  if(tr.fin.length)h+=`<div class="legrow"><span class="leg"><i class="g"></i>tabellone</span><span class="leg"><i class="y"></i>finali di piazzamento</span>${infoB('lnleg')}</div>${infoX('lnleg','<p>A parità di vittorie contano gli scontri diretti, poi la differenza mete.</p>')}`;
   h+=`<div style="overflow-x:auto"><table class="rt">${usHead}${ord.map((nm,k)=>usRow(nm,t[nm],[nm===SV.team?'me':'',lnZone(k+1,tr)].filter(Boolean).join(' '))).join('')}</table></div>`;
   if(Lg&&Lg.last.length)h+=`<h3 class="eh">Ultima giornata</h3><ul class="elist">${Lg.last.map(m=>`<li class="${m[2]>m[3]?'w':'l'}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('')}</ul>`;
   if(i===L.pi){
@@ -103,7 +103,7 @@ function lnFinView(){
   return h;
 }
 function lnTiersView(){
-  const L=SV.ln,D=LN_DEF[SV.lk];let h=`<p class="estat">${esc(D.cc)} · tutti i livelli</p><p class="note" style="margin:0 0 6px">Ogni stagione salgono e scendono squadre tra un livello e il successivo (${D.mv.map((n,i)=>D.tiers[i].name+'-'+D.tiers[i+1].name+': '+n).join(', ')}). La cifra accanto al nome è la forza della rosa.</p>`;
+  const L=SV.ln,D=LN_DEF[SV.lk];let h=`<p class="estat">${esc(D.cc)} · tutti i livelli ${infoB('lntiers')}</p>${infoX('lntiers',`<p>Ogni stagione salgono e scendono squadre tra un livello e il successivo (${D.mv.map((n,i)=>D.tiers[i].name+'-'+D.tiers[i+1].name+': '+n).join(', ')}). La cifra accanto al nome è la forza della rosa.</p>`)}`;
   D.tiers.forEach((tr,ti)=>{
     h+=`<h3 class="eh">${esc(tr.name)}${tr.id===L.tier?' · il tuo livello':''}</h3>`;
     for(const c of L.T[tr.id]){
@@ -122,12 +122,7 @@ function renderEventLN(){
   if(SV.event!=='camp'){$('eBody').innerHTML=euView();return;}   // EUCF: gironi e tabellone (18-eucf-schermate.js)
   if(lnTabPh!==L.ph){lnTabPh=L.ph;lnTabSel=L.ph==='grp'?'grp':'fin';}
   let body='';
-  if(SV.done&&SV.next){
-    const hx=SV.hist[0];
-    body+=`<p class="estat">${esc(SV.next.short)}</p><p class="note" style="margin:0 0 8px">Premio di stagione: ${SV.next.prize} crediti. Sponsor ${SV.next.objOk?'soddisfatto: bonus di '+SV.obj.reward+' crediti':'deluso: nessun bonus'}.${hx&&hx.mvp?` MVP della squadra: ${esc(hx.mvp)} (${hx.mvpS}).`:''}${SV.next.qual?' Vi siete qualificati all’EUCF: si gioca nella stagione dopo.':''} Con la nuova stagione tutti invecchiano di un anno, i veterani possono ritirarsi, le altre squadre cambiano e il mercato si rinnova.</p>`;
-    if(hx&&hx.aw&&hx.aw.length)body+=`<div class="seas"><h3>Premi della stagione · ${esc(SERIES_NAME[SV.sr])}</h3><ul class="awl">${hx.aw.map(awRow).join('')}</ul>${hx.best7&&hx.best7.length?`<p>Squadra ideale: ${hx.best7.map(q=>`${q.mine?'<b style="color:var(--gold)">':'<b>'}${esc(q.name)}</b> (${q.pos})`).join(', ')}</p>`:''}</div>`;
-    body+='<button type="button" class="go" id="eReset">Inizia la nuova stagione</button>';
-  }
+  if(SV.done&&SV.next)body+=endSeasonHTML({});
   body+=`<div class="seg" id="lnTabs">${[['grp','Girone'],['fin','Fase finale'],['tiers','Livelli']].map(([k,l])=>`<button type="button" class="sg${lnTabSel===k?' on':''}" data-lt="${k}">${l}</button>`).join('')}</div>`;
   body+=lnTabSel==='fin'?lnFinView():(lnTabSel==='tiers'?lnTiersView():lnPoolView());
   $('eBody').innerHTML=body;

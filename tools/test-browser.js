@@ -195,7 +195,7 @@ catch(e){
     if(!(await page.locator('tr.dt .scr').isVisible()))throw new Error('manca il rapporto di scouting nella scheda');
     await page.click('#hHome');
     await page.click('#hTrain');await vis('#train');await page.click('#tTeamBox [data-int="2"]');
-    if(!/Intenso/.test(await page.locator('.tint small').innerText()))throw new Error('l\'intensità dell\'allenamento non cambia');
+    if(!/Intenso/.test(await page.locator('.tint .sg.on').innerText()))throw new Error('l\'intensità dell\'allenamento non cambia');
     await page.click('#tTeamBox [data-int="1"]');
     if(!/punti/.test(await page.locator('#tTeamBox .ttype[data-team="tec"] .fc').innerText()))throw new Error('manca l\'anteprima della seduta di squadra');
     await page.click('#tTeamBox .ttype[data-team="tec"]');await vis('#tRes .tres');
@@ -297,6 +297,17 @@ catch(e){
     if(await page.locator('#eReset').count())throw new Error('la coppa conclusa si puo\' ancora far ripartire');
     await page.click('#eCamp');await page.waitForTimeout(150);await page.click('#hHome');await vis('#home');
     if(!/Inizia partita/.test(await page.locator('#hPlayT').innerText()))throw new Error('dopo la coppa non si torna al campionato');
+  });
+  await step('fine stagione: riepilogo in cima, tasto «Inizia la nuova stagione» ben visibile e premi dietro un tasto',async()=>{
+    for(let i=0;i<70&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim');await vis('#simres');await page.click('#srOk');await page.waitForTimeout(120);}
+    await page.click('#hEvent');await vis('#event');
+    if(!(await page.locator('#eBody .endc').count()))throw new Error('manca la scheda di fine stagione');
+    const vh=page.viewportSize().height,bb=await page.locator('#eReset').boundingBox();
+    if(!bb||bb.y+bb.height>vh)throw new Error('«Inizia la nuova stagione» non si vede senza scorrere');
+    if(await page.locator('#eBody .endtog').count()&&await page.locator('#eBody [data-infobox="endaw"]:not(.hidden)').count())throw new Error('i premi devono essere chiusi all\'apertura');
+    await page.click('#eReset');await page.waitForTimeout(300);
+    if(await page.locator('#eReset').count())throw new Error('la nuova stagione non e\' partita');
+    await page.click('#hHome');await vis('#home');
   });
   await step('slot carriera: una seconda carriera e il ritorno alla prima',async()=>{
     const team1=(await page.locator('#tCareerS').innerText().catch(()=>''));

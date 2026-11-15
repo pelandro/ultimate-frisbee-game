@@ -274,7 +274,7 @@ tip:`Non spendere tutto subito: tieni sempre una riserva di crediti per le emerg
 `Finite le 15 giornate (in Italia) si giocano i <b>playoff</b>: in Serie A le prime 4 giocano le semifinali (1ª-4ª, 2ª-3ª) e la finale per lo scudetto. In Serie B e C la prima sale direttamente e dal 2° al 5° posto c’è lo spareggio per la seconda promozione. Salgono due squadre e ne scendono due.`,
 [`A fine stagione il campionato assegna <b>MVP</b>, attaccante e difensore dell’anno, capocannoniere, re degli assist, rivelazione (fino a 21 anni), allenatore dell’anno e squadra ideale. I premi vinti restano nella scheda del giocatore e portano reputazione e crediti.`,
 `Ogni stagione nasce una <b>rivalità</b> con una squadra del tuo livello: nel derby vincere dà crediti, morale e reputazione; perdere fa male all’umore.`],
-`Da qui parte la nuova stagione.`],
+`Quando il campionato finisce, in cima alla pagina Lega trovi il riepilogo (classifica, premio, bonus dello sponsor, MVP) e il grande tasto <b>Inizia la nuova stagione</b>; i premi e la squadra ideale si aprono con «Premi e squadra ideale». Le spiegazioni lunghe di tutta la carriera stanno dietro il pulsante <b>i</b>.`],
 tip:`In zona playoff le partite si giocano una alla volta: usa bene i cambi, ogni punto conta.`},
 {id:'car-avvisi',t:'Avvisi, ritiri e spogliatoio',b:[
 `La <b>Posta</b> (in alto a destra) divide i messaggi in <b>Da decidere</b>, <b>Novità</b> e <b>Cronologia</b>, e ha tre livelli: le <b>emergenze</b> (infortuni, addii) e le <b>decisioni</b> (ritiro annunciato, offerta per un tuo giocatore, richiesta di cessione) aprono il riquadro da sole, una volta; le <b>notizie</b> non interrompono e accendono il numero sulla campanella.`,
