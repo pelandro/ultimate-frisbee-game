@@ -7,9 +7,36 @@
    Lo SPONSOR si sceglie a inizio stagione tra tre offerte (sicuro, equilibrato, ambizioso) e prende il posto dell'obiettivo fisso: piu' soldi sicuri a partita
    oppure meno soldi a partita e un bonus grosso se a fine stagione si raggiunge l'obiettivo, che e' quello del contratto scelto (SV.obj, letto dai premi di fine stagione).
    Il ROSSO ha conseguenze graduali (SV.red): mercato fermo, avvisi della dirigenza, morale in calo sempre piu' forte e, se dura troppo, l'esonero (SV.fired). */
+// PESO ECONOMICO DI UNA SERIE: le entrate (biglietti, sponsor, premi vittoria) seguono quanto costano in stipendi le rose delle altre squadre del tuo
+// campionato (in USA tutta la lega, nelle leghe europee tutto il livello, in Italia la serie: le Conference e i gironi sono troppo diversi tra loro),
+// non un valore fisso per campionato: dove i giocatori sono piu' forti costano e incassano di piu'. La rosa di riferimento ha 16 giocatori, uguale per tutti:
+// le entrate non dipendono dalla tua rosa. La curva passa per i valori dell'Italia (Serie C 1, B 1,3, A 1,65), che restano come prima.
+const ECO_REF=[[84,1],[253,1.3],[511,1.65]],ECO_RS=16;
+function ecoPeers(){
+  if(isUS())return US_NAMES;
+  if(isLN()&&SV.ln&&SV.ln.T&&SV.ln.T[SV.ln.tier])return SV.ln.T[SV.ln.tier].flatMap(c=>c.pools?c.pools.flat():(c.clubs||[]));
+  return (SV.mem&&SV.mem[SV.sr])||[];
+}
+const w16=ro=>{const v=ro.map(o=>wageOf(o)).sort((a,b)=>b-a),n=Math.min(ECO_RS,v.length);let s=0;for(let i=0;i<n;i++)s+=v[i];return n?s*ECO_RS/n:0;};
+let ecoKC={key:'',v:1};
+function ecoK(){
+  if(!SV||!SV.sr)return 1;
+  const key=SV.team+'|'+SV.season+'|'+SV.sr;if(ecoKC.key===key)return ecoKC.v;
+  const ns=ecoPeers().filter(n=>n!==SV.team&&SV.rost&&SV.rost[n]&&SV.rost[n].length);
+  if(!ns.length){ecoKC={key,v:SR_K[SV.sr]||1};return ecoKC.v;}
+  ecoKC={key,v:ecoCurve(ns.reduce((a,n)=>a+w16(SV.rost[n]),0)/ns.length)};return ecoKC.v;
+}
+// dal costo medio di una rosa da 16 al peso economico: interpolazione sui punti italiani, fuori dai punti si prolunga il primo o l'ultimo tratto
+function ecoCurve(W){
+  const R=ECO_REF;let k;
+  if(W<=R[0][0])k=R[0][1]+(W-R[0][0])*(R[1][1]-R[0][1])/(R[1][0]-R[0][0]);
+  else if(W>=R[2][0])k=R[2][1]+(W-R[2][0])*(R[2][1]-R[1][1])/(R[2][0]-R[1][0]);
+  else{const i=W<R[1][0]?0:1;k=R[i][1]+(W-R[i][0])*(R[i+1][1]-R[i][1])/(R[i+1][0]-R[i][0]);}
+  return clamp(k,0.6,2.4);
+}
 const ECO={
-  K:()=>SR_K[SV.sr]||1,
-  SHARE_N:0.35,        // a campo neutro (tornei) i biglietti sono quasi tutti dell'organizzatore: una quota di quelli che avresti in casa
+  K:ecoK,
+  SHARE_N:0.5,         // a campo neutro (tornei: Nationals, Campionato europeo, finali) meta' dei biglietti che avresti in casa (era 0,35)
   WB:4,                // premio della lega per una vittoria normale (prima di K e dell'importanza)
   TRV:2.2              // costo fisso di una trasferta (prima di K)
 };

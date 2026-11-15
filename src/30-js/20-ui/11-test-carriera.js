@@ -169,6 +169,11 @@ function careerSelfTest(seasons,seed){
        rows.push(row('Stipendi, osservazioni e premio promozione: lo stipendio sale con l\'Overall, osservare costa di più chi vale di più, gli Osservatori fanno risparmiare, la promozione in A paga più di quella in B',
          `stipendio ${w1.toFixed(1)} e ${w2.toFixed(1)} a stagione, osservare ${s1} e ${s2} (${s3} con Osservatori 3), promozione ${promoPrize('B')} e ${promoPrize('A')}`,
          w2>w1*4&&w1>=5&&s2>s1&&s3<s2&&promoPrize('A')>promoPrize('B')));}
+      {const ro=[];for(let i=0;i<20;i++)ro.push(genPlayer(60+i,26,'ws|'+i,potB(62+i)));const full=ro.reduce((a,o)=>a+wageOf(o),0),ws=wageSeason(ro),p=ro[19],sv=sellValue(p),off=Math.round(priceOf(p)*1.35+5);
+       const c=[84,253,511,676].map(ecoCurve);
+       rows.push(row('Economia uguale per tutti i campionati: entrate secondo il livello dei giocatori (Italia come prima), riserve oltre il 14° a metà stipendio, cessione immediata sotto le offerte dei club',
+         `peso economico ${c.map(x=>x.toFixed(2).replace('.',',')).join(', ')} · stipendi di 20 giocatori ${Math.round(ws)} invece di ${Math.round(full)} · cessione ${sv} contro un'offerta di ${off}`,
+         Math.abs(c[0]-1)<0.01&&Math.abs(c[1]-1.3)<0.01&&Math.abs(c[2]-1.65)<0.01&&c[3]>c[2]&&ws<full&&ws>full*0.8&&sv<off*0.5&&Math.abs(sv-priceOf(p)*0.4)<=1));}
       rows.push(row('Crescita secondo la serie: più facile in basso, più dura in alto; chi domina la sua serie cresce meno',
         `C ${srGrowK('C').toFixed(2)}, B ${srGrowK('B').toFixed(2)}, A ${srGrowK('A').toFixed(2)}, con 5 punti di vantaggio ×${clamp(1-LEAD_K*5,0.5,1).toFixed(2)}`,srGrowK('C')>srGrowK('B')&&srGrowK('B')>srGrowK('A')&&srGrowK('A')<1&&LEAD_K>0));
       rows.push(row('Sorprese di crescita: qualche giovane si ferma, pochi scoprono più margine, nessuno perde punti',
