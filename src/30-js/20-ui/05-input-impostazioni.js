@@ -110,8 +110,8 @@ const LVL=['Molto lento','Lento','Veloce','Molto veloce'],SLW=['Minimo','Basso',
      UZL=['Più piccola','Automatica','Più grande','Molto più grande'];
 const SET_KEY='ultimate-settings';
 let SETT={ci:2,cs:1,bs:2,ds:2,uz:1,rl:0,pos:null};   // pos: centro di ogni pulsante come frazione dello schermo (null = posizione predefinita)   // predefinito: velocita' iniziale veloce (23 m/s), rallentamento lento (30 m a 1,4 s, 40 m a 2,0 s, 55 m a 3,0 s)
-try{const o=JSON.parse(localStorage.getItem(SET_KEY)||'null');if(o&&o.ci>=0&&o.ci<4&&o.cs>=0&&o.cs<4)SETT={ci:o.ci|0,cs:o.cs|0,bs:(o.bs>=0&&o.bs<5)?o.bs|0:2,ds:(o.ds>=0&&o.ds<4)?o.ds|0:2,uz:(o.uz>=0&&o.uz<4)?o.uz|0:1,rl:o.rl===1?1:0,pos:validPos(o.pos)};}catch(e){}
-const applyRail=()=>{document.documentElement.dataset.rail=SETT.rl?'r':'l';};applyRail();   // colonna della carriera a sinistra (predefinito) o a destra
+try{const o=JSON.parse(localStorage.getItem(SET_KEY)||'null');if(o&&o.ci>=0&&o.ci<4&&o.cs>=0&&o.cs<4)SETT={ci:o.ci|0,cs:o.cs|0,bs:(o.bs>=0&&o.bs<5)?o.bs|0:2,ds:(o.ds>=0&&o.ds<4)?o.ds|0:2,uz:(o.uz>=0&&o.uz<4)?o.uz|0:1,rl:(o.rl===1||o.rl===2)?o.rl|0:0,pos:validPos(o.pos)};}catch(e){}
+const applyRail=()=>{document.documentElement.dataset.rail=(SETT.rl===1||(SETT.rl===0&&cutSide==='l'))?'r':'l';};railHook=applyRail;applyRail();   // colonna della carriera: 0 automatica (dal lato opposto al ritaglio dello schermo), 1 a destra, 2 a sinistra
 UZS=SETT.uz;   // scelta dell'ingrandimento dell'interfaccia (UZ_STEP)
 // dimensione dei pulsanti di gioco: 5 livelli con piccole differenze (circa 7%); «medi» = 50 px come prima
 function validPos(p){
@@ -177,11 +177,11 @@ function setSView(v){
   $('sTitle').textContent=v==='diag'?'Diagnostica':v==='charge'?'Lancio':(v==='btns'?'Pulsanti':(v==='size'?'Dimensioni':'Impostazioni'));renderSettings();
 }
 function renderSettings(){
-  for(const [id,key,names] of [['sDs','ds',DSL],['sSpd','ci',LVL],['sSlow','cs',SLW],['sBsz','bs',BLBL],['sUz','uz',UZL],['sRl','rl',['A sinistra','A destra']]])$(id).innerHTML=names.map((n,i)=>`<button type="button" class="sg${SETT[key]===i?' on':''}" data-k="${key}" data-i="${i}">${n}</button>`).join('');
+  for(const [id,key,names] of [['sDs','ds',DSL],['sSpd','ci',LVL],['sSlow','cs',SLW],['sBsz','bs',BLBL],['sUz','uz',UZL],['sRl','rl',['Automatica','A destra','A sinistra']]])$(id).innerHTML=names.map((n,i)=>`<button type="button" class="sg${SETT[key]===i?' on':''}" data-k="${key}" data-i="${i}">${n}</button>`).join('');
   const f=d=>{const t=timeTo(d);return t===null?'oltre 9 s':t.toFixed(1).replace('.',',')+' s';};
   $('sPrev').textContent=`20 m in ${f(20)} · 30 m in ${f(30)} · 40 m in ${f(40)} · 55 m in ${f(55)}`;
   $('sSumC').textContent=`Trascinamento: sensibilità ${DSL[SETT.ds].toLowerCase()}`;
-  $('sSumS').textContent=`Interfaccia ${UZL[SETT.uz].toLowerCase()} · pulsanti ${BLBL[SETT.bs].toLowerCase()} · colonna ${SETT.rl?'a destra':'a sinistra'}`;
+  $('sSumS').textContent=`Interfaccia ${UZL[SETT.uz].toLowerCase()} · pulsanti ${BLBL[SETT.bs].toLowerCase()} · colonna ${['automatica','a destra','a sinistra'][SETT.rl|0]}`;
   $('sSumP').textContent=SETT.pos?'Personalizzata':'Predefinita';
   $('sSumB').textContent=`Dimensione: ${BLBL[SETT.bs].toLowerCase()} · posizione: ${SETT.pos?'personalizzata':'predefinita'}`;
 }
