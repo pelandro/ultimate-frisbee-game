@@ -20,7 +20,7 @@ function updateHUD(dt){
   if(!play)return;
   elScore0.textContent=G.drill?drHud(0):G.score[0];elScore1.textContent=G.drill?drHud(1):G.score[1];
   $('score').classList.toggle('mini',G.mode==='play');   // durante l'azione restano solo i due numeri; a fine meta tornano i nomi
-  elPt.textContent=G.drill?G.matchLabel:'Meta '+G.pointNo+(G.target!==MATCH_TARGET?' · ai '+G.target:'')+(G.matchLabel?' · '+G.matchLabel:'');   // «Meta» per prima: se il testo e' lungo si taglia in fondo
+  elPt.textContent=G.drill?G.matchLabel:'Meta '+G.pointNo+(G.target!==MATCH_TARGET?(/^(8|11)/.test(String(G.target))?' · agli ':' · ai ')+G.target:'')+(G.matchLabel?' · '+G.matchLabel:'');   // «Meta» per prima: se il testo e' lungo si taglia in fondo
   // sigle in barra (i nomi interi non entrano e coprivano il testo): SFR, RRF...
   const nm0=G.drill?drHud(2):(G.myName||'Blu'),nm1=G.drill?drHud(3):(G.oppName||'Rossi');
   myN.textContent=G.drill?nm0:teamAbbr(nm0);oppN.textContent=G.drill?nm1:teamAbbr(nm1);myN.title=nm0;oppN.title=nm1;bExit.classList.toggle('hidden',!G.inMatch);
@@ -45,7 +45,7 @@ function updateHUD(dt){
   bSch.classList.toggle('hidden',G.mode!=='ready'||!!G.drill);bSub.classList.toggle('hidden',G.mode!=='ready'||!!G.drill);$('bSimPt').classList.toggle('hidden',G.mode!=='ready'||!!G.drill);
   $('bTO').classList.toggle('hidden',!(canTimeout(0)&&!G.paused&&!G.schemeOpen&&!G.auto&&G.freeze<=0&&!G.zoomHold));
   bSkipD.classList.toggle('hidden',!canSkipDef());
-  bDef.classList.toggle('hidden',!defNow);bDef.classList.toggle('on',G.dmode[0]===1);bDef.textContent=G.dmode[0]?'Marcatura: anticipo':'Marcatura: contieni';
+  bDef.classList.toggle('hidden',!defNow);bDef.classList.toggle('on',G.dmode[0]===1);bDef.textContent=G.dmode[0]?'Marcatura: anticipo':'Marcatura: contenimento';
   if(!defNow&&(ddrag||G.cdir)){ddrag=null;G.cdir=null;}
   let hint='';   // solo messaggi di stato (conto alla rovescia, disco da raccogliere): i suggerimenti su come si gioca non compaiono mai durante la partita
   if(G.mode==='ready'&&G.pullTeam===1&&!G.schemeOpen)hint='Pull avversario tra '+Math.max(1,Math.ceil(G.readyT));

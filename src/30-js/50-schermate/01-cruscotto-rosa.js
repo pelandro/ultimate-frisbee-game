@@ -6,7 +6,7 @@ function renderHome(){
   if(m){
     const op=Math.round((m.roster?rosterPower(m.roster):m.power)+carDiff().plus),me=Math.round(squadPower()),idn=m.roster?teamIdentity(m.name,bestSeven(m.roster)):null;
     nx=timelineHTML()+`<div class="dvs"><span>${crest(m.name,26)}<b>${esc(m.name)}</b></span><span class="dpw"><i>tu</i> ${me} <i>·</i> ${op} <i>loro</i></span></div>`+(G.opt.wind===false?'':`<small class="dtag dtag1">Meteo: ${esc(meteoTxt(m))}</small>`);
-  }else if(SV.event==='camp')nx=timelineHTML()+`<div class="dvs"><span><b>${SV.next?esc(SV.next.short):''}</b></span></div><small class="dtag">Premi e riepilogo in Classifica: da lì parte la nuova stagione</small>`;
+  }else if(SV.event==='camp')nx=timelineHTML()+`<div class="dvs"><span><b>${SV.next?esc(SV.next.short):''}</b></span></div><small class="dtag">Premi e riepilogo in Lega: da lì parte la nuova stagione</small>`;
   else nx=timelineHTML()+`<div class="dvs"><span><b>${euEndTxt()}</b></span></div><small class="dtag">${SV.done?'La prossima edizione, se vi qualificate, è nella nuova stagione':'Si torna al campionato: la prossima edizione è tra una stagione, se vi qualificate'}</small>`;
   $('hNext').innerHTML=nx;
   let tab;
@@ -96,7 +96,7 @@ function histHTML(p){
 }
 // margine di crescita per categoria: quanto manca al limite (lo si conosce solo dopo aver osservato il giocatore a fondo)
 function roomHTML(p,sure){
-  if(!sure)return `<div class="dst"><b style="color:var(--gold);font-weight:400">Limiti</b>: ancora da scoprire: osservalo (o tienilo in rosa: ogni stagione lo conosci meglio).</div>`;
+  if(!sure)return `<div class="dst"><b style="color:var(--gold);font-weight:400">Limiti</b>: ancora da scoprire. Osservalo (oppure tienilo in rosa: ogni stagione lo conosci meglio).</div>`;
   return `<div class="dst"><b style="color:var(--gold);font-weight:400">Limiti</b>: ${CATS.map(c=>{const room=c.keys.reduce((a,k)=>a+Math.max(0,capX(p,k)-p.s[k]),0);return `${c.name} ${room?'+'+room:'al massimo'}`;}).join(' · ')} (punti ancora raggiungibili)</div>`;
 }
 // SCHEDA DEL GIOCATORE in tre parti: Attributi (che cosa sa fare), Prestazioni (che cosa ha fatto), Sviluppo (dove puo' arrivare). Prima era un unico elenco lungo
@@ -197,7 +197,7 @@ function renderEvent(){
   if(isLN())return renderEventLN();   // Classifica delle leghe europee: 19-leghe-schermate.js
   const cs=SV.done?`${SERIES_NAME[SV.sr]}, stagione conclusa`:(SV.po&&SV.po.on?`${SERIES_NAME[SV.sr]}, ${PO_NAME[SV.po.kind].toLowerCase()}`:`${SERIES_NAME[SV.sr]}, giornata ${SV.round+1} di ${totalRounds()}`);
   $('eCards').innerHTML=
-    `<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>Campionato</strong><small>Serie A, B e C: tutte contro tutte, salgono le prime 2 e scendono le ultime 2. ${cs}.</small></button>`+
+    `<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>Campionato</strong><small>Serie A, B e C: tutte contro tutte, poi playoff scudetto tra le prime 4 della A; in B e C sale la prima più la vincente dello spareggio tra 2ª e 5ª. Scendono le ultime 2. ${cs}.</small></button>`+
     (SV.euUnlocked
       ?`<button type="button" class="ecard${SV.event==='eu'?' on':''}" data-e="eu"><strong>Campionato europeo (EUCF)</strong><small>16 club in 4 gironi da 4, poi prequarti, quarti, semifinali e finale. ${euCardSub()}</small></button>`
       :`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo</strong><small>Bloccato: serve chiudere la stagione tra le prime 3 della Serie A, e vale per la stagione dopo.</small></button>`);

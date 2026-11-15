@@ -83,7 +83,7 @@ function goalsEnd(){   // fine stagione: premio o delusione
     }else{
       p.sad=(p.sad|0)+1;ko.push(pname(p));
       if(p.sad>=2&&!p.prom&&p.mood!==2&&SQ.length>SQ_MIN+1){p.mood=2;alertAdd('mood',pname(p)+' non ha raggiunto l’obiettivo per la seconda stagione di fila e chiede di essere cedut'+oa(p)+'.',{full:p.full,act:'unhappy'});}
-      else alertAdd('mood',pname(p)+' ha mancato il suo obiettivo ('+GOALS[g.id].txt(g)+') ed è deluso'+(p.sad>=2?': una terza delusione e se ne va':'')+'.',{full:p.full,seen:1});
+      else alertAdd('mood',pname(p)+' ha mancato il suo obiettivo ('+GOALS[g.id].txt(g)+') ed è delus'+oa(p)+(p.sad>=2?': una terza delusione e se ne va':'')+'.',{full:p.full,seen:1});
     }
   }
 }
@@ -103,7 +103,7 @@ function scoutReport(o){
     const same=(best===deep&&idn.deep>0.3)||(best===short&&idn.deep<-0.3);
     h+=` <b>Schemi adatti</b>: ${sch}. Il vostro gioco è ${styl}: ${same?'si inserisce bene':'porterebbe qualcosa di diverso'}.`;
     const same2=SQ.filter(p=>posOf(p)===pos).sort((a,b)=>ovrX(b)-ovrX(a)),slot=pos==='H'?3:4,cut=same2[slot-1],v=ovrX(o);
-    h+=cut&&v>ovrX(cut)?` <b>In squadra</b>: prenderebbe il posto di ${esc(pname(cut))} (Overall ${ovr(cut)}).`:` <b>In squadra</b>: sarebbe una riserva${cut?' (il titolare più debole è '+ovr(cut)+')':''}.`;
+    h+=cut&&v>ovrX(cut)?` <b>In squadra</b>: prenderebbe il posto di ${esc(pname(cut))} (Overall ${ovr(cut)}).`:` <b>In squadra</b>: sarebbe una riserva${cut?' (il titolare più debole ha Overall '+ovr(cut)+')':''}.`;
   }else if(sk===2)h+=' <span class="note">Alla terza osservazione: schemi adatti e posto in squadra.</span>';
   return h;
 }

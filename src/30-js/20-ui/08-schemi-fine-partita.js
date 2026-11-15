@@ -8,8 +8,8 @@ ATTS.push({id:'side',name:'Stack laterale',desc:'Cutter in fila su un lato: mezz
 ATTS.push({id:'weave',name:'Weave',desc:'Tre handler che si passano il disco in diagonale correndosi davanti. Guadagna metri contro la zona; contro gli aiuti i passaggi corti si complicano.',pos:[[.1,.5],[.18,.2],[.06,.8],[.42,.12],[.52,.38],[.62,.62],[.72,.88]]});
 ATTS.push({id:'t1',name:'T1',desc:'Sequenza: un cutter taglia verso il disco, poi taglio in meta o di rientro. Il più efficace, ma se lo ripeti l’IA lo riconosce. Si segue alla lettera con Visione alta.',pos:[[.19,.51],[.09,.13],[.09,.90],[.5,.06],[.5,.36],[.5,.63],[.5,.93]]});
 const DEFS=[
-  {id:'man_out',name:'Uomo, forza fuori',desc:'Il marcatore chiude il centro: il disco va verso la linea.',pos:[[.1,.5],[.26,.15],[.26,.85],[.46,.5],[.6,.5],[.74,.5],[.88,.5]]},
-  {id:'man_in',name:'Uomo, forza dentro',desc:'Il marcatore chiude la linea: lanci verso il centro.',pos:[[.1,.5],[.26,.15],[.26,.85],[.46,.5],[.6,.5],[.74,.5],[.88,.5]]},
+  {id:'man_out',name:'Uomo, forza fuori',desc:'Il marcatore chiude il centro: il disco va verso la linea laterale.',pos:[[.1,.5],[.26,.15],[.26,.85],[.46,.5],[.6,.5],[.74,.5],[.88,.5]]},
+  {id:'man_in',name:'Uomo, forza dentro',desc:'Il marcatore chiude la linea laterale: lanci verso il centro.',pos:[[.1,.5],[.26,.15],[.26,.85],[.46,.5],[.6,.5],[.74,.5],[.88,.5]]},
   {id:'zone',name:'Zona a coppa',desc:'Tre sul disco a coppa, quattro dietro per chiudere gli spazi.',pos:[[.2,.5],[.32,.22],[.32,.78],[.55,.16],[.55,.84],[.8,.34],[.8,.66]]},
   {id:'man_poach',name:'Uomo con aiuti',desc:'Chi marca un uomo lontano dal disco scala sulle linee di passaggio: più intercetti, ma un taglio improvviso lo trova in ritardo.',pos:[[.1,.5],[.26,.15],[.26,.85],[.42,.5],[.52,.5],[.62,.5],[.72,.5]]}
 ];
@@ -44,7 +44,7 @@ function overMoreHTML(){
   const L=G.ptLog||[],o=L.filter(x=>x.rec===0),d=L.filter(x=>x.rec===1),hold=o.filter(x=>x.by===0).length,brk=d.filter(x=>x.by===0).length;
   let h=`<div class="omore"><div><b>Attacco (ricevi il pull)</b>: ${hold} mete su ${o.length}${o.length?' ('+Math.round(hold/o.length*100)+'%)':''}</div><div><b>Difesa (tiri il pull)</b>: ${brk} break su ${d.length}${d.length?' ('+Math.round(brk/d.length*100)+'%)':''}</div>`;
   const sch=(R,N,lab)=>{const ks=Object.keys(R||{}).filter(k=>R[k][0]);return ks.length?`<div><b>${lab}</b>: ${ks.map(k=>`${N[k]||k} ${R[k][1]}/${R[k][0]}`).join(' · ')}</div>`:'';};
-  h+=sch(G.schR,ATT_NAME,'Tuoi schemi d’attacco (mete/possessi)')+sch(G.defR,DEF_NAME,'Tue difese (mete subite/possessi avversari)');
+  h+=sch(G.schR,ATT_NAME,'I tuoi schemi d’attacco (mete/possessi)')+sch(G.defR,DEF_NAME,'Le tue difese (mete subite/possessi avversari)');
   const pl=SQ.filter(p=>p.m&&p.m.pts>0).map(p=>{const m=p.m,t=m.lan[0]+m.lan[1]+m.spa[0]+m.spa[1]+m.buc[0]+m.buc[1],ok=m.lan[0]+m.spa[0]+m.buc[0];return {p,sc:(m.g|0)*3+(m.a|0)*3+(m.dif|0)*3+ok*0.3+(p.xpLast||0)*0.1,g:m.g|0,a:m.a|0,b:m.dif|0,c:t?Math.round(ok/t*100)+'%':'–'};}).sort((a,b)=>b.sc-a.sc).slice(0,3);
   if(pl.length)h+=`<div class="otop"><span class="hd">Migliori</span><span class="hd">Mete</span><span class="hd">Assist</span><span class="hd">Difese</span><span class="hd">Lanci</span>${pl.map((x,i)=>`<span>${i===0?'★ ':''}${esc(x.p.label||x.p.name)}</span><span>${x.g}</span><span>${x.a}</span><span>${x.b}</span><span>${x.c}</span>`).join('')}</div>`;
   return h+'</div>';

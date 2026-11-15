@@ -44,7 +44,7 @@ async function uoDb(method,path,body,q){
 }
 function uoErr(e){
   if(uoOffline()||e instanceof TypeError)return 'Nessuna connessione: Real player ha bisogno di internet. Il resto del gioco funziona anche offline.';
-  if(e&&(e.status===401||e.status===403))return 'Il database ha rifiutato la richiesta: controlla le regole di sicurezza e l’accesso anonimo (docs/ULTIMATE-TEAM-ONLINE.md).';
+  if(e&&(e.status===401||e.status===403))return 'Il server di Real player ha rifiutato la richiesta: riprova più tardi.';   // per chi sviluppa: regole di sicurezza e accesso anonimo in docs/ULTIMATE-TEAM-ONLINE.md
   return 'Errore online: '+((e&&e.message)||'sconosciuto')+'. Riprova tra poco.';
 }
 const uoNode=pw=>({n:UOP.name,p:UOP.p,w:UOP.w,l:UOP.l,g:UOP.g,pw,u:Date.now()});
@@ -109,7 +109,7 @@ async function uoStart(){
     const o=await uoFindOpp();
     if(!o){UO.msg='Non ci sono ancora altri giocatori: invita un amico a creare la sua squadra.';return;}
     const tm=await uoDb('GET','ut/teams/'+o.id),ros=tm&&utoUnpack(tm.m,o.id);
-    if(!ros){UO.msg='La squadra di '+o.n+' non è valida: riprova, ne cerco un’altra.';UOP.last=o.id;uoSaveP();return;}
+    if(!ros){UO.msg='La squadra di '+o.n+' non è valida: riprova e ti abbino a un’altra.';UOP.last=o.id;uoSaveP();return;}
     UOP.last=o.id;UO.msg='';uoLaunch(o,ros);
   }catch(e){UO.msg=uoErr(e);}
   finally{UO.busy=false;renderUtReal();}
@@ -163,7 +163,7 @@ function renderUtReal(){
   uoSettle();
   const off=!uoOk(),has=UT.col.length>0&&UT.sel.length===7,net=uoOffline(),pend=UT.packs.length,nx=(UT.ms|0)+1;
   $('urNameBox').classList.toggle('hidden',!!UOP||off);   // il nome si sceglie una volta sola: poi il riquadro non torna piu'
-  $('urInfo').innerHTML=off?'Real player non è ancora attivo: manca la configurazione online (docs/ULTIMATE-TEAM-ONLINE.md).':(UOP?`<b>${esc(UOP.name)}</b> · Punti: <b>${UOP.p}</b> · Vittorie ${UOP.w} · Sconfitte ${UOP.l}${has?` · Forza: <b>${utPower()}</b>`:''}${UT.col.length?` · Gettoni: <b>${UT.coins}</b>`:''}${UOP.dirty?' · risultato da inviare':''}`:'Scegli il tuo nome per entrare in classifica. Attenzione: una volta confermato non si può più cambiare.');
+  $('urInfo').innerHTML=off?'Real player non è disponibile in questa versione del gioco.':(UOP?`<b>${esc(UOP.name)}</b> · Punti: <b>${UOP.p}</b> · Vittorie ${UOP.w} · Sconfitte ${UOP.l}${has?` · Forza: <b>${utPower()}</b>`:''}${UT.col.length?` · Gettoni: <b>${UT.coins}</b>`:''}${UOP.dirty?' · risultato da inviare':''}`:'Scegli il tuo nome per entrare in classifica. Attenzione: una volta confermato non si può più cambiare.');
   $('urPlay').disabled=off||!UOP||!has||UO.busy||net;
   $('urPlayS').textContent=net?'Serve internet':(!has?'Prima completa la tua squadra (7 titolari)':'Contro un giocatore con punti simili ai tuoi');
   $('urPack').classList.toggle('hidden',!pend);
