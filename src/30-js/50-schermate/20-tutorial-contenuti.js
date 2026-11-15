@@ -221,9 +221,9 @@ tip:`Non cambiare tutta la linea a ogni partita: l’intesa si costruisce restan
 [`<b>Solo chi posso prendere</b> nasconde chi costa troppo, chiede più reputazione o non ha posto in rosa.`,`<b>Ordina per</b>: più economico, più forte, più promettente, più giovane, miglior rapporto qualità/prezzo.`,`<b>Dettagli / Rapporto</b>: ciò che sanno gli osservatori e il confronto con il tuo titolare più debole nel ruolo.`,`Il <b>potenziale</b> è un intervallo che si stringe osservando il giocatore.`],
 `Circa metà dei giocatori ha una <b>motivazione</b> scritta sotto il nome: «Vuole giocare» firma solo se sarebbe titolare; «Ambizioso» non scende in Serie C; «Ingaggio alto» costa il 20% in più; «Cerca un progetto» fa lo sconto se Vivaio o Campo di allenamento sono almeno al livello 2.`,
 `Con i conti in rosso non si compra.`,
-`Il potenziale di un giovane è una <b>scommessa</b>: dipende dal livello della tua serie e cade in una fascia (quasi sempre nella media o buono, a volte una delusione, raramente un talento o un fenomeno). Tra i 18 e i 22 anni qualcuno si ferma prima del previsto e qualcuno scopre più margine. Gli adulti hanno poco margine, e meno con l’età.`,
-`Se la tua squadra è sotto la media della serie (per esempio appena promossa), il mercato offre giocatori della categoria: costano, ma ti fanno salire. Se sei già tra i più forti, l’offerta non cresce insieme a te.`,
-`Si cresce più in fretta nelle serie basse (Serie C +35%, B +15%) e più piano in alto (A −10%). Se sei già più forte della migliore delle altre, la crescita rallenta: dominare a lungo costa fatica. Nella serie più alta di un campionato con posti europei conta anche il livello delle migliori d’Europa: chi domina un campionato più debole può comunque diventare competitivo in Europa.`],
+`I <b>giovani</b> sono una scommessa: il potenziale all’inizio è un intervallo, che si stringe osservandoli o tenendoli in rosa. Qualcuno diventa più forte del previsto, qualcuno si ferma prima: te lo dicono gli avvisi a inizio stagione.`,
+`Gli <b>adulti</b> rendono subito, ma hanno poco margine di crescita, e meno con l’età.`,
+`Dopo una promozione il mercato propone giocatori della nuova categoria: costano di più, ma servono per restare su.`],
 tip:`Un giovane col potenziale alto che oggi è scarso diventa il titolare di domani: osservalo prima di decidere.`},
 {id:'car-scouting',t:'Osservazioni e rapporti',w:'Mercato › Osserva / Rapporto',b:[
 `Far osservare un giocatore costa crediti (1 in meno per livello della Rete di osservatori). Ogni osservazione sblocca una parte del rapporto:`,
@@ -262,7 +262,7 @@ tip:`Con pochi crediti parti dal Campo di allenamento o dalle Tribune (che si ri
 tip:`Il Mentore è il più utile se punti sui giovani; l’Allenatore se vuoi crescita per tutti. Lo stipendio si paga a ogni partita: assumi con i conti in ordine.`},
 {id:'car-soldi',t:'Soldi, tifosi e morale',b:[
 `Ogni partita ha un <b>conto</b> che vedi a fine partita. Entrano i <b>biglietti</b> (solo in casa: più tifosi e partita importante = più spettatori, fino alla capienza), lo <b>sponsor</b> e il <b>premio vittoria</b> (vale di più nelle partite importanti). Escono gli <b>stipendi</b> (crescono con l’Overall), la manutenzione, lo staff e, in trasferta, un <b>costo di viaggio</b> fisso: una vittoria in trasferta contro una piccola squadra può chiudersi in rosso.`,
-`A inizio stagione scegli lo <b>sponsor</b>: Sicuro (paga di più a ogni partita, bonus piccolo), Equilibrato o Ambizioso (paga meno, bonus grande se raggiungi l’obiettivo a fine stagione). Gli obiettivi seguono la forza del tuo club nella serie: titolo o promozione per chi è tra i migliori, parte alta per chi è a metà classifica; con l’Ambizioso, se giochi il Campionato europeo, conta anche il risultato in Europa. Con i conti in rosso il mercato si ferma, la dirigenza avvisa e il morale cala; se dura troppo vieni <b>esonerato</b> e riparti da una squadra più debole.`,
+`A inizio stagione scegli lo <b>sponsor</b>: Sicuro (paga di più a ogni partita, bonus piccolo), Equilibrato o Ambizioso (paga meno, bonus grande se raggiungi l’obiettivo a fine stagione). Ogni contratto indica il suo obiettivo (per esempio il titolo, la promozione o un posto in classifica): più è difficile, più vale il bonus. Con l’Ambizioso, se giochi il Campionato europeo, l’obiettivo comprende anche il risultato in Europa. Con i conti in rosso il mercato si ferma, la dirigenza avvisa e il morale cala; se dura troppo vieni <b>esonerato</b> e riparti da una squadra più debole.`,
 [`<b>Bilancio previsionale</b> (Società › Conti): stima biglietti, sponsor, trasferte, stipendi, saldo all’ultima giornata e bonus da qui a fine campionato; accanto alle Tribune c’è in quante partite si ripaga il prossimo livello.`,
 `<b>Tifosi</b>: riempiono lo stadio, salgono con le vittorie; le Tribune danno più posti e ammorbidiscono le sconfitte.`,
 `<b>Morale</b>: si alza con vittorie, premi e Recupero; un Colloquio aiuta il singolo.`,
@@ -285,7 +285,7 @@ tip:`In zona playoff le partite si giocano una alla volta: usa bene i cambi, ogn
 tip:`Un buon giocatore in panchina troppo a lungo ti lascia: ruotalo oppure promettigli spazio.`},
 {id:'car-extra',t:'Conferenze, imprevisti e traguardi',b:[
 [`<b>Conferenza stampa</b>: dopo una partita con un po’ di storia (derby, vittoria a sorpresa, finale…) scegli tra tre risposte: parli della squadra (morale), dei tifosi (più tifosi) o di un giocatore (a lui l’umore migliora). «Salta» non cambia nulla.`,
-`<b>Imprevisti</b>: una o due volte a stagione dopo una partita succede qualcosa (sponsor, influenza, provino, invito a un torneo). A volte aiuta, a volte no, e spesso scegli tra due strade. Il ragazzo del <b>provino</b> è quasi sempre nella media per la tua serie: un talento (come una delusione) è rarissimo.`,
+`<b>Imprevisti</b>: una o due volte a stagione dopo una partita succede qualcosa (sponsor, influenza, provino, invito a un torneo). A volte aiuta, a volte no, e spesso scegli tra due strade.`,
 `<b>Traguardi</b> (Società › Bacheca › Traguardi): venti obiettivi di lungo periodo (vittorie, promozioni, scudetti, Europa, mete, premi, tifosi, strutture, derby, Hall of Fame…) con barra di avanzamento. Ognuno dà una volta sola un piccolo premio in crediti.`,
 `<b>Albo d’oro, Record e Hall of Fame</b> (Club): trofei, l’albo della tua serie, i migliori di sempre della squadra e le carte dorate di chi si ritira dopo una carriera speciale.`]],
 tip:`I traguardi sono una guida gratuita su cosa fare dopo: guardali quando non sai che obiettivo darti.`},
@@ -338,7 +338,7 @@ tip:`Controlla i posti della tua Conference dopo ogni giornata: ogni vittoria la
 `<b>Germania</b>: la 1. Liga ha 16 squadre in due gironi da 8 con fasi finali per tutte le posizioni; poi 2. e 3. Liga.`,
 `<b>Regno Unito</b>: i Nationals (due gironi da 4 e turno incrociato) e, sotto, i club dell’Open Tour.`],
 `Le forze dei club sono stimate dai risultati e dal ranking EUCS; i giocatori sono quelli delle liste dei tornei 2026 (età note o stimate: «circa») e dove un club ha pochi nomi la rosa è completata con giocatori generati.`,
-`Nel gioco ogni stagione ha <b>almeno 11 partite</b> per chi arriva fino in fondo: i gironi si giocano con più giri contro le stesse squadre (andata, ritorno e, dove serve, un terzo giro), poi le fasi finali vere.`,
+`I gironi si giocano con più giri contro le stesse squadre (andata, ritorno e, dove serve, un terzo giro), poi le fasi finali: chi arriva fino in fondo gioca almeno <b>11 partite</b>.`,
 `Anche chi gioca in queste leghe riceve offerte di panchina e scambi dalle altre (vedi «Offerte tra tutte le leghe»).`],
 tip:`Nei livelli bassi le rose hanno meno nomi veri: è l’occasione per trovare giovani e svincolati di talento.`},
 {id:'lega-eucf',t:'La coppa europea (EUCF)',w:'Colonna › Lega (stagione dopo la qualificazione)',b:[
