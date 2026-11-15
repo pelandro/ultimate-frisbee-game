@@ -19,9 +19,9 @@ function budgetForecast(){
   out.wage=wageBill()*out.left;out.up=(facUpkeep()+staffWage())*out.left;
   const n=names.length,rank=myRank();
   out.prize=Math.round((n-rank+1)*3*SR_K[SV.sr]);out.rank=rank;
-  out.obj=SV.obj&&rank<=SV.obj.tgt?SV.obj.reward:0;
+  out.obj=objMet(rank)?SV.obj.reward:0;
   if(isLN()){out.prize=Math.round(Math.max(1,names.length-rank+1)*3*SR_K[SV.sr]);}   // leghe europee: come in Italia, secondo la posizione nel girone
-  if(isUS()){const st=usExpectStage(rank);out.prize=Math.round(US_PRIZE[st]*SR_K.U);out.obj=SV.obj&&st>=SV.obj.lvl?SV.obj.reward:0;}   // USA: il premio dipende da quanto si va avanti, non dalla classifica
+  if(isUS()){const st=usExpectStage(rank);out.prize=Math.round(US_PRIZE[st]*SR_K.U);out.obj=SV.obj&&st>=SV.obj.lvl&&(!SV.obj.cr||rank<=SV.obj.cr)?SV.obj.reward:0;}   // USA: il premio dipende da quanto si va avanti, non dalla classifica
   out.end=Math.round(SV.cash+out.inc-out.trv-out.wage-out.up);   // saldo all'ultima giornata (quello che guarda la sfida «Conti in ordine»)
   out.after=out.end+out.prize+out.obj;                          // dopo i premi di fine stagione
   return out;

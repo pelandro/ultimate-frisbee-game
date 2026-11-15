@@ -115,15 +115,13 @@ function spRankTxt(tgt,n){
 }
 // il contratto scelto cambia l'obiettivo: ogni variante parte da quello che la dirigenza si aspetta (SV.obj calcolato da setObjective)
 function spVariant(k,b){
-  const S=SP_KIND[k],K=ECO.K();
   if(!b)return null;
-  if(isUS()){
-    const i=US_OBJ.findIndex(o=>o.id===b.id),j=clamp(i+(k==='sic'?-1:(k==='amb'?1:0)),0,US_OBJ.length-1),o=US_OBJ[j<0?0:j];
-    return {id:o.id,lvl:o.lvl,tgt:o.tgt,txt:o.txt,exp:b.exp,reward:Math.round(o.rw*SR_K.U/1.65*S.rw)};
+  if(isUS())return usObjFor(k,b.exp);
+  if(b.rel){   // subentrato: la dirigenza chiede la salvezza, i contratti si spostano di un paio di posti
+    const S=SP_KIND[k],K=ECO.K(),n=SV.mem[SV.sr].length,tgt=clamp(b.tgt+S.sh,1,Math.max(1,n-1));
+    return {rel:1,tgt,txt:spRankTxt(tgt,n),exp:b.exp,reward:Math.round((36+(n-tgt)*4)*K*S.rw)};
   }
-  if(k==='bal')return Object.assign({},b);
-  const n=isLN()?lnComp().clubs.length:SV.mem[SV.sr].length,tgt=clamp(b.tgt+S.sh,1,Math.max(1,n-1));
-  return {tgt,txt:spRankTxt(tgt,n),exp:b.exp,reward:Math.round((36+(n-tgt)*4)*K*S.rw)};
+  return k==='bal'?Object.assign({},b):objFor(k,b.exp);   // 27-obiettivi-sponsor.js
 }
 function spOffer(){
   const b=SV.obj;if(!b||SV.sp&&SV.sp.y===SV.season&&SV.sp.off)return;

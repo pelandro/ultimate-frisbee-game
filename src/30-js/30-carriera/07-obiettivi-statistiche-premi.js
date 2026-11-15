@@ -2,13 +2,7 @@
 function setObjective(){setObjectiveBase();spOffer();}   // l'obiettivo atteso dalla dirigenza e' la base dei tre contratti di sponsor (26-economia-partita.js)
 function setObjectiveBase(){
   if(isUS())return usObjective();   // obiettivi del campionato USA: 35-usa/04-carriera-usa.js
-  if(isLN())return lnObjective();   // leghe europee: 37-leghe/04-carriera-lega.js
-  const names=SV.mem[SV.sr],ord=names.slice().sort((a,b)=>teamPow(b)-teamPow(a)),exp=ord.indexOf(SV.team)+1,n=names.length;
-  let tgt,txt;
-  if(exp<=3){tgt=3;txt=SV.sr==='A'?'Podio: finisci tra le prime 3':'Zona promozione: finisci tra le prime 3';}
-  else if(exp<=n/2){tgt=Math.ceil(n/2);txt='Parte alta della classifica: finisci tra le prime '+tgt;}
-  else{tgt=n-PROMO;txt=SV.sr==='C'?'Stagione dignitosa: non finire tra le ultime 2':'Salvezza: non finire tra le ultime 2';}
-  SV.obj={tgt,txt,exp,reward:Math.round((36+(n-tgt)*4)*SR_K[SV.sr])};
+  objBase();   // Italia e leghe europee: 27-obiettivi-sponsor.js
 }
 /* ---- statistiche personali, premi, record, Hall of Fame ---- */
 const carOf=p=>p.car||(p.car={mp:0,g:0,a:0,b:0,ss:{mp:0,g:0,a:0,b:0},yrs:0});
@@ -73,7 +67,7 @@ function seasonAwards(rank,order){   // a fine stagione: premi del campionato, s
   if(tit)for(const p of SQ)if(p.car&&p.car.ss.mp>=3)p.ti=(p.ti|0)+1;   // chi ha contribuito al titolo lo porta nella scheda
   const tr=SV.troph;if(tit)tr[SV.sr]=(tr[SV.sr]|0)+1;if(SV.next&&SV.next.sr<SV.sr)tr.promo=(tr.promo|0)+1;tr.aw=(tr.aw|0)+mine;tr.b7=(tr.b7|0)+best7.filter(q=>q.mine).length;
   const champs=SV.next&&SV.next.champs?Object.assign({},SV.next.champs):{};if(order)for(const sr of ['A','B','C'])if(!champs[sr])champs[sr]=order[sr][0];
-  SV.hist.unshift({season:SV.season,sr:SV.sr,rank,n,w:t.w,l:t.l,mvp:mvp?(mvp.label||mvp.name):'',mvpS:mvp&&mvp.car?`${mvp.car.ss.g} mete, ${mvp.car.ss.a} assist, ${mvp.car.ss.b} difese`:'',obj:SV.obj?rank<=SV.obj.tgt:false,short:SV.next?SV.next.short:'',aw,best7,champs,po:SV.next&&SV.next.po?{kind:SV.next.po.kind,fin:SV.next.po.fin,win:SV.next.po.win}:undefined});
+  SV.hist.unshift({season:SV.season,sr:SV.sr,rank,n,w:t.w,l:t.l,mvp:mvp?(mvp.label||mvp.name):'',mvpS:mvp&&mvp.car?`${mvp.car.ss.g} mete, ${mvp.car.ss.a} assist, ${mvp.car.ss.b} difese`:'',obj:SV.obj?!!(SV.next&&SV.next.objOk):false,short:SV.next?SV.next.short:'',aw,best7,champs,po:SV.next&&SV.next.po?{kind:SV.next.po.kind,fin:SV.next.po.fin,win:SV.next.po.win}:undefined});
   if(SV.hist.length>40)SV.hist.length=40;
   const w0=aw[0];if(w0)news(`MVP del campionato: ${w0.name} (${w0.team}).`+(mine?` Premi vinti dai tuoi: ${mine}.`:''));
   if(mvp)news('MVP della tua squadra: '+(mvp.label||mvp.name)+'.');
