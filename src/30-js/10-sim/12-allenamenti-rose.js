@@ -90,6 +90,8 @@ function pickSeven(list,roleOf,meanOf){
 const bestSeven=list=>pickSeven(list,o=>o.r,mean9).sort((a,b)=>(a.r==='H'?0:1)-(b.r==='H'?0:1));
 // rosa completa dell'avversario: i 7 in campo e la panchina, ognuno con la propria energia. I cambi sono veri.
 const OPP={list:[]};
+// avversari piu' forti per livello (DIFF_PLUS): si somma alle statistiche dei 7 che entrano in campo; chi entra dalla panchina lo prende da G.oppPlus (loadOpp)
+function oppBoost(plus){G.oppPlus=plus||0;if(plus)for(const q of T[1])for(const k of KEYS)q.s[k]=Math.min(99,q.s[k]+plus);}
 function loadOpp(p,o,sub){
   p.name=o.n;p.look=makeLook(o.full||o.n,o.f);p.age=o.age;p.role=o.r;p.tl=o.tl;p.tf=o.tf;p.tv=o.tv;p.tal=Math.round((o.tl+o.tf+o.tv)/3);p.ro=o;p.trait=o.trait!==undefined?o.trait:traitFor(o.full||o.n,o.s,o.r);
   for(const k of KEYS)p.s[k]=sub?Math.min(99,o.s[k]+(G.oppPlus||0)):o.s[k];

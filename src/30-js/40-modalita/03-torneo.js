@@ -32,14 +32,14 @@ function tnRecord(win,su,so){
 function startTourn(sim){
   if(!TOUR||TOUR.st!=='play')return;
   const a=TOUR.team,b=tnOpp();if(!b)return;
-  if(sim){const r=simMatch(qPower(a),qPower(b),TOUR.d,lenOk(TOUR.len|0)),w=r.a>r.b,msg=tnRecord(w,r.a,r.b);showSim(w,`${a} ${r.a} – ${r.b} ${b}`,msg,()=>renderTourn());return;}
+  if(sim){const r=simMatch(qPower(a),qPower(b)+(DIFF_PLUS[clamp(TOUR.d|0,0,3)]||0),TOUR.d,lenOk(TOUR.len|0)),w=r.a>r.b,msg=tnRecord(w,r.a,r.b);showSim(w,`${a} ${r.a} – ${r.b} ${b}`,msg,()=>renderTourn());return;}
   if(hasCareer()){persist();QM.bak=JSON.stringify(SV);}else QM.bak=null;   // la carriera resta com'e': viene rimessa alla fine
   QM.on=true;TN.on=true;UT.on=false;
-  setSquad(qRoster(a,9));applyRoster(qRoster(b,7));
+  setSquad(qRoster(a,9));applyRoster(qRoster(b,7));oppBoost(DIFF_PLUS[clamp(TOUR.d|0,0,3)]);
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;applyForm();
   G.oppName=b;G.myName=a;G.matchLabel='Torneo · '+tnRoundName(tnCur().length);
-  newGame();G.target=lenOk(TOUR.len|0);rollWind();G.lvl=[0,Math.min(2,TOUR.d|0)];G.oppPlus=0;G.idn=[null,teamIdentity(b,T[1])];G.xtr=(TOUR.d|0)===3;G.hint=(TOUR.d|0)===0;G.routes=(TOUR.d|0)<=1;G.inMatch=true;G.recorded=false;
+  newGame();G.target=lenOk(TOUR.len|0);rollWind();G.lvl=[0,clamp(TOUR.d|0,0,3)];G.oppPlus=DIFF_PLUS[clamp(TOUR.d|0,0,3)];G.idn=[null,teamIdentity(b,T[1])];G.xtr=(TOUR.d|0)===3;G.hint=(TOUR.d|0)===0;G.routes=(TOUR.d|0)<=1;G.inMatch=true;G.recorded=false;
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
 }

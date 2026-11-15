@@ -1,9 +1,16 @@
 /* ---- IA lanciatore (avversario; in test anche per la tua squadra) ---- */
-function aiPick(th){
+// probabilita' di completare un lancio piatto verso il compagno (dove sta andando): serve a scegliere tra i candidati, non solo a scegliere lo stile
+function aiProb(th,q){
+  const dist=hyp(q.x-th.x,q.y-th.y),tt=flightTime(dist,0,dist>=SPARO_D);
+  return estimateThrow(th,clamp(q.x+q.vx*tt*0.8,0.5,FIELD_L-0.5),clamp(q.y+q.vy*tt*0.8,0.5,FIELD_W-0.5),q,0).p;
+}
+// refine (solo quando sta per lanciare): tra i 3 migliori per punteggio vince chi ha la probabilita' di completare piu' alta (traiettoria libera, difensore
+// lontano dal punto d'arrivo). Non aggiunge attese: decide nello stesso istante, con un conto in piu'
+function aiPick(th,refine){
   const P=th.t,d=dirOf(P),defs=T[1-P];
   let mates=T[P].filter(q=>q!==th);
   {const al=pbAllowed(th);if(al){const free=q=>defs.every(df=>hyp(df.x-q.x,df.y-q.y)>=3.5),m2=mates.filter(q=>al.includes(q)&&free(q));if(m2.length)mates=m2;}}   // schema a sequenza: il lancio va a chi e' previsto, se e' libero; se lo schema e' chiuso si gioca libero
-  let best=null,bs=-1e9;const lv=AIK(P),idn=idOf(P),dmD=G.dmode[1-P];
+  let best=null,bs=-1e9;const lv=AIK(P),idn=idOf(P),dmD=G.dmode[1-P],cands=[];
   // LETTURA DELLA PARTITA: chi e' avanti di 2 o sta per chiudere non regala il disco (meno lanci lunghi e contesi); chi e' sotto di 3 rischia di piu'
   const gap=G.score[P]-G.score[1-P],late=G.score[P]>=G.target-2,risk=lv.smart*((gap>=2?1:(gap<=-3?-0.8:0))+(late&&gap>=0?0.5:0));
   const W=G.wind&&G.wind.lv?G.wind:null;
@@ -32,27 +39,47 @@ function aiPick(th){
     if(G.open&&G.poss===P)sc+=clamp(fwd,-6,18)*0.18+clamp(3-Math.abs(q.y-MID)*0.2,-2,3)+(q.role==='H'?0.8:0);   // passaggio d'apertura dopo il pull: avanti e verso il centro, di preferenza a un handler
     if(G.stallT>6.5&&fwd<0)sc+=3;
     if(sc>bs){bs=sc;best=q;}
+    cands.push([sc,q]);
+  }
+  if(refine&&lv.smart>=0.7&&cands.length>1){
+    cands.sort((a,b)=>b[0]-a[0]);let bv=-1e9;const W=8*lv.smart;
+    for(const [sc,q] of cands.slice(0,3)){const v=sc+W*aiProb(th,q);if(v>bv){bv=v;best=q;}}
   }
   if(!best)best=nearestTo(mates,th.x,th.y);
   let open=99;for(const df of defs)open=Math.min(open,hyp(df.x-best.x,df.y-best.y));
   return {best,open};
 }
 function aiThrow(th){
-  const P=th.t,defs=T[1-P],pk=aiPick(th),best=pk.best,open=pk.open,lv=AIK(P);
+  const P=th.t,defs=T[1-P],pk=aiPick(th,true),best=pk.best,open=pk.open,lv=AIK(P);
   const dist=hyp(best.x-th.x,best.y-th.y);
   const lead=st=>{const tt=flightTime(dist,st,dist>=SPARO_D);return [clamp(best.x+best.vx*tt*0.8,0.5,FIELD_L-0.5),clamp(best.y+best.vy*tt*0.8,0.5,FIELD_W-0.5)];};
+  // PUNTO D'ARRIVO NELLO SPAZIO: oltre a dove sta andando il compagno prova qualche punto piu' lontano dal difensore che gli e' piu' vicino e sceglie quello in cui
+  // il compagno arriva prima di lui (e dove il lancio ha piu' probabilita' di completarsi): meno duelli a due su un disco contestato
+  const space=st=>{
+    const a0=lead(st);if(lv.smart<0.7)return {a:a0,v:0};
+    const nd=nearestTo(defs,a0[0],a0[1]);let ux=a0[0]-nd.x,uy=a0[1]-nd.y;const ul=hyp(ux,uy);
+    if(ul<0.3){ux=0;uy=a0[1]<MID?-1:1;}else{ux/=ul;uy/=ul;}
+    let bv=-1e9,ba=a0;
+    for(const s of [0,1.5,3,4.5]){
+      const x=clamp(a0[0]+ux*s,0.5,FIELD_L-0.5),y=clamp(a0[1]+uy*s,0.5,FIELD_W-0.5),e=estimateThrow(th,x,y,best,st).p;
+      let dm=1e9;for(const q of defs)dm=Math.min(dm,ttr(q,x,y));
+      const v=e+0.12*clamp(dm-ttr(best,x,y),-1.5,1.5)-0.02*s;
+      if(v>bv){bv=v;ba=[x,y];}
+    }
+    return {a:ba,v:bv};
+  };
   let style=0;
   if(dist<SPARO_D){
     if(lv.smart>=0.7){   // SCELTA DEL LANCIO: prova gli stili che sa fare e tira quello che ha piu' probabilita' di arrivare
       let bp=-1;
-      for(const st of [0,1]){const a=lead(st),e=estimateThrow(th,a[0],a[1],best,st).p+(st===0?0.03:0)+rnd(0,0.05);if(e>bp){bp=e;style=st;}}
+      for(const st of [0,1]){const e=space(st).v+(st===0?0.03:0)+rnd(0,0.05);if(e>bp){bp=e;style=st;}}
     }else{   // livello facile: regole semplici
       const lb=laneBlock(th,best.x,best.y,planThrow(th,best.x,best.y,0));
       if(open<4&&dist>14&&Math.random()<0.4)style=1;
       else if(lb&&lb.prob>0.14&&Math.random()<0.35+th.s.vis*0.004)style=1;
     }
   }
-  const a=lead(style);
+  const a=space(style).a;
   doThrow(th,a[0],a[1],best,style);
 }
 

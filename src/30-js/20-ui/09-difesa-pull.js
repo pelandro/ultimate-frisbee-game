@@ -43,7 +43,7 @@ function defTick(){
    Ogni tocco (schermo, Spazio, tasto A del controller) ferma l'indicatore; al secondo parte il pull. Il punto d'arrivo si muove sul campo: non serve leggere numeri. */
 let pm=null;
 const pullMineNow=()=>G.mode==='ready'&&G.pullTeam===0&&!G.auto&&!G.schemeOpen&&!G.paused&&!!G.puller;
-const pmSpd=()=>G.drill?0.78:[0.9,1,1.12][G.lvl?G.lvl[1]|0:0];   // la difficolta' della partita accelera un poco gli indicatori; nella lezione vanno piano
+const pmSpd=()=>G.drill?0.78:[0.9,1,1.12,1.12][G.lvl?G.lvl[1]|0:0];   // la difficolta' della partita accelera un poco gli indicatori; nella lezione vanno piano
 function pullTick(){
   if(!pullMineNow()){pm=null;return;}
   if(!pm)pm={ph:0,t0:G.tick+0.5,c:0,off:0};   // mezzo secondo di attesa: un tocco dato per chiudere la meta precedente non fa partire il pull

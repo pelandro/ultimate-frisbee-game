@@ -2,7 +2,7 @@
 // Ricalibrato dopo la P1 (intercetti lungo il volo, tagli coordinati, aperture del playbook): 6 coppie di rose diverse per ogni scarto (0-12 punti),
 // circa 280 punti per scarto. Una sola pendenza spiega tutto: 0,185 per punto di forza (il gioco di squadra rende la sola forza un po' meno decisiva).
 // Difficolta' dell'IA avversaria misurata allo stesso modo su circa 1200 punti per livello: Medio vale 1,5 punti di forza, Difficile 2,7.
-const SIM_K=0.185,SIM_KS=0.185,SIM_CAP=12,SIM_DIFF=[0,-1.5,-2.7,-2.7];
+const SIM_K=0.185,SIM_KS=0.185,SIM_CAP=12,SIM_DIFF=[0,-1.5,-2.7,-3.9];
 function simPointP(diff){const c=clamp(diff,-SIM_CAP,SIM_CAP);return 1/(1+Math.exp(-(SIM_K*c+SIM_KS*(diff-c))));}
 function simMatch(myP,oppP,dlv,tgt){   // tgt: punteggio che chiude la partita (predefinito 7)
   const p=simPointP(myP-oppP+(SIM_DIFF[dlv|0]||0)),N=tgt||MATCH_TARGET;let a=0,b=0;

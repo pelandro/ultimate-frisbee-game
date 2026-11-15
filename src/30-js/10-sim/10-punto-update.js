@@ -26,7 +26,10 @@ const drOf=p=>3+2.4*clamp((p.s.tuf-40)/60,0,1);   // quanto oltre la portata ci 
 // adapt = quanto si adatta a cio' che ripeti; sw = cambi di marcatura quando un difensore e' battuto
 const DIFF_AI=[{noise:1,think:1,wander:1,sprint:0,hb:1,mark:1,pat:0,smart:0.35,poach:0.45,react:1.15,adapt:0,sw:0.3},
   {noise:0.95,think:1.02,wander:0.95,sprint:0.04,hb:1.07,mark:0.9,pat:0.95,smart:0.8,poach:0.8,react:1,adapt:0.35,sw:0.6},
-  {noise:0.85,think:1.05,wander:0.8,sprint:0.08,hb:1.15,mark:0.75,pat:1.3,smart:1.2,poach:1.1,react:0.85,adapt:0.7,sw:0.9}];
+  {noise:0.85,think:1.05,wander:0.8,sprint:0.08,hb:1.15,mark:0.75,pat:1.3,smart:1.2,poach:1.1,react:0.85,adapt:0.7,sw:0.9},
+  {noise:0.75,think:1,wander:0.65,sprint:0.12,hb:1.22,mark:0.6,pat:1.3,smart:1.5,poach:1.3,react:0.72,adapt:0.9,sw:1}];   // Estrema: ancora piu' attenta; non aspetta di piu' (pat, think) per non esitare
+// bonus di statistiche dei 7 avversari per livello (Facile, Medio, Difficile, Estrema): a pari rosa il distacco non e' solo di comportamento. Non vale per Real player
+const DIFF_PLUS=[0,1,3,5];
 /* ---- IDENTITA' TATTICA delle squadre: nasce dal nome (fissa) e dalle qualita' dei 7 in campo.
    deep: -1 gioco corto ... +1 gioco lungo; pat: -1 ritmo alto ... +1 possesso paziente; press: probabilita' di marcare in anticipo; poach: quanto aiutano lontano dal disco ---- */
 const ID0={deep:0,pat:0,press:0.3,poach:0.5,tags:[]};
@@ -88,7 +91,7 @@ function update(dt){
   updateAttackers(dt);updateDefenders(dt);separate();
   if(G.flight){   // lo scatto sui lanci lunghi consuma energia: meno con la Resistenza alta
     for(const q of (G.sprint&&G.hold?[G.sprint.p]:[]).concat(G.aiSprint||[]))
-      if(q.fl&&q.st>0&&hyp(q.x-q.fl.x,q.y-q.fl.y)>0.6)q.st=Math.max(0,q.st-SPRINT_DRAIN*(1.5-q.s.res/100)*(hasT(q,'iron')?0.7:1)*dt);
+      if(q.fl&&q.st>0&&hyp(q.x-q.fl.x,q.y-q.fl.y)>0.6)q.st=Math.max(0,q.st-SPRINT_DRAIN*(1.5-q.s.res/100)*(hasT(q,'iron')?0.7:1)*(G.aiSprint&&G.aiSprint.includes(q)?AI_SPRINT_COST:1)*dt);   // l'IA scatta piu' spesso e si stanca meno
   }
   updateDisc(dt);
   if(G.mode!=='play')return;

@@ -1,7 +1,7 @@
 function startMatch(resume){   // resume: ripresa di una partita sospesa (niente presentazione)
   const m=nextMatch();if(!m)return;
   applyRoster(m.roster||makeRoster(m.power,SV.seed+'|'+m.name));
-  const plus=carDiff().plus;if(plus)for(const q of T[1])for(const k of KEYS)q.s[k]=Math.min(99,q.s[k]+plus);   // difficile: avversarie piu' forti
+  const plus=carDiff().plus;oppBoost(plus);   // dal Medio in su: avversarie piu' forti (DIFF_PLUS)
   SQ.forEach(p=>{p.injNew=false;});fixLineup();   // gli infortunati non giocano
   const first=!SV.help;if(first){SV.help=true;persist();}   // salvo prima della forma del giorno
   G.formB=teamFormB();applyForm();
@@ -28,10 +28,10 @@ function showScreen(id){
 const evName=()=>SV.event==='camp'?'Campionato':'Campionato europeo';
 // difficolta' della carriera: ritmo degli allenamenti e forza delle avversarie
 const CAR_DIFF={
-  easy:{name:'Facile',n:1,plus:0,ai:0,txt:'Allenamenti a ogni partita. Avversarie che scelgono in modo semplice.'},
-  med:{name:'Medio',n:2,plus:0,ai:1,txt:'Allenamenti una volta ogni 2 partite. Avversarie che leggono i mismatch e si adattano un po’ al tuo gioco.'},
-  hard:{name:'Difficile',n:3,plus:2,ai:2,txt:'Allenamenti una volta ogni 3 partite. Avversarie che decidono, si posizionano e reagiscono meglio, e solo 2 punti più forti.'},
-  xtr:{name:'Estrema',n:3,plus:2,ai:2,txt:'Come Difficile, ma la traiettoria del lancio si vede solo all’inizio.'}
+  easy:{name:'Facile',n:1,plus:DIFF_PLUS[0],ai:0,txt:'Allenamenti a ogni partita. Avversarie che scelgono in modo semplice.'},
+  med:{name:'Medio',n:2,plus:DIFF_PLUS[1],ai:1,txt:'Allenamenti una volta ogni 2 partite. Avversarie che leggono i mismatch e si adattano un po’ al tuo gioco, e 1 punto più forti.'},
+  hard:{name:'Difficile',n:3,plus:DIFF_PLUS[2],ai:2,txt:'Allenamenti una volta ogni 3 partite. Avversarie che decidono, si posizionano e reagiscono meglio, e 3 punti più forti.'},
+  xtr:{name:'Estrema',n:3,plus:DIFF_PLUS[3],ai:3,txt:'Avversarie ancora più attente e 5 punti più forti; la traiettoria del lancio si vede solo all’inizio.'}
 };
 const carDiff=()=>CAR_DIFF[(SV&&SV.diff)||'easy']||CAR_DIFF.easy;
 const carLen=()=>lenOk((SV&&SV.len)|0);   // durata delle partite di carriera (Opzioni): 7, 11 o 15 punti
@@ -156,17 +156,17 @@ function updateQuick(){
   $('qPlay').disabled=a===b;$('qPlay').textContent=a===b?'Scegli due squadre diverse':'Gioca';
   QM.d=+$('qD').value;QM.s=+$('qS').value;QM.len=+$('qL').value;
   $('qS').options[0].textContent=a;$('qS').options[1].textContent=b;   // i nomi delle due squadre
-  $('qDP').textContent=['L’IA avversaria gioca come sempre.','L’IA avversaria sceglie e reagisce un po’ meglio.','L’IA avversaria sceglie e reagisce molto meglio.','Come Difficile, ma la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'][QM.d]+' Le statistiche dei giocatori non cambiano.';
+  $('qDP').textContent=['L’IA avversaria gioca come sempre.','L’IA avversaria sceglie e reagisce un po’ meglio.','L’IA avversaria sceglie e reagisce molto meglio.','Ancora più attenta del Difficile, e la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'][QM.d]+' '+['Le statistiche dei giocatori non cambiano.','Avversari con +1 a tutte le statistiche.','Avversari con +3 a tutte le statistiche.','Avversari con +5 a tutte le statistiche.'][QM.d];
 }
 function startQuick(){
   const a=QM.a,b=QM.b;if(!a||!b||a===b)return;
   if(hasCareer()){persist();QM.bak=JSON.stringify(SV);}else QM.bak=null;   // la carriera resta com'e': viene rimessa alla fine
   QM.on=true;
-  setSquad(qRoster(a,9));applyRoster(qRoster(b,7));
+  setSquad(qRoster(a,9));applyRoster(qRoster(b,7));oppBoost(DIFF_PLUS[clamp(QM.d|0,0,3)]);
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;applyForm();
   G.oppName=b;G.myName=a;G.matchLabel='Partita veloce';
-  newGame();G.target=lenOk(QM.len|0);rollWind();G.lvl=[0,Math.min(2,QM.d|0)];G.oppPlus=0;G.idn=[null,teamIdentity(b,T[1])];G.xtr=(QM.d|0)===3;G.hint=(QM.d|0)===0;G.routes=(QM.d|0)<=1;G.inMatch=true;G.recorded=false;   // Estrema = IA come Difficile
+  newGame();G.target=lenOk(QM.len|0);rollWind();G.lvl=[0,clamp(QM.d|0,0,3)];G.oppPlus=DIFF_PLUS[clamp(QM.d|0,0,3)];G.idn=[null,teamIdentity(b,T[1])];G.xtr=(QM.d|0)===3;G.hint=(QM.d|0)===0;G.routes=(QM.d|0)<=1;G.inMatch=true;G.recorded=false;
   G.nextRec=QM.s===0?0:1;G.startRec=G.nextRec;   // chi riceve il primo pull inizia in attacco; l'altra squadra tira il pull (difesa)
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
