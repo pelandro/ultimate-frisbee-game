@@ -14,8 +14,11 @@ const SL_SENS=[1.3,1.14,1,0.86],DSL=['Molto bassa','Bassa','Media','Alta'];   //
 const slFull=()=>0.34*CH*SL_SENS[SETT.ds];         // px di trascinamento per il lancio massimo (55 m): un terzo dell'altezza dello schermo (era la meta': gli spari lunghi erano faticosi da caricare)
 // distanza in metri: cresce piano all'inizio (i passaggi corti sono precisi) e in fretta alla fine (gli spari)
 function slDist(len){const u=clamp((len-SL_DEAD)/(slFull()-SL_DEAD),0,1);return 3.5+(CH_MAX-3.5)*(0.45*u+0.55*u*u);}
-// Tipo di lancio: si sceglie con le DITA. Una sola dita = piatto (rovescio o dritto); due dita insieme (o piu') = lancio alto (scoober o hammer, il rovesciato).
-// G.high vale 0 o 1 e puo' solo salire mentre si mira: se una dita si stacca il lancio resta quello scelto. Con la tastiera: Maiusc (o K) = alto.
+// Tipo di lancio: si sceglie con le DITA. Un tocco = piatto (rovescio o dritto); DOPPIO TOCCO (un tocco rapido nel campo libero, poi entro HAM_WIN secondi un secondo tocco tenuto
+// premuto per mirare) oppure due dita insieme (o piu') = lancio alto (scoober o hammer, il rovesciato). Il primo tocco conta solo nel campo libero, lontano da ogni giocatore:
+// su un giocatore resta la chiamata rapida (taglio, clear), che parte subito. G.high vale 0 o 1 e puo' solo salire mentre si mira: se una dita si stacca il lancio resta quello scelto.
+// Con la tastiera: Maiusc (o K) = alto.
+const HAM_WIN=0.35;let hamT=-9;   // hamT: istante (G.tick) in cui e' finito il primo tocco del doppio tocco
 // CHIAMATE RAPIDE: tocco su un compagno = taglio (profondo se e' vicino, di rientro se e' lontano); pressione lunga = isolamento; tocco sul portatore = clear
 function nearMate(w,team,r){let b=null,bd=r;for(const q of T[team]){const d=hyp(q.x-w.x,q.y-1.4-w.y);if(d<bd){bd=d;b=q;}}return b;}
 function quickCall(w,long){
@@ -54,6 +57,7 @@ cv.addEventListener('pointerdown',e=>{
     const tb=cssToBuf(e.clientX,e.clientY);
     drag={btn:'throw',sl:true,ox:e.clientX,oy:e.clientY,fx:e.clientX,fy:e.clientY,s:G.tick,D:0,dirOk:false,ang:0,x:sxw(h.x),y:syw(h.y),tw:toWorld(tb[0],tb[1]),pids:new Set([e.pointerId]),multi:false};
     G.high=0;
+    if(G.tick-hamT<HAM_WIN){hamT=-9;drag.multi=true;drag.iso=true;G.high=1;drag.btn='hammer';shownAlto++;HOOKS.vibe(10);HOOKS.sfx('ui');}   // doppio tocco: il secondo tocco, tenuto premuto, e' un lancio alto (non e' mai una chiamata)
   }
 });
 // una seconda dita sul campo durante la mira: lancio alto (il tipo non scende mai: se una dita si stacca il lancio resta quello scelto)

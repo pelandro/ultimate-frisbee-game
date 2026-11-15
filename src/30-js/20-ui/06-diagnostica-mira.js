@@ -85,7 +85,7 @@ function aimUp(e){
     updateCall(h,w.x,w.y,hi,true);
     const aim=computeAim(h,w.x,w.y,hi);
     doThrow(h,aim.x,aim.y,aim.intended,hi,exq);shownHint++;
-  }else if(ok&&tapW)quickCall(tapW,false);
+  }else if(ok&&tapW){if(nearMate(tapW,0,3.4))quickCall(tapW,false);else hamT=G.tick;}   // tocco sul campo libero: arma il doppio tocco del lancio alto (05-input-impostazioni.js)
   G.high=false;
 }
 bSprint.addEventListener('pointerdown',e=>{if(!(G.flight&&G.flight.sparo&&G.sprint&&!G.pull))return;e.preventDefault();try{bSprint.setPointerCapture(e.pointerId);}catch(_){}G.hold=true;});

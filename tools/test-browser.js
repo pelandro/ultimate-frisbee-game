@@ -320,6 +320,15 @@ catch(e){
     // tipo di lancio con le dita: una = piatto, due (o piu') = alto (il rovesciato); niente pulsante in attacco. Si annulla riportando il dito al punto di partenza
     if(await page.locator('#bHammer:not(.hidden)').count())throw new Error('in attacco non deve esserci il pulsante dei tipi di lancio');
     {const cdp=await page.context().newCDPSession(page),TT=(type,pts)=>cdp.send('Input.dispatchTouchEvent',{type,touchPoints:pts}),aim=async()=>await page.locator('canvas').first().getAttribute('data-aim');
+     // doppio tocco: un tocco rapido nel campo libero (lontano da ogni compagno), poi un secondo tocco tenuto premuto = lancio alto con un dito solo
+     // il gioco sta in una funzione chiusa: non si leggono le posizioni dei giocatori, quindi si provano alcuni punti finche' ne arma uno libero (un tocco su un compagno e' una chiamata e non arma niente)
+     const dbl=async(pt,gap)=>{await TT('touchStart',[{x:pt.x,y:pt.y,id:1}]);await page.waitForTimeout(60);await TT('touchEnd',[]);await page.waitForTimeout(gap);
+       await TT('touchStart',[{x:pt.x,y:pt.y,id:1}]);await TT('touchMove',[{x:pt.x-40,y:pt.y-10,id:1}]);await page.waitForTimeout(150);const r=await aim();
+       await TT('touchMove',[{x:pt.x,y:pt.y,id:1}]);await page.waitForTimeout(80);await TT('touchEnd',[]);await page.waitForTimeout(250);return r;};
+     let free=null;for(const fy of [0.3,0.5,0.7,0.85])for(const fx of [0.15,0.3,0.45,0.6,0.75,0.9]){if(free)break;const pt={x:Math.round(844*fx),y:Math.round(390*fy)};if(await dbl(pt,120)==='alto')free=pt;}
+     if(!free)throw new Error('doppio tocco: nessun punto del campo ha armato il lancio alto');
+     if(await aim())throw new Error('doppio tocco: finita la mira il tipo di lancio deve sparire');
+     if(await dbl(free,600)!=='piatto')throw new Error('doppio tocco troppo lento: il lancio deve restare piatto');
      await TT('touchStart',[{x:420,y:250,id:1}]);await TT('touchMove',[{x:380,y:240,id:1}]);await page.waitForTimeout(150);
      if(await aim()!=='piatto')throw new Error('una dita: il lancio deve essere piatto ('+await aim()+')');
      await TT('touchStart',[{x:380,y:240,id:1},{x:300,y:300,id:2}]);await page.waitForTimeout(150);
