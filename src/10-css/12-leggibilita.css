@@ -2,6 +2,10 @@
    html[data-ew] = larghezza utile dopo l'ingrandimento dell'interfaccia (01-base-camera.js, resize): 's' sotto 800 px, 'xs' sotto 640 px.
    Le media query guardano la finestra, non l'ingrandimento (zoom): per questo le disposizioni compatte si scelgono con questo attributo. */
 
+/* iOS Safari in orizzontale ingrandisce da solo i blocchi di testo lunghi (autosizing): Guida, Tutorial e spiegazioni apparivano molto piu' grandi di quanto scritto.
+   Con 100% il carattere resta quello del CSS */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+
 /* testi lunghi (Guida, Tutorial, riquadri «i»): piu' piccoli e con piu' respiro. Con l'interfaccia ingrandita il carattere non cresce oltre ~17 px a schermo */
 .gsec{font-size:calc(15px * min(1, 1.13 / var(--ui)));line-height:1.34}
 .gsec li{margin:0 0 7px}
@@ -69,3 +73,15 @@ html[data-ew="xs"] .shead{flex-wrap:wrap}
 .cof{min-width:0}.cof svg,.cof canvas{width:100%;height:auto}
 .qbar{flex-wrap:wrap}
 html[data-ew="xs"] #qPlay{min-width:0}
+
+/* barra in alto: un po' d'aria sopra (stemma, nome della squadra, crediti e Menu non toccano piu' il bordo dello schermo) */
+:root{--ctop:46px}
+#ctop{box-sizing:border-box;padding-top:max(8px,var(--sat))}
+@media (max-height:420px){:root{--ctop:40px}#ctop{padding-top:max(6px,var(--sat))}}
+
+/* menu della carriera (Guida, Tutorial, Opzioni, Menu principale): sta sopra la colonna e, con la colonna a destra, si ferma prima di lei */
+#cmenu{z-index:6}
+html[data-rail="r"] #cmenu{right:calc(var(--rail) + 6px)}
+
+/* righe di testo lunghe da leggere: massimo circa 85 caratteri per riga */
+.gsec,.tubody{max-width:44em}
