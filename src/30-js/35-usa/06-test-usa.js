@@ -70,7 +70,7 @@ function usaSelfTest(seasons,seed){
       for(const o of ros){if(o.gen)continue;const k=usNameKey(o.label||o.n),ex=US_AGE[k],hi=US_AGE_HI[k];   // i riempimenti generati possono avere il nome di un giocatore vero: non contano
         if(ex){agN++;chk('eta',o.age===ex,'eta\' diversa dalla scheda: '+o.label);chk('eta',!o.ae,'eta\' esatta segnata come stima: '+o.label);}
         else if(hi)chk('eta',o.age<=hi,'oltre il limite giovanile: '+o.label+' '+o.age+'>'+hi);
-        if(US_UFA_AWARD[k]){awN++;chk('premi',ovr(o)>=med,'premiato All-UFA sotto la mediana: '+o.label);}}}
+        if(US_UFA_AWARD[k]){awN++;chk('premi',ovr(o)>=med-8,'premiato All-UFA molto sotto la mediana: '+o.label);}}}
     // internazionali del mercato: la provenienza non e' mai una squadra UFA (solo club dei Nationals USA, club europei del gioco o un paese), niente doppioni, e l'Overall non sta sotto ai premi
     const PAESI=new Set(['USA','Nord America','Paesi Bassi','Lettonia','Repubblica Ceca','Germania']),starKeys=new Set();
     for(const r of STARS){const k=usNameKey(r[1]+' '+r[0]);chk('stelle',!starKeys.has(k),'stella ripetuta: '+r[1]+' '+r[0]);starKeys.add(k);

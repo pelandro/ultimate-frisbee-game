@@ -113,11 +113,11 @@ function usFFof(club,sur,nm){
   if(!usFFmap){usFFmap={};for(const t in US_FF){const c=US_NAMES.find(n=>n.endsWith(t));if(!c)continue;usFFmap[c]={};for(const f of US_FF[t])usFFmap[c][usNameKey(f[0])]=f;}}
   const m=usFFmap[club];return m?m[usNameKey(nm+' '+sur)]||null:null;
 }
-// valore 0..1,3: 70% rendimento (punti a partita, radice per non far dominare i pochi fuoriclasse) e 30% costo (la stima di prima del torneo). Il costo
-// e' anche un pavimento (80%): chi ha un costo alto e ha reso poco ai Nationals e' di solito una stella con un torneo storto, non un giocatore mediocre.
+// valore 0..1,3: 50% rendimento (punti a partita, radice per non far dominare i pochi fuoriclasse) e 50% costo (la stima di prima del torneo: un solo torneo non fa
+// un campione). Il costo e' anche un pavimento (90%): chi ha un costo alto e ha reso poco ai Nationals e' di solito una stella con un torneo storto, non un giocatore mediocre.
 function usFFval(f){
   const pg=f[3]/Math.max(1,f[2]),perf=pg>0?Math.sqrt(pg/15):pg/20,cost=Math.min(1.3,Math.sqrt(Math.max(0,f[1]-3)/19));
-  return Math.max(0.7*Math.min(1.25,perf)+0.3*cost,0.8*cost);
+  return Math.max(0.5*Math.min(1.1,perf)+0.5*cost,0.9*cost);
 }
 // Overall assoluto (uguale per tutti i club, non relativo al club): un fuoriclasse in una squadra scarsa resta un fuoriclasse. Le stelle del mercato hanno
 // anche la fama del loro Overall di mercato (m), che fa da pavimento (-3) quando il torneo e' andato male.
@@ -125,12 +125,15 @@ function usFFval(f){
 // Ritorna direttamente il livello minimo (0 = nessuno): il maggiore tra il premio 2026 e la reputazione su piu' anni (US_REP, 03-reputazione.js).
 // nomi comuni che sono persone diverse in leghe diverse: non prendono i livelli minimi di un altro (usato anche da LN_HOMONYM, 37-leghe/)
 const US_HOMONYM=new Set(['Joe Miller','Chris Allen'].map(usNameKey));
-const usAward=(sur,nm)=>{const k=usNameKey(nm+' '+sur);if(US_HOMONYM.has(k))return 0;return Math.max([0,92,89,82][US_UFA_AWARD[k]|0],usRepFloor(k),US_UFA_ROSTER.has(k)?78:0,usHistFloor(k));};
+const usAward=(sur,nm)=>{const k=usNameKey(nm+' '+sur);if(US_HOMONYM.has(k))return 0;return Math.min(usCapOf(sur,nm),Math.max([0,90,87,81][US_UFA_AWARD[k]|0],usRepFloor(k),US_UFA_ROSTER.has(k)?78:0,usHistFloor(k)))};
 // contesto europeo (37-leghe/): chi gioca anche in un club europeo e li' e' un punto di riferimento ha come livello minimo quello europeo (meno 1)
 // giocatori che giocano sia in Europa sia in America e che il gioco tiene solo in Europa (le stelle sono tolte anche da US_STAR_CLUB; Orion Cable fa il contrario, vedi LN_OUT)
 const US_OUT=new Set(['Lander Decraene','Sofiène Bontemps','Louis Betrancourt','Gael Ancelin','Daan De Marrée','David Barzasi','Thomas Edmonds','Elliot Bonnet','Connor McHale','Sam Hill'].map(usNameKey));
 const usOut=(sur,nm)=>US_OUT.has(usNameKey(nm+' '+sur));
 const usEuCtx=(sur,nm)=>{const e=lnCtxOvr(usNameKey(nm+' '+sur));return e>0?e+2:0;};
+// livello "puro" (senza pavimenti) e pavimento finale: il pavimento (fama di mercato -3, premi, reputazione) e' il valore minimo che il giocatore ha DOPO la calibrazione del club,
+// non una base a cui si somma lo spostamento (altrimenti un pavimento di 90 diventava 94 in un club forte)
+const usAbP=f=>usFFabs(f,0,0),usFl=(m,aw)=>Math.max(m?m-3:0,aw|0);
 const usFFabs=(f,m,aw)=>{const a=62+30*usFFval(f);return clamp(Math.max(a,m?m-3:0,aw|0),40,98);};
 // eta' nel 2026: esatta se e' nelle schede UFA, altrimenti il limite delle convocazioni giovanili quando la stima lo supera, altrimenti la stima. Ritorna [eta', esatta?]
 function usAgeOf(sur,nm,def){
@@ -176,13 +179,13 @@ function usRoster(club,seedStr,opt){
   const specs=[];
   // le stelle del mercato che hanno i dati Fantasy (k:'sf') prendono livello e ruolo dal rendimento come gli altri, ma restano loro (tratto, aspetto, eta');
   // le altre (k:'s') tengono l'Overall del mercato
-  for(const r of STARS)if(US_STAR_CLUB[usStarKey(r)]===club){const f=usFFof(club,r[0],r[1]);specs.push(f?{k:'sf',row:r,ab:usFFabs(f,Math.max(r[4],usEuCtx(r[0],r[1])),usAward(r[0],r[1])),role:usFFrole(f)}:{k:'s',row:r});}
+  for(const r of STARS)if(US_STAR_CLUB[usStarKey(r)]===club){const f=usFFof(club,r[0],r[1]);specs.push(f?{k:'sf',row:r,ab:usAbP(f),fl:usFl(Math.max(r[4],usEuCtx(r[0],r[1])),usAward(r[0],r[1])),role:usFFrole(f)}:{k:'s',row:r});}
   // giocatori veri: dove ci sono i dati Fantasy contano quelli (livello assoluto e ruolo), altrimenti il bonus di US_CORE rispetto al club
   const real=[];
-  (US_CORE[club]||[]).filter(r=>!usOut(r[0],r[1])).forEach(r=>{const f=usFFof(club,r[0],r[1]),ro=f&&usFFrole(f);const ag=usAgeOf(r[0],r[1],r[2]);real.push({k:'r',row:[r[0],r[1],ag[0],ro||r[3],r[4]],ex:ag[1],ab:f?usFFabs(f,usEuCtx(r[0],r[1]),usAward(r[0],r[1])):null,base:-1+(r[4]|0)});});
-  usFFextra(club).forEach(x=>{const ag=usAgeOf(x.sur,x.nm,22+hashStr(x.f[0])%12);real.push({k:'r',row:[x.sur,x.nm,ag[0],usFFrole(x.f)||'C',0],ex:ag[1],ab:usFFabs(x.f,usEuCtx(x.sur,x.nm),usAward(x.sur,x.nm)),base:0});});
+  (US_CORE[club]||[]).filter(r=>!usOut(r[0],r[1])).forEach(r=>{const f=usFFof(club,r[0],r[1]),ro=f&&usFFrole(f);const ag=usAgeOf(r[0],r[1],r[2]);real.push({k:'r',row:[r[0],r[1],ag[0],ro||r[3],r[4]],ex:ag[1],ab:f?usAbP(f):null,fl:f?usFl(usEuCtx(r[0],r[1]),usAward(r[0],r[1])):0,base:-1+(r[4]|0)});});
+  usFFextra(club).forEach(x=>{const ag=usAgeOf(x.sur,x.nm,22+hashStr(x.f[0])%12);real.push({k:'r',row:[x.sur,x.nm,ag[0],usFFrole(x.f)||'C',0],ex:ag[1],ab:usAbP(x.f),fl:usFl(usEuCtx(x.sur,x.nm),usAward(x.sur,x.nm)),base:0});});
   // una rosa ha al massimo 20 giocatori: le stelle restano sempre, poi i veri migliori
-  const key=s=>s.ab!=null?s.ab:P+s.base;
+  const key=s=>s.ab!=null?Math.max(s.ab,s.fl||0):P+s.base;
   real.sort((a,b)=>key(b)-key(a)).slice(0,Math.max(0,20-specs.length)).forEach(s=>specs.push(s));
   const N=Math.min(20,Math.max(opt.n||16,specs.length));
   const used=new Set(specs.map(s=>s.row[0]+s.row[1]));
@@ -194,7 +197,9 @@ function usRoster(club,seedStr,opt){
   // obiettivo del club: la sua forza (power) spostata di meta' verso il talento vero dei suoi migliori 7 (al massimo 4 punti, vedi usFFskew): una squadra
   // con campioni e' un po' piu' forte del suo rating, una con pochi un po' piu' debole. Il resto della differenza resta nel rating.
   const T=P+clamp(0.5*usFFskew(club),-4,4);
-  const lv=(s,off)=>clamp(s.ab!=null?s.ab+off:P+s.base+off,36,99);   // tetto 99: con 95 i migliori dei club più forti finivano tutti allo stesso valore
+  const soft=x=>x>90?Math.min(94,90+(x-90)*0.5):x;   // sopra 90 i valori si avvicinano e il massimo e' 94: il migliore del mondo (De Marrée, 97, in Europa) resta sopra tutti
+  const lv0=(s,off)=>s.ab!=null?Math.max(s.fl||0,soft(clamp(s.ab+off,36,99))):soft(clamp(P+s.base+off,36,99));
+  const lv=(s,off)=>Math.min(usCapOf(s.row[0],s.row[1]),lv0(s,off));   // US_CAP (03-reputazione.js)
   let off=0,out=[];
   for(let it=0;it<7;it++){
     out=specs.map((s,j)=>{
