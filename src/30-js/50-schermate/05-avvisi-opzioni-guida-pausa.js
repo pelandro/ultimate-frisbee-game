@@ -2,7 +2,7 @@
 function renderAlerts(){
   const L=SV.alerts||[],nw=L.filter(a=>!a.seen).length;
   $('alSub').textContent=L.length?(nw?`${nw} novità · le scelte in sospeso restano qui finché non rispondi`:'Nessuna novità: qui resta la cronologia'):'Qui compare tutto ciò che succede ai tuoi giocatori.';
-  $('alBody').innerHTML=L.length?L.map(a=>{
+  const item=a=>{
     const kd=AL_KIND[a.k]||['Avviso','#c2cbe6'],p=a.full?byFull(a.full):null;let act='';
     if(!a.done&&(a.act==='job'||a.act==='trade'))act=crossLgButtons(a);   // offerte dell'altra lega (35-usa/05-lega-incrociata.js)
     else if(!a.done&&p){
@@ -11,7 +11,12 @@ function renderAlerts(){
       else if(a.act==='unhappy'&&p.mood===2)act=`<button type="button" class="sec" data-al="${a.id}" data-do="prom">Promettigli spazio</button><button type="button" class="sec" data-al="${a.id}" data-do="sell">Cedilo (+${sellValue(p)})</button>`;
     }
     return `<div class="ali${a.seen?'':' new'}"><span class="alk" style="background:${kd[1]}">${kd[0]}</span><div><p>${esc(a.txt)}</p>${a.res?`<div class="res">${esc(a.res)}</div>`:''}${act?`<div class="schrow">${act}</div>`:''}<small>Stagione ${a.s} · giornata ${a.r}</small></div></div>`;
-  }).join(''):'<p class="note">Ancora nessun avviso.</p>';
+  };
+  // tre gruppi: da decidere (scelte in sospeso), novita' (non lette), cronologia
+  const open=a=>!a.done&&(a.act==='job'||a.act==='trade'||(a.full&&byFull(a.full)&&((a.act==='stay'&&byFull(a.full).ret===1)||(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)||(a.act==='unhappy'&&byFull(a.full).mood===2))));
+  const g1=L.filter(open),g2=L.filter(a=>!open(a)&&!a.seen),g3=L.filter(a=>!open(a)&&a.seen);
+  const grp=(t,l)=>l.length?`<h3 class="alg">${t} <b>${l.length}</b></h3>`+l.map(item).join(''):'';
+  $('alBody').innerHTML=L.length?grp('Da decidere',g1)+grp('Novità',g2)+grp('Cronologia',g3.slice(0,40)):'<p class="note">Ancora nessun avviso.</p>';
 }
 function openAlerts(){renderAlerts();$('alerts').classList.remove('hidden');}
 /* Tre livelli di avviso. EMERGENZE (infortuni, addii) e DECISIONI (ritiro annunciato, offerta, richiesta di cessione, sfide) aprono il riquadro da sole, una volta.

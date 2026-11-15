@@ -71,4 +71,75 @@ html #home .hdash .hr{padding-top:0;display:flex;flex-direction:column;gap:8px}
 #home .dtick{white-space:normal;padding:5px 9px;font-size:16px;line-height:1.2}
 #home .dtick span{display:block;padding-left:0;animation:none}
 #home .dtick:before{content:"Consiglio · ";color:#9fb0de}
-#home .dtick.nw:before{content:"Novità · ";color:#9fb0de}
+#home .dtick.nw:before{content:""}
+/* ---- Squadra: carte con Overall, scheda con barre ---- */
+.pch .pov{min-width:28px;font-size:10px;line-height:12px;padding:3px 2px;margin:-1px -3px -1px 0}
+.pcl svg,.pcl .mood{width:14px;height:14px}
+.pcl i{font-size:9px;line-height:13px;padding:1px 5px}
+.ovbig{min-width:40px;font-size:17px;padding:7px 5px;box-shadow:0 3px 0 #000}
+.pcnv{position:absolute;right:92px;top:50%;transform:translateY(-50%);width:34px;height:34px;font:inherit;font-size:24px;line-height:1;color:#fff;background:rgba(0,0,0,.35);border:3px solid #000;cursor:pointer;padding:0}
+.pcnv.nx{right:54px}
+.pcnv:active{transform:translateY(-50%) translateY(2px)}
+.pcph .pcln{margin-right:130px}
+.abgrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px}
+.abg h4{margin:0 0 2px;font-size:15px;font-weight:400;color:var(--gold);font-family:inherit}.abg h4 b{color:#fff;font-weight:400}
+.ab{display:flex;align-items:center;gap:6px;font-size:15px;line-height:1.35}
+.ab>span:first-child{width:76px;flex:none;color:#c2cbe6}
+.abb{position:relative;flex:1;height:9px;background:#000;border:1px solid #000;min-width:30px}
+.abb i{display:block;height:100%}
+.abb u{position:absolute;top:-3px;bottom:-3px;width:3px;margin-left:-1px;background:#fff;opacity:.85}
+.ab b{width:24px;text-align:right;font-weight:400}
+@media (max-width:560px){.abgrid{grid-template-columns:1fr}}
+/* la scheda del giocatore apre dentro la cornice: la barra in alto e la colonna restano visibili */
+.screen.csc .pcov{top:var(--ctop);left:var(--rail)}
+/* ---- Allena: stato della settimana in due pastiglie, seduta di squadra a sinistra e lavori individuali a destra ---- */
+.tstrip{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:0 0 8px}
+.tstrip small{flex:1 1 220px;font-size:14px;color:#9fb0de;line-height:1.2}
+.tchs{display:flex;gap:6px}
+.tch{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;background:#141a36;border:3px solid #000;font-size:16px;color:#c2cbe6;white-space:nowrap}
+.tch b{font-weight:400;color:#fff}
+.tch i{width:10px;height:10px;border:2px solid #000;background:#9fb0de}
+.tch.todo i{background:#ffb83f}.tch.ok i{background:var(--good)}.tch.blk i{background:#59627f}
+#train .tgrid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+#train .tgrid>div:last-child{order:-1}
+/* ---- Mercato: schede dei giocatori al posto della tabella ---- */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.mcard{display:flex;flex-direction:column;gap:5px;padding:6px 8px 8px;background:#16204a;border:3px solid var(--rc,#2f7bff);box-shadow:0 3px 0 #000;min-width:0}
+.mcard.star{box-shadow:0 3px 0 #000,inset 0 0 0 2px var(--gold)}
+.mcard.lk{filter:saturate(.7)}
+.mch{display:flex;align-items:center;gap:8px;min-width:0}
+.mav{line-height:0;border:2px solid #000;background:rgba(0,0,0,.25);flex:none}
+.mn{flex:1;min-width:0;line-height:1.1}
+.mn b{display:block;font-weight:400;font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mn small{display:block;font-size:13px;color:#9fb0de;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mst{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap;font-size:15px;color:#c2cbe6}
+.mst b{font-weight:400;color:var(--gold)}
+.mrp{padding:1px 6px;background:#0b0f22;border:2px solid #000;font-size:14px}.mrp.up{color:#8cf0a8}.mrp.dn{color:#ff8a8d}
+.mpr{margin-left:auto;font-size:19px;color:var(--gold);display:inline-flex;align-items:center}
+.mpr .coin{margin-left:3px}
+.mcard .mka{display:flex;gap:6px}
+.mcard .mka button{flex:1;min-height:36px}
+.mdt{border-top:2px solid #000;padding-top:5px;font-size:15px}
+.mdt .dst{margin:3px 0}
+/* ---- Societa': schede di gestione e Bacheca ---- */
+.csub{margin:0 0 8px;max-width:520px}
+#club .qtabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+/* ---- Lega (classifica): campionato e coppa come due linguette sottili; la descrizione compare solo su quella attiva ---- */
+#event .ecards{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:8px}
+#event .ecard{padding:5px 10px}
+#event .ecard strong{font-size:17px;font-weight:400}
+#event .ecard small{display:none;font-size:13px;line-height:1.15}
+#event .ecard.on small{display:block}
+#event .ecard:disabled strong:after{content:" 🔒";font-size:13px}
+@media (max-height:420px){#event .ecard.on small{display:none}}
+/* ---- Posta: gruppi Da decidere / Novita' / Cronologia ---- */
+.alg{margin:10px 0 4px;font-family:var(--pfont);font-weight:400;font-size:9px;font-size-adjust:none;color:var(--gold);text-transform:uppercase;letter-spacing:0;display:flex;align-items:center;gap:8px}
+.alg b{font-weight:400;background:#0b0f22;border:2px solid #000;color:#fff;padding:1px 6px}
+.alg:first-child{margin-top:0}
+/* ---- Nuova carriera: tre passi (Campionato > Squadra > Allenatore) ---- */
+.steps{display:flex;gap:4px;margin-left:auto;align-items:center}
+.steps i{display:inline-flex;align-items:center;gap:5px;font-style:normal;font-size:14px;color:#7f8db8;padding:2px 7px;background:#141a36;border:2px solid #000}
+.steps i b{font-family:var(--pfont);font-weight:400;font-size:8px;font-size-adjust:none;background:#29366f;color:#fff;border:2px solid #000;padding:2px 4px}
+.steps i.on{color:#1a1c2c;background:var(--gold)}.steps i.on b{background:#fff;color:#1a1c2c}
+.steps i.done{color:#9fe3b3}.steps i.done b{background:var(--good);color:#06240f}
+@media (max-width:560px){.steps i em{display:none}}

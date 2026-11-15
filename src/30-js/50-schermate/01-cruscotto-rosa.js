@@ -66,7 +66,7 @@ function tapSwap(id){
   }else swapSel=id;
 }
 const openDet=new Set();
-let rView=(()=>{try{return localStorage.getItem('ultimate-vista-rosa')==='t'?'t':'c';}catch(e){return 'c';}})(),cardOpen=null,nickEdit=null;   // vista: carte (c) o tabella (t)
+let rView=(()=>{try{return localStorage.getItem('ultimate-vista-rosa')==='t'?'t':'c';}catch(e){return 'c';}})(),cardOpen=null,nickEdit=null,rOrd=[];   // vista: carte (c) o tabella (t)
 // filtri e ordinamenti della Rosa: con 20 e piu' giocatori servono per trovare subito chi cerchi
 let rFilt='all',rSort='ovr';
 const R_FILT={all:['Tutti',()=>true],H:['Handler',p=>posOf(p)==='H'],C:['Cutter',p=>posOf(p)==='C'],D:['Defender',p=>posOf(p)==='D'],out:['Fuori linea',p=>!SV.lineO.includes(p.full)&&!SV.lineD.includes(p.full)],ko:['Da gestire',p=>!!p.inj||p.cond<50||p.mood>0||p.ret===1]};
@@ -106,10 +106,11 @@ function detailHTML(p){
   const tabs=`<div class="seg dtabs">${DET_TABS.map(t=>`<button type="button" class="sg${tab===t[0]?' on':''}" data-dtab="${t[0]}" data-pid="${p.id}">${t[1]}</button>`).join('')}</div>`;
   let body='';
   if(tab==='att'){
-    const stats=CATS.map(ct=>`<div class="dgr"><b>${ct.name} ${catLevel(p,ct)}</b>`+ct.keys.map(k=>`<span>${LBL[k]} ${p.s[k]}${sure?`<small>/${capX(p,k)}</small>`:''}</span>`).join('')+'</div>').join('');
+    const bar=k=>{const v=p.s[k],cp=sure?capX(p,k):0;return `<div class="ab"><span>${LBL[k]}</span><span class="abb"><i style="width:${v}%;background:${barColor(v)}"></i>${cp>v?`<u style="left:${cp}%" title="limite ${cp}"></u>`:''}</span><b>${v}</b></div>`;};
+    const stats=CATS.map(ct=>`<div class="abg"><h4>${ct.name} <b>${catLevel(p,ct)}</b></h4>${ct.keys.map(bar).join('')}</div>`).join('');
     const rr=['H','C','D'].map(r=>`<span class="${pos===r?'on':''}">${POS_NAME[r]} ${Math.round(rate(p.s,r))}</span>`).join('');
     const tr=p.trait&&TRAITS[p.trait]?`<div class="dtr"><b>${TRAITS[p.trait][0]}</b>: ${TRAITS[p.trait][1].toLowerCase()}.</div>`:'';
-    body=`<div class="drole">${rr}</div>${tr}<div class="dg">${stats}</div>${rosterCmp(p)}`;
+    body=`<div class="drole">${rr}</div>${tr}<div class="dg abgrid">${stats}</div>${rosterCmp(p)}`;
   }else if(tab==='pre'){
     const per=(x,n)=>n?(x/n).toFixed(1):'–',lm=p.lm;
     const col=(t,x)=>`<div class="dpc"><b>${t}</b>${x?`<span>Partite<i>${x.mp}</i></span><span>Mete<i>${x.g}</i></span><span>Assist<i>${x.a}</i></span><span>Difese<i>${x.b}</i></span><span>Voto<i>${per(x.g*2+x.a*2+x.b*3,x.mp)}</i></span>`:'<small>nessuna partita</small>'}</div>`;
@@ -130,28 +131,29 @@ const ROLE_COL={H:'#2f7bff',C:'#e8a020',D:'#e0483a'},ROLE_ABB={H:'HAN',C:'CUT',D
 function cardHTML(p){
   const pos=posOf(p),v=ovr(p),inO=SV.lineO.includes(p.full),inD=SV.lineD.includes(p.full);
   return `<button type="button" class="pcard${p.inj?' inj':''}${(inO||inD)?' on':''}" data-card="${p.id}" style="--rc:${ROLE_COL[pos]||'#2f7bff'}" aria-label="${esc(pname(p))}, ${POS_NAME[pos]}, ${starsOf(v)} stelle">
-    <span class="pch"><b>${ROLE_ABB[pos]||''}</b>${moodFace(moodKey(p))}</span>
+    <span class="pch"><b>${ROLE_ABB[pos]||''}</b><b class="ov pov ${ovrCls(v)}">${v}</b></span>
     <span class="pca">${avatar(p,46)}${p.star?'<i class="stb">★</i>':''}</span>
     <span class="pcn">${esc(p.nick||p.name)}</span>
     ${starsHTML(starsOf(v))}
     ${condBar(p.cond)}
-    <span class="pcl"><i class="${inO?'a':''}">A</i><i class="${inD?'d':''}">D</i>${p.inj?`<em>${p.abs?'RIP':'INF'} ${p.inj}</em>`:(p.ret===1?'<em class="r">ULT</em>':'')}</span>
+    <span class="pcl">${moodFace(moodKey(p))}<i class="${inO?'a':''}">A</i><i class="${inD?'d':''}">D</i>${p.inj?`<em>${p.abs?'RIP':'INF'} ${p.inj}</em>`:(p.ret===1?'<em class="r">ULT</em>':'')}</span>
   </button>`;
 }
 // scheda a tutto schermo di un giocatore (dalla vista a carte): intestazione, linee, schede Attributi/Prestazioni/Sviluppo e azioni
 function cardPanel(p){
   const v=ovr(p),pos=posOf(p),inO=SV.lineO.includes(p.full),inD=SV.lineD.includes(p.full),mk=moodKey(p),i=SQ.indexOf(p);
   return `<div class="pcov" data-pcx="1"><div class="pcpanel" style="--rc:${ROLE_COL[pos]||'#2f7bff'}">
-    <div class="pcph"><span class="pcav">${avatar(p,54)}</span><div class="pcti"><h3>${esc(p.label||p.name)}${p.nick?` <small>«${esc(p.nick)}»</small>`:''}${p.star?'<span class="stb">★</span>':''}${traitBadge(p)}</h3><p>${POS_NAME[pos]} · ${p.ae?'circa ':''}${p.age} anni · ${moodFace(mk)} ${MOOD_TXT[mk]}</p>${starsHTML(starsOf(v))} <b class="ov ${ovrCls(v)}">${v}</b> <span class="pot">pot. ${potTxt(p)}</span></div>
-    <div class="pcln"><button type="button" class="lb${inO?' on':''}" data-line="lineO" data-id="${p.id}">ATT</button><button type="button" class="lb d${inD?' on':''}" data-line="lineD" data-id="${p.id}">DIF</button></div><button type="button" class="pcx" data-pcx="1" aria-label="Chiudi">✕</button></div>
+    <div class="pcph"><span class="pcav">${avatar(p,54)}</span><div class="pcti"><h3>${esc(p.label||p.name)}${p.nick?` <small>«${esc(p.nick)}»</small>`:''}${p.star?'<span class="stb">★</span>':''}${traitBadge(p)}</h3><p>${POS_NAME[pos]} · ${p.ae?'circa ':''}${p.age} anni · ${moodFace(mk)} ${MOOD_TXT[mk]}</p>${starsHTML(starsOf(v))} <b class="ov ovbig ${ovrCls(v)}">${v}</b> <span class="pot">pot. ${potTxt(p)}</span></div>
+    <div class="pcln"><button type="button" class="lb${inO?' on':''}" data-line="lineO" data-id="${p.id}">ATT</button><button type="button" class="lb d${inD?' on':''}" data-line="lineD" data-id="${p.id}">DIF</button></div><button type="button" class="pcnv" data-pcn="-1" aria-label="Giocatore precedente">‹</button><button type="button" class="pcnv nx" data-pcn="1" aria-label="Giocatore successivo">›</button><button type="button" class="pcx" data-pcx="1" aria-label="Chiudi">✕</button></div>
     <div class="pcbd">${rosterMsg?`<p class="rmsg">${rosterMsg}</p>`:''}${detailHTML(p)}</div></div></div>`;
 }
 function renderRoster(){
   const inO=new Set(SV.lineO),inD=new Set(SV.lineD);
   const ord=SQ.filter(R_FILT[rFilt]?R_FILT[rFilt][1]:()=>true).sort((a,b)=>R_SORT[rSort][1](a,b)||ovrX(b)-ovrX(a)||a.name.localeCompare(b.name));
+  rOrd=ord.map(p=>p.id);   // l'ordine che vedi: le frecce della scheda scorrono quello
   const cnt=k=>SQ.filter(R_FILT[k][1]).length;
   const bar=`<div class="rbar"><div class="seg rview"><button type="button" class="sg${rView==='c'?' on':''}" data-rv="c">Carte</button><button type="button" class="sg${rView==='t'?' on':''}" data-rv="t">Tabella</button></div><div class="seg">${Object.keys(R_FILT).filter(k=>k==='all'||k===rFilt||cnt(k)).map(k=>`<button type="button" class="sg${rFilt===k?' on':''}" data-rf="${k}">${R_FILT[k][0]}${k==='all'?'':' '+cnt(k)}</button>`).join('')}</div><label class="rsort">Ordina per <select class="qs" data-rsort="1">${Object.keys(R_SORT).map(k=>`<option value="${k}"${rSort===k?' selected':''}>${R_SORT[k][0]}</option>`).join('')}</select></label></div>`;
-  $('rTop').innerHTML=`<span>Rosa <b>${SQ.length}</b>/${SQ_MAX}</span><span class="${SV.lineO.length===7?'':'bad'}">Attacco <b>${SV.lineO.length}</b>/7</span><span class="${SV.lineD.length===7?'':'bad'}">Difesa <b>${SV.lineD.length}</b>/7</span><span>Crediti <b>${SV.cash}</b></span><button type="button" class="sec" id="rAuto">Linee consigliate</button><button type="button" class="sec" id="rSmart">Cambi intelligenti: ${SV.autoSub?'sì':'no'}</button>`;
+  $('rTop').innerHTML=`<span>Rosa <b>${SQ.length}</b>/${SQ_MAX}</span><span class="${SV.lineO.length===7?'':'bad'}">Attacco <b>${SV.lineO.length}</b>/7</span><span class="${SV.lineD.length===7?'':'bad'}">Difesa <b>${SV.lineD.length}</b>/7</span><button type="button" class="sec" id="rAuto">Linee consigliate</button><button type="button" class="sec" id="rSmart">Cambi intelligenti: ${SV.autoSub?'sì':'no'}</button>`;
   const head='<tr><th>Giocatore</th><th>OVR</th><th>POT</th><th>Cond</th><th>Linee</th><th></th></tr>';
   const row=p=>{
     const op=openDet.has(p.id),v=ovr(p);
