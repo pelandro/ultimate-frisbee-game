@@ -2,7 +2,7 @@
    Frecce o WASD = direzione (si aggancia al compagno piu' vicino a quella direzione, e lo segue mentre corre).
    Spazio (o J) = Lancio: tieni premuto per caricare, rilascia per tirare; in difesa = handblock; durante uno sparo = scatto; nello stacco laterale = tocco.
    Maiusc (o K) = lancio alto (Hammer); in difesa = tuffo. Invio (o Y) in difesa = salta il possesso avversario. Esc = annulla il lancio. Controller: stick o croce = direzione, A / RT = Lancio, X / B = Hammer. */
-const SRC={kb:{th:false,hm:false,ang:null},pad:{th:false,hm:false,ang:null}},VIN={th:false,hm:false,ang:null,live:false,sp:false,pid:9001,hintUntil:0,hinted:false};
+const SRC={kb:{th:false,hm:false,ang:null},pad:{th:false,hm:false,ang:null}},VIN={th:false,hm:false,ang:null,live:false,sp:false,pid:9001};
 const vinEvt=(x,y)=>({pointerId:VIN.pid,clientX:x,clientY:y,preventDefault(){},currentTarget:{setPointerCapture(){}}});
 const angDiff=(a,b)=>Math.abs(Math.atan2(Math.sin(a-b),Math.cos(a-b)));
 const kbOn=()=>G.inMatch&&!G.schemeOpen&&(G.mode==='play'||G.mode==='ready'||G.mode==='cine');
@@ -68,7 +68,6 @@ window.addEventListener('keydown',e=>{
   if(kbOn()&&(['KeyE','KeyQ','KeyC','KeyF','Tab'].includes(e.code)||(e.code==='Enter'&&inDefense()))){e.preventDefault();if(!e.repeat)kbAction(e.code);return;}
   const k=kbKind(e.code);if(!k||!kbOn())return;
   e.preventDefault();if(e.repeat)return;
-  if(!VIN.hinted&&G.mode!=='cine'){VIN.hinted=true;VIN.hintUntil=G.tick+7;}
   if(k==='dir'){kbHeld.add(e.code);kbRecalc();}else SRC.kb[k]=true;
   vinSync();
 },true);
@@ -91,7 +90,7 @@ function padPoll(){
   SRC.pad.th=b(0)||b(7)||b(5);SRC.pad.hm=b(2)||b(1);
   if(b(3)&&!padY&&inDefense())skipDefense();padY=b(3);   // Y in difesa: salta il possesso avversario
   if(b(4)&&!padSw){if(inDefense())cycleCtrl();else{const q=vinMate();if(q)quickCall({x:q.x,y:q.y-1.4},false);}}padSw=b(4);   // LB: cambia difensore o chiama il taglio
-  if(SRC.pad.th||SRC.pad.hm||SRC.pad.ang!==null||VIN.th||VIN.hm){if(!VIN.hinted&&kbOn())VIN.hinted=true;vinSync();}
+  if(SRC.pad.th||SRC.pad.hm||SRC.pad.ang!==null||VIN.th||VIN.hm){vinSync();}
 }
 /* schermo intero (su telefono parte al primo tocco; il pulsante nella schermata Schemi lo attiva o lo chiude) */
 const fsEl=document.documentElement||{},fsReq=fsEl.requestFullscreen||fsEl.webkitRequestFullscreen;

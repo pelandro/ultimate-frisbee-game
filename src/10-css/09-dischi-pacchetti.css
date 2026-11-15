@@ -1,0 +1,20 @@
+/* ---- pacchetti a forma di disco (Ultimate Team): il bagliore e il movimento crescono con la rarita' ---- */
+.disc{display:block;width:150px;height:auto;margin:0 auto;overflow:visible;animation:discb 1.2s steps(2) infinite}
+.disc.q0,.disc.q1{animation-duration:1.6s}
+.disc.q2{filter:drop-shadow(0 0 3px rgba(205,138,85,.55))}
+.disc.q3{filter:drop-shadow(0 0 4px rgba(220,228,244,.65))}
+.disc.q4{filter:drop-shadow(0 0 7px rgba(255,210,63,.85))}
+.disc.q5{filter:drop-shadow(0 0 9px rgba(120,225,255,.95));animation:discb 1s steps(2) infinite,discp .8s steps(2) infinite}
+.disc.q6{filter:drop-shadow(0 0 11px rgba(255,255,255,.9));animation:discb .8s steps(2) infinite,discr 2.4s steps(12) infinite}
+@keyframes discb{50%{transform:translateY(-5px) rotate(-3deg)}}
+@keyframes discp{50%{filter:drop-shadow(0 0 4px rgba(120,225,255,.6))}}
+@keyframes discr{to{filter:drop-shadow(0 0 11px rgba(255,255,255,.9)) hue-rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.disc,.disc.q5,.disc.q6{animation:none}}
+.dpk{display:flex;flex-direction:column;align-items:center;text-align:center}
+.dpk b{font-size:16px;margin-top:2px}.dpk small{font-size:11px;opacity:.85;max-width:200px}
+@media (max-height:340px){.disc{width:104px}}
+/* Negozio: tre pacchetti affiancati (a capo sugli schermi stretti) */
+.shopl{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:6px 0}
+.shopi{flex:1 1 200px;max-width:260px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 8px;background:#141a36;border:3px solid var(--rc,#fff);box-shadow:4px 4px 0 #000}
+.shopi .disc{width:120px}
+@media (max-height:340px){.shopi .disc{width:84px}.shopi{padding:6px}}

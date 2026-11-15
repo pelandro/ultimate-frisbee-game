@@ -4,7 +4,7 @@
 const DEF_KEY='ultimate-difesa',DEF_LBL=['Automatica','Manuale','Saltata'];
 const DEF_TXT=['i tuoi difendono da soli, restano pochi tuffi e salti a tempo','guidi un difensore: handblock e tuffi a ogni occasione','il possesso avversario si risolve in un istante'];
 function setDefMode(v){G.opt.def=v;try{localStorage.setItem(DEF_KEY,String(v));}catch(e){}ddrag=null;G.cdir=null;G.ctrl=null;}
-const bSkipD=$('bSkipD');let shownSkip=0;
+const bSkipD=$('bSkipD');
 const canSkipDef=()=>!!G.inMatch&&!G.drill&&!G.paused&&G.mode==='play'&&G.poss===1&&!G.pull&&!G.diveWin&&!!(G.holder||G.flight);
 /* SALTA: il possesso avversario viene giocato in un istante dal motore vero (stesse statistiche, stessa fatica, stessi schemi), finche' il disco
    torna a te o loro segnano. Durante il salto non ci sono stacchi ne' momenti a tempo: decidono le statistiche. Alla fine una fascia dice com'e' andata. */
@@ -18,7 +18,7 @@ function skipDefense(){
   HOOKS.cine=null;G.opt.cine=false;G.skip=true;RP.buf.length=0;
   try{while(n++<14400&&G.mode==='play'&&G.poss===1)update(1/60);}
   finally{Object.assign(HOOKS,H0);G.opt.cine=c0;G.skip=false;}
-  G.diveWin=null;G.dive=null;G.slowTail=0;G.hold=false;G.sprint=null;G.ctrl=null;cam.snap=true;shownSkip++;
+  G.diveWin=null;G.dive=null;G.slowTail=0;G.hold=false;G.sprint=null;G.ctrl=null;cam.snap=true;
   const pas=G.st.cmp[1]-cmp0,rec=pas===1?'1 passaggio avversario':pas+' passaggi avversari';
   if(G.mode==='banner'&&G.banner){HOOKS.sfx('goal',G.banner.team);return true;}
   if(G.mode==='play'&&G.poss===0){
@@ -61,7 +61,7 @@ function pullTap(){
     return true;
   }
   const c=pm.c,a=(dirOf(0)>0?0:Math.PI)+pmVal()*PULL_SW;pm=null;
-  doPull(c,a);shownPull++;return true;
+  doPull(c,a);return true;
 }
 // dove cadrebbe il pull con questa potenza e questo angolo (vento compreso, senza l'errore casuale) e che cosa vale:
 // 3 fuori, 2 nella meta avversaria, 1 a meno di 10 m dalla linea di meta, 0 corto

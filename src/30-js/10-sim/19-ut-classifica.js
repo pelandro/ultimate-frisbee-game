@@ -31,7 +31,7 @@ function utoCoins(mine,opp,win){
   return {base:UTO_COIN_W,bonus:f?f[1]:0};
 }
 // traguardi di punti: uno ogni UTO_MILE punti sopra quelli iniziali. Ognuno regala un pacchetto, sempre migliore e con piu' carte; dal quinto
-// (1500 punti) e' la «super bustina» dei campioni. Il valore e' nel formato dei pacchetti in attesa: qualita' + 10 x numero di carte
+// (1500 punti) e' la «super pacchetto» dei campioni. Il valore e' nel formato dei pacchetti in attesa: qualita' + 10 x numero di carte
 const UTO_MILE=100,UTO_MILE_PK=[[2,5],[3,6],[4,7],[5,8],[6,9]];
 const utoMiles=p=>Math.max(0,Math.floor((p-UTO_START)/UTO_MILE));
 const utoMilePts=i=>UTO_START+i*UTO_MILE;                                  // punti del traguardo numero i (1 = il primo)

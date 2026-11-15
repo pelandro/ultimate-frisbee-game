@@ -4,7 +4,6 @@ const hud=$('hud'),elScore0=$('s0'),elScore1=$('s1'),elPt=$('pt'),elStall=$('sta
 const cache=new Map();
 function setHTML(el,html){if(cache.get(el)!==html){cache.set(el,html);el.innerHTML=html;}}
 const ATT_NAME={vert:'Verticale',horz:'Orizzontale',hex:'Esagono',side:'Stack laterale',t1:'T1',weave:'Weave'},DEF_NAME={man_out:'Uomo, forza fuori',man_in:'Uomo, forza dentro',zone:'Zona',man_poach:'Uomo con aiuti'};
-let shownHint=0,shownPull=0,shownDef=0,shownAlto=0;
 // in difesa (l'avversario ha il disco o lo ha lanciato) i due pulsanti diventano handblock (destra) e tuffo (sinistra)
 const inDefense=()=>G.mode==='play'&&!G.pull&&!!((G.holder&&G.holder.t===1)||(G.flight&&G.flight.team===1));
 function updateHUD(dt){
@@ -21,7 +20,6 @@ function updateHUD(dt){
   if(n)elStall.textContent='Stall '+n;
   const mine=h&&h.t===0&&!G.flight&&G.mode==='play';
   const canThrow=mine&&G.freeze<=0&&!G.zoomHold&&!G.walk;
-  const pullMine=G.mode==='ready'&&G.pullTeam===0&&!G.auto&&!G.schemeOpen&&!!G.puller;   // il pull si carica con il pulsante «Lancio»
   const defNow=inDefense(),man=defMan(),hbRdy=defNow&&!!hbWindow()&&!G.hbAtt,dvRdy=defNow&&!!(G.diveWin&&!G.diveWin.done);   // rdy: e' il momento di premere
   // difesa automatica: il tasto del tuffo compare solo nel momento del tuffo a tempo, quello dell'handblock mai
   bThr.classList.toggle('hidden',!(mine||defNow));bThr.classList.toggle('def',defNow);bThr.classList.toggle('dis',mine&&!canThrow);bHammer.classList.toggle('hidden',!(defNow&&(man||dvRdy)));   // in attacco non c'e' piu': il lancio alto si fa con due dita
@@ -39,17 +37,9 @@ function updateHUD(dt){
   bSkipD.classList.toggle('hidden',!canSkipDef());
   bDef.classList.toggle('hidden',!defNow);bDef.classList.toggle('on',G.dmode[0]===1);bDef.textContent=G.dmode[0]?'Marcatura: anticipo':'Marcatura: contieni';
   if(!defNow&&(ddrag||G.cdir)){ddrag=null;G.cdir=null;}
-  let hint='';
+  let hint='';   // solo messaggi di stato (conto alla rovescia, disco da raccogliere): i suggerimenti su come si gioca non compaiono mai durante la partita
   if(G.mode==='ready'&&G.pullTeam===1&&!G.schemeOpen)hint='Pull avversario tra '+Math.max(1,Math.ceil(G.readyT));
   if(G.mode==='play'&&G.holder&&!G.flight){if(G.walk)hint=G.walk.line?'Si riparte dalla linea di meta':'Si raccoglie il disco';}
-  if(!hint&&pullMine&&pm)hint=pm.ph?'Tocca per fermare la DIREZIONE dentro il campo':'PULL: tocca per fermare la POTENZA nel verde';
-  if(!hint&&canThrow&&!drag&&shownHint<3)hint='Trascina all’indietro e rilascia per lanciare';
-  if(!hint&&canThrow&&!drag&&shownHint>=3&&shownCall<2&&G.holdT>1.2)hint='Tocca un compagno per chiamargli il taglio';
-  if(!hint&&canThrow&&!drag&&shownHint>=2&&shownHint<9&&shownAlto<1&&G.holdT>1.8)hint='Tocca due volte nel campo (tieni il secondo tocco) per il lancio alto (rovesciato)';
-  if(!hint&&dvRdy&&!man)hint='TUFFO! Tocca quando il cerchio si chiude';
-  if(!hint&&defNow&&G.holder&&man&&shownCtrl<3)hint='Difesa: trascina per muovere il difensore azzurro';
-  if(!hint&&defNow&&G.holder&&!man&&shownSkip<3)hint='Difesa automatica: tocca SALTA per andare avanti';
-  if(!hint&&G.tick<VIN.hintUntil&&G.mode==='play')hint=defNow?(man?'Spazio: handblock · Maiusc: tuffo':'Invio: salta la difesa · Spazio: tuffo quando compare'):'Frecce: direzione · Spazio: lancio (tieni premuto) · Maiusc: Hammer';
   if(DR.on)hint='';
   elHint.classList.toggle('hidden',!hint);if(hint)elHint.textContent=hint;
   drillTick();
