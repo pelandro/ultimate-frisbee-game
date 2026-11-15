@@ -26,6 +26,7 @@ catch(e){
   await page.addLocatorHandler(page.locator('#intro:not(.hidden) #inGo'),async()=>{await page.click('#inGo');});
   // la conferenza stampa dopo le partite che contano si salta con un tocco
   await page.addLocatorHandler(page.locator('#press:not(.hidden) #prSkip'),async()=>{await page.click('#prSkip');});
+  const vis_=async(pg,sel)=>{if(!(await pg.locator(sel).isVisible()))throw new Error('non visibile: '+sel);};
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
   const menu=async id=>{for(let i=0;i<3;i++){if(!(await page.locator('#cmenu').isVisible()))await page.click('#hMenu');try{await page.click(id,{timeout:3000});return;}catch(e){}}await page.click(id);};   // i fumetti e gli imprevisti che si aprono da soli chiudono il menu: si riapre   // Opzioni, Guida, Tutorial e «Menu principale» stanno nel menu della barra in alto
   const step=async(name,fn)=>{try{await fn();done.push(name);}catch(e){errs.push(name+': '+(process.env.TB_FULL?e.message.split('\n').slice(0,8).join(' | '):e.message.split('\n')[0]));try{if(await page.locator('#tut:not(.hidden)').count())await page.click('#tuX',{timeout:2000});}catch(_){}}};
@@ -313,6 +314,18 @@ catch(e){
   await step('partita veloce: avvio, pausa, abbandono',async()=>{
     await page.click('#tQuick');await vis('#quick');await page.click('#qPlay');await page.waitForTimeout(500);
     await page.keyboard.press('Escape');await vis('#pause');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
+  });
+  await step('pausa: tutti i pulsanti sono dentro lo schermo, anche sul telefono piccolo (667x375), e Abbandona si raggiunge',async()=>{
+    const c=await browser.newContext({viewport:{width:667,height:375}}),p=await c.newPage();p.setDefaultTimeout(15000);
+    await p.addInitScript(()=>{try{localStorage.setItem('ultimate-primi','{"d":[],"m":9,"off":1}');}catch(e){}});   // niente schede dei «Primi passi» sopra la partita
+    await p.goto('file://'+OUT);await p.waitForTimeout(400);
+    await p.click('#tQuick');await vis_(p,'#quick');await p.click('#qPlay');await p.waitForTimeout(700);
+    await p.keyboard.press('Escape');await p.waitForSelector('#pause:not(.hidden)');
+    const bad=await p.evaluate(()=>[...document.querySelectorAll('#pause button')].filter(b=>b.getBoundingClientRect().width>0).map(b=>{const r=b.getBoundingClientRect();return {id:b.id,ok:r.top>=0&&r.bottom<=innerHeight&&r.left>=0&&r.right<=innerWidth&&r.height>=34};}).filter(x=>!x.ok).map(x=>x.id));
+    if(bad.length)throw new Error('pulsanti della pausa fuori dallo schermo o troppo piccoli: '+bad.join(', '));
+    await p.click('#paQuit');await p.click('#paQuit');await p.waitForTimeout(300);   // due tocchi: conferma
+    if(await p.locator('#pause:not(.hidden)').count())throw new Error('«Abbandona» (con conferma) deve chiudere la partita');
+    await c.close();
   });
   await step('timeout: uno a partita, ferma il gioco e si riprende',async()=>{
     await page.click('#tQuick');await vis('#quick');await page.selectOption('#qS','0');await page.click('#qPlay');await page.waitForTimeout(600);

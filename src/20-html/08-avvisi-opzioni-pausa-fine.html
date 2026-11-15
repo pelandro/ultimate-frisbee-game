@@ -12,9 +12,23 @@
   <div class="orow"><h2>Ricominciare</h2><div class="schrow"><button type="button" class="sec danger" id="hNew">Nuova carriera</button><span class="qp" style="margin:0">Cancella la carriera attuale e torna alla scelta della squadra.</span></div></div>
 </div></div>
 
-<div id="pause" class="overlay hidden"><div class="panel" style="max-width:400px">
+<div id="pause" class="overlay hidden"><div class="panel pausepanel">
   <h1>Pausa</h1><p id="paSub"></p>
-  <div class="pcol"><button id="paGo" class="go" type="button">Riprendi</button><button id="paSim" class="sec" type="button">Simula questa meta</button><button id="paSusp" class="sec" type="button">Sospendi e continua più tardi</button><button id="paHelp" class="sec" type="button">Guida: comandi e regole</button><div class="prow2"><button id="paSnd" class="sec" type="button"></button><button id="paCine" class="sec" type="button"></button></div><button id="paDef" class="sec" type="button"></button><button id="paQuit" class="sec danger" type="button">Abbandona la partita</button></div>
+  <div class="pa2">
+    <div class="pamain">
+      <button id="paGo" class="go" type="button">Riprendi</button>
+      <button id="paSim" class="sec" type="button">Simula questa meta</button>
+      <button id="paSusp" class="sec" type="button">Sospendi e continua più tardi</button>
+    </div>
+    <div class="paside">
+      <h2 class="pah">Impostazioni</h2>
+      <button id="paSnd" class="sec pt" type="button"></button>
+      <button id="paCine" class="sec pt" type="button"></button>
+      <button id="paDef" class="sec pt" type="button"></button>
+      <button id="paHelp" class="sec" type="button">Guida e comandi</button>
+      <button id="paQuit" class="sec danger" type="button">Abbandona la partita</button>
+    </div>
+  </div>
 </div></div>
 
 <div id="simres" class="overlay hidden"><div class="panel" style="max-width:480px"><h1 id="srTitle"></h1><p id="srScore"></p><p id="srEvent"></p><div id="srMoney"></div><p class="qp">Partita simulata in base alle statistiche delle due squadre.</p><button id="srOk" class="go" type="button">Continua</button></div></div>
