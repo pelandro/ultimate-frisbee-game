@@ -301,8 +301,9 @@ catch(e){
     if(!/Inizia partita/.test(await page.locator('#hPlayT').innerText()))throw new Error('dopo la coppa non si torna al campionato');
   });
   await step('fine stagione: riepilogo in cima, tasto «Inizia la nuova stagione» ben visibile e premi dietro un tasto',async()=>{
-    for(let i=0;i<70&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim');await vis('#simres');await page.click('#srOk');await page.waitForTimeout(120);}
+    for(let i=0;i<70&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim',{timeout:4000});await vis('#simres');await page.click('#srOk',{timeout:4000});await page.waitForTimeout(120);}
     await page.click('#hEvent');await vis('#event');
+    if(await page.locator('#eCards [data-e="camp"]').count())await page.click('#eCards [data-e="camp"]');   // il passo precedente puo' aver lasciato aperta la coppa
     if(!(await page.locator('#eBody .endc').count()))throw new Error('manca la scheda di fine stagione');
     const vh=page.viewportSize().height,bb=await page.locator('#eReset').boundingBox();
     if(!bb||bb.y+bb.height>vh)throw new Error('«Inizia la nuova stagione» non si vede senza scorrere');
