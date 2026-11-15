@@ -332,18 +332,20 @@ tip:`Guarda la proiezione dei posti nella tua Conference: se rischi il Play-in, 
 `<b>Germania</b>: la 1. Liga ha 16 squadre in due gironi da 8 con fasi finali per tutte le posizioni; poi 2. e 3. Liga.`,
 `<b>Regno Unito</b>: i Nationals (due gironi da 4 e turno incrociato) e, sotto, i club dell’Open Tour.`],
 `Le forze dei club sono stimate dai risultati e dal ranking EUCS; i giocatori sono quelli delle liste dei tornei 2026 (età note o stimate: «circa») e dove un club ha pochi nomi la rosa è completata con giocatori generati.`,
-`Le carriere di queste leghe non ricevono offerte dall’altra lega.`],
+`Anche chi gioca in queste leghe riceve offerte di panchina e scambi dalle altre (vedi «Offerte tra tutte le leghe»).`],
 tip:`Nei livelli bassi le rose hanno meno nomi veri: è l’occasione per trovare giovani e svincolati di talento.`},
 {id:'lega-eucf',t:'La coppa europea (EUCF)',w:'Cruscotto › Classifica (stagione dopo la qualificazione)',b:[
 `Si sblocca <b>chiudendo il campionato tra i posti qualificanti</b>: Serie A prime 3, livello più alto in Belgio prime 3, in Francia e Regno Unito prime 2, in Germania la prima. Si gioca nella stagione dopo, una sola volta.`,
 `Il formato è quello dei veri European Ultimate Club Finals: <b>16 club</b> (3 italiani, 3 belgi, 2 francesi, 2 britannici, 1 tedesco, tutti club veri, più 5 club europei inventati di Spagna, Paesi Bassi, Cechia, Svizzera e Irlanda) in 4 gironi da 4, 3 partite a girone; poi quarti, semifinali e finale (stesso schema dei Nationals USA).`,
 `Ogni turno superato porta <b>crediti</b>; la vittoria anche reputazione e un trofeo. A torneo concluso si torna al campionato. Ogni coppa vinta alza il livello delle avversarie successive.`],
 tip:`In Europa le avversarie sono forti: arriva con la rosa fresca e prepara gli schemi giusti prima di ogni girone.`},
-{id:'lega-ponte',t:'Italia e USA insieme',b:[
-`Se la carriera va bene, a inizio stagione un club dell’altra lega (Italia ↔ USA) può offrirti la <b>panchina</b> (negli Avvisi): accettando cambi club e lega, ma allenatore, storico, trofei e traguardi restano tuoi.`,
-`Ogni tanto un club dell’altra lega propone anche uno <b>scambio di giocatori</b>.`,
+{id:'lega-ponte',t:'Offerte tra tutte le leghe',w:'Avvisi (campanella del cruscotto)',b:[
+`Se la carriera va bene, a inizio stagione un club di <b>un’altra lega</b> (Italia, USA, Belgio, Francia, Germania o Regno Unito, in ogni direzione) può offrirti la <b>panchina</b>. L’offerta arriva negli Avvisi e vale fino alla prossima partita.`,
+[`Il club offerto ha un <b>prestigio simile al tuo</b>: i primi di un paese chiamano i primi di un altro, i club di bassa classifica quelli di livello vicino.`,
+`Accettando cambi club e lega, ma <b>allenatore, storico, trofei e traguardi restano tuoi</b> (la reputazione scende un po’, perché si riparte in un altro ambiente).`,
+`Ogni tanto un club propone anche uno <b>scambio di giocatori</b> di livello simile. Può essere di un’altra lega o della <b>tua stessa lega</b>: in quel caso il tuo giocatore entra nella sua rosa e il suo esce da lì.`],
 `I giocatori internazionali del mercato che giocano per un club USA stanno nel loro club e, nelle carriere USA, non compaiono sul mercato.`],
-tip:`Se vuoi cambiare lega senza perdere nulla, aspetta l’offerta: è l’unico modo per portarti dietro tutto.`}
+tip:`Vuoi cambiare lega senza perdere nulla? Aspetta l’offerta: è l’unico modo per portarti dietro tutto. Non ti piace? Rifiuta e resti dove sei.`}
 ]});
 
 TUT.push({id:'mod',t:'Le altre modalità',sub:'Partita veloce, Torneo, Ultimate Team, Real player, Allenamento.',
