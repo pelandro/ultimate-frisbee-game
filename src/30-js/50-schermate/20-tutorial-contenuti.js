@@ -174,12 +174,12 @@ tip:`Ruota i giocatori: un titolare fresco al 100% rende più di una stella al 4
 {id:'sch-tempo',t:'Timeout, half time e pausa',b:[
 [`<b>Timeout</b>: uno a partita, solo con il disco in mano (tasto in basso a sinistra). Azzera lo stall, recupera un po’ di energia e permette di cambiare schema.`,
 `<b>Half time</b>: quando una squadra segna la metà dei punti (4 su 7, 6 su 11, 8 su 15) compare «Half time» con Schemi, Cambi e Continua. Chi ha iniziato in difesa (il pull) la riprende in attacco.`,
-`<b>Pausa</b> (tasto «II» in alto a destra): riprendi, simula la meta, apri la guida, regoli audio e stacchi o abbandoni la partita.`],
+`<b>Pausa</b> (tasto «II» in alto a destra): riprendi, sospendi (in carriera), regoli audio, stacchi e difesa, apri la guida o abbandoni la partita.`],
 `<b>Attenzione</b>: in carriera, nel torneo e in Ultimate Team abbandonare è una <b>sconfitta a tavolino</b>. Per fermarti e riprendere dopo usa <b>Sospendi e continua più tardi</b>: la partita si salva con punteggio, energie e statistiche e dal cruscotto «Riprendi la partita» la fa ripartire.`,
 `Se chiudi il gioco durante una partita di carriera, la sospensione si salva da sola.`],
 tip:`Usa il timeout quando stai per perdere il disco per stall o hai bisogno di cambiare lo schema nel momento decisivo, non a caso.`},
 {id:'sch-sim',t:'Simula meta, Salta e durata',b:[
-`<b>Simula meta</b> (a inizio meta, accanto a Schemi e Cambi) gioca la meta in un istante con l’intelligenza artificiale per entrambe le squadre. Contano le stesse statistiche, la stessa fatica e gli stessi schemi e i giocatori raccolgono la stessa esperienza. Dal menu di pausa puoi simulare anche una meta già cominciata.`,
+`<b>Simula meta</b> (a inizio meta, accanto a Schemi e Cambi) gioca la meta in un istante con l’intelligenza artificiale per entrambe le squadre. Contano le stesse statistiche, la stessa fatica e gli stessi schemi e i giocatori raccolgono la stessa esperienza. Il pulsante compare solo a inizio meta.`,
 `<b>Salta</b> (in difesa automatica) fa giocare in un istante solo il possesso avversario.`,
 `La <b>durata</b> si sceglie nelle Opzioni della carriera, nella partita veloce e alla creazione del torneo: <b>Arcade</b> (7 punti), <b>Competitiva</b> (11), <b>Lunga</b> (15). In Ultimate Team si gioca sempre ai 7. Le partite lunghe non fanno crescere di più.`,
 `La <b>difficoltà</b> va da Facile a Estrema: più sale, meno aiuti grafici vedi e meglio reagisce l’IA.`],

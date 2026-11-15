@@ -67,12 +67,12 @@ function openGuide(tab,back,key){
 document.addEventListener('click',e=>{const b=e.target.closest('.shelp');if(b)openGuide(5,null,b.dataset.help);});
 $('gdTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)openGuide(+b.dataset.g,guideBack);});
 $('gdX').addEventListener('click',()=>{$('guide').classList.add('hidden');const f=guideBack;guideBack=null;if(f)f();});
-/* ---- PAUSA: un solo tasto in alto a destra durante la partita. La partita si ferma davvero; da qui si riprende, si simula la meta, si apre la guida o si esce ---- */
+/* ---- PAUSA: un solo tasto in alto a destra durante la partita. La partita si ferma davvero; da qui si riprende, si sospende, si regolano audio e difesa, si apre la guida o si esce ---- */
 function openPause(){
   if(!G.inMatch||!(G.mode==='play'||G.mode==='ready')||G.paused)return;
   G.paused=true;G.schemeOpen=true;drag=null;ddrag=null;aimPid=null;G.cdir=null;
   $('paSub').textContent=G.drill?G.matchLabel:`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${G.oppName||'Rossi'} · meta ${G.pointNo}`;
-  $('paSim').classList.toggle('hidden',!!G.drill);$('paSusp').classList.toggle('hidden',!!(G.drill||QM.on));   // sospendere: solo le partite di carriera
+  $('paSusp').classList.toggle('hidden',!!(G.drill||QM.on));   // sospendere: solo le partite di carriera
   $('paQuit').textContent=G.drill?'Esci dall’allenamento':(matchCounts()?'Abbandona (sconfitta a tavolino)':'Abbandona la partita');delete $('paQuit').dataset.arm;
   syncToggles();$('pause').classList.remove('hidden');
 }
@@ -85,7 +85,6 @@ $('paQuit').addEventListener('click',()=>{
   if(matchCounts())armed($('paQuit'),'Conferma: sconfitta a tavolino','Abbandona (sconfitta a tavolino)',()=>{closePause();forfeitMatch();});
   else armed($('paQuit'),'Conferma: il risultato non viene registrato','Abbandona la partita',()=>{closePause();quitMatch();});
 });
-$('paSim').addEventListener('click',()=>{closePause();simPoint();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)openPause();});   // cambi app o scheda: la partita ti aspetta
 /* ---- SIMULA META: la meta in corso (o quella che sta per cominciare) viene giocata in un istante dal motore vero, con l'IA anche per la tua squadra.
    Valgono le stesse statistiche, la stessa fatica e gli stessi schemi di una meta giocata; poi compare il normale stacco della meta segnata ---- */
