@@ -153,6 +153,7 @@ catch(e){
     if(!/Giulia Rossi/i.test(await page.locator('#coName').innerText()))throw new Error('l\'anteprima non segue il nome');
     await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     if(!(await page.locator('#hCoach svg.av').count()))throw new Error('manca il volto dell\'allenatore nel cruscotto');
+    if(!(await page.locator('.dcash .cr .coin').count()))throw new Error('manca la moneta di fianco a «Crediti» nel cruscotto');
   });
   await step('tutorial completo dal cruscotto: fumetto «Scopri di più» e tasto Tutorial',async()=>{
     if(await page.locator('#tip:not(.hidden)').count()){   // il fumetto del cruscotto porta alla sua lezione
