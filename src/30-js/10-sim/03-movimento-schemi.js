@@ -102,7 +102,7 @@ function updatePlay(dt){
     pb.stageT+=dt;
     const book=PLAYBOOK[pb.id],ph=book.phases[pb.phase];
     if(pb.stage==='set'){
-      if(G.brickWait||G.walk||G.pull)continue;
+      if(G.walk||G.pull)continue;
       let ok=true;
       for(const p of T[team]){if(!pb.follow[p.id]||p===G.holder)continue;const sp=ph.set[pb.role[p.id]];if(sp){const t=pbPos(pb,team,sp[0],sp[1],sp[2]);if(hyp(p.x-t.x,p.y-t.y)>3.5)ok=false;}}
       if(ok||pb.stageT>1.2){pb.stage='go';pb.stageT=0;}
@@ -122,11 +122,25 @@ function pbAllowed(th){   // a chi puo' lanciare chi segue lo schema
   const al=ph.pass.map(r=>pb.rp[r]).filter(q=>q&&pb.follow[q.id]);
   return al.length?al:null;
 }
-function playOnCatch(team,p){
+function playOnCatch(team,p){   // (il primo passaggio dopo un pull preso dall'IA non ha ancora uno schema: lo avvia catchBy)
   const pb=G.pb&&G.pb[team];if(!pb||!pb.active)return;
   const book=PLAYBOOK[pb.id],ph=book.phases[pb.phase],nxt=book.phases[pb.phase+1];
   if(nxt&&ph.pass&&pb.role[p.id]===ph.pass[0]){pb.phase++;pb.stage='go';pb.stageT=0;pb.ready=false;pb.wp={};}   // il ricevitore previsto ha preso: parte la fase successiva
   else pb.active=false;
+}
+// BRICK: il pull e' uscito e si riparte dal segno al centro. Nessuno aspetta: l'attacco si dispone subito dove lo schema lo vuole (attorno a chi ha
+// il disco) e ogni difensore si mette davanti al suo uomo, cosi' si gioca da subito
+function brickSet(){
+  const P=G.poss,d=dirOf(P),H=G.holder,sch=P===0?G.sch.att:G.opp.att,side=H.y<MID?1:-1,pb=G.pb&&G.pb[P];
+  for(const p of T[P]){
+    if(p===H)continue;
+    const sp=pb&&pb.follow[p.id]&&PLAYBOOK[pb.id].phases[0].set[pb.role[p.id]],t=sp?pbPos(pb,P,sp[0],sp[1],sp[2]):anchor(sch,p.slot,H,d,side);
+    p.x=t.x;p.y=t.y;p.vx=p.vy=0;p.fl=null;p.flD=0;p.boost=0;
+  }
+  T[1-P].forEach((q,i)=>{
+    const m=q.mark||H;
+    q.x=clamp(m.x+d*(m===H?2.6:2.2),1,FIELD_L-1);q.y=q.mark?m.y:clamp(H.y+(i-3)*4,2.5,FIELD_W-2.5);q.vx=q.vy=0;q.fl=null;q.flD=0;q.boost=0;
+  });
 }
 function anchor(sch,slot,H,d,side){
   const s=SLOTS[sch][slot];
@@ -164,7 +178,7 @@ function placeTeams(rec){
   for(const q of def){q.x=px;q.y=q===puller?MID:ys[k++];}
   for(const p of atk.concat(def)){p.vx=p.vy=0;p.fl=null;p.flD=0;p.boost=0;p.cs='set';p.cutT=rnd(0.6,2);p.mark=null;p.ph=0;p.wT=0;p.nT=0;p.nx=0;p.ny=0;p.cmd=null;}
   G.puller=puller;G.pullTeam=pt;G.pull=null;G.holder=null;G.flight=null;G.marker=null;
-  G.edge=null;G.stallT=0;G.zoneH=null;G.zoneT=0;G.call=null;G.sideA=undefined;G.snapQ=null;G.iso=null;G.ctrl=null;G.cdir=null;G.ctrlH=null;G.hold=false;G.sprint=null;G.aiSprint=[];G.brickWait=false;G.walk=null;G.diveWin=null;G.dive=null;G.slowTail=0;G.pb=[null,null];
+  G.edge=null;G.stallT=0;G.zoneH=null;G.zoneT=0;G.call=null;G.sideA=undefined;G.snapQ=null;G.iso=null;G.ctrl=null;G.cdir=null;G.ctrlH=null;G.hold=false;G.sprint=null;G.aiSprint=[];G.brick=false;G.open=false;G.walk=null;G.diveWin=null;G.dive=null;G.slowTail=0;G.pb=[null,null];
   G.disc.x=puller.x;G.disc.y=puller.y;G.disc.z=1;
   G.readyT=G.auto?0.3:3.2;G.freeze=0;G.high=false;G.mode='ready';
   assignMarks();

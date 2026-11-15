@@ -125,7 +125,7 @@ function drillTick(){
     const st=TUT_STEPS[Math.min(DR.step,TUT_STEPS.length-1)];
     if(st.pull&&G.drill.live){   // il pull e' riuscito se, quando qualcuno raccoglie il disco, non c'e' brick (cioe' non e' uscito)
       if(G.pull)DR.pulled=true;
-      else if(DR.pulled&&G.mode==='play'&&G.holder){DR.pulled=false;if(!G.brickWait){DR.cnt++;tutNext();}else{drSay('Fuori dal campo: potenza nel verde, direzione al centro');drillNext(1.6);}}
+      else if(DR.pulled&&G.mode==='play'&&G.holder){DR.pulled=false;if(!G.brick){DR.cnt++;tutNext();}else{drSay('Fuori dal campo: potenza nel verde, direzione al centro');drillNext(1.6);}}
     }
     h=`<b>${st.t}</b>${st.x}<i>${fresh?DR.last:st.g+(st.n>1?' · '+DR.cnt+'/'+st.n:'')}</i>`;
   }else if(DR.kind==='free')h=`<b>Allenamento libero</b>${G.drill.side==='def'?'Difendi: trascina per muovere il difensore azzurro':'Attacca verso destra: trascina all’indietro e rilascia per lanciare'}${fresh?`<i>${DR.last}</i>`:''}`;

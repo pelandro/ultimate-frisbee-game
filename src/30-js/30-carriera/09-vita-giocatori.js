@@ -4,7 +4,7 @@
    (vale piu' dei titolari, gioca tanto, fa numeri), se ha il tratto Ironman, se l'ambiente e' buono; si abbassa se e' ai margini, gioca poco o ha avuto
    infortuni seri. Un campione che rende gioca fino a 40 anni e oltre; una riserva che non vede il campo puo' smettere poco dopo i 30.
    Prima dice che ci sta pensando, poi annuncia l'ultima stagione (a inizio o a meta' campionato), e solo a fine stagione lascia: puoi chiedergli un altro anno. */
-const AL_KIND={ret:['Ritiro','#c9a0ff'],inj:['Infortunio','#ff6b70'],ok:['Rientro','#4fe58f'],mood:['Spogliatoio','#ff9a3a'],off:['Offerta','#ffd23f'],dec:['Declino','#9fb0de'],up:['Crescita','#4fe58f'],bye:['Addio','#e8ecf8']};
+const AL_KIND={ret:['Ritiro','#c9a0ff'],inj:['Infortunio','#ff6b70'],ok:['Rientro','#4fe58f'],mood:['Spogliatoio','#ff9a3a'],off:['Offerta','#ffd23f'],dec:['Declino','#9fb0de'],up:['Crescita','#4fe58f'],bye:['Addio','#e8ecf8'],dir:['Dirigenza','#ff6b70']};
 const pname=p=>p.label||p.name||p.n;
 // concordanza: «infortunato» o «infortunata» secondo il giocatore
 const FEM_N=new Set(['Beatrice','Camilla','Chiara','Claudia','Elisa','Emma','Francesca','Giorgia','Ilaria','Laura','Marta','Martina','Paola','Sara','Valentina','Vittoria','Alice','Giada']);

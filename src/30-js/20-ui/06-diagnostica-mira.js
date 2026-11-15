@@ -60,7 +60,7 @@ function aimDown(e,hammer){
   if(G.mode==='ready'){e.preventDefault();if(!hammer)pullTap();return;}   // pull a tempo: Spazio o A fermano l'indicatore
   const h=G.holder;
   if(hammer&&e.pointerId!==VIN.pid){e.preventDefault();return;}   // il pulsante dell'Hammer non c'e' piu' in attacco: il lancio alto si fa con due dita (05-input-impostazioni.js)
-  if(G.mode!=='play'||G.freeze>0||G.zoomHold||G.brickWait||G.walk||G.flight||!h||h.t!==0||drag)return;
+  if(G.mode!=='play'||G.freeze>0||G.zoomHold||G.walk||G.flight||!h||h.t!==0||drag)return;
   e.preventDefault();
   try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}
   aimPid=e.pointerId;

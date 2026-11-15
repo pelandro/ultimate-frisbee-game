@@ -75,8 +75,8 @@ function crossLgAnswer(a,d){
   return `Scambio fatto: ${pname(p)} passa a ${t.club}, arriva ${rec.label||rec.n}.`;
 }
 // ---- cambio di lega: accetti l'offerta di un club dell'altra lega ----
-function switchLeague(club){
-  const old=SV.team,s=SV.season,carry={hist:SV.hist,hof:SV.hof,troph:SV.troph,ach:SV.ach,alb:SV.alb,usAlb:SV.usAlb,lnAlb:SV.lnAlb,rec:SV.rec,tips:SV.tips,diff:SV.diff,len:SV.len,autoSub:SV.autoSub,played:SV.played,jobLast:SV.jobLast,rep:Math.round(SV.rep*0.85)};
+function switchLeague(club,fired){   // fired: esonerato dalla dirigenza (26-economia-partita.js): la reputazione scende di piu'
+  const old=SV.team,s=SV.season,carry={hist:SV.hist,hof:SV.hof,troph:SV.troph,ach:SV.ach,alb:SV.alb,usAlb:SV.usAlb,lnAlb:SV.lnAlb,rec:SV.rec,tips:SV.tips,diff:SV.diff,len:SV.len,autoSub:SV.autoSub,played:SV.played,jobLast:SV.jobLast,rep:Math.round(SV.rep*(fired?0.65:0.85))};
   const coach=SV.coach;
   startCareer(club,{coach,season:s,carry});
   if(s>1){   // le rose nuove sono quelle di inizio carriera: invecchiano delle stagioni gia' giocate
@@ -84,6 +84,6 @@ function switchLeague(club){
     const L=squadData();for(let y=1;y<s;y++)for(const o of L)agePlayer(o,Math.random);
     setSquad(L);fixLines();
   }
-  news(`Lasci ${old} e accetti ${club} (${lgName(lgNow())}).`);persist();
+  news(fired?`Esonerato da ${old}: riparti da ${club} (${lgName(lgNow())}).`:`Lasci ${old} e accetti ${club} (${lgName(lgNow())}).`);persist();
   return `Benvenuto a ${club}: da ora alleni nel ${lgName(lgNow())}.`;
 }

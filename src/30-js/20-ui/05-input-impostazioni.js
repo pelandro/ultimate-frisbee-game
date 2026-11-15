@@ -39,7 +39,7 @@ cv.addEventListener('pointerdown',e=>{
   if(G.mode==='cine'){cineTap();return;}
   if(G.mode==='ready'){pullTap();return;}   // pull a tempo: ogni tocco ferma un indicatore
   if(diveTouch())return;                      // difesa automatica: durante il rallentatore basta toccare lo schermo per tuffarsi
-  if(G.mode!=='play'||G.freeze>0||G.zoomHold||G.brickWait||G.walk)return;   // brick o disco da raccogliere: si aspetta
+  if(G.mode!=='play'||G.freeze>0||G.zoomHold||G.walk)return;   // disco da raccogliere: si aspetta
   try{cv.setPointerCapture(e.pointerId);}catch(_){}
   const sprintNow=!!(G.flight&&G.flight.sparo&&G.sprint&&!G.pull);if(sprintNow)G.hold=true;   // sparo in volo: tieni premuto per far scattare il tuo corridore
   if(inDefense()&&!G.auto&&!defMan())return;   // difesa automatica: niente da guidare

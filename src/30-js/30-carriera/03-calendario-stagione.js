@@ -26,7 +26,7 @@ function freshTab(names){const t={};for(const n of names)t[n]={pts:0,w:0,l:0,pf:
 function beginSeason(){
   if(isLN())lnPrepSeason();   // leghe europee: promozioni e retrocessioni, gironi, il tuo girone (37-leghe/)
   const names=SV.mem[SV.sr];
-  SV.sched=roundRobin(names.length);SV.round=0;SV.tab=isUS()||isLN()?usFreshTab(names):freshTab(names);SV.res=[];SV.done=false;SV.next=null;
+  SV.sched=roundRobin(names.length);SV.round=0;SV.tab=isUS()||isLN()?usFreshTab(names):freshTab(names);SV.res=[];SV.done=false;SV.next=null;SV.sgp=0;   // giornate di campionato giocate in questa stagione (28-allenamenti-fuori-stagione.js)
   leagueBegin();   // le altre due serie hanno ora un calendario vero
   if(SV.rost)lsSeasonStart();   // statistiche individuali del girone: la stagione scorsa passa alla carriera, il contatore riparte
   if(SV.rost)SV.expOrd=names.slice().sort((a,b)=>teamPow(b)-teamPow(a));   // gerarchie a inizio stagione: servono al premio per l'allenatore dell'anno
@@ -140,7 +140,7 @@ function endSeason(){
   SV.po=null;SV.poRes=null;
   // premi di fine stagione: classifica, obiettivo, reputazione, premi individuali
   const n=SV.mem[SV.sr].length,prize=Math.round((n-rank+1)*3*SR_K[SV.sr]);SV.cash+=prize;
-  const ok=SV.obj&&rank<=SV.obj.tgt;
+  const ok=objMet(rank,{promoted:nsr<SV.sr,tit});
   if(SV.obj){if(ok){SV.cash+=SV.obj.reward;SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}
   if(nsr<SV.sr)SV.rep=clamp(SV.rep+6,0,100);else if(nsr>SV.sr)SV.rep=clamp(SV.rep-8,0,100);
   if(tit&&SV.sr==='A')SV.rep=clamp(SV.rep+6,0,100);
@@ -149,7 +149,7 @@ function endSeason(){
   seasonEndDyn(rank);   // sfida della dirigenza, reazione delle rivali
   seasonAwards(rank,order);
   achCheck();
-  news('Stagione '+SV.season+' conclusa al '+rank+'° posto: premio di '+prize+' crediti'+(SV.obj?(ok?', obiettivo raggiunto (+'+SV.obj.reward+')':', obiettivo mancato'):'')+'.');
+  news('Stagione '+SV.season+' conclusa al '+rank+'° posto: premio di '+prize+' crediti'+(SV.obj?(ok?', bonus dello sponsor (+'+SV.obj.reward+')':', lo sponsor non paga il bonus'):'')+'.');
 }
 // nuova stagione: tutti i giocatori (anche i tuoi) invecchiano di un anno e le statistiche cambiano di conseguenza
 function agePlayers(){
@@ -160,6 +160,7 @@ function newSeason(){
   SV.mem=SV.next.mem;SV.sr=SV.next.sr;SV.season++;
   SV.euUnlocked=!!SV.next.qual;if(SV.euUnlocked)SV.eu=newEu(SV.season);SV.event='camp';   // la stagione nuova riparte sempre dal campionato
   retireOwn();   // chi aveva annunciato l'addio lascia adesso
+  offTrain();    // chi ha finito presto si e' allenato le settimane in cui non ha giocato (28-allenamenti-fuori-stagione.js)
   staffYear();   // lo staff invecchia e matura (25-staff-persone.js)
   achCheck();    // (Hall of Fame)
   for(const p of SQ){p.hist=p.hist||[];p.hist.push([SV.season-1,ovr(p)]);if(p.hist.length>14)p.hist.shift();}   // storico dei progressi: l'Overall con cui ha chiuso la stagione
@@ -175,9 +176,9 @@ function newSeason(){
 }
 function recordResult(win,su,so){
   SV.susp=null;   // la partita e' finita: niente piu' da riprendere
-  let msg='';SV.played=(SV.played||0)+1;
-  const incPre=matchIncome(win);   // l'incasso di questa partita si calcola con i tifosi di prima del risultato
-  const xm=!!(isUS()&&SV.event==='camp'&&usCrossPending());   // interregionale USA: stanca e conta per il ranking, ma niente incassi, stipendi, allenamenti, eventi e mercato
+  let msg='';SV.played=(SV.played||0)+1;if(SV.event==='camp')SV.sgp=(SV.sgp|0)+1;
+  const incPre=matchMoney(win);   // i conti di questa partita si calcolano con i tifosi e la forma di prima del risultato (26-economia-partita.js)
+  const xm=!!(isUS()&&SV.event==='camp'&&usCrossPending());   // interregionale USA: una partita come le altre (conti, allenamento, eventi), ma non conta per la classifica della Conference e non fa girare il mercato
   if(isUS()&&SV.event==='camp'){
     fansBump(win,win?1:0);msg=usRecord(win,su,so);   // campionato USA: stagione regolare, Play-in, Nationals (35-usa/03-stagione-usa.js)
   }else if(isLN()&&SV.event==='camp'){
@@ -204,20 +205,21 @@ function recordResult(win,su,so){
     msg=euRecord(win,su,so);   // EUCF: gironi, prequarti, quarti, semifinali, finale (36-europa/01-eucf.js)
   }
   for(const p of SQ){   // nuova giornata: tornano gli allenamenti, gli infortunati recuperano; ogni infortunio e ogni rientro viene segnalato
-    if(!xm)p.tr=false;
+    p.tr=false;
     if(p.injNew&&(SV.fisShield|0)>0&&p.inj>1){p.inj=Math.ceil(p.inj/2);SV.fisShield--;}   // prevenzione (fisioterapia tenuta almeno al livello 3)
     if(p.injNew&&p.inj>1&&hasTr('fit','fis'))p.inj--;   // caratteristica del preparatore: «Fisioterapista»
     if(p.injNew){const big=p.inj>=5;if(big){p.injC=(p.injC|0)+1;p.injBig=1;}alertAdd('inj',`${pname(p)} si è infortunat${oa(p)}${big?' in modo serio':''}: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full});}
     else if(p.inj>0){p.inj--;if(p.inj===0){if(p.abs)p.abs=0;else healed(p);}}   // abs: assenza per impegni, non un infortunio
     p.injNew=false;
   }
-  if(!xm)SV.tTeam=false;
+  SV.tTeam=false;
   // incasso, morale, affiatamento, condizione: chi ha giocato si stanca, la settimana fa recuperare (di piu' con la fisioterapia)
-  if(!xm){const inc=incPre,wg=wageBill();SV.cash+=inc-wg;SV.lastInc=inc-wg;SV.lastWage=wg;}
-  // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso gli stipendi arrivano in ritardo e l'umore cala
-  SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-(SV.cash<0?3:0)+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede')+(hasTr('men','pap')?0.3:0),0,100);
+  SV.cash+=incPre.net;SV.lastInc=incPre.net;SV.lastWage=incPre.wage;SV.lastUp=incPre.up+incPre.stf;
+  econAfterMatch(incPre);   // registro dei conti, avvisi del rosso, premio a chi ha giocato una partita straordinaria
+  // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso l'umore cala sempre di piu' (redPen)
+  SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-redPen()+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede')+(hasTr('men','pap')?0.3:0),0,100);
   for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
-  if(!xm){lifeAfterMatch();dynAfterMatch();}
+  lifeAfterMatch();dynAfterMatch();
   if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0&&!xm)buildMarket();   // il mercato si rinnova ogni 5 giornate
   achCheck();   // traguardi (23-traguardi.js)
   persist();return msg;

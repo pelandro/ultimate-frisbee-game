@@ -36,7 +36,7 @@ function timelineHTML(){
 function adviceList(){
   const L=[],hurt=SQ.filter(p=>p.inj&&!p.abs),low=SQ.filter(p=>p.cond<50&&!p.inj),lineBad=SV.lineO.length<7||SV.lineD.length<7||SQ.some(p=>p.inj&&(SV.lineO.includes(p.full)||SV.lineD.includes(p.full)));
   if(lineBad)L.push(['Una linea è incompleta o ha un infortunato: sistema le linee dalla Rosa (o «Linee consigliate»).',9]);
-  if(SV.cash<0)L.push(['Conti in rosso: niente acquisti e il morale cala. Vendi una riserva o aspetta le prossime partite.',9]);
+  if(SV.cash<0)L.push(['Conti in rosso: mercato fermo e morale in calo; se dura la dirigenza ti esonera. Vendi una riserva o punta sulle partite in casa.',9]);
   if(low.length>=2)L.push([`${low.length} giocatori sono scarichi: un Recupero negli Allenamenti o un Riposo dalla scheda li rimette in forma.`,7]);
   if(trainOpen()&&!SV.tTeam)L.push(['C’è una sessione di allenamento da fare: la squadra cresce solo se la usi (o accendi il Programma automatico).',6]);
   if(fansOf()<35)L.push([`I tifosi sono pochi (${Math.round(fansOf())}%): le vittorie li riportano allo stadio e le Tribune ammorbidiscono le sconfitte.`,5]);
@@ -46,7 +46,7 @@ function adviceList(){
   if(SV.mkSeen!==SV.mkN)L.push(['Il mercato si è rinnovato: guarda le giovani promesse e chi è alla tua portata.',3]);
   if(hurt.length)L.push([`${esc(pname(hurt[0]))} è infortunat${oa(hurt[0])}: ${hurt[0].inj} ${hurt[0].inj>1?'partite':'partita'} di stop.`,3]);
   const base=['Tocca un compagno per chiamargli il taglio: lancia dove sta correndo, non dove si trova.','Il timeout (uno a partita) azzera lo stall e fa recuperare energia.','Con più Sparo il lanciatore arriva più lontano: lo vedi dall’arco rosso mentre mira.','Controlla il meteo prima di partire: con vento forte i lanci lunghi sono più difficili.','Un giocatore che resta fuori troppo a lungo diventa scontento: ruota le linee.','Le Tribune portano più tifosi e più incasso a ogni partita.','Il programma automatico degli Allenamenti fa le sedute al posto tuo.','Nel derby si guadagna di più, ma si perde di più.'];
-  if(SV.obj)L.push([`Obiettivo della stagione: ${SV.obj.txt} (premio ${SV.obj.reward} crediti).`,2]);
+  if(SV.obj)L.push([`Obiettivo dello sponsor: ${SV.obj.txt} (bonus ${SV.obj.reward} crediti a fine stagione).`,2]);
   base.forEach(t=>L.push([t,0]));
   return L;
 }

@@ -5,7 +5,7 @@
    L'etichetta della situazione sopra il portatore (stall, ultimo lancio, match point, universe point) e' qui: la usano il campo e le prove. */
 const TMO_N=1,TMO_REST=14;
 const tmoLeft=t=>TMO_N-((G.tmo&&G.tmo[t])|0);
-function canTimeout(t){return !!G.inMatch&&!G.drill&&G.mode==='play'&&!G.flight&&!G.walk&&!G.pull&&!G.brickWait&&!!G.holder&&G.holder.t===t&&tmoLeft(t)>0;}
+function canTimeout(t){return !!G.inMatch&&!G.drill&&G.mode==='play'&&!G.flight&&!G.walk&&!G.pull&&!!G.holder&&G.holder.t===t&&tmoLeft(t)>0;}
 function callTimeout(t){
   if(!canTimeout(t))return false;
   if(!G.tmo)G.tmo=[0,0];G.tmo[t]++;

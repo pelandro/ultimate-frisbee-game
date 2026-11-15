@@ -48,7 +48,7 @@ les:[
 [`Prima la barra della <b>POTENZA</b>: il cursore sale e scende, tocca (o Spazio) per fermarlo. <b>Verde</b> = il disco arriva nella meta avversaria; giallo o prima = corto; rosso = rischia di uscire dal fondo.`,
 `Poi la barra della <b>DIREZIONE</b>: spazza il campo da una linea laterale all’altra, ferma nel verde (al centro) o almeno nel giallo. Nel rosso esce di lato.`],
 `Sul campo vedi dove cadrebbe il disco: <b>FUORI</b> (rosso), <b>CORTO</b> (bianco), <b>BUON PULL</b> (verde) o <b>GRAN PULL</b> (oro, ben in fondo alla meta).`,
-`Con un gran pull chi riceve parte con lo stall già a 3 e i suoi tagliatori aspettano di più; con un pull corto o fuori l’attacco avversario ha via libera. Se il pull esce si riparte dal brick (il segno × al centro, a 18 m dalla meta).`],
+`Con un gran pull chi riceve parte con lo stall già a 3 e i suoi tagliatori aspettano di più; con un pull corto o fuori l’attacco avversario ha via libera. Se il pull esce si riparte dal brick (il segno × al centro, a 18 m dalla meta) e tutti vanno subito al loro posto.`],
 tip:`Chi tira conta: con Lancio e Sparo alti le barre vanno piano. Scegli come tiratore chi ha i valori migliori.`},
 {id:'att-lancio',t:'Il lancio a trascinamento',b:[
 `Non c’è nessun pulsante: quando hai il disco <b>tocca dove vuoi, trascina il dito all’indietro e rilascia</b>. Il disco parte nella direzione opposta al trascinamento e tanto più lontano quanto più lo allunghi.`,
@@ -258,12 +258,13 @@ tip:`Con pochi crediti parti dal Campo di allenamento o dalle Tribune (che si ri
 `Gli effetti sugli allenamenti (insieme al campo) non superano mai +50%. Ogni tanto un altro club prova a portarti via uno di loro: se lo lasci andare subentra un assistente di un livello in meno. A 66 anni si va in pensione.`],
 tip:`Il Mentore è il più utile se punti sui giovani; l’Allenatore se vuoi crescita per tutti. Lo stipendio si paga a ogni partita: assumi con i conti in ordine.`},
 {id:'car-soldi',t:'Soldi, tifosi e morale',b:[
-`Ogni partita porta <b>crediti</b> (di più se vinci, in serie più alte e con più reputazione) e costa gli <b>stipendi</b> (crescono con l’Overall), la manutenzione delle strutture e lo staff. A fine stagione arrivano il premio di classifica e quello dell’obiettivo. Con i conti in rosso non si compra e il morale scende.`,
-[`<b>Bilancio previsionale</b> (Club › Società): stima incassi, stipendi, saldo all’ultima giornata e premi da qui a fine campionato; accanto alle Tribune c’è in quante partite si ripaga il prossimo livello.`,
-`<b>Tifosi</b>: fanno l’incasso, salgono con le vittorie; le Tribune ammorbidiscono le sconfitte.`,
+`Ogni partita ha un <b>conto</b> che vedi a fine partita. Entrano i <b>biglietti</b> (solo in casa: più tifosi e partita importante = più spettatori, fino alla capienza), lo <b>sponsor</b> e il <b>premio vittoria</b> (vale di più nelle partite importanti). Escono gli <b>stipendi</b> (crescono con l’Overall), la manutenzione, lo staff e, in trasferta, un <b>costo di viaggio</b> fisso: una vittoria in trasferta contro una piccola squadra può chiudersi in rosso.`,
+`A inizio stagione scegli lo <b>sponsor</b>: Sicuro (paga di più a ogni partita, bonus piccolo), Equilibrato o Ambizioso (paga meno, bonus grande se raggiungi l’obiettivo a fine stagione). Gli obiettivi seguono la forza del tuo club nella serie: titolo o promozione per chi è tra i migliori, parte alta per chi è a metà classifica; con l’Ambizioso, se giochi il Campionato europeo, conta anche il risultato in Europa. Con i conti in rosso il mercato si ferma, la dirigenza avvisa e il morale cala; se dura troppo vieni <b>esonerato</b> e riparti da una squadra più debole.`,
+[`<b>Bilancio previsionale</b> (Club › Società): stima biglietti, sponsor, trasferte, stipendi, saldo all’ultima giornata e bonus da qui a fine campionato; accanto alle Tribune c’è in quante partite si ripaga il prossimo livello.`,
+`<b>Tifosi</b>: riempiono lo stadio, salgono con le vittorie; le Tribune danno più posti e ammorbidiscono le sconfitte.`,
 `<b>Morale</b>: si alza con vittorie, premi e Recupero; un Colloquio aiuta il singolo.`,
 `<b>Reputazione</b>: apre porte (mercato, offerte, internazionali).`],
-`Ogni tanto la dirigenza propone una <b>sfida facoltativa</b>: se riesce porta crediti e reputazione, se no non succede nulla.`],
+`Ogni tanto la dirigenza propone una <b>sfida facoltativa</b>: se riesce porta crediti e reputazione, se no non succede nulla. Dopo una partita straordinaria di un giocatore può arrivare la proposta di un <b>premio</b>: lo paghi tu, e fa piacere alla squadra.`],
 tip:`Non spendere tutto subito: tieni sempre una riserva di crediti per le emergenze (un guasto, un colloquio, un rinnovo).`},
 {id:'car-classifica',t:'Classifica, playoff e premi',w:'Cruscotto › Classifica',b:[
 `In <b>Classifica</b> scegli la serie da guardare, leggi l’ultima giornata delle altre e, in «Dal campionato», le storie della stagione. Sotto la tua serie ci sono i <b>migliori per mete, assist e difese</b>.`,
@@ -321,11 +322,12 @@ tip:`La Serie A è dura da difendere: dopo il titolo investi in rosa e strutture
 tip:`Con soli 5 turni ogni partita pesa tantissimo: gioca tu quelle contro le rivali dirette.`},
 {id:'lega-nat',t:'USA: Play-in e Nationals',b:[
 `Ogni Conference è una regione e ha <b>1 posto automatico</b>; altri 8 posti di forza vanno alle regioni in base al <b>ranking nazionale</b> (da 1 a 4 per regione, 16 in tutto). I posti vanno alla regione, non alla squadra: se li contendono i club della Conference.`,
-`<b>I posti cambiano durante la stagione</b>: il ranking si ricalcola dopo ogni partita e con lui i posti di ogni regione (in Classifica vedi la freccia e una notizia quando cambiano); sono definitivi solo alla fine della stagione regolare. Per legare le Conference tra loro ogni club gioca 7 <b>partite interregionali</b>, una contro ogni altra Conference: contano solo per il ranking (niente classifica di Conference, incassi o stipendi) e le giochi o le simuli come le altre.`,
+`<b>I posti cambiano durante la stagione</b>: il ranking si ricalcola dopo ogni partita e con lui i posti di ogni regione (in Classifica vedi la freccia e una notizia quando cambiano); sono definitivi solo alla fine della stagione regolare. Per legare le Conference tra loro ogni club gioca 7 <b>partite interregionali</b>, una contro ogni altra Conference: non entrano nella classifica della Conference ma contano per il ranking, e sono partite come le altre: le giochi o le simuli, con i loro conti, una seduta di allenamento e la fatica.`,
 [`Con 1 posto va la 1ª.`,`Con 2: la 1ª direttamente e 2ª contro 3ª in gara secca (Play-in).`,`Con 3: la 1ª diretta, poi 2ª-5ª e 3ª-4ª.`,`Con 4: le prime due dirette, poi 3ª-6ª e 4ª-5ª.`],
 `I <b>Nationals</b> hanno 16 squadre in 4 gironi da 4 (fasce del ranking, club della stessa Conference in gironi diversi se possibile): 3 partite a girone, le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono fuori. Poi quarti, semifinali e finale.`,
-`In Classifica trovi tre viste: <b>Conference</b> (verde = Nationals diretti, giallo = Play-in, rosso = fuori), <b>Nationals</b> (gironi e tabellone) e <b>Ranking</b>.`],
-tip:`Controlla i posti della tua Conference dopo ogni partita: ogni vittoria larga, in Conference e soprattutto nelle interregionali, alza il ranking e può far guadagnare un posto a tutta la regione.`},
+`In Classifica trovi tre viste: <b>Conference</b> (verde = Nationals diretti, giallo = Play-in, rosso = fuori), <b>Nationals</b> (gironi e tabellone) e <b>Ranking</b>.`,
+`Anche se esci presto dai Play-in o dai Nationals hai già giocato 12 partite di stagione regolare (5 di Conference e 7 interregionali): nei Men’s Club USA non c’è bisogno delle settimane di allenamento extra, che servono solo dove si gioca meno di 11 partite.`],
+tip:`Controlla i posti della tua Conference dopo ogni giornata: ogni vittoria larga, in Conference e nell’interregionale, alza il ranking e può far guadagnare un posto a tutta la regione.`},
 {id:'lega-eu',t:'Belgio, Francia, Germania, Regno Unito',b:[
 `Campionati Open outdoor veri, con formati ricostruiti dai risultati 2026. Nessuno è eliminato: ogni turno delle fasi finali si gioca per il piazzamento e a fine stagione salgono e scendono squadre tra i livelli.`,
 [`<b>Belgio</b>: 6 livelli (N1-N6) da 8 squadre in due gironi da 4, poi tabellone con tutte le finali di piazzamento.`,
@@ -333,6 +335,7 @@ tip:`Controlla i posti della tua Conference dopo ogni partita: ogni vittoria lar
 `<b>Germania</b>: la 1. Liga ha 16 squadre in due gironi da 8 con fasi finali per tutte le posizioni; poi 2. e 3. Liga.`,
 `<b>Regno Unito</b>: i Nationals (due gironi da 4 e turno incrociato) e, sotto, i club dell’Open Tour.`],
 `Le forze dei club sono stimate dai risultati e dal ranking EUCS; i giocatori sono quelli delle liste dei tornei 2026 (età note o stimate: «circa») e dove un club ha pochi nomi la rosa è completata con giocatori generati.`,
+`Nel gioco ogni stagione ha <b>almeno 11 partite</b> per chi arriva fino in fondo: i gironi si giocano con più giri contro le stesse squadre (andata, ritorno e, dove serve, un terzo giro), poi le fasi finali vere.`,
 `Anche chi gioca in queste leghe riceve offerte di panchina e scambi dalle altre (vedi «Offerte tra tutte le leghe»).`],
 tip:`Nei livelli bassi le rose hanno meno nomi veri: è l’occasione per trovare giovani e svincolati di talento.`},
 {id:'lega-eucf',t:'La coppa europea (EUCF)',w:'Cruscotto › Classifica (stagione dopo la qualificazione)',b:[

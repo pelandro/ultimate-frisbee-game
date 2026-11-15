@@ -8,7 +8,7 @@ let PP={d:[],m:0,off:0};   // d: schede viste, m: partite iniziate con il tutori
 try{const o=JSON.parse(localStorage.getItem(PP_KEY)||'null');if(o&&Array.isArray(o.d))PP={d:o.d.filter(x=>typeof x==='string').slice(0,20),m:o.m|0,off:o.off?1:0};}catch(e){}
 const ppSave=()=>{try{localStorage.setItem(PP_KEY,JSON.stringify(PP));}catch(e){}};
 function ppReset(){PP={d:[],m:0,off:0};ppSave();}
-const ppHold=()=>{const h=G.holder;return !!(h&&h.t===0&&!G.flight&&G.mode==='play'&&G.freeze<=0&&!G.zoomHold&&!G.walk&&!G.brickWait&&!G.pull);};   // il disco e' tuo e puoi lanciare
+const ppHold=()=>{const h=G.holder;return !!(h&&h.t===0&&!G.flight&&G.mode==='play'&&G.freeze<=0&&!G.zoomHold&&!G.walk&&!G.pull);};   // il disco e' tuo e puoi lanciare
 const PP_STEPS=[
   {id:'goal',t:'Come si gioca',x:'Per segnare porta il disco nella meta avversaria passandolo ai compagni: chi ha il disco non può correre. Vince chi arriva per primo al punteggio scritto in alto.',when:()=>G.mode==='ready'},
   {id:'pull',t:'Il pull',x:'Ogni punto comincia con un pull, un lancio lungo. Tocca lo schermo due volte: la prima ferma la POTENZA nel verde, la seconda la DIREZIONE al centro. Se il disco cade in fondo alla meta è un GRAN PULL e la difesa parte avvantaggiata.',when:()=>pullMineNow()},

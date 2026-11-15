@@ -59,7 +59,8 @@ function renderTeamsLN(){
 // descrizione breve di un livello: gironi e fasi finali
 function lnFormatTxt(tr){
   const g=tr.pools>1?`${tr.pools} gironi`:'girone unico',m={c8:'tabellone a 8 con tutte le finali di piazzamento',c4:'semifinali e finali',x8:'turno incrociato e finali di piazzamento',p:'finali di piazzamento a coppie',rr:'minigirone'};
-  return `${tr.comps>1?tr.comps+' competizioni, ':''}${g}, tutti contro tutti${tr.fin.length?', poi '+[...new Set(tr.fin.map(f=>m[f.m]))].join(' e '):''}`;
+  const lk=LN_IDS.find(k=>LN_DEF[k].tiers.includes(tr)),tg=lk?lnTierGames(lk,tr):null,legs=tg&&tg.g>tg.one?` (nel gioco più giri: ${tg.g} partite a testa, per arrivare ad almeno ${LN_MIN} in stagione)`:'';
+  return `${tr.comps>1?tr.comps+' competizioni, ':''}${g}, tutti contro tutti${legs}${tr.fin.length?', poi '+[...new Set(tr.fin.map(f=>m[f.m]))].join(' e '):''}`;
 }
 // ---- Classifica ----
 const lnZone=(r,tr)=>{const i=tr.fin.findIndex(f=>r>=f.f&&r<=f.t);return i<0?'':(i===0?'up':'pi');};
@@ -123,7 +124,7 @@ function renderEventLN(){
   let body='';
   if(SV.done&&SV.next){
     const hx=SV.hist[0];
-    body+=`<p class="estat">${esc(SV.next.short)}</p><p class="note" style="margin:0 0 8px">Premio di stagione: ${SV.next.prize} crediti. Obiettivo ${SV.next.objOk?'raggiunto: +'+SV.obj.reward+' crediti':'mancato'}.${hx&&hx.mvp?` MVP della squadra: ${esc(hx.mvp)} (${hx.mvpS}).`:''}${SV.next.qual?' Vi siete qualificati all’EUCF: si gioca nella stagione dopo.':''} Con la nuova stagione tutti invecchiano di un anno, i veterani possono ritirarsi, le altre squadre cambiano e il mercato si rinnova.</p>`;
+    body+=`<p class="estat">${esc(SV.next.short)}</p><p class="note" style="margin:0 0 8px">Premio di stagione: ${SV.next.prize} crediti. Sponsor ${SV.next.objOk?'soddisfatto: bonus di '+SV.obj.reward+' crediti':'deluso: nessun bonus'}.${hx&&hx.mvp?` MVP della squadra: ${esc(hx.mvp)} (${hx.mvpS}).`:''}${SV.next.qual?' Vi siete qualificati all’EUCF: si gioca nella stagione dopo.':''} Con la nuova stagione tutti invecchiano di un anno, i veterani possono ritirarsi, le altre squadre cambiano e il mercato si rinnova.</p>`;
     if(hx&&hx.aw&&hx.aw.length)body+=`<div class="seas"><h3>Premi della stagione · ${esc(SERIES_NAME[SV.sr])}</h3><ul class="awl">${hx.aw.map(awRow).join('')}</ul>${hx.best7&&hx.best7.length?`<p>Squadra ideale: ${hx.best7.map(q=>`${q.mine?'<b style="color:var(--gold)">':'<b>'}${esc(q.name)}</b> (${q.pos})`).join(', ')}</p>`:''}</div>`;
     body+='<button type="button" class="go" id="eReset">Inizia la nuova stagione</button>';
   }
