@@ -382,7 +382,7 @@ function selfTestPlan(opt){
       row('Dati ostili da internet: statistiche nei limiti 25-99, nomi senza simboli, ruolo e tratto validi',cleaned?'ripuliti':'no',cleaned),
       row('Squadre incomplete o che non sono squadre: rifiutate',junk?'sì':'no',junk),
       row('Gettoni: vittoria con avversario a +0, +25, +50, +100, +150, +400 punti; sconfitta',cs.join(', ')+'; '+cl.base,coinOk,'crescono con la differenza fino a un massimo, nessun bonus a chi perde'),
-      row('Traguardi di punti: pacchetti (qualità + 10 × carte) dal primo al quinto e oltre',mq.join(', '),mileOk,'sempre migliori e più grandi, super bustina dal quinto')];
+      row('Traguardi di punti: pacchetti (qualità + 10 × carte) dal primo al quinto e oltre',mq.join(', '),mileOk,'sempre migliori e più grandi, super pacchetto dal quinto')];
   }]);
   S.steps.push(['Livelli dell\u2019IA',()=>{
     // 4 livelli (Facile, Medio, Difficile, Estrema): il comportamento migliora a ogni passo e ogni livello aggiunge un bonus alle statistiche dei 7 avversari

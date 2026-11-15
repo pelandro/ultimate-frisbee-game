@@ -24,16 +24,17 @@ const utRar=o=>o>=90?['Leggenda','leg']:(o>=80?['Epico','epi']:(o>=65?['Raro','r
 // Il primo pacchetto in assoluto ha 10 giocatori (4 handler, 4 cutter, 2 defender), tutti i successivi 5 (2 handler, 2 cutter, 1 defender)
 // Un pacchetto in attesa e' un numero: la qualita' (0-6) piu' 10 volte il numero di carte quando non e' quello solito (i premi dei traguardi di
 // Real player ne hanno da 5 a 9): cosi' i salvataggi vecchi, che hanno solo la qualita', restano validi
-const utPkQ=v=>clamp((v|0)%10,0,6),utPackSize=v=>Math.floor((v|0)/10)||(UT.col.length?5:10);
+// e 100 volte il ruolo dei pacchetti del Negozio (1 = solo Handler, 2 = solo Cutter, 0 = misto)
+const utPkQ=v=>clamp((v|0)%10,0,6),utPackSize=v=>Math.floor(((v|0)%100)/10)||(UT.col.length?5:10),utPkRole=v=>Math.floor((v|0)/100)%10;
 const UT_PK_ROLES=['H','C','H','C','D','H','C','C','D'];
 function utMakePack(v){
-  const q=utPkQ(v),n=utPackSize(v),roles=n===10?['H','H','H','H','C','C','C','C','D','D']:UT_PK_ROLES.slice(0,n),pk=utPackTiers(q,roles.length,UT.pity,Math.random);
+  const q=utPkQ(v),n=utPackSize(v),pr=utPkRole(v),roles=pr?Array(n).fill(pr===1?'H':'C'):n===10?['H','H','H','H','C','C','C','C','D','D']:UT_PK_ROLES.slice(0,n),pk=utPackTiers(q,roles.length,UT.pity,Math.random);
   UT.pity=pk.pity;
   const tiers=pk.tiers.sort(()=>Math.random()-0.5);   // la rarita' non dipende dal ruolo
   return roles.map((r,i)=>utPlayer(r,utTierOvr(tiers[i],Math.random),Math.random)).sort((a,b)=>a.ovr-b.ovr);
 }
-const utPackName=v=>utPkQ(v)===0&&!UT.col.length?'Pacchetto iniziale':(UT.rp&&utPkQ(v)===6?'Super bustina':UT_PQN[utPkQ(v)]);
-const utPackTip=v=>{const q=utPkQ(v);return q>=6?'almeno un Epico garantito':(q>=2?'almeno un Raro garantito':((UT.pity|0)+1>=UT_PITY?'questo contiene di sicuro un Epico':'più sono forti, più sono rari'));};
+const utPackName=v=>utPkRole(v)?(utPkRole(v)===1?'Pacchetto Handler':'Pacchetto Cutter'):utPkQ(v)===0&&!UT.col.length?'Pacchetto iniziale':(UT.rp&&utPkQ(v)===6?'Super pacchetto':UT_PQN[utPkQ(v)]);
+const utPackTip=v=>{const q=utPkQ(v);if(utPkRole(v))return utPkRole(v)===1?'solo carte Handler':'solo carte Cutter';return q>=6?'almeno un Epico garantito':(q>=2?'almeno un Raro garantito':((UT.pity|0)+1>=UT_PITY?'questo contiene di sicuro un Epico':'più sono forti, più sono rari'));};
 // squadra avversaria del turno: 7 titolari con media esatta = forza del turno, 7 di panchina piu' deboli
 function utOppRoster(power,seed){
   const rng=mulberry32(hashStr(seed)),v=[],roles=['H','H','H','C','C','C','C'];let tot=0;
@@ -74,7 +75,7 @@ const utPower=()=>UT.sel.length?Math.round(UT.sel.reduce((a,i)=>a+ovrX(UT.col[i]
 function renderUT(){
   const has=UT.col.length>0,pend=UT.packs.length,playing=UT.st==='play'&&!pend&&UT.sel.length===7;
   $('uStats').innerHTML=has?`Rosa: <b>${UT.col.length}</b> giocatori · Forza: <b>${utPower()}</b> (titolari ${UT.sel.length}/7) · Gettoni: <b>${UT.coins}</b>`:'Apri il tuo primo pacchetto per iniziare.';
-  $('uBuy').textContent=`Compra un pacchetto (${UT_PACK_COST} gettoni)`;$('uBuy').classList.toggle('hidden',!has);$('uBuy').disabled=UT.coins<UT_PACK_COST;
+  $('uShop').classList.toggle('hidden',!has);
   $('uObj').innerHTML=has?UT_OBJ.filter(o=>!UT.claimed[o.id]).slice(0,3).map(o=>`<div class="chal"><div><b>${o.txt}</b><small>${o.pr()} · premio ${o.rw} gettoni</small></div><button type="button" class="go" data-obj="${o.id}"${o.ok()?'':' disabled'}>${o.ok()?'Riscuoti':'In corso'}</button></div>`).join(''):'';
   $('uRounds').innerHTML=UT_ROUNDS.map((n,i)=>{const c=(UT.st==='won'||i<UT.round)?'done':(i===UT.round?(UT.st==='out'?'lost':'cur'):'');return `<span class="uchip ${c}"><small>${n}</small><b>${UT_POWERS[i]}</b></span>`;}).join('');
   $('uPack').classList.toggle('hidden',!pend);
@@ -99,7 +100,7 @@ $('uTeam').addEventListener('click',()=>{utTeamBack='ut';showScreen('utTeam');})
 $('uPlay').addEventListener('click',startUT);
 $('uDiff').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)return;UT.d=+b.dataset.d;utSave();renderUT();});
 $('uSim').addEventListener('click',simUTMatch);
-$('uBuy').addEventListener('click',()=>{if(UT.coins<UT_PACK_COST)return;UT.coins-=UT_PACK_COST;UT.packs.push(1);utSave();renderUT();});
+$('uShop').addEventListener('click',()=>showScreen('utShop'));   // il Negozio (05-ut-negozio.js) e' lo stesso per il torneo contro il computer e per Real player
 $('uObj').addEventListener('click',e=>{const b=e.target.closest('[data-obj]');if(!b||b.disabled)return;const o=UT_OBJ.find(x=>x.id===b.dataset.obj);if(!o||UT.claimed[o.id]||!o.ok())return;UT.claimed[o.id]=true;UT.coins+=o.rw;UT.res=`Obiettivo raggiunto: +${o.rw} gettoni.`;utSave();renderUT();});
 $('uNew').addEventListener('click',()=>{UT.tid++;UT.round=0;UT.st='play';UT.res='';UT.packs.push(0);utOpps();utSave();renderUT();});
 // ---- apertura del pacchetto ----
@@ -108,7 +109,7 @@ const utCard=(p,i)=>{const [rn,rc]=utRar(p.ovr);return `<div class="ucard ${rc}"
 function renderPack(){
   const open=UT.stage==='open';
   $('pkTitle').textContent=open?'Ecco i tuoi giocatori':utPackName(UT.packs[0]);
-  $('pkBody').innerHTML=open?`<div class="ucards">${UT.cur.map(utCard).join('')}</div>`:`<div class="pack q${utPkQ(UT.packs[0])}"><b>${utPackSize(UT.packs[0])}</b><span>GIOCATORI</span><small>${utPackTip(UT.packs[0])}</small></div>`;
+  $('pkBody').innerHTML=open?`<div class="ucards">${UT.cur.map(utCard).join('')}</div>`:`<div class="dpk">${utDisc(utPkQ(UT.packs[0]),utPackSize(UT.packs[0]),utPkRole(UT.packs[0])===1?'H':(utPkRole(UT.packs[0])===2?'C':''))}<b>giocatori</b><small>${utPackTip(UT.packs[0])}</small></div>`;
   $('pkGo').textContent=open?(UT.packs.length?`Prossimo pacchetto (${UT.packs.length})`:'Continua'):'Apri';
 }
 $('pkGo').addEventListener('click',()=>{
@@ -209,7 +210,7 @@ function startUT(){
   startPoint(G.nextRec);cam.snap=true;
 }
 // gettoni: si guadagnano giocando (di piu' vincendo e andando avanti), si spendono in pacchetti e potenziamenti; scartando i doppioni se ne recuperano
-const UT_PACK_COST=90,UT_SELL={com:4,unc:8,rar:20,epi:55,leg:140};
+const UT_SELL={com:4,unc:8,rar:20,epi:55,leg:140};
 // crescita lenta delle carte che giocano: ogni 4 partite da titolare +1 alla loro statistica migliore ancora sotto il massimo (fino a +4 in tutto)
 function utGrowCards(){
   const out=[];

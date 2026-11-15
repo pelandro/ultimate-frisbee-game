@@ -368,9 +368,9 @@ catch(e){
   await step('pull a tempo, difesa automatica e tasto «Salta»',async()=>{
     await page.click('#tQuick');await vis('#quick');await page.selectOption('#qS','1');await page.click('#qPlay');await page.waitForTimeout(500);
     if(await page.locator('#menu').isVisible())await page.click('#bGo');
-    const hint=async re=>{await page.waitForFunction(r=>{const h=document.getElementById('hint');return !h.classList.contains('hidden')&&new RegExp(r).test(h.textContent);},re);};
-    await hint('POTENZA');await page.waitForTimeout(700);await page.mouse.click(420,150);   // primo tocco: potenza
-    await hint('DIREZIONE');await page.waitForTimeout(350);await page.mouse.click(420,150);   // secondo tocco: direzione, il pull parte
+    // in partita non compaiono suggerimenti: si aspetta l'inizio della meta (compare «Schemi»), poi due tocchi fermano potenza e direzione
+    await page.waitForSelector('#bSch:not(.hidden)');await page.waitForTimeout(800);await page.mouse.click(420,150);   // primo tocco: potenza
+    await page.waitForTimeout(400);await page.mouse.click(420,150);   // secondo tocco: direzione, il pull parte
     await page.waitForSelector('#bSkipD:not(.hidden)',{timeout:25000});
     if(await page.locator('#bThrow').isVisible())throw new Error('in difesa automatica il tasto dell\'handblock non deve comparire');
     await page.click('#bSkipD');await page.waitForTimeout(300);
@@ -394,6 +394,24 @@ catch(e){
     await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');await vis('#ut');
     if(await page.locator('#uPack').isVisible()){await page.click('#uPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await page.waitForTimeout(200);}
     await vis('#ut');await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
+  });
+  await step('Ultimate Team: Negozio con pacchetto normale, Handler e Cutter',async()=>{
+    const ut=()=>page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut'));return {n:o.col.length,c:o.coins|0,pk:o.packs.slice(),r:o.col.map(x=>x.r)};});
+    const u0=await ut();await page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut'));o.coins=500;localStorage.setItem('ultimate-ut',JSON.stringify(o));});
+    await page.reload();await page.waitForTimeout(500);
+    await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');await vis('#ut');
+    if(await page.locator('#uBuy').count())throw new Error('«Compra un pacchetto» e\' sostituito dal Negozio');
+    await page.click('#uShop');await vis('#utShop');
+    if(await page.locator('#shList [data-k]').count()!==3)throw new Error('il Negozio deve avere tre pacchetti');
+    if(await page.locator('#shList svg.disc').count()!==3)throw new Error('i pacchetti del Negozio sono dischi');
+    await page.click('#shList [data-k="han"]');await page.click('#shList [data-k="cut"]');
+    const u1=await ut();if(u1.c!==500-65-65||u1.pk.length!==u0.pk.length+2)throw new Error('Handler e Cutter: costo o pacchetti sbagliati '+JSON.stringify(u1));
+    await page.click('#shOpen');await vis('#utPack');
+    await page.click('#pkGo');await page.waitForTimeout(3400);
+    if(await page.locator('#pkBody .ucard').count()!==3)throw new Error('il pacchetto Handler ha 3 carte');
+    await page.click('#pkGo');await page.waitForTimeout(300);await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await vis('#ut');
+    const u2=await ut(),nw=u2.r.slice(u1.n);if(nw.length!==6||nw.slice(0,3).some(r=>r!=='H')||nw.slice(3).some(r=>r!=='C'))throw new Error('3 Handler e 3 Cutter attesi: '+nw.join(''));
+    await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
   });
   await step('Ultimate Team: Real player (senza configurazione online) e ritorno al menu',async()=>{
     await page.click('#tUT');await vis('#utMode');await page.click('#umReal');await vis('#utReal');

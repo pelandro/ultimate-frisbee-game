@@ -8,7 +8,7 @@ const UT_BAND={com:[38,49],unc:[50,64],rar:[65,79],epi:[80,89],leg:[90,96]};
 const UT_PQ=[   // probabilita' (%) di Comune, Non comune, Raro, Epico, Leggenda per qualita'
   [72,16,9,2.5,0.5],[60,24,12,3.2,0.8],[50,28,16,5,1],[40,30,21,7,2],[30,30,28,10,2],[20,30,34,13,3],[0,25,45,24,6]];
 const UT_PITY=6;
-const UT_PQN=['Pacchetto base','Pacchetto acquistato','Pacchetto bronzo','Pacchetto argento','Pacchetto oro','Pacchetto platino','Pacchetto dei campioni'];
+const UT_PQN=['Pacchetto base','Pacchetto acquistato','Pacchetto bronzo','Pacchetto argento','Pacchetto oro','Pacchetto platino','Super pacchetto'];
 function utTier(q,rng){const t=UT_PQ[clamp(q|0,0,6)];let r=rng()*100;for(let i=0;i<5;i++){r-=t[i];if(r<0)return i;}return 0;}
 // rarita' delle n carte di un pacchetto di qualita' q; pity = pacchetti consecutivi senza Epici (ritorna anche il nuovo valore)
 function utPackTiers(q,n,pity,rng){

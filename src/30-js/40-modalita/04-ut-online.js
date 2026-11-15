@@ -157,8 +157,8 @@ function renderUtReal(){
   $('urPackS').textContent=pend?`${utPackSize(UT.packs[0])} giocatori · ${utPackTip(UT.packs[0])}`:'';
   $('urTeam').classList.toggle('hidden',!UT.col.length);
   $('urTeamS').textContent=`${UT.col.length} giocatori · titolari ${UT.sel.length}/7`;
-  $('urBuy').classList.toggle('hidden',!UT.col.length);$('urBuy').textContent=`Compra un pacchetto (${UTO_PACK} gettoni)`;$('urBuy').disabled=UT.coins<UTO_PACK;
-  $('urGoal').textContent=UT.col.length?`Prossimo traguardo: ${utoMilePts(nx)} punti → ${utPkQ(utoMilePack(nx))===6?'Super bustina':UT_PQN[utPkQ(utoMilePack(nx))]} da ${utPackSize(utoMilePack(nx))} giocatori${nx===1?' e potenziamenti sbloccati':''}. Vittoria ${UTO_COIN_W} gettoni (fino a +${UTO_UPSET[0][1]} se l’avversario ha più punti), sconfitta ${UTO_COIN_L}.`:'';
+  $('urShop').classList.toggle('hidden',!UT.col.length);
+  $('urGoal').textContent=UT.col.length?`Prossimo traguardo: ${utoMilePts(nx)} punti → ${utPkQ(utoMilePack(nx))===6?'Super pacchetto':UT_PQN[utPkQ(utoMilePack(nx))]} da ${utPackSize(utoMilePack(nx))} giocatori${nx===1?' e potenziamenti sbloccati':''}. Vittoria ${UTO_COIN_W} gettoni (fino a +${UTO_UPSET[0][1]} se l’avversario ha più punti), sconfitta ${UTO_COIN_L}.`:'';
   $('urBoard').disabled=off||net;
   $('urMsg').textContent=net&&!UO.msg?'Nessuna connessione: Real player ha bisogno di internet. Il resto del gioco funziona anche offline.':UO.msg;
   if(UOP&&UOP.dirty&&!UO.busy&&Date.now()-UO.tried>15000)uoPush();   // ogni tanto, non in continuazione se la rete non risponde
@@ -170,7 +170,7 @@ $('urBack').addEventListener('click',()=>showScreen('utMode'));
 $('urPlay').addEventListener('click',uoStart);
 $('urTeam').addEventListener('click',()=>{utTeamBack='utReal';showScreen('utTeam');});
 $('urPack').addEventListener('click',()=>{if(!UT.packs.length)return;UT.stage='closed';showScreen('utPack');});
-$('urBuy').addEventListener('click',()=>{if(UT.coins<UTO_PACK)return;UT.coins-=UTO_PACK;UT.packs.push(1);utSave();renderUtReal();});
+$('urShop').addEventListener('click',()=>showScreen('utShop'));
 $('urBoard').addEventListener('click',()=>{showScreen('utBoard');});
 $('urNameOk').addEventListener('click',async()=>{
   if(UOP){renderUtReal();return;}   // il nome non si cambia
