@@ -11,7 +11,8 @@ function lnSelfTest(seasons,seed){
   const hide=()=>{for(const id of ['simres','alerts','evt'])$(id).classList.add('hidden');};
   const play=()=>{let g=0;while(!SV.done&&g++<40){const m=nextMatch();if(!m){chk('flusso',false,'partita mancante in '+SV.ln.ph);break;}const r=simPower(SV.team,m.name);recordResult(r[0]>r[1],r[0],r[1]);hide();games++;
     for(const v of ['grp','fin','tiers']){lnTabSel=v;try{renderEvent();}catch(e){chk('viste',false,v+' fase '+SV.ln.ph+': '+e.message);}}}   // le tre viste della Classifica si aprono in ogni fase
-    chk('flusso',SV.done&&g<=20,'stagione non chiusa o troppo lunga '+g);};
+    chk('flusso',SV.done&&g<=20,'stagione non chiusa o troppo lunga '+g);
+    if(SV.done&&SV.next&&SV.next.rank===1)chk('minime',(SV.sgp|0)>=LN_MIN,`${SV.sr}: la vincitrice ha giocato ${SV.sgp|0} partite`);};
   try{
     // ---- dati ----
     const all=LN_NAMES.concat(Object.keys(TEAM),US_NAMES,EU_CLUBS.map(x=>x[0]));
@@ -23,6 +24,14 @@ function lnSelfTest(seasons,seed){
       for(const club in LN_PL[lk])chk('dati',!!LN_BY[club]&&LN_BY[club].lk===lk,'giocatori di un club sconosciuto: '+club);
     }
     for(const k in LN_STAR_CLUB)chk('dati',!!STARS.find(r=>usStarKey(r)===k)&&!!LN_BY[LN_STAR_CLUB[k]],'stella o club inesistente: '+k);
+    // ---- almeno 11 partite per chi arriva in fondo, in ogni livello e competizione (06-partite-minime.js) ----
+    {const S0=SV;SV={team:'',lk:'BE'};
+     for(const lk of LN_IDS){SV.lk=lk;const T=lnBuildT(lk);lnPools(T,lk,true);
+       for(const tr of LN_DEF[lk].tiers)for(const c of T[tr.id]){const g=lnCompMin(tr,c),sz=c.pools.map(p=>p.length);
+         for(const p of c.pools){const cnt=Array(p.length).fill(0);for(const R of lnGrpSched(p.length,g))for(const [a,b] of R){cnt[a]++;cnt[b]++;}chk('minime',p.length<2||Math.min(...cnt)>=g,`${lk} ${tr.id}: girone da ${p.length} con ${Math.min(...cnt)} partite`);}
+         chk('minime',g+lnFinR(tr,sz)>=LN_MIN,`${lk} ${tr.id}${c.id}: la vincitrice gioca ${g}+${lnFinR(tr,sz)}`);
+         if(Math.max(...sz)-1+lnFinR(tr,sz)>=LN_MIN)chk('minime',g===Math.max(...sz)-1,`${lk} ${tr.id}: giri aggiunti senza bisogno`);}}
+     SV=S0;}
     // ---- rose: ogni club, con la forza dei dati ----
     for(const n of LN_NAMES){
       const ro=lnRoster(n,'t'),pw=rosterPower(ro),sv=ro.some(o=>o.star);
@@ -114,6 +123,10 @@ function lnSelfTest(seasons,seed){
     chk('italia',!isLN()&&!isUS()&&SV.sr==='C'&&SV.sched.length===15&&Object.keys(SV.mem).join()==='A,B,C'&&!SV.ln,'carriera italiana invariata');
     startCareer('Seattle Sockeye',{});
     chk('usa',isUS()&&SV.sr==='U'&&SV.sched.length===5&&!SV.ln,'carriera USA invariata');
+    {const tot=()=>SQ.reduce((a,p)=>a+KEYS.reduce((x,k)=>x+p.s[k],0),0);   // eliminati presto: le settimane mancanti diventano allenamenti (28-allenamenti-fuori-stagione.js)
+     SV.sgp=SEASON_MIN;let t0=tot();offTrain();chk('fuori',tot()===t0,'allenamenti extra anche con la stagione completa');
+     SV.sgp=5;t0=tot();offTrain();chk('fuori',tot()>t0&&/Allenamenti dopo/.test(SV.news[0].txt),'nessun allenamento dopo 5 partite');
+     chk('fuori',SV.sgp===undefined,'contatore non azzerato');}
   }catch(e){err=e&&e.message||String(e);rows.push(row('Errore durante il test',err,false));}
   finally{
     Math.random=R0;QM.on=q0;hide();
@@ -135,6 +148,8 @@ function lnSelfTest(seasons,seed){
   r('Coppa europea: 16 club con 3 italiani, 3 belgi, 2 francesi, 2 britannici e 1 tedesco, in gironi','eucf','sì');
   r('Mercato: le stelle che giocano nei club della lega non sono in vendita','mercato','sì');
   r('Offerte tra tutte le leghe: lavoro e scambi da ognuna delle sei verso le altre cinque (gli scambi anche dalla stessa lega), con allenatore, storico e trofei conservati','offerte','sì');
+  r('Almeno 11 partite per chi arriva in fondo in ogni livello europeo (più giri nei gironi solo dove servono)','minime','sì');
+  r('Eliminati presto (USA): le settimane senza partite diventano allenamenti, una volta sola','fuori','sì');
   r('Campionato italiano invariato','italia','sì');r('Campionato USA invariato','usa','sì');
   return rows;
 }

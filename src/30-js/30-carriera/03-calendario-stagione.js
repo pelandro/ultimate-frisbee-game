@@ -26,7 +26,7 @@ function freshTab(names){const t={};for(const n of names)t[n]={pts:0,w:0,l:0,pf:
 function beginSeason(){
   if(isLN())lnPrepSeason();   // leghe europee: promozioni e retrocessioni, gironi, il tuo girone (37-leghe/)
   const names=SV.mem[SV.sr];
-  SV.sched=roundRobin(names.length);SV.round=0;SV.tab=isUS()||isLN()?usFreshTab(names):freshTab(names);SV.res=[];SV.done=false;SV.next=null;
+  SV.sched=roundRobin(names.length);SV.round=0;SV.tab=isUS()||isLN()?usFreshTab(names):freshTab(names);SV.res=[];SV.done=false;SV.next=null;SV.sgp=0;   // giornate di campionato giocate in questa stagione (28-allenamenti-fuori-stagione.js)
   leagueBegin();   // le altre due serie hanno ora un calendario vero
   if(SV.rost)lsSeasonStart();   // statistiche individuali del girone: la stagione scorsa passa alla carriera, il contatore riparte
   if(SV.rost)SV.expOrd=names.slice().sort((a,b)=>teamPow(b)-teamPow(a));   // gerarchie a inizio stagione: servono al premio per l'allenatore dell'anno
@@ -159,6 +159,7 @@ function newSeason(){
   SV.mem=SV.next.mem;SV.sr=SV.next.sr;SV.season++;
   SV.euUnlocked=!!SV.next.qual;if(SV.euUnlocked)SV.eu=newEu(SV.season);SV.event='camp';   // la stagione nuova riparte sempre dal campionato
   retireOwn();   // chi aveva annunciato l'addio lascia adesso
+  offTrain();    // chi ha finito presto si e' allenato le settimane in cui non ha giocato (28-allenamenti-fuori-stagione.js)
   staffYear();   // lo staff invecchia e matura (25-staff-persone.js)
   achCheck();    // (Hall of Fame)
   for(const p of SQ){p.hist=p.hist||[];p.hist.push([SV.season-1,ovr(p)]);if(p.hist.length>14)p.hist.shift();}   // storico dei progressi: l'Overall con cui ha chiuso la stagione
@@ -174,7 +175,7 @@ function newSeason(){
 }
 function recordResult(win,su,so){
   SV.susp=null;   // la partita e' finita: niente piu' da riprendere
-  let msg='';SV.played=(SV.played||0)+1;
+  let msg='';SV.played=(SV.played||0)+1;if(SV.event==='camp')SV.sgp=(SV.sgp|0)+1;
   const incPre=matchMoney(win);   // i conti di questa partita si calcolano con i tifosi e la forma di prima del risultato (26-economia-partita.js)
   if(isUS()&&SV.event==='camp'){
     fansBump(win,win?1:0);msg=usRecord(win,su,so);   // campionato USA: stagione regolare, Play-in, Nationals (35-usa/03-stagione-usa.js)

@@ -325,7 +325,8 @@ tip:`Con soli 5 turni ogni partita pesa tantissimo: gioca tu quelle contro le ri
 `<b>I posti cambiano durante la stagione</b>: il ranking si ricalcola dopo ogni giornata e con lui i posti di ogni regione (in Classifica vedi la freccia e una notizia quando cambiano); sono definitivi solo alla fine della stagione regolare. Per legare le Conference tra loro, ogni giornata ogni club gioca anche una <b>partita interregionale</b> contro un club di un’altra Conference: conta solo per il ranking e le tue si simulano da sole.`,
 [`Con 1 posto va la 1ª.`,`Con 2: la 1ª direttamente e 2ª contro 3ª in gara secca (Play-in).`,`Con 3: la 1ª diretta, poi 2ª-5ª e 3ª-4ª.`,`Con 4: le prime due dirette, poi 3ª-6ª e 4ª-5ª.`],
 `I <b>Nationals</b> hanno 16 squadre in 4 gironi da 4 (fasce del ranking, club della stessa Conference in gironi diversi se possibile): 3 partite a girone, le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono fuori. Poi quarti, semifinali e finale.`,
-`In Classifica trovi tre viste: <b>Conference</b> (verde = Nationals diretti, giallo = Play-in, rosso = fuori), <b>Nationals</b> (gironi e tabellone) e <b>Ranking</b>.`],
+`In Classifica trovi tre viste: <b>Conference</b> (verde = Nationals diretti, giallo = Play-in, rosso = fuori), <b>Nationals</b> (gironi e tabellone) e <b>Ranking</b>.`,
+`Se esci presto la squadra non resta ferma: a fine stagione si allena per le settimane in cui le altre giocano ancora (fino a 11 partite in tutto), e all’inizio della stagione nuova gli Avvisi mostrano chi è cresciuto.`],
 tip:`Controlla i posti della tua Conference dopo ogni giornata: ogni vittoria larga, in Conference e nell’interregionale, alza il ranking e può far guadagnare un posto a tutta la regione.`},
 {id:'lega-eu',t:'Belgio, Francia, Germania, Regno Unito',b:[
 `Campionati Open outdoor veri, con formati ricostruiti dai risultati 2026. Nessuno è eliminato: ogni turno delle fasi finali si gioca per il piazzamento e a fine stagione salgono e scendono squadre tra i livelli.`,
@@ -334,6 +335,7 @@ tip:`Controlla i posti della tua Conference dopo ogni giornata: ogni vittoria la
 `<b>Germania</b>: la 1. Liga ha 16 squadre in due gironi da 8 con fasi finali per tutte le posizioni; poi 2. e 3. Liga.`,
 `<b>Regno Unito</b>: i Nationals (due gironi da 4 e turno incrociato) e, sotto, i club dell’Open Tour.`],
 `Le forze dei club sono stimate dai risultati e dal ranking EUCS; i giocatori sono quelli delle liste dei tornei 2026 (età note o stimate: «circa») e dove un club ha pochi nomi la rosa è completata con giocatori generati.`,
+`Nel gioco ogni stagione ha <b>almeno 11 partite</b> per chi arriva fino in fondo: i gironi si giocano con più giri contro le stesse squadre (andata, ritorno e, dove serve, un terzo giro), poi le fasi finali vere.`,
 `Anche chi gioca in queste leghe riceve offerte di panchina e scambi dalle altre (vedi «Offerte tra tutte le leghe»).`],
 tip:`Nei livelli bassi le rose hanno meno nomi veri: è l’occasione per trovare giovani e svincolati di talento.`},
 {id:'lega-eucf',t:'La coppa europea (EUCF)',w:'Cruscotto › Classifica (stagione dopo la qualificazione)',b:[

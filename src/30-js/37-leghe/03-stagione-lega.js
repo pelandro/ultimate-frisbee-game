@@ -49,8 +49,9 @@ function lnPrepSeason(){
   SV.sr=lnKey(SV.lk,L.tier);SV.mem={[SV.sr]:L.T[L.tier][L.ci].pools[L.pi].slice()};
 }
 function lnLeagueBegin(){   // chiamata da leagueBegin() a ogni inizio stagione
-  const L=SV.ln,comp=lnComp();SV.lg={};
-  comp.pools.forEach((n,i)=>{if(i!==L.pi)SV.lg[i]={sched:roundRobin(n.length),round:0,tab:usFreshTab(n),last:[],streak:{}};});
+  const L=SV.ln,comp=lnComp(),g=lnCompMin(lnTierDef(),comp);SV.lg={};
+  SV.sched=lnGrpSched(SV.mem[SV.sr].length,g);SV.round=0;   // piu' giri se servono per arrivare ad almeno 11 partite (06-partite-minime.js)
+  comp.pools.forEach((n,i)=>{if(i!==L.pi)SV.lg[i]={sched:lnGrpSched(n.length,g),round:0,tab:usFreshTab(n),last:[],streak:{}};});
   L.ph='grp';L.F=null;L.ord=null;L.stage=0;
   lnSkipBye();
 }
@@ -227,7 +228,8 @@ function lnCompOrder(ord,F){
   return head.concat(lnRest(ord,used));
 }
 function lnSimComp(tr,comp){   // simula una competizione intera: gironi, fasi finali, classifica
-  const ord=comp.pools.map(p=>{const t=usFreshTab(p);for(let i=0;i<p.length;i++)for(let j=i+1;j<p.length;j++){const [sa,sb]=simPower(p[i],p[j]);usAddRes(t,p[i],p[j],sa,sb);}return usRanking(t,p);});
+  const g=lnCompMin(tr,comp);
+  const ord=comp.pools.map(p=>{const t=usFreshTab(p);for(const R of lnGrpSched(p.length,g))for(const [i,j] of R){const [sa,sb]=simPower(p[i],p[j]);usAddRes(t,p[i],p[j],sa,sb);}return usRanking(t,p);});
   let F=null;
   if(tr.fin.length){F=lnFinBuild(tr.fin,ord);while(!F.done&&F.rd<F.rounds)lnFinRoundF(F,null);}
   return {ord,F,order:lnCompOrder(ord,F)};

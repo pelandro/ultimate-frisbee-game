@@ -46,7 +46,7 @@ function reliefStart(){
     rk=ranking(SV.tab,names).indexOf(SV.team)+1;
     if(rk>n-3)break;   // penultima, terzultima o ultima: abbastanza in crisi
   }
-  SV.round=R-1;SV.w0=SV.tab[SV.team].w;
+  SV.round=R-1;SV.w0=SV.tab[SV.team].w;SV.sgp=R-1;   // le giornate prima del tuo arrivo la squadra le ha giocate (e si e' allenata)
   leagueAdvance();   // le altre serie arrivano alla stessa altezza della stagione
   SV.mor=45;SV.chem=40;   // spogliatoio scosso
   SV.obj={rel:1,tgt:n-PROMO,txt:'Salvezza: non finire tra le ultime '+PROMO,exp:rk,reward:Math.round((36+PROMO*4)*SR_K[SV.sr])};SV.sp=null;spOffer();   // anche qui gli sponsor offrono tre contratti sull'obiettivo salvezza
