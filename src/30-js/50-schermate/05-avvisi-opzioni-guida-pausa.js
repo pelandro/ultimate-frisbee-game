@@ -161,7 +161,7 @@ $('qSwap').addEventListener('click',()=>{const a=QM.a;QM.a=QM.b;QM.b=a;updateQui
 $('qPlay').addEventListener('click',startQuick);
 $('hTrain').addEventListener('click',()=>showScreen('train'));
 $('hEvent').addEventListener('click',()=>showScreen('event'));
-$('hHelp').addEventListener('click',()=>openGuide(5));
+$('hHelp').addEventListener('click',()=>openGuide(5,null,{roster:'Rosa',train:'Allenamenti',market:'Mercato',club:'Strutture',event:'Campionati'}[csCur]));   // la guida si apre dal punto che riguarda la schermata
 $('tHelp').addEventListener('click',()=>openGuide(0));
 function armed(btn,label,idle,fn){
   if(!btn.dataset.arm){btn.dataset.arm='1';btn.textContent=label;setTimeout(()=>{delete btn.dataset.arm;btn.textContent=idle;},3000);return;}

@@ -1,9 +1,7 @@
 function renderHome(){
   if(SV.prog&&SV.prog.on&&autoTrain())persist();   // programma di allenamento automatico: parte da solo quando c'e' una sessione disponibile
   const m=nextMatch(),names=SV.mem[SV.sr];
-  $('hCrest').innerHTML=crest(SV.team,38);$('hEvt').textContent=SV.team;
-  if(SV.coach){$('hCoach').innerHTML=avatar({look:SV.coach.lk,t:0},34);$('hCoach').title=`${coachTitle()}: tocca per cambiare nome o volto`;$('hCoach').setAttribute('aria-label',`Il tuo allenatore, ${coachName()}: cambia nome o volto`);}
-  $('hInfo').textContent=isUS()?usInfo():isLN()?lnInfo():`${SERIES_NAME[SV.sr]} · Stagione ${SV.season}`+(SV.event==='camp'?(SV.done?' · conclusa':(SV.round>0?` · ${myRank()}° posto`:'')):' · Campionato europeo');
+  renderShell();   // stemma, nome, crediti e posta stanno nel guscio (24-guscio-carriera.js)
   let nx;
   if(m){
     const op=Math.round((m.roster?rosterPower(m.roster):m.power)+carDiff().plus),me=Math.round(squadPower()),idn=m.roster?teamIdentity(m.name,bestSeven(m.roster)):null;
@@ -20,7 +18,8 @@ function renderHome(){
   }else tab=euHomeTab();
   $('hTab').innerHTML=tab;
   $('hBars').innerHTML=`<div class="dcash"><span>Crediti</span><b>${SV.cash}</b></div>`+statBar('Tifosi',fansOf(),'#ff9a3a','%')+`<div class="dbar"><span>Morale</span><span class="cbar"><i style="width:${Math.round(SV.mor)}%;background:#4fe58f"></i></span><b>${moodFace(teamMoodKey())}</b></div>`+statBar('Affiatamento',SV.chem,'#5ac8ff');
-  renderTicker();   // consiglio o novità che scorre in fondo (09-consigli-fumetti.js)
+  renderTodo();   // «Questa settimana»: cosa serve adesso, ognuna porta alla schermata giusta (24-guscio-carriera.js)
+  renderTicker();   // consiglio o novità in fondo (09-consigli-fumetti.js)
   // l'azione principale e' sempre quella che serve adesso: giocare, oppure aprire la nuova stagione (o il nuovo torneo europeo)
   const su=suspOk();
   // a competizione conclusa il tasto dice che cosa succede davvero: nuova stagione (se il campionato e' finito) oppure ritorno al campionato (coppa finita)
