@@ -27,7 +27,7 @@ catch(e){
   // la conferenza stampa dopo le partite che contano si salta con un tocco
   await page.addLocatorHandler(page.locator('#press:not(.hidden) #prSkip'),async()=>{await page.click('#prSkip');});
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
-  const step=async(name,fn)=>{try{await fn();done.push(name);}catch(e){errs.push(name+': '+e.message.split('\n')[0]);}};
+  const step=async(name,fn)=>{try{await fn();done.push(name);}catch(e){errs.push(name+': '+e.message.split('\n')[0]);try{if(await page.locator('#tut:not(.hidden)').count())await page.click('#tuX',{timeout:2000});}catch(_){}}};
   const playOut=async()=>{   // gioca la partita in corso simulando una meta alla volta, gestendo schemi, cambi obbligati e half time
     for(let i=0;i<160;i++){
       if(await page.locator('#over').isVisible())return;
@@ -50,7 +50,7 @@ catch(e){
   await step('tutorial completo dal menu: capitoli, lezioni, progressi salvati, Esc e ingresso dalla Guida',async()=>{
     await page.click('#tTut');await vis('#tut');
     if(await page.locator('#tuBody .tuc').count()!==8)throw new Error('il tutorial deve avere 8 capitoli');
-    await page.click('#tuBody .tuc >> nth=0');await vis('#tuBody .tul');
+    await page.click('#tuBody .tuc >> nth=0');await vis('#tuBody .tul >> nth=0');
     await page.click('#tuBody .tul >> nth=0');
     if(!(await page.locator('#tuBody .tubody').count()))throw new Error('la lezione non si apre');
     await page.click('#tuBody .tunav .go');await page.waitForTimeout(100);
