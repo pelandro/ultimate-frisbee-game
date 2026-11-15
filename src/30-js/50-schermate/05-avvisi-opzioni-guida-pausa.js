@@ -2,7 +2,7 @@
 function renderAlerts(){
   const L=SV.alerts||[],nw=L.filter(a=>!a.seen).length;
   $('alSub').textContent=L.length?(nw?`${nw} novità · le scelte in sospeso restano qui finché non rispondi`:'Nessuna novità: qui resta la cronologia'):'Qui compare tutto ciò che succede ai tuoi giocatori.';
-  $('alBody').innerHTML=L.length?L.map(a=>{
+  const item=a=>{
     const kd=AL_KIND[a.k]||['Avviso','#c2cbe6'],p=a.full?byFull(a.full):null;let act='';
     if(!a.done&&(a.act==='job'||a.act==='trade'))act=crossLgButtons(a);   // offerte dell'altra lega (35-usa/05-lega-incrociata.js)
     else if(!a.done&&p){
@@ -11,7 +11,12 @@ function renderAlerts(){
       else if(a.act==='unhappy'&&p.mood===2)act=`<button type="button" class="sec" data-al="${a.id}" data-do="prom">Promettigli spazio</button><button type="button" class="sec" data-al="${a.id}" data-do="sell">Cedilo (+${sellValue(p)})</button>`;
     }
     return `<div class="ali${a.seen?'':' new'}"><span class="alk" style="background:${kd[1]}">${kd[0]}</span><div><p>${esc(a.txt)}</p>${a.res?`<div class="res">${esc(a.res)}</div>`:''}${act?`<div class="schrow">${act}</div>`:''}<small>Stagione ${a.s} · giornata ${a.r}</small></div></div>`;
-  }).join(''):'<p class="note">Ancora nessun avviso.</p>';
+  };
+  // tre gruppi: da decidere (scelte in sospeso), novita' (non lette), cronologia
+  const open=a=>!a.done&&(a.act==='job'||a.act==='trade'||(a.full&&byFull(a.full)&&((a.act==='stay'&&byFull(a.full).ret===1)||(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)||(a.act==='unhappy'&&byFull(a.full).mood===2))));
+  const g1=L.filter(open),g2=L.filter(a=>!open(a)&&!a.seen),g3=L.filter(a=>!open(a)&&a.seen);
+  const grp=(t,l)=>l.length?`<h3 class="alg">${t} <b>${l.length}</b></h3>`+l.map(item).join(''):'';
+  $('alBody').innerHTML=L.length?grp('Da decidere',g1)+grp('Novità',g2)+grp('Cronologia',g3.slice(0,40)):'<p class="note">Ancora nessun avviso.</p>';
 }
 function openAlerts(){renderAlerts();$('alerts').classList.remove('hidden');}
 /* Tre livelli di avviso. EMERGENZE (infortuni, addii) e DECISIONI (ritiro annunciato, offerta, richiesta di cessione, sfide) aprono il riquadro da sole, una volta.
@@ -62,12 +67,12 @@ function openGuide(tab,back,key){
 document.addEventListener('click',e=>{const b=e.target.closest('.shelp');if(b)openGuide(5,null,b.dataset.help);});
 $('gdTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)openGuide(+b.dataset.g,guideBack);});
 $('gdX').addEventListener('click',()=>{$('guide').classList.add('hidden');const f=guideBack;guideBack=null;if(f)f();});
-/* ---- PAUSA: un solo tasto in alto a destra durante la partita. La partita si ferma davvero; da qui si riprende, si simula la meta, si apre la guida o si esce ---- */
+/* ---- PAUSA: un solo tasto in alto a destra durante la partita. La partita si ferma davvero; da qui si riprende, si sospende, si regolano audio e difesa, si apre la guida o si esce ---- */
 function openPause(){
   if(!G.inMatch||!(G.mode==='play'||G.mode==='ready')||G.paused)return;
   G.paused=true;G.schemeOpen=true;drag=null;ddrag=null;aimPid=null;G.cdir=null;
   $('paSub').textContent=G.drill?G.matchLabel:`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${G.oppName||'Rossi'} · meta ${G.pointNo}`;
-  $('paSim').classList.toggle('hidden',!!G.drill);$('paSusp').classList.toggle('hidden',!!(G.drill||QM.on));   // sospendere: solo le partite di carriera
+  $('paSusp').classList.toggle('hidden',!!(G.drill||QM.on));   // sospendere: solo le partite di carriera
   $('paQuit').textContent=G.drill?'Esci dall’allenamento':(matchCounts()?'Abbandona (sconfitta a tavolino)':'Abbandona la partita');delete $('paQuit').dataset.arm;
   syncToggles();$('pause').classList.remove('hidden');
 }
@@ -80,7 +85,6 @@ $('paQuit').addEventListener('click',()=>{
   if(matchCounts())armed($('paQuit'),'Conferma: sconfitta a tavolino','Abbandona (sconfitta a tavolino)',()=>{closePause();forfeitMatch();});
   else armed($('paQuit'),'Conferma: il risultato non viene registrato','Abbandona la partita',()=>{closePause();quitMatch();});
 });
-$('paSim').addEventListener('click',()=>{closePause();simPoint();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)openPause();});   // cambi app o scheda: la partita ti aspetta
 /* ---- SIMULA META: la meta in corso (o quella che sta per cominciare) viene giocata in un istante dal motore vero, con l'IA anche per la tua squadra.
    Valgono le stesse statistiche, la stessa fatica e gli stessi schemi di una meta giocata; poi compare il normale stacco della meta segnata ---- */
@@ -161,7 +165,7 @@ $('qSwap').addEventListener('click',()=>{const a=QM.a;QM.a=QM.b;QM.b=a;updateQui
 $('qPlay').addEventListener('click',startQuick);
 $('hTrain').addEventListener('click',()=>showScreen('train'));
 $('hEvent').addEventListener('click',()=>showScreen('event'));
-$('hHelp').addEventListener('click',()=>openGuide(5));
+$('hHelp').addEventListener('click',()=>openGuide(5,null,{roster:'Rosa',train:'Allenamenti',market:'Mercato',club:'Strutture',event:'Campionati'}[csCur]));   // la guida si apre dal punto che riguarda la schermata
 $('tHelp').addEventListener('click',()=>openGuide(0));
 function armed(btn,label,idle,fn){
   if(!btn.dataset.arm){btn.dataset.arm='1';btn.textContent=label;setTimeout(()=>{delete btn.dataset.arm;btn.textContent=idle;},3000);return;}

@@ -3,7 +3,8 @@ let clMsg='';
 let clTab='man';const clInfo=new Set();
 const awRow=a=>`<li class="${a.mine?'me':''}"><i>${a.k}</i><b>${esc(a.name)}</b> · ${esc(a.team)}${a.txt?' · '+a.txt:''}</li>`;
 function renderClub(){
-  for(const b of $('clTabs').children)b.classList.toggle('on',b.dataset.k===clTab);
+  const bach=clTab==='hon'||clTab==='ach'||clTab==='rec';   // Bacheca: albo d'oro, traguardi e record stanno insieme
+  for(const b of $('clTabs').children)b.classList.toggle('on',b.dataset.k===(bach?'hon':clTab));
   let h='';
   if(clTab==='man'||clTab==='str'||clTab==='stf'){
     // Gestione divisa in tre pagine (Società, Strutture, Staff): prima erano tutte insieme e la schermata era troppo piena. Le spiegazioni lunghe stanno dietro al tasto «i» di ciascuna voce
@@ -37,6 +38,7 @@ function renderClub(){
     h+=`<div class="ccard" style="margin-top:10px"><h3>Record di una stagione</h3>${rec?`<ul class="nlist">${rec}</ul>`:'<p>I record di una stagione compariranno qui. In grigio, nelle classifiche, chi non è più in rosa.</p>'}</div>`;
     h+=`<div class="ccard hofbox" style="margin-top:10px"><h3>Hall of Fame</h3>${hofHTML()}</div>`;
   }
+  if(bach)h=`<div class="seg csub" id="clSub">${[['hon','Albo d’oro'],['ach','Traguardi'],['rec','Record']].map(([k,l])=>`<button type="button" class="sg${clTab===k?' on':''}" data-k="${k}">${l}</button>`).join('')}</div>`+h;
   $('clBox').innerHTML=h;
 }
 $('clTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;clTab=b.dataset.k;renderClub();});
@@ -67,6 +69,7 @@ function importSave(txt){
   return '';
 }
 $('clBox').addEventListener('click',e=>{
+  const sb=e.target.closest('#clSub [data-k]');if(sb){clTab=sb.dataset.k;renderClub();return;}
   const ib=e.target.closest('[data-inf]');if(ib){const k=ib.dataset.inf;if(clInfo.has(k))clInfo.delete(k);else clInfo.add(k);renderClub();return;}
   const f=e.target.closest('[data-fac]');
   if(f){if(buyFac(f.dataset.fac)){clMsg='';persist();}renderClub();return;}

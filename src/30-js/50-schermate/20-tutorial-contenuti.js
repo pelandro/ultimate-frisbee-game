@@ -174,20 +174,20 @@ tip:`Ruota i giocatori: un titolare fresco al 100% rende più di una stella al 4
 {id:'sch-tempo',t:'Timeout, half time e pausa',b:[
 [`<b>Timeout</b>: uno a partita, solo con il disco in mano (tasto in basso a sinistra). Azzera lo stall, recupera un po’ di energia e permette di cambiare schema.`,
 `<b>Half time</b>: quando una squadra segna la metà dei punti (4 su 7, 6 su 11, 8 su 15) compare «Half time» con Schemi, Cambi e Continua. Chi ha iniziato in difesa (il pull) la riprende in attacco.`,
-`<b>Pausa</b> (tasto «II» in alto a destra): riprendi, simula la meta, apri la guida, regoli audio e stacchi o abbandoni la partita.`],
+`<b>Pausa</b> (tasto «II» in alto a destra): riprendi, sospendi (in carriera), regoli audio, stacchi e difesa, apri la guida o abbandoni la partita.`],
 `<b>Attenzione</b>: in carriera, nel torneo e in Ultimate Team abbandonare è una <b>sconfitta a tavolino</b>. Per fermarti e riprendere dopo usa <b>Sospendi e continua più tardi</b>: la partita si salva con punteggio, energie e statistiche e dal cruscotto «Riprendi la partita» la fa ripartire.`,
 `Se chiudi il gioco durante una partita di carriera, la sospensione si salva da sola.`],
 tip:`Usa il timeout quando stai per perdere il disco per stall o hai bisogno di cambiare lo schema nel momento decisivo, non a caso.`},
 {id:'sch-sim',t:'Simula meta, Salta e durata',b:[
-`<b>Simula meta</b> (a inizio meta, accanto a Schemi e Cambi) gioca la meta in un istante con l’intelligenza artificiale per entrambe le squadre. Contano le stesse statistiche, la stessa fatica e gli stessi schemi e i giocatori raccolgono la stessa esperienza. Dal menu di pausa puoi simulare anche una meta già cominciata.`,
+`<b>Simula meta</b> (a inizio meta, accanto a Schemi e Cambi) gioca la meta in un istante con l’intelligenza artificiale per entrambe le squadre. Contano le stesse statistiche, la stessa fatica e gli stessi schemi e i giocatori raccolgono la stessa esperienza. Il pulsante compare solo a inizio meta.`,
 `<b>Salta</b> (in difesa automatica) fa giocare in un istante solo il possesso avversario.`,
 `La <b>durata</b> si sceglie nelle Opzioni della carriera, nella partita veloce e alla creazione del torneo: <b>Arcade</b> (7 punti), <b>Competitiva</b> (11), <b>Lunga</b> (15). In Ultimate Team si gioca sempre ai 7. Le partite lunghe non fanno crescere di più.`,
 `La <b>difficoltà</b> va da Facile a Estrema: più sale, meno aiuti grafici vedi e meglio reagisce l’IA.`],
 tip:`Per le partite senza storia simula; per i derby, le finali e quando c’è qualcosa in palio gioca tu.`}
 ]});
 
-TUT.push({id:'car',t:'La carriera schermo per schermo',sub:'Cruscotto, Rosa, Mercato, Allenamenti, Club (strutture e staff), Classifica, Avvisi.',
-intro:'La carriera dura più stagioni. Qui trovi ogni schermata: a cosa serve, come si usa e cosa conviene fare.',
+TUT.push({id:'car',t:'La carriera schermo per schermo',sub:'Partita, Squadra, Allena, Mercato, Lega, Società (strutture e staff), Posta.',
+intro:'La carriera dura più stagioni. Ogni schermata ha la stessa cornice: in alto stemma, crediti, Posta e Menu; a sinistra la colonna con le sei sezioni. Qui trovi a cosa serve ognuna, come si usa e cosa conviene fare.',
 les:[
 {id:'car-inizio',t:'Cominciare una carriera',w:'Menu › Carriera',b:[
 `Il tasto <b>Carriera</b> riprende l’ultima giocata; <b>Carriere</b> mostra i tre slot (carriere separate sullo stesso dispositivo). «Nuova carriera» ne comincia una e, se lo slot è pieno, chiede conferma perché lo cancella.`,
@@ -196,27 +196,27 @@ les:[
 `<b>3. L’allenatore</b>: nome, cognome e volto (12 facce in pixel art o «Personaggio casuale»).`,
 `<b>4. La partenza</b>: «Scegli la squadra» (l’elenco di sempre) oppure <b>Subentrato</b>: una squadra in crisi ti chiama a una giornata dalla fine ed è in zona retrocessione. Hai una sola partita per salvarla (non finire tra le ultime 2).`]],
 tip:`Per cominciare in tranquillità scegli una squadra del tuo livello e parti in Facile: puoi cambiare difficoltà più avanti dalle Opzioni.`},
-{id:'car-cruscotto',t:'Il cruscotto',w:'Schermata principale della carriera',b:[
-`È la schermata da cui parte tutto. In alto la <b>linea delle giornate</b> (l’ultima partita con il risultato, quella di adesso e la prossima), poi la prossima avversaria con il suo stile e il <b>meteo</b>, la classifica, crediti, reputazione, morale, affiatamento e tifosi.`,
+{id:'car-cruscotto',t:'La schermata Partita e la cornice',w:'Colonna a sinistra › Partita',b:[
+`È la schermata da cui parte tutto. A sinistra la <b>linea delle giornate</b> (l’ultima partita con il risultato, quella di adesso e la prossima), la prossima avversaria con il suo stile e il <b>meteo</b>, la mini-classifica e gli indicatori (crediti, tifosi, morale, affiatamento).`,
 [`<b>Inizia partita</b> (tasto giallo) la gioca; <b>Simula</b> la fa giocare al posto tuo.`,
-`<b>Rosa, Allenamenti, Mercato, Club, Classifica</b>: le cinque aree della società. Un numero o «!» e «NEW» ti avvisano di cosa richiede attenzione.`,
-`La <b>campanella Avvisi</b> raccoglie ciò che succede ai tuoi giocatori. In alto trovi anche Tutorial, Guida e Opzioni; toccando il volto dell’allenatore cambi nome o volto.`,
-`In fondo scorre un <b>consiglio</b> scelto in base a ciò che serve davvero adesso (linee incomplete, giocatori scarichi, conti in rosso, crediti da spendere…).`],
-`La prima volta che apri Rosa, Mercato, Club, Allenamenti e Classifica compare un fumetto che spiega la schermata: da lì «Scopri di più» porta alla lezione. Si rivedono dalle Opzioni (Suggerimenti).`],
+`<b>Questa settimana</b> elenca ciò che serve adesso (linee incomplete, infortunati, allenamento da fare, mercato rinnovato, posta da leggere): ogni riga ti porta alla schermata giusta. Sotto trovi un consiglio fisso.`,
+`<b>Colonna a sinistra</b>, sempre visibile: <b>Partita, Squadra, Allena, Mercato, Lega, Società</b>. Un «!» o «NEW» ti dice cosa richiede attenzione; la sezione aperta è gialla.`,
+`<b>Barra in alto</b>: stemma e stagione (tocca lo stemma per aprire la Società), crediti, <b>Posta</b> (tutto ciò che succede ai tuoi giocatori), il volto dell’allenatore (cambia nome o volto) e <b>Menu</b> con Guida, Tutorial, Opzioni e Menu principale.`],
+`La prima volta che apri Squadra, Mercato, Società, Allena e Lega compare un fumetto che spiega la schermata: da lì «Scopri di più» porta alla lezione. Si rivedono dalle Opzioni (Suggerimenti).`],
 tip:`Prima di ogni partita: guarda il meteo, controlla la Rosa (infortuni e scarichi) e solo poi premi Inizia.`},
-{id:'car-rosa',t:'La Rosa',w:'Cruscotto › Rosa',b:[
+{id:'car-rosa',t:'La Squadra (Rosa)',w:'Colonna › Squadra',b:[
 `La Rosa mostra i tuoi giocatori come <b>carte</b>: ruolo (colore), faccina dell’umore, stelle (da mezza a cinque), barra verde della condizione e bollini <b>A</b> e <b>D</b> per le linee. In alto scegli chi vedere (tutti, per ruolo, fuori dalle linee, «da gestire») e come ordinarli (Overall, potenziale, età, condizione, stipendio, rendimento).`,
 `Tocca una carta (o la freccia) per aprire la <b>scheda</b>, in tre parti:`,
 [`<b>Attributi</b>: che cosa sa fare, con il confronto con un compagno («Confronta con»).`,`<b>Prestazioni</b>: ultima partita, stagione e carriera, umore, obiettivo, intesa, premi.`,`<b>Sviluppo</b>: potenziale, crescita, indirizzo, rapporto degli osservatori.`],
 `Dalla scheda: <b>Riposo</b> (salta la prossima partita e recupera condizione), <b>Colloquio</b> (4 crediti, solleva l’umore ma funziona meno se lo ripeti), <b>Soprannome</b> (compare in campo e nella Hall of Fame), <b>Specializzazione</b> e <b>priorità di allenamento</b>.`,
 `<b>Overall</b> (OVR) è il valore del giocatore nel suo ruolo migliore; la <b>forza della squadra</b> è la media dei 7 migliori. Circa un giocatore su quattro ha un <b>tratto</b> (Deep Threat, Break Specialist, Field General, Lockdown, Sky Dominator, Safe Hands, Explosive Cutter, Ironman).`],
 tip:`«Linee consigliate» sistema le linee per te; se una linea ha meno di 7 giocatori o un infortunato, il cruscotto te lo segnala.`},
-{id:'car-linee',t:'Le linee ATT e DIF',w:'Rosa › A e D',b:[
+{id:'car-linee',t:'Le linee ATT e DIF',w:'Squadra › A e D',b:[
 `Il gioco ha due squadre da 7: la linea <b>ATT</b> gioca le mete in cui ricevi il pull, la linea <b>DIF</b> quelle in cui lo tiri. I bollini A e D sulle carte li assegnano.`,
 `Ogni linea ha bisogno di 7 giocatori. Un titolare può stare in entrambe, ma si stanca di più. <b>Linee consigliate</b> propone attacco con 3 handler e 4 cutter, difesa con i migliori difensori (almeno 2 handler per ripartire dopo un recupero), cercando di non ripetere gli stessi nomi. Un buon equilibrio di ruoli rende più delle sole stelle.`,
 `Handler e cutter che giocano insieme costruiscono <b>intesa</b> (fino a 12 partite): meno dispersione sui loro lanci e meno prese perse.`],
 tip:`Non cambiare tutta la linea a ogni partita: l’intesa si costruisce restando insieme.`},
-{id:'car-mercato',t:'Il Mercato',w:'Cruscotto › Mercato',b:[
+{id:'car-mercato',t:'Il Mercato',w:'Colonna › Mercato',b:[
 `Si rinnova ogni 5 giornate. Ci sono <b>15 giocatori</b> di livello vicino al tuo, divisi per categoria nelle linguette: giovani promesse, svincolati, in vendita da altre squadre e, con la stella, <b>internazionali</b> (giocatori veri del mondo: UFA, nazionale USA, club europei; i più forti arrivano solo con tanta reputazione e crediti).`,
 [`<b>Solo chi posso prendere</b> nasconde chi costa troppo, chiede più reputazione o non ha posto in rosa.`,`<b>Ordina per</b>: più economico, più forte, più promettente, più giovane, miglior rapporto qualità/prezzo.`,`<b>Dettagli / Rapporto</b>: ciò che sanno gli osservatori e il confronto con il tuo titolare più debole nel ruolo.`,`Il <b>potenziale</b> è un intervallo che si stringe osservando il giocatore.`],
 `Circa metà dei giocatori ha una <b>motivazione</b> scritta sotto il nome: «Vuole giocare» firma solo se sarebbe titolare; «Ambizioso» non scende in Serie C; «Ingaggio alto» costa il 20% in più; «Cerca un progetto» fa lo sconto se Vivaio o Campo di allenamento sono almeno al livello 2.`,
@@ -227,7 +227,7 @@ tip:`Un giovane col potenziale alto che oggi è scarso diventa il titolare di do
 [`La <b>prima</b> mostra i punti di forza.`,`La <b>seconda</b> i punti deboli e il tratto.`,`La <b>terza</b> gli schemi adatti, la compatibilità con il vostro stile e il posto che occuperebbe in squadra.`],
 `Chi è adatto al tuo gioco (lungo o corto) si inserisce subito; gli altri tolgono più affiatamento. Il potenziale si stringe osservando o tenendo il giocatore in rosa.`],
 tip:`Con «Occhio clinico» nello staff scopri i potenziali con un anno di anticipo.`},
-{id:'car-allenamenti',t:'Gli Allenamenti',w:'Cruscotto › Allenamenti',b:[
+{id:'car-allenamenti',t:'Gli Allenamenti',w:'Colonna › Allena',b:[
 `A ogni giornata puoi fare <b>una seduta di squadra</b> e fino a <b>3 lavori individuali</b> (rendono il 50% in più). Cinque indirizzi:`,
 [`<b>Tecnica</b>: lancio, buco, sparo, presa.`,`<b>Atletismo</b>: velocità, scatto, agilità, salto, resistenza.`,`<b>Difesa</b>: difesa, tuffo.`,`<b>Tattica</b>: visione e affiatamento.`,`<b>Recupero</b>: ridà condizione, nessuna crescita.`],
 `L’<b>intensità</b> vale per tutte le sedute: Leggero (metà fatica), Normale, Intenso (circa +45% di crescita ma +70% di fatica e più rischio di infortuni). Sopra ogni tasto vedi i punti attesi e la condizione che costa.`,
@@ -241,14 +241,14 @@ tip:`La settimana di una partita importante: Recupero il giorno prima, così arr
 `<b>Obiettivi personali</b>: a inizio stagione fino a 3 giocatori si pongono un traguardo credibile. Chi lo raggiunge cresce di più e porta un premio; chi lo manca resta deluso e alla seconda delusione di fila chiede di partire.`],
 `Simulare una partita dà in media la stessa esperienza di giocarla.`],
 tip:`Punta su 2-3 giovani da far crescere con le specializzazioni: sono l’investimento che rende di più nel lungo periodo.`},
-{id:'car-club',t:'Il Club: Società e Strutture',w:'Cruscotto › Club',b:[
+{id:'car-club',t:'La Società: conti e strutture',w:'Colonna › Società',b:[
 `Il Club ha sei schede: <b>Società</b> (conti e bilancio), <b>Strutture</b>, <b>Staff</b>, <b>Albo d’oro</b>, <b>Traguardi</b> e <b>Record</b>.`,
 `Le <b>strutture</b> sono sei e arrivano al livello 5. Ogni livello costa più del precedente (60, 144, 252, 384, 540) e fa crescere la manutenzione, che si paga a ogni partita:`,
 [`<b>Campo di allenamento</b>: gli allenamenti rendono il 10% in più per livello.`,`<b>Fisioterapia</b>: più recupero a ogni giornata e infortuni meno frequenti (−12% per livello).`,`<b>Vivaio</b>: più giovani promesse sul mercato, e più forti.`,`<b>Tribune</b>: incasso di ogni partita +7% per livello.`,`<b>Rete di osservatori</b>: osservare un giocatore costa 1 credito in meno per livello.`,`<b>Sede del club</b>: affiatamento più rapido e morale di base più alto.`],
 `D’estate una struttura dal livello 2 in su può perdere un livello per usura; durante la stagione può capitare un guasto da riparare. Chi tiene una struttura almeno al livello 3 per metà della stagione riceve in estate il suo <b>premio di mantenimento</b>: sotto ogni struttura vedi per quante giornate l’hai mantenuta.`,
 `Il tasto «i» accanto a ogni voce spiega cosa fa.`],
 tip:`Con pochi crediti parti dal Campo di allenamento o dalle Tribune (che si ripagano): dopo qualche giornata hanno già reso.`},
-{id:'car-staff',t:'Lo Staff tecnico',w:'Club › Staff',b:[
+{id:'car-staff',t:'Lo Staff tecnico',w:'Società › Staff',b:[
 `Quattro persone, una per ruolo, con nome, età, volto, umore, un <b>livello da 1 a 3</b> e spesso una <b>caratteristica speciale</b>.`,
 [`<b>Allenatore</b>: gli allenamenti rendono di più. Caratteristica: «Motivatore» (+1 di morale dopo ogni partita) o «Beniamino dei tifosi» (più tifosi a ogni vittoria).`,
 `<b>Preparatore atletico</b>: più recupero e meno infortuni. Caratteristica: «Fisioterapista» (infortuni di una partita più brevi) o «Recupero rapido» (+2 di condizione dopo ogni partita).`,
@@ -260,13 +260,13 @@ tip:`Il Mentore è il più utile se punti sui giovani; l’Allenatore se vuoi cr
 {id:'car-soldi',t:'Soldi, tifosi e morale',b:[
 `Ogni partita ha un <b>conto</b> che vedi a fine partita. Entrano i <b>biglietti</b> (solo in casa: più tifosi e partita importante = più spettatori, fino alla capienza), lo <b>sponsor</b> e il <b>premio vittoria</b> (vale di più nelle partite importanti). Escono gli <b>stipendi</b> (crescono con l’Overall), la manutenzione, lo staff e, in trasferta, un <b>costo di viaggio</b> fisso: una vittoria in trasferta contro una piccola squadra può chiudersi in rosso.`,
 `A inizio stagione scegli lo <b>sponsor</b>: Sicuro (paga di più a ogni partita, bonus piccolo), Equilibrato o Ambizioso (paga meno, bonus grande se raggiungi l’obiettivo a fine stagione). Gli obiettivi seguono la forza del tuo club nella serie: titolo o promozione per chi è tra i migliori, parte alta per chi è a metà classifica; con l’Ambizioso, se giochi il Campionato europeo, conta anche il risultato in Europa. Con i conti in rosso il mercato si ferma, la dirigenza avvisa e il morale cala; se dura troppo vieni <b>esonerato</b> e riparti da una squadra più debole.`,
-[`<b>Bilancio previsionale</b> (Club › Società): stima biglietti, sponsor, trasferte, stipendi, saldo all’ultima giornata e bonus da qui a fine campionato; accanto alle Tribune c’è in quante partite si ripaga il prossimo livello.`,
+[`<b>Bilancio previsionale</b> (Società › Conti): stima biglietti, sponsor, trasferte, stipendi, saldo all’ultima giornata e bonus da qui a fine campionato; accanto alle Tribune c’è in quante partite si ripaga il prossimo livello.`,
 `<b>Tifosi</b>: riempiono lo stadio, salgono con le vittorie; le Tribune danno più posti e ammorbidiscono le sconfitte.`,
 `<b>Morale</b>: si alza con vittorie, premi e Recupero; un Colloquio aiuta il singolo.`,
 `<b>Reputazione</b>: apre porte (mercato, offerte, internazionali).`],
 `Ogni tanto la dirigenza propone una <b>sfida facoltativa</b>: se riesce porta crediti e reputazione, se no non succede nulla. Dopo una partita straordinaria di un giocatore può arrivare la proposta di un <b>premio</b>: lo paghi tu, e fa piacere alla squadra.`],
 tip:`Non spendere tutto subito: tieni sempre una riserva di crediti per le emergenze (un guasto, un colloquio, un rinnovo).`},
-{id:'car-classifica',t:'Classifica, playoff e premi',w:'Cruscotto › Classifica',b:[
+{id:'car-classifica',t:'Lega: classifica, playoff e premi',w:'Colonna › Lega',b:[
 `In <b>Classifica</b> scegli la serie da guardare, leggi l’ultima giornata delle altre e, in «Dal campionato», le storie della stagione. Sotto la tua serie ci sono i <b>migliori per mete, assist e difese</b>.`,
 `Finite le 15 giornate (in Italia) si giocano i <b>playoff</b>: in Serie A le prime 4 giocano le semifinali (1ª-4ª, 2ª-3ª) e la finale per lo scudetto. In Serie B e C la prima sale direttamente e dal 2° al 5° posto c’è lo spareggio per la seconda promozione. Salgono due squadre e ne scendono due.`,
 [`A fine stagione il campionato assegna <b>MVP</b>, attaccante e difensore dell’anno, capocannoniere, re degli assist, rivelazione (fino a 21 anni), allenatore dell’anno e squadra ideale. I premi vinti restano nella scheda del giocatore e portano reputazione e crediti.`,
@@ -274,7 +274,7 @@ tip:`Non spendere tutto subito: tieni sempre una riserva di crediti per le emerg
 `Da qui parte la nuova stagione.`],
 tip:`In zona playoff le partite si giocano una alla volta: usa bene i cambi, ogni punto conta.`},
 {id:'car-avvisi',t:'Avvisi, ritiri e spogliatoio',b:[
-`La campanella <b>Avvisi</b> ha tre livelli: le <b>emergenze</b> (infortuni, addii) e le <b>decisioni</b> (ritiro annunciato, offerta per un tuo giocatore, richiesta di cessione) aprono il riquadro da sole, una volta; le <b>notizie</b> non interrompono e accendono il numero sulla campanella.`,
+`La <b>Posta</b> (in alto a destra) divide i messaggi in <b>Da decidere</b>, <b>Novità</b> e <b>Cronologia</b>, e ha tre livelli: le <b>emergenze</b> (infortuni, addii) e le <b>decisioni</b> (ritiro annunciato, offerta per un tuo giocatore, richiesta di cessione) aprono il riquadro da sole, una volta; le <b>notizie</b> non interrompono e accendono il numero sulla campanella.`,
 [`<b>Ritiri</b>: ogni giocatore ha una sua età di ritiro (chi rende ancora continua anche oltre i 40 anni). Prima fa capire che ci pensa, poi annuncia l’ultima stagione: puoi chiedergli un altro anno con un premio di permanenza (un solo tentativo). Chi lascia il segno entra nella Hall of Fame.`,
 `<b>Spogliatoio</b>: un buon giocatore che resta fuori 6 partite diventa scontento; dopo 10 chiede la cessione (vendilo o promettigli spazio; se la promessa non è mantenuta se ne va gratis).`,
 `<b>Offerte</b>: ogni tanto una squadra di serie superiore chiede uno dei tuoi migliori: accetti o rifiuti entro la partita successiva.`,
@@ -283,10 +283,10 @@ tip:`Un buon giocatore in panchina troppo a lungo ti lascia: ruotalo oppure prom
 {id:'car-extra',t:'Conferenze, imprevisti e traguardi',b:[
 [`<b>Conferenza stampa</b>: dopo una partita con un po’ di storia (derby, vittoria a sorpresa, finale…) scegli tra tre risposte: parli della squadra (morale), dei tifosi (più tifosi) o di un giocatore (a lui l’umore migliora). «Salta» non cambia nulla.`,
 `<b>Imprevisti</b>: una o due volte a stagione dopo una partita succede qualcosa (sponsor, influenza, provino, invito a un torneo). A volte aiuta, a volte no, e spesso scegli tra due strade.`,
-`<b>Traguardi</b> (Club › Traguardi): venti obiettivi di lungo periodo (vittorie, promozioni, scudetti, Europa, mete, premi, tifosi, strutture, derby, Hall of Fame…) con barra di avanzamento. Ognuno dà una volta sola un piccolo premio in crediti.`,
+`<b>Traguardi</b> (Società › Bacheca › Traguardi): venti obiettivi di lungo periodo (vittorie, promozioni, scudetti, Europa, mete, premi, tifosi, strutture, derby, Hall of Fame…) con barra di avanzamento. Ognuno dà una volta sola un piccolo premio in crediti.`,
 `<b>Albo d’oro, Record e Hall of Fame</b> (Club): trofei, l’albo della tua serie, i migliori di sempre della squadra e le carte dorate di chi si ritira dopo una carriera speciale.`]],
 tip:`I traguardi sono una guida gratuita su cosa fare dopo: guardali quando non sai che obiettivo darti.`},
-{id:'car-opzioni',t:'Opzioni e salvataggi',w:'Cruscotto › Opzioni',b:[
+{id:'car-opzioni',t:'Opzioni e salvataggi',w:'Menu › Opzioni',b:[
 `Dalle <b>Opzioni</b> della carriera regoli difficoltà, durata, vento e meteo, Suggerimenti, difesa manuale/automatica, la musica e gli slot.`,
 [`La carriera si salva da sola a ogni passo. I <b>3 slot</b> sono carriere separate.`,
 `Puoi <b>esportare e importare un file</b> della carriera dello slot in cui sei (utile per cambiare dispositivo o fare una copia).`,
@@ -338,12 +338,12 @@ tip:`Controlla i posti della tua Conference dopo ogni giornata: ogni vittoria la
 `Nel gioco ogni stagione ha <b>almeno 11 partite</b> per chi arriva fino in fondo: i gironi si giocano con più giri contro le stesse squadre (andata, ritorno e, dove serve, un terzo giro), poi le fasi finali vere.`,
 `Anche chi gioca in queste leghe riceve offerte di panchina e scambi dalle altre (vedi «Offerte tra tutte le leghe»).`],
 tip:`Nei livelli bassi le rose hanno meno nomi veri: è l’occasione per trovare giovani e svincolati di talento.`},
-{id:'lega-eucf',t:'La coppa europea (EUCF)',w:'Cruscotto › Classifica (stagione dopo la qualificazione)',b:[
+{id:'lega-eucf',t:'La coppa europea (EUCF)',w:'Colonna › Lega (stagione dopo la qualificazione)',b:[
 `Si sblocca <b>chiudendo il campionato tra i posti qualificanti</b>: Serie A prime 3, livello più alto in Belgio prime 3, in Francia e Regno Unito prime 2, in Germania la prima. Si gioca nella stagione dopo, una sola volta.`,
 `Il formato è quello dei veri European Ultimate Club Finals: <b>16 club</b> (3 italiani, 3 belgi, 2 francesi, 2 britannici, 1 tedesco, tutti club veri, più 5 club europei inventati di Spagna, Paesi Bassi, Cechia, Svizzera e Irlanda) in 4 gironi da 4, 3 partite a girone; poi quarti, semifinali e finale (stesso schema dei Nationals USA).`,
 `Ogni turno superato porta <b>crediti</b>; la vittoria anche reputazione e un trofeo. A torneo concluso si torna al campionato. Ogni coppa vinta alza il livello delle avversarie successive.`],
 tip:`In Europa le avversarie sono forti: arriva con la rosa fresca e prepara gli schemi giusti prima di ogni girone.`},
-{id:'lega-ponte',t:'Offerte tra tutte le leghe',w:'Avvisi (campanella del cruscotto)',b:[
+{id:'lega-ponte',t:'Offerte tra tutte le leghe',w:'Posta (in alto a destra)',b:[
 `Se la carriera va bene, a inizio stagione un club di <b>un’altra lega</b> (Italia, USA, Belgio, Francia, Germania o Regno Unito, in ogni direzione) può offrirti la <b>panchina</b>. L’offerta arriva negli Avvisi e vale fino alla prossima partita.`,
 [`Il club offerto ha un <b>prestigio simile al tuo</b>: i primi di un paese chiamano i primi di un altro, i club di bassa classifica quelli di livello vicino.`,
 `Accettando cambi club e lega, ma <b>allenatore, storico, trofei e traguardi restano tuoi</b> (la reputazione scende un po’, perché si riparte in un altro ambiente).`,

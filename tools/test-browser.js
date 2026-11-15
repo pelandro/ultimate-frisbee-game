@@ -26,8 +26,10 @@ catch(e){
   await page.addLocatorHandler(page.locator('#intro:not(.hidden) #inGo'),async()=>{await page.click('#inGo');});
   // la conferenza stampa dopo le partite che contano si salta con un tocco
   await page.addLocatorHandler(page.locator('#press:not(.hidden) #prSkip'),async()=>{await page.click('#prSkip');});
+  const vis_=async(pg,sel)=>{if(!(await pg.locator(sel).isVisible()))throw new Error('non visibile: '+sel);};
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
-  const step=async(name,fn)=>{try{await fn();done.push(name);}catch(e){errs.push(name+': '+e.message.split('\n')[0]);try{if(await page.locator('#tut:not(.hidden)').count())await page.click('#tuX',{timeout:2000});}catch(_){}}};
+  const menu=async id=>{for(let i=0;i<3;i++){if(!(await page.locator('#cmenu').isVisible()))await page.click('#hMenu');try{await page.click(id,{timeout:3000});return;}catch(e){}}await page.click(id);};   // i fumetti e gli imprevisti che si aprono da soli chiudono il menu: si riapre   // Opzioni, Guida, Tutorial e «Menu principale» stanno nel menu della barra in alto
+  const step=async(name,fn)=>{try{await fn();done.push(name);}catch(e){errs.push(name+': '+(process.env.TB_FULL?e.message.split('\n').slice(0,8).join(' | '):e.message.split('\n')[0]));try{if(await page.locator('#tut:not(.hidden)').count())await page.click('#tuX',{timeout:2000});}catch(_){}}};
   const playOut=async()=>{   // gioca la partita in corso simulando una meta alla volta, gestendo schemi, cambi obbligati e half time
     for(let i=0;i<160;i++){
       if(await page.locator('#over').isVisible())return;
@@ -114,8 +116,8 @@ catch(e){
     await page.click('#hEvent');await vis('#event');
     {const up=await page.locator('#eBody .rt tr.up').count(),pi=await page.locator('#eBody .rt tr.pi').count(),dn=await page.locator('#eBody .rt tr.dn').count();if(up<1||up>2||pi>4||up+pi+dn!==6)throw new Error('zone Nationals / Play-in / eliminate non evidenziate ('+up+'/'+pi+'/'+dn+')');}
     for(const k of ['nat','rank','conf'])await page.click('#usTabs [data-ut="'+k+'"]');
-    await page.click('#eBack');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
-    await page.click('#hOpt');await page.click('#opX');
+    await page.click('#hHome');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
+    await menu('#hOpt');await page.click('#opX');
     await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');localStorage.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])localStorage.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
     await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   });
@@ -140,7 +142,7 @@ catch(e){
     await page.click('#hEvent');await vis('#event');
     if(await page.locator('#eBody .rt tr.up').count()!==4)throw new Error('il girone da 4 deve avere tutte le squadre nella zona del tabellone');
     for(const k of ['fin','tiers','grp'])await page.click('#lnTabs [data-lt="'+k+'"]');
-    await page.click('#eBack');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
+    await page.click('#hHome');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
     await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');localStorage.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])localStorage.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
     await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   });
@@ -161,7 +163,7 @@ catch(e){
       if(!/cruscotto/i.test(await page.locator('#tuH').innerText()))throw new Error('«Scopri di più» deve aprire la lezione sul cruscotto: '+await page.locator('#tuH').innerText());
       await page.click('#tuX');
     }
-    await vis('#home');await page.click('#hTut');await vis('#tut');await page.click('#tuX');await vis('#home');
+    await vis('#home');await menu('#hTut');await vis('#tut');await page.click('#tuX');await vis('#home');
   });
   await step('allenatore e staff: cambio nome dal cruscotto, candidati, assunzione e rinnovo dell\'elenco',async()=>{
     await page.click('#hCoach');await vis('#coachsel');await page.fill('#coS','Bianchi');await page.click('#coGo');await vis('#home');
@@ -175,15 +177,15 @@ catch(e){
     await page.click('#hireList [data-hirei]:not([disabled]) >> nth=0');
     if(await page.locator('#hire:not(.hidden)').count())throw new Error('assunto: la finestra deve chiudersi');
     if(await page.locator('#clBox .scard:not(.empty)').count()!==1)throw new Error('dopo l\'assunzione deve esserci una persona nello staff');
-    await page.click('#clBack');await vis('#home');
+    await page.click('#hHome');await vis('#home');
   });
   await step('vento: si spegne e si riaccende dalle opzioni, il cruscotto si aggiorna',async()=>{
     const meteo=async()=>/Meteo:/.test(await page.locator('#home').innerText());
     if(!(await meteo()))throw new Error('il cruscotto non annuncia il meteo');
-    await page.click('#hOpt');await vis('#opts');await page.click('#opWind');
+    await menu('#hOpt');await vis('#opts');await page.click('#opWind');
     if(!/no/.test(await page.locator('#opWind').innerText()))throw new Error('il vento non si spegne');
     await page.click('#opX');if(await meteo())throw new Error('con il vento spento il cruscotto non deve annunciare il meteo');
-    await page.click('#hOpt');await page.click('#opWind');
+    await menu('#hOpt');await page.click('#opWind');
     if(!/sì/.test(await page.locator('#opWind').innerText()))throw new Error('il vento non si riaccende');
     await page.click('#opX');if(!(await meteo()))throw new Error('riacceso il vento il meteo deve tornare');
   });
@@ -191,7 +193,7 @@ catch(e){
     await page.click('#hRoster');await vis('#roster');await page.click('#rBox [data-rv="t"]');await page.click('tr.pl >> nth=0');await vis('tr.dt');await page.click('#rBox [data-dtab="svi"]');   // gli indirizzi e il rapporto degli osservatori stanno nella parte «Sviluppo» della scheda
     if(await page.locator('.dspec button[data-spec]').count()!==6)throw new Error('gli indirizzi di sviluppo devono essere sei');
     if(!(await page.locator('tr.dt .scr').isVisible()))throw new Error('manca il rapporto di scouting nella scheda');
-    await page.click('#rBack');
+    await page.click('#hHome');
     await page.click('#hTrain');await vis('#train');await page.click('#tTeamBox [data-int="2"]');
     if(!/Intenso/.test(await page.locator('.tint small').innerText()))throw new Error('l\'intensità dell\'allenamento non cambia');
     await page.click('#tTeamBox [data-int="1"]');
@@ -199,20 +201,20 @@ catch(e){
     await page.click('#tTeamBox .ttype[data-team="tec"]');await vis('#tRes .tres');
     await page.click('#tTeamBox [data-prog]');if(!/Acceso/.test(await page.locator('#tTeamBox [data-prog]').innerText()))throw new Error('il programma automatico non si accende');
     if(await page.locator('#tList .prow:not([disabled])').count()>await page.locator('#tList .prow').count()-3)throw new Error('il programma automatico non ha fatto i lavori individuali');
-    await page.click('#tTeamBox [data-prog]');await page.click('#tBack');
-    await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#mkBack');
+    await page.click('#tTeamBox [data-prog]');await page.click('#hHome');
+    await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#hHome');
     await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="man"]');{const t=await page.locator('#clBox').innerText();if(!/Sponsor e obiettivo/i.test(t)||!/a ogni partita/.test(t)||!/Conti delle partite/i.test(t))throw new Error('la scheda Società deve mostrare lo sponsor scelto e i conti delle partite: '+t.replace(/\s+/g,' ').slice(0,900));}await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==6)throw new Error('devono esserci sei strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci quattro figure dello staff');
     // le altre linguette del Club: traguardi (ventidue schede, percentuale), albo d'oro e Hall of Fame
-    await page.click('#clTabs button[data-k="ach"]');if(await page.locator('#clBox .ach').count()!==22||!/%/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi devono essere ventidue, con la percentuale');
-    await page.click('#clTabs button[data-k="hon"]');if(await page.locator('#clBox .trt').count()<7)throw new Error('manca la bacheca dei trofei');
-    await page.click('#clTabs button[data-k="rec"]');if(await page.locator('#clBox .hofbox').count()!==1)throw new Error('manca la Hall of Fame');
+    await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="ach"]');if(await page.locator('#clBox .ach').count()!==22||!/%/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi devono essere ventidue, con la percentuale');
+    await page.click('#clSub [data-k="hon"]');if(await page.locator('#clBox .trt').count()<7)throw new Error('manca la bacheca dei trofei');
+    await page.click('#clSub [data-k="rec"]');if(await page.locator('#clBox .hofbox').count()!==1)throw new Error('manca la Hall of Fame');
     await page.click('#clTabs button[data-k="stf"]');
     if(await page.locator('#clBox .scard').count()!==4||await page.locator('#clBox [data-hire]').count()<4)throw new Error('le figure dello staff devono essere quattro, ciascuna con «Cambia» o «Scegli chi assumere»');
-    await page.click('#clTabs [data-k="hon"]');await page.click('#clTabs [data-k="rec"]');await page.click('#clBack');
+    await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="rec"]');await page.click('#hHome');
     await page.click('#hEvent');await vis('#event');await page.click('#evTabs [data-sr="A"]');await page.click('#evTabs [data-sr="B"]');await vis('#eBody table.rt');
     const trs=await page.locator('#eBody table.rt tr').count();if(trs<8)throw new Error('classifica di un\'altra serie troppo corta: '+trs);
-    await page.click('#eBack');
-    await page.click('#hOpt');await vis('#opts');await page.click('#opX');
+    await page.click('#hHome');
+    await menu('#hOpt');await vis('#opts');await page.click('#opX');
     await page.click('#hBell');await vis('#alerts');   // lo chiude il gestore qui sopra alla prossima azione
   });
   await step('rosa: filtri, ordinamento e scheda in tre parti; mercato: filtro e ordinamento; guida contestuale',async()=>{
@@ -236,13 +238,13 @@ catch(e){
     await page.click('#rBox [data-dtab="pre"]');if(await page.locator('#rBox .dp3 .dpc').count()!==3)throw new Error('le statistiche non sono in tre colonne');
     await page.click('#rBox .pcx');
     await page.click('#roster .shelp');await vis('#guide');if(!(await page.locator('#gdBody li.ghi').count()))throw new Error('la guida contestuale non evidenzia la voce della Rosa');
-    await page.click('#gdX');await page.click('#rBack');
-    await page.click('#hMarket');await vis('#market');const m0=await page.locator('#mkBox tr').count();
-    await page.check('#mkBox [data-mkonly]');const m1=await page.locator('#mkBox tr').count();if(m1>m0)throw new Error('il filtro del mercato aggiunge righe');
+    await page.click('#gdX');await page.click('#hHome');
+    await page.click('#hMarket');await vis('#market');const m0=await page.locator('#mkBox .mcard').count();
+    await page.check('#mkBox [data-mkonly]');const m1=await page.locator('#mkBox .mcard').count();if(m1>m0)throw new Error('il filtro del mercato aggiunge righe');
     await page.uncheck('#mkBox [data-mkonly]');await page.click('#mkTabs [data-k="all"]');await page.selectOption('#mkBox [data-mksort]','price');
-    const pr=(await page.locator('#mkBox table.rt tr td:nth-child(4)').allInnerTexts()).map(Number).filter(x=>!isNaN(x));
+    const pr=(await page.locator('#mkBox .mpr').allInnerTexts()).map(x=>parseInt(x,10)).filter(x=>!isNaN(x));
     if(pr.length<3||pr.some((a,i)=>i&&a<pr[i-1]))throw new Error('ordinamento per prezzo non rispettato: '+pr.join(','));
-    await page.click('#mkBack');await vis('#home');
+    await page.click('#hHome');await vis('#home');
   });
   await step('partite simulate dal cruscotto',async()=>{
     for(let i=0;i<2;i++){
@@ -293,17 +295,17 @@ catch(e){
     if(/nuova stagione/i.test(await page.locator('#hNext').innerText()))throw new Error('a coppa conclusa il cruscotto parla di nuova stagione');
     await page.click('#hEvent');await vis('#event');
     if(await page.locator('#eReset').count())throw new Error('la coppa conclusa si puo\' ancora far ripartire');
-    await page.click('#eCamp');await page.waitForTimeout(150);await page.click('#eBack');await vis('#home');
+    await page.click('#eCamp');await page.waitForTimeout(150);await page.click('#hHome');await vis('#home');
     if(!/Inizia partita/.test(await page.locator('#hPlayT').innerText()))throw new Error('dopo la coppa non si torna al campionato');
   });
   await step('slot carriera: una seconda carriera e il ritorno alla prima',async()=>{
     const team1=(await page.locator('#tCareerS').innerText().catch(()=>''));
-    await vis('#home');const name1=await page.locator('#home .dname').first().innerText();
-    await page.click('#hOpt');await vis('#opts');if(await page.locator('#opSlots [data-slot]').count()!==3)throw new Error('gli slot devono essere tre');
+    await vis('#home');const name1=await page.locator('#hEvt').first().innerText();
+    await menu('#hOpt');await vis('#opts');if(await page.locator('#opSlots [data-slot]').count()!==3)throw new Error('gli slot devono essere tre');
     await page.click('#opSlots [data-slot="2"]');await await vis('#league');await page.click('#lgList [data-lg="IT"]');await vis('#team');await page.click('#tSr button[data-k="B"]');await page.click('.tteam >> nth=3');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
-    const name2=await page.locator('#home .dname').first().innerText();if(name2===name1)throw new Error('lo slot 2 ha la stessa squadra dello slot 1');
-    await page.click('#hOpt');await page.click('#opSlots [data-slot="1"]');await page.waitForTimeout(300);await vis('#home');
-    const back=await page.locator('#home .dname').first().innerText();if(back!==name1)throw new Error('tornando allo slot 1 la carriera non e\' quella di prima: '+back);
+    const name2=await page.locator('#hEvt').first().innerText();if(name2===name1)throw new Error('lo slot 2 ha la stessa squadra dello slot 1');
+    await menu('#hOpt');await page.click('#opSlots [data-slot="1"]');await page.waitForTimeout(300);await vis('#home');
+    const back=await page.locator('#hEvt').first().innerText();if(back!==name1)throw new Error('tornando allo slot 1 la carriera non e\' quella di prima: '+back);
   });
   await step('il salvataggio resiste alla ricarica della pagina',async()=>{
     await page.reload();await page.waitForTimeout(500);
@@ -312,6 +314,18 @@ catch(e){
   await step('partita veloce: avvio, pausa, abbandono',async()=>{
     await page.click('#tQuick');await vis('#quick');await page.click('#qPlay');await page.waitForTimeout(500);
     await page.keyboard.press('Escape');await vis('#pause');await vis('#paFs');if(!/Schermo intero/.test(await page.locator('#paFs').innerText()))throw new Error('il menu pausa deve avere il pulsante dello schermo intero');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
+  });
+  await step('pausa: tutti i pulsanti sono dentro lo schermo, anche sul telefono piccolo (667x375), e Abbandona si raggiunge',async()=>{
+    const c=await browser.newContext({viewport:{width:667,height:375}}),p=await c.newPage();p.setDefaultTimeout(15000);
+    await p.addInitScript(()=>{try{localStorage.setItem('ultimate-primi','{"d":[],"m":9,"off":1}');}catch(e){}});   // niente schede dei «Primi passi» sopra la partita
+    await p.goto('file://'+OUT);await p.waitForTimeout(400);
+    await p.click('#tQuick');await vis_(p,'#quick');await p.click('#qPlay');await p.waitForTimeout(700);
+    await p.keyboard.press('Escape');await p.waitForSelector('#pause:not(.hidden)');
+    const bad=await p.evaluate(()=>[...document.querySelectorAll('#pause button')].filter(b=>b.getBoundingClientRect().width>0).map(b=>{const r=b.getBoundingClientRect();return {id:b.id,ok:r.top>=0&&r.bottom<=innerHeight&&r.left>=0&&r.right<=innerWidth&&r.height>=34};}).filter(x=>!x.ok).map(x=>x.id));
+    if(bad.length)throw new Error('pulsanti della pausa fuori dallo schermo o troppo piccoli: '+bad.join(', '));
+    await p.click('#paQuit');await p.click('#paQuit');await p.waitForTimeout(300);   // due tocchi: conferma
+    if(await p.locator('#pause:not(.hidden)').count())throw new Error('«Abbandona» (con conferma) deve chiudere la partita');
+    await c.close();
   });
   await step('timeout: uno a partita, ferma il gioco e si riprende',async()=>{
     await page.click('#tQuick');await vis('#quick');await page.selectOption('#qS','0');await page.click('#qPlay');await page.waitForTimeout(600);
@@ -478,10 +492,10 @@ catch(e){
     await page.click('#tMode button[data-k="sub"]');await page.click('#tSr button[data-k="B"]');await vis('#tReAcc');await page.click('#tReAlt');await vis('#tReAcc');
     await page.click('#tReAcc');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     if(!/posto/.test(await page.locator('#hInfo').innerText()))throw new Error('il subentro deve mostrare la posizione in classifica');
-    await page.click('#hBack');await vis('#title');await page.click('#tSlots');
+    await menu('#hBack');await vis('#title');await page.click('#tSlots');
     if(await page.locator('#csBox [data-cgo]').count()!==full+1)throw new Error('la nuova carriera non e\' nello slot '+k);
     const other=await page.locator('#csBox [data-cgo]:not([data-cgo="'+k+'"])').first();await other.click();await vis('#home');
-    await page.click('#hBack');await vis('#title');
+    await menu('#hBack');await vis('#title');
     if(!(await page.locator('link[rel="icon"]').getAttribute('href')||'').startsWith('data:image/png'))throw new Error('manca l\'icona del gioco');
   });
   // ROTAZIONE AUTOMATICA: telefono tenuto in verticale. Il gioco si disegna girato, i menu si toccano e una partita si gioca
