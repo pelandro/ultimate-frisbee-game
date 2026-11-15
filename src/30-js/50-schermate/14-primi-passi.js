@@ -1,6 +1,6 @@
 /* ---- PRIMI PASSI: il tutorial nelle prime partite ----
    Nelle prime tre partite (di qualsiasi modalita', allenamento escluso) compaiono schede che spiegano come si gioca, una per volta e nel momento in cui servono:
-   obiettivo, pull, ricezione, lancio, chiamate ai compagni, stall, lancio alto, difesa, dopo la meta. Ogni scheda ferma il gioco (G.paused) finche' non si preme
+   obiettivo, pull, ricezione, lancio, chiamate ai compagni, stall, lancio alto, difesa, isolamento, schemi, cambi e simulazione, dopo la meta. Ogni scheda ferma il gioco (G.paused) finche' non si preme
    «Capito» (o Invio/Spazio); «Salta il tutorial» le spegne tutte. Cio' che hai gia' visto resta segnato sul dispositivo (chiave «ultimate-primi»).
    Si riaccendono dalle Opzioni (Suggerimenti: no, poi sì); con Suggerimenti spenti non compaiono. Le regole del gioco non cambiano: e' solo interfaccia. */
 const PP_KEY='ultimate-primi',PP_MAXM=3;
@@ -18,6 +18,9 @@ const PP_STEPS=[
   {id:'stall',t:'Il conteggio (stall)',x:'Il marcatore conta ad alta voce: arrivato a 10 perdi il disco. Se il numero sale, passa subito, anche corto.',when:()=>ppHold()&&G.stallT>=2.5&&!!G.marker},
   {id:'alto',t:'Lancio alto',x:'Appoggia due dita insieme e trascina: è il lancio alto (il rovesciato). Passa sopra il marcatore, ma è più lento e meno preciso.',when:()=>ppHold()&&(G.st.thr[0]|0)>=3&&G.holdT>1.2},
   {id:'def',t:'In difesa',x:()=>defMan()?'Il disco è dell’avversario. Trascina il dito per guidare il difensore azzurro; quando sul tuo marcatore compare un cerchio che si stringe, tocca il pulsante a destra (la mano) per bloccare il lancio.':'Il disco è dell’avversario. I tuoi difendono da soli: con «Marcatura» scegli se contenere o anticipare, con «Salta» fai scorrere il possesso. Quando compare il cerchio, tocca per il tuffo.',when:()=>G.mode==='play'&&inDefense()&&!!G.holder&&G.holder.t===1&&!G.diveWin},
+  {id:'iso',t:'Isolamento e tagli',x:'Tieni premuto su un compagno per isolarlo: taglia lui e gli altri liberano il corridoio. È la mossa migliore contro un marcatore più lento. Il tratto verde mostra da che parte parte.',when:()=>ppHold()&&(G.st.thr[0]|0)>=2&&G.holdT>1.5},
+  {id:'schemi',t:'Gli schemi',x:'A inizio meta tocca «Schemi» per scegliere attacco e difesa: Verticale, Orizzontale, Esagono, Stack laterale, Weave e T1. Ognuno ha punti forti e deboli scritti nel menu: la zona, per esempio, ferma il Verticale ma subisce l’Orizzontale.',when:()=>G.mode==='ready'&&G.pointNo>=2&&!G.schemeOpen},
+  {id:'sim',t:'Cambi, Simula e Pausa',x:'Accanto a «Schemi» trovi «Cambi» (chi gioca) e «Simula meta» (la gioca il computer). Il tasto II in alto ferma la partita: da lì «Sospendi» la salva per continuare più tardi. Tutto il resto lo trovi nel Tutorial completo, dal menu.',when:()=>G.mode==='ready'&&G.pointNo>=3&&!G.schemeOpen},
   {id:'next',t:'Dopo la meta',x:'Dopo ogni meta le squadre cambiano campo e si ricomincia dal pull. Il Timeout, una volta a partita, ferma lo stall e fa recuperare un po’ di energia.',when:()=>G.mode==='ready'&&G.pointNo>=2}
 ];
 let ppCur=null,ppWas=false;

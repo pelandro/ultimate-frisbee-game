@@ -27,7 +27,7 @@ catch(e){
   // la conferenza stampa dopo le partite che contano si salta con un tocco
   await page.addLocatorHandler(page.locator('#press:not(.hidden) #prSkip'),async()=>{await page.click('#prSkip');});
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
-  const step=async(name,fn)=>{try{await fn();done.push(name);}catch(e){errs.push(name+': '+e.message.split('\n')[0]);}};
+  const step=async(name,fn)=>{try{await fn();done.push(name);}catch(e){errs.push(name+': '+e.message.split('\n')[0]);try{if(await page.locator('#tut:not(.hidden)').count())await page.click('#tuX',{timeout:2000});}catch(_){}}};
   const playOut=async()=>{   // gioca la partita in corso simulando una meta alla volta, gestendo schemi, cambi obbligati e half time
     for(let i=0;i<160;i++){
       if(await page.locator('#over').isVisible())return;
@@ -46,6 +46,23 @@ catch(e){
   await step('menu iniziale, guida e impostazioni',async()=>{
     await vis('#title');await page.click('#tHelp');await vis('#guide');await page.click('#gdX');
     await page.click('#tSet');await vis('#settings');await page.click('#sBack');await vis('#title');
+  });
+  await step('tutorial completo dal menu: capitoli, lezioni, progressi salvati, Esc e ingresso dalla Guida',async()=>{
+    await page.click('#tTut');await vis('#tut');
+    if(await page.locator('#tuBody .tuc').count()!==8)throw new Error('il tutorial deve avere 8 capitoli');
+    await page.click('#tuBody .tuc >> nth=0');await vis('#tuBody .tul >> nth=0');
+    await page.click('#tuBody .tul >> nth=0');
+    if(!(await page.locator('#tuBody .tubody').count()))throw new Error('la lezione non si apre');
+    await page.click('#tuBody .tunav .go');await page.waitForTimeout(100);
+    let st=await page.evaluate(()=>JSON.parse(localStorage.getItem('ultimate-tutorial')||'{}'));
+    if(Object.keys(st).length<2)throw new Error('le lezioni lette devono restare salvate: '+JSON.stringify(st));
+    await page.keyboard.press('Escape');await page.waitForTimeout(100);
+    if(await page.locator('#tut:not(.hidden)').count())throw new Error('Esc deve chiudere il tutorial');
+    await page.click('#tHelp');await vis('#guide');await page.click('#gdTut');await vis('#tut');
+    if(await page.locator('#guide:not(.hidden)').count())throw new Error('aprendo il tutorial la Guida deve chiudersi');
+    await page.click('#tuBody .tuc >> nth=0');await page.click('#tuBody [data-tu^="h"]');   // dal capitolo si torna all'indice
+    if(await page.locator('#tuBody .tuc').count()!==8)throw new Error('«Tutti i capitoli» deve riportare all\'indice');
+    await page.click('#tuX');await vis('#title');
   });
   await step('schermo: l\'interfaccia si adatta (telefono invariato, iPad e computer piu\' grandi) e si puo\' regolare',async()=>{
     const ui=p=>p.evaluate(()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ui')));
@@ -136,6 +153,14 @@ catch(e){
     if(!/Giulia Rossi/i.test(await page.locator('#coName').innerText()))throw new Error('l\'anteprima non segue il nome');
     await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     if(!(await page.locator('#hCoach svg.av').count()))throw new Error('manca il volto dell\'allenatore nel cruscotto');
+  });
+  await step('tutorial completo dal cruscotto: fumetto «Scopri di più» e tasto Tutorial',async()=>{
+    if(await page.locator('#tip:not(.hidden)').count()){   // il fumetto del cruscotto porta alla sua lezione
+      await page.click('#tipMore');await vis('#tut');
+      if(!/cruscotto/i.test(await page.locator('#tuH').innerText()))throw new Error('«Scopri di più» deve aprire la lezione sul cruscotto: '+await page.locator('#tuH').innerText());
+      await page.click('#tuX');
+    }
+    await vis('#home');await page.click('#hTut');await vis('#tut');await page.click('#tuX');await vis('#home');
   });
   await step('allenatore e staff: cambio nome dal cruscotto, candidati, assunzione e rinnovo dell\'elenco',async()=>{
     await page.click('#hCoach');await vis('#coachsel');await page.fill('#coS','Bianchi');await page.click('#coGo');await vis('#home');
