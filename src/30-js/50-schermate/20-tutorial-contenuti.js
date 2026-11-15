@@ -370,7 +370,7 @@ tip:`La Partita veloce con la difficoltà Estrema è il banco di prova migliore 
 `Si gioca sempre ai 7 punti.`]],
 tip:`Potenzia linee diverse: due carte della stessa forza restano diverse e la squadra è meno prevedibile.`},
 {id:'mod-real',t:'Real player',b:[
-`In Ultimate Team scegli «Real player» invece di «Computer»: sfidi le squadre di altri giocatori, senza che siano online nello stesso momento (la loro squadra è guidata dall’IA, Media). La squadra è separata da quella del torneo: ha i suoi giocatori, gettoni e pacchetti (si parte da un pacchetto di 10 giocatori).`,
+`In Ultimate Team scegli «Real player» invece di «Computer»: sfidi le squadre di altri giocatori, senza che siano online nello stesso momento (la loro squadra è guidata dall’IA, sempre in difficoltà Difficile). La squadra è separata da quella del torneo: ha i suoi giocatori, gettoni e pacchetti (si parte da un pacchetto di 10 giocatori).`,
 [`Scegli un <b>nome</b> (poi non si cambia). «Inizia partita» carica la tua squadra e ti abbina a un avversario con punti vicini.`,
 `Si parte da <b>1000 punti</b>; vincere contro un più forte vale di più, perdere contro un più debole costa di più (da 1 a 32 punti). La classifica online mostra i primi 50.`,
 `Premi: vittoria 40 gettoni, sconfitta 15; bonus se batti uno con più punti; nel Negozio il pacchetto normale costa 130, quello Handler o Cutter 90. Ogni 100 punti sopra 1000 c’è un pacchetto premio (Bronzo a 1100, Argento 1200, Oro 1300, Platino 1400, dal 1500 il Super pacchetto).`,
