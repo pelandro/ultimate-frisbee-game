@@ -5,7 +5,7 @@
    Le eta' senza l'1 finale sono stime (nel gioco compaiono con «circa»).
    La squadra (campo 6) non e' mai una squadra UFA: e' il club dei Nationals USA o europeo dove il giocatore gioca nel gioco (US_STAR_CLUB, LN_STAR_CLUB), altrimenti il suo paese (e' svincolato). ---- */
 const STARS=[
-  ['De Marrée','Daan',25,'C',96,'Mooncatchers','sky',1],['Decraene','Tobe',23,'C',95,'Boston DiG','explosive',1],['Babbitt','Jeff',32,'D',93,'Boston DiG','sky'],
+  ['De Marrée','Daan',25,'C',97,'Mooncatchers','sky',1],['Decraene','Tobe',23,'C',93,'Boston DiG','explosive',1],['Babbitt','Jeff',32,'D',92,'Boston DiG','sky'],
   ['Laviolette','Allan',35,'H',91,'Raleigh-Durham United','general'],['Frankenberg','Walker',24,'C',90,'San Francisco Revolver','deep'],['Randolph','John',25,'C',90,'New York PoNY',null],
   ['Taylor','Austin',32,'H',90,'USA','break'],['Jagt','Ben',33,'C',90,'New York PoNY','deep'],['Williams','Jack',31,'H',89,'USA','break'],
   ['Mickle','Jimmy',35,'H',89,'New York PoNY','general'],['Gutowsky','Anthony',27,'C',89,'USA','deep'],['Dunn','Travis',35,'H',89,'USA','general'],

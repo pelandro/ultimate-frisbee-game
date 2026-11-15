@@ -16,9 +16,9 @@ const lnStarTaken=r=>isLN()&&!!LN_STAR_CLUB[usStarKey(r)]&&!!LN_BY[LN_STAR_CLUB[
 const LN_HOMONYM=US_HOMONYM;
 // chi gioca sia in Europa sia in America: il gioco lo tiene in Europa (scelta del progetto), tranne Orion Cable che resta in America (LN_OUT: non compare nei club europei).
 // LN_DUAL = Overall del giocatore in Europa: il piu' alto tra il valore europeo e quello americano (Fantasy dei Nationals), ma l'America non lo alza di piu' di 5 punti e
-// nessuno supera 92 tranne De Marrée (99: il migliore del mondo) (un solo torneo non fa un fuoriclasse: la regola e' la stessa di US_REP). McHale e Hill sono stati assegnati ai Clapham per scelta del progetto. I quattro che erano stelle del mercato alzano anche il loro Overall in STARS.
+// nessuno supera 92 tranne De Marrée (97: il migliore del mondo) (un solo torneo non fa un fuoriclasse: la regola e' la stessa di US_REP). McHale e Hill sono stati assegnati ai Clapham per scelta del progetto. I quattro che erano stelle del mercato alzano anche il loro Overall in STARS.
 const LN_OUT=new Set(['Orion Cable'].map(usNameKey));
-const LN_DUAL={'Lander Decraene':89,'Sofiène Bontemps':90,'Louis Betrancourt':84,'Gael Ancelin':83,'Daan De Marrée':99,'David Barzasi':92,'Thomas Edmonds':92,'Elliot Bonnet':92,'Connor McHale':84,'Sam Hill':76};
+const LN_DUAL={'Lander Decraene':89,'Sofiène Bontemps':90,'Louis Betrancourt':84,'Gael Ancelin':83,'Daan De Marrée':97,'David Barzasi':92,'Thomas Edmonds':92,'Elliot Bonnet':92,'Connor McHale':84,'Sam Hill':76};
 let lnDualMap=null;
 const lnDual=(sur,nm)=>{if(!lnDualMap){lnDualMap={};for(const n in LN_DUAL)lnDualMap[usNameKey(n)]=LN_DUAL[n];}return lnDualMap[usNameKey(nm+' '+sur)]|0;};
 for(const r of STARS)r[4]=Math.max(r[4],lnDual(r[0],r[1]));

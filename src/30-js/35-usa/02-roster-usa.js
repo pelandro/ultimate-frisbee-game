@@ -125,7 +125,7 @@ function usFFval(f){
 // Ritorna direttamente il livello minimo (0 = nessuno): il maggiore tra il premio 2026 e la reputazione su piu' anni (US_REP, 03-reputazione.js).
 // nomi comuni che sono persone diverse in leghe diverse: non prendono i livelli minimi di un altro (usato anche da LN_HOMONYM, 37-leghe/)
 const US_HOMONYM=new Set(['Joe Miller','Chris Allen'].map(usNameKey));
-const usAward=(sur,nm)=>{const k=usNameKey(nm+' '+sur);if(US_HOMONYM.has(k))return 0;return Math.max([0,90,87,81][US_UFA_AWARD[k]|0],usRepFloor(k),US_UFA_ROSTER.has(k)?78:0,usHistFloor(k));};
+const usAward=(sur,nm)=>{const k=usNameKey(nm+' '+sur);if(US_HOMONYM.has(k))return 0;return Math.min(usCapOf(sur,nm),Math.max([0,90,87,81][US_UFA_AWARD[k]|0],usRepFloor(k),US_UFA_ROSTER.has(k)?78:0,usHistFloor(k)))};
 // contesto europeo (37-leghe/): chi gioca anche in un club europeo e li' e' un punto di riferimento ha come livello minimo quello europeo (meno 1)
 // giocatori che giocano sia in Europa sia in America e che il gioco tiene solo in Europa (le stelle sono tolte anche da US_STAR_CLUB; Orion Cable fa il contrario, vedi LN_OUT)
 const US_OUT=new Set(['Lander Decraene','Sofiène Bontemps','Louis Betrancourt','Gael Ancelin','Daan De Marrée','David Barzasi','Thomas Edmonds','Elliot Bonnet','Connor McHale','Sam Hill'].map(usNameKey));
@@ -197,9 +197,9 @@ function usRoster(club,seedStr,opt){
   // obiettivo del club: la sua forza (power) spostata di meta' verso il talento vero dei suoi migliori 7 (al massimo 4 punti, vedi usFFskew): una squadra
   // con campioni e' un po' piu' forte del suo rating, una con pochi un po' piu' debole. Il resto della differenza resta nel rating.
   const T=P+clamp(0.5*usFFskew(club),-4,4);
-  const soft=x=>x>92?Math.min(97,92+(x-92)*0.55):x;   // sopra 92 i valori si avvicinano: il migliore del mondo (De Marrée, 99, in Europa) resta sopra tutti
+  const soft=x=>x>90?Math.min(94,90+(x-90)*0.5):x;   // sopra 90 i valori si avvicinano e il massimo e' 94: il migliore del mondo (De Marrée, 97, in Europa) resta sopra tutti
   const lv0=(s,off)=>s.ab!=null?Math.max(s.fl||0,soft(clamp(s.ab+off,36,99))):soft(clamp(P+s.base+off,36,99));
-  const lv=(s,off)=>Math.min(usCapOf(s.row[0],s.row[1]),lv0(s,off));   // US_CAP (03-reputazione.js)   // tetto 99: con 95 i migliori dei club più forti finivano tutti allo stesso valore
+  const lv=(s,off)=>Math.min(usCapOf(s.row[0],s.row[1]),lv0(s,off));   // US_CAP (03-reputazione.js)
   let off=0,out=[];
   for(let it=0;it<7;it++){
     out=specs.map((s,j)=>{

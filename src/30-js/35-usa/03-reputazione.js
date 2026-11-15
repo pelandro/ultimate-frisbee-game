@@ -16,14 +16,16 @@ function usRepFloor(k){   // k = chiave di usNameKey
   if(!usRepMap){usRepMap={};for(const n in US_REP)usRepMap[usNameKey(n)]=US_REP[n];}
   return usRepMap[k]|0;
 }
-for(const r of STARS)r[4]=Math.max(r[4],usAward(r[0],r[1]));   // anche i premi All-UFA 2026: stesso Overall sul mercato e nel club USA
 
 // Limiti massimi (Overall) per chi i dati di un solo torneo o di un club forte spingono troppo in alto: il miglior giocatore del mondo e' Daan De Marrée (99, Giocatore dell'anno
 // dei club 2025 secondo Ultiworld) e nessun altro gli sta vicino. Elliot Hawkins (miglior assist-man UFA 2026, ma non il piu' forte d'America) e Mica Glass (All-Club 2025 e 2026,
-// ma dietro a De Marrée, Hecht e Boxley come attaccante del 2025) valgono meno di quanto dicessero i calcoli.
-const US_CAP={'Elliot Hawkins':91,'Mica Glass':92};
+// ma dietro a De Marrée, Hecht e Boxley come attaccante del 2025) valgono meno di quanto dicessero i calcoli. Ultiworld 2025: De Marrée primo nella classifica dei migliori 25 e Giocatore
+// dell'anno dei club, Hecht miglior attaccante, Boxley secondo, Decraene terzo (e nella seconda squadra All-Club): Hecht 94, Boxley e Decraene 93, Babbitt 92.
+const US_CAP={'Elliot Hawkins':91,'Mica Glass':92,'Malcolm Hecht':94,'Christian Boxley':93,'Tobe Decraene':93,'Jeff Babbitt':92};
 let usCapMap=null;
 function usCapOf(sur,nm){
   if(!usCapMap){usCapMap={};for(const n in US_CAP)usCapMap[usNameKey(n)]=US_CAP[n];}
   return usCapMap[usNameKey(nm+' '+sur)]||99;
 }
+// le stelle del mercato (STARS) prendono gli stessi livelli dei club USA: i minimi (premi 2026, reputazione, rosa UFA, storia UFA) e i limiti di US_CAP
+for(const r of STARS)r[4]=Math.min(usCapOf(r[0],r[1]),Math.max(r[4],usAward(r[0],r[1])));
