@@ -45,7 +45,7 @@ function updateHUD(dt){
   if(!hint&&pullMine&&pm)hint=pm.ph?'Tocca per fermare la DIREZIONE dentro il campo':'PULL: tocca per fermare la POTENZA nel verde';
   if(!hint&&canThrow&&!drag&&shownHint<3)hint='Trascina all’indietro e rilascia per lanciare';
   if(!hint&&canThrow&&!drag&&shownHint>=3&&shownCall<2&&G.holdT>1.2)hint='Tocca un compagno per chiamargli il taglio';
-  if(!hint&&canThrow&&!drag&&shownHint>=2&&shownHint<9&&shownAlto<1&&G.holdT>1.8)hint='Trascina con due dita insieme per il lancio alto (rovesciato)';
+  if(!hint&&canThrow&&!drag&&shownHint>=2&&shownHint<9&&shownAlto<1&&G.holdT>1.8)hint='Tocca due volte nel campo (tieni il secondo tocco) per il lancio alto (rovesciato)';
   if(!hint&&dvRdy&&!man)hint='TUFFO! Tocca quando il cerchio si chiude';
   if(!hint&&defNow&&G.holder&&man&&shownCtrl<3)hint='Difesa: trascina per muovere il difensore azzurro';
   if(!hint&&defNow&&G.holder&&!man&&shownSkip<3)hint='Difesa automatica: tocca SALTA per andare avanti';
