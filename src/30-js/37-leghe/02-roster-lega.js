@@ -66,7 +66,7 @@ function lnAgeOf(full,age,hi){
 const LN_BOOST={'Freezzz Beezzz one':[4,4,3,3,2,2]};
 const lnShape=j=>j<7?4.2-1.45*j:-4.5-0.65*(j-6);
 function lnRoster(club,seedStr,opt){
-  opt=opt||{};const B=LN_BY[club],P=opt.p!==undefined?opt.p:(opt.low?B.p*0.9+5.5:B.p),dl=opt.low?Math.max(0,B.p-P):0,rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
+  opt=opt||{};const B=LN_BY[club],P=opt.p!==undefined?opt.p:(opt.low?usStartPow(B.p):B.p),dl=opt.low?Math.max(0,B.p-P):0,rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
   for(const r of STARS)if(LN_STAR_CLUB[usStarKey(r)]===club)specs.push({k:'s',row:r});
   const star=new Set(specs.map(s=>usNameKey(s.row[1]+' '+s.row[0])));   // chi e' gia' una stella non si ripete dalle tabelle
   const real=(LN_PL[B.lk][club]||[]).filter(r=>{const k=usNameKey(r[1]+' '+r[0]);return !star.has(k)&&!LN_OUT.has(k);}).map(r=>{const ag=lnAgeOf(r[1]+' '+r[0],r[2],r[3]);return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+r[5],fx:lnDual(r[0],r[1])};});
