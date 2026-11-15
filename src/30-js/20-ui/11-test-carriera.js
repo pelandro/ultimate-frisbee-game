@@ -6,7 +6,7 @@ function careerSelfTest(seasons,seed){
   const bak=hasCareer()?(persist(),JSON.stringify(SV)):null,R0=Math.random,q0=QM.on,rows=[],row=(name,val,ok,note)=>({name,val,ok:!!ok,note:note||''});
   Math.random=mulberry32(seed||2026);QM.on=true;talentGrow.n=0;
   const hide=()=>{for(const id of ['simres','alerts','evt'])$(id).classList.add('hidden');};
-  let lgBad=[],stories=0,derby=0,spec=0,goalsOk=0,goalsKo=0,duoMax=0,err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,worn=0,keep=0,signed=0,poDays=0,poTit=0,sizeBad=[],sz0=null;
+  let lgBad=[],stories=0,derby=0,spec=0,goalsOk=0,goalsKo=0,duoMax=0,err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,worn=0,keep=0,signed=0,poDays=0,poTit=0,sizeBad=[],sz0=null,moneyBad=[],ven={H:0,A:0,N:0},spBad=[],spSeen=new Set(),bonusEv=0,netTot=0,matchesTot=0;
   try{
     startCareer(SERIES.C[2]);
     sz0={A:SV.mem.A.length,B:SV.mem.B.length,C:SV.mem.C.length};
@@ -35,9 +35,13 @@ function careerSelfTest(seasons,seed){
         for(const p of SQ)if(!p.spec&&p.age<=26&&SV.cash>specCost(p)+120){setSpec(p,Object.keys(SPECS)[Math.floor(Math.random()*6)]);spec++;break;}
         duoMax=Math.max(duoMax,...Object.values(SV.duo||{}),0);
         if(SV.po&&SV.po.on)poDays++;
-        const a0=SV.alN|0;simCareerMatch();hide();
+        const a0=SV.alN|0,sp0=SV.sp&&SV.sp.off?SV.sp.off:null;if(sp0){spSeen.add(s);const ok3=sp0.length===3&&sp0.every(d=>d.fix>0&&d.obj&&d.obj.reward>0&&d.obj.txt)&&sp0[0].fix>sp0[1].fix&&sp0[1].fix>sp0[2].fix&&sp0[2].obj.reward>sp0[1].obj.reward&&sp0[1].obj.reward>sp0[0].obj.reward;if(!ok3)spBad.push(`S${s}: offerte non valide`);}   // sicuro: piu' soldi a partita e bonus piu' piccolo; ambizioso: l'opposto
+        simCareerMatch();hide();
+        {const L=SV.lastMoney;   // il conto della partita: le voci tornano, mai oltre la capienza, biglietti solo in casa o al torneo, trasferta solo fuori casa
+         if(!L||L.net!==L.gate+L.spon+L.wb-L.trv-L.wage-L.up-L.stf||!isFinite(L.net)||(L.v==='H'&&(L.att>L.cap||L.att<=0||L.trv))||(L.v==='A'&&(L.gate||!L.trv))||(L.v==='N'&&!L.trv)||L.spon<=0||L.wb<0||(!L.win&&L.wb))moneyBad.push(`S${s} G${r+1}: ${L?JSON.stringify(L).slice(0,90):'manca'}`);
+         else{ven[L.v]++;netTot+=L.net;matchesTot++;}}
         inj+=(SV.alerts||[]).filter(a=>a.id>a0&&a.k==='inj').length;   // gli infortuni di questa giornata (in partita e in allenamento)
-        if(SV.evt){evts++;const e=SV.evt,ops=EVT[e.id].o(e.a),ok=ops.map((o,i)=>(!o[2]||o[2]())?i:-1).filter(i=>i>=0);evtAnswer(ok[Math.floor(Math.random()*ok.length)]);}
+        if(SV.evt){evts++;if(SV.evt.id==='bonus')bonusEv++;const e=SV.evt,ops=EVT[e.id].o(e.a),ok=ops.map((o,i)=>(!o[2]||o[2]())?i:-1).filter(i=>i>=0);evtAnswer(ok[Math.floor(Math.random()*ok.length)]);}
         cashMax=Math.max(cashMax,SV.cash);cashMin=Math.min(cashMin,SV.cash);
         // ogni giornata: niente valori impossibili
         for(const p of SQ){if(!isFinite(ovrX(p))||KEYS.some(k=>!(p.s[k]>=25&&p.s[k]<=99))||!(p.cond>=0&&p.cond<=100))bad.push(`S${s}: ${pname(p)}`);}
@@ -74,7 +78,7 @@ function careerSelfTest(seasons,seed){
     // programma automatico, bilancio previsionale, storico dei progressi (la stagione nuova e' appena cominciata: c'e' una sessione disponibile)
     SV.prog={on:true,team:'auto'};for(const p of SQ)p.tr=false;SV.tTeam=false;SV.played=0;
     const at=autoTrain(),progOk=!!at&&SV.tTeam&&SQ.filter(p=>p.tr).length===Math.min(3,SQ.length)&&autoTrain()===null;
-    const bf=budgetForecast(),bOk=isFinite(bf.end)&&bf.left===SV.sched.length-SV.round&&bf.end===Math.round(SV.cash+bf.inc-bf.wage-bf.up)&&bf.winP>0&&bf.winP<1&&bf.after===bf.end+bf.prize+bf.obj;
+    const bf=budgetForecast(),bOk=isFinite(bf.end)&&bf.left===SV.sched.length-SV.round&&bf.end===Math.round(SV.cash+bf.inc-bf.trv-bf.wage-bf.up)&&bf.winP>0&&bf.winP<1&&bf.after===bf.end+bf.prize+bf.obj;
     const hOk=seasons<3||(SQ.some(p=>(p.hist||[]).length>=2)&&SQ.every(p=>(p.hist||[]).length<=14));
     rows.push(row('Programma automatico: fa la seduta di squadra e i 3 lavori individuali, una volta sola',progOk?'sì':'no'+(at?'':' (non parte)'),progOk));
     rows.push(row('Bilancio previsionale: partite rimaste, vittorie attese e saldo finale coerenti',bOk?`sì (${bf.left} partite, ${Math.round(bf.winP*100)}% vittorie, saldo ${bf.end})`:'no',bOk));
@@ -142,6 +146,10 @@ function careerSelfTest(seasons,seed){
     rows.push(row('Giocatori che hanno superato il proprio limite (maturità)',String(talentGrow.n|0),(talentGrow.n|0)>=1,'almeno uno in tutto il test'));
     rows.push(row('Giovani promesse ingaggiate nel test',String(signed),true));
     rows.push(row('Indirizzi personali assegnati nel test',String(spec),spec>=1));
+    rows.push(row('Economia: ogni partita ha un conto che torna (voci, capienza, biglietti in casa, trasferta fuori)',moneyBad.length?moneyBad.slice(0,2).join('; '):`sì: ${ven.H} in casa, ${ven.A} in trasferta, ${ven.N} a campo neutro`,!moneyBad.length&&ven.H>0&&ven.A>0,'in campionato casa e trasferta si alternano'));
+    rows.push(row('Economia: saldo medio a partita (prima di premi di fine stagione)',(netTot/Math.max(1,matchesTot)).toFixed(1),matchesTot>0&&netTot/matchesTot>-25&&netTot/matchesTot<60,'ne' + 'ssun conto fuori scala: la squadra del test investe in strutture e staff'));
+    rows.push(row('Sponsor: tre offerte a stagione (sicuro, equilibrato, ambizioso) con soldi e bonus coerenti',spBad.length?spBad.slice(0,2).join('; '):`sì (${spSeen.size} stagioni)`,!spBad.length&&spSeen.size>=seasons-1));
+    rows.push(row('Premio a un giocatore dopo una partita straordinaria (imprevisto)',String(bonusEv),true,'informativo: capita ogni tanto'));
     // partenza da subentrato: una squadra in crisi a una giornata dalla fine; si gioca l'ultima partita e si passa all'estate (cambia la carriera di prova: va per ultimo)
     {const rb=[];
      for(const sr of ['A','B','C'])for(let t=0;t<3;t++){
@@ -156,6 +164,24 @@ function careerSelfTest(seasons,seed){
        if(t===0){simCareerMatch();hide();if(!SV.done)rb.push(tag+': la stagione non si chiude dopo l\u2019ultima partita');else{newSeason();if(SV.season!==2||SV.round!==0)rb.push(tag+': l\u2019estate non parte');}}
      }
      rows.push(row('Partenza da subentrato (A, B, C): a una giornata dalla fine, in crisi, vittorie ereditate non contate, poi si gioca e parte l\u2019estate',rb.length?rb.slice(0,3).join('; '):'sì (9 partenze)',!rb.length));}
+    // conti in rosso: la dirigenza avvisa, il morale cala sempre di piu', dopo troppe partite arriva l'esonero con club solo piu' scarsi; accettando si riparte (ultimo: cambia la carriera di prova)
+    {const fb=[];
+     for(const [sr,nm] of [['A',SERIES.A[3]],['C',SERIES.C[1]]]){
+       startCareer(nm,{coach:{n:'Prova',s:'Test'}});if(SV.sp&&SV.sp.off)spChoose(1);
+       const me0=qPowOf(SV.team),tag=sr+' '+nm;
+       SV.cash=-200;SV.mor=70;const lim=redLimit(),pens=[];
+       for(let i=0;i<lim+2&&!SV.fired;i++){redUpdate(-20);pens.push(redPen());}
+       if(!SV.fired)fb.push(tag+': nessun esonero dopo '+(lim+2)+' partite in rosso');
+       else{
+         if(!(SV.alerts||[]).some(a=>a.k==='dir'))fb.push(tag+': nessun avviso della dirigenza');
+         if(!pens.every((v,i)=>i===0||v>=pens[i-1])||pens[pens.length-1]<=pens[0])fb.push(tag+': il morale non cala sempre di piu\'');
+         const of=SV.fired.offers;if(!of.length||of.some(n=>qPowOf(n)>=me0||n===SV.team))fb.push(tag+': offerte non piu\' scarse');
+         const sell=canSign(SV.market[0]);if(sell!=='Crediti insufficienti')fb.push(tag+': il mercato non e\' fermo');
+         const r=firedAccept(of[0]);if(!r||SV.fired||SV.team===nm||!SV.sp||!SV.sp.off)fb.push(tag+': ripartenza dopo l\'esonero');
+       }
+       if(fb.length)break;
+     }
+     rows.push(row('Conti in rosso: avvisi, morale in calo, mercato fermo, esonero con club piu\' scarsi e ripartenza',fb.length?fb.slice(0,2).join('; '):'sì (Serie A e C)',!fb.length));}
   }catch(e){err=e&&e.message||String(e);rows.push(row('Errore durante il test',err,false));}
   finally{
     Math.random=R0;QM.on=q0;hide();

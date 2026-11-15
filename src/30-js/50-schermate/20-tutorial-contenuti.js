@@ -258,12 +258,13 @@ tip:`Con pochi crediti parti dal Campo di allenamento o dalle Tribune (che si ri
 `Gli effetti sugli allenamenti (insieme al campo) non superano mai +50%. Ogni tanto un altro club prova a portarti via uno di loro: se lo lasci andare subentra un assistente di un livello in meno. A 66 anni si va in pensione.`],
 tip:`Il Mentore è il più utile se punti sui giovani; l’Allenatore se vuoi crescita per tutti. Lo stipendio si paga a ogni partita: assumi con i conti in ordine.`},
 {id:'car-soldi',t:'Soldi, tifosi e morale',b:[
-`Ogni partita porta <b>crediti</b> (di più se vinci, in serie più alte e con più reputazione) e costa gli <b>stipendi</b> (crescono con l’Overall), la manutenzione delle strutture e lo staff. A fine stagione arrivano il premio di classifica e quello dell’obiettivo. Con i conti in rosso non si compra e il morale scende.`,
-[`<b>Bilancio previsionale</b> (Club › Società): stima incassi, stipendi, saldo all’ultima giornata e premi da qui a fine campionato; accanto alle Tribune c’è in quante partite si ripaga il prossimo livello.`,
-`<b>Tifosi</b>: fanno l’incasso, salgono con le vittorie; le Tribune ammorbidiscono le sconfitte.`,
+`Ogni partita ha un <b>conto</b> che vedi a fine partita. Entrano i <b>biglietti</b> (solo in casa: più tifosi e partita importante = più spettatori, fino alla capienza), lo <b>sponsor</b> e il <b>premio vittoria</b> (vale di più nelle partite importanti). Escono gli <b>stipendi</b> (crescono con l’Overall), la manutenzione, lo staff e, in trasferta, un <b>costo di viaggio</b> fisso: una vittoria in trasferta contro una piccola squadra può chiudersi in rosso.`,
+`A inizio stagione scegli lo <b>sponsor</b>: Sicuro (paga di più a ogni partita, bonus piccolo), Equilibrato o Ambizioso (paga meno, bonus grande se raggiungi l’obiettivo a fine stagione). Con i conti in rosso il mercato si ferma, la dirigenza avvisa e il morale cala; se dura troppo vieni <b>esonerato</b> e riparti da una squadra più debole.`,
+[`<b>Bilancio previsionale</b> (Club › Società): stima biglietti, sponsor, trasferte, stipendi, saldo all’ultima giornata e bonus da qui a fine campionato; accanto alle Tribune c’è in quante partite si ripaga il prossimo livello.`,
+`<b>Tifosi</b>: riempiono lo stadio, salgono con le vittorie; le Tribune danno più posti e ammorbidiscono le sconfitte.`,
 `<b>Morale</b>: si alza con vittorie, premi e Recupero; un Colloquio aiuta il singolo.`,
 `<b>Reputazione</b>: apre porte (mercato, offerte, internazionali).`],
-`Ogni tanto la dirigenza propone una <b>sfida facoltativa</b>: se riesce porta crediti e reputazione, se no non succede nulla.`],
+`Ogni tanto la dirigenza propone una <b>sfida facoltativa</b>: se riesce porta crediti e reputazione, se no non succede nulla. Dopo una partita straordinaria di un giocatore può arrivare la proposta di un <b>premio</b>: lo paghi tu, e fa piacere alla squadra.`],
 tip:`Non spendere tutto subito: tieni sempre una riserva di crediti per le emergenze (un guasto, un colloquio, un rinnovo).`},
 {id:'car-classifica',t:'Classifica, playoff e premi',w:'Cruscotto › Classifica',b:[
 `In <b>Classifica</b> scegli la serie da guardare, leggi l’ultima giornata delle altre e, in «Dal campionato», le storie della stagione. Sotto la tua serie ci sono i <b>migliori per mete, assist e difese</b>.`,

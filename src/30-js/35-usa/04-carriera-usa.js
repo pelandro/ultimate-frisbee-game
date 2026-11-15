@@ -47,7 +47,7 @@ function usEndSeason(){
   seasonAwards(rank,null);
   if(SV.hist[0]&&SV.hist[0].season===SV.season)SV.hist[0].us={stage:st,champ,conf:U.cf,pos:usPos(SV.team)};
   achCheck();
-  news(`Stagione ${SV.season} conclusa: ${short} Premio di ${prize} crediti`+(SV.obj?(ok?`, obiettivo raggiunto (+${SV.obj.reward})`:', obiettivo mancato'):'')+'.');
+  news(`Stagione ${SV.season} conclusa: ${short} Premio di ${prize} crediti`+(SV.obj?(ok?`, bonus dello sponsor (+${SV.obj.reward})`:', lo sponsor non paga il bonus'):'')+'.');
 }
 // ---- offerte per i tuoi giocatori: dai club della stessa lega piu' forti del tuo ----
 function usOfferTeams(){

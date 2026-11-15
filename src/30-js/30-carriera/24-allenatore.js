@@ -49,7 +49,7 @@ function reliefStart(){
   SV.round=R-1;SV.w0=SV.tab[SV.team].w;
   leagueAdvance();   // le altre serie arrivano alla stessa altezza della stagione
   SV.mor=45;SV.chem=40;   // spogliatoio scosso
-  SV.obj={tgt:n-PROMO,txt:'Salvezza: non finire tra le ultime '+PROMO,exp:rk,reward:Math.round((36+PROMO*4)*SR_K[SV.sr])};
+  SV.obj={tgt:n-PROMO,txt:'Salvezza: non finire tra le ultime '+PROMO,exp:rk,reward:Math.round((36+PROMO*4)*SR_K[SV.sr])};SV.sp=null;spOffer();   // anche qui gli sponsor offrono tre contratti sull'obiettivo salvezza
   const pts=SV.tab[SV.team].pts,safe=ranking(SV.tab,names)[n-PROMO-1],gap=SV.tab[safe].pts-pts;
   news(`${SV.team} ha nominato ${coachName()} nuovo allenatore: ${rk}ª su ${n} a una giornata dalla fine${gap>0?`, ${gap} ${gap>1?'punti':'punto'} dalla salvezza`:', appena sopra la zona retrocessione'}.`);
   alertAdd('club',`${SV.team} ha nominato ${coachName()} nuovo allenatore. Siete ${rk}ª su ${n} a una giornata dalla fine: serve la salvezza.`);

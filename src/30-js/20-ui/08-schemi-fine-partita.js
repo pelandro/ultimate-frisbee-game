@@ -60,9 +60,9 @@ function forfeitMatch(){
 }
 function showOver(){
   const w=G.score[0]>G.score[1],on=G.oppName||'Rossi';
-  let msg='',grow=[];
+  let msg='',grow=[],mny='';
   const hurt=QM.on?[]:SQ.filter(p=>p.injNew);
-  if(G.inMatch&&!G.recorded){G.recorded=true;restoreForm();if(!QM.on){grow=matchGrowth(0);recordMatchStats();msg=recordResult(w,G.score[0],G.score[1])+incTxt();pressPending=null;if(!G.forfeit)pressNext=pressCtxOf(w,G.score[0],G.score[1],G.oppName);}else if(UT.on)msg=UO.on?uoRecord(w):utRecord(w);else if(TN.on)msg=tnRecord(w,G.score[0],G.score[1]);else msg='Partita veloce: non cambia la carriera.';}
+  if(G.inMatch&&!G.recorded){G.recorded=true;restoreForm();if(!QM.on){grow=matchGrowth(0);recordMatchStats();msg=recordResult(w,G.score[0],G.score[1]);mny=moneyHTML(SV.lastMoney);pressPending=null;if(!G.forfeit)pressNext=pressCtxOf(w,G.score[0],G.score[1],G.oppName);}else if(UT.on)msg=UO.on?uoRecord(w):utRecord(w);else if(TN.on)msg=tnRecord(w,G.score[0],G.score[1]);else msg='Partita veloce: non cambia la carriera.';}
   // crescita in partita, raggruppata per giocatore
   let gh='';
   if(!QM.on){
@@ -74,7 +74,7 @@ function showOver(){
   $('oMore').innerHTML=overMoreHTML();
   $('oTitle').textContent=w?'Vittoria!':(G.forfeit?'Sconfitta a tavolino':'Sconfitta');
   $('oScore').textContent=`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${on}`;
-  $('oEvent').textContent=msg;
+  $('oEvent').textContent=msg;$('oMoney').innerHTML=mny;   // i conti della giornata: biglietti, sponsor, premio, trasferta, stipendi
   $('oInj').textContent=hurt.length?'Infortuni: '+hurt.map(p=>`${p.name} (${p.inj} ${p.inj>1?'partite':'partita'} di stop)`).join(', ')+'.':'';
   const pct=t=>G.st.thr[t]?Math.round(G.st.cmp[t]/G.st.thr[t]*100)+'%':'–';
   const rows=[['',G.myName||'Blu',on],['Lanci riusciti',pct(0),pct(1)],['Turnover causati',G.st.to[1],G.st.to[0]],['Salti vinti',G.st.jump[0],G.st.jump[1]],['Tuffi riusciti',G.st.dive[0],G.st.dive[1]],['Handblock',G.st.hb[0],G.st.hb[1]],['Prese mancate',G.st.drop[0],G.st.drop[1]]];

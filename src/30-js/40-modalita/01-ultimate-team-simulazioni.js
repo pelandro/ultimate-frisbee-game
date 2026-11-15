@@ -168,7 +168,7 @@ $('tmBack').addEventListener('click',()=>showScreen(utTeamBack));
 //  con la scala misurata sulle partite giocate (simPointP e SIM_DIFF in 10-sim/13-partite-simulate.js). Si gioca ai 7 punti, come la partita vera.
 let simAfter=null;
 function showSim(win,score,msg,after){
-  $('srTitle').textContent=win?'Vittoria!':'Sconfitta';$('srScore').textContent=score;$('srEvent').textContent=msg;simAfter=after;$('simres').classList.remove('hidden');
+  $('srMoney').innerHTML='';$('srTitle').textContent=win?'Vittoria!':'Sconfitta';$('srScore').textContent=score;$('srEvent').textContent=msg;simAfter=after;$('simres').classList.remove('hidden');
 }
 $('srOk').addEventListener('click',()=>{$('simres').classList.add('hidden');const f=simAfter;simAfter=null;if(f)f();});
 function simCareerMatch(){
@@ -185,8 +185,8 @@ function simCareerMatch(){
   for(const p of SQ){p.m=newCounters();if(on.has(p.id)&&!p.inj){p.m.pts=1;growBy(p,simParts(p,1),XP_ROLE[posOf(p)]);}}
   simMatchStats(r.a);
   simInjuries([...on].map(id=>SQ[id]).filter(Boolean),1-0.12*facLv('fis'));   // dopo la crescita: chi si fa male in partita la partita l'ha giocata
-  const msg=recordResult(w,r.a,r.b)+incTxt();
-  showSim(w,`${SV.team} ${r.a} – ${r.b} ${m.name}`,msg,()=>renderHome());
+  const msg=recordResult(w,r.a,r.b);
+  showSim(w,`${SV.team} ${r.a} – ${r.b} ${m.name}`,msg,()=>renderHome());$('srMoney').innerHTML=moneyHTML(SV.lastMoney);
 }
 function simUTMatch(){
   if(UT.sel.length!==7||UT.st!=='play'||UT.packs.length)return;

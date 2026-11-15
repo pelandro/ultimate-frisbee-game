@@ -63,6 +63,8 @@ function careerInit(){   // campi nuovi della carriera (anche per i salvataggi p
   if(SV.autoSub===undefined)SV.autoSub=true;
   if(!SV.lineO||!SV.lineD)autoLines();fixLines();
   if(!SV.obj&&SV.tab)setObjective();
+  if(!SV.sp&&SV.obj)spDefault();   // salvataggi di prima: un contratto equilibrato gia' firmato; dalla stagione dopo si sceglie
+  if(!SV.red)SV.red={n:0,w:0};if(!SV.fin)SV.fin=[];
   if(!SV.market||SV.mkStars!==2){buildMarket();SV.mkStars=2;}
   leagueAnchors();
   for(const p of SQ)retAnchor(p);
