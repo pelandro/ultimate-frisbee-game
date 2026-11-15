@@ -18,7 +18,7 @@ function usStartCareer(name,opt){
 const usRepStart=()=>Math.round(20+(US_NAMES.length-US_TEAM[SV.team].rank)/(US_NAMES.length-1)*40);   // i club piu' prestigiosi partono con piu' reputazione (da 21 a 60)
 // ---- obiettivi della dirigenza: secondo il livello del club tra i 48 ----
 const US_OBJ=[
-  {id:'pin',lvl:1,txt:'Qualificarsi ai Play-in: chiudere tra le prime 3 della Conference',tgt:3,rw:30},
+  {id:'pin',lvl:1,txt:'Qualificarsi ai Play-in: chiudere tra le prime posizioni della Conference (dipende dai posti della regione)',tgt:3,rw:30},
   {id:'nat',lvl:2,txt:'Raggiungere i Nationals',tgt:4,rw:44},
   {id:'sf',lvl:5,txt:'Arrivare alle semifinali dei Nationals',tgt:2,rw:62},
   {id:'tit',lvl:7,txt:'Vincere il titolo nazionale',tgt:1,rw:90}

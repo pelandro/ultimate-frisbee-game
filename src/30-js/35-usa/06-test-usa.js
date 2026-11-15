@@ -1,6 +1,6 @@
 /* ---- DIAGNOSTICA: TEST DEL CAMPIONATO USA ----
    Gioca piu' stagioni di seguito in carriere USA di prova (club forte, medio e debole) e controlla il formato: 48 club, 8 Conference da 6, 5 giornate,
-   8 qualificate dirette + 8 dal Play-in = 16 ai Nationals, 4 gironi da 4 (una squadra per fascia, Conference separate), 3 partite a girone,
+   posti ai Nationals per regione (1 automatico + 8 di forza dal ranking, 16 in tutto) con Play-in variabile, 4 gironi da 4 (una squadra per fascia, Conference separate), 3 partite a girone,
    prequarti 2ª-3ª di gironi diversi, quarti, semifinali e finale senza accoppiamenti duplicati. Poi salvataggio, cambio di lega, stelle tolte dal mercato Overall dai dati Fantasy ed età/premi UFA.
    La carriera vera non viene toccata (QM.on blocca persist e alla fine si rimette com'era). Seme fisso: risultati ripetibili. */
 function usaSelfTest(seasons,seed){
@@ -25,10 +25,15 @@ function usaSelfTest(seasons,seed){
         chk('flusso',SV.done&&g<=20,'stagione non chiusa o troppo lunga '+g);
         const U=SV.us,N=U.nat;if(!N||!U.q){chk('flusso',false,'Nationals mancanti');break;}
         chk('qualif',U.q.length===16&&new Set(U.q).size===16,'16 ai Nationals');
-        const dir=[],pin=[];for(const c of US_CK){const o=U.fin[c];dir.push(o[0]);pin.push(U.pin[c].r[0][4]);
-          chk('playin',U.pin[c].m.length===1&&U.pin[c].m[0][0]===o[1]&&U.pin[c].m[0][1]===o[2],'2ª contro 3ª');
-          chk('playin',o.length===6&&!U.q.includes(o[3])&&!U.q.includes(o[4])&&!U.q.includes(o[5]),'dalla 4ª alla 6ª fuori');}
-        chk('qualif',dir.length===8&&pin.length===8&&dir.every(t=>U.q.includes(t))&&pin.every(t=>U.q.includes(t)),'8 dirette + 8 Play-in');
+        // posti per regione (bid allocation USAU): 1 automatico + 8 di forza dal ranking, 16 in tutto, al massimo 4 per regione; ogni regione manda esattamente i suoi posti
+        const B=U.bids;let tot=0;chk('posti',!!B&&US_CK.every(c=>B[c]>=1&&B[c]<=4),'posti per regione fuori misura');
+        for(const c of US_CK){
+          const o=U.fin[c],P=U.pin[c],s=usBidSplit(B[c]);tot+=B[c];
+          chk('playin',P.d===s.d&&P.m.length===s.k&&P.r.length===s.k&&P.r.every(r=>!!r),'gare del Play-in di '+c);
+          P.m.forEach((m,i)=>chk('playin',m[0]===o[s.d+i]&&m[1]===o[s.d+2*s.k-1-i],'accoppiamento del Play-in di '+c));
+          chk('qualif',o.filter(t=>U.q.includes(t)).length===B[c]&&o.slice(0,s.d).every(t=>U.q.includes(t)),'qualificate di '+c+' diverse dai posti');
+          chk('playin',o.length===6&&o.slice(s.d+2*s.k).every(t=>!U.q.includes(t)),'fuori dal Play-in qualificate in '+c);}
+        chk('posti',tot===16,'16 posti in tutto: '+tot);
         chk('gironi',N.pools.length===4&&N.pools.every(p=>p.length===4)&&new Set(N.pools.flat()).size===16,'4 gironi da 4');
         N.pools.forEach((pl,i)=>{pools++;chk('gironi',pl.map(t=>Math.floor(N.seed.indexOf(t)/4)).sort().join('')==='0123','una squadra per fascia');
           const cs=pl.map(usConfOf);conflicts+=cs.length-new Set(cs).size;
@@ -96,8 +101,9 @@ function usaSelfTest(seasons,seed){
   const r=(name,k,okTxt)=>rows.push(row(name,bad[k]?bad[k].slice(0,2).join('; '):okTxt,!bad[k]));
   r('Formato: 48 club distinti in 8 Conference (regioni USAU) da 6','club','sì');rows[rows.length-1].ok=rows[rows.length-1].ok&&!bad.conf;
   r('Stagione regolare: 5 giornate, stagione che si chiude in al massimo 20 partite tue','flusso',`sì (${seasonsDone} stagioni, ${games} partite)`);
-  r('Qualificate: 8 dirette (1ª) + 8 dal Play-in (2ª contro 3ª) = 16 ai Nationals, dalla 4ª alla 6ª fuori','qualif','sì');
-  r('Play-in: 2ª contro 3ª in ogni Conference','playin','sì');
+  r('Posti ai Nationals per regione (bid allocation USAU): 1 automatico + 8 di forza dal ranking = 16, da 1 a 4 per Conference','posti','sì');
+  r('Qualificate: ogni Conference manda esattamente i suoi posti (dirette + vincitrici del Play-in), 16 ai Nationals','qualif','sì');
+  r('Play-in: gare secche tra le squadre dopo le dirette (2ª-3ª, oppure 2ª-5ª e 3ª-4ª, 3ª-6ª e 4ª-5ª), le altre fuori','playin','sì');
   r('Nationals: 4 gironi da 4, una squadra per fascia del ranking, 3 partite a girone','gironi',`sì (${pools} gironi)`);
   rows.push(row('Nationals: Conference diverse nello stesso girone quando si puo\'',conflicts+' accoppiamenti della stessa Conference su '+pools+' gironi',conflicts<=Math.ceil(pools*0.1)));
   r('Tabellone: prequarti 2ª-3ª di altri gironi, quarti, semifinali e finale senza accoppiamenti duplicati','tabellone','sì');

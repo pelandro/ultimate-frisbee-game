@@ -174,8 +174,10 @@ function usFFskew(club){
 }
 // la rosa di un club: giocatori internazionali del mercato che ci giocano, giocatori veri e riempimento generato, poi si sposta il livello di tutti tranne le stelle
 // finche' la media dei 7 migliori e' quella del club (power). opt.low: la rosa che parte tua, un po' meno allenata; opt.n: giocatori in rosa
+// forza della rosa con cui si parte (un po' meno allenata): i club forti perdono poco (91 -> 90, prima 87), quelli deboli quasi niente; vale anche per le leghe europee
+const usStartPow=p=>p*0.96+2.5;
 function usRoster(club,seedStr,opt){
-  opt=opt||{};const P=opt.low?US_TEAM[club].power*0.9+5.5:US_TEAM[club].power,rg=mulberry32(hashStr(seedStr+'|usr|'+club));
+  opt=opt||{};const P=opt.low?usStartPow(US_TEAM[club].power):US_TEAM[club].power,rg=mulberry32(hashStr(seedStr+'|usr|'+club));
   const specs=[];
   // le stelle del mercato che hanno i dati Fantasy (k:'sf') prendono livello e ruolo dal rendimento come gli altri, ma restano loro (tratto, aspetto, eta');
   // le altre (k:'s') tengono l'Overall del mercato

@@ -6,7 +6,7 @@
    3) NATIONALS: 16 club in 4 gironi da 4 (fasce del ranking nazionale, club della stessa Conference in gironi diversi quando si puo'). Le prime vanno ai quarti,
       le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono fuori. Poi quarti, semifinali e finale.
    4) RANKING NAZIONALE (SV.us.pr): punteggio Elo aggiornato dopo ogni partita ufficiale, contro la forza dell'avversario e col margine di mete.
-   Stato: SV.us={cf, conf, ph, pr, pr0, fin, pin, q, nat, stage}. SV.sr==='U', SV.mem.U = i club della tua Conference, SV.lg = le altre tre Conference.
+   Stato: SV.us={cf, conf, ph, pr, pr0, fin, pin, bids, q, nat, stage}. SV.sr==='U', SV.mem.U = i club della tua Conference, SV.lg = le altre tre Conference.
    nat={pools, tabs, sched, pg, rd, ord, ko, champ, out}: rd = turno in corso (0-2 gironi, 3 prequarti, 4 quarti, 5 semifinali, 6 finale, 7 concluso);
    ko[0..3] = prequarti, quarti, semifinali, finale: ogni partita e' [a,b,punti a,punti b,vincitrice]. */
 Object.assign(PO_NAME,{pin:'Play-in',nat:'Nationals'});
@@ -48,7 +48,7 @@ function usLeagueBegin(){   // chiamata da leagueBegin() a ogni inizio stagione
   const U=SV.us;SV.lg={};
   for(const c of US_CK)if(c!==U.cf){const n=U.conf[c];SV.lg[c]={sched:roundRobin(n.length),round:0,tab:usFreshTab(n),last:[],streak:{}};}
   if(SV.season>1)for(const n of US_NAMES)U.pr[n]=0.5*U.pr[n]+0.5*usBaseRating(n);   // d'estate il ranking si riavvicina alla forza delle rose
-  U.ph='reg';U.pin=null;U.q=null;U.nat=null;U.fin=null;U.stage=0;U.pr0=Object.assign({},U.pr);
+  U.ph='reg';U.pin=null;U.q=null;U.nat=null;U.fin=null;U.bids=null;U.stage=0;U.pr0=Object.assign({},U.pr);
 }
 function usLeagueAdvance(){   // le altre Conference giocano la loro giornata quando giochi la tua
   if(!SV.lg||!SV.sched)return;
@@ -94,35 +94,56 @@ function usRegRecord(win,su,so){
   if(SV.round>=SV.sched.length)return usRegEnd(dby);
   return `Giornata ${SV.round} di ${SV.sched.length} conclusa: ${myRank()}° nella ${usConfName(SV.us.cf)}. Prossima: ${nextMatch().name}.`+dby;
 }
-// fine della stagione regolare: classifiche, Play-in (o direttamente Nationals / fine stagione)
+// ---- posti ai Nationals (bid allocation di USA Ultimate) ----
+// 16 posti: ogni regione (Conference) ne ha 1 automatico, gli altri 8 sono posti di forza assegnati dal ranking nazionale. Si scorre il ranking: la prima squadra di una regione
+// e' il suo posto automatico, ogni altra squadra di quella regione che si incontra scendendo guadagna alla regione un posto di forza, finche' i posti di forza sono 8 (al massimo
+// 4 per regione). I posti vanno alla regione, non alla squadra: se ne contendono le squadre della Conference (ritorna una mappa Conference -> numero di posti).
+function usBids(){
+  const b={};for(const c of US_CK)b[c]=1;
+  const seen={};let extra=8;
+  for(const t of usRankList()){const c=usConfOf(t);if(!seen[c]){seen[c]=1;continue;}if(b[c]>=4)continue;b[c]++;if(--extra<=0)break;}
+  return b;
+}
+// come si assegnano i posti di una Conference: 1 posto = la 1ª va diretta; 2 = la 1ª diretta e la 2ª contro la 3ª; 3 = 1ª diretta, poi 2ª contro 5ª e 3ª contro 4ª;
+// 4 = 1ª e 2ª dirette, poi 3ª contro 6ª e 4ª contro 5ª (gare secche, chi vince va ai Nationals). d = dirette, k = gare del Play-in
+const usBidSplit=b=>{const d=b>=4?2:1;return {d,k:b-d};};
+const usBidsNow=()=>SV.us.bids||usBids();   // dopo la stagione regolare quelli definitivi, prima la proiezione dal ranking di adesso
+function usPinPairs(o,s){const m=[];for(let i=0;i<s.k;i++)m.push([o[s.d+i],o[s.d+2*s.k-1-i]]);return m;}
+// fine della stagione regolare: classifiche, posti per regione, Play-in (o direttamente Nationals / fine stagione)
 function usRegEnd(dby){
   const U=SV.us;leagueAdvance();
   U.fin={};for(const c of US_CK)U.fin[c]=usConfOrder(c);
-  for(const c of US_CK){const o=U.fin[c];if(c!==U.cf)story(`${o[0]} chiude al primo posto la ${usConfName(c)}: diretta ai Nationals.`,false);}
-  const mine=U.fin[U.cf],r=mine.indexOf(SV.team)+1;
+  U.bids=usBids();
   U.ph='pin';U.pin={};
-  for(const c of US_CK){const o=U.fin[c];U.pin[c]={m:[[o[1],o[2]]],r:[null]};}   // 2ª contro 3ª
-  if(r===2||r===3){
-    const mi=0,pair=U.pin[U.cf].m[mi];
-    SV.po={on:true,kind:'pin',round:0,mi,opp:pair[0]===SV.team?pair[1]:pair[0],last:null};U.stage=Math.max(U.stage,1);
-    news(`Stagione regolare conclusa al ${r}° posto: Play-in contro ${SV.po.opp}.`);
-    return `Stagione regolare conclusa: ${r}° nella ${usConfName(U.cf)}. Play-in: ${SV.po.opp} (gara secca, chi vince va ai Nationals).`+dby;
+  for(const c of US_CK){
+    const o=U.fin[c],s=usBidSplit(U.bids[c]);
+    U.pin[c]={d:s.d,m:usPinPairs(o,s),r:Array(s.k).fill(null)};
+    if(c!==U.cf)for(let i=0;i<s.d;i++)story(`${o[i]} chiude ${i+1}ª la ${usConfName(c)}: diretta ai Nationals.`,false);
   }
-  for(const c of US_CK)usPinPlay(c,0,null);
-  if(r===1){
+  const mine=U.fin[U.cf],r=mine.indexOf(SV.team)+1,P=U.pin[U.cf],b=U.bids[U.cf],bt=`${usConfName(U.cf)}: ${b} ${b===1?'posto':'posti'} ai Nationals.`;
+  const mi=P.m.findIndex(m=>m.includes(SV.team));
+  if(mi>=0){
+    const pair=P.m[mi];
+    SV.po={on:true,kind:'pin',round:0,mi,opp:pair[0]===SV.team?pair[1]:pair[0],last:null};U.stage=Math.max(U.stage,1);
+    news(`Stagione regolare conclusa al ${r}° posto: Play-in contro ${SV.po.opp}. ${bt}`);
+    return `Stagione regolare conclusa: ${r}° nella ${usConfName(U.cf)}. ${bt} Play-in: ${SV.po.opp} (gara secca, chi vince va ai Nationals).`+dby;
+  }
+  for(const c of US_CK)usPinPlayAll(c);
+  if(r<=P.d){
     usNatBegin();
     const t=usNatNext();
     return `Stagione regolare conclusa: ${r}° posto, qualificati direttamente ai Nationals! ${t}`+dby;
   }
-  return usEliminated(`Stagione regolare conclusa: ${r}° posto, fuori dai Play-in.`+dby);
+  return usEliminated(`Stagione regolare conclusa: ${r}° posto, fuori dai Play-in. ${bt}`+dby);
 }
 // ---- Play-in ----
 function usPinPlay(c,mi,rec){const P=SV.us.pin[c],m=P.m[mi];if(!P.r[mi])P.r[mi]=rec?(rec[0]===m[0]?rec:[m[0],m[1],rec[3],rec[2],rec[4]]):usOfficial(m[0],m[1]);}
+function usPinPlayAll(c){const P=SV.us.pin[c];for(let i=0;i<P.m.length;i++)usPinPlay(c,i,null);}
 function usPinRecord(win,su,so){
   const U=SV.us,po=SV.po,opp=po.opp,rec=[SV.team,opp,su,so,win?SV.team:opp];
   usRate(SV.team,opp,su,so);po.on=false;po.last={opp,su,so,win};
   usPinPlay(U.cf,po.mi,rec);
-  for(const c of US_CK)usPinPlay(c,0,null);   // tutte le altre gare secche
+  for(const c of US_CK)usPinPlayAll(c);   // tutte le altre gare secche
   if(!win)return usEliminated(`Play-in perso contro ${opp}: la stagione finisce qui.`);
   usNatBegin();
   return `Play-in vinto contro ${opp}: siete ai Nationals! ${usNatNext()}`;
@@ -131,7 +152,7 @@ function usPinRecord(win,su,so){
 const usCtx=()=>({rate:t=>SV.us.pr[t],grp:usConfOf,play:usOfficial});
 function usNatBegin(){
   const U=SV.us,q=[];
-  for(const c of US_CK){const o=U.fin[c],P=U.pin[c];q.push(o[0],P.r[0][4]);}
+  for(const c of US_CK){const o=U.fin[c],P=U.pin[c];q.push(...o.slice(0,P.d||1),...P.r.map(r=>r[4]));}
   U.q=q;U.ph='nat';
   U.nat=t16Begin(usCtx(),q,SV.team);
   if(q.includes(SV.team))news(`Nationals: il sorteggio vi mette nel girone ${US_POOL[usNatPool(SV.team)]}.`);

@@ -95,7 +95,7 @@ catch(e){
     await page.click('.tteam >> nth=0');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     if(!/Conference/.test(await page.locator('#hInfo').innerText()))throw new Error('il cruscotto non mostra la Conference');
     await page.click('#hEvent');await vis('#event');
-    if(await page.locator('#eBody .rt tr.up').count()!==1||await page.locator('#eBody .rt tr.pi').count()!==2||await page.locator('#eBody .rt tr.dn').count()!==3)throw new Error('zone Nationals / Play-in / eliminate non evidenziate (1/2/3)');
+    {const up=await page.locator('#eBody .rt tr.up').count(),pi=await page.locator('#eBody .rt tr.pi').count(),dn=await page.locator('#eBody .rt tr.dn').count();if(up<1||up>2||pi>4||up+pi+dn!==6)throw new Error('zone Nationals / Play-in / eliminate non evidenziate ('+up+'/'+pi+'/'+dn+')');}
     for(const k of ['nat','rank','conf'])await page.click('#usTabs [data-ut="'+k+'"]');
     await page.click('#eBack');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
     await page.click('#hOpt');await page.click('#opX');

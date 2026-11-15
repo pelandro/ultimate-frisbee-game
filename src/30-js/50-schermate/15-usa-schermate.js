@@ -80,21 +80,23 @@ function renderTeamsUS(){
 const usRow=(nm,t,cls)=>`<tr${cls?` class="${cls}"`:''}><td>${crest(nm,15)} ${esc(nm)}<span class="tp">${Math.round(teamPower(nm)||(typeof euPowOf==='function'?euPowOf(nm):0)||0)}</span></td><td>${t.w+t.l}</td><td>${t.w}</td><td>${t.l}</td><td>${t.pf-t.pa>0?'+':''}${t.pf-t.pa}</td></tr>`;
 const usHead='<tr><th>Squadra e forza</th><th>G</th><th>V</th><th>S</th><th>Diff</th></tr>';
 function usConfTable(c){
-  const names=SV.us.conf[c],t=usTab(c),ord=usRanking(t,names);
-  const rows=ord.map((nm,i)=>usRow(nm,t[nm],[nm===SV.team?'me':'',i<1?'up':(i<3?'pi':'dn')].filter(Boolean).join(' '))).join('');
+  const names=SV.us.conf[c],t=usTab(c),ord=usRanking(t,names),sp=usBidSplit(usBidsNow()[c]);   // dirette (verde), Play-in (giallo), fuori (rosso) secondo i posti della regione
+  const rows=ord.map((nm,i)=>usRow(nm,t[nm],[nm===SV.team?'me':'',i<sp.d?'up':(i<sp.d+2*sp.k?'pi':'dn')].filter(Boolean).join(' '))).join('');
   return `<div style="overflow-x:auto"><table class="rt">${usHead}${rows}</table></div>`;
 }
 const usMatchRow=m=>`<li class="${m[4]===SV.team?'w':(m[0]===SV.team||m[1]===SV.team?'l':'')}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]===null?'da giocare':m[2]+' – '+m[3]}</span></li>`;
+// «posti ai Nationals» della regione: 1 automatico + quelli di forza dal ranking nazionale (definitivi a fine stagione regolare, prima una proiezione)
+function usBidsTxt(c){const b=usBidsNow()[c];return `<b>${b} ${b===1?'posto':'posti'} ai Nationals</b> (1 automatico${b>1?` + ${b-1} di forza`:''}${SV.us.bids?'':', proiezione dal ranking'}) · i posti vanno alla regione: se li giocano le squadre della Conference`;}
 function usPinHTML(c){
   const U=SV.us,P=U.pin&&U.pin[c];if(!P)return '';
-  const lab=['2ª contro 3ª'];
+  const d=P.d||1,k=P.m.length,lab=P.m.map((m,i)=>`${d+i+1}ª contro ${d+2*k-i}ª`);
   return `<h3 class="eh">Play-in · ${usConfName(c)}</h3><ul class="elist">${P.m.map((m,i)=>{const r=P.r[i];return r?`<li class="${r[4]===SV.team?'w':(m.includes(SV.team)?'l':'')}"><span>${lab[i]}: ${esc(r[0])} – ${esc(r[1])}</span><span>${r[2]} – ${r[3]}</span></li>`:`<li class="${m.includes(SV.team)?'n':''}"><span>${lab[i]}: ${esc(m[0])} – ${esc(m[1])}</span><span>${m.includes(SV.team)?'Prossima':'da giocare'}</span></li>`;}).join('')}</ul>`;
 }
 function usConfView(){
   const U=SV.us;if(!usConfSel||!U.conf[usConfSel])usConfSel=U.cf;
   const c=usConfSel;let h=`<div class="seg" id="usConfs">${US_CK.map(k=>`<button type="button" class="sg${c===k?' on':''}" data-uc="${k}">${US_CONF[k]}${k===U.cf?' (tua)':''}</button>`).join('')}</div>`;
   const L=c!==U.cf&&SV.lg[c];
-  h+=`<p class="estat">${usConfName(c)}, stagione ${SV.season}${L?` · giornata ${L.round} di ${L.sched.length}`:''}</p><p class="note" style="margin:0 0 6px"><b style="color:#4fe58f">Verde</b>: Nationals diretti (1ª) · <b style="color:#ffd23f">Giallo</b>: Play-in (2ª contro 3ª) · <b style="color:#ff7b80">Rosso</b>: eliminate (4ª-6ª). A parità di vittorie contano gli scontri diretti, poi la differenza mete.</p>`;
+  h+=`<p class="estat">${usConfName(c)}, stagione ${SV.season}${L?` · giornata ${L.round} di ${L.sched.length}`:''}</p><p class="note" style="margin:0 0 6px">${usBidsTxt(c)}<br><b style="color:#4fe58f">Verde</b>: Nationals diretti · <b style="color:#ffd23f">Giallo</b>: Play-in (gare secche, chi vince va ai Nationals) · <b style="color:#ff7b80">Rosso</b>: eliminate. A parità di vittorie contano gli scontri diretti, poi la differenza mete.</p>`;
   h+=usConfTable(c)+usPinHTML(c);
   if(L&&L.last.length)h+=`<h3 class="eh">Ultima giornata in ${usConfName(c)}</h3><ul class="elist">${L.last.map(m=>`<li class="${m[2]>m[3]?'w':'l'}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('')}</ul>`;
   if(c===U.cf){
