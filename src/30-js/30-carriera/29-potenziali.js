@@ -16,8 +16,16 @@ function seriesPow(){   // forza media delle altre squadre della tua divisione (
 // riferimento: il livello della serie conta piu' della tua squadra. Sotto la media della serie (per esempio appena promosso) il mercato ti offre giocatori
 // della categoria, cosi' puoi rinforzarti spendendo; sopra la media cresce molto meno della tua forza: prima seguiva la tua squadra e ogni anno
 // arrivavano giocatori piu' forti dei tuoi, fino a rose da 95 anche in Italia
+// LIVELLO EUROPEO: chi gioca nella serie piu' alta di un campionato che manda squadre al Campionato europeo non si misura solo con le rivali di casa.
+// In Inghilterra o in Germania le migliori sono gia' sopra tutte le altre (Clapham 82,5 contro 77,5; Wall City 86 contro 74), ma le migliori d'Europa
+// stanno intorno a 88: senza questo il freno per chi domina (carGrowK) le avrebbe fermate prima di diventare competitive in Europa.
+let euTopC=0;
+const euTop=()=>euTopC||(euTopC=Math.max(...SERIES.A.map(n=>TEAM[n].power),...LN_IDS.filter(k=>LN_DEF[k].eu).flatMap(k=>LN_NAMES.filter(n=>LN_BY[n].lk===k&&LN_BY[n].t===LN_DEF[k].tiers[0].id).map(n=>LN_BY[n].p))));
+const euTier=()=>!!SV&&!isUS()&&(isLN()?!!(LN_DEF[SV.lk]&&LN_DEF[SV.lk].eu&&SV.ln&&lnTiers().findIndex(t=>t.id===SV.ln.tier)===0):SV.sr==='A');
+const EU_GAP=8;   // nel mercato di queste serie la media non scende sotto il livello europeo meno 8 (la Serie A, a 81, non cambia)
 function potRef(kind){
-  const S=seriesPow(),T=squadPower(),rp=kind==='adult'?0:clamp(((SV.rep|0)-50)*0.04,-2,2);
+  let S=seriesPow();if(kind!=='prov'&&euTier())S=Math.max(S,euTop()-EU_GAP);
+  const T=squadPower(),rp=kind==='adult'?0:clamp(((SV.rep|0)-50)*0.04,-2,2);
   if(kind==='prov')return S;
   const wT=kind==='viv'?0.4:(kind==='adult'?0.2:0.3);   // sotto la media: quanto conta ancora la tua forza (poco: chi sale trova giocatori della categoria, se li paga)
   return (T<=S?S+wT*(T-S):S+0.4*(T-S))+rp;
@@ -43,7 +51,8 @@ function potNews(){   // dopo l'estate: le sorprese (20-sorprese-crescita.js) de
 }
 /* ---- CRESCITA SECONDO LA SERIE: piu' facile in basso, via via piu' dura ----
    Moltiplica allenamenti ed esperienza dei tuoi giocatori: Serie C 1,35, Serie B 1,15, Serie A 0,9 (USA e leghe europee secondo SR_K, cioe' il peso
-   della categoria). In piu', se la tua squadra e' gia' piu' forte della migliore delle altre della tua divisione, si cresce meno (fino alla meta'):
+   della categoria). In piu', se la tua squadra e' gia' piu' forte della migliore delle altre della tua divisione (e, nelle serie con posti europei,
+   anche delle migliori d'Europa: euTop), si cresce meno (fino alla meta'):
    prima chi dominava continuava a staccarsi (97 contro 92 della seconda). Le squadre del computer non lo usano. */
 const srGrowK=sr=>clamp(1.35-((SR_K[sr]||1)-1)*0.7,0.9,1.35);
 const LEAD_K=0.08;   // per ogni punto di forza sopra la migliore delle altre, l'8% di crescita in meno (al massimo la meta')
@@ -53,6 +62,6 @@ function carGrowK(){
   const key=SV.team+'|'+SV.season+'|'+SV.sr+'|'+(SV.played|0);if(cgk.key===key)return cgk.v;
   const k=srGrowK(SV.sr);
   const ns=((SV.mem&&SV.mem[SV.sr])||[]).filter(n=>n!==SV.team);
-  const lead=ns.length?squadPower()-Math.max(...ns.map(teamPow)):0;
+  const lead=ns.length?squadPower()-Math.max(...ns.map(teamPow),euTier()?euTop():0):0;   // nelle serie con posti europei il riferimento e' anche il livello europeo
   cgk={key,v:k*(lead>0?clamp(1-LEAD_K*lead,0.5,1):1)};return cgk.v;
 }
