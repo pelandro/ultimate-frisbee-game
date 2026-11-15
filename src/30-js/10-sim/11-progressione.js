@@ -23,7 +23,7 @@ function potRange(x){
 const devLabel=d=>d>=1.2?'rapida':(d>=0.95?'normale':'lenta');
 // eta': i giovani crescono in fretta, gli adulti si stabilizzano, i veterani quasi non crescono piu'
 // oltre 70 ogni punto costa di piu': arrivare a 95 richiede anni, non mesi
-const lvlF=v=>v<70?1:(v<80?0.8:(v<88?0.6:(v<94?0.36:0.22)));
+const lvlF=v=>v<70?1:(v<80?0.72:(v<88?0.5:(v<94?0.3:0.2)));   // ritoccata: sopra 80 si sale piu' piano (prima una squadra media arrivava a 95)
 const ageMul=a=>a<=19?1.5:(a<=23?1.25:(a<=27?1:(a<=30?0.65:(a<=33?0.4:0.22))));
 /* ---- ESPERIENZA (XP): la crescita nasce dalla qualita' della prestazione, non da soglie fisse.
    Ogni azione vale punti, anche quelle senza statistica: buone marcature, tagli efficaci, reset. I pesi sono tarati perche' handler, cutter e difensori
@@ -34,7 +34,7 @@ function xpParts(m){   // punti esperienza per tipo di azione
     sca:m.sca*0.45,vel:m.vel*0.9,vis:m.vis*1.3,pre:m.pre*1.2,mk:(m.mk||0)*1.4,cut:(m.cut||0)*0.8,rst:(m.rst||0)*1.6,res:Math.min(4,m.res*0.05)};
 }
 const xpTotal=m=>{const q=xpParts(m);let t=0;for(const k in q)t+=q[k];return t;};
-const XP_RATE=0.024;   // punti statistica per punto esperienza (a 24-27 anni, crescita normale): circa 0,75 punti a partita
+const XP_RATE=0.0228;   // punti statistica per punto esperienza (a 24-27 anni, crescita normale): circa 0,65 punti a partita (era 0,024)
 const XP_ROLE={H:1.3,C:0.95,D:0.82};   // in campo gli handler raccolgono meno esperienza di cutter e difensori: il peso la pareggia (misurato su 560 prestazioni)
 function growBy(x,parts,mult){   // applica la crescita a un giocatore (in campo o in scheda): ritorna i cambi [{k,from,to}]
   let tot=0;const w={};
@@ -53,12 +53,12 @@ function growBy(x,parts,mult){   // applica la crescita a un giocatore (in campo
 // cosi' simulare o giocare da' lo stesso sviluppo medio
 const XP_SIM={H:{lan:7.5,buc:1.2,spa:1.5,vis:1.6,rst:1.2,sca:1.2,mk:1,cut:1,res:2},C:{sca:3.2,cut:3,vel:1.4,pre:1.6,sal:1.6,vis:2,lan:2.2,mk:1.2,dif:1,res:2.4},D:{dif:3.4,mk:3.6,tuf:1.4,sal:1.4,sca:2,cut:1.6,lan:1.6,res:2.4}};
 function simParts(x,share){const b=XP_SIM[posOf(x)],o={};let t=0;for(const k in b)t+=b[k];const f=30/t*(share===undefined?1:share)*(0.6+0.8*Math.random());for(const k in b)o[k]=b[k]*f;return o;}   // 30 punti a partita, come la media delle partite giocate (misurata)
-function matchGrowth(team){   // dopo una partita giocata: crescita a XP di chi e' sceso in campo
+function matchGrowth(team,mult){   // dopo una partita giocata: crescita a XP di chi e' sceso in campo (mult: moltiplicatore della carriera, carGrowK)
   const out=[];
   for(const p of (team===0?SQ:T[team])){
     const parts=xpParts(p.m),lk=lenK();if(lk<1)for(const k in parts)parts[k]*=lk;   // partita lunga: stessa esperienza di una partita ai 7
     p.xpLast=Math.round(xpTotal(p.m)*lk*10)/10;
-    for(const c of growBy(p,parts,XP_ROLE[posOf(p)]))out.push({p,k:c.k,from:c.from,to:c.to,gain:c.to-c.from});
+    for(const c of growBy(p,parts,XP_ROLE[posOf(p)]*(mult||1)))out.push({p,k:c.k,from:c.from,to:c.to,gain:c.to-c.from});
   }
   return out;
 }

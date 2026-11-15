@@ -183,7 +183,8 @@ function simCareerMatch(){
   const r=simMatch(my,opp,carDiff().ai|0,carLen()),w=r.a>r.b;   // la difficolta' scelta vale anche qui: l'IA migliore vale qualche punto di forza in piu'
   // una partita simulata vale come una giocata: stessa esperienza media, statistiche personali, fatica e (ora) anche gli infortuni
   const on=new Set(matchLine('lineO').concat(matchLine('lineD')));
-  for(const p of SQ){p.m=newCounters();if(on.has(p.id)&&!p.inj){p.m.pts=1;growBy(p,simParts(p,1),XP_ROLE[posOf(p)]);}}
+  const gk=carGrowK();   // crescita secondo la serie e il distacco (29-potenziali.js), come nelle partite giocate
+  for(const p of SQ){p.m=newCounters();if(on.has(p.id)&&!p.inj){p.m.pts=1;growBy(p,simParts(p,1),XP_ROLE[posOf(p)]*gk);}}
   simMatchStats(r.a);
   simInjuries([...on].map(id=>SQ[id]).filter(Boolean),1-0.12*facLv('fis'));   // dopo la crescita: chi si fa male in partita la partita l'ha giocata
   const msg=recordResult(w,r.a,r.b);

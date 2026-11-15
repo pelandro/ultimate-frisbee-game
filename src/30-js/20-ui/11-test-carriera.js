@@ -150,6 +150,25 @@ function careerSelfTest(seasons,seed){
     rows.push(row('Indirizzi personali assegnati nel test',String(spec),spec>=1));
     rows.push(row('Economia: ogni partita ha un conto che torna (voci, capienza, biglietti in casa, trasferta fuori)',moneyBad.length?moneyBad.slice(0,2).join('; '):`sì: ${ven.H} in casa, ${ven.A} in trasferta, ${ven.N} a campo neutro`,!moneyBad.length&&ven.H>0&&ven.A>0,'in campionato casa e trasferta si alternano'));
     rows.push(row('Economia: saldo medio a partita (prima di premi di fine stagione)',(netTot/Math.max(1,matchesTot)).toFixed(1),matchesTot>0&&netTot/matchesTot>-25&&netTot/matchesTot<60,'ne' + 'ssun conto fuori scala: la squadra del test investe in strutture e staff'));
+    {   // potenziali a fasce (29-potenziali.js), margini dei giocatori veri per eta' (realGap) e sorprese di crescita (20-sorprese-crescita.js)
+      const R=mulberry32(77),fr=kind=>{const c=[0,0,0,0,0];for(let i=0;i<4000;i++)c[potDraw(kind,60,R,0).band]++;return c.map(x=>x/40);};
+      const mk=fr('mkt'),pv=fr('prov');
+      rows.push(row('Potenziale dei giovani a fasce: mercato con delusioni e fenomeni rari, provino ancora più prevedibile',
+        `mercato ${mk.map(x=>Math.round(x)).join('/')}%, provino ${pv.map(x=>Math.round(x)).join('/')}%`,
+        mk[0]>=9&&mk[0]<=19&&mk[4]<=5&&mk[1]+mk[2]>=62&&pv[0]<mk[0]&&pv[3]+pv[4]<mk[3]+mk[4]&&pv[3]+pv[4]<=7&&pv[1]>=60));
+      const top=x=>{const c={};for(const k of KEYS)c[k]=Math.max(x.s[k],capX(x,k));return Math.max(rate(c,roleR(x)),rate(c,'D'));};
+      const g={y:[],m:[],o:[]};for(const n of SERIES.A.concat(SERIES.B).slice(0,20))for(const o of realRoster(REAL[n]||[],'ts|'+n,realOpt(n,7))){const d=top(o)-ovrX(o);(o.age<=20?g.y:(o.age<=29&&o.age>=24?g.m:(o.age>=30?g.o:[]))).push(d);}
+      const md=a=>{a=a.slice().sort((x,y)=>x-y);return a.length?a[a.length>>1]:0;};
+      rows.push(row('Margine di crescita dei giocatori veri: grande per i giovani, piccolo per gli adulti (prima 20-25 a ogni età)',
+        `mediana: fino a 20 anni ${md(g.y).toFixed(1)}, 24-29 ${md(g.m).toFixed(1)}, dai 30 ${md(g.o).toFixed(1)}`,
+        md(g.y)>=7&&md(g.y)<=15&&md(g.m)<=7&&md(g.o)<=4.5&&md(g.y)>md(g.m)&&md(g.m)>md(g.o)));
+      let dn=0,up=0,lost=0;const N=1500;
+      for(let i=0;i<N;i++){const o=genPlayer(50,17,'sorp|'+i,potB(70));const s0=KEYS.reduce((a,k)=>a+o.s[k],0),t0=o.tl+o.tf+o.tv;for(let y=0;y<6;y++){o.pvx=0;const b=KEYS.reduce((a,k)=>a+o.s[k],0);o.age++;potSurprise(o);if(KEYS.reduce((a,k)=>a+o.s[k],0)<b)lost++;}const t1=o.tl+o.tf+o.tv;if(t1<t0)dn++;else if(t1>t0)up++;}
+      rows.push(row('Crescita secondo la serie: più facile in basso, più dura in alto; chi domina la sua serie cresce meno',
+        `C ${srGrowK('C').toFixed(2)}, B ${srGrowK('B').toFixed(2)}, A ${srGrowK('A').toFixed(2)}, con 5 punti di vantaggio ×${clamp(1-LEAD_K*5,0.5,1).toFixed(2)}`,srGrowK('C')>srGrowK('B')&&srGrowK('B')>srGrowK('A')&&srGrowK('A')<1&&LEAD_K>0));
+      rows.push(row('Sorprese di crescita: qualche giovane si ferma, pochi scoprono più margine, nessuno perde punti',
+        `${Math.round(dn/N*100)}% si fermano, ${Math.round(up/N*100)}% salgono`,dn/N>=0.08&&dn/N<=0.16&&up/N>=0.03&&up/N<=0.09&&!lost));
+    }
     {const bad=[];for(const n of [8,14,16])for(let e=1;e<=n;e++){const T=objTargets(e,n,n-2);   // tre traguardi distinti dal piu' difficile al piu' facile, mai oltre la salvezza, e per chi sta nella meta' alta il sicuro non e' la salvezza
         if(!(T.amb<=T.bal&&T.bal<=T.sic)||T.sic>n-1||T.amb<1||(e>=3&&T.amb>=e)||(n>=14&&e<=n/2&&(T.sic>=n-2||T.sic-e<2)))bad.push(`${e}/${n}: ${T.amb}-${T.bal}-${T.sic}`);}
       rows.push(row('Obiettivi dello sponsor: coerenti con la posizione attesa (ambizioso meglio, sicuro mai solo la salvezza per chi e\' a meta\' classifica)',bad.length?bad.slice(0,3).join('; '):'sì',!bad.length));}

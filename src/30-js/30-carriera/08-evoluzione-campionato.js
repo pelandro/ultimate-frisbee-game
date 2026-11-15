@@ -8,6 +8,7 @@ function leagueAnchors(){   // livello storico di ogni squadra (quello di inizio
 }
 // POLITICA DEL CLUB (fissa per squadra): chi punta sui giovani sforna piu' promesse e piu' forti, chi punta sull'esperienza ne promuove poche.
 // Con il livello storico che ora si sposta negli anni (vedi sotto), le squadre non restano inchiodate ai valori di partenza.
+const TAL_AI=94;   // fin dove la spinta verso il livello storico alza il talento di un giocatore del computer (il migliore al mondo, De Marree, e' 97)
 const CLUB_POL=[['giovani','punta sul vivaio'],['equilibrio','rosa equilibrata'],['esperienza','punta sui veterani']];
 const clubPol=n=>CLUB_POL[hashStr('pol|'+n)%3];
 // quanto un giocatore servirebbe a una rosa: differenza tra lui e il titolare piu' debole nel suo ruolo
@@ -47,7 +48,7 @@ function evolveLeague(){
     const acad=0.5+(hashStr(n+'|acad|'+SV.season)%100)/100;   // annata del vivaio: buona o scarsa
     const lvl=rosterPower(ro);
     const pol=clubPol(n)[0],ny=pol==='giovani'?3:(pol==='esperienza'?1:2),pk=pol==='giovani'?1.2:(pol==='esperienza'?0.85:1);
-    for(let i=0;i<ny||ro.length<14;i++){if(ro.length>=22)break;ro.push(genPlayer(lvl-9+R()*5,16+Math.floor(R()*4),SV.seed+'|yo|'+n+'|'+SV.season+'|'+i,lvl+2+R()*20*acad*pk));}
+    for(let i=0;i<ny||ro.length<14;i++){if(ro.length>=22)break;ro.push(genPlayer(lvl-9+R()*5,16+Math.floor(R()*4),SV.seed+'|yo|'+n+'|'+SV.season+'|'+i,potB(potDraw('mkt',lvl+2,R,(acad*pk-1)*4).p)));}   // potenziale a fasce come i tuoi (29-potenziali.js): prima arrivava fino a +26 e in Serie A nascevano giocatori da 95
     while(ro.length>20){const w=ro.slice().sort((a,b)=>ovrX(a)-ovrX(b))[0];ro.splice(ro.indexOf(w),1);}
     // la squadra tende al proprio livello storico, spostato dal ciclo del momento: cosi' il campionato resta credibile per decenni, con squadre che salgono e che scendono
     const prev=SV.cyc[n]||0;SV.cyc[n]=clamp(prev*0.75+(R()*2-1)*2.6,-7,7);
@@ -55,12 +56,13 @@ function evolveLeague(){
     if(Math.abs(gap)>0.3)for(const o of best){
       if(gap>0&&o.age>29)continue;if(gap<0&&o.age<24&&R()<0.4)continue;   // crescono i giovani e chi e' nel pieno, calano soprattutto i meno giovani
       const g=gap*(gap>0?1.5:1.7);
-      for(const k of KEYS){const d=Math.trunc(g)+(R()<Math.abs(g%1)?Math.sign(g):0);if(d)o.s[k]=clamp(o.s[k]+d,25,99);}
-      if(gap>0){const mx=ks=>Math.max(...ks.map(k=>o.s[k]));o.tl=Math.max(o.tl,Math.min(99,mx(['lan','buc','spa'])+3));o.tv=Math.max(o.tv,Math.min(99,o.s.vis+3));o.tf=Math.max(o.tf,Math.min(99,mx(['dif','sal','sca','tuf','vel','res','pre','agi'])+3));}
+      if(gap>0){const mx=ks=>Math.max(...ks.map(k=>o.s[k]));o.tl=Math.max(o.tl,Math.min(TAL_AI,mx(['lan','buc','spa'])+3));o.tv=Math.max(o.tv,Math.min(TAL_AI,o.s.vis+3));o.tf=Math.max(o.tf,Math.min(TAL_AI,mx(['dif','sal','sca','tuf','vel','res','pre','agi'])+3));}
+      for(const k of KEYS){const d=Math.trunc(g)+(R()<Math.abs(g%1)?Math.sign(g):0);if(d)o.s[k]=clamp(o.s[k]+d,25,d>0?Math.max(o.s[k],capX(o,k)):99);}   // la spinta non supera il limite del giocatore (prima arrivava a 99)
     }
     if(SV.cyc[n]-prev>2.2)up.push(n);else if(SV.cyc[n]-prev<-2.2)dn.push(n);
     // il livello storico non e' piu' fisso: ogni anno si sposta un poco verso cio' che la squadra e' diventata. In 10-20 stagioni le gerarchie cambiano davvero
-    SV.anc[n]=clamp(SV.anc[n]+(rosterPower(ro)-SV.anc[n])*0.18+(R()*2-1)*0.5,36,94);
+    // la spinta delle rivali quando domini (domBoost) non entra nel livello storico: prima vi si sommava anno dopo anno e tutta la Serie A saliva a 95-99
+    SV.anc[n]=clamp(SV.anc[n]+(rosterPower(ro)-domBoost(n)-SV.anc[n])*0.18+(R()*2-1)*0.5,36,94);
   }
   if(ret.length)news('Si ritirano: '+ret.slice(0,4).join(', ')+(ret.length>4?' e altri':'')+'.');
   const mine=new Set(SV.mem[SV.sr]),u=up.filter(n=>mine.has(n)).slice(0,2),d=dn.filter(n=>mine.has(n)).slice(0,2);

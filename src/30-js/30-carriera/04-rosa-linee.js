@@ -9,7 +9,7 @@ function genPlayer(level,age,seedStr,potB){
   const rng=mulberry32(hashStr(seedStr)),R=(a,b)=>a+rng()*(b-a);
   const NP=isUS()?US_FN:(isLN()?LN_POOL[SV.lk].f:NAME_POOL),SP=isUS()?US_LN:(isLN()?LN_POOL[SV.lk].l:SURN),nm=NP[Math.floor(rng()*NP.length)],sur=SP[Math.floor(rng()*SP.length)],full=sur+' '+nm+' '+String.fromCharCode(65+hashStr(seedStr)%26)+(hashStr(seedStr+'x')%90+10);
   const role=rng()<0.45?'H':'C',d=role==='H'?0.5:-0.5,pb0=potB===undefined?level+R(5,24):potB,pb=pb0>90?90+(pb0-90)*0.45:pb0;
-  const tg=x=>clamp(Math.round(pb+x+R(-4,4)),60,99),tl=tg(4*d),tf=tg(-4*d),tv=tg(0),st={};
+  const tg=x=>clamp(Math.round(pb+x+R(-4,4)),45,99),tl=tg(4*d),tf=tg(-4*d),tv=tg(0),st={};
   KEYS.forEach(k=>{const g=(k==='lan'||k==='buc'||k==='spa')?'L':(k==='vis'?'V':'F'),off=g==='L'?9*d:(g==='V'?3*d:-7*d);st[k]=clamp(Math.round(level+off+R(-5,5)),25,capVal(full,k,g==='L'?tl:(g==='V'?tv:tf)));});
   return {n:nm,label:nm+' '+sur,full,sur,r:role,age,tl,tf,tv,s:st,gen:true,f:FEM_N.has(nm),trait:traitFor(full,st,role),dev:devOf(full),sk:0,cond:100,car:null};
 }

@@ -17,9 +17,10 @@ const facUpkeep=()=>Math.round(Object.keys(FAC).reduce((a,k)=>a+facLv(k)*(facLv(
 const KEEP_LV=3;
 const FAC_KEEP={camp:'ritiro estivo: i giocatori fino a 23 anni migliorano',fis:'prevenzione: i primi due infortuni della stagione durano la metà',viv:'un giovane del vivaio sale in prima squadra',
   stad:'abbonamenti: crediti a inizio stagione',oss:'rapporto estivo: potenziale già noto per tutto il mercato',sede:'ambiente: reputazione e morale in più'};
-function youthFromAcademy(tag,bonus){   // un ragazzo cresciuto in casa (vivaio o provino): entra in rosa se c'e' posto
+function youthFromAcademy(tag,bonus){   // un ragazzo cresciuto in casa (vivaio o provino): entra in rosa se c'e' posto. Potenziale a fasce: 29-potenziali.js
   if(SQ.length>=28)return null;
-  const lv=squadPower(),o=genPlayer(lv-13+Math.random()*6+(bonus||0),16+Math.floor(Math.random()*3),SV.seed+'|'+tag+'|'+SV.season+'|'+SV.round+'|'+SQ.length,lv+4+Math.random()*22+(bonus||0)*2);
+  const kind=tag==='prov'?'prov':'viv',ref=potRef(kind),d=potDraw(kind,ref,Math.random,kind==='viv'?facLv('viv'):0);
+  const o=genPlayer(ref-13+Math.random()*6+(bonus||0),16+Math.floor(Math.random()*3),SV.seed+'|'+tag+'|'+SV.season+'|'+SV.round+'|'+SQ.length,potB(d.p));
   o.sk=1;setSquad(squadData().concat([o]));fixLines();return o;
 }
 function boostYoung(maxAge,n){   // +1 in n statistiche a caso, sotto il proprio massimo
@@ -105,7 +106,7 @@ const EVT={
     t:a=>['Guasto: '+FAC[a.k][0],'Serve una riparazione da '+a.c+' crediti. Senza, la struttura scende al livello '+(facLv(a.k)-1)+'.'],
     o:a=>[['Ripara ('+a.c+' crediti)',()=>{SV.cash-=a.c;return 'Riparato: il livello resta '+facLv(a.k)+'.';},()=>SV.cash>=a.c],['Lascia perdere',()=>{SV.fac[a.k]=Math.max(0,facLv(a.k)-1);return FAC[a.k][0]+' scende al livello '+facLv(a.k)+'.';}]]},
   provino:{w:2,ok:()=>SQ.length<28,mk:()=>({}),t:a=>['Un provino','Un ragazzo del posto, mai visto prima, chiede di allenarsi con voi. Di lui non si sa nulla.'],
-    o:a=>[['Prendilo in rosa',()=>{const o=youthFromAcademy('prov',Math.random()<0.25?4:0);return o?(o.label||o.n)+' ('+o.age+' anni) entra in rosa: il suo potenziale è tutto da scoprire.':'Rosa piena: non c’è posto.';}],['No, grazie',()=>'Il ragazzo proverà altrove.']]},
+    o:a=>[['Prendilo in rosa',()=>{const o=youthFromAcademy('prov',0);return o?(o.label||o.n)+' ('+o.age+' anni) entra in rosa: il suo potenziale è tutto da scoprire.':'Rosa piena: non c’è posto.';}],['No, grazie',()=>'Il ragazzo proverà altrove.']]},
   amichevole:{w:3,mk:()=>({c:Math.round(14*evK())}),t:a=>['Torneo amichevole','Vi invitano a un torneo sulla sabbia nel fine settimana libero: un piccolo gettone e tanto gioco insieme, ma si torna stanchi.'],
     o:a=>[['Partecipa: +'+a.c+' crediti, +3 affiatamento, −12 condizione',()=>{SV.cash+=a.c;SV.chem=clamp(SV.chem+3,0,100);allCond(-12);return 'Bel torneo: gruppo più unito, gambe più pesanti.';}],['Riposo: +6 condizione',()=>{allCond(6);return 'Un fine settimana di riposo: +6 di condizione a tutti.';}]]},
   tifosi:{w:2,ok:()=>SV.res.length>=2&&SV.res.slice(-2).every(r=>r.su>r.so),mk:()=>({}),t:a=>['Entusiasmo','Due vittorie di fila: al campo arriva più gente e la squadra lo sente.'],
