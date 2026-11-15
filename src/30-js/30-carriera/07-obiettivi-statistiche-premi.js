@@ -1,5 +1,6 @@
 /* ---- obiettivo stagionale e reputazione ---- */
-function setObjective(){
+function setObjective(){setObjectiveBase();spOffer();}   // l'obiettivo atteso dalla dirigenza e' la base dei tre contratti di sponsor (26-economia-partita.js)
+function setObjectiveBase(){
   if(isUS())return usObjective();   // obiettivi del campionato USA: 35-usa/04-carriera-usa.js
   if(isLN())return lnObjective();   // leghe europee: 37-leghe/04-carriera-lega.js
   const names=SV.mem[SV.sr],ord=names.slice().sort((a,b)=>teamPow(b)-teamPow(a)),exp=ord.indexOf(SV.team)+1,n=names.length;

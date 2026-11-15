@@ -123,7 +123,7 @@ function renderEventLN(){
   let body='';
   if(SV.done&&SV.next){
     const hx=SV.hist[0];
-    body+=`<p class="estat">${esc(SV.next.short)}</p><p class="note" style="margin:0 0 8px">Premio di stagione: ${SV.next.prize} crediti. Obiettivo ${SV.next.objOk?'raggiunto: +'+SV.obj.reward+' crediti':'mancato'}.${hx&&hx.mvp?` MVP della squadra: ${esc(hx.mvp)} (${hx.mvpS}).`:''}${SV.next.qual?' Vi siete qualificati all’EUCF: si gioca nella stagione dopo.':''} Con la nuova stagione tutti invecchiano di un anno, i veterani possono ritirarsi, le altre squadre cambiano e il mercato si rinnova.</p>`;
+    body+=`<p class="estat">${esc(SV.next.short)}</p><p class="note" style="margin:0 0 8px">Premio di stagione: ${SV.next.prize} crediti. Sponsor ${SV.next.objOk?'soddisfatto: bonus di '+SV.obj.reward+' crediti':'deluso: nessun bonus'}.${hx&&hx.mvp?` MVP della squadra: ${esc(hx.mvp)} (${hx.mvpS}).`:''}${SV.next.qual?' Vi siete qualificati all’EUCF: si gioca nella stagione dopo.':''} Con la nuova stagione tutti invecchiano di un anno, i veterani possono ritirarsi, le altre squadre cambiano e il mercato si rinnova.</p>`;
     if(hx&&hx.aw&&hx.aw.length)body+=`<div class="seas"><h3>Premi della stagione · ${esc(SERIES_NAME[SV.sr])}</h3><ul class="awl">${hx.aw.map(awRow).join('')}</ul>${hx.best7&&hx.best7.length?`<p>Squadra ideale: ${hx.best7.map(q=>`${q.mine?'<b style="color:var(--gold)">':'<b>'}${esc(q.name)}</b> (${q.pos})`).join(', ')}</p>`:''}</div>`;
     body+='<button type="button" class="go" id="eReset">Inizia la nuova stagione</button>';
   }

@@ -38,7 +38,6 @@ const carLen=()=>lenOk((SV&&SV.len)|0);   // durata delle partite di carriera (O
 const trainOpen=()=>((SV.played||0)%carDiff().n)===0;       // la sessione e' disponibile prima della 1a partita e poi ogni n partite giocate (anche in Europa)
 const trainWait=()=>{const n=carDiff().n;return n-((SV.played||0)%n);};
 // forza di una squadra = media delle statistiche dei suoi 7 migliori giocatori (3 handler e 4 cutter)
-const incTxt=()=>` Bilancio della giornata: ${SV.lastInc>=0?'+':''}${SV.lastInc} crediti (stipendi ${SV.lastWage|0}${SV.lastUp?', manutenzione e staff '+SV.lastUp:''}).`;
 const teamFormB=()=>clamp((SV.chem-50)/50*0.9+(SV.mor-50)/50*0.6+0.3*staffLv('ana')+(hasTr('ana','str')?0.3:0),-1.5,1.5);
 const squadPower=()=>{const b=pickSeven(SQ,p=>p.role,mean9);return b.reduce((a,p)=>a+mean9(p),0)/b.length;};
 const teamPower=n=>n===SV.team?squadPower():(SV.rost&&SV.rost[n]?rosterPower(SV.rost[n])+carDiff().plus:null);

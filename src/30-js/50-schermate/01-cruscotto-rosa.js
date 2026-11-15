@@ -26,7 +26,7 @@ function renderHome(){
   // a competizione conclusa il tasto dice che cosa succede davvero: nuova stagione (se il campionato e' finito) oppure ritorno al campionato (coppa finita)
   const toCamp=!m&&SV.event==='eu'&&!SV.done;
   $('hPlayT').textContent=su?'Riprendi la partita':(m?'Inizia partita':(toCamp?'Torna al campionato':'Nuova stagione'));
-  $('hPlayS').textContent=su?`Sospesa sul ${SV.susp.score[0]}–${SV.susp.score[1]} contro ${m.name}`:(m?`Contro ${m.name} · ${carDiff().name}`:(toCamp?`Giornata ${SV.round+1} di ${totalRounds()}`:'Riepilogo, premi e ripartenza'));
+  $('hPlayS').textContent=su?`Sospesa sul ${SV.susp.score[0]}–${SV.susp.score[1]} contro ${m.name}`:(m?`Contro ${m.name} · ${VENUE_SHORT[venueOf()]} · ${carDiff().name}`:(toCamp?`Giornata ${SV.round+1} di ${totalRounds()}`:'Riepilogo, premi e ripartenza'));
   $('hSim').classList.toggle('hidden',!m||su);   // una partita sospesa si riprende, non si simula
   const left=3-SQ.filter(p=>p.tr).length,hurt=SQ.filter(p=>p.inj).length,low=SQ.filter(p=>p.cond<50).length;
   $('hTrainS').textContent=!trainOpen()?`Tra ${trainWait()} ${trainWait()>1?'partite':'partita'}`:!SV.tTeam?'Da fare':(left?`Restano ${left} singoli`:'Fatti');   // testi brevi: sul telefono i lunghi venivano troncati
@@ -37,9 +37,11 @@ function renderHome(){
   $('hRosterB').classList.toggle('hidden',!lineBad);
   $('hTrainB').classList.toggle('hidden',!(trainOpen()&&(!SV.tTeam||left>0)));
   $('hMarketB').classList.toggle('hidden',SV.mkSeen===SV.mkN);
+  if(!SV.evt&&SV.sp&&SV.sp.off)SV.evt={id:'spons',a:{}};   // inizio stagione: la scelta dello sponsor aspetta una risposta, come un imprevisto
   const nwA=(SV.alerts||[]).filter(a=>!a.seen).length,pdA=pendingAlerts();
   $('hBellB').textContent=nwA||pdA;$('hBellB').classList.toggle('hidden',!(nwA||pdA));
   if(urgentAlerts()&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openAlerts();   // si apre da solo soltanto per le decisioni e le emergenze; le notizie restano nella campanella
+  else if(SV.fired&&$('fired').classList.contains('hidden')&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('over').classList.contains('hidden')&&$('simres').classList.contains('hidden'))openFired();   // esonerato: bisogna scegliere un altro club
   else if(SV.evt&&$('evt').classList.contains('hidden')&&$('alerts').classList.contains('hidden')&&!$('home').classList.contains('hidden')&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden'))openEvt();   // un imprevisto aspetta una risposta
   $('hEventS').textContent=isUS()?usEventSub():(isLN()&&SV.event==='camp')?(SV.done?'Stagione conclusa: premi e ripartenza':lnShort()):SV.event==='camp'?(SV.done?'Stagione conclusa: premi e ripartenza':(SV.po&&SV.po.on?PO_NAME[SV.po.kind]+(SV.po.round?' · finale':' · semifinale'):`Giornata ${SV.round+1} di ${totalRounds()}`)):euEventSub();
 }
@@ -202,7 +204,7 @@ function renderEvent(){
   if(SV.event==='camp'){
     if(!SV.lg||!SV.lg[evSr])evSr=SV.sr;
     let endH='';
-    if(SV.done){const hx=SV.hist[0];endH=`<p class="estat">${SV.next.short}</p>`+(SV.next.prize!==undefined?`<p class="note" style="margin:0 0 8px">Premio di classifica: ${SV.next.prize} crediti. Obiettivo ${SV.next.objOk?'raggiunto: +'+SV.obj.reward+' crediti':'mancato'}.${hx&&hx.mvp?` MVP della squadra: ${esc(hx.mvp)} (${hx.mvpS}).`:''} Con la nuova stagione tutti invecchiano di un anno, i veterani possono ritirarsi, le altre squadre cambiano e il mercato si rinnova.</p>`:'')+(hx&&hx.aw&&hx.aw.length?`<div class="seas"><h3>Premi della stagione · ${SERIES_NAME[SV.sr]}</h3><ul class="awl">${hx.aw.map(awRow).join('')}</ul>${hx.best7&&hx.best7.length?`<p>Squadra ideale: ${hx.best7.map(q=>`${q.mine?'<b style="color:var(--gold)">':'<b>'}${esc(q.name)}</b> (${q.pos})`).join(', ')}</p>`:''}</div>`:'')+`<button type="button" class="go" id="eReset">Inizia la nuova stagione</button>`;}
+    if(SV.done){const hx=SV.hist[0];endH=`<p class="estat">${SV.next.short}</p>`+(SV.next.prize!==undefined?`<p class="note" style="margin:0 0 8px">Premio di classifica: ${SV.next.prize} crediti. Sponsor ${SV.next.objOk?'soddisfatto: bonus di '+SV.obj.reward+' crediti':'deluso: nessun bonus'}.${hx&&hx.mvp?` MVP della squadra: ${esc(hx.mvp)} (${hx.mvpS}).`:''} Con la nuova stagione tutti invecchiano di un anno, i veterani possono ritirarsi, le altre squadre cambiano e il mercato si rinnova.</p>`:'')+(hx&&hx.aw&&hx.aw.length?`<div class="seas"><h3>Premi della stagione · ${SERIES_NAME[SV.sr]}</h3><ul class="awl">${hx.aw.map(awRow).join('')}</ul>${hx.best7&&hx.best7.length?`<p>Squadra ideale: ${hx.best7.map(q=>`${q.mine?'<b style="color:var(--gold)">':'<b>'}${esc(q.name)}</b> (${q.pos})`).join(', ')}</p>`:''}</div>`:'')+`<button type="button" class="go" id="eReset">Inizia la nuova stagione</button>`;}
     body+=endH;   // a stagione conclusa il riepilogo, i premi e il tasto per ripartire stanno in cima: prima erano in fondo a una pagina lunga
     body+=`<div class="seg" id="evTabs">${['A','B','C'].map(s=>`<button type="button" class="sg${evSr===s?' on':''}" data-sr="${s}">${SERIES_NAME[s]}${s===SV.sr?' (tua)':''}</button>`).join('')}</div>`;
     body+=`<p class="estat">${SERIES_NAME[evSr]}, stagione ${SV.season}${evSr!=='A'?', in verde chi sale':''}${evSr!=='C'?`${evSr!=='A'?' e in rosso':', in rosso'} chi scende`:''}${evSr!==SV.sr&&SV.lg[evSr]?` · giornata ${SV.lg[evSr].round} di ${SV.lg[evSr].sched.length}`:''}</p>`;

@@ -148,7 +148,6 @@ function evtAnswer(i){   // applica la scelta e ritorna il testo dell'esito
 function dynAfterMatch(){
   if(SV.event==='camp'){SV.facRnd=(SV.facRnd|0)+1;if(!SV.facDays)SV.facDays={};for(const k of Object.keys(FAC))if(facLv(k)>=KEEP_LV)SV.facDays[k]=(SV.facDays[k]|0)+1;}   // giornate di campionato al livello del premio
   progAfterMatch();   // intesa tra le coppie
-  const up=facUpkeep()+staffWage();if(up){SV.cash-=up;SV.lastInc=(SV.lastInc|0)-up;}SV.lastUp=up;
   const tired=SQ.filter(p=>!p.inj&&p.cond<TIRED_AT);
   const tn=tired.length,more=tn>(SV.tiredN|0);SV.tiredN=tn;   // l'avviso arriva quando la situazione peggiora, non a ogni giornata
   if(more)alertAdd('tired',(tired.length===1?pname(tired[0])+' è molto affaticat'+oa(tired[0]):tired.slice(0,4).map(pname).join(', ')+(tired.length>4?' e altri':'')+' sono molto affaticati')+': con il Recupero o una partita in panchina il rischio di infortunio rientra.');

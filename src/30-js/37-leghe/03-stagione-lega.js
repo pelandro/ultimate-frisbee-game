@@ -301,5 +301,5 @@ function lnEndSeason(){
   seasonAwards(rank,null);
   if(SV.hist[0]&&SV.hist[0].season===SV.season)SV.hist[0].ln={tier:L.tier,rank,n,champ};
   achCheck();
-  news(`Stagione ${SV.season} conclusa: ${short} Premio di ${prize} crediti`+(SV.obj?(ok?`, obiettivo raggiunto (+${SV.obj.reward})`:', obiettivo mancato'):'')+'.');
+  news(`Stagione ${SV.season} conclusa: ${short} Premio di ${prize} crediti`+(SV.obj?(ok?`, bonus dello sponsor (+${SV.obj.reward})`:', lo sponsor non paga il bonus'):'')+'.');
 }

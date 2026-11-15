@@ -200,7 +200,7 @@ catch(e){
     if(await page.locator('#tList .prow:not([disabled])').count()>await page.locator('#tList .prow').count()-3)throw new Error('il programma automatico non ha fatto i lavori individuali');
     await page.click('#tTeamBox [data-prog]');await page.click('#tBack');
     await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#mkBack');
-    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==6)throw new Error('devono esserci sei strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci quattro figure dello staff');
+    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="man"]');{const t=await page.locator('#clBox').innerText();if(!/Sponsor e obiettivo/i.test(t)||!/a ogni partita/.test(t)||!/Conti delle partite/i.test(t))throw new Error('la scheda Società deve mostrare lo sponsor scelto e i conti delle partite: '+t.replace(/\s+/g,' ').slice(0,900));}await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==6)throw new Error('devono esserci sei strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci quattro figure dello staff');
     // le altre linguette del Club: traguardi (ventidue schede, percentuale), albo d'oro e Hall of Fame
     await page.click('#clTabs button[data-k="ach"]');if(await page.locator('#clBox .ach').count()!==22||!/%/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi devono essere ventidue, con la percentuale');
     await page.click('#clTabs button[data-k="hon"]');if(await page.locator('#clBox .trt').count()<7)throw new Error('manca la bacheca dei trofei');
@@ -244,7 +244,12 @@ catch(e){
     await page.click('#mkBack');await vis('#home');
   });
   await step('partite simulate dal cruscotto',async()=>{
-    for(let i=0;i<2;i++){await page.click('#hSim');await vis('#simres');await page.click('#srOk');await page.waitForTimeout(100);}
+    for(let i=0;i<2;i++){
+      await page.click('#hSim');await vis('#simres');
+      const mny=await page.locator('#srMoney').innerText();   // i conti della giornata: biglietti (se in casa), sponsor, stipendi, saldo
+      if(!/Conti della giornata/.test(mny)||!/Sponsor/.test(mny)||!/Stipendi/.test(mny)||!/Saldo/.test(mny)||(/In casa/.test(mny)&&!/Biglietti/.test(mny))||(/In trasferta/.test(mny)&&(!/Trasferta/.test(mny)||/Biglietti/.test(mny))))throw new Error('conti della giornata incompleti: '+mny.replace(/\s+/g,' '));
+      await page.click('#srOk');await page.waitForTimeout(100);
+    }
   });
   await step('partita di carriera fino alla fine (con «Simula meta» e pausa)',async()=>{
     await page.click('#hPlay');await page.waitForTimeout(500);if(await page.locator('#menu').isVisible())await page.click('#bGo');

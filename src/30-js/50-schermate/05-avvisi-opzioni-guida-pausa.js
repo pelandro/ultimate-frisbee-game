@@ -16,7 +16,7 @@ function renderAlerts(){
 function openAlerts(){renderAlerts();$('alerts').classList.remove('hidden');}
 /* Tre livelli di avviso. EMERGENZE (infortuni, addii) e DECISIONI (ritiro annunciato, offerta, richiesta di cessione, sfide) aprono il riquadro da sole, una volta.
    Le NOTIZIE (crescita, rientri, umore tornato, club) non interrompono: accendono il numero sulla campanella e una riga sul cruscotto. */
-const AL_URGENT={inj:1,bye:1,off:1};
+const AL_URGENT={inj:1,bye:1,off:1,dir:1};   // dir: la dirigenza protesta per i conti in rosso
 const urgentAlerts=()=>(SV.alerts||[]).filter(a=>!a.seen&&(AL_URGENT[a.k]||a.act)).length;
 function pendingAlerts(){return (SV.alerts||[]).filter(a=>{if(a.done)return false;if(a.act==='job'||a.act==='trade')return true;const p=a.full?byFull(a.full):null;return p&&((a.act==='stay'&&p.ret===1)||(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)||(a.act==='unhappy'&&p.mood===2));}).length;}
 $('hBell').addEventListener('click',openAlerts);

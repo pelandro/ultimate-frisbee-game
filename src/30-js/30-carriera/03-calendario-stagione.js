@@ -148,7 +148,7 @@ function endSeason(){
   seasonEndDyn(rank);   // sfida della dirigenza, reazione delle rivali
   seasonAwards(rank,order);
   achCheck();
-  news('Stagione '+SV.season+' conclusa al '+rank+'° posto: premio di '+prize+' crediti'+(SV.obj?(ok?', obiettivo raggiunto (+'+SV.obj.reward+')':', obiettivo mancato'):'')+'.');
+  news('Stagione '+SV.season+' conclusa al '+rank+'° posto: premio di '+prize+' crediti'+(SV.obj?(ok?', bonus dello sponsor (+'+SV.obj.reward+')':', lo sponsor non paga il bonus'):'')+'.');
 }
 // nuova stagione: tutti i giocatori (anche i tuoi) invecchiano di un anno e le statistiche cambiano di conseguenza
 function agePlayers(){
@@ -175,7 +175,7 @@ function newSeason(){
 function recordResult(win,su,so){
   SV.susp=null;   // la partita e' finita: niente piu' da riprendere
   let msg='';SV.played=(SV.played||0)+1;
-  const incPre=matchIncome(win);   // l'incasso di questa partita si calcola con i tifosi di prima del risultato
+  const incPre=matchMoney(win);   // i conti di questa partita si calcolano con i tifosi e la forma di prima del risultato (26-economia-partita.js)
   if(isUS()&&SV.event==='camp'){
     fansBump(win,win?1:0);msg=usRecord(win,su,so);   // campionato USA: stagione regolare, Play-in, Nationals (35-usa/03-stagione-usa.js)
   }else if(isLN()&&SV.event==='camp'){
@@ -211,9 +211,10 @@ function recordResult(win,su,so){
   }
   SV.tTeam=false;
   // incasso, morale, affiatamento, condizione: chi ha giocato si stanca, la settimana fa recuperare (di piu' con la fisioterapia)
-  const inc=incPre,wg=wageBill();SV.cash+=inc-wg;SV.lastInc=inc-wg;SV.lastWage=wg;
-  // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso gli stipendi arrivano in ritardo e l'umore cala
-  SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-(SV.cash<0?3:0)+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede')+(hasTr('men','pap')?0.3:0),0,100);
+  SV.cash+=incPre.net;SV.lastInc=incPre.net;SV.lastWage=incPre.wage;SV.lastUp=incPre.up+incPre.stf;
+  econAfterMatch(incPre);   // registro dei conti, avvisi del rosso, premio a chi ha giocato una partita straordinaria
+  // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso l'umore cala sempre di piu' (redPen)
+  SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-redPen()+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede')+(hasTr('men','pap')?0.3:0),0,100);
   for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
   lifeAfterMatch();dynAfterMatch();
   if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0)buildMarket();   // il mercato si rinnova ogni 5 giornate
