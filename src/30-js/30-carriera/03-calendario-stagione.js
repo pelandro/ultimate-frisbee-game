@@ -139,7 +139,7 @@ function endSeason(){
   SV.po=null;SV.poRes=null;
   // premi di fine stagione: classifica, obiettivo, reputazione, premi individuali
   const n=SV.mem[SV.sr].length,prize=Math.round((n-rank+1)*3*SR_K[SV.sr]);SV.cash+=prize;
-  const ok=SV.obj&&rank<=SV.obj.tgt;
+  const ok=objMet(rank,{promoted:nsr<SV.sr,tit});
   if(SV.obj){if(ok){SV.cash+=SV.obj.reward;SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}
   if(nsr<SV.sr)SV.rep=clamp(SV.rep+6,0,100);else if(nsr>SV.sr)SV.rep=clamp(SV.rep-8,0,100);
   if(tit&&SV.sr==='A')SV.rep=clamp(SV.rep+6,0,100);

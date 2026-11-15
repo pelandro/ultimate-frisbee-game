@@ -289,7 +289,7 @@ function lnEndSeason(){
   else if(ni>ci)short=`Retrocessi in ${LN_DEF[lk].tiers[ni].name}.`;
   else short=`Restate in ${tr.name}: ${rank}° su ${n}.`;
   // premio, obiettivo, reputazione e tifosi
-  const prize=Math.round(LN_PRIZE(Math.max(1,n-rank+1)*3)*SR_K[SV.sr]),ok=!!(SV.obj&&rank<=SV.obj.tgt);SV.cash+=prize;
+  const prize=Math.round(LN_PRIZE(Math.max(1,n-rank+1)*3)*SR_K[SV.sr]),ok=objMet(rank,{promoted:ni<ci,tit});SV.cash+=prize;
   if(SV.obj){if(ok){SV.cash+=SV.obj.reward;SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}
   if(ni<ci)SV.rep=clamp(SV.rep+6,0,100);else if(ni>ci)SV.rep=clamp(SV.rep-8,0,100);
   if(tit)SV.rep=clamp(SV.rep+6,0,100);

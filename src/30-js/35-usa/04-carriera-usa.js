@@ -16,18 +16,9 @@ function usStartCareer(name,opt){
   persist();
 }
 const usRepStart=()=>Math.round(20+(US_NAMES.length-US_TEAM[SV.team].rank)/(US_NAMES.length-1)*40);   // i club piu' prestigiosi partono con piu' reputazione (da 21 a 60)
-// ---- obiettivi della dirigenza: secondo il livello del club tra i 48 ----
-const US_OBJ=[
-  {id:'pin',lvl:1,txt:'Qualificarsi ai Play-in: chiudere tra le prime posizioni della Conference (dipende dai posti della regione)',tgt:3,rw:30},
-  {id:'nat',lvl:2,txt:'Raggiungere i Nationals',tgt:4,rw:44},
-  {id:'sf',lvl:5,txt:'Arrivare alle semifinali dei Nationals',tgt:2,rw:62},
-  {id:'tit',lvl:7,txt:'Vincere il titolo nazionale',tgt:1,rw:90}
-];
-function usObjective(){
-  const ord=US_NAMES.slice().sort((a,b)=>teamPow(b)-teamPow(a)),exp=ord.indexOf(SV.team)+1,o=US_OBJ[exp<=6?3:(exp<=15?2:(exp<=30?1:0))];
-  SV.obj={id:o.id,lvl:o.lvl,tgt:o.tgt,txt:o.txt,exp,reward:Math.round(o.rw*SR_K.U/1.65)};
-}
-const usObjOk=()=>!!(SV.obj&&(SV.us.stage|0)>=SV.obj.lvl);
+// ---- obiettivi della dirigenza: secondo il livello del club tra i 48 (la scala US_RUNG e' in 30-carriera/27-obiettivi-sponsor.js) ----
+function usObjective(){SV.obj=usObjFor('bal',objExp(US_NAMES,n=>-US_TEAM[n].rank));}
+const usObjOk=rank=>!!(SV.obj&&(SV.us.stage|0)>=SV.obj.lvl&&(!SV.obj.cr||rank<=SV.obj.cr));
 // ---- fine stagione (chiamata da endSeason quando i Nationals sono finiti) ----
 function usEndSeason(){
   const U=SV.us,rank=ranking(SV.tab,SV.mem.U).indexOf(SV.team)+1,st=U.stage|0,champ=U.nat&&U.nat.champ?U.nat.champ:null,tit=champ===SV.team;
@@ -36,7 +27,7 @@ function usEndSeason(){
   if(tit)short='Siete campioni degli Stati Uniti!';
   else if(st===0)short=`Fuori dai Play-in (${rank}° nella ${usConfName(U.cf)}).`;
   else short=({1:'Eliminati ai Play-in.',2:'Eliminati nel girone dei Nationals.',3:'Eliminati ai prequarti dei Nationals.',4:'Eliminati ai quarti dei Nationals.',5:'Eliminati in semifinale ai Nationals.',6:'Finale dei Nationals persa.'})[st];
-  const prize=Math.round(US_PRIZE[st]*SR_K.U),ok=usObjOk();SV.cash+=prize;
+  const prize=Math.round(US_PRIZE[st]*SR_K.U),ok=usObjOk(rank);SV.cash+=prize;
   if(SV.obj){if(ok){SV.cash+=SV.obj.reward;SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,st-SV.obj.lvl)),0,100);}else SV.rep=clamp(SV.rep-4,0,100);}
   if(tit)SV.rep=clamp(SV.rep+6,0,100);
   SV.fans=clamp(fansOf()+[-3,-1,0,1,2,3,4,6][st],0,100);

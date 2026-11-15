@@ -35,7 +35,9 @@ function careerSelfTest(seasons,seed){
         for(const p of SQ)if(!p.spec&&p.age<=26&&SV.cash>specCost(p)+120){setSpec(p,Object.keys(SPECS)[Math.floor(Math.random()*6)]);spec++;break;}
         duoMax=Math.max(duoMax,...Object.values(SV.duo||{}),0);
         if(SV.po&&SV.po.on)poDays++;
-        const a0=SV.alN|0,sp0=SV.sp&&SV.sp.off?SV.sp.off:null;if(sp0){spSeen.add(s);const ok3=sp0.length===3&&sp0.every(d=>d.fix>0&&d.obj&&d.obj.reward>0&&d.obj.txt)&&sp0[0].fix>sp0[1].fix&&sp0[1].fix>sp0[2].fix&&sp0[2].obj.reward>sp0[1].obj.reward&&sp0[1].obj.reward>sp0[0].obj.reward;if(!ok3)spBad.push(`S${s}: offerte non valide`);}   // sicuro: piu' soldi a partita e bonus piu' piccolo; ambizioso: l'opposto
+        const a0=SV.alN|0,sp0=SV.sp&&SV.sp.off?SV.sp.off:null;if(sp0){spSeen.add(s);const ok3=sp0.length===3&&sp0.every(d=>d.fix>0&&d.obj&&d.obj.reward>0&&d.obj.txt)&&sp0[0].fix>sp0[1].fix&&sp0[1].fix>sp0[2].fix&&sp0[2].obj.reward>sp0[1].obj.reward&&sp0[1].obj.reward>sp0[0].obj.reward;if(!ok3)spBad.push(`S${s}: offerte non valide`);
+          if(!isUS()&&!sp0[0].obj.rel){const t=sp0.map(d=>d.obj.tgt),c0=objCtx();if(!(t[2]<=t[1]&&t[1]<=t[0])||(c0.n>=8&&sp0[1].obj.exp<=c0.n/2&&t[0]>=c0.safe))spBad.push(`S${s}: obiettivi ${t.join('/')} (attesa ${sp0[1].obj.exp} su ${c0.n})`);}   // dal piu' difficile al piu' facile; a meta' classifica il sicuro non e' la sola salvezza
+          if(isUS()){const l=sp0.map(d=>d.obj.lvl*10+(8-(d.obj.cr||8)));if(!(l[2]>=l[1]&&l[1]>=l[0]))spBad.push(`S${s}: obiettivi USA ${sp0.map(d=>d.obj.id).join('/')}`);}}   // sicuro: piu' soldi a partita e bonus piu' piccolo; ambizioso: l'opposto
         simCareerMatch();hide();
         {const L=SV.lastMoney;   // il conto della partita: le voci tornano, mai oltre la capienza, biglietti solo in casa o al torneo, trasferta solo fuori casa
          if(!L||L.net!==L.gate+L.spon+L.wb-L.trv-L.wage-L.up-L.stf||!isFinite(L.net)||(L.v==='H'&&(L.att>L.cap||L.att<=0||L.trv))||(L.v==='A'&&(L.gate||!L.trv))||(L.v==='N'&&!L.trv)||L.spon<=0||L.wb<0||(!L.win&&L.wb))moneyBad.push(`S${s} G${r+1}: ${L?JSON.stringify(L).slice(0,90):'manca'}`);
@@ -148,6 +150,9 @@ function careerSelfTest(seasons,seed){
     rows.push(row('Indirizzi personali assegnati nel test',String(spec),spec>=1));
     rows.push(row('Economia: ogni partita ha un conto che torna (voci, capienza, biglietti in casa, trasferta fuori)',moneyBad.length?moneyBad.slice(0,2).join('; '):`sì: ${ven.H} in casa, ${ven.A} in trasferta, ${ven.N} a campo neutro`,!moneyBad.length&&ven.H>0&&ven.A>0,'in campionato casa e trasferta si alternano'));
     rows.push(row('Economia: saldo medio a partita (prima di premi di fine stagione)',(netTot/Math.max(1,matchesTot)).toFixed(1),matchesTot>0&&netTot/matchesTot>-25&&netTot/matchesTot<60,'ne' + 'ssun conto fuori scala: la squadra del test investe in strutture e staff'));
+    {const bad=[];for(const n of [8,14,16])for(let e=1;e<=n;e++){const T=objTargets(e,n,n-2);   // tre traguardi distinti dal piu' difficile al piu' facile, mai oltre la salvezza, e per chi sta nella meta' alta il sicuro non e' la salvezza
+        if(!(T.amb<=T.bal&&T.bal<=T.sic)||T.sic>n-1||T.amb<1||(e>=3&&T.amb>=e)||(n>=14&&e<=n/2&&(T.sic>=n-2||T.sic-e<2)))bad.push(`${e}/${n}: ${T.amb}-${T.bal}-${T.sic}`);}
+      rows.push(row('Obiettivi dello sponsor: coerenti con la posizione attesa (ambizioso meglio, sicuro mai solo la salvezza per chi e\' a meta\' classifica)',bad.length?bad.slice(0,3).join('; '):'sì',!bad.length));}
     rows.push(row('Sponsor: tre offerte a stagione (sicuro, equilibrato, ambizioso) con soldi e bonus coerenti',spBad.length?spBad.slice(0,2).join('; '):`sì (${spSeen.size} stagioni)`,!spBad.length&&spSeen.size>=seasons-1));
     rows.push(row('Premio a un giocatore dopo una partita straordinaria (imprevisto)',String(bonusEv),true,'informativo: capita ogni tanto'));
     // partenza da subentrato: una squadra in crisi a una giornata dalla fine; si gioca l'ultima partita e si passa all'estate (cambia la carriera di prova: va per ultimo)
