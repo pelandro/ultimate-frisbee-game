@@ -222,7 +222,8 @@ tip:`Non cambiare tutta la linea a ogni partita: l’intesa si costruisce restan
 `Circa metà dei giocatori ha una <b>motivazione</b> scritta sotto il nome: «Vuole giocare» firma solo se sarebbe titolare; «Ambizioso» non scende in Serie C; «Ingaggio alto» costa il 20% in più; «Cerca un progetto» fa lo sconto se Vivaio o Campo di allenamento sono almeno al livello 2.`,
 `Con i conti in rosso non si compra.`,
 `Il potenziale di un giovane è una <b>scommessa</b>: dipende dal livello della tua serie e cade in una fascia (quasi sempre nella media o buono, a volte una delusione, raramente un talento o un fenomeno). Tra i 18 e i 22 anni qualcuno si ferma prima del previsto e qualcuno scopre più margine. Gli adulti hanno poco margine, e meno con l’età.`,
-`Se la tua squadra è sotto la media della serie (per esempio appena promossa), il mercato offre giocatori della categoria: costano, ma ti fanno salire. Se sei già tra i più forti, l’offerta non cresce insieme a te.`],
+`Se la tua squadra è sotto la media della serie (per esempio appena promossa), il mercato offre giocatori della categoria: costano, ma ti fanno salire. Se sei già tra i più forti, l’offerta non cresce insieme a te.`,
+`Si cresce più in fretta nelle serie basse (Serie C +35%, B +15%) e più piano in alto (A −10%). Se sei già più forte della migliore delle altre, la crescita rallenta: dominare a lungo costa fatica.`],
 tip:`Un giovane col potenziale alto che oggi è scarso diventa il titolare di domani: osservalo prima di decidere.`},
 {id:'car-scouting',t:'Osservazioni e rapporti',w:'Mercato › Osserva / Rapporto',b:[
 `Far osservare un giocatore costa crediti (1 in meno per livello della Rete di osservatori). Ogni osservazione sblocca una parte del rapporto:`,

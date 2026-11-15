@@ -41,3 +41,18 @@ function potNews(){   // dopo l'estate: le sorprese (20-sorprese-crescita.js) de
   }
   for(const n in SV.rost)for(const o of SV.rost[n]||[])if(o.pvx)delete o.pvx;
 }
+/* ---- CRESCITA SECONDO LA SERIE: piu' facile in basso, via via piu' dura ----
+   Moltiplica allenamenti ed esperienza dei tuoi giocatori: Serie C 1,35, Serie B 1,15, Serie A 0,9 (USA e leghe europee secondo SR_K, cioe' il peso
+   della categoria). In piu', se la tua squadra e' gia' piu' forte della migliore delle altre della tua divisione, si cresce meno (fino alla meta'):
+   prima chi dominava continuava a staccarsi (97 contro 92 della seconda). Le squadre del computer non lo usano. */
+const srGrowK=sr=>clamp(1.35-((SR_K[sr]||1)-1)*0.7,0.9,1.35);
+const LEAD_K=0.08;   // per ogni punto di forza sopra la migliore delle altre, l'8% di crescita in meno (al massimo la meta')
+let cgk={key:'',v:1};   // calcolo una volta a giornata: trainMul lo chiede per ogni giocatore e ogni anteprima
+function carGrowK(){
+  if(!SV||!SV.team)return 1;
+  const key=SV.team+'|'+SV.season+'|'+SV.sr+'|'+(SV.played|0);if(cgk.key===key)return cgk.v;
+  const k=srGrowK(SV.sr);
+  const ns=((SV.mem&&SV.mem[SV.sr])||[]).filter(n=>n!==SV.team);
+  const lead=ns.length?squadPower()-Math.max(...ns.map(teamPow)):0;
+  cgk={key,v:k*(lead>0?clamp(1-LEAD_K*lead,0.5,1):1)};return cgk.v;
+}

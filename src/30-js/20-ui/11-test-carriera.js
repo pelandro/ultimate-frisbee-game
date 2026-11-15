@@ -164,6 +164,8 @@ function careerSelfTest(seasons,seed){
         md(g.y)>=7&&md(g.y)<=15&&md(g.m)<=7&&md(g.o)<=4.5&&md(g.y)>md(g.m)&&md(g.m)>md(g.o)));
       let dn=0,up=0,lost=0;const N=1500;
       for(let i=0;i<N;i++){const o=genPlayer(50,17,'sorp|'+i,potB(70));const s0=KEYS.reduce((a,k)=>a+o.s[k],0),t0=o.tl+o.tf+o.tv;for(let y=0;y<6;y++){o.pvx=0;const b=KEYS.reduce((a,k)=>a+o.s[k],0);o.age++;potSurprise(o);if(KEYS.reduce((a,k)=>a+o.s[k],0)<b)lost++;}const t1=o.tl+o.tf+o.tv;if(t1<t0)dn++;else if(t1>t0)up++;}
+      rows.push(row('Crescita secondo la serie: più facile in basso, più dura in alto; chi domina la sua serie cresce meno',
+        `C ${srGrowK('C').toFixed(2)}, B ${srGrowK('B').toFixed(2)}, A ${srGrowK('A').toFixed(2)}, con 5 punti di vantaggio ×${clamp(1-LEAD_K*5,0.5,1).toFixed(2)}`,srGrowK('C')>srGrowK('B')&&srGrowK('B')>srGrowK('A')&&srGrowK('A')<1&&LEAD_K>0));
       rows.push(row('Sorprese di crescita: qualche giovane si ferma, pochi scoprono più margine, nessuno perde punti',
         `${Math.round(dn/N*100)}% si fermano, ${Math.round(up/N*100)}% salgono`,dn/N>=0.08&&dn/N<=0.16&&up/N>=0.03&&up/N<=0.09&&!lost));
     }
