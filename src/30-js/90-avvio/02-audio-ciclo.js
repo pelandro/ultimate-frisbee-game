@@ -225,6 +225,7 @@ function syncToggles(){   // audio e stacchi laterali si cambiano da piu' punti 
   $('paSnd').classList.toggle('off',!on);$('paCine').classList.toggle('off',!c);   // nella pausa l'interruttore mostra anche lo stato con il colore
   for(const id of ['opSnd','paSnd'])$(id).textContent='Audio: '+(on?'sì':'no');
   for(const id of ['opCine','paCine'])$(id).textContent='Stacchi laterali: '+(c?'sì':'no');
+  $('paFs').textContent='Schermo intero: '+(fsOn()?'sì':'no');$('paFs').classList.toggle('off',!fsOn());
   for(const id of ['opDef','paDef'])$(id).textContent='Difesa: '+DEF_LBL[G.opt.def].toLowerCase();
   $('sDefS').textContent=DEF_LBL[G.opt.def]+': '+DEF_TXT[G.opt.def];
   $('sRotS').textContent=rotPref?'Accesa: in verticale il gioco si gira da solo':'Spenta: in verticale compare «Gira lo schermo»';
