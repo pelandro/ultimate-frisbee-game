@@ -143,7 +143,7 @@ function endSeason(){
   const n=SV.mem[SV.sr].length,prize=Math.round((n-rank+1)*3*SR_K[SV.sr]);SV.cash+=prize;
   const ok=objMet(rank,{promoted:nsr<SV.sr,tit});
   if(SV.obj){if(ok){SV.cash+=SV.obj.reward;SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}
-  if(nsr<SV.sr)SV.rep=clamp(SV.rep+6,0,100);else if(nsr>SV.sr)SV.rep=clamp(SV.rep-8,0,100);
+  if(nsr<SV.sr){SV.rep=clamp(SV.rep+6,0,100);const pp=promoPrize(nsr);SV.cash+=pp;SV.next.promoP=pp;news('Premio della lega per la promozione: +'+pp+' crediti per rinforzarvi in '+SERIES_NAME[nsr]+'.');}else if(nsr>SV.sr)SV.rep=clamp(SV.rep-8,0,100);
   if(tit&&SV.sr==='A')SV.rep=clamp(SV.rep+6,0,100);
   fansSeason(tit&&SV.sr==='A'?1:rank,nsr,SV.sr);
   SV.next.prize=prize;SV.next.objOk=!!ok;
@@ -220,7 +220,7 @@ function recordResult(win,su,so){
   econAfterMatch(incPre);   // registro dei conti, avvisi del rosso, premio a chi ha giocato una partita straordinaria
   // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso l'umore cala sempre di piu' (redPen)
   SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-redPen()+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede')+(hasTr('men','pap')?0.3:0),0,100);
-  for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
+  for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+2*staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
   lifeAfterMatch();dynAfterMatch();
   if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0&&!xm)buildMarket();   // il mercato si rinnova ogni 5 giornate
   achCheck();   // traguardi (23-traguardi.js)

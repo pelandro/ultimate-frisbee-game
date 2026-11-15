@@ -13,9 +13,9 @@ function trainForecast(list,opt,single){
   let pts=0,cond=0,risk=0,n=0,atRisk=0;
   for(const p of list){
     if(p.inj&&opt.id!=='rec')continue;n++;
-    if(opt.id==='rec'){cond+=Math.min(100-p.cond,REST_GAIN+(single?8:0)+2*facLv('fis')+2*staffLv('fit'));continue;}
+    if(opt.id==='rec'){cond+=Math.min(100-p.cond,REST_GAIN+(single?8:0)+2*facLv('fis')+4*staffLv('fit'));continue;}
     pts+=trainExpect(p,opt,trainMul(p)*(single?1.5:1)*it.g);
-    cond-=Math.round((single?TRAIN_COST1:TRAIN_COST)*it.c*(specBonus(p,opt.keys)>0?1.15:1));
+    cond-=Math.round((single?TRAIN_COST1:TRAIN_COST)*it.c*(specBonus(p,opt.keys)>0?1.15:1)*trCostK());
     const r=(trainRisk(p)*it.r+(it.r>1?0.004:0))*fis;risk=1-(1-risk)*(1-r);if(trainRisk(p)>0)atRisk++;
   }
   return {pts,cond:n?cond/n:0,risk,n,atRisk};
