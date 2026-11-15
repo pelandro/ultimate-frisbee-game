@@ -42,7 +42,7 @@ function utOppRoster(power,seed){
   for(let i=0;i<7;i++)out.push(utPlayer(i<3?'H':'C',clamp(power-12+(rng()-0.5)*10,30,99),rng));
   return out;
 }
-const UT_DIFF=[{name:'Facile',txt:'L’IA avversaria gioca come sempre.'},{name:'Medio',txt:'L’IA avversaria sceglie e reagisce un po’ meglio.'},{name:'Difficile',txt:'L’IA avversaria sceglie e reagisce molto meglio.'},{name:'Estrema',txt:'Come Difficile, ma la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'}];
+const UT_DIFF=[{name:'Facile',txt:'L’IA avversaria gioca come sempre.'},{name:'Medio',txt:'L’IA avversaria sceglie e reagisce un po’ meglio.'},{name:'Difficile',txt:'L’IA avversaria sceglie e reagisce molto meglio.'},{name:'Estrema',txt:'Ancora più attenta del Difficile, e la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'}];
 const UT={on:false,d:0,manual:false,col:[],sel:[],round:0,tid:0,packs:[],st:'play',res:'',opp:[],stage:'closed',cur:[],coins:0,stat:{w:0,t:0,up:0},claimed:{},mode:'sel',pity:0,rp:false,ms:0};   // pity: pacchetti di fila senza Epici   // rp: e' caricata la squadra di Real player (false = quella del torneo contro il computer); ms: traguardi di punti gia' premiati (solo Real player)   // col: giocatori; sel: indici dei 7 titolari; packs: qualita' dei pacchetti da aprire
 function utSave(){try{localStorage.setItem(UT.rp?UTR_KEY:UT_KEY,JSON.stringify({v:2,ms:UT.ms|0,d:UT.d,manual:UT.manual,col:UT.col,sel:UT.sel,round:UT.round,tid:UT.tid,packs:UT.packs,st:UT.st,res:UT.res,coins:UT.coins,stat:UT.stat,claimed:UT.claimed,pity:UT.pity|0}));}catch(e){}}
 function utOpps(){   // 6 avversarie del torneo: squadre vere scelte con un seme
@@ -88,7 +88,7 @@ function renderUT(){
   $('uTeam').classList.toggle('hidden',!has);
   $('uTeamS').textContent=has?`${UT.col.length} giocatori · scegli i 7 titolari`:'';
   $('uNew').classList.toggle('hidden',UT.st==='play');
-  $('uDiff').innerHTML=UT_DIFF.map((d,i)=>`<button type="button" class="sg${i===UT.d?' on':''}" data-d="${i}">${d.name}</button>`).join('');$('uDiffN').textContent=UT_DIFF[UT.d].txt+' Le avversarie hanno sempre la forza del turno.';
+  $('uDiff').innerHTML=UT_DIFF.map((d,i)=>`<button type="button" class="sg${i===UT.d?' on':''}" data-d="${i}">${d.name}</button>`).join('');$('uDiffN').textContent=UT_DIFF[UT.d].txt+' Le avversarie hanno la forza del turno'+(DIFF_PLUS[UT.d|0]?', più '+DIFF_PLUS[UT.d|0]+' a tutte le statistiche.':'.');
   $('uMsg').textContent=UT.res||'';
 }
 $('tUT').addEventListener('click',()=>showScreen('utMode'));   // prima si sceglie: Computer (questa pagina) o Real player (04-ut-online.js)
@@ -191,7 +191,7 @@ function simCareerMatch(){
 function simUTMatch(){
   if(UT.sel.length!==7||UT.st!=='play'||UT.packs.length)return;
   const o=UT.opp[UT.round],my=UT.sel.reduce((a,i)=>a+mean9(UT.col[i]),0)/7;
-  const r=simMatch(my,o.power,UT.d),w=r.a>r.b,msg=utRecord(w);
+  const r=simMatch(my,o.power+(DIFF_PLUS[clamp(UT.d|0,0,3)]||0),UT.d),w=r.a>r.b,msg=utRecord(w);
   showSim(w,`Ultimate Team ${r.a} – ${r.b} ${o.name}`,msg,()=>renderUT());
 }
 function startUT(){
@@ -200,11 +200,11 @@ function startUT(){
   if(hasCareer()){persist();QM.bak=JSON.stringify(SV);}else QM.bak=null;   // la carriera resta com'e': viene rimessa alla fine
   QM.on=true;UT.on=true;
   setSquad(UT.col);setLineup(UT.sel.slice());
-  applyRoster(utOppRoster(UT_POWERS[r],'ut|'+UT.tid+'|'+r));
+  applyRoster(utOppRoster(UT_POWERS[r],'ut|'+UT.tid+'|'+r));oppBoost(DIFF_PLUS[clamp(UT.d|0,0,3)]);
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;
   G.oppName=opp.name;G.myName='Ultimate Team';G.matchLabel='Ultimate Team · '+UT_ROUNDS[r];
-  newGame();rollWind();G.lvl=[0,Math.min(2,UT.d|0)];G.oppPlus=0;G.idn=[null,teamIdentity(opp.name,T[1])];G.xtr=(UT.d|0)===3;G.hint=(UT.d|0)===0;G.routes=(UT.d|0)<=1;G.inMatch=true;G.recorded=false;   // difficolta': IA come in partita veloce, Estrema = traiettoria nascosta
+  newGame();rollWind();G.lvl=[0,clamp(UT.d|0,0,3)];G.oppPlus=DIFF_PLUS[clamp(UT.d|0,0,3)];G.idn=[null,teamIdentity(opp.name,T[1])];G.xtr=(UT.d|0)===3;G.hint=(UT.d|0)===0;G.routes=(UT.d|0)<=1;G.inMatch=true;G.recorded=false;   // difficolta': IA come in partita veloce, Estrema = traiettoria nascosta
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
 }
