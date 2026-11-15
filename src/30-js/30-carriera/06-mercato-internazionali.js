@@ -75,8 +75,10 @@ function buildMarket(){
   // reputazione), il resto svincolati. Prima i fuoriclasse erano 5-6 su 20 e poi 2-3 su 15, a ogni livello e con potenziali molto alti: ora i campioni sono rari
   // (le stelle solo se alla portata del tuo livello, i giovani di talento sono pochi, gli svincolati adulti hanno poco margine, chi e' in vendita e' di un club del tuo livello).
   const lv=squadPower(),sd=SV.seed+'|mk|'+SV.season+'|'+(SV.mkN=(SV.mkN||0)+1),R=mulberry32(hashStr(sd)),out=[],viv=SV.fac.viv|0,nY=4+Math.min(viv,2),nSale=3,nStar=1+(SV.rep>=40?1:0)+(SV.rep>=70&&R()<0.4?1:0),nFree=MARKET_N-nY-nSale-nStar;
-  for(let i=0;i<nY;i++){const o=genPlayer(lv-11+R()*7+viv,16+Math.floor(R()*4),sd+'y'+i,lv+3+Math.pow(R(),2)*20+viv*2);out.push({o,kind:'Giovane promessa',from:null});}   // pochi giovani di vero talento
-  for(let i=0;i<nFree;i++){const l0=lv-5+R()*9,o=genPlayer(l0,23+Math.floor(R()*11),sd+'f'+i,l0+1+R()*8);out.push({o,kind:'Svincolato',from:null});}   // un adulto ha poco margine
+  // giovani: potenziale a fasce attorno al livello della serie (29-potenziali.js); adulti: livello tra la tua squadra e la tua serie, poco margine
+  const ry=potRef('mkt'),la=potRef('adult');
+  for(let i=0;i<nY;i++){const o=genPlayer(ry-11+R()*7+viv,16+Math.floor(R()*4),sd+'y'+i,potB(potDraw('mkt',ry,R,viv).p));out.push({o,kind:'Giovane promessa',from:null});}
+  for(let i=0;i<nFree;i++){const l0=la-5+R()*9,ag=23+Math.floor(R()*11),o=genPlayer(l0,ag,sd+'f'+i,adultPot(l0,ag,R));out.push({o,kind:'Svincolato',from:null});}   // un adulto ha poco margine
   const teams=Object.keys(SV.rost).filter(n=>SV.rost[n]&&SV.rost[n].length>14&&teamPow(n)>=lv-14&&teamPow(n)<=lv+12);   // club del tuo livello, non i migliori della lega
   for(let i=0;i<nSale&&teams.length;i++){
     const n=teams[Math.floor(R()*teams.length)],ro=SV.rost[n].slice().sort((a,b)=>ovrX(b)-ovrX(a)),o=ro[4+Math.floor(R()*Math.max(1,ro.length-4))];
@@ -88,7 +90,7 @@ function buildMarket(){
     const r=pool.splice(Math.floor(R()*pool.length),1)[0],o=starPlayer(r,mulberry32(hashStr(SV.seed+'|star|'+r[0]+r[1])));
     out.push({o,kind:ovr(o)>=86?'Stella internazionale':'Giocatore internazionale',from:null,nat:r[5],star:true});
   }
-  for(let i=0;out.length<MARKET_N;i++){const o=genPlayer(lv-5+R()*9,23+Math.floor(R()*11),sd+'x'+i);out.push({o,kind:'Svincolato',from:null});}   // se una squadra non ha dato il suo giocatore, si completa con uno svincolato
+  for(let i=0;out.length<MARKET_N;i++){const l0=la-5+R()*9,ag=23+Math.floor(R()*11),o=genPlayer(l0,ag,sd+'x'+i,adultPot(l0,ag,R));out.push({o,kind:'Svincolato',from:null});}   // se una squadra non ha dato il suo giocatore, si completa con uno svincolato
   for(const m of out){m.price=Math.round(priceOf(m.o)*(m.from?1.3:(m.star?1.15:1)));m.base=m.price;motAssign(m,R);}
   SV.market=out;mkReprice();   // motivazioni e prezzi che ne dipendono (18-motivazioni.js)
 }
@@ -96,7 +98,7 @@ function canSign(m){return SV.cash<0?'Crediti insufficienti':SQ.length>=SQ_MAX?'
 function signPlayer(i){
   const m=SV.market[i];if(!m||canSign(m))return false;
   SV.cash-=m.price;SV.market.splice(i,1);
-  if(m.from&&SV.rost[m.from]){const ro=SV.rost[m.from],k=ro.findIndex(x=>x===m.o||(x.full&&x.full===m.o.full));if(k>=0)ro.splice(k,1);if(ro.length<14)ro.push(genPlayer(rosterPower(ro)-8,17+Math.floor(Math.random()*4),SV.seed+'|rep|'+m.from+'|'+SV.season+'|'+ro.length));}
+  if(m.from&&SV.rost[m.from]){const ro=SV.rost[m.from],k=ro.findIndex(x=>x===m.o||(x.full&&x.full===m.o.full));if(k>=0)ro.splice(k,1);if(ro.length<14){const lv0=rosterPower(ro);ro.push(genPlayer(lv0-8,17+Math.floor(Math.random()*4),SV.seed+'|rep|'+m.from+'|'+SV.season+'|'+ro.length,potB(potDraw('mkt',lv0,Math.random,0).p)));}}
   const o=Object.assign({},m.o,{sk:Math.max(1,m.o.sk|0),cond:100,car:null,s:Object.assign({},m.o.s)});
   const list=squadData();list.push(o);const lO=SV.lineO,lD=SV.lineD;setSquad(list);SV.lineO=lO;SV.lineD=lD;fixLines();
   SV.chem=Math.max(0,SV.chem-(4-2*fitOf(o)));news('Acquistato '+o.label+' ('+POS_NAME[posOf(o)]+', '+ovr(o)+') per '+m.price+' crediti'+(m.from?' da '+m.from:'')+'.');

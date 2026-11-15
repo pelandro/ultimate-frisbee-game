@@ -4,12 +4,13 @@ const CATS=[{id:'tec',name:'Tecnica',keys:['lan','buc','spa','pre']},{id:'atl',n
 const catLevel=(p,c)=>Math.round(c.keys.reduce((a,k)=>a+p.s[k],0)/c.keys.length);
 const TRAIN_COST=7,TRAIN_COST1=5,REST_GAIN=18;   // condizione persa con l'allenamento di squadra, con quello singolo, e recuperata col Recupero
 function trainGain(t){return t>=90?3:(t>=80?2:1);}
+const TRAIN_K=0.95;   // resa di una seduta rispetto alla taratura iniziale: un po' meno, perche' le rose crescevano troppo in fretta
 function trainCategory(p,c,boost){
   // punti: in media 1,6 a seduta per un talento normale a 24-27 anni, di piu' per i giovani e per chi cresce in fretta, quasi nulla vicino al massimo.
   // Tattica e Difesa hanno meno statistiche: meta' dei punti, cosi' nessuna statistica corre piu' delle altre
   const tal=c.keys.reduce((a,k)=>a+talX(p,k),0)/c.keys.length,gained={};
   const sb=specBonus(p,c.keys),sp=p.spec&&SPECS[p.spec]?SPECS[p.spec].keys:null;   // indirizzo personale: piu' punti, e i punti vanno alle sue statistiche
-  let pts=(0.8+trainGain(tal)*0.4)*(p.dev||1)*Math.sqrt(ageMul(p.age))*(c.keys.length<3?0.55:1)*(boost||1)*(1+sb),n=Math.floor(pts);if(Math.random()<pts-n)n++;
+  let pts=TRAIN_K*(0.8+trainGain(tal)*0.4)*(p.dev||1)*Math.sqrt(ageMul(p.age))*(c.keys.length<3?0.55:1)*(boost||1)*(1+sb),n=Math.floor(pts);if(Math.random()<pts-n)n++;
   for(let i=0;i<n;i++){
     const el=c.keys.filter(k=>p.s[k]<capX(p,k));if(!el.length)break;
     let t=0;const ws=el.map(k=>{const r=clamp((capX(p,k)-p.s[k])/10,0.08,1)*(sp&&sp.includes(k)?1+2*specRoom(p):1);t+=r;return r;});
@@ -25,7 +26,7 @@ function trainCategory(p,c,boost){
 function trainExpect(p,c,boost){
   if(!c.keys.length)return 0;
   const tal=c.keys.reduce((a,k)=>a+talX(p,k),0)/c.keys.length,sb=specBonus(p,c.keys),sp=p.spec&&SPECS[p.spec]?SPECS[p.spec].keys:null;
-  const pts=(0.8+trainGain(tal)*0.4)*(p.dev||1)*Math.sqrt(ageMul(p.age))*(c.keys.length<3?0.55:1)*(boost||1)*(1+sb);
+  const pts=TRAIN_K*(0.8+trainGain(tal)*0.4)*(p.dev||1)*Math.sqrt(ageMul(p.age))*(c.keys.length<3?0.55:1)*(boost||1)*(1+sb);
   const el=c.keys.filter(k=>p.s[k]<capX(p,k));if(!el.length)return 0;
   let t=0,e=0;for(const k of el){const r=clamp((capX(p,k)-p.s[k])/10,0.08,1)*(sp&&sp.includes(k)?1+2*specRoom(p):1);t+=r;e+=r*clamp((capX(p,k)-p.s[k])/6,0.2,1)*lvlF(p.s[k]);}
   return pts*e/t;
@@ -106,6 +107,15 @@ function applyTeam(power,seedStr){applyRoster(makeRoster(power,seedStr));}
 // piu' assist e mete = giocatore piu' forte. Tante mete e pochi assist = cutter (piu' fisico), il contrario = handler (piu' lanci),
 // valori simili = giocatore bilanciato in tutto. Nomi ed eta' sono quelli veri; nessun giocatore viene inventato se il roster basta.
 const REAL_MIN=14,REAL_MAX=55;
+// margine di crescita di un giocatore vero: base per eta' e fascia (r tra 0 e 1, fissa per giocatore): 14% delusione, 44% nella media, 28% buono, 11% talento, 3% fenomeno.
+// Le fasce pesano meno con l'eta': a 30 anni un «fenomeno» ha comunque poco margine. REAL_TK copre lo scarto tra il livello e le statistiche piu' alte del ruolo
+const REAL_TK=0;
+function realGap(age,r){
+  const base=age<=19?9:(age<=21?7:(age<=23?5:(age<=26?3:(age<=29?1.5:(age<=32?0:-1))))),sc=age<=23?1:(age<=29?0.7:0.4);
+  const B=[[0.14,-5,-1],[0.58,-1,3],[0.86,3,7],[0.97,7,12],[1,12,18]];
+  let lo=0;for(const [t,a,b] of B){if(r<t)return base+sc*(a+(b-a)*(r-lo)/(t-lo));lo=t;}
+  return base;
+}
 const flavorAge=(fl,rng)=>fl==='u17'?15+Math.floor(rng()*3):(fl==='u20'?17+Math.floor(rng()*3):(fl==='newgen'?17+Math.floor(rng()*5):(fl==='wise'?35+Math.floor(rng()*20):19+Math.floor(rng()*12))));
 function realRoster(rows,seedStr,opt){
   if(opt.target!==undefined&&opt.off===undefined){   // forza fissata (Serie A e B): si sposta il livello di tutti finche' la media dei 7 migliori e' quella voluta
@@ -137,10 +147,11 @@ function realRoster(rows,seedStr,opt){
     const tot=o.a+o.g,d=tot?(o.a-o.g)/tot:0,lvl=44+(tot-REAL_MIN)/(REAL_MAX-REAL_MIN)*22+(opt.off||0),Rv=opt.low?lvl*0.9+5.5:lvl;
     const role=d>0.15?'H':(d<-0.15?'C':(rng()<0.5?'H':'C'));
     const age=o.age||(ages.length?ages[ages.length>>1]:flavorAge(opt.flavor,rng));   // eta' vera; se manca (un solo caso nei fogli) quella mediana della squadra
-    // talento (il massimo raggiungibile): dipende dal livello, un po' dalla serie e dall'eta' vera (i giovani hanno piu' margine, dai 30 anni in su meno)
-    const ageT=age>=30?-Math.min(8,(age-29)*0.6):(age<=20?3:0);
-    const tg=x=>clamp(Math.round(lvl-(opt.off||0)*0.45+24+x+R(0,12)+ageT),72,99);
-    const tl=tg(4*d),tf=tg(-4*d),tv=tg(0);
+    // talento (il massimo raggiungibile): il livello vero piu' un margine che dipende dall'eta' e da una fascia fissata per giocatore (realGap).
+    // Prima era il livello piu' 24-36 punti, mai sotto 72: anche un trentenne medio poteva arrivare a 90 e ogni rosa cresceva senza freni
+    const gp=realGap(age,mulberry32(hashStr(seedStr+'|tal|'+full))());
+    const tg=x=>{const u=R(0,12);return clamp(Math.round(lvl+REAL_TK+gp+x+(u-6)/3),45,99);};   // R(0,12) resta: le statistiche usano lo stesso generatore e non devono cambiare
+    const tl=tg(9*d),tf=tg(-7*d),tv=tg(3*d);   // ogni gruppo parte dal livello delle sue statistiche (un handler ha i lanci piu' alti del fisico)
     const s={};
     KEYS.forEach(k=>{
       const g=(k==='lan'||k==='buc'||k==='spa')?'L':(k==='vis'?'V':'F');
@@ -189,6 +200,7 @@ function agePlayer(o,R){
     o.s[k]=clamp(o.s[k]+d,25,cap);
   }
   o.age++;
+  potSurprise(o);   // 20-sorprese-crescita.js
 }
 // inizio carriera: la tua rosa parte con statistiche tutte basse (il talento resta quello fissato)
 function lowStats(p,i){

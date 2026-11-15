@@ -220,7 +220,10 @@ tip:`Non cambiare tutta la linea a ogni partita: l’intesa si costruisce restan
 `Si rinnova ogni 5 giornate. Ci sono <b>15 giocatori</b> di livello vicino al tuo, divisi per categoria nelle linguette: giovani promesse, svincolati, in vendita da altre squadre e, con la stella, <b>internazionali</b> (giocatori veri del mondo: UFA, nazionale USA, club europei; i più forti arrivano solo con tanta reputazione e crediti).`,
 [`<b>Solo chi posso prendere</b> nasconde chi costa troppo, chiede più reputazione o non ha posto in rosa.`,`<b>Ordina per</b>: più economico, più forte, più promettente, più giovane, miglior rapporto qualità/prezzo.`,`<b>Dettagli / Rapporto</b>: ciò che sanno gli osservatori e il confronto con il tuo titolare più debole nel ruolo.`,`Il <b>potenziale</b> è un intervallo che si stringe osservando il giocatore.`],
 `Circa metà dei giocatori ha una <b>motivazione</b> scritta sotto il nome: «Vuole giocare» firma solo se sarebbe titolare; «Ambizioso» non scende in Serie C; «Ingaggio alto» costa il 20% in più; «Cerca un progetto» fa lo sconto se Vivaio o Campo di allenamento sono almeno al livello 2.`,
-`Con i conti in rosso non si compra.`],
+`Con i conti in rosso non si compra.`,
+`Il potenziale di un giovane è una <b>scommessa</b>: dipende dal livello della tua serie e cade in una fascia (quasi sempre nella media o buono, a volte una delusione, raramente un talento o un fenomeno). Tra i 18 e i 22 anni qualcuno si ferma prima del previsto e qualcuno scopre più margine. Gli adulti hanno poco margine, e meno con l’età.`,
+`Se la tua squadra è sotto la media della serie (per esempio appena promossa), il mercato offre giocatori della categoria: costano, ma ti fanno salire. Se sei già tra i più forti, l’offerta non cresce insieme a te.`,
+`Si cresce più in fretta nelle serie basse (Serie C +35%, B +15%) e più piano in alto (A −10%). Se sei già più forte della migliore delle altre, la crescita rallenta: dominare a lungo costa fatica.`],
 tip:`Un giovane col potenziale alto che oggi è scarso diventa il titolare di domani: osservalo prima di decidere.`},
 {id:'car-scouting',t:'Osservazioni e rapporti',w:'Mercato › Osserva / Rapporto',b:[
 `Far osservare un giocatore costa crediti (1 in meno per livello della Rete di osservatori). Ogni osservazione sblocca una parte del rapporto:`,
@@ -282,7 +285,7 @@ tip:`In zona playoff le partite si giocano una alla volta: usa bene i cambi, ogn
 tip:`Un buon giocatore in panchina troppo a lungo ti lascia: ruotalo oppure promettigli spazio.`},
 {id:'car-extra',t:'Conferenze, imprevisti e traguardi',b:[
 [`<b>Conferenza stampa</b>: dopo una partita con un po’ di storia (derby, vittoria a sorpresa, finale…) scegli tra tre risposte: parli della squadra (morale), dei tifosi (più tifosi) o di un giocatore (a lui l’umore migliora). «Salta» non cambia nulla.`,
-`<b>Imprevisti</b>: una o due volte a stagione dopo una partita succede qualcosa (sponsor, influenza, provino, invito a un torneo). A volte aiuta, a volte no, e spesso scegli tra due strade.`,
+`<b>Imprevisti</b>: una o due volte a stagione dopo una partita succede qualcosa (sponsor, influenza, provino, invito a un torneo). A volte aiuta, a volte no, e spesso scegli tra due strade. Il ragazzo del <b>provino</b> è quasi sempre nella media per la tua serie: un talento (come una delusione) è rarissimo.`,
 `<b>Traguardi</b> (Società › Bacheca › Traguardi): venti obiettivi di lungo periodo (vittorie, promozioni, scudetti, Europa, mete, premi, tifosi, strutture, derby, Hall of Fame…) con barra di avanzamento. Ognuno dà una volta sola un piccolo premio in crediti.`,
 `<b>Albo d’oro, Record e Hall of Fame</b> (Club): trofei, l’albo della tua serie, i migliori di sempre della squadra e le carte dorate di chi si ritira dopo una carriera speciale.`]],
 tip:`I traguardi sono una guida gratuita su cosa fare dopo: guardali quando non sai che obiettivo darti.`},
