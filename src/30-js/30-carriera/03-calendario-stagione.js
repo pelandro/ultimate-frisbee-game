@@ -72,7 +72,7 @@ function loadSave(d0){
       SV.rv=3;SV.realAB=1;SV.realAI=1;
     }
     for(const n in SV.rost)for(const o of SV.rost[n])if(o){if(o.trait===undefined)o.trait=traitFor(o.full||o.n,o.s,o.r);if(!o.dev)o.dev=devOf(o.full||o.n);}
-    if(isUS())usMigrate();   // salvataggio USA con 32 club e 4 Conference: la stagione riparte con 48 club e 8 Conference (35-usa/04-carriera-usa.js)
+    if(isUS()){usMigrate();usCrossFix();}   // salvataggio USA con 32 club e 4 Conference: la stagione riparte con 48 club e 8 Conference (35-usa/04-carriera-usa.js)
     SV.v=SAVE_V;careerInit();   // campi della nuova carriera, anche sui salvataggi precedenti
     setLineup(idsOf(SV.lineO).length===7?idsOf(SV.lineO):lineupIds());
     return true;
@@ -91,6 +91,7 @@ function nextMatch(){
   if(SV.event==='camp'&&SV.po&&SV.po.on)return {name:SV.po.opp,roster:SV.rost[SV.po.opp],label:poLabel()};   // playoff: l'avversaria del turno
   if(SV.event==='camp'){
     if(SV.done)return null;
+    if(isUS()&&usCrossPending())return usCrossMatch();   // USA: interregionale (35-usa/03-stagione-usa.js)
     const names=SV.mem[SV.sr],ui=names.indexOf(SV.team),pr=SV.sched[SV.round].find(m=>m[0]===ui||m[1]===ui),on=names[pr[0]===ui?pr[1]:pr[0]];
     return {name:on,roster:SV.rost[on],label:`Giornata ${SV.round+1} di ${totalRounds()}`+(on===SV.riv?' · Derby':'')};
   }
@@ -177,6 +178,7 @@ function recordResult(win,su,so){
   SV.susp=null;   // la partita e' finita: niente piu' da riprendere
   let msg='';SV.played=(SV.played||0)+1;if(SV.event==='camp')SV.sgp=(SV.sgp|0)+1;
   const incPre=matchMoney(win);   // i conti di questa partita si calcolano con i tifosi e la forma di prima del risultato (26-economia-partita.js)
+  const xm=!!(isUS()&&SV.event==='camp'&&usCrossPending());   // interregionale USA: una partita come le altre (conti, allenamento, eventi), ma non conta per la classifica della Conference e non fa girare il mercato
   if(isUS()&&SV.event==='camp'){
     fansBump(win,win?1:0);msg=usRecord(win,su,so);   // campionato USA: stagione regolare, Play-in, Nationals (35-usa/03-stagione-usa.js)
   }else if(isLN()&&SV.event==='camp'){
@@ -218,7 +220,7 @@ function recordResult(win,su,so){
   SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-redPen()+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede')+(hasTr('men','pap')?0.3:0),0,100);
   for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
   lifeAfterMatch();dynAfterMatch();
-  if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0)buildMarket();   // il mercato si rinnova ogni 5 giornate
+  if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0&&!xm)buildMarket();   // il mercato si rinnova ogni 5 giornate
   achCheck();   // traguardi (23-traguardi.js)
   persist();return msg;
 }

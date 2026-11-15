@@ -21,7 +21,7 @@ function venueOf(){
   if(SV.event==='eu')return 'N';   // EUCF: torneo in una sede sola
   if(isUS()){
     const U=SV.us;
-    if(U.ph==='reg')return venueAlt();
+    if(U.ph==='reg')return venueAlt(SV.sgp|0);   // casa e trasferta si alternano a ogni partita, interregionali comprese
     if(U.ph==='pin'){const P=U.pin&&U.pin[U.cf],m=P&&SV.po?P.m[SV.po.mi]:null;return m&&m[0]===SV.team?'H':'A';}   // Play-in: gara secca in casa della meglio piazzata
     return 'N';   // Nationals
   }

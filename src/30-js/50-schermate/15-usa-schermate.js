@@ -10,6 +10,14 @@ function usShortLabel(){   // etichetta breve della partita di adesso
   const rd=U.nat.rd;
   return rd<3?`Girone ${US_POOL[usNatPool(SV.team)]} · ${rd+1}/3`:['Prequarti','Quarti','Semifinale','Finale'][rd-3];
 }
+// la partita di adesso e le successive nel calendario di 12 (5 giornate di Conference e 7 interregionali): [titolo breve, sotto]
+function usEv(i){
+  const R=SV.sched.length;if(i>=US_CAL.length)return null;
+  let nc=0,nx=0;for(let k=0;k<i;k++)US_CAL[k]==='c'?nc++:nx++;
+  if(US_CAL[i]==='c'){const o=oppAt(nc);return ['G'+(nc+1)+' di '+R,shortN(o)+(o===SV.riv?' · derby':'')];}
+  return ['Interreg. '+(nx+1)+'/7',shortN(usCrossOpp(nx))];
+}
+const usRegSub=()=>{const e=usEv(SV.us.ci|0);return e?(US_CAL[SV.us.ci|0]==='x'?'Interregionale '+((SV.us.xn|0)+1)+' di 7':'Giornata '+(SV.round+1)+' di '+SV.sched.length):'';};
 const usInfo=()=>{
   const U=SV.us;
   if(SV.done)return `${usConfName(U.cf)} · Stagione ${SV.season} · conclusa`;
@@ -19,7 +27,7 @@ const usInfo=()=>{
 const usEventSub=()=>{
   const U=SV.us;
   if(SV.done)return 'Stagione conclusa: premi e ripartenza';
-  return U.ph==='reg'?`Giornata ${SV.round+1} di ${totalRounds()}`:(SV.po&&SV.po.on?usShortLabel():US_PHASE_NAME[U.ph]);
+  return U.ph==='reg'?usRegSub():(SV.po&&SV.po.on?usShortLabel():US_PHASE_NAME[U.ph]);
 };
 const usObjNow=()=>SV.us.ph==='reg'?(SV.round>0?` · ora ${myRank()}ª`:''):` · fase: ${US_STAGE[SV.us.stage|0]}`;
 // righe del riquadro «classifica» del cruscotto durante Play-in e Nationals
@@ -35,9 +43,10 @@ function usHomeTab(){
 function usTimelineHTML(node){
   const U=SV.us,R=SV.sched.length,last=SV.res[SV.res.length-1],lastN=SV.res.length;
   const po=SV.po&&SV.po.on;
-  const prevRes=r=>node(r.su>r.so?'w':'l',(r.su>r.so?'V ':'S ')+r.su+'–'+r.so,'G'+lastN+' · '+shortN(r.opp));
+  const prevRes=r=>node(r.su>r.so?'w':'l',(r.su>r.so?'V ':'S ')+r.su+'–'+r.so,'G'+lastN+' · '+shortN(r.opp)),lx=U.xl&&U.xl[U.xl.length-1];
   let prev;
   if(SV.po&&SV.po.last){const l=SV.po.last;prev=node(l.win?'w':'l',(l.win?'V ':'S ')+l.su+'–'+l.so,(l.label?l.label.replace('Nationals · ',''):'Play-in')+' · '+shortN(l.opp));}
+  else if(U.lp==='x'&&lx)prev=node(lx.su>lx.so?'w':'l',(lx.su>lx.so?'V ':'S ')+lx.su+'–'+lx.so,'Interreg. · '+shortN(lx.opp));
   else prev=last?prevRes(last):node('f','Inizio','stagione '+SV.season);
   let cur,nxt;
   if(SV.done){cur=node('n','Fine','posto '+(SV.next?SV.next.rank:myRank())+'°');nxt=node('f','Nuova','stagione');}
@@ -46,8 +55,9 @@ function usTimelineHTML(node){
     const rd=U.ph==='nat'?U.nat.rd:-1;
     nxt=rd<0?node('f','Nationals','se vincete'):(rd===6?node('f','Fine','stagione'):node('f',rd<2?'Girone '+(rd+2)+'/3':['Quarti','Quarti','Semifinale','Finale'][rd-2],'se avanzate'));
   }else{
-    cur=node('n','G'+(SV.round+1)+' di '+R,shortN(oppAt(SV.round))+(oppAt(SV.round)===SV.riv?' · derby':''));
-    nxt=SV.round+1<R?node('f','G'+(SV.round+2),shortN(oppAt(SV.round+1))):node('f','Play-in','o Nationals');
+    const e=usEv(U.ci|0),e2=usEv((U.ci|0)+1);
+    cur=e?node('n',e[0],e[1]):node('f','Fine','stagione regolare');
+    nxt=e2?node('f',e2[0],e2[1]):node('f','Play-in','o Nationals');
   }
   return `<div class="tline">${[prev,cur,nxt].join('')}</div>`;
 }
@@ -59,6 +69,8 @@ function usStakes(m){
     const rd=U.nat.rd;tag='Nationals';
     if(rd<3){title=`Girone ${US_POOL[usNatPool(SV.team)]} · partita ${rd+1} di 3`;lines.push(rd===2?'Ultima partita del girone: le prime vanno ai quarti, le seconde e le terze ai prequarti, le quarte sono fuori.':'Ogni vittoria conta per la classifica del girone: a parità decidono gli scontri diretti e la differenza mete.');}
     else{title=['Prequarti','Quarti di finale','Semifinale','Finale'][rd-3];lines.push(rd===6?'Chi vince è campione degli Stati Uniti: trofeo e reputazione.':'Eliminazione diretta: chi perde è fuori.');}
+  }else if(usCrossPending()){
+    tag='Interregionale';title=`Contro ${m.name} (${usConfName(usConfOf(m.name))})`;lines.push('Conta solo per il ranking nazionale: i risultati contro club di altre Conference decidono quanti posti ai Nationals ha ogni regione.');
   }else{
     const names=SV.mem.U,ord=ranking(SV.tab,names),rk=ord.indexOf(SV.team)+1,last=SV.round===SV.sched.length-1;
     if(m.name===SV.riv){tag='Rivalità';title='Derby';const rr=SV.rivRec||{w:0,l:0};lines.push(`Contro ${m.name} vale di più: incasso, morale e reputazione.${rr.w+rr.l?` Finora ${rr.w} ${rr.w===1?'vinto':'vinti'} e ${rr.l} ${rr.l===1?'perso':'persi'}.`:''}`);}
@@ -73,7 +85,7 @@ function renderTeamsUS(){
   $('tMode').classList.add('hidden');$('tRelief').classList.add('hidden');$('tTeams').classList.remove('hidden');
   $('tSr').innerHTML=US_CK.map(c=>`<button type="button" data-k="${c}">${US_CONF[c]}</button>`).join('');
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamCf);
-  $('tNote').textContent='Men’s Club USA: 48 club veri nelle 8 regioni di USA Ultimate, 6 per Conference. Si gioca nella propria Conference (5 giornate), poi Play-in e Nationals a 16 squadre. Le Conference non cambiano mai: niente promozioni e retrocessioni. Il numero accanto al nome è la forza del club; i più prestigiosi partono più forti, ma le gerarchie cambiano negli anni.';
+  $('tNote').textContent='Men’s Club USA: 48 club veri nelle 8 regioni di USA Ultimate, 6 per Conference. Si gioca nella propria Conference (5 giornate) e contro un club di ciascuna delle altre 7 Conference (interregionali), poi Play-in e Nationals a 16 squadre. Le Conference non cambiano mai: niente promozioni e retrocessioni. Il numero accanto al nome è la forza del club; i più prestigiosi partono più forti, ma le gerarchie cambiano negli anni.';
   $('tTeams').innerHTML=US_BYCONF[teamCf].slice().sort((a,b)=>favFirst(a,b)||US_TEAM[a].rank-US_TEAM[b].rank).map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${favMark(n)}${esc(n)}<small class="tcity">${esc(US_TEAM[n].city)} · n° ${US_TEAM[n].rank}</small></span></span><b class="tp">${usPreview(n)}</b></button>`).join('');
 }
 // ---- Classifica ----
@@ -88,7 +100,7 @@ const usMatchRow=m=>`<li class="${m[4]===SV.team?'w':(m[0]===SV.team||m[1]===SV.
 // «posti ai Nationals» della regione: 1 automatico + quelli di forza dal ranking nazionale (definitivi a fine stagione regolare, prima una proiezione)
 function usBidsTxt(c){
   const U=SV.us,b=usBidsNow()[c],q=U.bids?null:(U.bq&&U.bq[c]),tr=q&&q!==b?` <b style="color:${b>q?'#4fe58f':'#ff7b80'}">${b>q?'▲':'▼'} era ${q}</b>`:'';
-  return `<b>${b} ${b===1?'posto':'posti'} ai Nationals</b>${tr} (1 automatico${b>1?` + ${b-1} di forza`:''}${U.bids?', definitivi':', si aggiornano dopo ogni giornata dal ranking'}) · i posti vanno alla regione: se li giocano le squadre della Conference`;
+  return `<b>${b} ${b===1?'posto':'posti'} ai Nationals</b>${tr} (1 automatico${b>1?` + ${b-1} di forza`:''}${U.bids?', definitivi':', si aggiornano dopo ogni partita dal ranking'}) · i posti vanno alla regione: se li giocano le squadre della Conference`;
 }
 function usPinHTML(c){
   const U=SV.us,P=U.pin&&U.pin[c];if(!P)return '';
@@ -103,7 +115,8 @@ function usConfView(){
   h+=usConfTable(c)+usPinHTML(c);
   if(L&&L.last.length)h+=`<h3 class="eh">Ultima giornata in ${usConfName(c)}</h3><ul class="elist">${L.last.map(m=>`<li class="${m[2]>m[3]?'w':'l'}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('')}</ul>`;
   if(c===U.cf){
-    if(U.xl&&U.xl.length)h+=`<h3 class="eh">Interregionali (contano per il ranking)</h3><ul class="elist">${U.xl.slice(-5).map(x=>`<li class="${x.su>x.so?'w':'l'}"><span>Giornata ${x.r} contro ${esc(x.opp)} (${usConfOf(x.opp)})</span><span>${x.su} – ${x.so}</span></li>`).join('')}</ul>`;
+    if(U.ph==='reg'||(U.xl&&U.xl.length)){const xs=(U.xl||[]).map(x=>`<li class="${x.su>x.so?'w':'l'}"><span>Interregionale ${x.r} contro ${esc(x.opp)} (${usConfName(usConfOf(x.opp))})</span><span>${x.su} – ${x.so}</span></li>`);if(usCrossPending()){const m=usCrossMatch();xs.push(`<li class="n"><span>${esc(m.label)} contro ${esc(m.name)}</span><span>Prossima</span></li>`);}
+      if(xs.length)h+=`<h3 class="eh">Interregionali (7 a stagione, contano per il ranking)</h3><ul class="elist">${xs.join('')}</ul>`;}
     h+=leadersHTML();
     if(SV.riv)h+=`<p class="note" style="margin:8px 0 0">${derbyTxt()}.</p>`;
     const done=SV.res.slice(-7).map((r,i)=>{const g=SV.res.length-Math.min(7,SV.res.length)+i+1;return `<li class="${r.su>r.so?'w':'l'}"><span>Giornata ${g} contro ${esc(r.opp)}</span><span>${r.su} – ${r.so}</span></li>`;});
@@ -146,11 +159,11 @@ function usRankView(){
   const arr=d=>`<td style="color:${d>0?'#4fe58f':(d<0?'#ff7b80':'inherit')}">${d>0?'▲'+d:(d<0?'▼'+(-d):'–')}</td>`,pl=U.ph==='reg'?U.pl:null;
   const rows=usRankList().map((n,i)=>{const d=pos0[n]-(i+1),cf=usConfOf(n),dl=pl&&pl[n]?pl[n]-(i+1):0;
     return `<tr class="${n===SV.team?'me':''}"><td>${i+1}. ${crest(n,15)} ${esc(n)}</td><td>${cf}</td><td>${Math.round(U.pr[n])}</td>${arr(dl)}${arr(d)}</tr>`;}).join('');
-  return `<p class="estat">Ranking nazionale</p><p class="note" style="margin:0 0 6px">Cresce con le vittorie, più se l’avversaria è forte e se il margine è largo; cala con le sconfitte. Si aggiorna dopo ogni giornata, comprese le partite interregionali (una a giornata contro un club di un’altra Conference): è il ranking che decide quanti posti ai Nationals ha ogni regione, le teste di serie e i gironi. E = Eastern, W = Western, C = Central, S = Southern; le frecce sono il cambio dall’ultima giornata e da inizio stagione.</p><div style="overflow-x:auto"><table class="rt"><tr><th>Club</th><th>Conf.</th><th>Punti</th><th>Giorn.</th><th>Stag.</th></tr>${rows}</table></div>`;
+  return `<p class="estat">Ranking nazionale</p><p class="note" style="margin:0 0 6px">Cresce con le vittorie, più se l’avversaria è forte e se il margine è largo; cala con le sconfitte. Si aggiorna dopo ogni partita, comprese le 7 interregionali (una contro un club di ciascuna delle altre Conference): è il ranking che decide quanti posti ai Nationals ha ogni regione, le teste di serie e i gironi. E = Eastern, W = Western, C = Central, S = Southern; le frecce sono il cambio dall’ultima giornata e da inizio stagione.</p><div style="overflow-x:auto"><table class="rt"><tr><th>Club</th><th>Conf.</th><th>Punti</th><th>Giorn.</th><th>Stag.</th></tr>${rows}</table></div>`;
 }
 function renderEventUS(){
-  const U=SV.us,sub=SV.done?'Stagione conclusa.':(U.ph==='reg'?`Giornata ${SV.round+1} di ${totalRounds()}.`:US_PHASE_NAME[U.ph]+'.');
-  $('eCards').innerHTML=`<button type="button" class="ecard on" data-e="camp"><strong>Men’s Club USA</strong><small>48 club, 8 Conference da 6: 5 giornate, Play-in e Nationals a 16 squadre. ${sub}</small></button>`;
+  const U=SV.us,sub=SV.done?'Stagione conclusa.':(U.ph==='reg'?usRegSub()+'.':US_PHASE_NAME[U.ph]+'.');
+  $('eCards').innerHTML=`<button type="button" class="ecard on" data-e="camp"><strong>Men’s Club USA</strong><small>48 club, 8 Conference da 6: 5 giornate di Conference + 7 interregionali, Play-in e Nationals a 16 squadre. ${sub}</small></button>`;
   if(usTabPh!==U.ph){usTabPh=U.ph;usTabSel=(U.ph==='nat'||U.ph==='done')?'nat':'conf';}
   let body='';
   if(SV.done&&SV.next){

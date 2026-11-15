@@ -4,7 +4,7 @@
    con il rating dei Postseason Rankings USAU 2026 finali (dopo i Nationals). Le 8 Conference sono le regioni vere di USA Ultimate (Northeast, Mid-Atlantic, Southeast, Great Lakes, North Central,
    South Central, Northwest, Southwest), 6 club ciascuna. I 32 club della prima versione sono rimasti dove la regione USAU li colloca; per arrivare a 6 per regione si sono aggiunti i 16 club
    meglio classificati nel ranking nazionale tra quelli che mancavano. Fanno eccezione Salt Lake City Shrimp (nessun dato 2026: rating stimato). Le Conference non cambiano mai: niente
-   promozioni ne' retrocessioni. Struttura della stagione (regole in 03-stagione-usa.js): 5 giornate nella propria Conference, Play-in (2ª contro 3ª), Nationals a 16 squadre. */
+   promozioni ne' retrocessioni. Struttura della stagione (regole in 03-stagione-usa.js): 5 giornate nella propria Conference e 7 interregionali (una contro ogni altra Conference), Play-in, Nationals a 16 squadre. */
 const US_CONF={NE:'Northeast',MA:'Mid-Atlantic',SE:'Southeast',GL:'Great Lakes',NC:'North Central',SC:'South Central',NW:'Northwest',SW:'Southwest'},US_CK=['NE','MA','SE','GL','NC','SC','NW','SW'];
 // [nome, citta', Conference, rating USAU 2026]: rating dei Postseason Rankings USAU 2026 (o proiezione Ultiworld). Stimati: Salt Lake City Shrimp (nessun dato 2026) e Montréal Mephisto (non ha rating nella tabella ricevuta). Conference geografiche da 8: Eastern (Nord-Est e Ontario/Quebec), Southern (Sud-Est e Mid-Atlantic del Sud), Central (Midwest, Pianure, Texas, Colorado), Western (costa del Pacifico, Utah, Columbia Britannica)
 const US_RAW=[

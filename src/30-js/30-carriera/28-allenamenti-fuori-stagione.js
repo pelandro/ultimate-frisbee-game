@@ -1,6 +1,6 @@
 /* ===================== ALLENAMENTI DOPO L'ELIMINAZIONE =====================
    Ogni campionato garantisce almeno SEASON_MIN partite a chi arriva fino in fondo (in Europa con piu' giri nei gironi: 37-leghe/06-partite-minime.js).
-   Chi finisce prima, per esempio negli USA senza Play-in o Nationals, resta a casa mentre gli altri giocano: a fine stagione la squadra si allena
+   Chi finisce prima (negli USA ormai nessuno: ogni club gioca 12 partite di stagione regolare) resta a casa mentre gli altri giocano: a fine stagione la squadra si allena
    le settimane mancanti come farebbe il programma automatico (seduta di squadra piu' tre lavori individuali, all'intensita' scelta, senza infortuni)
    e i progressi compaiono all'inizio della stagione nuova. SV.sgp conta le giornate di campionato della stagione (anche quelle prima del tuo arrivo, da subentrato). */
 const SEASON_MIN=11;
