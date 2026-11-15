@@ -23,7 +23,7 @@ function potRange(x){
 const devLabel=d=>d>=1.2?'rapida':(d>=0.95?'normale':'lenta');
 // eta': i giovani crescono in fretta, gli adulti si stabilizzano, i veterani quasi non crescono piu'
 // oltre 70 ogni punto costa di piu': arrivare a 95 richiede anni, non mesi
-const lvlF=v=>v<70?1:(v<80?0.8:(v<88?0.6:(v<94?0.36:0.22)));
+const lvlF=v=>v<70?1:(v<80?0.72:(v<88?0.5:(v<94?0.3:0.2)));   // ritoccata: sopra 80 si sale piu' piano (prima una squadra media arrivava a 95)
 const ageMul=a=>a<=19?1.5:(a<=23?1.25:(a<=27?1:(a<=30?0.65:(a<=33?0.4:0.22))));
 /* ---- ESPERIENZA (XP): la crescita nasce dalla qualita' della prestazione, non da soglie fisse.
    Ogni azione vale punti, anche quelle senza statistica: buone marcature, tagli efficaci, reset. I pesi sono tarati perche' handler, cutter e difensori
@@ -34,7 +34,7 @@ function xpParts(m){   // punti esperienza per tipo di azione
     sca:m.sca*0.45,vel:m.vel*0.9,vis:m.vis*1.3,pre:m.pre*1.2,mk:(m.mk||0)*1.4,cut:(m.cut||0)*0.8,rst:(m.rst||0)*1.6,res:Math.min(4,m.res*0.05)};
 }
 const xpTotal=m=>{const q=xpParts(m);let t=0;for(const k in q)t+=q[k];return t;};
-const XP_RATE=0.024;   // punti statistica per punto esperienza (a 24-27 anni, crescita normale): circa 0,75 punti a partita
+const XP_RATE=0.0228;   // punti statistica per punto esperienza (a 24-27 anni, crescita normale): circa 0,65 punti a partita (era 0,024)
 const XP_ROLE={H:1.3,C:0.95,D:0.82};   // in campo gli handler raccolgono meno esperienza di cutter e difensori: il peso la pareggia (misurato su 560 prestazioni)
 function growBy(x,parts,mult){   // applica la crescita a un giocatore (in campo o in scheda): ritorna i cambi [{k,from,to}]
   let tot=0;const w={};

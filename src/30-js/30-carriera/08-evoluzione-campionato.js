@@ -47,7 +47,7 @@ function evolveLeague(){
     const acad=0.5+(hashStr(n+'|acad|'+SV.season)%100)/100;   // annata del vivaio: buona o scarsa
     const lvl=rosterPower(ro);
     const pol=clubPol(n)[0],ny=pol==='giovani'?3:(pol==='esperienza'?1:2),pk=pol==='giovani'?1.2:(pol==='esperienza'?0.85:1);
-    for(let i=0;i<ny||ro.length<14;i++){if(ro.length>=22)break;ro.push(genPlayer(lvl-9+R()*5,16+Math.floor(R()*4),SV.seed+'|yo|'+n+'|'+SV.season+'|'+i,lvl+2+R()*20*acad*pk));}
+    for(let i=0;i<ny||ro.length<14;i++){if(ro.length>=22)break;ro.push(genPlayer(lvl-9+R()*5,16+Math.floor(R()*4),SV.seed+'|yo|'+n+'|'+SV.season+'|'+i,potB(potDraw('mkt',lvl+2,R,(acad*pk-1)*4).p)));}   // potenziale a fasce come i tuoi (29-potenziali.js): prima arrivava fino a +26 e in Serie A nascevano giocatori da 95
     while(ro.length>20){const w=ro.slice().sort((a,b)=>ovrX(a)-ovrX(b))[0];ro.splice(ro.indexOf(w),1);}
     // la squadra tende al proprio livello storico, spostato dal ciclo del momento: cosi' il campionato resta credibile per decenni, con squadre che salgono e che scendono
     const prev=SV.cyc[n]||0;SV.cyc[n]=clamp(prev*0.75+(R()*2-1)*2.6,-7,7);
