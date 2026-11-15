@@ -2,7 +2,8 @@
    Chi gioca in una lega puo' ricevere offerte da tutte le altre (Italia, USA, Belgio, Francia, Germania, Regno Unito), in ogni direzione:
    - OFFERTA DI LAVORO (SV.job): a inizio stagione, se la carriera va bene, un club di un'altra lega ti vuole come allenatore. Accettando cambi lega: nuovo club e
      nuova rosa, mentre allenatore, storico, trofei, traguardi, Hall of Fame e impostazioni restano tuoi; la reputazione scende un po' (si riparte in un altro ambiente).
-   - SCAMBIO (SV.trade): ogni tanto un club di un'altra lega propone un giocatore suo per uno tuo, di livello simile. Accettando, i due si scambiano.
+   - SCAMBIO (SV.trade): ogni tanto un club (di un'altra lega o della tua stessa lega) propone un giocatore suo per uno tuo, di livello simile. Accettando, i due si scambiano;
+     se il club e' della tua lega il tuo giocatore entra nella sua rosa e il suo esce da li' (nessun giocatore resta in due squadre).
    Le offerte arrivano come Avvisi (act 'job' / 'trade') e scadono alla prossima partita. Il prestigio di un club (clubLvl, da 0 a 1) e' la sua posizione nella forza
    della propria lega: cosi' un club di vertice riceve offerte da club di vertice di un altro paese e uno di bassa classifica da club di livello simile.
    Un campionato nuovo entra da solo se e' coperto da clubLega(), allClubs(), clubLvl(), foreignRoster(), clubLeagueTxt() e lgName(). */
@@ -18,6 +19,8 @@ function lnLvl(n){   // posizione del club nella forza dei club del suo paese (t
 const clubLvl=n=>US_TEAM[n]?1-(US_TEAM[n].rank-1)/(US_NAMES.length-1):(LN_BY[n]?lnLvl(n):(TEAM[n]?1-(TEAM[n].rank-1)/45:0.5));   // 0..1: quanto e' prestigioso il club nella sua lega
 const allClubs=()=>[].concat(SERIES.A,SERIES.B,SERIES.C).filter(n=>REAL[n]).concat(US_NAMES,LN_NAMES.filter(lnPlayable));   // ogni club da cui si puo' partire
 const foreignClubs=()=>{const me=lgNow();return allClubs().filter(n=>clubLega(n)!==me&&n!==SV.team);};   // i club di tutte le altre leghe
+const tradeClubs=()=>foreignClubs().concat(Object.keys(SV.rost||{}).filter(n=>n!==SV.team&&SV.rost[n]&&SV.rost[n].length>=8));   // altre leghe e club della tua lega (le loro rose sono quelle di adesso)
+const tradeRoster=(n,seed)=>clubLega(n)===lgNow()&&SV.rost[n]?SV.rost[n].filter(o=>!o.inj&&o.ret!==1):foreignRoster(n,seed);
 const foreignRoster=(n,seed)=>US_TEAM[n]?usRoster(n,seed):(LN_BY[n]?lnRoster(n,seed):realRoster(REAL[n],seed+'|'+n,realOpt(n,9)));
 const clubLeagueTxt=n=>US_TEAM[n]?`Men’s Club USA, ${usConfName(US_TEAM[n].conf)}`:(LN_BY[n]?SERIES_NAME[lnKey(LN_BY[n].lk,LN_BY[n].t)]:SERIES_NAME[TEAM[n].series]);
 // ---- offerta di lavoro, a inizio stagione ----
@@ -35,9 +38,9 @@ function crossLgOffer(){
 function crossLgTrade(){
   if(SV.trade||SV.job||SV.event!=='camp'||SV.done||SQ.length<=SQ_MIN+1)return;
   const mine=SQ.filter(p=>!p.inj&&p.ret!==1&&p.age<=33&&ovr(p)>=squadPower()-14).sort(()=>Math.random()-0.5)[0];if(!mine)return;
-  const clubs=foreignClubs().sort(()=>Math.random()-0.5);
+  const clubs=tradeClubs().sort(()=>Math.random()-0.5);
   for(const club of clubs.slice(0,6)){
-    const ro=foreignRoster(club,SV.seed+'|x|'+SV.season+'|'+(SV.played|0)),cand=ro.filter(o=>Math.abs(ovrX(o)-ovr(mine))<=4&&!SQ.some(p=>p.full===o.full)).sort(()=>Math.random()-0.5)[0];
+    const ro=tradeRoster(club,SV.seed+'|x|'+SV.season+'|'+(SV.played|0)),cand=ro.filter(o=>Math.abs(ovrX(o)-ovr(mine))<=4&&!SQ.some(p=>p.full===o.full)).sort(()=>Math.random()-0.5)[0];
     if(!cand)continue;
     SV.trade={club,mine:mine.full,theirs:cand,season:SV.season,round:SV.round|0};
     alertAdd('club',`${club} (${clubLeagueTxt(club)}) propone uno scambio: ${cand.label||cand.n} (${cand.age} anni, Overall ${Math.round(ovrX(cand))}, ${POS_NAME[posOf(cand)]}) per ${pname(mine)} (Overall ${ovr(mine)}). L’offerta vale fino alla prossima partita.`,{act:'trade',full:mine.full});
@@ -62,8 +65,11 @@ function crossLgAnswer(a,d){
   const t=SV.trade;SV.trade=null;if(!t)return 'L’offerta non è più valida.';
   const p=byFull(t.mine);if(!p)return 'Il giocatore non c’è più: scambio saltato.';
   if(d!=='yes')return `Scambio rifiutato: ${pname(p)} resta.`;
+  const own=clubLega(t.club)===lgNow()&&SV.rost[t.club],ex=own?SV.rost[t.club].find(o=>o.full===t.theirs.full):null;
+  if(own&&!ex)return 'Il giocatore non è più in quel club: scambio saltato.';
   keepFormer(p);
-  const rec=Object.assign({},t.theirs,{sk:1,cond:100,car:null,ss:undefined,cs:undefined}),list=squadData().filter(o=>o.full!==p.full);list.push(rec);
+  const mine=squadData().find(o=>o.full===p.full),rec=Object.assign({},t.theirs,{sk:1,cond:100,car:null,ss:undefined,cs:undefined}),list=squadData().filter(o=>o.full!==p.full);list.push(rec);
+  if(own){Object.assign(mine,{car:null,ret:undefined,mood:undefined,idle:undefined,prom:undefined});SV.rost[t.club].splice(SV.rost[t.club].indexOf(ex),1,mine);}   // il tuo giocatore passa nella loro rosa: lo ritroverai da avversario
   const lO=SV.lineO,lD=SV.lineD;setSquad(list);SV.lineO=lO;SV.lineD=lD;fixLines();SV.chem=Math.max(0,SV.chem-3);
   news(`Scambio con ${t.club}: ${pname(p)} parte, arriva ${rec.label||rec.n}.`);
   return `Scambio fatto: ${pname(p)} passa a ${t.club}, arriva ${rec.label||rec.n}.`;

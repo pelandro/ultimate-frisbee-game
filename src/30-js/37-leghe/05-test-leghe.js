@@ -95,11 +95,18 @@ function lnSelfTest(seasons,seed){
           if(isLN())chk('offerte',!!SV.ln&&SV.sr===lnKey(b,LN_BY[club].t),a+'→'+b+': livello non valido '+SV.sr);
           if(isUS())chk('offerte',SV.sr==='U'&&!!SV.us,a+'→'+b+': campionato USA non valido');
         }
-        // scambio di giocatori: arriva da una lega diversa, la rosa resta della stessa dimensione e le linee valide
+        // scambio di giocatori: da un'altra lega o dalla tua; la rosa resta della stessa dimensione, le linee valide e nessun giocatore e' in due squadre
         startCareer(st[a],{});SV.event='camp';SV.done=false;SV.trade=null;SV.job=null;
-        const tl=new Set();for(let i=0;i<60&&tl.size<2;i++){SV.trade=null;crossLgTrade();if(SV.trade){tl.add(clubLega(SV.trade.club));chk('offerte',clubLega(SV.trade.club)!==a,'scambio proposto da un club della stessa lega: '+SV.trade.club);}}
-        chk('offerte',tl.size>=1,'da '+a+' nessuno scambio proposto');
-        if(SV.trade){const n0=SQ.length,t=SV.trade;crossLgAnswer({act:'trade'},'yes');chk('offerte',SQ.length===n0&&!!byFull(t.theirs.full)&&!byFull(t.mine)&&SV.lineO.length===7&&SV.lineD.length===7&&Number.isFinite(squadPower()),'scambio da '+a+' non coerente');}
+        const tl=new Set();let same=0;for(let i=0;i<300&&(tl.size<5||same<2);i++){SV.trade=null;crossLgTrade();if(SV.trade){tl.add(clubLega(SV.trade.club));if(clubLega(SV.trade.club)===a)same++;}}
+        chk('offerte',tl.has(a)&&tl.size>=3,'da '+a+' gli scambi arrivano solo da: '+[...tl].join(',')+' (servono la stessa lega e altre)');
+        for(const k of [0,1]){   // k=0: un club della stessa lega, k=1: di un'altra
+          let ok=false;for(let i=0;i<300&&!ok;i++){SV.trade=null;crossLgTrade();ok=!!SV.trade&&(clubLega(SV.trade.club)===a)===(k===0);}
+          if(!ok){chk('offerte','nessuno scambio '+(k?'da un’altra lega':'dalla stessa lega')+' per '+a);continue;}
+          const n0=SQ.length,t=SV.trade,r0=SV.rost[t.club]?SV.rost[t.club].length:0,mineFull=t.mine,inRost=f=>Object.keys(SV.rost).filter(n=>SV.rost[n].some(o=>o.full===f)).length,c0=inRost(t.theirs.full);crossLgAnswer({act:'trade'},'yes');
+          chk('offerte',SQ.length===n0&&!!byFull(t.theirs.full)&&!byFull(mineFull)&&SV.lineO.length===7&&SV.lineD.length===7&&Number.isFinite(squadPower()),'scambio da '+a+' non coerente');
+          if(k===0){const ro=SV.rost[t.club];chk('offerte',ro.length===r0&&ro.some(o=>o.full===mineFull)&&!ro.some(o=>o.full===t.theirs.full),'scambio in '+a+': la rosa del club non e\' stata aggiornata');
+            chk('offerte',inRost(t.theirs.full)===c0-1,'scambio in '+a+': '+t.theirs.full+' era in '+c0+' rose, ora in '+inRost(t.theirs.full));}
+        }
       }
     }
     // ---- Italia e USA restano come erano ----
@@ -127,7 +134,7 @@ function lnSelfTest(seasons,seed){
   r('Avvio carriera: livello e girone giusti, rose di tutti i club','lega','sì');
   r('Coppa europea: 16 club con 3 italiani, 3 belgi, 2 francesi, 2 britannici e 1 tedesco, in gironi','eucf','sì');
   r('Mercato: le stelle che giocano nei club della lega non sono in vendita','mercato','sì');
-  r('Offerte tra tutte le leghe: lavoro e scambi da ognuna delle sei verso le altre cinque, con allenatore, storico e trofei conservati','offerte','sì');
+  r('Offerte tra tutte le leghe: lavoro e scambi da ognuna delle sei verso le altre cinque (gli scambi anche dalla stessa lega), con allenatore, storico e trofei conservati','offerte','sì');
   r('Campionato italiano invariato','italia','sì');r('Campionato USA invariato','usa','sì');
   return rows;
 }
