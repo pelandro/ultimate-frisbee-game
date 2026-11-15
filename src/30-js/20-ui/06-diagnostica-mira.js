@@ -84,7 +84,7 @@ function aimUp(e){
   if(ok&&dOk&&hyp(w.x-h.x,w.y-h.y)>=3.5){   // nessuna direzione (dito al punto di partenza) o troppo vicino: il lancio si annulla
     updateCall(h,w.x,w.y,hi,true);
     const aim=computeAim(h,w.x,w.y,hi);
-    doThrow(h,aim.x,aim.y,aim.intended,hi,exq);shownHint++;
+    doThrow(h,aim.x,aim.y,aim.intended,hi,exq);
   }else if(ok&&tapW){if(nearMate(tapW,0,3.4))quickCall(tapW,false);else hamT=G.tick;}   // tocco sul campo libero: arma il doppio tocco del lancio alto (05-input-impostazioni.js)
   G.high=false;
 }

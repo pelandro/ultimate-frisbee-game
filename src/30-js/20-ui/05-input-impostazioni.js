@@ -26,9 +26,8 @@ function quickCall(w,long){
   const q=nearMate(w,0,3.4);if(!q)return;
   if(q===h){if(callClear(0)){addFloater('CLEAR!',h.x,h.y,PAL.sky);HOOKS.sfx('ui');HOOKS.vibe(8);}return;}
   const k=long?callIso(q):callCut(q,'auto');if(!k)return;
-  addFloater(long?'ISO!':(k==='deep'?'LUNGO!':(k==='reset'?'RESET!':'VIENI!')),q.x,q.y,PAL.sky);HOOKS.sfx('ui');HOOKS.vibe(8);shownCall++;
+  addFloater(long?'ISO!':(k==='deep'?'LUNGO!':(k==='reset'?'RESET!':'VIENI!')),q.x,q.y,PAL.sky);HOOKS.sfx('ui');HOOKS.vibe(8);
 }
-let shownCall=0,shownCtrl=0;
 function toggleDmode(){G.dmode[0]=1-G.dmode[0];HOOKS.sfx('ui');HOOKS.vibe(8);}
 function slMove(e){
   const vx=e.clientX-drag.ox,vy=e.clientY-drag.oy,len=hyp(vx,vy);
@@ -57,7 +56,7 @@ cv.addEventListener('pointerdown',e=>{
     const tb=cssToBuf(e.clientX,e.clientY);
     drag={btn:'throw',sl:true,ox:e.clientX,oy:e.clientY,fx:e.clientX,fy:e.clientY,s:G.tick,D:0,dirOk:false,ang:0,x:sxw(h.x),y:syw(h.y),tw:toWorld(tb[0],tb[1]),pids:new Set([e.pointerId]),multi:false};
     G.high=0;
-    if(G.tick-hamT<HAM_WIN){hamT=-9;drag.multi=true;drag.iso=true;G.high=1;drag.btn='hammer';shownAlto++;HOOKS.vibe(10);HOOKS.sfx('ui');}   // doppio tocco: il secondo tocco, tenuto premuto, e' un lancio alto (non e' mai una chiamata)
+    if(G.tick-hamT<HAM_WIN){hamT=-9;drag.multi=true;drag.iso=true;G.high=1;drag.btn='hammer';HOOKS.vibe(10);HOOKS.sfx('ui');}   // doppio tocco: il secondo tocco, tenuto premuto, e' un lancio alto (non e' mai una chiamata)
   }
 });
 // una seconda dita sul campo durante la mira: lancio alto (il tipo non scende mai: se una dita si stacca il lancio resta quello scelto)
@@ -65,7 +64,7 @@ function fingerAdd(id){
   if(!drag||!drag.pids)return;
   drag.pids.add(id);drag.multi=true;
   const st=drag.pids.size>=2?1:0;
-  if(st>(G.high|0)){G.high=st;drag.btn='hammer';shownAlto++;HOOKS.vibe(10);HOOKS.sfx('ui');}
+  if(st>(G.high|0)){G.high=st;drag.btn='hammer';HOOKS.vibe(10);HOOKS.sfx('ui');}
 }
 // iPhone: il pizzico con due o tre dita non deve ingrandire la pagina (il campo ha gia' touch-action:none)
 for(const ev of ['gesturestart','gesturechange'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
@@ -73,7 +72,7 @@ function fingerDrop(id){if(drag&&drag.pids&&id!==aimPid)drag.pids.delete(id);}
 cv.addEventListener('pointermove',e=>{
   if(ddrag&&e.pointerId===ddrag.pid){
     ddrag.fx=e.clientX;ddrag.fy=e.clientY;const vx=e.clientX-ddrag.ox,vy=e.clientY-ddrag.oy,len=hyp(vx,vy);
-    if(len>12){if(!ddrag.mv)shownCtrl++;ddrag.mv=true;G.cdir={x:vx/len,y:vy/len};}else if(ddrag.mv)G.cdir=null;
+    if(len>12){ddrag.mv=true;G.cdir={x:vx/len,y:vy/len};}else if(ddrag.mv)G.cdir=null;
     return;
   }
   if(e.pointerId!==aimPid)return;
