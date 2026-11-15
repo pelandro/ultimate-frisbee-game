@@ -17,7 +17,7 @@ function drillStart(){
   const atk=T[team],def=T[1-team],h=atk[0];
   atk.forEach((p,i)=>{p.x=hx+(i?d*(3+i*2.2):0);p.y=i?clamp(MID+(i-3.5)*5.2,3,FIELD_W-3):MID;});
   def.forEach((q,i)=>{q.x=hx+d*(i?4+i*2.2:1.7);q.y=i?clamp(MID+(i-3.5)*5.2+0.8,3,FIELD_W-3):MID+0.4;});
-  G.mode='play';G.puller=null;G.pull=null;G.walk=null;G.brickWait=false;
+  G.mode='play';G.puller=null;G.pull=null;G.walk=null;G.brick=false;G.open=false;
   G.poss=team;G.holder=h;G.flight=null;G.marker=null;G.stallT=0;G.holdT=0;G.hbAtt=null;G.hbOk=null;G.zoneH=null;G.zoneT=0;G.call=null;
   G.disc.x=h.x;G.disc.y=h.y;G.disc.z=1;
   assignMarks();G.pb=[null,null];startPlay(team);G.think=thinkFor(team,1.2,2);

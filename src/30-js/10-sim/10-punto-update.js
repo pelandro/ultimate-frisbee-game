@@ -96,15 +96,11 @@ function update(dt){
   const h=G.holder;
   if(h&&!G.flight){
     G.holdT+=dt;
-    if(G.brickWait){   // brick: l'attacco parte solo quando i difensori si sono schierati (o dopo un po')
-      G.brickT+=dt;
-      if(brickReady()||G.brickT>8){G.brickWait=false;G.think=rnd(0.5,0.9);}
-    }
     if(G.walk){   // dopo un turnover: prima raggiunge il disco; se e' nella meta che attacca, poi cammina fino alla linea di meta
       const wk=G.walk,tg=wk.stage?wk.line:wk.pick;
       if(hyp(h.x-tg.x,h.y-tg.y)<0.6){if(!wk.stage&&wk.line)wk.stage=1;else{G.walk=null;G.think=rnd(0.7,1.1);}}
     }
-    const waiting=G.brickWait||!!G.walk;
+    const waiting=!!G.walk;
     if(waiting){G.think=Math.max(G.think,0.6);G.stallT=0;}
     if(!waiting&&G.marker&&hyp(G.marker.x-h.x,G.marker.y-h.y)<3.8)G.stallT+=dt;
     if(G.stallT>=10){HOOKS.sfx('whistle');HOOKS.toast('Stall! Disco perso',1-h.t);turnover(1-h.t,h.x,h.y,G.marker,'',1-h.t);return;}
@@ -114,9 +110,9 @@ function update(dt){
     }
     if((h.t===1||G.auto)&&!waiting){
       const lv=AIK(h.t);
-      if(pbWait(h)){const mk=G.marker,hold=((mk&&mk.t===0?hbDur(h,mk):0.85)+0.12)*(G.k||K_DEF);if(G.think<hold)G.think=hold;}   // schema a sequenza: non lancia finche' non e' pronto
+      if(!G.open&&pbWait(h)){const mk=G.marker,hold=((mk&&mk.t===0?hbDur(h,mk):0.85)+0.12)*(G.k||K_DEF);if(G.think<hold)G.think=hold;}   // schema a sequenza: non lancia finche' non e' pronto
       const patT=lv.pat+Math.max(0,idOf(h.t).pat)*0.9;
-      if(patT>0&&G.stallT<7){   // difficolta': aspetta un ricevitore libero (il tempo di lancio resta appena sopra l'inizio del cerchio)
+      if(patT>0&&G.stallT<7&&!G.open){   // (il passaggio d'apertura dopo il pull non aspetta nessuno: la difesa e' ancora lontana)   // difficolta': aspetta un ricevitore libero (il tempo di lancio resta appena sopra l'inizio del cerchio)
         const mk=G.marker,hold=((mk&&mk.t===0?hbDur(h,mk):0.85)+0.12)*(G.k||K_DEF);
         if(G.think<hold&&aiPick(h).open<patT)G.think=hold;
       }
@@ -124,7 +120,6 @@ function update(dt){
     }
   }
 }
-// dopo un brick i difensori devono essere vicini al proprio uomo (o, in zona, vicini al disco)
 function diveCandidate(f){
   const L={x:f.tx,y:f.ty},reach=p=>reachOf(f,p);
   {const p=G.ctrl;if(p&&p.t===1-f.team){const d=hyp(p.x-L.x,p.y-L.y),r=reach(p);if(d>r&&d<=r+drOf(p)+0.5)return p;}}   // prima di tutti il difensore che stai guidando
@@ -158,13 +153,5 @@ function diveTap(){
   w.done=true;w.color=color;w.q=q;G.dive={p:w.p,qual:q,color};HOOKS.sfx('timing',q);HOOKS.sfx('dive');
   w.p.fl={x:f.tx,y:f.ty};w.p.flD=0;w.p.boost=1;   // il difensore si butta verso il punto d'arrivo
   w.p.dv={t0:G.tick||0,dir:f.tx>=w.p.x?1:-1,end:null};   // animazione del tuffo (la disegna l'interfaccia)
-  return true;
-}
-function brickReady(){
-  const def=T[1-G.poss],h=G.holder;if(!h)return true;
-  for(const q of def){
-    if(q.mark){if(hyp(q.x-q.mark.x,q.y-q.mark.y)>=4.5)return false;}
-    else if(hyp(q.x-h.x,q.y-h.y)>=22)return false;
-  }
   return true;
 }
