@@ -1,5 +1,12 @@
 /* ---- HUD ---- */
 const bDef=$('bDef');bDef.addEventListener('click',()=>{if(inDefense())toggleDmode();});
+// sigla di una squadra per la barra in alto: iniziali delle parole principali (San Francisco Revolver = SFR), o le prime tre lettere di un nome solo
+const ABBR_SKIP=new Set(['of','di','de','del','della','the','and','la','il','le','cus']);
+function teamAbbr(n){
+  n=String(n||'');const w=n.replace(/\([^)]*\)/g,' ').split(/[^A-Za-zÀ-ÿ0-9]+/).filter(x=>x&&!ABBR_SKIP.has(x.toLowerCase()));
+  if(w.length>=2)return w.slice(0,3).map(x=>x[0]).join('').toUpperCase();
+  return (w[0]||n).slice(0,3).toUpperCase();
+}
 const hud=$('hud'),elScore0=$('s0'),elScore1=$('s1'),elPt=$('pt'),elStall=$('stall'),elHint=$('hint'),bThr=$('thr'),bSprint=$('bSprint'),bThrow=$('bThrow'),bHammer=$('bHammer'),bSch=$('bSch'),skipBtn=$('skip');
 const cache=new Map();
 function setHTML(el,html){if(cache.get(el)!==html){cache.set(el,html);el.innerHTML=html;}}
@@ -13,7 +20,10 @@ function updateHUD(dt){
   if(!play)return;
   elScore0.textContent=G.drill?drHud(0):G.score[0];elScore1.textContent=G.drill?drHud(1):G.score[1];
   $('score').classList.toggle('mini',G.mode==='play');   // durante l'azione restano solo i due numeri; a fine meta tornano i nomi
-  elPt.textContent=G.drill?G.matchLabel:(G.matchLabel?G.matchLabel+' · ':'')+'Meta '+G.pointNo+(G.target!==MATCH_TARGET?' · ai '+G.target:'');myN.textContent=G.drill?drHud(2):(G.myName||'Blu');oppN.textContent=G.drill?drHud(3):(G.oppName||'Rossi');bExit.classList.toggle('hidden',!G.inMatch);
+  elPt.textContent=G.drill?G.matchLabel:'Meta '+G.pointNo+(G.target!==MATCH_TARGET?' · ai '+G.target:'')+(G.matchLabel?' · '+G.matchLabel:'');   // «Meta» per prima: se il testo e' lungo si taglia in fondo
+  // sigle in barra (i nomi interi non entrano e coprivano il testo): SFR, RRF...
+  const nm0=G.drill?drHud(2):(G.myName||'Blu'),nm1=G.drill?drHud(3):(G.oppName||'Rossi');
+  myN.textContent=G.drill?nm0:teamAbbr(nm0);oppN.textContent=G.drill?nm1:teamAbbr(nm1);myN.title=nm0;oppN.title=nm1;bExit.classList.toggle('hidden',!G.inMatch);
   const h=G.holder;
   const n=h&&!G.flight&&G.marker&&hyp(G.marker.x-h.x,G.marker.y-h.y)<3.8?Math.min(10,Math.floor(G.stallT)+1):0;
   elStall.classList.toggle('hidden',!n||G.mode!=='play');elStall.classList.toggle('hot',n>=7);

@@ -98,6 +98,10 @@ function usConfTable(c){
 }
 const usMatchRow=m=>`<li class="${m[4]===SV.team?'w':(m[0]===SV.team||m[1]===SV.team?'l':'')}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]===null?'da giocare':m[2]+' – '+m[3]}</span></li>`;
 // «posti ai Nationals» della regione: 1 automatico + quelli di forza dal ranking nazionale (definitivi a fine stagione regolare, prima una proiezione)
+function usBidsShort(c){   // una riga: quanti posti ai Nationals ha la regione e se sono saliti o scesi
+  const U=SV.us,b=usBidsNow()[c],q=U.bids?null:(U.bq&&U.bq[c]),tr=q&&q!==b?` <b style="color:${b>q?'#4fe58f':'#ff7b80'}">${b>q?'▲':'▼'} era ${q}</b>`:'';
+  return `<span class="legb"><b>${b} ${b===1?'posto':'posti'} ai Nationals</b>${tr}${U.bids?' · definitivi':''}</span>`;
+}
 function usBidsTxt(c){
   const U=SV.us,b=usBidsNow()[c],q=U.bids?null:(U.bq&&U.bq[c]),tr=q&&q!==b?` <b style="color:${b>q?'#4fe58f':'#ff7b80'}">${b>q?'▲':'▼'} era ${q}</b>`:'';
   return `<b>${b} ${b===1?'posto':'posti'} ai Nationals</b>${tr} (1 automatico${b>1?` + ${b-1} di forza`:''}${U.bids?', definitivi':', si aggiornano dopo ogni partita dal ranking'}) · i posti vanno alla regione: se li giocano le squadre della Conference`;
@@ -111,7 +115,7 @@ function usConfView(){
   const U=SV.us;if(!usConfSel||!U.conf[usConfSel])usConfSel=U.cf;
   const c=usConfSel;let h=`<div class="seg" id="usConfs">${US_CK.map(k=>`<button type="button" class="sg${c===k?' on':''}" data-uc="${k}">${US_CONF[k]}${k===U.cf?' (tua)':''}</button>`).join('')}</div>`;
   const L=c!==U.cf&&SV.lg[c];
-  h+=`<p class="estat">${usConfName(c)}, stagione ${SV.season}${L?` · giornata ${L.round} di ${L.sched.length}`:''}</p><p class="note" style="margin:0 0 6px">${usBidsTxt(c)}<br><b style="color:#4fe58f">Verde</b>: Nationals diretti · <b style="color:#ffd23f">Giallo</b>: Play-in (gare secche, chi vince va ai Nationals) · <b style="color:#ff7b80">Rosso</b>: eliminate. A parità di vittorie contano gli scontri diretti, poi la differenza mete.</p>`;
+  h+=`<p class="estat">${usConfName(c)}, stagione ${SV.season}${L?` · giornata ${L.round} di ${L.sched.length}`:''} ${infoB('uconf')}</p><div class="legrow">${usBidsShort(c)}<span class="leg"><i class="g"></i>Nationals</span><span class="leg"><i class="y"></i>Play-in</span><span class="leg"><i class="r"></i>fuori</span></div>${infoX('uconf',`<p>${usBidsTxt(c)}</p><p><b style="color:#4fe58f">Verde</b>: Nationals diretti · <b style="color:#ffd23f">Giallo</b>: Play-in (gare secche, chi vince va ai Nationals) · <b style="color:#ff7b80">Rosso</b>: eliminate. A parità di vittorie contano gli scontri diretti, poi la differenza mete.</p>`)}`;
   h+=usConfTable(c)+usPinHTML(c);
   if(L&&L.last.length)h+=`<h3 class="eh">Ultima giornata in ${usConfName(c)}</h3><ul class="elist">${L.last.map(m=>`<li class="${m[2]>m[3]?'w':'l'}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('')}</ul>`;
   if(c===U.cf){
@@ -143,7 +147,7 @@ function usPoolHTML(p,N){
 function usNatView(){
   const U=SV.us,N=U.nat;
   if(!N){
-    let h=`<p class="estat">Nationals · 16 squadre</p><p class="note" style="margin:0 0 8px">Ci vanno la 1ª di ogni Conference (8 squadre) e le 8 vincitrici dei Play-in (2ª contro 3ª). Gironi da 4 formati con le fasce del ranking nazionale, senza club della stessa Conference nello stesso girone se possibile. Le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono eliminate. Poi quarti, semifinali e finale.</p>`;
+    let h=`<p class="estat">Nationals · 16 squadre ${infoB('unat')}</p>${infoX('unat',`<p>Ci vanno la 1ª di ogni Conference (8 squadre) e le 8 vincitrici dei Play-in (2ª contro 3ª). Gironi da 4 formati con le fasce del ranking nazionale, senza club della stessa Conference nello stesso girone se possibile. Le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono eliminate. Poi quarti, semifinali e finale.</p>`)}`;
     if(U.fin){
       h+=US_CK.map(c=>{const o=U.fin[c];return `<h3 class="eh">${usConfName(c)}</h3><ul class="elist"><li><span>Diretta: ${esc(o[0])}</span><span>${o[0]===SV.team?'Voi':''}</span></li></ul>`;}).join('');
     }else h+='<p class="note">I qualificati si conoscono alla fine della stagione regolare.</p>';
@@ -159,19 +163,14 @@ function usRankView(){
   const arr=d=>`<td style="color:${d>0?'#4fe58f':(d<0?'#ff7b80':'inherit')}">${d>0?'▲'+d:(d<0?'▼'+(-d):'–')}</td>`,pl=U.ph==='reg'?U.pl:null;
   const rows=usRankList().map((n,i)=>{const d=pos0[n]-(i+1),cf=usConfOf(n),dl=pl&&pl[n]?pl[n]-(i+1):0;
     return `<tr class="${n===SV.team?'me':''}"><td>${i+1}. ${crest(n,15)} ${esc(n)}</td><td>${cf}</td><td>${Math.round(U.pr[n])}</td>${arr(dl)}${arr(d)}</tr>`;}).join('');
-  return `<p class="estat">Ranking nazionale</p><p class="note" style="margin:0 0 6px">Cresce con le vittorie, più se l’avversaria è forte e se il margine è largo; cala con le sconfitte. Si aggiorna dopo ogni partita, comprese le 7 interregionali (una contro un club di ciascuna delle altre Conference): è il ranking che decide quanti posti ai Nationals ha ogni regione, le teste di serie e i gironi. E = Eastern, W = Western, C = Central, S = Southern; le frecce sono il cambio dall’ultima giornata e da inizio stagione.</p><div style="overflow-x:auto"><table class="rt"><tr><th>Club</th><th>Conf.</th><th>Punti</th><th>Giorn.</th><th>Stag.</th></tr>${rows}</table></div>`;
+  return `<p class="estat">Ranking nazionale ${infoB('urank')}</p>${infoX('urank',`<p>Cresce con le vittorie, più se l’avversaria è forte e se il margine è largo; cala con le sconfitte. Si aggiorna dopo ogni partita, comprese le 7 interregionali (una contro un club di ciascuna delle altre Conference): è il ranking che decide quanti posti ai Nationals ha ogni regione, le teste di serie e i gironi. E = Eastern, W = Western, C = Central, S = Southern; le frecce sono il cambio dall’ultima giornata e da inizio stagione.</p>`)}<div style="overflow-x:auto"><table class="rt"><tr><th>Club</th><th>Conf.</th><th>Punti</th><th>Giorn.</th><th>Stag.</th></tr>${rows}</table></div>`;
 }
 function renderEventUS(){
   const U=SV.us,sub=SV.done?'Stagione conclusa.':(U.ph==='reg'?usRegSub()+'.':US_PHASE_NAME[U.ph]+'.');
   $('eCards').innerHTML=`<button type="button" class="ecard on" data-e="camp"><strong>Men’s Club USA</strong><small>48 club, 8 Conference da 6: 5 giornate di Conference + 7 interregionali, Play-in e Nationals a 16 squadre. ${sub}</small></button>`;
   if(usTabPh!==U.ph){usTabPh=U.ph;usTabSel=(U.ph==='nat'||U.ph==='done')?'nat':'conf';}
   let body='';
-  if(SV.done&&SV.next){
-    const hx=SV.hist[0];
-    body+=`<p class="estat">${SV.next.short}</p><p class="note" style="margin:0 0 8px">Premio di stagione: ${SV.next.prize} crediti. Sponsor ${SV.next.objOk?'soddisfatto: bonus di '+SV.obj.reward+' crediti':'deluso: nessun bonus'}.${hx&&hx.mvp?` MVP della squadra: ${esc(hx.mvp)} (${hx.mvpS}).`:''} Con la nuova stagione tutti invecchiano di un anno, i veterani possono ritirarsi, le altre squadre cambiano e il mercato si rinnova.</p>`;
-    if(hx&&hx.aw&&hx.aw.length)body+=`<div class="seas"><h3>Premi della stagione · ${usConfName(U.cf)}</h3><ul class="awl">${hx.aw.map(awRow).join('')}</ul>${hx.best7&&hx.best7.length?`<p>Squadra ideale: ${hx.best7.map(q=>`${q.mine?'<b style="color:var(--gold)">':'<b>'}${esc(q.name)}</b> (${q.pos})`).join(', ')}</p>`:''}</div>`;
-    body+='<button type="button" class="go" id="eReset">Inizia la nuova stagione</button>';
-  }
+  if(SV.done&&SV.next)body+=endSeasonHTML({rl:'Conference',awTitle:usConfName(U.cf)});
   body+=`<div class="seg" id="usTabs">${[['conf','Conference'],['nat','Nationals'],['rank','Ranking']].map(([k,l])=>`<button type="button" class="sg${usTabSel===k?' on':''}" data-ut="${k}">${l}</button>`).join('')}</div>`;
   body+=usTabSel==='nat'?usNatView():(usTabSel==='rank'?usRankView():usConfView());
   if(usTabSel==='nat'&&SV.usAlb&&SV.usAlb.length)body+=`<h3 class="eh">Albo d’oro dei Nationals</h3><ul class="elist">${SV.usAlb.slice(0,6).map(a=>`<li><span>${a.s}: ${esc(a.champ)}</span><span>${a.sc[0]}–${a.sc[1]} su ${esc(a.run)}</span></li>`).join('')}</ul>`;

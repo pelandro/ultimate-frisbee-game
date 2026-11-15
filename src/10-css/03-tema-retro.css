@@ -13,14 +13,14 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;image-rendering:pix
 .chip,.btn,.tbtn{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 /* ---- barra nera in alto: squadre e punteggio a sinistra, meta al centro, stall ed «Esci» a destra ---- */
 #hud::before{content:"";position:absolute;left:0;right:0;top:0;height:28px;background:#000;box-shadow:0 2px 0 rgba(0,0,0,.35)}
-#score,#score.mini{top:0;left:max(10px,env(safe-area-inset-left,0px));height:28px;padding:0;background:none;display:flex;flex-wrap:nowrap;align-items:center;gap:8px;max-width:none}
-#score .tn,#score.mini .tn{display:inline-block;font-size:20px;font-weight:400;max-width:23vw;line-height:28px}
+#score,#score.mini{top:0;left:max(10px,var(--sal));height:28px;padding:0;background:none;display:flex;flex-wrap:nowrap;align-items:center;gap:8px;max-width:none}
+#score .tn,#score.mini .tn{display:inline-block;font-size:20px;font-weight:400;max-width:23vw;line-height:28px;letter-spacing:.02em}
 #score .dash,#score.mini .dash{display:inline}
 #score b,#score.mini b{font-family:var(--pfont);font-size:14px;font-weight:400;color:#fff!important;min-width:1em}
-#score small,#score.mini small{display:block;position:fixed;left:auto;right:calc(max(8px,env(safe-area-inset-right,0px)) + 66px);top:0;margin:0;line-height:28px;font-size:19px;color:#c2cbe6;white-space:nowrap;flex-basis:auto}
+#score small,#score.mini small{display:block;position:fixed;left:auto;right:calc(max(12px,var(--sar)) + 62px);top:0;margin:0;line-height:28px;font-size:17px;color:#c2cbe6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;max-width:calc(100vw - 270px - var(--sal) - var(--sar));flex-basis:auto}
 #score #pt{flex-basis:auto}
-#bExit{top:3px;right:max(8px,env(safe-area-inset-right,0px));height:22px;padding:0 9px;font-size:18px;font-weight:400;line-height:18px;background:#000;color:#fff;border:2px solid #fff}
-#stall{top:34px;left:max(8px,env(safe-area-inset-left,0px));height:24px;padding:0 9px;font-family:var(--pfont);font-size:11px;line-height:20px;font-weight:400;background:#000;color:#fff;border:2px solid #fff;text-transform:uppercase}
+#bExit{top:2px;right:max(12px,var(--sar));height:24px;min-width:44px;padding:0 9px;font-size:18px;font-weight:400;line-height:18px;background:#000;color:#fff;border:2px solid #fff}
+#stall{top:34px;left:max(8px,var(--sal));height:24px;padding:0 9px;font-family:var(--pfont);font-size:11px;line-height:20px;font-weight:400;background:#000;color:#fff;border:2px solid #fff;text-transform:uppercase}
 #stall.hot{background:var(--bad);color:#fff;border-color:#000;animation:blink .3s steps(2) infinite}
 @keyframes blink{50%{opacity:.35}}
 #hint{top:36px;background:#000;border:2px solid #fff;font-size:18px;font-weight:400;padding:3px 10px}
