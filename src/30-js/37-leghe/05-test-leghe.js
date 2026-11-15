@@ -145,7 +145,7 @@ function lnSelfTest(seasons,seed){
   r('Classifica: Girone, Fase finale e Livelli si aprono in ogni fase della stagione','viste','sì');
   r('Salvataggio: ricarica a metà stagione','salvataggio','sì');
   r('Avvio carriera: livello e girone giusti, rose di tutti i club','lega','sì');
-  r('Coppa europea: 16 club con 3 italiani, 3 belgi, 2 francesi, 2 britannici e 1 tedesco, in gironi','eucf','sì');
+  r('Campionato europeo: 16 club con 3 italiani, 3 belgi, 2 francesi, 2 britannici e 1 tedesco, in gironi','eucf','sì');
   r('Mercato: le stelle che giocano nei club della lega non sono in vendita','mercato','sì');
   r('Offerte tra tutte le leghe: lavoro e scambi da ognuna delle sei verso le altre cinque (gli scambi anche dalla stessa lega), con allenatore, storico e trofei conservati','offerte','sì');
   r('Almeno 11 partite per chi arriva in fondo in ogni livello europeo (più giri nei gironi solo dove servono)','minime','sì');

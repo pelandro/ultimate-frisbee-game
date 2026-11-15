@@ -1,7 +1,7 @@
 /* ===================== ULTIMATE TEAM =====================
    Si parte aprendo un pacchetto da 10 giocatori casuali (piu' sono forti, piu' sono rari), si sceglie la rosa e si gioca un torneo a eliminazione diretta
    di 64 squadre (6 turni). Le avversarie crescono di forza a ogni turno. Dopo ogni vittoria si apre un nuovo pacchetto (sempre migliore). */
-const UT_KEY='ultimate-ut',UTR_KEY='ultimate-ut-real',UT_POWERS=[50,58,64,72,84,98],UT_ROUNDS=['Trentaduesimi','Sedicesimi','Ottavi','Quarti','Semifinale','Finale'];
+const UT_KEY='ultimate-ut',UTR_KEY='ultimate-ut-real',UT_POWERS=[50,58,64,72,84,98],UT_ROUNDS=['Trentaduesimi','Sedicesimi','Ottavi','Quarti','Semifinale','Finale'],UT_TO=['ai trentaduesimi di finale','ai sedicesimi di finale','agli ottavi di finale','ai quarti di finale','in semifinale','in finale'];   // UT_TO: «passi …», «eliminati …»
 const UT_OFF={D:{lan:-8,buc:-9,spa:-9,vis:1,dif:13,sal:6,sca:5,tuf:8,vel:6,res:5,pre:-3,agi:6},H:{lan:8,buc:8,spa:8,vis:5,dif:-7,sal:-7,sca:-7,tuf:-7,vel:-7,res:-7,pre:-2,agi:-5},C:{lan:-9,buc:-9,spa:-9,vis:-3,dif:7,sal:7,sca:7,tuf:7,vel:7,res:7,pre:6,agi:7}};
 const UT_LETTERS='ABCDEFGHILMNOPRSTVZ';
 // statistiche di un giocatore con media (ovr) data: il ruolo da' il profilo (handler = lanci, cutter = fisico), che a livelli alti si appiattisce
@@ -89,7 +89,7 @@ function renderUT(){
   $('uTeam').classList.toggle('hidden',!has);
   $('uTeamS').textContent=has?`${UT.col.length} giocatori · scegli i 7 titolari`:'';
   $('uNew').classList.toggle('hidden',UT.st==='play');
-  $('uDiff').innerHTML=UT_DIFF.map((d,i)=>`<button type="button" class="sg${i===UT.d?' on':''}" data-d="${i}">${d.name}</button>`).join('');$('uDiffN').textContent=UT_DIFF[UT.d].txt+' Le avversarie hanno la forza del turno'+(DIFF_PLUS[UT.d|0]?', più '+DIFF_PLUS[UT.d|0]+' a tutte le statistiche.':'.');
+  $('uDiff').innerHTML=UT_DIFF.map((d,i)=>`<button type="button" class="sg${i===UT.d?' on':''}" data-d="${i}">${d.name}</button>`).join('');$('uDiffN').textContent=UT_DIFF[UT.d].txt+' Le avversarie hanno la forza del turno'+(DIFF_PLUS[UT.d|0]?', con +'+DIFF_PLUS[UT.d|0]+' a tutte le statistiche.':'.');
   $('uMsg').textContent=UT.res||'';
 }
 $('tUT').addEventListener('click',()=>showScreen('utMode'));   // prima si sceglie: Computer (questa pagina) o Real player (04-ut-online.js)
@@ -231,9 +231,9 @@ function utRecord(win){
   const r=UT.round,gain=win?40+15*r:15;UT.coins+=gain;if(win){UT.stat.w++;if(r>=5)UT.stat.t++;}
   const grown=utGrowCards();
   if(win){
-    if(r>=5){UT.st='won';UT.round=6;UT.packs.push(6);UT.res='Campioni! Hai vinto il torneo e ottieni un pacchetto speciale.';}
-    else{UT.round=r+1;UT.packs.push(r+1);UT.res=`Passi ai ${UT_ROUNDS[r+1]}: hai ottenuto un nuovo pacchetto.`;}
-  }else{UT.st='out';UT.res=`Eliminati ai ${UT_ROUNDS[r]}. Puoi iniziare un nuovo torneo e tenere i tuoi giocatori.`;}
+    if(r>=5){UT.st='won';UT.round=6;UT.packs.push(6);UT.res='Campioni! Hai vinto il torneo e ottieni il Super pacchetto.';}
+    else{UT.round=r+1;UT.packs.push(r+1);UT.res=`Passi ${UT_TO[r+1]}: hai ottenuto un nuovo pacchetto.`;}
+  }else{UT.st='out';UT.res=`Eliminati ${UT_TO[r]}. Puoi iniziare un nuovo torneo e tenere i tuoi giocatori.`;}
   UT.res+=` +${gain} gettoni.`+(grown.length?` ${grown.length===1?grown[0]+' è cresciuto':grown.length+' carte sono cresciute'} giocando.`:'');
   utSave();return UT.res;
 }

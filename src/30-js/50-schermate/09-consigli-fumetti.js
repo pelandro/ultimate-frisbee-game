@@ -35,7 +35,7 @@ function timelineHTML(){
 // consigli: [testo, urgenza] ; i piu' urgenti prima
 function adviceList(){
   const L=[],hurt=SQ.filter(p=>p.inj&&!p.abs),low=SQ.filter(p=>p.cond<50&&!p.inj),lineBad=SV.lineO.length<7||SV.lineD.length<7||SQ.some(p=>p.inj&&(SV.lineO.includes(p.full)||SV.lineD.includes(p.full)));
-  if(lineBad)L.push(['Una linea è incompleta o ha un infortunato: sistema le linee dalla Rosa (o «Linee consigliate»).',9]);
+  if(lineBad)L.push(['Una linea è incompleta o ha un infortunato: sistema le linee in Squadra (o «Linee consigliate»).',9]);
   if(SV.cash<0)L.push(['Conti in rosso: mercato fermo e morale in calo; se dura la dirigenza ti esonera. Vendi una riserva o punta sulle partite in casa.',9]);
   if(low.length>=2)L.push([`${low.length} giocatori sono scarichi: un Recupero negli Allenamenti o un Riposo dalla scheda li rimette in forma.`,7]);
   if(trainOpen()&&!SV.tTeam)L.push(['C’è una sessione di allenamento da fare: la squadra cresce solo se la usi (o accendi il Programma automatico).',6]);
@@ -45,7 +45,7 @@ function adviceList(){
   if(af)L.push([`Hai ${SV.cash} crediti: ${FAC[af][0]} al livello ${facLv(af)+1} costa ${facCost(af)}. ${FAC[af][1]}.`,4]);
   if(SV.mkSeen!==SV.mkN)L.push(['Il mercato si è rinnovato: guarda le giovani promesse e chi è alla tua portata.',3]);
   if(hurt.length)L.push([`${esc(pname(hurt[0]))} è infortunat${oa(hurt[0])}: ${hurt[0].inj} ${hurt[0].inj>1?'partite':'partita'} di stop.`,3]);
-  const base=['Tocca un compagno per chiamargli il taglio: lancia dove sta correndo, non dove si trova.','Il timeout (uno a partita) azzera lo stall e fa recuperare energia.','Con più Sparo il lanciatore arriva più lontano: lo vedi dall’arco rosso mentre mira.','Controlla il meteo prima di partire: con vento forte i lanci lunghi sono più difficili.','Un giocatore che resta fuori troppo a lungo diventa scontento: ruota le linee.','Le Tribune portano più tifosi e più incasso a ogni partita.','Il programma automatico degli Allenamenti fa le sedute al posto tuo.','Nel derby si guadagna di più, ma si perde di più.'];
+  const base=['Tocca un compagno per chiamargli il taglio: lancia dove sta correndo, non dove si trova.','Il timeout (uno a partita) azzera lo stall e fa recuperare energia.','Con più Sparo il lanciatore arriva più lontano: lo vedi dall’arco rosso mentre mira.','Controlla il meteo prima di partire: con vento forte i lanci lunghi sono più difficili.','Un giocatore che resta fuori troppo a lungo diventa scontento: ruota le linee.','Le Tribune allargano lo stadio e tengono i tifosi: incassi di più quando lo stadio si riempie.','Il programma automatico degli Allenamenti fa le sedute al posto tuo.','Nel derby si guadagna di più, ma si perde di più.'];
   if(SV.obj)L.push([`Obiettivo dello sponsor: ${SV.obj.txt} (bonus ${SV.obj.reward} crediti a fine stagione).`,2]);
   base.forEach(t=>L.push([t,0]));
   return L;
@@ -63,7 +63,7 @@ function renderTicker(){
 }
 /* ---- fumetti ---- */
 const TIPS={
-  home:'Benvenuto nella tua carriera! Qui, nella schermata Partita, vedi la prossima partita, «Questa settimana» (cosa serve adesso) e come stanno squadra e tifosi. A sinistra la colonna ti porta in Squadra, Allena, Mercato, Lega e Società. Il tasto giallo fa giocare la partita, «Simula» la fa giocare al posto tuo. In basso scorre un consiglio.',
+  home:'Benvenuto nella tua carriera! Qui, nella schermata Partita, vedi la prossima partita, «Questa settimana» (cosa serve adesso) e come stanno squadra e tifosi. A sinistra la colonna ti porta in Squadra, Allena, Mercato, Lega e Società. Il tasto giallo fa giocare la partita, «Simula» la fa giocare al posto tuo. Sotto trovi un consiglio.',
   roster:'Qui conosci i tuoi giocatori. Le stelle dicono quanto sono forti, la barra verde la condizione, la faccina l’umore. Tocca una carta per aprire la scheda: attributi, prestazioni e sviluppo, e le azioni Riposo, Colloquio e Soprannome. Con A e D scegli chi gioca in attacco e in difesa.',
   market:'Il mercato si rinnova ogni 5 giornate. Giovani promesse, svincolati e giocatori in vendita: osservali per scoprirne il potenziale. Alcuni hanno una motivazione (vuole giocare, ambizioso…) scritta sotto il nome. «Solo chi posso prendere» nasconde chi costa troppo.',
   club:'La Società è il tuo club: strutture (campo, fisio, vivaio, tribune, osservatori, sede), staff e conti. Ogni livello costa di più ma dà un vantaggio che si vede. Con il tasto «i» accanto a ogni voce leggi cosa fa.',

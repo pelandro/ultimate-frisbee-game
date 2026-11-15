@@ -108,7 +108,7 @@ const EVT={
     o:a=>[['Ripara ('+a.c+' crediti)',()=>{SV.cash-=a.c;return 'Riparato: il livello resta '+facLv(a.k)+'.';},()=>SV.cash>=a.c],['Lascia perdere',()=>{SV.fac[a.k]=Math.max(0,facLv(a.k)-1);return FAC[a.k][0]+' scende al livello '+facLv(a.k)+'.';}]]},
   provino:{w:2,ok:()=>SQ.length<28,mk:()=>({}),t:a=>['Un provino','Un ragazzo del posto, mai visto prima, chiede di allenarsi con voi. Di lui non si sa nulla.'],
     o:a=>[['Prendilo in rosa',()=>{const o=youthFromAcademy('prov',0);return o?(o.label||o.n)+' ('+o.age+' anni) entra in rosa: il suo potenziale è tutto da scoprire.':'Rosa piena: non c’è posto.';}],['No, grazie',()=>'Il ragazzo proverà altrove.']]},
-  amichevole:{w:3,mk:()=>({c:Math.round(14*evK())}),t:a=>['Torneo amichevole','Vi invitano a un torneo sulla sabbia nel fine settimana libero: un piccolo gettone e tanto gioco insieme, ma si torna stanchi.'],
+  amichevole:{w:3,mk:()=>({c:Math.round(14*evK())}),t:a=>['Torneo amichevole','Vi invitano a un torneo sulla sabbia nel fine settimana libero: un piccolo compenso e tanto gioco insieme, ma si torna stanchi.'],
     o:a=>[['Partecipa: +'+a.c+' crediti, +3 affiatamento, −12 condizione',()=>{SV.cash+=a.c;SV.chem=clamp(SV.chem+3,0,100);allCond(-12);return 'Bel torneo: gruppo più unito, gambe più pesanti.';}],['Riposo: +6 condizione',()=>{allCond(6);return 'Un fine settimana di riposo: +6 di condizione a tutti.';}]]},
   tifosi:{w:2,ok:()=>SV.res.length>=2&&SV.res.slice(-2).every(r=>r.su>r.so),mk:()=>({}),t:a=>['Entusiasmo','Due vittorie di fila: al campo arriva più gente e la squadra lo sente.'],
     o:a=>[['Bene!',()=>{SV.mor=clamp(SV.mor+8,0,100);return '+8 morale.';}]]},
@@ -125,7 +125,7 @@ const EVT={
   maltempo:{w:2,ok:()=>!SV.tTeam&&trainOpen(),mk:()=>({}),t:a=>['Campo allagato','Ha piovuto tutta la settimana: l’allenamento di squadra di questa giornata salta. Restano i lavori individuali.'],
     o:a=>[['Pazienza',()=>{SV.tTeam=true;return 'Niente seduta di squadra fino alla prossima partita.';}]]},
   staff:{w:2,ok:()=>Object.keys(STAFF).some(k=>staffLv(k)>=1&&stPerson(k)),mk:()=>{const ks=Object.keys(STAFF).filter(k=>staffLv(k)>=1&&stPerson(k)),k=ks[Math.floor(Math.random()*ks.length)];return {k,c:Math.round((20*evK()+STAFF_WAGE[staffLv(k)]*5)*(staffMoodKey()==='s'?1.5:1))};},
-    t:a=>{const s=stPerson(a.k);return ['Offerta per il tuo staff',(s?s.n:'Un membro dello staff')+' ('+STAFF[a.k].n.toLowerCase()+', livello '+staffLv(a.k)+') è stato contattato da un altro club.'+(staffMoodKey()==='s'?' L’ambiente è teso e vuole di più per restare.':'')];},
+    t:a=>{const s=stPerson(a.k);return ['Offerta per il tuo staff',(s?s.n:'Un membro dello staff')+' ('+STAFF[a.k].n.toLowerCase()+', livello '+staffLv(a.k)+') è stato contattato da un altro club.'+(staffMoodKey()==='s'?' L’ambiente è teso: per restare chiede di più.':'')];},
     o:a=>[['Trattieni con un premio di '+a.c+' crediti',()=>{SV.cash-=a.c;const s=stPerson(a.k);return (s?s.n:'Resta')+' resta con voi.';},()=>SV.cash>=a.c],['Lascialo andare: perdi un livello',()=>staffLeave(a.k)]]},
   spirito:{w:2,mk:()=>({}),t:a=>['Premio Spirit of the Game','Le avversarie vi hanno votato come la squadra più corretta dell’ultimo turno.'],
     o:a=>[['Grazie!',()=>{SV.rep=clamp(SV.rep+3,0,100);return '+3 reputazione.';}]]}

@@ -26,25 +26,24 @@ function objCtx(){
   if(isLN()){
     const comp=lnComp(),D=LN_DEF[SV.lk],tiers=lnTiers(),ti=tiers.findIndex(t=>t.id===SV.ln.tier),n=comp.clubs.length,down=ti<tiers.length-1?D.mv[ti]:0,up=ti>0?D.mv[ti-1]:0;
     return {names:comp.clubs,n,cat:x=>LN_BY[x]?LN_BY[x].p:NaN,pow:lnP,up,safe:n-(down||1),
-      title:`Vincere il campionato ${D.de}`,upTxt:ti>0?`Promozione: salire in ${tiers[ti-1].name}`:'',eu:ti===0?D.eu:0,
-      low:t=>down?`Salvezza: non finire tra le ultime ${down}`:'Stagione dignitosa: non chiudere ultimi'};
+      title:ti===0?`Titolo ${D.de}`:`Primo posto in ${tiers[ti].name}`,upTxt:ti>0?`Promozione in ${tiers[ti-1].name}`:'',eu:ti===0?D.eu:0,
+      low:t=>down?`Salvezza (non tra le ultime ${down})`:'Non chiudere ultimi'};
   }
   const names=SV.mem[SV.sr],n=names.length,top=SV.sr==='A';
   return {names,n,cat:x=>TEAM[x]?TEAM[x].power:NaN,pow:teamPow,up:top?0:PROMO,safe:n-PROMO,
-    title:top?'Vincere lo scudetto':'Vincere il campionato',upTxt:`Promozione: salire in ${SERIES_NAME[SV.sr==='C'?'B':'A']}`,eu:top?3:0,
-    low:t=>t>=n-1?'Non chiudere ultimi':(SV.sr==='C'?'Stagione dignitosa: non finire tra le ultime '+PROMO:'Salvezza: non finire tra le ultime '+PROMO)};
+    title:top?'Scudetto':`Primo posto in ${SERIES_NAME[SV.sr]}`,upTxt:`Promozione in ${SERIES_NAME[SV.sr==='C'?'B':'A']}`,eu:top?3:0,
+    low:t=>t>=n-1?'Non chiudere ultimi':(SV.sr==='C'?'Fuori dalle ultime '+PROMO:'Salvezza (non tra le ultime '+PROMO+')')};
 }
 function objMk(t,c,exp,k){
   const o={tgt:t,exp};
   if(t<=1)o.txt=c.title;
   else if(c.up>=2&&t===c.up){o.promo=1;o.txt=c.upTxt;}
-  else if(c.eu&&t===c.eu)o.txt=`Qualificarsi al Campionato europeo: chiudere tra le prime ${t}`;
+  else if(c.eu&&t===c.eu)o.txt=`Posto all’EUCF (prime ${t})`;
   else if(t>=c.safe)o.txt=c.low(t);
-  else if(t===Math.ceil(c.n/2))o.txt='Parte alta della classifica: finire tra le prime '+t;
-  else o.txt='Chiudere tra le prime '+t;
+  else o.txt=`Prime ${t} in classifica`;
   let rw=(36+(c.n-t)*4)*ECO.K()*SP_KIND[k].rw;
   if(k==='amb'&&euOn()&&c.eu){   // chi ha l'Europa da giocare: il contratto ambizioso chiede anche la strada nel torneo
-    o.eu=exp<=2?3:2;o.txt+=` e ${o.eu===3?'arrivare in semifinale':'arrivare ai quarti'} del Campionato europeo`;rw*=1.35;
+    o.eu=exp<=2?3:2;o.txt+=` + ${o.eu===3?'semifinale':'quarti di finale'} all’EUCF`;rw*=1.35;
   }
   o.reward=Math.round(rw);
   return o;
@@ -67,14 +66,14 @@ function objMet(rank,x){
 }
 // ---- USA: la scala va dalla Conference ai Nationals ----
 const US_RUNG=[
-  {id:'c5',lvl:0,cr:5,txt:'Chiudere la Conference tra le prime 5',tgt:5,rw:14},
-  {id:'c4',lvl:0,cr:4,txt:'Chiudere la Conference tra le prime 4',tgt:4,rw:20},
-  {id:'c3',lvl:0,cr:3,txt:'Chiudere la Conference tra le prime 3',tgt:3,rw:26},
-  {id:'pin',lvl:1,txt:'Qualificarsi ai Play-in: chiudere tra le prime posizioni della Conference (dipende dai posti della regione)',tgt:3,rw:30},
-  {id:'nat',lvl:2,txt:'Raggiungere i Nationals',tgt:4,rw:44},
-  {id:'qf',lvl:4,txt:'Arrivare ai quarti dei Nationals',tgt:3,rw:54},
-  {id:'sf',lvl:5,txt:'Arrivare alle semifinali dei Nationals',tgt:2,rw:62},
-  {id:'tit',lvl:7,txt:'Vincere il titolo nazionale',tgt:1,rw:90}
+  {id:'c5',lvl:0,cr:5,txt:'Prime 5 della Conference',tgt:5,rw:14},
+  {id:'c4',lvl:0,cr:4,txt:'Prime 4 della Conference',tgt:4,rw:20},
+  {id:'c3',lvl:0,cr:3,txt:'Prime 3 della Conference',tgt:3,rw:26},
+  {id:'pin',lvl:1,txt:'Play-in (i posti dipendono dalla regione)',tgt:3,rw:30},
+  {id:'nat',lvl:2,txt:'Qualificazione ai Nationals',tgt:4,rw:44},
+  {id:'qf',lvl:4,txt:'Quarti di finale ai Nationals',tgt:3,rw:54},
+  {id:'sf',lvl:5,txt:'Semifinale ai Nationals',tgt:2,rw:62},
+  {id:'tit',lvl:7,txt:'Titolo nazionale',tgt:1,rw:90}
 ];
 const usRungBal=exp=>exp<=2?6:(exp<=6?5:(exp<=14?4:(exp<=24?3:(exp<=36?2:1))));   // gradino equilibrato secondo la posizione attesa tra i 48 club
 function usObjFor(k,exp){

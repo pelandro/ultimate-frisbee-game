@@ -21,11 +21,11 @@ function lnObjective(){
   const comp=lnComp(),n=comp.clubs.length,ord=comp.clubs.slice().sort((a,b)=>lnP(b)-lnP(a)),exp=ord.indexOf(SV.team)+1,tiers=lnTiers(),ti=tiers.findIndex(t=>t.id===SV.ln.tier),top=ti===0;
   const mv=LN_DEF[SV.lk].mv,down=ti<tiers.length-1?mv[ti]:0,up=ti>0?mv[ti-1]:0,eu=LN_DEF[SV.lk].eu;
   let tgt,txt;
-  if(top&&exp<=2){tgt=1;txt=`Vincere il campionato ${LN_DEF[SV.lk].de}`;}
-  else if(top&&exp<=eu+2){tgt=eu;txt=`Qualificarsi all’EUCF: chiudere tra le prime ${eu}`;}
-  else if(!top&&exp<=up+1){tgt=up;txt=`Promozione: chiudere tra le prime ${up}`;}
-  else if(exp<=Math.ceil(n/2)){tgt=Math.ceil(n/2);txt=`Parte alta della classifica: tra le prime ${tgt}`;}
-  else{tgt=Math.max(1,n-(down||1));txt=down?`Salvezza: non finire tra le ultime ${down}`:'Stagione dignitosa: non chiudere ultimi';}
+  if(top&&exp<=2){tgt=1;txt=`Titolo ${LN_DEF[SV.lk].de}`;}
+  else if(top&&exp<=eu+2){tgt=eu;txt=`Posto all’EUCF (prime ${eu})`;}
+  else if(!top&&exp<=up+1){tgt=up;txt=`Promozione (prime ${up})`;}
+  else if(exp<=Math.ceil(n/2)){tgt=Math.ceil(n/2);txt=`Prime ${tgt} in classifica`;}
+  else{tgt=Math.max(1,n-(down||1));txt=down?`Salvezza (non tra le ultime ${down})`:'Non chiudere ultimi';}
   SV.obj={tgt,txt,exp,reward:Math.round((36+(n-tgt)*4)*SR_K[SV.sr])};
 }
 const lnObjNow=()=>SV.ln.ph==='grp'?(SV.round>0?` · ora ${myRank()}ª nel girone`:''):' · fase finale';

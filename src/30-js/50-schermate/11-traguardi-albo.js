@@ -12,7 +12,7 @@ function achHTML(){
 // albo d'oro della Serie A: un'edizione per riga, in numeri romani; la tua squadra è in oro
 function albHTML(){
   const a=SV.alb||[];
-  if(!a.length)return '<p class="note">Qui comparirà l’albo d’oro della Serie A: a fine stagione, dopo la finale dei playoff, si aggiunge il nome della campione, scritto in numeri romani.</p>';
+  if(!a.length)return '<p class="note">Qui comparirà l’albo d’oro della Serie A: a fine stagione, dopo la finale dei playoff, si aggiunge il nome della campione, con il numero dell’edizione in numeri romani.</p>';
   return `<ul class="albl">${a.map(e=>`<li class="${e.champ===SV.team?'me':''}"><i>${roman(e.s)}</i>${crest(e.champ,18)}<b>${esc(e.champ)}</b><span class="sc">${e.ft?e.ft[0]+'–'+e.ft[1]+' su ':'finale su '}${esc(e.run)}</span></li>`).join('')}</ul>`;
 }
 // Hall of Fame: una carta dorata per ogni grande ritirato (le voci di prima del cambio hanno solo i numeri: niente ruolo né volto)

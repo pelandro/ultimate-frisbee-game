@@ -33,7 +33,7 @@ function openCoach(o){
 function renderCoach(){
   if(!coS){showScreen(hasCareer()?'home':'team');return;}
   const nw=coS.mode==='new';
-  $('coWhy').textContent=nw?(coS.relief?`${coS.team} ti ha scelto come nuovo allenatore. Come ti chiami?`:`Stai per allenare ${coS.team}. Come ti chiami e che faccia hai?`):'Cambia nome o volto quando vuoi: compari nel cruscotto, nelle notizie e nella Hall of Fame.';
+  $('coWhy').textContent=nw?(coS.relief?`${coS.team} ti ha scelto come nuovo allenatore. Come ti chiami?`:`Stai per allenare ${coS.team}. Come ti chiami e che faccia hai?`):'Cambia nome o volto quando vuoi: compari nella schermata Partita, nelle notizie e nella Hall of Fame.';
   $('coN').value=coS.n;$('coS').value=coS.s;$('coGo').textContent=nw?'Inizia la carriera':'Salva';
   coPaint();
 }
