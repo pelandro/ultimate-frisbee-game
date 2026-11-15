@@ -7,7 +7,7 @@ function usaSelfTest(seasons,seed){
   const bak=hasCareer()?(persist(),JSON.stringify(SV)):null,R0=Math.random,q0=QM.on,rows=[],row=(name,val,ok,note)=>({name,val,ok:!!ok,note:note||''});
   Math.random=mulberry32(seed||2026);QM.on=true;
   const bad={},chk=(k,c,m)=>{if(!c)(bad[k]=bad[k]||[]).push(m||'');};
-  let err='',conflicts=0,pools=0,seasonsDone=0,champs=new Set(),stages=new Set(),games=0;
+  let err='',conflicts=0,pools=0,seasonsDone=0,champs=new Set(),stages=new Set(),games=0,bidChg=0,bidSeas=0,prevB=null;
   const hide=()=>{for(const id of ['simres','alerts','evt'])$(id).classList.add('hidden');};
   try{
     chk('club',US_NAMES.length===48&&new Set(US_NAMES).size===48,'48 club distinti');
@@ -19,11 +19,16 @@ function usaSelfTest(seasons,seed){
       chk('lega',SV.lk==='US'&&SV.sr==='U'&&SV.sched.length===5,'avvio '+club);
       for(let s=0;s<seasons;s++){
         let g=0;
-        while(!SV.done&&g++<40){const m=nextMatch();if(!m){chk('flusso',false,'partita mancante');break;}const r=simPower(SV.team,m.name);recordResult(r[0]>r[1],r[0],r[1]);hide();games++;
+        prevB=null;let chgS=0;
+        while(!SV.done&&g++<40){
+          if(SV.us.ph==='reg'){const nb=JSON.stringify(usBids());if(prevB&&prevB!==nb)chgS++;prevB=nb;}   // i posti si ricalcolano dopo ogni giornata
+          const m=nextMatch();if(!m){chk('flusso',false,'partita mancante');break;}const r=simPower(SV.team,m.name);recordResult(r[0]>r[1],r[0],r[1]);hide();games++;
           // le tre viste della Classifica si aprono in ogni fase (i gironi dei Nationals esistono solo dopo la stagione regolare)
           for(const v of ['nat','rank','conf']){usTabSel=v;try{renderEvent();}catch(e){chk('viste',false,v+' fase '+SV.us.ph+': '+e.message);}}}
         chk('flusso',SV.done&&g<=20,'stagione non chiusa o troppo lunga '+g);
-        const U=SV.us,N=U.nat;if(!N||!U.q){chk('flusso',false,'Nationals mancanti');break;}
+        bidChg+=chgS;bidSeas++;
+        const U=SV.us,N=U.nat;
+        chk('interreg',U.xn===5&&!!U.xl&&U.xl.length===5&&U.xl.every((x,i)=>x.r===i+1&&usConfOf(x.opp)!==U.cf),'partite interregionali del tuo club: '+(U.xl?U.xl.length:'nessuna'));if(!N||!U.q){chk('flusso',false,'Nationals mancanti');break;}
         chk('qualif',U.q.length===16&&new Set(U.q).size===16,'16 ai Nationals');
         // posti per regione (bid allocation USAU): 1 automatico + 8 di forza dal ranking, 16 in tutto, al massimo 4 per regione; ogni regione manda esattamente i suoi posti
         const B=U.bids;let tot=0;chk('posti',!!B&&US_CK.every(c=>B[c]>=1&&B[c]<=4),'posti per regione fuori misura');
@@ -102,6 +107,8 @@ function usaSelfTest(seasons,seed){
   r('Formato: 48 club distinti in 8 Conference (regioni USAU) da 6','club','sì');rows[rows.length-1].ok=rows[rows.length-1].ok&&!bad.conf;
   r('Stagione regolare: 5 giornate, stagione che si chiude in al massimo 20 partite tue','flusso',`sì (${seasonsDone} stagioni, ${games} partite)`);
   r('Posti ai Nationals per regione (bid allocation USAU): 1 automatico + 8 di forza dal ranking = 16, da 1 a 4 per Conference','posti','sì');
+  r('Interregionali: ogni giornata una partita fuori Conference (5 a stagione), che lega le Conference nel ranking','interreg','sì');
+  rows.push(row('Posti ai Nationals che cambiano durante la stagione regolare (ranking vivo)',bidChg+' cambi in '+bidSeas+' stagioni',bidChg>=bidSeas));
   r('Qualificate: ogni Conference manda esattamente i suoi posti (dirette + vincitrici del Play-in), 16 ai Nationals','qualif','sì');
   r('Play-in: gare secche tra le squadre dopo le dirette (2ª-3ª, oppure 2ª-5ª e 3ª-4ª, 3ª-6ª e 4ª-5ª), le altre fuori','playin','sì');
   r('Nationals: 4 gironi da 4, una squadra per fascia del ranking, 3 partite a girone','gironi',`sì (${pools} gironi)`);

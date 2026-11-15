@@ -86,7 +86,10 @@ function usConfTable(c){
 }
 const usMatchRow=m=>`<li class="${m[4]===SV.team?'w':(m[0]===SV.team||m[1]===SV.team?'l':'')}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]===null?'da giocare':m[2]+' – '+m[3]}</span></li>`;
 // «posti ai Nationals» della regione: 1 automatico + quelli di forza dal ranking nazionale (definitivi a fine stagione regolare, prima una proiezione)
-function usBidsTxt(c){const b=usBidsNow()[c];return `<b>${b} ${b===1?'posto':'posti'} ai Nationals</b> (1 automatico${b>1?` + ${b-1} di forza`:''}${SV.us.bids?'':', proiezione dal ranking'}) · i posti vanno alla regione: se li giocano le squadre della Conference`;}
+function usBidsTxt(c){
+  const U=SV.us,b=usBidsNow()[c],q=U.bids?null:(U.bq&&U.bq[c]),tr=q&&q!==b?` <b style="color:${b>q?'#4fe58f':'#ff7b80'}">${b>q?'▲':'▼'} era ${q}</b>`:'';
+  return `<b>${b} ${b===1?'posto':'posti'} ai Nationals</b>${tr} (1 automatico${b>1?` + ${b-1} di forza`:''}${U.bids?', definitivi':', si aggiornano dopo ogni giornata dal ranking'}) · i posti vanno alla regione: se li giocano le squadre della Conference`;
+}
 function usPinHTML(c){
   const U=SV.us,P=U.pin&&U.pin[c];if(!P)return '';
   const d=P.d||1,k=P.m.length,lab=P.m.map((m,i)=>`${d+i+1}ª contro ${d+2*k-i}ª`);
@@ -100,6 +103,7 @@ function usConfView(){
   h+=usConfTable(c)+usPinHTML(c);
   if(L&&L.last.length)h+=`<h3 class="eh">Ultima giornata in ${usConfName(c)}</h3><ul class="elist">${L.last.map(m=>`<li class="${m[2]>m[3]?'w':'l'}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('')}</ul>`;
   if(c===U.cf){
+    if(U.xl&&U.xl.length)h+=`<h3 class="eh">Interregionali (contano per il ranking)</h3><ul class="elist">${U.xl.slice(-5).map(x=>`<li class="${x.su>x.so?'w':'l'}"><span>Giornata ${x.r} contro ${esc(x.opp)} (${usConfOf(x.opp)})</span><span>${x.su} – ${x.so}</span></li>`).join('')}</ul>`;
     h+=leadersHTML();
     if(SV.riv)h+=`<p class="note" style="margin:8px 0 0">${derbyTxt()}.</p>`;
     const done=SV.res.slice(-7).map((r,i)=>{const g=SV.res.length-Math.min(7,SV.res.length)+i+1;return `<li class="${r.su>r.so?'w':'l'}"><span>Giornata ${g} contro ${esc(r.opp)}</span><span>${r.su} – ${r.so}</span></li>`;});
@@ -139,9 +143,10 @@ function usNatView(){
 }
 function usRankView(){
   const U=SV.us,pos0={};US_NAMES.slice().sort((a,b)=>U.pr0[b]-U.pr0[a]||(a<b?-1:1)).forEach((n,i)=>{pos0[n]=i+1;});
-  const rows=usRankList().map((n,i)=>{const d=pos0[n]-(i+1),cf=usConfOf(n);
-    return `<tr class="${n===SV.team?'me':''}"><td>${i+1}. ${crest(n,15)} ${esc(n)}</td><td>${cf}</td><td>${Math.round(U.pr[n])}</td><td style="color:${d>0?'#4fe58f':(d<0?'#ff7b80':'inherit')}">${d>0?'▲'+d:(d<0?'▼'+(-d):'–')}</td></tr>`;}).join('');
-  return `<p class="estat">Ranking nazionale</p><p class="note" style="margin:0 0 6px">Cresce con le vittorie, più se l’avversaria è forte e se il margine è largo; cala con le sconfitte. Decide le teste di serie e i gironi dei Nationals. E = Eastern, W = Western, C = Central, S = Southern; la freccia è il cambio da inizio stagione.</p><div style="overflow-x:auto"><table class="rt"><tr><th>Club</th><th>Conf.</th><th>Punti</th><th>Da inizio</th></tr>${rows}</table></div>`;
+  const arr=d=>`<td style="color:${d>0?'#4fe58f':(d<0?'#ff7b80':'inherit')}">${d>0?'▲'+d:(d<0?'▼'+(-d):'–')}</td>`,pl=U.ph==='reg'?U.pl:null;
+  const rows=usRankList().map((n,i)=>{const d=pos0[n]-(i+1),cf=usConfOf(n),dl=pl&&pl[n]?pl[n]-(i+1):0;
+    return `<tr class="${n===SV.team?'me':''}"><td>${i+1}. ${crest(n,15)} ${esc(n)}</td><td>${cf}</td><td>${Math.round(U.pr[n])}</td>${arr(dl)}${arr(d)}</tr>`;}).join('');
+  return `<p class="estat">Ranking nazionale</p><p class="note" style="margin:0 0 6px">Cresce con le vittorie, più se l’avversaria è forte e se il margine è largo; cala con le sconfitte. Si aggiorna dopo ogni giornata, comprese le partite interregionali (una a giornata contro un club di un’altra Conference): è il ranking che decide quanti posti ai Nationals ha ogni regione, le teste di serie e i gironi. E = Eastern, W = Western, C = Central, S = Southern; le frecce sono il cambio dall’ultima giornata e da inizio stagione.</p><div style="overflow-x:auto"><table class="rt"><tr><th>Club</th><th>Conf.</th><th>Punti</th><th>Giorn.</th><th>Stag.</th></tr>${rows}</table></div>`;
 }
 function renderEventUS(){
   const U=SV.us,sub=SV.done?'Stagione conclusa.':(U.ph==='reg'?`Giornata ${SV.round+1} di ${totalRounds()}.`:US_PHASE_NAME[U.ph]+'.');
