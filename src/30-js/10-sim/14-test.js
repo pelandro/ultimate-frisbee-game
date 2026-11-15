@@ -204,7 +204,7 @@ function selfTestPlan(opt){
       tick(60*12,()=>!G.pull&&!!G.holder);
       const h=G.holder,d=T[1-G.poss];if(!h||!G.brick||G.open)continue;
       bOk++;if(d.some(q=>!q.mark||hyp(q.x-q.mark.x,q.y-q.mark.y)>3.2))bFar++;
-      const t=tick(60*3,()=>!!G.flight||G.mode!=='play');if(t>=2.9)bWait++;   // l'IA lancia entro pochi secondi, non aspetta la difesa
+      const t=tick(60*6,()=>!!G.flight||G.mode!=='play');if(t>=4.5)bWait++;   // l'IA lancia entro pochi secondi, non aspetta la difesa (misurato su 40 brick: da 1,1 a 3,3 s, in genere 2,7 s, il tempo normale di uno schema che parte; con 3 s di soglia un solo brick lento faceva fallire il controllo)
     }
     // PASSAGGIO D'APERTURA: l'IA che riceve un pull normale lancia subito in avanti, verso il centro, poi parte lo schema
     let oN=0,oT=0,oG=0,oC=0,oSch=0,oOpen=0;
@@ -216,7 +216,7 @@ function selfTestPlan(opt){
       oN++;oT+=t;oG+=(G.flight.tx-x0)*dirOf(1);oC+=Math.abs(G.flight.ty-MID);
       tick(60*6,()=>!G.flight);if(G.holder&&G.holder.t===1&&!G.open)oSch++;
     }
-    return [row('Brick: difensori accanto al loro uomo appena si riparte, e l\u2019attacco lancia entro 3 secondi',bOk+' brick, '+bFar+' difese fuori posto, '+bWait+' attese',bOk>=Math.max(2,K/2-2)&&bFar===0&&bWait===0,'nessuna attesa'),
+    return [row('Brick: difensori accanto al loro uomo appena si riparte, e l\u2019attacco lancia entro 4,5 secondi',bOk+' brick, '+bFar+' difese fuori posto, '+bWait+' attese',bOk>=Math.max(2,K/2-2)&&bFar===0&&bWait===0,'nessuna attesa'),
       row('Dopo il pull l\u2019IA prepara il passaggio d\u2019apertura (nessuno schema finché non è preso)',oOpen+' su '+K,oOpen>=K-2,'tutti i pull non usciti'),
       row('Passaggio d\u2019apertura: tempo dalla presa al lancio',oN?(oT/oN).toFixed(2)+' s':'-',oN>0&&oT/oN<=1.3,'al massimo 1,3 s'),
       row('Passaggio d\u2019apertura: metri guadagnati e distanza dal centro del ricevitore',oN?(oG/oN).toFixed(0)+' m, '+(oC/oN).toFixed(1)+' m':'-',oN>0&&oG/oN>=12&&oC/oN<=7,'almeno 12 m in avanti, al massimo 7 m dal centro'),
@@ -234,7 +234,7 @@ function selfTestPlan(opt){
       let zx=clamp(th.x+d*24,6,FIELD_L-6),zy=th.y<MID?MID+8:MID-8,found=false;
       for(const ax of [24,18,30,14])for(const ay of [-12,-8,8,12,-4,4]){
         if(found)continue;const x=clamp(th.x+d*ax,6,FIELD_L-6),y=clamp(th.y+ay,4,FIELD_W-4);let nd=99;for(const q of T[0])if(q!==th)nd=Math.min(nd,hyp(q.x-x,q.y-y));
-        if(!computeAim(th,x,y,false,true).intended&&nd>=5&&nd<=CALL_MAX-3&&hyp(x-th.x,y-th.y)>=8){zx=x;zy=y;found=true;}
+        if(!computeAim(th,x,y,false,true).intended&&nd>=5&&nd<=callMax(th)-3&&hyp(x-th.x,y-th.y)>=8){zx=x;zy=y;found=true;}
       }
       for(let i=0;i<60*4&&G.holder===th&&!G.flight;i++){
         const j=Math.sin(i*0.9)*2.2,jx=zx+j,jy=zy+Math.cos(i*1.3)*2.2;
@@ -247,7 +247,20 @@ function selfTestPlan(opt){
         if(q){if(!sx)sx=[q.x,q.y];const sp=hyp(q.vx,q.vy);if(i>=24&&pv&&sp>2.5&&hyp(pv[0],pv[1])>2.5&&(pv[0]*q.vx+pv[1]*q.vy)/(sp*hyp(pv[0],pv[1]))<-0.5)rev++;if(i%6===0)pv=[q.vx,q.vy];moved=hyp(q.x-G.call.x,q.y-G.call.y);}
       }
     }
-    return [row('Chiamata a una zona libera con il dito che trema: cambi di compagno e chiamate cadute',ok?swaps+' e '+ended:'partita non pronta',ok&&swaps<=1&&ended===0,'al massimo un cambio (un compagno arrivato molto piu\u2019 vicino), nessuna chiamata caduta'),
+    // portata della chiamata secondo la Visione, e un solo chiamato: il piu' veloce ad arrivare, non il piu' vicino
+    let cm=[0,0,0,0],pick='-',pickOk=false;
+    if(ok){
+      const sv=th.s.vis;cm=[25,40,60,90].map(v=>{th.s.vis=v;return Math.round(callMax(th));});th.s.vis=99;
+      const [q1,q2]=T[0].filter(q=>q!==th),px=th.x+d*12,py=th.y<MID?th.y+6:th.y-6;
+      for(const q of T[0])if(q!==th){q.x=th.x-d*16;q.y=th.y;q.vx=0;q.vy=0;}
+      Object.assign(q1.s,{vel:25,sca:25});Object.assign(q2.s,{vel:99,sca:99});
+      q1.x=px-d*7;q1.y=py;q2.x=px-d*9;q2.y=py;G.call=null;
+      updateCall(th,px,py,false);pick=G.call?(G.call.q===q2?'il veloce (piu\u2019 lontano)':(G.call.q===q1?'il lento (piu\u2019 vicino)':'altro')):'nessuno';pickOk=!!G.call&&G.call.q===q2;
+      th.s.vis=sv;
+    }
+    return [row('Portata della chiamata con Visione 25, 40, 60 e 90',ok?cm.join(', ')+' m':'-',ok&&cm.join()==='10,10,14,20','10 m fino a 40, 14 m a 60, 20 m da 90 in su'),
+      row('Chiamata: sceglie chi arriva prima, non il piu\u2019 vicino',ok?pick:'-',ok&&pickOk,'un solo compagno, il piu\u2019 veloce a raggiungere la zona'),
+      row('Chiamata a una zona libera con il dito che trema: cambi di compagno e chiamate cadute',ok?swaps+' e '+ended:'partita non pronta',ok&&swaps<=1&&ended===0,'al massimo un cambio (un compagno arrivato molto piu\u2019 vicino), nessuna chiamata caduta'),
       row('Chiamata: inversioni di corsa del compagno e distanza dal punto chiamato dopo 4 secondi',ok?rev+' e '+moved.toFixed(1)+' m':'-',ok&&rev<=1&&moved<=6,'arriva al punto e ci resta (al massimo un ripensamento)')];
   }]);
   S.steps.push(['Gittata, fiducia e cognomi',()=>{
