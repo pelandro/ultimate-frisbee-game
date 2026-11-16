@@ -107,6 +107,6 @@ $('rBox').addEventListener('click',e=>{
   const id=+r.dataset.id;if(openDet.has(id))openDet.delete(id);else openDet.add(id);sellArm=null;renderRoster();
 });
 $('rTop').addEventListener('click',e=>{
-  if(e.target.closest('#rAuto')){autoLines();fixLines();rosterMsg='Linee impostate: attacco con i migliori handler e cutter, difesa con i migliori difensori.';persist();renderRoster();}
+  if(e.target.closest('#rAuto')){autoLines();fixLines();rosterMsg='Linee impostate: attacco con i migliori handler e cutter, difesa con i migliori difensori; a parità entra il più fresco e chi è già in attacco va in difesa solo se vale molto di più.';persist();renderRoster();}
   else if(e.target.closest('#rSmart')){SV.autoSub=!SV.autoSub;persist();renderRoster();}
 });

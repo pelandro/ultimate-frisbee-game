@@ -20,34 +20,36 @@ const idsOf=names=>(names||[]).map(byFull).filter(Boolean).map(p=>p.id);
 const namesOf=ids=>ids.map(id=>SQ[id]&&SQ[id].full).filter(Boolean);
 // linee consigliate: attacco = 3 migliori handler + 4 migliori cutter; difesa = i 7 migliori difensori (almeno 2 handler per ripartire dopo un recupero)
 function autoLines(){
-  const ok=SQ.filter(p=>!p.inj),by=(r)=>(a,b)=>rate(b.s,r)-rate(a.s,r);
+  // valore di oggi: chi e' scarico rende meno (COND_PEN, come in partita), quindi a parita' entra il piu' fresco
+  const ok=SQ.filter(p=>!p.inj),ef=(p,r)=>rate(p.s,r)-COND_PEN*(100-(p.cond===undefined?100:p.cond)),by=(r)=>(a,b)=>ef(b,r)-ef(a,r);
   const H=ok.filter(p=>p.role==='H').sort(by('H')),C=ok.filter(p=>p.role!=='H').sort(by('C'));
   let o=H.slice(0,3).concat(C.slice(0,4));if(o.length<7)o=o.concat(ok.filter(p=>!o.includes(p)).sort((a,b)=>ovrX(b)-ovrX(a)).slice(0,7-o.length));
-  // in difesa si preferisce chi non gioca gia' in attacco (a parita' o quasi di valore): due linee diverse si stancano la meta'
-  const dv=p=>rate(p.s,'D')-(o.includes(p)?4:0),byD=(a,b)=>dv(b)-dv(a);
+  // in difesa si preferisce chi non gioca gia' in attacco: chi sta in entrambe le linee rende DBL_PEN in meno in tutte e due e si stanca il doppio
+  const dv=p=>ef(p,'D')-(o.includes(p)?2*DBL_PEN+2:0),byD=(a,b)=>dv(b)-dv(a);
   const dH=H.slice().sort(byD).slice(0,2);let d=dH.concat(ok.filter(p=>!dH.includes(p)).sort(byD).slice(0,5));
   SV.lineO=o.map(p=>p.full);SV.lineD=d.map(p=>p.full);
 }
 function fixLines(){   // linee sempre valide: 7 nomi presenti in rosa. Gli infortunati restano in linea: rientrano da soli quando guariscono
   for(const k of ['lineO','lineD']){
     const L=[...new Set((SV[k]||[]).filter(n=>byFull(n)))];
-    const rest=SQ.filter(p=>!p.inj&&!L.includes(p.full)).sort((a,b)=>k==='lineD'?rate(b.s,'D')-rate(a.s,'D'):ovrX(b)-ovrX(a));
+    const oth=SV[k==='lineO'?'lineD':'lineO']||[],dup=p=>oth.includes(p.full)?1:0;   // per completare si preferisce chi non e' gia' nell'altra linea
+    const rest=SQ.filter(p=>!p.inj&&!L.includes(p.full)).sort((a,b)=>(dup(a)-dup(b))||(k==='lineD'?rate(b.s,'D')-rate(a.s,'D'):ovrX(b)-ovrX(a)));
     while(L.length<7&&rest.length)L.push(rest.shift().full);
     SV[k]=L.slice(0,7);
   }
 }
 function matchLine(k){   // la linea di oggi: al posto di chi e' infortunato entra il migliore disponibile dello stesso ruolo (la linea salvata non cambia)
-  const ids=idsOf(SV[k]),out=[];
+  const ids=idsOf(SV[k]),out=[],oth=SV[k==='lineO'?'lineD':'lineO']||[],dup=q=>oth.includes(q.full)?1:0;   // a parita' di ruolo entra chi non gioca gia' nell'altra linea
   for(const id of ids){
     const p=SQ[id];
     if(!p.inj){out.push(id);continue;}
-    const c=SQ.filter(q=>!q.inj&&!ids.includes(q.id)&&!out.includes(q.id)).sort((a,b)=>((b.role===p.role)-(a.role===p.role))||(k==='lineD'?rate(b.s,'D')-rate(a.s,'D'):ovrX(b)-ovrX(a)))[0];
+    const c=SQ.filter(q=>!q.inj&&!ids.includes(q.id)&&!out.includes(q.id)).sort((a,b)=>((b.role===p.role)-(a.role===p.role))||(dup(a)-dup(b))||(k==='lineD'?rate(b.s,'D')-rate(a.s,'D'):ovrX(b)-ovrX(a)))[0];
     if(c)out.push(c.id);
   }
   return out;
 }
 function careerInit(){   // campi nuovi della carriera (anche per i salvataggi piu' vecchi)
-  if(SV.cash===undefined)SV.cash=Math.max(Math.round(70*SR_K[SV.sr]),wageBill()*3);   // in cassa almeno tre partite di stipendi: le rose lunghe di USA ed Europa altrimenti partivano in rosso
+  if(SV.cash===undefined)SV.cash=Math.max(Math.round(70*SR_K[SV.sr]),wageBill()*4);   // in cassa almeno quattro partite di stipendi: le rose lunghe di USA ed Europa altrimenti partivano in rosso
   if(SV.rep===undefined)SV.rep=SV.sr==='U'?usRepStart():(isLN()?lnRepStart():(SV.sr==='A'?60:(SV.sr==='B'?40:20)));
   if(!SV.fac)SV.fac={camp:0,fis:0,viv:0};
   if(!SV.staff)SV.staff={};if(!SV.duo)SV.duo={};if(SV.tInt===undefined)SV.tInt=1;if(!SV.facKeep)SV.facKeep={};if(SV.dom===undefined)SV.dom=0;if(SV.facRnd===undefined){SV.facRnd=SV.event==='camp'?(SV.round|0):0;SV.facDays={};for(const k in (SV.fac||{}))if((SV.fac[k]|0)>=3)SV.facDays[k]=SV.facRnd;}   // salvataggi di prima: le strutture gia' al livello 3 contano come mantenute da inizio stagione   // carriera dinamica: intensita' normale, nessun premio di mantenimento maturato, nessun dominio

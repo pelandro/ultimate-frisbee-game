@@ -227,6 +227,7 @@ function oppSchemes(){
 // Con i cambi intelligenti chi e' stanco esce da solo per il compagno piu' fresco dello stesso ruolo, solo per quella meta.
 function useLines(rec){
   const L=G.lines;if(!L)return;
+  oppLine(rec);   // anche l'avversario alterna attacco e difesa (21-due-linee.js)
   G.lineK=rec===0?'o':'d';
   let ids=(rec===0?L.o:L.d).filter(id=>SQ[id]&&!SQ[id].inj);
   const pool=()=>SQ.filter(p=>!p.inj&&!ids.includes(p.id));

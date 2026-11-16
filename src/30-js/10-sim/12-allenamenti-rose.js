@@ -2,6 +2,12 @@
    che crescono tre volte piu' in fretta) ma costa condizione fisica; con la condizione bassa cresce il rischio di infortunio. Il Recupero la restituisce. ---- */
 const CATS=[{id:'tec',name:'Tecnica',keys:['lan','buc','spa','pre']},{id:'atl',name:'Atletismo',keys:['vel','sca','agi','sal','res']},{id:'dif',name:'Difesa',keys:['dif','tuf']},{id:'tat',name:'Tattica',keys:['vis']}];
 const catLevel=(p,c)=>Math.round(c.keys.reduce((a,k)=>a+p.s[k],0)/c.keys.length);
+// COND_PEN: forza persa per ogni punto di condizione che manca (100 = in piena forma), uguale nelle partite giocate (applyForm) e in quelle simulate
+// DBL_PEN: chi gioca in attacco e in difesa non riposa mai tra una meta e l'altra e rende questi punti in meno (in entrambe le linee).
+// Con due linee di 7 servono 14 giocatori: prima mettere le stelle in tutte e due le linee non costava nulla e una rosa da 12 valeva una da 20
+const COND_PEN=0.04,DBL_PEN=7;
+// quota delle mete giocate in una partita (0-1): nelle simulate la fissa simCareerMatch (p.m.sh: meta' per una linea, tutte per chi sta in entrambe)
+const fatShare=(p,tot)=>!p.m?0:(p.m.sh!==undefined?p.m.sh:Math.min(1,(p.m.pts|0)/Math.max(1,tot|0)));
 const TRAIN_COST=7,TRAIN_COST1=5,REST_GAIN=18;   // condizione persa con l'allenamento di squadra, con quello singolo, e recuperata col Recupero
 function trainGain(t){return t>=90?3:(t>=80?2:1);}
 const TRAIN_K=0.95;   // resa di una seduta rispetto alla taratura iniziale: un po' meno, perche' le rose crescevano troppo in fretta
@@ -95,11 +101,12 @@ const OPP={list:[]};
 function oppBoost(plus){G.oppPlus=plus||0;if(plus)for(const q of T[1])for(const k of KEYS)q.s[k]=Math.min(99,q.s[k]+plus);}
 function loadOpp(p,o,sub){
   p.name=o.n;p.look=makeLook(o.full||o.n,o.f);p.age=o.age;p.role=o.r;p.tl=o.tl;p.tf=o.tf;p.tv=o.tv;p.tal=Math.round((o.tl+o.tf+o.tv)/3);p.ro=o;p.trait=o.trait!==undefined?o.trait:traitFor(o.full||o.n,o.s,o.r);
-  for(const k of KEYS)p.s[k]=sub?Math.min(99,o.s[k]+(G.oppPlus||0)):o.s[k];
+  const dp=sub&&OPP.ln&&OPP.ln.dbl.has(o)?DBL_PEN:0;   // in entrambe le linee (21-due-linee.js): non riposa mai
+  for(const k of KEYS)p.s[k]=sub?clamp(o.s[k]+(G.oppPlus||0)-dp,1,99):o.s[k];
   if(sub){p.b=Object.assign({},p.s);p.st=o.st===undefined?100:o.st;p.run=0;p.miss=0;p.hot=p.cold=false;}
 }
 function applyRoster(list){
-  OPP.list=list;for(const o of list)o.st=100;
+  OPP.list=list;OPP.ln=null;for(const o of list)o.st=100;   // le due linee (OPP.ln) le mette solo la partita di carriera
   bestSeven(list).forEach((o,i)=>loadOpp(T[1][i],o,false));
 }
 function applyTeam(power,seedStr){applyRoster(makeRoster(power,seedStr));}
@@ -239,11 +246,12 @@ function fixLineup(){
 }
 // forma del giorno: a ogni partita ogni statistica devia da -3 a +3; con talento alto la devianza e' piu' spesso positiva, con talento basso negativa
 function formDev(t){const b=clamp((t-85)/14,-1,1);return clamp(Math.round(rnd(-3,3)+b*1.5),-3,3);}
-function applyForm(){
+function applyForm(dbl){   // dbl: id dei tuoi giocatori in entrambe le linee (solo carriera)
   for(const p of SQ.concat(T[1])){
     p.b=Object.assign({},p.s);
     // affiatamento e morale (solo carriera, G.formB da -1,5 a +1,5) spostano di poco la forma del giorno della tua squadra
-    const fb=p.t===0?(G.formB||0):0;
+    // chi arriva scarico (condizione bassa, solo in carriera) rende meno, come nelle partite simulate
+    const fb=p.t===0?(G.formB||0)-(p.cond!==undefined?COND_PEN*(100-p.cond):0)-(dbl&&dbl.has(p.id)?DBL_PEN:0):0;
     for(const k of KEYS)p.s[k]=clamp(p.b[k]+formDev(talOf(p,k))+(fb?Math.trunc(fb)+(Math.random()<Math.abs(fb%1)?Math.sign(fb):0):0),1,Math.max(p.b[k],Math.min(99,capOf(p,k))));
   }
 }

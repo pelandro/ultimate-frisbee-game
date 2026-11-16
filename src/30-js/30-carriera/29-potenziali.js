@@ -62,6 +62,6 @@ function carGrowK(){
   const key=SV.team+'|'+SV.season+'|'+SV.sr+'|'+(SV.played|0);if(cgk.key===key)return cgk.v;
   const k=srGrowK(SV.sr);
   const ns=((SV.mem&&SV.mem[SV.sr])||[]).filter(n=>n!==SV.team);
-  const lead=ns.length?squadPower()-Math.max(...ns.map(teamPow),euTier()?euTop():0):0;   // nelle serie con posti europei il riferimento e' anche il livello europeo
+  const lead=ns.length?matchPow(SV.team)-Math.max(...ns.map(matchPow),euTier()?euTop():0):0;   // nelle serie con posti europei il riferimento e' anche il livello europeo
   cgk={key,v:k*(lead>0?clamp(1-LEAD_K*lead,0.5,1):1)};return cgk.v;
 }

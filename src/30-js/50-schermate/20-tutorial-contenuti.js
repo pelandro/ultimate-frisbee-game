@@ -197,11 +197,11 @@ tip:`Prima di ogni partita: guarda il meteo, svuota «Questa settimana» e solo 
 `I tuoi giocatori sono <b>carte</b>: ruolo (colore), Overall, faccina dell’umore, stelle, barra verde della condizione e bollini <b>A</b> e <b>D</b> per le linee. In alto scegli chi vedere (tutti, per ruolo, fuori dalle linee, «da gestire») e come ordinarli.`,
 `Tocca una carta per aprire la <b>scheda</b>: <b>Attributi</b> (con «Confronta con»), <b>Prestazioni</b> (partite, umore, obiettivo, intesa, premi) e <b>Sviluppo</b> (potenziale, crescita, indirizzo, rapporto degli osservatori). Le frecce passano al giocatore dopo o prima.`,
 `Dalla scheda: <b>Riposo</b> (salta la prossima partita e recupera condizione), <b>Colloquio</b> (pochi crediti, solleva l’umore ma funziona meno se lo ripeti), <b>Soprannome</b>, <b>Specializzazione</b> e <b>priorità di allenamento</b>.`,
-`L’<b>Overall</b> (OVR) è il valore del giocatore nel suo ruolo migliore; la <b>forza della squadra</b> è la media dei 7 migliori. Circa un giocatore su quattro ha un <b>tratto</b> (Deep Threat, Break Specialist, Field General, Lockdown, Sky Dominator, Safe Hands, Explosive Cutter, Ironman).`],
+`L’<b>Overall</b> (OVR) è il valore del giocatore nel suo ruolo migliore; la <b>forza della squadra</b> è la media dei 7 migliori; in partita contano tutte e due le linee. Circa un giocatore su quattro ha un <b>tratto</b> (Deep Threat, Break Specialist, Field General, Lockdown, Sky Dominator, Safe Hands, Explosive Cutter, Ironman).`],
 tip:`«Linee consigliate» sistema le linee per te; se una linea ha meno di 7 giocatori o un infortunato, «Questa settimana» te lo segnala.`},
 {id:'car-linee',t:'Le linee ATT e DIF',w:'Squadra › A e D',b:[
 `La linea <b>ATT</b> gioca le mete in cui ricevi il pull, la linea <b>DIF</b> quelle in cui lo tiri. I bollini A e D sulle carte dicono chi è in ogni linea (si cambia con ATT e DIF nella scheda), e ognuna ha bisogno di 7 giocatori.`,
-`Un titolare può stare in entrambe, ma si stanca di più. <b>Linee consigliate</b> mette in attacco 3 handler e 4 cutter e in difesa i migliori difensori (con almeno 2 handler per ripartire): un buon equilibrio di ruoli rende più delle sole stelle.`,
+`Chi sta in entrambe non riposa mai: in partita rende <b>${DBL_PEN} punti in meno</b> e si stanca il doppio. Con meno di 14 giocatori qualcuno deve farlo per forza. <b>Linee consigliate</b> mette in attacco 3 handler e 4 cutter e in difesa i migliori difensori (con almeno 2 handler per ripartire): un buon equilibrio di ruoli rende più delle sole stelle.`,
 `Handler e cutter che giocano insieme costruiscono <b>intesa</b>: lanci più precisi e meno prese perse tra loro.`],
 tip:`Non cambiare tutta la linea a ogni partita: l’intesa si costruisce restando insieme.`},
 {id:'car-mercato',t:'Il Mercato',w:'Colonna › Mercato',b:[
@@ -220,7 +220,7 @@ tip:`Con «Occhio clinico» nello staff scopri i potenziali dei tuoi giocatori c
 `A ogni giornata puoi fare <b>una seduta di squadra</b> e fino a <b>3 lavori individuali</b>, che rendono di più. Cinque indirizzi:`,
 [`<b>Tecnica</b>: lancio, buco, sparo, presa.`,`<b>Atletismo</b>: velocità, scatto, agilità, salto, resistenza.`,`<b>Difesa</b>: difesa, tuffo.`,`<b>Tattica</b>: visione e affiatamento.`,`<b>Recupero</b>: ridà condizione, nessuna crescita.`],
 `L’<b>intensità</b> vale per tutte le sedute: Leggero (metà fatica, meno crescita), Normale, Intenso (più crescita, molta più fatica e più rischio di infortuni). Sopra ogni tasto vedi i punti attesi e la condizione che costa.`,
-`Chi è scarico gioca con meno energia e sotto 45 di condizione rischia di infortunarsi anche in allenamento: alterna lavoro e recupero.`,
+`Chi è scarico rende meno in partita e sotto 45 di condizione rischia di infortunarsi anche in allenamento: alterna lavoro e recupero.`,
 `Il <b>Programma automatico</b> fa le sedute al posto tuo (Recupero se la squadra è scarica, altrimenti l’indirizzo scelto), partendo dai giocatori che hai segnato come priorità. L’esito arriva nella Posta.`],
 tip:`La settimana di una partita importante: Recupero il giorno prima, così arrivi con energie piene.`},
 {id:'car-crescita',t:'Crescita, età e maturità',b:[
