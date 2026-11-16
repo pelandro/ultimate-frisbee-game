@@ -7,7 +7,7 @@
 const {spawn,spawnSync}=require('child_process'),path=require('path');
 const quick=process.argv.includes('--rapido'),serial=process.argv.includes('--seriale'),cwd=path.join(__dirname,'..');
 const groups=[['Controlli statici',['tools/check.js']],['Motore di gioco',['tools/test-sim.js',quick?'3':'6']]];
-if(!quick)groups.push(['Prova nel browser',['tools/test-browser.js']]);
+if(!quick)groups.push(['Prova nel browser',['tools/test-browser.js']],['Prova di impaginazione',['tools/test-layout.js']]);
 const fail=name=>{console.error(`\nVERIFICA FALLITA: ${name}`);process.exit(1);};
 const ok=()=>console.log('\nVERIFICA SUPERATA'+(quick?' (rapida: manca la prova nel browser)':''));
 // 1) controlli statici da soli: se il codice non si carica, inutile provare il resto

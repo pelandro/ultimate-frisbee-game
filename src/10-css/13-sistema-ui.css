@@ -65,3 +65,11 @@ html[data-ew="xs"] .lgcards{grid-template-columns:1fr}
 #tip .schrow{justify-content:flex-end;gap:8px}
 html[data-rail="l"] #tip{padding-left:var(--rail)}
 html[data-rail="r"] #tip{padding-right:var(--rail)}
+
+/* colonna della carriera: i sei pulsanti stanno sempre nell'altezza disponibile. Con poca altezza utile (interfaccia ingrandita su un telefono)
+   si stringono invece di uscire: prima il tocco su «Società» faceva scorrere la colonna e «Partita» finiva sotto la barra in alto */
+#rail .rb{min-height:0}
+html[data-eh="s"] #rail{gap:3px;padding-top:3px;padding-bottom:3px}
+html[data-eh="s"] #rail .rb{gap:0}
+html[data-eh="s"] #rail .rb svg{width:17px;height:17px}
+html[data-eh="s"] #rail .rb strong{font-size:11px}

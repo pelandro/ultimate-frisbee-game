@@ -34,6 +34,7 @@ function resize(){
   document.documentElement.style.setProperty('--ui',UIZ);document.documentElement.style.setProperty('--bz',BZ);
   // larghezza utile in px CSS dopo l'ingrandimento: con «piu' grande» il telefono ha meno spazio e le schermate passano a disposizioni piu' compatte (12-leggibilita.css)
   const ew=CW/UIZ;document.documentElement.dataset.ew=ew<640?'xs':(ew<800?'s':'');
+  document.documentElement.dataset.eh=CH/UIZ<300?'s':'';   // altezza utile bassa: la colonna della carriera si stringe (12-leggibilita.css)
   document.documentElement.dataset.big=UIZ>=1.5?'1':'';   // iPad e computer: il cruscotto riempie meglio l'altezza (05-schermi-grandi-e-tocco.css)
   cv.width=Math.round(CW*DPR);cv.height=Math.round(CH*DPR);
   PXS=Math.max(1,Math.round(cv.height/224));   // circa 224 pixel di gioco in altezza, ingrandimento sempre intero
