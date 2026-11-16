@@ -181,6 +181,7 @@ catch(e){
     const first=await page.locator('#hireList .hcn .sr').first().innerText();
     await page.click('#hireRenew');if(await page.locator('#hireList .hcn').count()!==3)throw new Error('dopo il rinnovo i candidati devono essere ancora tre');
     await page.click('#hireList [data-hirei]:not([disabled]) >> nth=0');
+    await vis('#cfm');await page.click('#cfmOk');
     if(await page.locator('#hire:not(.hidden)').count())throw new Error('assunto: la finestra deve chiudersi');
     if(await page.locator('#clBox .scard:not(.empty)').count()!==1)throw new Error('dopo l\'assunzione deve esserci una persona nello staff');
     await page.click('#hHome');await vis('#home');
@@ -204,7 +205,10 @@ catch(e){
     if(!/Intenso/.test(await page.locator('.tint .sg.on').innerText()))throw new Error('l\'intensità dell\'allenamento non cambia');
     await page.click('#tTeamBox [data-int="1"]');
     if(!/punti/.test(await page.locator('#tTeamBox .ttype[data-team="tec"] .fc').innerText()))throw new Error('manca l\'anteprima della seduta di squadra');
-    await page.click('#tTeamBox .ttype[data-team="tec"]');await vis('#tRes .tres');
+    await page.click('#tTeamBox .ttype[data-team="tec"]');await page.waitForTimeout(100);
+    if(await page.locator('#tRes .tres').count())throw new Error('la seduta di squadra parte senza conferma');
+    if(!(await page.locator('#tTeamBox .tcf').isVisible()))throw new Error('manca il riquadro di conferma della seduta');
+    await page.click('#tTeamBox [data-trgo]');await vis('#tRes .tres');
     await page.click('#tTeamBox [data-prog]');if(!/Acceso/.test(await page.locator('#tTeamBox [data-prog]').innerText()))throw new Error('il programma automatico non si accende');
     if(await page.locator('#tList .prow:not([disabled])').count()>await page.locator('#tList .prow').count()-3)throw new Error('il programma automatico non ha fatto i lavori individuali');
     await page.click('#tTeamBox [data-prog]');await page.click('#hHome');
@@ -497,9 +501,10 @@ catch(e){
     await page.click('#scBox .schrow [data-go="tut"]');await page.waitForTimeout(700);await vis('#coach');
     await page.click('#bExit');await vis('#pause');await page.click('#paQuit');await page.waitForTimeout(300);await vis('#school');
   });
-  await step('menu iniziale: Carriere, nuova carriera in un altro slot e ritorno, senza passare dalle Opzioni',async()=>{
+  await step('menu iniziale: Salvataggi, nuova carriera in un altro slot e ritorno, senza passare dalle Opzioni',async()=>{
     await page.click('#tBack').catch(()=>{});
     if(!(await page.locator('#title').isVisible())){await page.goto('file://'+OUT);await page.waitForTimeout(400);}
+    if(!/Salvataggi/.test(await page.locator('#tSlots').innerText()))throw new Error('il tasto degli slot deve chiamarsi «Salvataggi»');
     await page.click('#tSlots');await vis('#slots');
     const full=await page.locator('#csBox [data-cgo]').count();if(full<1)throw new Error('la carriera esistente non compare tra gli slot');
     const empty=await page.locator('#csBox .csl:not(:has([data-cgo])) [data-cnew]').first();

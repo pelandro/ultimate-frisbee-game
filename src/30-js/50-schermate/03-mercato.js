@@ -32,5 +32,15 @@ $('mkBox').addEventListener('click',e=>{
   const rp=e.target.closest('[data-rp]');if(rp){const m=SV.market[+rp.dataset.rp],k=m&&(m.o.full||m.o.n);if(k){if(mkOpen.has(k))mkOpen.delete(k);else mkOpen.add(k);}renderMarket();return;}
   const sc=e.target.closest('[data-sc]'),by=e.target.closest('[data-buy]');
   if(sc){const m=SV.market[+sc.dataset.sc];if(m&&scoutPlayer(m.o)){mkMsg=`Osservato ${m.o.label||m.o.n}: potenziale ${potTxt(m.o)}.`;persist();}renderMarket();}
-  else if(by){const m=SV.market[+by.dataset.buy];if(m){const nm=m.o.label||m.o.n;if(signPlayer(+by.dataset.buy)){mkMsg=`${nm} è un nuovo giocatore della squadra. Mettilo in una linea da Squadra.`;persist();}}renderMarket();}
+  else if(by){const i=+by.dataset.buy,m=SV.market[i];if(m&&!canSign(m))askConfirm(mkBuySummary(m,()=>{const k=SV.market.indexOf(m),nm=m.o.label||m.o.n;if(k>=0&&signPlayer(k)){mkMsg=`${nm} è un nuovo giocatore della squadra. Mettilo in una linea da Squadra.`;persist();}renderMarket();}));}
 });
+// riepilogo prima di comprare: prezzo, crediti che restano, stipendio in piu' a ogni partita, posto in rosa e chi sostituirebbe nel suo ruolo
+function mkBuySummary(m,onOk){
+  const o=m.o,v=ovr(o),pos=posOf(o),bill0=wageBill(),bill1=Math.round(wageSeason(SQ.concat([o]))/15),after=SV.cash-m.price;
+  const same=SQ.filter(p=>posOf(p)===pos).sort((x,y)=>ovr(x)-ovr(y))[0],d=same?v-ovr(same):0;
+  const row=(k,val,cls)=>`<tr><td>${k}</td><td${cls?` class="${cls}"`:''}>${val}</td></tr>`;
+  const html=`<p><b>${esc(o.label||o.n)}</b> · ${POS_NAME[pos]} · ${o.ae?'circa ':''}${o.age} anni · OVR <b>${v}</b> · pot. ${potTxt(o)}</p>`
+    +`<table class="cfmt">${row('Prezzo',m.price+' crediti')}${row('Crediti dopo l’acquisto',after+' crediti',after<30?'bad':'')}${row('Stipendi a partita',`${bill0} → ${bill1} crediti (+${bill1-bill0})`)}${row('Rosa',`${SQ.length} → ${SQ.length+1} su ${SQ_MAX}`)}${same?row('Nel suo ruolo',`${d>0?'+':''}${d} sul più debole (${esc(same.nick||same.name)}, ${ovr(same)})`,d>0?'ok':(d<0?'bad':'')):''}</table>`
+    +(m.mot&&MOT[m.mot]?`<p>Motivazione: ${esc(MOT[m.mot][0].toLowerCase())}.</p>`:'');
+  return {title:'Confermi l’acquisto?',html,ok:'Acquista per '+m.price,onOk};
+}

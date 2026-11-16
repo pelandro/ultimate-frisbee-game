@@ -72,7 +72,9 @@ $('clBox').addEventListener('click',e=>{
   const sb=e.target.closest('#clSub [data-k]');if(sb){clTab=sb.dataset.k;renderClub();return;}
   const ib=e.target.closest('[data-inf]');if(ib){const k=ib.dataset.inf;if(clInfo.has(k))clInfo.delete(k);else clInfo.add(k);renderClub();return;}
   const f=e.target.closest('[data-fac]');
-  if(f){if(buyFac(f.dataset.fac)){clMsg='';persist();}renderClub();return;}
+  if(f){const k=f.dataset.fac,c=facCost(k),lv=facLv(k);if(lv>=FAC_MAX||SV.cash<c){renderClub();return;}
+    askConfirm({title:'Migliorare '+FAC[k][0]+'?',html:`<p>${esc(FAC[k][1])}.</p><table class="cfmt"><tr><td>Livello</td><td>${lv} → ${lv+1} su ${FAC_MAX}</td></tr><tr><td>Costo</td><td>${c} crediti</td></tr><tr><td>Crediti dopo</td><td${SV.cash-c<30?' class="bad"':''}>${SV.cash-c} crediti</td></tr></table><p>Ogni livello ha anche una manutenzione a ogni partita.</p>`,ok:'Migliora per '+c,onOk:()=>{if(buyFac(k)){clMsg='';persist();}renderClub();}});
+    return;}
   const sf=e.target.closest('[data-staff]');
   if(sf){if(buyStaff(sf.dataset.staff)){clMsg='';persist();}renderClub();return;}
   const hb=e.target.closest('[data-hire]');if(hb){openHire(hb.dataset.hire);return;}

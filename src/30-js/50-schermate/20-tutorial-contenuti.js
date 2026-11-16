@@ -15,7 +15,7 @@ les:[
 tip:`Non serve sapere le regole a memoria: nelle prime tre partite compaiono delle schede che spiegano ogni cosa nel momento in cui serve.`},
 {id:'ini-menu',t:'I menu del gioco',w:'Menu iniziale',b:[
 `Dal menu iniziale scegli come giocare:`,
-[`<b>Carriera</b>: la modalità principale. Guidi una squadra per più stagioni, con rosa, mercato, allenamenti, strutture, staff e campionati veri. «Carriere» mostra i tre slot di salvataggio.`,
+[`<b>Carriera</b>: la modalità principale. Guidi una squadra per più stagioni, con rosa, mercato, allenamenti, strutture, staff e campionati veri. «Salvataggi» mostra i tre slot di salvataggio.`,
 `<b>Partita veloce</b>: due squadre qualsiasi, subito in campo, senza conseguenze.`,
 `<b>Ultimate Team</b>: apri pacchetti di carte, scegli i 7 titolari e sfida il computer o le squadre degli altri giocatori.`,
 `<b>Torneo</b>: un torneo a eliminazione diretta con 4, 8 o 16 squadre.`,
@@ -180,7 +180,7 @@ TUT.push({id:'car',t:'La carriera schermo per schermo',sub:'Partita, Squadra, Al
 intro:'La carriera dura più stagioni. Ogni schermata ha la stessa cornice: in alto stemma, crediti, Posta e Menu; a sinistra la colonna con le sei sezioni. Qui trovi a cosa serve ognuna e cosa conviene fare.',
 les:[
 {id:'car-inizio',t:'Cominciare una carriera',w:'Menu › Carriera',b:[
-`Il tasto <b>Carriera</b> riprende l’ultima giocata; <b>Carriere</b> mostra i tre slot (carriere separate sullo stesso dispositivo). «Nuova carriera» ne comincia una e, se lo slot è pieno, chiede conferma perché lo cancella.`,
+`Il tasto <b>Carriera</b> riprende l’ultima giocata; <b>Salvataggi</b> mostra i tre slot (carriere separate sullo stesso dispositivo). «Nuova carriera» ne comincia una e, se lo slot è pieno, chiede conferma perché lo cancella.`,
 [`<b>1. Il campionato</b>: Italia, USA Men’s Club, Belgio, Francia, Germania o Regno Unito.`,
 `<b>2. La squadra</b>: toccandola vedi il suo roster prima di decidere; con «Squadra del cuore» la metti in cima all’elenco. In alternativa parti da <b>Subentrato</b>: una squadra in zona retrocessione ti chiama all’ultima giornata e hai una sola partita per salvarla.`,
 `<b>3. L’allenatore</b>: nome, cognome e volto.`]],

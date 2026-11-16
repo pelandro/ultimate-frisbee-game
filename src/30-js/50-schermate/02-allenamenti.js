@@ -1,4 +1,7 @@
 const trainSel=new Set();let trainRes=null;
+// scelta in due passi: il tocco su un indirizzo lo seleziona e mostra l'anteprima (crescita, condizione, rischio); la seduta parte solo con «Avvia».
+// Prima il tocco eseguiva subito: bastava un dito nel posto sbagliato per bruciare la seduta della giornata
+let trPick={team:null,ind:null};
 // cinque indirizzi: quattro fanno crescere (e costano condizione), il Recupero la restituisce
 const TR_OPTS=CATS.concat([{id:'rec',name:'Recupero',keys:[]}]);
 const TR_SUB={tec:'Lancio, Buco, Sparo, Presa',atl:'Velocità, Scatto, Agilità, Salto, Resistenza',dif:'Difesa, Tuffo',tat:'Visione; di squadra anche affiatamento',rec:'Ridà condizione, nessuna crescita'};
@@ -26,10 +29,11 @@ function renderTrain(){
   }).join('');
   const one=trainSel.size===1?SQ[[...trainSel][0]]:null;
   const avgC=Math.round(SQ.reduce((a,p)=>a+p.cond,0)/SQ.length);
-  $('tTeamBox').innerHTML=`<div class="tteam2"><strong>Tutta la squadra ${infoB('tsq')}</strong>${!open?`<small>Bloccato: prossima sessione tra ${trainWait()} ${trainWait()>1?'partite':'partita'}.</small>`:(SV.tTeam?'<small>Già fatto in questa giornata.</small>':'')}${infoX('tsq',`<small>Una volta a giornata. Ogni seduta costa ${Math.round(TRAIN_COST*trInt().c)} di condizione a tutti (media attuale ${avgC}); il Recupero ne ridà ${REST_GAIN}. ${trInt().n}: ${trInt().t}.</small>`)}<div class="tint"><span>Intensità</span><div class="seg">${TR_INT.map((t,i)=>`<button type="button" class="sg${(SV.tInt|0)===i?' on':''}" data-int="${i}">${t.n}</button>`).join('')}</div></div><div class="ttypes t5">${TR_OPTS.map(c=>`<button type="button" class="ttype" data-team="${c.id}"${SV.tTeam||!open?' disabled':''}><strong>${c.name}</strong>${SV.tTeam||!open?'':`<small class="fc">${forecastTxt(trainForecast(SQ,c,false),c)}</small>`}</button>`).join('')}</div>${progHTML()}</div><strong class="tsing">Lavoro individuale: ${left} su 3 rimasti</strong>`;
+  $('tTeamBox').innerHTML=`<div class="tteam2"><strong>Tutta la squadra ${infoB('tsq')}</strong>${!open?`<small>Bloccato: prossima sessione tra ${trainWait()} ${trainWait()>1?'partite':'partita'}.</small>`:(SV.tTeam?'<small>Già fatto in questa giornata.</small>':'')}${infoX('tsq',`<small>Una volta a giornata. Ogni seduta costa ${Math.round(TRAIN_COST*trInt().c)} di condizione a tutti (media attuale ${avgC}); il Recupero ne ridà ${REST_GAIN}. ${trInt().n}: ${trInt().t}.</small>`)}<div class="tint"><span>Intensità</span><div class="seg">${TR_INT.map((t,i)=>`<button type="button" class="sg${(SV.tInt|0)===i?' on':''}" data-int="${i}">${t.n}</button>`).join('')}</div></div><div class="ttypes t5">${TR_OPTS.map(c=>`<button type="button" class="ttype${trPick.team===c.id?' on':''}" data-team="${c.id}" aria-pressed="${trPick.team===c.id}"${SV.tTeam||!open?' disabled':''}><strong>${c.name}</strong>${SV.tTeam||!open?'':`<small class="fc">${forecastTxt(trainForecast(SQ,c,false),c)}</small>`}</button>`).join('')}</div>${trCfHTML('team')}${progHTML()}</div><strong class="tsing">Lavoro individuale: ${left} su 3 rimasti</strong>`;
   $('tTypes').className='ttypes t5';
-  $('tTypes').innerHTML=TR_OPTS.map(c=>`<button type="button" class="ttype" data-k="${c.id}"${trainSel.size?'':' disabled'}><strong>${c.name}</strong><small>${TR_SUB[c.id]}</small>${one&&c.keys.length?`<small class="mt">livello ${catLevel(one,c)}</small>`:''}${trainSel.size?`<small class="fc">${forecastTxt(trainForecast([...trainSel].map(i=>SQ[i]),c,true),c)}</small>`:''}</button>`).join('');
+  $('tTypes').innerHTML=TR_OPTS.map(c=>`<button type="button" class="ttype${trPick.ind===c.id?' on':''}" data-k="${c.id}" aria-pressed="${trPick.ind===c.id}"${trainSel.size?'':' disabled'}><strong>${c.name}</strong><small>${TR_SUB[c.id]}</small>${one&&c.keys.length?`<small class="mt">livello ${catLevel(one,c)}</small>`:''}${trainSel.size?`<small class="fc">${forecastTxt(trainForecast([...trainSel].map(i=>SQ[i]),c,true),c)}</small>`:''}</button>`).join('');
   const hint=!open?`Bloccati in questa difficoltà: la prossima sessione è tra ${trainWait()} ${trainWait()>1?'partite':'partita'}.`:left===0?'Hai già usato i 3 lavori individuali: tornano dopo la prossima partita.':(trainSel.size?`${trainSel.size} ${trainSel.size>1?'selezionati':'selezionato'}: scegli l’indirizzo (+50% di crescita, ${Math.round(TRAIN_COST1*trInt().c)} di condizione).`:`Seleziona fino a ${left} giocatori per il lavoro individuale: i giovani crescono di più. Sotto 45 di condizione allenarsi può causare infortuni.`);
+  $('tCf').innerHTML=trainSel.size?trCfHTML('ind'):'';
   const chip=(c,l,v)=>`<span class="tch ${c}"><i></i>${l} <b>${v}</b></span>`;   // stato della settimana: seduta di squadra e lavori individuali
   $('tHint').innerHTML=`<div class="tchs">${chip(!open?'blk':SV.tTeam?'ok':'todo','Squadra',!open?'bloccata':SV.tTeam?'fatta':'da fare')}${chip(!open?'blk':left===0?'ok':'todo','Individuali',`${3-left}/3`)}</div><small>${hint}</small>`;
   if(trainRes){
@@ -42,11 +46,17 @@ $('tList').addEventListener('click',e=>{
   const i=+b.dataset.i;
   if(trainSel.has(i))trainSel.delete(i);
   else if(trainSel.size<3-SQ.filter(p=>p.tr).length)trainSel.add(i);
+  if(!trainSel.size)trPick.ind=null;
   trainRes=null;renderTrain();
 });
 $('tTypes').addEventListener('click',e=>{
   const b=e.target.closest('.ttype');if(!b||b.disabled||!trainOpen())return;
-  const opt=TR_OPTS.find(c=>c.id===b.dataset.k),out=[];
+  trPick.ind=trPick.ind===b.dataset.k?null:b.dataset.k;trainRes=null;renderTrain();
+});
+$('tCf').addEventListener('click',e=>{
+  if(e.target.closest('[data-trx]')){trPick.ind=null;renderTrain();return;}
+  if(!e.target.closest('[data-trgo]')||!trPick.ind||!trainSel.size||!trainOpen())return;
+  const opt=TR_OPTS.find(c=>c.id===trPick.ind),out=[];trPick.ind=null;
   for(const i of trainSel){const p=SQ[i];if(p.tr||(p.inj&&opt.id!=='rec'))continue;out.push(trainApply(p,opt,true));p.tr=true;}
   if(!out.length)out.note='Gli infortunati possono fare solo Recupero.';
   trainSel.clear();trainRes=out;fixLines();persist();renderTrain();
@@ -55,8 +65,10 @@ $('tTeamBox').addEventListener('change',e=>{if(e.target.closest('[data-progteam]
 $('tTeamBox').addEventListener('click',e=>{
   if(e.target.closest('[data-prog]')){const pr=progOf();pr.on=!pr.on;trainRes=null;if(pr.on){const t=autoTrain();if(t){trainRes=[];trainRes.note=t;}}persist();renderTrain();return;}
   const it=e.target.closest('[data-int]');if(it){SV.tInt=+it.dataset.int;trainRes=null;persist();renderTrain();return;}   // intensita': vale per le sedute di squadra e per i lavori individuali
-  const b=e.target.closest('.ttype');if(!b||b.disabled||SV.tTeam||!trainOpen())return;
-  const opt=TR_OPTS.find(c=>c.id===b.dataset.team),out=[];
+  if(e.target.closest('[data-trx]')){trPick.team=null;renderTrain();return;}
+  const pk=e.target.closest('.ttype');if(pk){if(pk.disabled||SV.tTeam||!trainOpen())return;trPick.team=trPick.team===pk.dataset.team?null:pk.dataset.team;trainRes=null;renderTrain();return;}
+  if(!e.target.closest('[data-trgo]')||!trPick.team||SV.tTeam||!trainOpen())return;
+  const opt=TR_OPTS.find(c=>c.id===trPick.team),out=[];trPick.team=null;
   for(const p of SQ){if(!p.inj||opt.id==='rec')out.push(trainApply(p,opt,false));}
   SV.tTeam=true;
   if(opt.id==='tat'){SV.chem=clamp(SV.chem+3,0,100);out.note='Affiatamento +3.';}
@@ -110,3 +122,13 @@ $('rTop').addEventListener('click',e=>{
   if(e.target.closest('#rAuto')){autoLines();fixLines();rosterMsg='Linee impostate: attacco con i migliori handler e cutter, difesa con i migliori difensori; a parità entra il più fresco e chi è già in attacco va in difesa solo se vale molto di più.';persist();renderRoster();}
   else if(e.target.closest('#rSmart')){SV.autoSub=!SV.autoSub;persist();renderRoster();}
 });
+// riquadro di conferma sotto gli indirizzi: che cosa succede (anteprima) e il tasto che fa partire davvero la seduta
+function trCfHTML(w){
+  const k=trPick[w];if(!k)return w==='team'&&!SV.tTeam&&trainOpen()?'<p class="tcfh">Tocca un indirizzo per vedere che cosa cambia, poi avvia la seduta.</p>':'';
+  const opt=TR_OPTS.find(c=>c.id===k);if(!opt)return '';
+  const list=w==='team'?SQ:[...trainSel].map(i=>SQ[i]).filter(Boolean),f=trainForecast(list,opt,w!=='team');
+  const extra=w==='team'?(k==='tat'?' · affiatamento +3':(k==='rec'?' · morale +2':'')):'';
+  const who=w==='team'?'tutta la squadra':(list.length===1?esc(pname(list[0])):list.length+' giocatori');
+  const risk=opt.id!=='rec'&&f.risk>=0.03?' bad':'';
+  return `<div class="tcf${risk}"><div><b>${opt.name}</b> per ${who}<small>${forecastTxt(f,opt)}${extra}${f.atRisk?` · ${f.atRisk} ${f.atRisk>1?'giocatori stanchi':'giocatore stanco'}: rischio di infortunio`:''}</small></div><span class="tcfb"><button type="button" class="sec" data-trx="1">Annulla</button><button type="button" class="go" data-trgo="1">Avvia</button></span></div>`;
+}
