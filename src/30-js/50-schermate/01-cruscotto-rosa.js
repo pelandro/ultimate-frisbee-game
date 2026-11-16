@@ -133,7 +133,8 @@ function detailHTML(p){
 }
 $('rBox').addEventListener('change',e=>{const so=e.target.closest('[data-rsort]');if(so){rSort=so.value;renderRoster();return;}const s=e.target.closest('[data-cmp]');if(!s)return;const p=SQ[+s.dataset.cmp];if(p){cmpWith[p.full]=s.value;renderRoster();}});
 // ROSA A CARTE: ritratto, ruolo colorato, cognome (o soprannome), stelle, condizione e umore; le linee si vedono dai bollini A (attacco) e D (difesa)
-const ROLE_COL={H:'#2f7bff',C:'#e8a020',D:'#e0483a'},ROLE_ABB={H:'HAN',C:'CUT',D:'DEF'};
+// colori dei ruoli: verde acqua, ambra, viola (non il blu e il rosso delle due squadre in campo, che facevano pensare alla divisa)
+const ROLE_COL={H:'#1f9e8f',C:'#e8a020',D:'#8a52d6'},ROLE_ABB={H:'HAN',C:'CUT',D:'DEF'};
 function cardHTML(p){
   const pos=posOf(p),v=ovr(p),inO=SV.lineO.includes(p.full),inD=SV.lineD.includes(p.full);
   return `<button type="button" class="pcard${p.inj?' inj':''}${(inO||inD)?' on':''}" data-card="${p.id}" style="--rc:${ROLE_COL[pos]||'#2f7bff'}" aria-label="${esc(pname(p))}, ${POS_NAME[pos]}, ${starsOf(v)} stelle">

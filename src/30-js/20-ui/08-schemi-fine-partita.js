@@ -40,12 +40,14 @@ function openSchemes(first,fromHome){
   $('mTip').textContent=first?'Prima partita? Il tutorial è nel menu iniziale, alla voce Allenamento; la guida è nel menu di pausa (II).':'';
 }
 // riepilogo: rendimento delle linee (O = mete in cui ricevi il pull, D = quelle in cui lo tiri), schemi usati e migliori in campo
+// i migliori in campo della tua squadra (mete, assist e difese contano di piu', poi i lanci riusciti)
+const overBest=()=>SQ.filter(p=>p.m&&p.m.pts>0).map(p=>{const m=p.m,t=m.lan[0]+m.lan[1]+m.spa[0]+m.spa[1]+m.buc[0]+m.buc[1],ok=m.lan[0]+m.spa[0]+m.buc[0];return {p,sc:(m.g|0)*3+(m.a|0)*3+(m.dif|0)*3+ok*0.3+(p.xpLast||0)*0.1,g:m.g|0,a:m.a|0,b:m.dif|0,c:t?Math.round(ok/t*100)+'%':'–'};}).sort((a,b)=>b.sc-a.sc).slice(0,3);
 function overMoreHTML(){
   const L=G.ptLog||[],o=L.filter(x=>x.rec===0),d=L.filter(x=>x.rec===1),hold=o.filter(x=>x.by===0).length,brk=d.filter(x=>x.by===0).length;
   let h=`<div class="omore"><div><b>Attacco (ricevi il pull)</b>: ${hold} mete su ${o.length}${o.length?' ('+Math.round(hold/o.length*100)+'%)':''}</div><div><b>Difesa (tiri il pull)</b>: ${brk} break su ${d.length}${d.length?' ('+Math.round(brk/d.length*100)+'%)':''}</div>`;
   const sch=(R,N,lab)=>{const ks=Object.keys(R||{}).filter(k=>R[k][0]);return ks.length?`<div><b>${lab}</b>: ${ks.map(k=>`${N[k]||k} ${R[k][1]}/${R[k][0]}`).join(' · ')}</div>`:'';};
   h+=sch(G.schR,ATT_NAME,'I tuoi schemi d’attacco (mete/possessi)')+sch(G.defR,DEF_NAME,'Le tue difese (mete subite/possessi avversari)');
-  const pl=SQ.filter(p=>p.m&&p.m.pts>0).map(p=>{const m=p.m,t=m.lan[0]+m.lan[1]+m.spa[0]+m.spa[1]+m.buc[0]+m.buc[1],ok=m.lan[0]+m.spa[0]+m.buc[0];return {p,sc:(m.g|0)*3+(m.a|0)*3+(m.dif|0)*3+ok*0.3+(p.xpLast||0)*0.1,g:m.g|0,a:m.a|0,b:m.dif|0,c:t?Math.round(ok/t*100)+'%':'–'};}).sort((a,b)=>b.sc-a.sc).slice(0,3);
+  const pl=overBest();
   if(pl.length)h+=`<div class="otop"><span class="hd">Migliori</span><span class="hd">Mete</span><span class="hd">Assist</span><span class="hd">Difese</span><span class="hd">Lanci</span>${pl.map((x,i)=>`<span>${i===0?'★ ':''}${esc(x.p.label||x.p.name)}</span><span>${x.g}</span><span>${x.a}</span><span>${x.b}</span><span>${x.c}</span>`).join('')}</div>`;
   return h+'</div>';
 }
@@ -71,14 +73,21 @@ function showOver(){
     if(by.size)gh+='<strong>Crescita in partita</strong>'+[...by].map(([p,l])=>`<div>${p.name}: ${l.map(g=>`${LONG[g.k]} ${g.from}→${g.to}`).join(', ')}</div>`).join('');
   }
   $('oGrow').innerHTML=gh;
-  $('oMore').innerHTML=overMoreHTML();
+  $('oMore').innerHTML=`<details class="odet"><summary>Dettagli della partita</summary>${overMoreHTML()}</details>`;   // attacco, difesa, schemi e migliori: si aprono a richiesta
   $('oTitle').textContent=w?'Vittoria!':(G.forfeit?'Sconfitta a tavolino':'Sconfitta');
-  $('oScore').textContent=`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${on}`;
+  // TABELLONE: stemmi, nomi e punteggio grande (i numeri contano da zero); sotto il migliore in campo
+  const my=G.myName||'Blu',best=overBest()[0];
+  $('oScore').innerHTML=`<span class="osb"><span class="ot">${crest(my,34)}<b>${esc(my)}</b></span><em class="${w?'w':''}">0</em><i>–</i><em class="${w?'':'w'}">0</em><span class="ot r"><b>${esc(on)}</b>${crest(on,34)}</span></span>`+
+    (best?`<span class="omvp">★ Migliore in campo: <b>${esc(best.p.label||best.p.name)}</b>${best.g||best.a||best.b?' · '+[best.g?best.g+(best.g>1?' mete':' meta'):'',best.a?best.a+' assist':'',best.b?best.b+(best.b>1?' difese':' difesa'):''].filter(Boolean).join(', '):''}</span>`:'');
+  const ems=$('oScore').querySelectorAll('em');countUp(ems[0],G.score[0]);countUp(ems[1],G.score[1]);
   $('oEvent').textContent=msg;$('oMoney').innerHTML=mny;   // i conti della giornata: biglietti, sponsor, premio, trasferta, stipendi
   $('oInj').textContent=hurt.length?'Infortuni: '+hurt.map(p=>`${p.name} (${p.inj} ${p.inj>1?'partite':'partita'} di stop)`).join(', ')+'.':'';
   const pct=t=>G.st.thr[t]?Math.round(G.st.cmp[t]/G.st.thr[t]*100)+'%':'–';
   const rows=[['',G.myName||'Blu',on],['Lanci riusciti',pct(0),pct(1)],['Turnover causati',G.st.to[1],G.st.to[0]],['Salti vinti',G.st.jump[0],G.st.jump[1]],['Tuffi riusciti',G.st.dive[0],G.st.dive[1]],['Handblock',G.st.hb[0],G.st.hb[1]],['Prese mancate',G.st.drop[0],G.st.drop[1]]];
-  $('oStats').innerHTML=rows.map((r,i)=>r.map(c=>`<span class="${i===0?'hd':''}">${c}</span>`).join('')).join('');
+  // statistiche a confronto: una barra divisa tra le due squadre (blu la tua, rossa l'avversaria) al posto della tabella fitta
+  const num=v=>parseFloat(v)||0;
+  $('oStats').innerHTML=`<div class="osh"><span>${esc(my)}</span><span>${esc(on)}</span></div>`+rows.slice(1).map(r=>{const a=num(r[1]),b=num(r[2]),t=a+b,k=t?Math.round(a/t*100):50;
+    return `<div class="osr"><span class="v">${r[1]}</span><span class="l">${r[0]}<i class="obar"><i style="width:${k}%"></i></i></span><span class="v">${r[2]}</span></div>`;}).join('');
   $('over').classList.remove('hidden');
 }
 $('bGo').addEventListener('click',()=>{

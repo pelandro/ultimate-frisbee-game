@@ -166,6 +166,7 @@ function updateQuick(){
   QM.d=+$('qD').value;QM.s=+$('qS').value;QM.len=+$('qL').value;
   $('qS').options[0].textContent=a;$('qS').options[1].textContent=b;   // i nomi delle due squadre
   $('qDP').textContent=['L’IA avversaria gioca in modo semplice.','L’IA avversaria sceglie e reagisce un po’ meglio.','L’IA avversaria sceglie e reagisce molto meglio.','Ancora più attenta del Difficile, e la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'][QM.d]+' '+['Le statistiche dei giocatori non cambiano.','Avversari con +1 a tutte le statistiche.','Avversari con +3 a tutte le statistiche.','Avversari con +5 a tutte le statistiche.'][QM.d];
+  quickVs();   // confronto tra le due squadre (29-confronto-tabellone.js)
 }
 function startQuick(){
   const a=QM.a,b=QM.b;if(!a||!b||a===b)return;
