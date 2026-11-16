@@ -23,6 +23,30 @@ const sxw=x=>Math.round(x*S)-CX,syw=y=>OYi+Math.round(y*S);
 const toWorld=(px,py)=>({x:(px+CX)/S,y:(py-OYi)/S});
 const portrait=()=>typeof matchMedia==='function'&&matchMedia('(orientation: portrait)').matches;
 
+/* ---- TESTO CHE SEGUE LO ZOOM ----
+   Menu e pannelli si ingrandiscono con «zoom: var(--ui)». Su iPad e iPhone (WebKit), con text-size-adjust in percentuale, il carattere si calcola dalla misura
+   scritta nel CSS e perde lo zoom: le caselle crescevano e il testo restava piccolo. Qui lo si misura: dentro un riquadro zoomato si confronta la larghezza di un testo
+   con quella di una barra di 400 px (se il testo segue lo zoom il rapporto e' lo stesso di fuori). Se il testo e' indietro, --tsa (letta da .screen, .overlay e #cshell
+   in 12-leggibilita.css) porta la percentuale che lo compensa; si verifica una seconda volta e, se non serve a niente, si toglie. Dove lo zoom e' regolare non cambia nulla. */
+function tszRatio(zoomed){
+  const d=document.createElement('div');d.className=zoomed?'tszprobe':'';
+  d.style.cssText='position:fixed;left:-9999px;top:0;visibility:hidden;pointer-events:none;white-space:nowrap;font:100px sans-serif;'+(zoomed?'zoom:var(--ui);':'');
+  d.innerHTML='<span>MMMMMMMM</span><i style="display:block;width:400px;height:1px"></i>';document.body.appendChild(d);
+  const r=d.firstChild.getBoundingClientRect().width/Math.max(1,d.lastChild.getBoundingClientRect().width);d.remove();return r;
+}
+function tszFix(){
+  const root=document.documentElement;root.style.removeProperty('--tsa');
+  if(UIZ<=1.01||!document.body)return;
+  try{
+    const r0=tszRatio(false),q1=tszRatio(true)/r0;   // 1 = il testo cresce come le caselle; meno di 1 = resta indietro
+    if(!(q1<0.93))return;
+    let pct=Math.min(400,Math.max(100,Math.round(100/q1)));root.style.setProperty('--tsa',pct+'%');
+    const q2=tszRatio(true)/r0;
+    if(q2<q1*1.05){root.style.removeProperty('--tsa');return;}   // la percentuale non fa effetto su questo browser: meglio non toccare niente
+    if(Math.abs(q2-1)>0.05){pct=Math.min(400,Math.max(100,Math.round(pct/q2)));root.style.setProperty('--tsa',pct+'%');}   // un secondo ritocco
+    window.__tsa=[q1,q2,pct];
+  }catch(e){root.style.removeProperty('--tsa');}
+}
 function resize(){
   const r={width:cv.clientWidth,height:cv.clientHeight};DPR=Math.min(window.devicePixelRatio||1,3);
   CW=Math.max(1,r.width);CH=Math.max(1,r.height);
@@ -32,6 +56,7 @@ function resize(){
   const uq=Math.min(10,Math.max(4,Math.round(Math.min(CW/800,CH/450)*4)));
   UIZ=clamp((uq+UZ_STEP[UZS|0])/4,0.75,3);BZ=clamp(UIZ,1,1.75);   // i pulsanti di gioco crescono un po' meno del resto: sotto il dito bastano 90 px
   document.documentElement.style.setProperty('--ui',UIZ);document.documentElement.style.setProperty('--bz',BZ);
+  tszFix();
   // larghezza utile in px CSS dopo l'ingrandimento: con «piu' grande» il telefono ha meno spazio e le schermate passano a disposizioni piu' compatte (12-leggibilita.css)
   const ew=CW/UIZ;document.documentElement.dataset.ew=ew<640?'xs':(ew<800?'s':'');
   document.documentElement.dataset.eh=CH/UIZ<300?'s':'';   // altezza utile bassa: la colonna della carriera si stringe (12-leggibilita.css)
