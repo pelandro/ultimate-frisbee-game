@@ -81,7 +81,7 @@ function openPause(){
   $('paSub').textContent=G.drill?G.matchLabel:`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${G.oppName||'Rossi'} · meta ${G.pointNo}`;
   $('paSusp').classList.toggle('hidden',!!(G.drill||QM.on));   // sospendere: solo le partite di carriera
   $('paQuit').textContent=G.drill?'Esci dall’allenamento':(matchCounts()?'Abbandona (sconfitta a tavolino)':'Abbandona la partita');delete $('paQuit').dataset.arm;
-  syncToggles();$('pause').classList.remove('hidden');
+  pauseBoard();syncToggles();$('pause').classList.remove('hidden');
 }
 function closePause(){$('pause').classList.add('hidden');G.paused=false;G.schemeOpen=false;}
 $('paGo').addEventListener('click',closePause);

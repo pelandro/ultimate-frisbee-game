@@ -223,14 +223,21 @@ function drawMeter(c,w,h){
   const nx=ri(bx+bw*c.pos);
   px(nx-2,by-bh/2-5,5,bh+10,PAL.out);px(nx-1,by-bh/2-4,3,bh+8,c.locked?'#ffd23f':'#ffffff');
   ctx.restore();
-  const fs=Math.round(Math.max(15,h*0.045));
+  // ISTRUZIONE ed ESITO in una linguetta attaccata alla cornice della barra (prima il testo galleggiava sopra le gambe dei giocatori e l'esito copriva la barra).
+  // L'esito entra come un timbro: un attimo piu' grande con il bordo bianco, poi si assesta nel colore del risultato
+  const top=by-bh/2-5;
+  ctx.save();ctx.globalAlpha=al;
   if(c.locked){
-    const age=c.t-(c.lockT===undefined?c.t:c.lockT),pop=age<0.2?lerp(0.6,1.15,age/0.2):lerp(1.15,1,clamp((age-0.2)/0.15,0,1));
-    const qc=c.bonus>=1?'#6dff9e':(c.bonus>=0.5?'#ffe27a':'#ff8a8a');
-    outlined(c.quality,w/2,by-bh-fs*0.9,Math.round(fs*1.5),qc,pop,al);
+    const age=c.t-(c.lockT===undefined?c.t:c.lockT),qc=c.bonus>=1?'#6dff9e':(c.bonus>=0.5?'#ffe27a':'#ff8a8a'),big=age<0.09,f=big||c.bonus>=1?'P':'p',fh=f==='P'?16:8;
+    const tw=ptw(c.quality.toUpperCase(),f)+(big?18:12),th=fh+(big?10:7),tx=ri(w/2-tw/2),ty=top-th+(big?-2:1);
+    pbox(tx-1,ty-1,tw+2,th+2,PAL.out,null);pbox(tx,ty,tw,th,'#0c1330',big?'#ffffff':qc);
+    ptext(c.quality.toUpperCase(),w/2,ty+ri((th-fh)/2)+(f==='P'?1:0),{f,c:qc,o:false});
   }else{
-    ctx.save();ctx.globalAlpha=al;ptext('Tocca nel verde',w/2,by-bh/2-20,{f:'p',c:'#fff'});ctx.restore();
+    const txt='TOCCA NEL VERDE',tw=ptw(txt,'p')+12,tx=ri(w/2-tw/2),ty=top-14;
+    pbox(tx-1,ty-1,tw+2,16,PAL.out,null);pbox(tx,ty,tw,15,'#0c1330','#4fe58f');
+    ptext(txt,w/2,ty+4,{f:'p',c:'#ffffff',o:false});
   }
+  ctx.restore();
 }
 // pubblico dello stacco: stessi spettatori a pixel del campo, in file sulle gradinate. Calcolato una volta sola
 const SPEC=[];for(let r=0;r<8;r++)for(let i=0;i<84;i++){let hh=Math.imul(r*977+i*131+7,2654435761)>>>0;hh^=hh>>>15;hh=Math.imul(hh,2246822519)>>>0;hh^=hh>>>13;if(hh%11===0)continue;SPEC.push({r,x:(i+((hh>>4)%9)*0.1)/84,hh});}
@@ -268,7 +275,10 @@ function drawCine(){
   for(let k=-6;k*pw<w+pw*4;k++){
     const x=ri(k*pw-((SD*u*1.6)%(pw*4))),i=((k%4)+4)%4;
     px(x,bY,pw,bH,PAL.out);px(x+1,bY+1,pw-2,bH-2,CINE_BOARDS[i]);px(x+1,bY+1,pw-2,1,'rgba(255,255,255,.35)');
-    ptext(i%2?'Frisbee':'Ultimate',x+pw/2,bY+ri(bH/2)-4,{f:'t',c:i===3?PAL.out:'#fff',o:false});
+    // cartelloni: le due squadre in campo (stemma e sigla, nei colori delle divise) alternate alle scritte del gioco
+    const tm=i===0?0:(i===2?1:-1),nm=tm<0?'':(tm===0?(G.myName||'Blu'):(G.oppName||'Rossi'));
+    if(tm>=0){px(x+1,bY+1,pw-2,bH-2,UNI[tm].shirt);const cw=Math.min(14,bH-6);crestPx(x+ri(pw*0.22),bY+ri(bH/2),cw,nm,1);ptext(teamAbbr(nm),x+ri(pw*0.6),bY+ri(bH/2)-4,{f:'p',c:'#fff',o:false});}
+    else ptext(i===1?'ULTIMATE':'FRISBEE',x+pw/2,bY+ri(bH/2)-4,{f:'t',c:i===3?PAL.out:'#fff',o:false});
   }
   // prato: erba del campo, strisce di taglio che scorrono, puntini
   px(-4,gt,w+8,h-gt+4,PAL.grass);

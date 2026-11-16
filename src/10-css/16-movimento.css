@@ -1,0 +1,9 @@
+/* ===================== MOVIMENTO DELL'INTERFACCIA =====================
+   Schermate e finestre comparivano di colpo. Ora entrano in 3 scatti (passi netti, niente sfumature morbide: resta lo stile a pixel).
+   Non serve codice: un'animazione CSS riparte da sola ogni volta che l'elemento torna visibile (da display:none). Durate brevi (120-140 ms):
+   la prova di impaginazione misura le schermate 150 ms dopo il tocco. Con «riduci movimento» del sistema non si muove nulla. */
+.screen:not(.hidden){animation:scin .12s steps(3) both}
+@keyframes scin{from{opacity:.2}to{opacity:1}}   /* solo dissolvenza: uno spostamento durante l'ingresso faceva scorrere la schermata verso l'elemento toccato, e lo scorrimento restava */
+.overlay:not(.hidden)>.panel{animation:pnin .14s steps(3) both}
+@keyframes pnin{from{opacity:.3;transform:scale(.94)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.screen:not(.hidden),.overlay:not(.hidden)>.panel{animation:none}}

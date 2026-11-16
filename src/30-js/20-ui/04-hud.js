@@ -12,13 +12,18 @@ const cache=new Map();
 function setHTML(el,html){if(cache.get(el)!==html){cache.set(el,html);el.innerHTML=html;}}
 const ATT_NAME={vert:'Verticale',horz:'Orizzontale',hex:'Esagono',side:'Stack laterale',t1:'T1',weave:'Weave'},DEF_NAME={man_out:'Uomo, forza fuori',man_in:'Uomo, forza dentro',zone:'Zona',man_poach:'Uomo con aiuti'};
 // in difesa (l'avversario ha il disco o lo ha lanciato) i due pulsanti diventano handblock (destra) e tuffo (sinistra)
+// il numero che cambia (una meta) salta in oro per un attimo; il primo valore di una partita no
+function scoreSet(el,v){
+  v=String(v);const was=el.textContent;if(was===v)return;el.textContent=v;
+  if(G.inMatch&&!G.drill&&/^\d+$/.test(was)&&+v===+was+1){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');}
+}
 const inDefense=()=>G.mode==='play'&&!G.pull&&!!((G.holder&&G.holder.t===1)||(G.flight&&G.flight.team===1));
 function updateHUD(dt){
   const play=G.mode==='play'||G.mode==='banner'||G.mode==='ready';
   hud.classList.toggle('hidden',!play||G.schemeOpen);
   skipBtn.classList.toggle('hidden',!(G.mode==='cine'||RP.on));if(RP.on||G.mode==='cine'){const st=RP.on?'Salta il replay':'Salta lo stacco';if(skipBtn.textContent!==st)skipBtn.textContent=st;}
   if(!play)return;
-  elScore0.textContent=G.drill?drHud(0):G.score[0];elScore1.textContent=G.drill?drHud(1):G.score[1];
+  scoreSet(elScore0,G.drill?drHud(0):G.score[0]);scoreSet(elScore1,G.drill?drHud(1):G.score[1]);
   $('score').classList.toggle('mini',G.mode==='play');   // durante l'azione restano solo i due numeri; a fine meta tornano i nomi
   elPt.textContent=G.drill?G.matchLabel:'Meta '+G.pointNo+(G.target!==MATCH_TARGET?(/^(8|11)/.test(String(G.target))?' · agli ':' · ai ')+G.target:'')+(G.matchLabel?' · '+G.matchLabel:'');   // «Meta» per prima: se il testo e' lungo si taglia in fondo
   // sigle in barra (i nomi interi non entrano e coprivano il testo): SFR, RRF...

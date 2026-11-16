@@ -5,16 +5,17 @@
 <div id="sai" aria-hidden="true" style="position:fixed;right:0;bottom:0;width:env(safe-area-inset-right,0px);height:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none"></div>
 
 <div id="hud" class="hidden">
-  <div id="score" class="chip"><span class="tn b" id="myN">BLU</span><b id="s0">0</b><span class="dash">–</span><b id="s1">0</b><span class="tn r" id="oppN">ROSSI</span><small id="pt"></small></div>
+  <div id="score" class="chip"><span class="tn b" id="myN">BLU</span><b id="s0">0</b><span class="dash">–</span><b id="s1">0</b><span class="tn r" id="oppN">ROSSI</span></div>
+  <div id="pt" class="chip"></div>
   <div id="stall" class="chip hidden"></div>
   <button id="bExit" class="btn hidden" type="button" aria-label="Pausa">II</button>
   <div id="hint" class="chip hidden"></div>
   <div id="coach" class="hidden"></div>
   <div id="ctrl">
-    <button id="bSch" class="btn">Schemi</button>
-    <button id="bSub" class="btn">Cambi</button>
-    <button id="bSimPt" class="btn" type="button">Simula meta</button>
-    <button id="bTO" class="btn hidden" type="button">Timeout</button>
+    <button id="bSch" class="btn"><svg class="bi" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2h8v2h2v11H2V4h2zM5 7h6M5 10h6M5 13h4"/></svg>Schemi</button>
+    <button id="bSub" class="btn"><svg class="bi" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 5h10M9 2l3 3-3 3M14 11H4M7 8l-3 3 3 3"/></svg>Cambi</button>
+    <button id="bSimPt" class="btn" type="button"><svg class="bi" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3l6 5-6 5zM8 3l6 5-6 5z"/></svg>Simula meta</button>
+    <button id="bTO" class="btn hidden" type="button"><svg class="bi" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3h10M8 3v11"/></svg>Timeout</button>
     <button id="bDef" class="btn hidden" type="button">Marcatura: contenimento</button>
     <button id="bSkipD" class="btn hidden" type="button" aria-label="Salta il possesso avversario">Salta ▸▸</button>
   </div>
