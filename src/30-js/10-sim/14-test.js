@@ -58,7 +58,7 @@ function selfTestPlan(opt){
       row('Ripensamenti: inversioni di corsa di un attaccante senza disco, ogni minuto',rev.toFixed(1),rev<=REV_MAX,'meno di '+REV_MAX+': chi parte per uno scatto lo porta a termine')];
   }]);
   S.steps.push(['Equilibrio degli schemi',()=>{
-    const k=Math.max(2,Math.round(n/2)),ra=ros(62,'a'),rb=ros(62,'b'),res=[];   // 3 partite per coppia con n=6: con 2 gli estremi dipendevano troppo dal caso
+    const k=Math.max(4,Math.round(n/2)),ra=ros(62,'a'),rb=ros(62,'b'),res=[];   // 4 partite per coppia: con 3 il T1 esatto (Visione alta) sfiorava il limite per puro caso, con 12 lo scarto vero e' 25-30 punti
     for(const at of SCH_ATT)for(const df of SCH_DEF){
       const ms=run(ra,rb,k,{fix:{sch:{att:at,def:df},opp:{att:at,def:df}}});let g=0,ps=0;
       for(const m of ms){g+=m.score[0]+m.score[1];ps+=m.score[0]+m.score[1]+m.st.to[0]+m.st.to[1];}
@@ -215,6 +215,16 @@ function selfTestPlan(opt){
     // aderenza: chi vede bene segue lo schema esattamente, chi vede poco quasi sempre
     const lowA=adhOf({s:{vis:40}}),hiA=adhOf({s:{vis:85}});
     out.push(row('Aderenza allo schema con Visione 40 e 85',pc(lowA)+' e '+pc(hiA),lowA>=0.75&&lowA<0.9&&hiA===1,'a Visione alta esattamente come disegnato, a Visione bassa non perfetto'));
+    // T1: il primo passaggio dopo l'apertura va a C4, come da schema: chi ha Visione alta lo fa piu' spesso (anche con un difensore vicino)
+    const t1c4=vis=>{for(const q of SQ)q.s.vis=vis;let c4=0,tot=0;
+      for(let i=0;i<Math.max(60,n*10);i++){placeTeams(0);G.sch.att='t1';G.opp.def='man_out';G.rep=[{k:'',n:0},{k:'',n:0}];
+        const p=G.puller;p.s.spa=99;p.s.lan=99;doPull(0.62,dirOf(1)>0?0:Math.PI);G.skip=true;
+        let t=0,seen=false;while(t++<3600&&G.mode==='play'&&G.poss===0&&!seen){update(1/60);const pb=G.pb&&G.pb[0],f=G.flight;
+          if(pb&&pb.id==='t1'&&pb.phase===0&&f&&f.team===0&&pb.role[f.thrower.id]==='H1'&&f.intended){seen=true;tot++;if(pb.role[f.intended.id]==='C4')c4++;}}
+        G.skip=false;G.mode='play';}
+      return c4/Math.max(1,tot);};
+    const lo=t1c4(30),hi=t1c4(90);
+    out.push(row('T1: quota dei primi passaggi a C4 (come da schema) con Visione 30 e 90',pc(lo)+' e '+pc(hi),hi>=lo+0.1&&hi>=0.4,'a Visione alta lo schema e\u2019 eseguito piu\u2019 alla lettera'));
     return out;
   }]);
   S.steps.push(['Compagni lontani dal portatore e tuffi che finiscono',()=>{

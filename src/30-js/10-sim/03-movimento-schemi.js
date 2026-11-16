@@ -116,6 +116,7 @@ function updatePlay(dt){
 }
 // il portatore aspetta che lo schema sia pronto, ma non oltre lo stall 3: da li' lo schema si abbandona e si gioca libero (PB_STALL)
 const PB_STALL=3;
+const PB_FREE=3.5,PB_FREE_D=2.7;   // distanza minima di un difensore dal ricevitore previsto perche' sia «libero»: 3,5 m con Visione bassa, 0,8 m con Visione alta (da 80)
 const pbWait=h=>{const pb=G.pb&&G.pb[h.t];return !!(pb&&pb.active&&pb.follow[h.id]&&G.stallT<PB_STALL&&(pb.stage==='set'||!pb.ready));};
 function pbAllowed(th){   // a chi puo' lanciare chi segue lo schema
   const pb=G.pb&&G.pb[th.t];if(!pb||!pb.active||!pb.follow[th.id]||pb.stage==='set'||G.stallT>=PB_STALL)return null;
