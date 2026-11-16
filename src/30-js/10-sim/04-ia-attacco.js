@@ -173,7 +173,7 @@ function updateAttackers(dt){
     if(q===Hh)continue;
     let dx=q.x-Hh.x,dy=q.y-Hh.y,dd=hyp(dx,dy);if(dd>=TEAM_R)continue;
     if(dd<0.2){dx=0;dy=q.y>=MID?1:-1;dd=1;}
-    const ux=dx/dd,uy=dy/dd,step=Math.min(TEAM_R-dd,9*dt);
+    const ux=dx/dd,uy=dy/dd,step=Math.min(TEAM_R-dd,14*dt);
     q.x=clamp(q.x+ux*step,1,FIELD_L-1);q.y=clamp(q.y+uy*step,1,FIELD_W-1);
     const vin=q.vx*ux+q.vy*uy;if(vin<0){q.vx-=vin*ux;q.vy-=vin*uy;}
   }

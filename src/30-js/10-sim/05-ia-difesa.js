@@ -24,12 +24,19 @@ function cycleCtrl(){   // passa al difensore successivo, dal piu' vicino al dis
   const f=G.flight,o=f?{x:f.tx,y:f.ty}:(G.holder||G.ref),list=T[0].slice().sort((a,b)=>hyp(a.x-o.x,a.y-o.y)-hyp(b.x-o.x,b.y-o.y));
   G.ctrl=list[(list.indexOf(G.ctrl)+1)%list.length];G.ctrlBy=true;
 }
-// LETTURA DEGLI SCHEMI: se il tuo attacco ha gia' segnato almeno 2 volte con lo stesso schema a sequenza, l'IA (Medio e Difficile) lo riconosce:
-// a ogni ripresa, con probabilita' pari al suo adattamento, i marcatori dei ricevitori previsti si mettono sulla fine del loro taglio.
-// Ritorna la mappa attaccante -> punto da coprire (o null). E' la contromisura alle giocate ripetute: lo stesso schema smette di pagare.
+// ADATTAMENTO ALLO SCHEMA: piu' possessi di fila una squadra attacca con lo stesso schema (G.rep), meglio la difesa avversaria lo legge e piu' e' difficile smarcarsi.
+// Dal secondo possesso comincia, dal quarto e' al massimo; appena si cambia schema riparte da zero. Chi difende conta: l'IA ha il suo livello (Facile non si adatta),
+// i tuoi compagni difendono come un Difficile. Vale per gli schemi con playbook (si mettono sulla fine dei tagli previsti, playRead) e per tutti (anticipano e marcano piu' stretto).
+const FIT_TIGHT=0.5,FIT_LEAD=0.8,FIT_LANE=1.5,FIT_REACT=0.4;   // peso dei controgiochi (SCH_FIT) su marcatura, anticipo, intercetti e reazione
+const ADAPT_STEP=1/3,ADAPT_MY=0.7,ADAPT_TIGHT=0.65,ADAPT_LEAD=1.3,ADAPT_CUT=0.6,ADAPT_REACT=0.5,ADAPT_LANE=2.2;   // marcatura piu' stretta (meno scarto casuale) e piu' anticipo, al massimo dell'adattamento
+function adaptOf(P){const r=G.rep&&G.rep[P];if(!r||r.n<2)return 0;return Math.min(1,(r.n-1)*ADAPT_STEP)*(P===0?AIK(1).adapt:ADAPT_MY);}
+// Ritorna la mappa attaccante -> punto da coprire (o null): a ogni ripresa, con probabilita' pari all'adattamento, i marcatori dei ricevitori previsti si mettono sulla fine del loro taglio.
+// quanto la difesa che marca l'attacco della squadra P e' favorita dallo schema d'attacco contro il suo (SCH_FIT, da -1 a +1)
+function fitOf(P){const a=P===0?G.sch.att:G.opp.att,d=P===0?G.opp.def:G.sch.def,r=SCH_FIT[a];return r&&r[d]||0;}
 function playRead(dTeam){
-  const P=1-dTeam,pb=G.pb&&G.pb[P];if(!pb||!pb.active||P!==0||!aiTeam(dTeam)||!G.seen||(G.seen.att[pb.id]|0)<2)return null;
-  if(pb.read===undefined)pb.read=Math.random()<AIK(dTeam).adapt;
+  const P=1-dTeam,pb=G.pb&&G.pb[P];if(!pb||!pb.active)return null;
+  const ak=adaptOf(P);if(ak<=0)return null;
+  if(pb.read===undefined)pb.read=Math.random()<ak;
   if(!pb.read)return null;
   const ph=PLAYBOOK[pb.id].phases[pb.phase],m=new Map();
   for(const r of ph.pass||[]){const a=pb.rp[r],way=ph.go[r];if(!a||!way)continue;const w=way[way.length-1];m.set(a,pbPos(pb,P,w[0],w[1],w[2]));}
@@ -57,7 +64,7 @@ function updateDefenders(dt){
   let cs=ref.y<MID?1:-1;if(sch==='man_in')cs=-cs;G.closedSide=cs;
   G.zoneT-=dt;
   if(sch==='zone'&&(G.zoneT<=0||G.zoneH!==Hh)){zoneAssign();G.zoneT=1.2;G.zoneH=Hh;}
-  const dTeam=1-P,ai=aiTeam(dTeam),lvD=AIK(dTeam),idn=idOf(dTeam);
+  const dTeam=1-P,ai=aiTeam(dTeam),lvD=AIK(dTeam),idn=idOf(dTeam),ak=adaptOf(P),ft=fitOf(P);   // ak: quanto la difesa ha preso le misure dello schema; ft: quanto il suo schema contrasta quello d'attacco
   // vicino alla propria meta non c'e' piu' profondo da proteggere: l'IA marca davanti all'uomo
   const nearGoal=Hh?((d>0?FIELD_L-EZ-Hh.x:Hh.x-EZ)<16):false,front=G.dmode[dTeam]===1||(ai&&nearGoal)||(ai&&!!Hh&&lvD.smart>=0.6&&throwMax(Hh)<40);   // contro chi non ha il braccio per il lungo l'IA esperta marca davanti: non c'e' profondo da proteggere
   // aiuti lontano dal disco: sempre con lo schema «uomo con aiuti», altrimenti quanto vuole l'identita' della squadra e il livello dell'IA
@@ -76,7 +83,7 @@ function updateDefenders(dt){
   }
   for(const q of dT){
     q.nT-=dt;
-    if(q.nT<=0){const A=clamp(1+(0.6-q.s.vis/100)*5,0.2,3)*AIK(q.t).mark*(hasT(q,'lock')?0.5:1);q.nx=rnd(-A,A);q.ny=rnd(-A,A);q.nT=rnd(0.6,1.4);}
+    if(q.nT<=0){const A=clamp(1+(0.6-q.s.vis/100)*5,0.2,3)*AIK(q.t).mark*(hasT(q,'lock')?0.5:1)*(1-ADAPT_TIGHT*ak)*(1-FIT_TIGHT*ft);q.nx=rnd(-A,A);q.ny=rnd(-A,A);q.nT=rnd(0.6,1.4);}
     if(q===G.ctrl&&G.cdir){   // lo guidi tu
       const sp=sprinting(q);moveTo(q,clamp(q.x+G.cdir.x*8,0.5,FIELD_L-0.5),clamp(q.y+G.cdir.y*8,0.5,FIELD_W-0.5),dt,sp?SPRINT_AM:1.12,sp?SPRINT_VM:1);q.flD=0;q.m.dif+=0;continue;
     }
@@ -97,7 +104,7 @@ function updateDefenders(dt){
       moveTo(q,zt.x,zt.y,dt,Hd&&hyp(q.x-Hd.x,q.y-Hd.y)<MIN_DEF?1.7:1);
     }else{
       const a=q.mark;if(!a)continue;
-      const react=clamp(0.42-q.s.dif*0.0034+0.06+(0.6-q.s.vis/100)*0.4,0.08,0.55)*(hasT(q,'lock')?0.7:1);
+      const react=clamp(0.42-q.s.dif*0.0034+0.06+(0.6-q.s.vis/100)*0.4,0.08,0.55)*(hasT(q,'lock')?0.7:1)*(1+ADAPT_LEAD*ak)*(1+FIT_LEAD*ft);   // piu' anticipo sul taglio
       let px=a.x+a.vx*react+d*0.9+q.nx,py=a.y+a.vy*react+q.ny;
       if(front&&Hd){const ax=Hd.x-a.x,ay=Hd.y-a.y,al=hyp(ax,ay);if(al>6){px=a.x+a.vx*react+ax/al*1.25+q.nx;py=a.y+a.vy*react+ay/al*1.25+q.ny;}}   // anticipo: tra l'uomo e il disco
       else if(a===deepA&&Hd&&(a.x-Hd.x)*d<thR+3)px+=d*1.6;   // contenimento: chi marca l'attaccante piu' avanzato tiene un passo in piu' verso la meta (copre il profondo)
@@ -105,7 +112,8 @@ function updateDefenders(dt){
         const far=hyp(a.x-Hd.x,a.y-Hd.y);
         if(far>20){const k=Math.min(1,clamp((far-20)/18,0,1)*0.42*pf*(far>thR+4?1.6:1));px=lerp(px,Hd.x+(a.x-Hd.x)*0.6,k);py=lerp(py,Hd.y+(a.y-Hd.y)*0.6,k);}
       }
-      if(rd&&rd.has(a)&&Hd){const e=rd.get(a);px=lerp(px,e.x,0.55);py=lerp(py,e.y,0.55);}   // ha riconosciuto lo schema: si mette sulla traiettoria del taglio previsto
+      if(ak>0&&Hd&&a.cs==='cut'&&a.tx!==undefined&&!(rd&&rd.has(a))){px=lerp(px,a.tx,ADAPT_CUT*ak);py=lerp(py,a.ty,ADAPT_CUT*ak);}   // conosce lo schema: si sposta gia' verso dove l'attaccante sta tagliando
+      if(rd&&rd.has(a)&&Hd){const e=rd.get(a),w=0.45+0.3*ak;px=lerp(px,e.x,w);py=lerp(py,e.y,w);}   // ha riconosciuto lo schema: si mette sulla traiettoria del taglio previsto
       const close=hyp(q.x-a.x,q.y-a.y)<8;
       const mt0=Hd?awayFrom(Hd,px,py,MIN_DEF):{x:px,y:py},mt=markTgt(q,mt0.x,mt0.y,dt);   // il punto del marcatore scorre piano (filtro), cosi' non scatta a ogni cambio dell'attaccante
       moveTo(q,mt.x,mt.y,dt,Hd&&hyp(q.x-Hd.x,q.y-Hd.y)<MIN_DEF?1.7:(close?0.85+q.s.dif/180:1));
