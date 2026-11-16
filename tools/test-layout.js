@@ -8,7 +8,7 @@ try{({chromium}=require('playwright'));}
 catch(e){if(process.env.CI){console.error('Playwright non installato');process.exit(1);}console.log('Prova di impaginazione saltata: Playwright non e\' installato');process.exit(0);}
 const OUT=path.join(os.tmpdir(),'ultimate-impaginazione-'+process.pid+'.html');
 // risoluzioni: uz = scelta «Dimensione dell'interfaccia» (1 automatica, 3 molto piu' grande); lo zoom non si tocca, si verifica soltanto
-const SIZES=[{w:667,h:375,uz:1,m:1,n:'telefono piccolo'},{w:874,h:402,uz:1,m:1,n:'telefono grande'},{w:874,h:402,uz:3,m:1,n:'telefono, interfaccia molto piu\' grande'},{w:1024,h:768,uz:1,m:0,n:'iPad'},{w:1366,h:768,uz:1,m:0,n:'computer'}];
+const SIZES=[{w:667,h:375,uz:1,m:1,n:'telefono piccolo'},{w:874,h:402,uz:1,m:1,n:'telefono grande'},{w:874,h:402,uz:3,m:1,n:'telefono, interfaccia molto piu\' grande'},{w:1180,h:820,uz:1,m:1,n:'iPad (automatica)'},{w:1180,h:820,uz:2,m:1,n:'iPad, interfaccia piu\' grande'},{w:1024,h:768,uz:1,m:0,n:'tablet 1024'},{w:1366,h:768,uz:1,m:0,n:'computer'}];
 // il controllo gira nella pagina: guarda la finestra in primo piano (se c'e') oppure la schermata visibile e la cornice della carriera
 const DET=()=>{
   const out=[],VW=innerWidth;
