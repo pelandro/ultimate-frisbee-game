@@ -68,6 +68,7 @@ function update(dt){
   G.diveScene=!!(G.diveWin||G.slowTail>0);
   const st=G.diveScene?SLOW_K:1;G.slowK=G.slowK===undefined?1:G.slowK+(st-G.slowK)*(1-Math.exp(-dtr*10));
   if(G.diveCool>0)G.diveCool-=dtr;
+  for(const t of T)for(const p of t)if(p.dv&&p.dv.end===null&&!(G.dive&&G.dive.p===p))p.dv.end=G.tick||0;   // tuffo rimasto senza proprietario (nessuna chiusura): il giocatore si rialza comunque
   dt*=G.k*G.slowK;
   if(G.edge){G.edge.t-=dt;if(G.edge.t<=0)G.edge=null;}   // il vantaggio del pull dura pochi secondi di gioco
   if(G.mode==='banner'){
@@ -149,6 +150,9 @@ function diveOffer(dtr){
   const W=Math.max(0.8,rem/((G.k||K_DEF)*SLOW_K));
   G.diveWin={p,t:0,W,tp:W*0.78,tol:W*0.32,done:false,color:null};G.diveCool=man?DIVE_COOL:DEF_EVT_COOL;G.diveFocus=p;   // la tolleranza in secondi e' proporzionale alla durata: cerchio piu' veloce = tempismo piu' stretto
 }
+// chiude il tuffo in corso: chi si e' buttato si rialza. Chi azzera G.dive senza passare da 08-prese-duelli.js (intercetto lungo la traiettoria, «Salta») deve usare questa:
+// prima p.dv restava con end=null e il giocatore stava steso per tutta la partita
+function endDive(){const dv=G.dive;G.dive=null;G.diveWin=null;if(dv&&dv.p.dv&&dv.p.dv.end===null)dv.p.dv.end=G.tick||0;}
 // tocco sul pulsante TUFFO: il tempismo decide il colore (verde, giallo, rosso)
 function diveTap(){
   const w=G.diveWin,f=G.flight;if(!w||w.done||!f)return false;

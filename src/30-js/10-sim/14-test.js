@@ -132,7 +132,7 @@ function selfTestPlan(opt){
       return cnt.map(x=>x/kk);
     };
     const lo=humanQ(30),hi=humanQ(90);placeTeams(1);const pl=G.puller;pl.s.spa=30;const per30=pullPeriod(pl,0);pl.s.spa=90;const per90=pullPeriod(pl,0);
-    const mm=Math.max(150,n*15),afterPull=c=>{   // mete di chi riceve nel possesso dopo un pull di quel tipo (tira un fuoriclasse: la qualita' e' quella voluta)
+    const mm=Math.max(450,n*50),afterPull=c=>{   // mete di chi riceve nel possesso dopo un pull di quel tipo (tira un fuoriclasse: la qualita' e' quella voluta)
       let g=0;for(let i=0;i<mm;i++){
         placeTeams(1);const p=G.puller;p.s.spa=99;p.s.lan=99;doPull(c,dirOf(0)>0?0:Math.PI);G.opt.def=0;G.auto=false;G.skip=true;
         let t=0;while(t++<14400&&G.mode==='play'&&G.poss===1)update(1/60);G.skip=false;if(G.mode==='banner'&&G.banner.team===1)g++;G.mode='play';
@@ -192,6 +192,26 @@ function selfTestPlan(opt){
     const t=G.target-1;G.score=[t,t];const uni=situationLabel(G.holder,0),lastT=situationLabel(G.holder,9);G.score=[0,0];
     return [row('Timeout: si puo\u2019 chiamare con il disco in mano, una sola volta; lo stall riparte da zero e la squadra recupera',(ok0&&!ok1&&r1&&!r2&&st1===0&&en)?'sì':'no',ok0&&!ok1&&r1&&!r2&&st1===0&&en,'uno a partita, solo per chi ha il disco'),
       row('Etichetta della situazione sopra il portatore',(lbBefore?lbBefore.txt:'-')+', '+(uni?uni.txt:'-')+', '+(lastT?lastT.txt:'-'),lbBefore&&lbBefore.txt==='STALL 8'&&uni&&uni.txt==='UNIVERSE POINT'&&lastT&&lastT.txt==='ULTIMO LANCIO')];
+  }]);
+  S.steps.push(['Compagni lontani dal portatore e tuffi che finiscono',()=>{
+    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    newGame();G.auto=true;G.lvl=[0,0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();G.startRec=0;G.nextRec=0;startPoint(0);
+    let g=0;while(g++<60*120&&!(G.mode==='play'&&G.holder&&G.holder.t===0&&G.holdT>1&&!G.flight&&!G.walk))update(1/60);
+    // 1) un compagno attaccato al portatore con un taglio che gli passa sopra: non deve restargli addosso
+    const h=G.holder,d=dirOf(0),q=T[0].find(x=>x!==h);
+    q.x=h.x-d*1.8;q.y=clamp(h.y+0.5,3,FIELD_W-3);q.vx=q.vy=0;q.cs='cut';q.tx=h.x+d*12;q.ty=h.y;q.cutT=3;q.cmd=null;
+    let near=99,n1=0;for(let i=0;i<60*3&&G.holder===h&&!G.flight;i++){update(1/60);if(i>=30&&G.holder===h&&!G.flight){n1++;for(const m of T[0])if(m!==h)near=Math.min(near,hyp(m.x-h.x,m.y-h.y));}}
+    const okNear=n1>=5&&near>=TEAM_R-0.5;
+    // 2) in una partita intera di un punto: nessun compagno resta sotto i 2,5 m dal portatore
+    let minP=99,fr=0;g=0;while(g++<60*90&&G.mode==='play'){update(1/60);const H=G.holder;if(H&&!G.flight&&!G.walk&&G.holdT>0.5){fr++;for(const m of T[H.t])if(m!==H)minP=Math.min(minP,hyp(m.x-H.x,m.y-H.y));}}
+    // 3) un tuffo senza chiusura (intercetto lungo la traiettoria, Salta) non lascia nessuno a terra
+    const p1=T[0][2],p2=T[0][3],p3=T[1][1];
+    p1.dv={t0:0,dir:1,end:null};G.dive=null;update(1/60);const orph=p1.dv.end!==null;
+    p2.dv={t0:0,dir:1,end:null};G.dive={p:p2,qual:1,color:'green'};G.diveWin={p:p2};endDive();const ended=p2.dv.end!==null&&G.dive===null&&G.diveWin===null;
+    p3.dv={t0:0,dir:1,end:null};placeTeams(0);const reset=!p3.dv&&!p1.dv&&!p2.dv;
+    return [row('Compagno attaccato al portatore con un taglio che gli passa sopra',near.toFixed(1)+' m',okNear,'almeno '+(TEAM_R-0.5).toFixed(1)+' m'),
+      row('Distanza minima dei compagni dal portatore in un punto intero',fr>30?minP.toFixed(1)+' m':'-',fr>30&&minP>=2.5,'mai sotto 2,5 m'),
+      row('Tuffo senza chiusura: il giocatore si rialza (nessuno steso per tutta la partita)',(orph?'sì':'no')+', '+(ended?'sì':'no')+', '+(reset?'sì':'no'),orph&&ended&&reset,'rete di sicurezza, endDive e nuovo punto')];
   }]);
   S.steps.push(['Brick e passaggio d\u2019apertura dopo il pull',()=>{
     const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;

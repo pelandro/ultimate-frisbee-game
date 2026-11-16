@@ -48,6 +48,15 @@ function spreadFrom(p,x,y,mates,R,k){
   }
   return {x:clamp(px,1,FIELD_L-1),y:clamp(py,2.5,FIELD_W-2.5)};
 }
+// i compagni non devono mai correre addosso a chi ha il disco (non si riesce a mirare): SKIRT_R = raggio che il percorso aggira, TEAM_R = distanza sotto cui la guardia
+// finale li spinge fuori. Prima solo il PUNTO d'arrivo stava lontano (MIN_ATT): la corsa verso un punto dall'altra parte del portatore gli passava sopra
+const SKIRT_R=5.5,TEAM_R=3.2;
+function skirt(p,H,x,y,R){
+  const vx=x-p.x,vy=y-p.y,L2=vx*vx+vy*vy;if(L2<1)return {x,y};
+  const t=clamp(((H.x-p.x)*vx+(H.y-p.y)*vy)/L2,0,1),cx=p.x+vx*t,cy=p.y+vy*t;
+  if(hyp(cx-H.x,cy-H.y)>=R)return {x,y};
+  return awayFrom(H,cx,cy,R);   // tappa sul percorso, spinta fuori dal raggio: poi si riparte verso il punto vero
+}
 function awayFrom(H,x,y,R){
   let dx=x-H.x,dy=y-H.y,d=hyp(dx,dy);
   if(d>=R)return {x,y};
@@ -90,6 +99,7 @@ function updateAttackers(dt){
     if(b){const open=G.marker?-G.closedSide:(Hh.y<MID?1:-1);b.cmd={k:'reset',x:clamp(Hh.x-d*4.5,2,FIELD_L-2),y:clamp(Hh.y+open*6.5,3,FIELD_W-3),t:3};b.cs='cut';}
   }
   aiIso(P,Hh,dt);   // l'IA isola il cutter che ha un vantaggio sul suo marcatore
+  const mvA=(q,x,y,dt0,am,vm)=>{const g=Hh&&!G.flight&&!G.walk?skirt(q,Hh,x,y,SKIRT_R):{x,y};moveTo(q,g.x,g.y,dt0,am,vm);};   // i compagni aggirano chi ha il disco
   const isoT=G.iso&&G.iso.p.t===P?G.iso.p.cmd:null;   // corridoio da lasciare libero
   for(const p of atk){
     p.rt=null;   // dove sta andando (solo per disegnare la linea del taglio)
@@ -99,16 +109,16 @@ function updateAttackers(dt){
       continue;
     }
     if(G.pull&&G.pull.landed&&G.pull.picker===p){moveTo(p,G.disc.x,G.disc.y,dt,0.55,0.4);continue;}   // disco a terra: va a prenderlo camminando
-    if(p.fl){const sp=sprinting(p),dt2=G.flight&&G.flight.sparo&&hasT(p,'deep');moveTo(p,p.fl.x,p.fl.y,dt,(sp?SPRINT_AM:1)*(dt2?1.1:1),(sp?SPRINT_VM:1)*(dt2?1.04:1));continue;}
+    if(p.fl){const sp=sprinting(p),dt2=G.flight&&G.flight.sparo&&hasT(p,'deep');mvA(p,p.fl.x,p.fl.y,dt,(sp?SPRINT_AM:1)*(dt2?1.1:1),(sp?SPRINT_VM:1)*(dt2?1.04:1));continue;}
     if(G.call&&G.call.q===p&&Hh&&!G.flight){p.rt={x:G.call.x,y:G.call.y};moveTo(p,G.call.x,G.call.y,dt,1.1,1);continue;}
     if(p.cmd){   // chiamata rapida: corre al punto indicato, piu' deciso di un taglio normale
       const c=p.cmd;c.t-=dt;
       const go=c.k==='go'&&G.flight&&G.flight.team===P;   // give-and-go: si continua a correre mentre il disco e' in volo
       if(c.t<=0||(!Hh&&!go)||(G.flight&&!go)||hyp(p.x-c.x,p.y-c.y)<1.5){p.cmd=null;p.cs='hold';p.cutT=rnd(0.5,0.9);}
-      else{p.rt={x:c.x,y:c.y};moveTo(p,c.x,c.y,dt,1.15,1);continue;}
+      else{p.rt={x:c.x,y:c.y};mvA(p,c.x,c.y,dt,1.15,1);continue;}
     }   // chiamato dal lanciatore: corre nella zona indicata
     {const tg=pbTarget(P,p);if(tg){
-      if(tg.hold)moveTo(p,p.x,p.y,dt);
+      if(tg.hold)mvA(p,p.x,p.y,dt);
       else if(tg.free){   // non ha un movimento previsto: prova comunque a liberarsi con piccoli tagli attorno al suo posto (fuori e dentro)
         p.fT=(p.fT||0)-dt;
         if(p.fT<=0||p.fx===undefined){
@@ -120,9 +130,9 @@ function updateAttackers(dt){
           p.fT=rnd(4.5,7);   // un nuovo piccolo taglio ogni 5-6 secondi circa (prima 1,4-2,2: il giocatore andava e veniva di continuo)
           if(Math.random()<0.5){p.fx=p.x;p.fy=p.y;}   // ogni tanto resta dov'e': un momento fermo tra un movimento e l'altro
         }
-        moveTo(p,p.fx,p.fy,dt);
+        mvA(p,p.fx,p.fy,dt);
       }
-      else{p.rt={x:tg.x,y:tg.y};moveTo(p,tg.x,tg.y,dt,tg.am,tg.vm);}
+      else{p.rt={x:tg.x,y:tg.y};mvA(p,tg.x,tg.y,dt,tg.am,tg.vm);}
       continue;
     }}   // schema a sequenza
     const v=visOf(p),w=wanderW(p);
@@ -131,7 +141,7 @@ function updateAttackers(dt){
     if(p.cs==='set'){
       const a=anchor(sch,p.slot,H,d,side);
       p.wT-=dt;if(p.wT<=0){p.wx=rnd(6,FIELD_L-6);p.wy=rnd(3,FIELD_W-3);p.wT=rnd(0.9,2.2);}
-      const st0=spreadFrom(p,lerp(a.x,p.wx,w),lerp(a.y,p.wy,w),atk,SPREAD_R,SPREAD_K),sg0=awayFrom(H,st0.x,st0.y,MIN_ATT),sg1=isoT?awayFrom(isoT,sg0.x,sg0.y,10):sg0,sg=settleTgt(p,sg1.x,sg1.y,dt),close=hyp(p.x-H.x,p.y-H.y)<MIN_ATT;moveTo(p,sg.x,sg.y,dt,close?1.7:0.85,close?1.2:1);
+      const st0=spreadFrom(p,lerp(a.x,p.wx,w),lerp(a.y,p.wy,w),atk,SPREAD_R,SPREAD_K),sg0=awayFrom(H,st0.x,st0.y,MIN_ATT),sg1=isoT?awayFrom(isoT,sg0.x,sg0.y,10):sg0,sg=settleTgt(p,sg1.x,sg1.y,dt),close=hyp(p.x-H.x,p.y-H.y)<MIN_ATT;mvA(p,sg.x,sg.y,dt,close?1.7:0.85,close?1.2:1);
       if(p.cutT<=0&&Hh&&!G.flight&&!isoT){
         let tightD=99;for(const q of T[1-P])tightD=Math.min(tightD,hyp(q.x-p.x,q.y-p.y));
         const tight=tightD<2.2&&G.holdT>0.8;   // marcato stretto: deve liberarsi, non aspettare
@@ -144,19 +154,28 @@ function updateAttackers(dt){
         }
       }
     }else if(p.cs==='cut'){
-      p.rt={x:p.tx,y:p.ty};moveTo(p,p.tx,p.ty,dt);
+      p.rt={x:p.tx,y:p.ty};mvA(p,p.tx,p.ty,dt);
       if(hyp(p.x-p.tx,p.y-p.ty)<1.2||p.cutT<=0){p.cs='hold';p.cutT=rnd(1.2,2.2);}   // dopo il taglio si ferma un momento: prima chi vedeva bene ripartiva subito (0,3-0,8 s) e il campo era un via vai
     }else if(p.cs==='hold'){
-      moveTo(p,p.x,p.y,dt);
+      mvA(p,p.x,p.y,dt);
       if(p.cutT<=0){
         if(Math.random()<clamp(v*1.15,0,1))p.cs='clear';
         else{p.cs='set';p.cutT=rnd(1.5+0.9*v,4);}
       }
     }else{                                                    // clear: torna nella formazione dello schema
       const a0=anchor(sch,p.slot,H,d,side),a1=spreadFrom(p,a0.x,a0.y,atk,SPREAD_R,SPREAD_K),a2=awayFrom(H,a1.x,a1.y,MIN_ATT),a3=isoT?awayFrom(isoT,a2.x,a2.y,10):a2,a=settleTgt(p,a3.x,a3.y,dt),close=hyp(p.x-H.x,p.y-H.y)<MIN_ATT;
-      moveTo(p,a.x,a.y,dt,close?1.7:1,close?1.2:1);
+      mvA(p,a.x,a.y,dt,close?1.7:1,close?1.2:1);
       if(hyp(p.x-a.x,p.y-a.y)<2.5){p.cs='set';p.cutT=rnd(1.5+0.9*v,4);}   // in formazione si aspetta di piu' prima del taglio successivo: meno scatti e inversioni, piu' leggibili
     }
+  }
+  // guardia finale: chi si ritrova comunque troppo vicino al portatore (partenza dei punti, scatti, urti) viene spinto fuori e perde la velocita' verso di lui
+  if(Hh&&!G.flight&&!G.walk&&G.mode==='play')for(const q of atk){
+    if(q===Hh)continue;
+    let dx=q.x-Hh.x,dy=q.y-Hh.y,dd=hyp(dx,dy);if(dd>=TEAM_R)continue;
+    if(dd<0.2){dx=0;dy=q.y>=MID?1:-1;dd=1;}
+    const ux=dx/dd,uy=dy/dd,step=Math.min(TEAM_R-dd,9*dt);
+    q.x=clamp(q.x+ux*step,1,FIELD_L-1);q.y=clamp(q.y+uy*step,1,FIELD_W-1);
+    const vin=q.vx*ux+q.vy*uy;if(vin<0){q.vx-=vin*ux;q.vy-=vin*uy;}
   }
 }
 

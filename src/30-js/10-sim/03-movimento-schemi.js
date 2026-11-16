@@ -176,7 +176,7 @@ function placeTeams(rec){
   const puller=def.slice().sort((a,b)=>b.s.spa-a.s.spa)[0];
   const ys=[4,9,14,23,28,33];let k=0;
   for(const q of def){q.x=px;q.y=q===puller?MID:ys[k++];}
-  for(const p of atk.concat(def)){p.vx=p.vy=0;p.fl=null;p.flD=0;p.boost=0;p.cs='set';p.cutT=rnd(0.6,2);p.mark=null;p.ph=0;p.wT=0;p.nT=0;p.nx=0;p.ny=0;p.cmd=null;}
+  for(const p of atk.concat(def)){p.vx=p.vy=0;p.fl=null;p.flD=0;p.boost=0;p.cs='set';p.cutT=rnd(0.6,2);p.mark=null;p.ph=0;p.wT=0;p.nT=0;p.nx=0;p.ny=0;p.cmd=null;p.dv=null;}   // anche il tuffo: nessuno resta a terra da un punto all'altro
   G.puller=puller;G.pullTeam=pt;G.pull=null;G.holder=null;G.flight=null;G.marker=null;
   G.edge=null;G.stallT=0;G.zoneH=null;G.zoneT=0;G.call=null;G.sideA=undefined;G.snapQ=null;G.iso=null;G.ctrl=null;G.cdir=null;G.ctrlH=null;G.hold=false;G.sprint=null;G.aiSprint=[];G.brick=false;G.open=false;G.walk=null;G.diveWin=null;G.dive=null;G.slowTail=0;G.pb=[null,null];
   G.disc.x=puller.x;G.disc.y=puller.y;G.disc.z=1;
