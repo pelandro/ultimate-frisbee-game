@@ -54,6 +54,7 @@ const DET=()=>{
     const look=async name=>{await page.waitForTimeout(150);const r=await page.evaluate(DET);checks++;for(const x of r)errs.push(S.n+' · '+name+': '+x);};
     try{
       await look('menu iniziale');
+      await page.click('#tSet');for(const [t,n] of [['#sTabGame','Impostazioni · Partita'],['#sTabCtl','Impostazioni · Comandi'],['#sTabScr','Impostazioni · Schermo e audio'],['#sGoDiag','Impostazioni · Avanzate']]){await page.click(t);await look(n);}await page.click('#sBack');
       await page.click('#tQuick');await look('partita veloce');await page.click('#qBack');
       await page.click('#tCareer');await look('scelta del campionato');
       await page.click('#lgList [data-lg="IT"]');await look('scelta della squadra');

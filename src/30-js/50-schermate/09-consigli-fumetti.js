@@ -3,7 +3,7 @@
    Barra «Consiglio» (adviceList): una riga che scorre in fondo al cruscotto, scelta in base a cio' che serve davvero adesso (crediti da spendere, giocatori scarichi,
    linee incomplete, tifosi in calo) e, se non c'e' niente di urgente, un consiglio di gioco; a ogni giornata ne esce uno diverso.
    Fumetti (tipOnce): la prima volta che apri una schermata della carriera un riquadro con «OK» spiega a che cosa serve. Ciascuno compare una volta (SV.tips),
-   si possono spegnere o rivedere dalle Opzioni (Suggerimenti). */
+   si possono spegnere o rivedere dalle Impostazioni (Partita › Suggerimenti). */
 function oppAt(r){
   const names=SV.mem[SV.sr],ui=names.indexOf(SV.team),pr=SV.sched[r]&&SV.sched[r].find(m=>m[0]===ui||m[1]===ui);
   return pr?names[pr[0]===ui?pr[1]:pr[0]]:'';
