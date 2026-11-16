@@ -10,7 +10,7 @@ intro:'Cinque lezioni per partire bene: che cosa si fa, dove si trova ogni cosa 
 les:[
 {id:'ini-gioco',t:'Che cosa si fa',b:[
 `L’Ultimate si gioca in due squadre da 7, con un disco. Per segnare devi portare il disco nella <b>meta</b> avversaria passandolo ai compagni: <b>chi ha il disco non può correre</b>, quindi si avanza solo lanciando.`,
-`Vince chi arriva per primo al punteggio scritto in alto: 7 punti in modalità Arcade, 11 in Competitiva, 15 in Lunga.`,
+`Vince chi arriva per primo a 7 mete in modalità Arcade, 11 in Competitiva, 15 in Lunga.`,
 [`Se il disco cade a terra, esce dal campo o viene intercettato, passa agli avversari: è un <b>turnover</b>.`,`Chi ha il disco ha <b>10 secondi</b> per lanciare (lo stall): a 10 perde il disco.`,`Dopo ogni meta le squadre cambiano campo e chi ha segnato tira il <b>pull</b> (il lancio lungo di inizio punto).`]],
 tip:`Non serve sapere le regole a memoria: nelle prime tre partite compaiono delle schede che spiegano ogni cosa nel momento in cui serve.`},
 {id:'ini-menu',t:'I menu del gioco',w:'Menu iniziale',b:[
@@ -29,7 +29,7 @@ tip:`Se sei nuovo, fai prima il percorso «Allenamento › Tutorial»: ogni lezi
 `<b>Controller</b>: stick o croce per la direzione, A o RT per lanciare, X o B per il lancio alto, Y per «Salta».`],
 `Dalle <b>Impostazioni</b> regoli sensibilità del trascinamento, dimensione e posizione dei pulsanti, audio, meteo e vento. Sul telefono si gioca in orizzontale: se lo tieni in verticale il gioco si gira da solo.`]},
 {id:'ini-primi',t:'I «Primi passi» in partita',b:[
-`Nelle prime tre partite compaiono in alto delle schede che spiegano il gioco <b>una alla volta e al momento giusto</b>: pull, ricezione, lancio, chiamate, stall, lancio alto, difesa, schemi, timeout e simulazione.`,
+`Nelle prime tre partite compaiono in alto delle schede che spiegano il gioco <b>una alla volta e al momento giusto</b>: pull, ricezione, lancio, chiamate, stall, lancio alto, difesa, isolamento, dopo la meta e timeout, schemi, cambi e simulazione.`,
 `Ogni scheda ferma il gioco: «Capito» (o Invio) per continuare, «Salta il tutorial» per spegnerle tutte. Per rivederle: <b>Opzioni › Suggerimenti</b>, spegni e riaccendi.`],
 tip:`Da lì si riattivano anche i fumetti della carriera (quelli che spiegano Squadra, Mercato, Società…).`},
 {id:'ini-alle',t:'Il tutorial guidato e le sfide',w:'Menu › Allenamento',b:[
@@ -71,10 +71,10 @@ tip:`Marcatore addosso e cono rosso davanti? Prova il rovesciato (doppio tocco):
 `Le <b>chiamate rapide</b> si fanno toccando i compagni senza trascinare:`,
 [`<b>Tocco su un compagno</b> = taglio: un cutter vicino al disco va lungo, uno già lontano torna incontro sul lato aperto; un handler ti offre lo scarico (<b>reset</b>) sul lato lasciato libero dal marcatore.`,
 `<b>Tieni premuto</b> su un compagno = <b>isolamento</b>: taglia lui e gli altri liberano il corridoio.`,
-`<b>Tocco sul portatore</b> = clear: tutti tornano in posizione e ripartono.`],
+`<b>Tocco su chi ha il disco</b> = clear: tutti tornano in posizione e ripartono.`],
 `Da tastiera: E = taglio, Q = isolamento, C = clear, verso il compagno indicato dalle frecce.`,
 `Se miri su una <b>zona libera</b> del campo, un compagno ci corre: quello che ci arriva prima, non per forza il più vicino. Più alta è la Visione di chi ha il disco, più lontano dai compagni può essere la zona. Il disco va esattamente dove hai mirato.`,
-`In Facile e Medio un breve tratto verde mostra da che parte parte ogni compagno (azzurro quello che hai chiamato tu); in Difficile ed Estrema non c’è nessun segnale.`],
+`In Facile e Medio un breve tratto verde mostra in che direzione parte ogni compagno (azzurro quello che hai chiamato tu); in Difficile ed Estrema non c’è nessun segnale.`],
 tip:`Isola il tuo cutter più veloce contro il marcatore più lento: è il modo più facile di creare un vantaggio.`},
 {id:'att-sparo',t:'Sparo, scatto e gioco lungo',b:[
 `Oltre 30 m il lancio è uno <b>sparo</b>. Quanto lontano arriva dipende dalla statistica Sparo: con 20 circa 30 m, con 60 circa 65 m, con 99 tutto il campo.`,
@@ -87,7 +87,7 @@ tip:`Uno scatto sprecato stanca il giocatore per il resto del punto: usalo solo 
 `Il <b>tuffo</b> scatta da solo se il disco cade appena oltre la portata. Nei duelli in aria e nei tuffi <b>tocca quando l’indicatore è nel verde</b> per avere un bonus.`],
 tip:`Gli avversari sfiniti hanno una goccia di sudore: è lì che conviene cercare il duello.`},
 {id:'att-stall',t:'Stall, serie e momenti decisivi',b:[
-`Il marcatore conta: da 6 in su il numero compare sopra chi ha il disco. A 9 c’è l’<b>ULTIMO LANCIO</b>, a 10 perdi il disco. Se il numero sale, passa subito, anche corto (o chiama il timeout: vedi «Timeout, half time e pausa»).`,
+`Quando un difensore ti marca conta fino a 10: lo vedi scritto in alto («Stall 3»…) e, da 6, anche sopra chi ha il disco. A 9 c’è l’<b>ULTIMO LANCIO</b>, a 10 perdi il disco. Se il numero sale, passa subito, anche corto (o chiama il timeout: vedi «Timeout, half time e pausa»).`,
 [`<b>Serie positiva</b>: tanti lanci riusciti di fila accendono un alone rosso e i lanci vengono un po’ meglio, finché sbagli.`,`<b>Serie negativa</b>: due errori di fila accendono un alone azzurro e i lanci vengono un po’ peggio, finché ne completi due.`,`<b>MATCH POINT</b> a un punto dalla vittoria, <b>UNIVERSE POINT</b> se lo sono entrambe.`]],
 tip:`Con lo stall alto non cercare il lancio perfetto: uno scarico corto vale più di un huck forzato.`},
 {id:'att-vento',t:'Vento, pioggia e neve',b:[
@@ -200,7 +200,7 @@ tip:`Prima di ogni partita: guarda il meteo, svuota «Questa settimana» e solo 
 `L’<b>Overall</b> (OVR) è il valore del giocatore nel suo ruolo migliore; la <b>forza della squadra</b> è la media dei 7 migliori; in partita contano tutte e due le linee. Circa un giocatore su quattro ha un <b>tratto</b> (Deep Threat, Break Specialist, Field General, Lockdown, Sky Dominator, Safe Hands, Explosive Cutter, Ironman).`],
 tip:`«Linee consigliate» sistema le linee per te; se una linea ha meno di 7 giocatori o un infortunato, «Questa settimana» te lo segnala.`},
 {id:'car-linee',t:'Le linee ATT e DIF',w:'Squadra › A e D',b:[
-`La linea <b>ATT</b> gioca le mete in cui ricevi il pull, la linea <b>DIF</b> quelle in cui lo tiri. I bollini A e D sulle carte le assegnano, e ognuna ha bisogno di 7 giocatori.`,
+`La linea <b>ATT</b> gioca le mete in cui ricevi il pull, la linea <b>DIF</b> quelle in cui lo tiri. I bollini A e D sulle carte dicono chi è in ogni linea (si cambia con ATT e DIF nella scheda), e ognuna ha bisogno di 7 giocatori.`,
 `Chi sta in entrambe non riposa mai: in partita rende <b>${DBL_PEN} punti in meno</b> e si stanca il doppio. Con meno di 14 giocatori qualcuno deve farlo per forza. <b>Linee consigliate</b> mette in attacco 3 handler e 4 cutter e in difesa i migliori difensori (con almeno 2 handler per ripartire): un buon equilibrio di ruoli rende più delle sole stelle.`,
 `Handler e cutter che giocano insieme costruiscono <b>intesa</b>: lanci più precisi e meno prese perse tra loro.`],
 tip:`Non cambiare tutta la linea a ogni partita: l’intesa si costruisce restando insieme.`},
