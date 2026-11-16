@@ -55,7 +55,7 @@ function laneCheck(f,P,z){
     e.done=true;   // il disco si allontana: e' il momento di provarci
     const fd=0.55+0.5*clamp((q.s.dif-40)/60,0,1),close=1-0.6*e.d/e.R,high=e.z>e.rz-0.45?0.55:1,fast=clamp(1.3-f.sp.v/40,0.55,1),late=e.t<reactOf(q)?0.5:1;
     if(Math.random()<LANE_P*fd*close*high*fast*late*(zone?LANE_ZONE:1)){
-      G.st.lane[q.t]++;G.diveWin=null;G.dive=null;G.hold=false;G.sprint=null;G.aiSprint=[];
+      G.st.lane[q.t]++;endDive();G.hold=false;G.sprint=null;G.aiSprint=[];
       finishTurn(f,q,e.z>2.3?'Intercetto in salto!':'Intercetto!',{x:P.x,y:P.y});
       return true;
     }
