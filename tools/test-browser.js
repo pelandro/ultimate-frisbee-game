@@ -159,7 +159,7 @@ catch(e){
     if(!/Giulia Rossi/i.test(await page.locator('#coName').innerText()))throw new Error('l\'anteprima non segue il nome');
     await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     if(!(await page.locator('#hCoach svg.av').count()))throw new Error('manca il volto dell\'allenatore nel cruscotto');
-    if(!(await page.locator('.dcash .cr .coin').count()))throw new Error('manca la moneta di fianco a «Crediti» nel cruscotto');
+    if(!(await page.locator('#ctop .ctcash .coin').count()))throw new Error('manca la moneta di fianco ai crediti nella barra in alto');   // i crediti stanno nella barra in alto (sul cruscotto erano un doppione)
   });
   await step('tutorial completo dal cruscotto: il fumetto della schermata Partita viene prima di sponsor e Posta, «Scopri di più» e tasto Tutorial',async()=>{
     // carriera appena iniziata: si apre per primo il fumetto della schermata Partita; sponsor e Posta aspettano che si chiuda
@@ -181,6 +181,7 @@ catch(e){
     const first=await page.locator('#hireList .hcn .sr').first().innerText();
     await page.click('#hireRenew');if(await page.locator('#hireList .hcn').count()!==3)throw new Error('dopo il rinnovo i candidati devono essere ancora tre');
     await page.click('#hireList [data-hirei]:not([disabled]) >> nth=0');
+    await vis('#cfm');await page.click('#cfmOk');
     if(await page.locator('#hire:not(.hidden)').count())throw new Error('assunto: la finestra deve chiudersi');
     if(await page.locator('#clBox .scard:not(.empty)').count()!==1)throw new Error('dopo l\'assunzione deve esserci una persona nello staff');
     await page.click('#hHome');await vis('#home');
@@ -204,7 +205,10 @@ catch(e){
     if(!/Intenso/.test(await page.locator('.tint .sg.on').innerText()))throw new Error('l\'intensità dell\'allenamento non cambia');
     await page.click('#tTeamBox [data-int="1"]');
     if(!/punti/.test(await page.locator('#tTeamBox .ttype[data-team="tec"] .fc').innerText()))throw new Error('manca l\'anteprima della seduta di squadra');
-    await page.click('#tTeamBox .ttype[data-team="tec"]');await vis('#tRes .tres');
+    await page.click('#tTeamBox .ttype[data-team="tec"]');await page.waitForTimeout(100);
+    if(await page.locator('#tRes .tres').count())throw new Error('la seduta di squadra parte senza conferma');
+    if(!(await page.locator('#tTeamBox .tcf').isVisible()))throw new Error('manca il riquadro di conferma della seduta');
+    await page.click('#tTeamBox [data-trgo]');await vis('#tRes .tres');
     await page.click('#tTeamBox [data-prog]');if(!/Acceso/.test(await page.locator('#tTeamBox [data-prog]').innerText()))throw new Error('il programma automatico non si accende');
     if(await page.locator('#tList .prow:not([disabled])').count()>await page.locator('#tList .prow').count()-3)throw new Error('il programma automatico non ha fatto i lavori individuali');
     await page.click('#tTeamBox [data-prog]');await page.click('#hHome');
@@ -222,6 +226,42 @@ catch(e){
     await page.click('#hHome');
     await menu('#hOpt');await vis('#opts');await page.click('#opX');
     await page.click('#hBell');await vis('#alerts');   // lo chiude il gestore qui sopra alla prossima azione
+  });
+  await step('Posta: «Chiudi» non segna come letto, «Segna tutto come letto» sì; Mercato: conferma prima di comprare; Allena: lavoro individuale in due passi',async()=>{
+    // una notizia nuova di sicuro: un avviso non urgente scritto nel salvataggio, poi ricarica
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(localStorage.getItem(k));d.alerts=d.alerts||[];d.alN=(d.alN|0)+1;d.alerts.unshift({id:d.alN,s:d.season,r:1,k:'grow',txt:'Prova di lettura',full:'',act:'',data:null,seen:0,done:0,sh:1});localStorage.setItem(k,JSON.stringify(d));if(d.slot)localStorage.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
+    // qui i tocchi passano da evaluate: il gestore in cima alla prova chiuderebbe la Posta prima di ogni click
+    const unread=async()=>(await page.locator('#alBody .ali.new').count()),tap=id=>page.evaluate(i=>document.getElementById(i).click(),id);
+    await tap('hBell');await vis('#alerts');const n0=await unread();if(n0<1)throw new Error('la notizia di prova non risulta nuova');
+    await tap('alX');await tap('hBell');await vis('#alerts');
+    if(await unread()!==n0)throw new Error('«Chiudi» ha segnato le notizie come lette');
+    await tap('alAll');if(await unread())throw new Error('«Segna tutto come letto» non ha segnato tutto');
+    await tap('alX');
+    // mercato: con i crediti per comprare, «Acquista» apre il riepilogo; «Annulla» non compra niente
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(localStorage.getItem(k));d.cash=5000;localStorage.setItem(k,JSON.stringify(d));if(d.slot)localStorage.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
+    await page.click('#hMarket');await vis('#market');
+    const buy=page.locator('#mkBox [data-buy]:not([disabled])').first();
+    if(await buy.count()){
+      const r0=await page.locator('#mkTop').innerText();
+      await buy.click();await vis('#cfm');if(!/Stipendi/.test(await page.locator('#cfmBody').innerText()))throw new Error('il riepilogo dell\'acquisto non mostra lo stipendio');
+      await page.click('#cfmNo');if(await page.locator('#cfm:not(.hidden)').count())throw new Error('«Annulla» non chiude la conferma');
+      if(await page.locator('#mkTop').innerText()!==r0)throw new Error('«Annulla» ha comprato lo stesso');
+      await buy.click();await vis('#cfm');await page.keyboard.press('Escape');if(await page.locator('#cfm:not(.hidden)').count())throw new Error('Esc non chiude la conferma');
+    }
+    // allenamento individuale: scegliere un indirizzo non lo esegue, «Avvia» sì
+    await page.click('#hTrain');await vis('#train');
+    const pr=page.locator('#tList .prow:not([disabled])').first();
+    if(await pr.count()){
+      await pr.click();
+      if(await page.locator('#tTypes .ttype[data-k="rec"]:not([disabled])').count()){   // se restano lavori individuali in questa giornata
+        await page.click('#tTypes .ttype[data-k="rec"]');
+        if(await page.locator('#tRes .tres').count())throw new Error('il lavoro individuale parte senza conferma');
+        await vis('#tCf .tcf');await page.click('#tCf [data-trgo]');await vis('#tRes .tres');
+      }
+    }
+    await page.click('#hHome');
   });
   await step('rosa: filtri, ordinamento e scheda in tre parti; mercato: filtro e ordinamento; guida contestuale',async()=>{
     await vis('#home');await page.click('#hRoster');await vis('#roster');
@@ -497,9 +537,10 @@ catch(e){
     await page.click('#scBox .schrow [data-go="tut"]');await page.waitForTimeout(700);await vis('#coach');
     await page.click('#bExit');await vis('#pause');await page.click('#paQuit');await page.waitForTimeout(300);await vis('#school');
   });
-  await step('menu iniziale: Carriere, nuova carriera in un altro slot e ritorno, senza passare dalle Opzioni',async()=>{
+  await step('menu iniziale: Salvataggi, nuova carriera in un altro slot e ritorno, senza passare dalle Opzioni',async()=>{
     await page.click('#tBack').catch(()=>{});
     if(!(await page.locator('#title').isVisible())){await page.goto('file://'+OUT);await page.waitForTimeout(400);}
+    if(!/Salvataggi/.test(await page.locator('#tSlots').innerText()))throw new Error('il tasto degli slot deve chiamarsi «Salvataggi»');
     await page.click('#tSlots');await vis('#slots');
     const full=await page.locator('#csBox [data-cgo]').count();if(full<1)throw new Error('la carriera esistente non compare tra gli slot');
     const empty=await page.locator('#csBox .csl:not(:has([data-cgo])) [data-cnew]').first();

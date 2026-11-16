@@ -14,9 +14,9 @@ function renderMarket(){
     const o=m.o,why=canSign(m),v=ovr(o),pos=posOf(o),open=mkOpen.has(o.full||o.n);
     const same=SQ.filter(p=>posOf(p)===pos).sort((x,y)=>ovr(x)-ovr(y))[0],d=same?v-ovr(same):0;   // chi sostituirebbe: il piu' debole del suo ruolo
     const rep=same?`<span class="mrp ${d>0?'up':(d<0?'dn':'')}">${d>0?'▲':(d<0?'▼':'=')} ${d>0?'+':''}${d} su ${esc(same.nick||same.name)}</span>`:'';
-    const lock=why?(/Rosa/.test(why)?'Rosa piena':(/Crediti/.test(why)?'Crediti scarsi':(/titolare/.test(why)?'Vuole giocare':(/Serie C/.test(why)?'Punta più in alto':'Poca reputazione')))):'';
+    const lock=why?(/Rosa/.test(why)?'Rosa piena':(/Crediti/.test(why)?'Pochi crediti':(/titolare/.test(why)?'Vuole giocare':(/Serie C/.test(why)?'Punta più in alto':'Poca reputazione')))):'';
     return `<div class="mcard${m.star?' star':''}${why?' lk':''}" style="--rc:${ROLE_COL[pos]||'#2f7bff'}"><div class="mch"><span class="mav">${avatar({look:makeLook(o.full||o.n,o.f),t:0},40)}</span><div class="mn"><b>${esc(o.label||o.n)}${m.star?'<span class="stb">★</span>':''}${traitBadge(o)}</b><small>${POS_NAME[pos]} · ${o.ae?'circa ':''}${o.age} anni · ${m.kind}${m.from?' ('+esc(m.from)+')':(m.nat?' · '+esc(m.nat):'')}</small>${motLineHTML(m)}</div><b class="ov ovbig ${ovrCls(v)}">${v}</b></div>
-      <div class="mst"><span>Pot. <b>${potTxt(o)}</b></span>${rep}<span class="mpr">${m.price} <i class="coin"></i></span></div>
+      <div class="mst"><span>Pot. <b>${potTxt(o)}</b></span>${rep}<span class="mwg" title="Stipendio a partita">stip. ${(Math.round(wageOf(o)/1.5)/10).toString().replace('.',',')}/partita</span><span class="mpr">${m.price} <i class="coin"></i></span></div>
       <div class="mka"><button type="button" class="sec" data-rp="${i}">${open?'Chiudi':'Dettagli'}</button><button type="button" class="go sm" data-buy="${i}"${why?' disabled':''} title="${esc(why)}">${why?lock:'Acquista'}</button></div>
       ${open?`<div class="mdt"><div class="dst"><b style="color:#7fd8ff;font-weight:400">Compatibilità tattica</b>: ${FIT_TXT[fitOf(o)]}.${m.mot&&MOT[m.mot]?` <b style="color:#7fd8ff;font-weight:400">Motivazione</b>: ${MOT[m.mot][0].toLowerCase()} (${MOT[m.mot][1]}).`:''}</div><div class="dst scr">${scoutReport(o)}</div><div class="dst"><button type="button" class="sec" data-sc="${i}"${(o.sk|0)>=3||SV.cash<scoutCost(o)?' disabled':''}>${(o.sk|0)>=3?'Osservato al massimo':'Osserva · '+scoutCost(o)+' crediti'}</button> <small>Ogni osservazione riduce l’incertezza sul potenziale.</small></div>${cmpTarget(o)?`<div class="dst"><b style="color:var(--gold);font-weight:400">Confronto con ${esc(pname(cmpTarget(o)))}</b>, il titolare più debole nel ruolo</div>${compareHTML(o,cmpTarget(o),o.label||o.n,pname(cmpTarget(o)))}`:''}</div>`:''}</div>`;
   };
@@ -32,5 +32,16 @@ $('mkBox').addEventListener('click',e=>{
   const rp=e.target.closest('[data-rp]');if(rp){const m=SV.market[+rp.dataset.rp],k=m&&(m.o.full||m.o.n);if(k){if(mkOpen.has(k))mkOpen.delete(k);else mkOpen.add(k);}renderMarket();return;}
   const sc=e.target.closest('[data-sc]'),by=e.target.closest('[data-buy]');
   if(sc){const m=SV.market[+sc.dataset.sc];if(m&&scoutPlayer(m.o)){mkMsg=`Osservato ${m.o.label||m.o.n}: potenziale ${potTxt(m.o)}.`;persist();}renderMarket();}
-  else if(by){const m=SV.market[+by.dataset.buy];if(m){const nm=m.o.label||m.o.n;if(signPlayer(+by.dataset.buy)){mkMsg=`${nm} è un nuovo giocatore della squadra. Mettilo in una linea da Squadra.`;persist();}}renderMarket();}
+  else if(by){const i=+by.dataset.buy,m=SV.market[i];if(m&&!canSign(m))askConfirm(mkBuySummary(m,()=>{const k=SV.market.indexOf(m),nm=m.o.label||m.o.n;if(k>=0&&signPlayer(k)){mkMsg=`${nm} è un nuovo giocatore della squadra. Mettilo in una linea da Squadra.`;persist();}renderMarket();}));}
 });
+// riepilogo prima di comprare: prezzo, crediti che restano, stipendio in piu' a ogni partita, posto in rosa e chi sostituirebbe nel suo ruolo
+function mkBuySummary(m,onOk){
+  const o=m.o,v=ovr(o),pos=posOf(o),w0=wageSeason(SQ)/15,w1=wageSeason(SQ.concat([o]))/15,dw=w1-w0,after=SV.cash-m.price;
+  const f1=x=>(Math.round(x*10)/10).toString().replace('.',',');
+  const same=SQ.filter(p=>posOf(p)===pos).sort((x,y)=>ovr(x)-ovr(y))[0],d=same?v-ovr(same):0;
+  const row=(k,val,cls)=>`<tr><td>${k}</td><td${cls?` class="${cls}"`:''}>${val}</td></tr>`;
+  const html=`<p><b>${esc(o.label||o.n)}</b> · ${POS_NAME[pos]} · ${o.ae?'circa ':''}${o.age} anni · OVR <b>${v}</b> · pot. ${potTxt(o)}</p>`
+    +`<table class="cfmt">${row('Prezzo',m.price+' crediti')}${row('Ti restano',after+' crediti',after<30?'bad':'')}${row('Stipendi a partita',`${Math.round(w0)} → ${Math.round(w1)} crediti (+${f1(dw)})`)}${row('Rosa',`${SQ.length} → ${SQ.length+1} su ${SQ_MAX}`)}${same?row('Nel suo ruolo',`${d>0?'+':''}${d} sul più debole (${esc(same.nick||same.name)}, ${ovr(same)})`,d>0?'ok':(d<0?'bad':'')):''}</table>`
+    +(m.mot&&MOT[m.mot]?`<p>Motivazione: ${esc(MOT[m.mot][0].toLowerCase())}.</p>`:'');
+  return {title:'Confermi l’acquisto?',html,ok:'Acquista per '+m.price,onOk};
+}
