@@ -441,6 +441,8 @@ catch(e){
     await page.click('#shOpen');await vis('#utPack');
     await page.click('#pkGo');await page.waitForTimeout(3400);
     if(await page.locator('#pkBody .ucard').count()!==3)throw new Error('il pacchetto Handler ha 3 carte');
+    const cls=await page.locator('#pkBody .ucard i:nth-of-type(2)').allTextContents();   // giocatori veri dei campionati: sulla carta c'e' il club
+    if(cls.length!==3||cls.some(t=>!t.trim()||t.includes(' · ')))throw new Error('le carte del pacchetto sono giocatori veri con il club: '+JSON.stringify(cls));
     await page.click('#pkGo');await page.waitForTimeout(300);await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await vis('#ut');
     const u2=await ut(),nw=u2.r.slice(u1.n);if(nw.length!==6||nw.slice(0,3).some(r=>r!=='H')||nw.slice(3).some(r=>r!=='C'))throw new Error('3 Handler e 3 Cutter attesi: '+nw.join(''));
     await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
