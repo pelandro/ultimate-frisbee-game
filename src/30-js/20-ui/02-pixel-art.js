@@ -177,55 +177,97 @@ function pdiscSprite(x,y,spin,sz,tl,inv){
 const PH=()=>20;   // altezza dello sprite in pixel: la pixel-art non si scala
 // ---- omino a pixel: testa, busto, pantaloncini, arti spessi 2 pixel; contorno scuro attorno a tutta la sagoma ----
 const lookOf=pl=>(pl&&pl.look)||DEF_LOOK;
-function puppet(x,y,un,lk,f,pose,ph,run,arm){
-  x=ri(x);y=ri(y);
+// CORSA a 6 fotogrammi (mezzo ciclo = 3, poi le gambe si scambiano): [piede d'appoggio avanti/indietro, piede in volo avanti/indietro, alzata del piede in volo, molleggio del corpo (+ = giu')].
+// Appoggio (corpo basso), passaggio (ginocchio alto), spinta (corpo in aria): a 20 pixel sono le pose chiave che danno peso al passo
+const RUN_F=[[2,-3,1,1],[0,0,3,0],[-3,3,2,-1]];
+// ex: {brk: frenata, view: 0 di lato, 1 di schiena, 2 di fronte, kind: tipo di lancio, ca: secondi dalla presa (o -1)}. Restituisce la posizione della mano vicina (il disco la segue)
+function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
+  x=ri(x);y=ri(y);ex=ex||{};
   const ops=[],R=(a,b,w,h,c)=>ops.push(a,b,w,h,c);
   const Lm=(ax,ay,bx,by,c,c2,cut)=>{   // arto: quadratini 2x2 lungo la linea; da 'cut' in poi il secondo colore
     const n=Math.max(Math.abs(bx-ax),Math.abs(by-ay))||1;
     for(let i=0;i<=n;i++){const u=i/n;R(ri(ax+(bx-ax)*u),ri(ay+(by-ay)*u),2,2,(c2&&u>=cut)?c2:c);}
   };
-  const skin=lk.skin,skin2=shade(skin,-0.16),hair=lk.hair,shirt=un.shirt,shirt2=shade(shirt,-0.22);
-  const s=Math.sin(ph),moving=run>0.18,fast=run>0.45,bob=fast&&Math.abs(s)>0.55?1:0;
-  const cheer=pose==='cheer',hop=cheer?(Math.sin(G.tick*12+x*0.7)>0?3:0):(pose==='jump'?ri(6*Math.sin(Math.PI*clamp(arm,0,1))):0);
-  const gy=y-hop,by=gy-bob,sy=by-14,T=by-20+(pose==='sad'?1:0),lean=fast?f:0;
-  // gambe: quella dietro si alza mentre corre
-  const sw=moving?s*(fast?4:2.4):0;
+  const skin=lk.skin,skin2=shade(skin,-0.16),hair=lk.hair,shirt=un.shirt,shirt2=shade(shirt,-0.22),sock2=shade(un.socks,-0.22),shoe2=shade(un.shoe,0.12);
+  const moving=run>0.18,fast=run>0.45,view=moving?(ex.view|0):0,cheer=pose==='cheer',mark=pose==='mark';
+  const fr=moving?((Math.floor(ph/(Math.PI*2)*6)%6)+6)%6:0,half=fr>=3?1:0,RF=RUN_F[fr%3],k=fast?1:0.6;
+  const hop=cheer?(Math.sin(G.tick*12+x*0.7)>0?3:0):(pose==='jump'?ri(6*Math.sin(Math.PI*clamp(arm,0,1))):0);
+  const breathe=!moving&&!cheer&&pose!=='jump'&&Math.sin(G.tick*2.4+x*0.37)>0.55?1:0;   // da fermo il busto respira (un pixel), ognuno col suo tempo
+  const dyB=moving?ri(RF[3]*k):(mark?1:0),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-20+breathe+(pose==='sad'?1:0);
+  const caught=ex.ca>=0&&ex.ca<0.3,recoil=caught&&ex.ca>0.08&&ex.ca<0.22?-f:0;   // presa: un pixel di rinculo all'indietro
+  let lean=fast?f:0;if(ex.brk&&moving)lean=-f;if(pose==='aim')lean=-f;lean+=recoil;
+  // GAMBE: quella lontana (dietro) e' piu' scura, cosi' si capisce quale va avanti
   for(const i of [-1,1]){
-    const a=sw*i,hx=x-1+(i>0?1:-1),fx=moving?hx+ri(a):hx+i,lift=fast?Math.max(0,ri(-a*f*0.55)):0,fy=gy-2-lift;
-    Lm(hx,by-6,fx,fy,skin,un.socks,0.62);
-    R(f>0?fx:fx-1,fy,3,2,un.shoe);
+    const far=i<0,hx=x-1+(i>0?1:-1),sk=far?skin2:skin,so=far?sock2:un.socks,sh=far?shoe2:un.shoe;
+    let dx=0,lift=0;
+    if(moving&&view===0){const planted=(i<0)===(half===0);dx=ri((planted?RF[0]:RF[1])*k)*f;lift=planted?0:ri(RF[2]*(fast?1:0.67));}
+    else if(moving){const planted=(i<0)===(half===0);lift=planted?0:(fr%3===1?3:1);}   // di schiena o di fronte: le gambe salgono e scendono sul posto
+    else if(mark)dx=i*2;   // marcatore: gambe larghe e corpo basso
+    else dx=i;
+    const fx=hx+dx,fy=gy-2-lift;
+    if(lift>=2){const kx=hx+ri(dx/2)+f*(view===0?1:0),ky=by-3-(lift>2?1:0);Lm(hx,by-6,kx,ky,sk);Lm(kx,ky,fx,fy,sk,so,0.25);}   // ginocchio piegato
+    else Lm(hx,by-6,fx,fy,sk,so,0.62);
+    R(view!==0?fx:(f>0?fx:fx-1),fy,view!==0?2:3,2,sh);
   }
-  // braccio lontano (dietro al busto)
   const shx=x-1+lean;
-  const hand=(i)=>{   // i = 1 braccio vicino, -1 braccio lontano
-    if(pose==='throw')return i>0?[shx+f*(3+ri(3*arm)),sy+2-ri(arm)]:[shx-f*2,sy+5];
+  // BRACCIA: di corsa vanno in opposizione alle gambe; il lancio ha caricamento, rilascio e accompagnamento diversi per rovescio, dritto e hammer
+  const kind=ex.kind||'backhand';
+  const runHand=i=>{
+    if(view!==0){const up=((i<0)===(half===0))?1:0;return [x-1+i*4,sy+5-up];}
+    const planted=(i<0)===(half===0),ldx=ri((planted?RF[0]:RF[1])*k);
+    return [shx+ri(-ldx*0.8)*f+(fast&&i>0?f:0),sy+5-(fast&&Math.abs(ldx)>1?1:0)];
+  };
+  const hand=i=>{   // i = 1 braccio vicino, -1 braccio lontano
+    if(pose==='aim'){   // caricamento: il braccio va indietro (rovescio: attraverso il corpo; dritto: di lato e basso; hammer: sopra la testa)
+      if(kind==='hammer'||kind==='scoober')return i>0?[shx-f*1,sy-6]:[shx+f*3,sy+3];
+      if(kind==='forehand')return i>0?[shx-f*4,sy+6]:[shx+f*3,sy+4];
+      return i>0?[shx-f*5,sy+3]:[shx+f*3,sy+5];
+    }
+    if(pose==='throw'){
+      const rel=arm>0.72;   // primi istanti: braccio teso verso il bersaglio; poi accompagna
+      if(kind==='hammer'||kind==='scoober')return i>0?(rel?[shx+f*3,sy-7]:[shx+f*5,sy+5]):[shx-f*2,sy+5];
+      if(kind==='forehand')return i>0?(rel?[shx+f*6,sy+4]:[shx-f*1,sy+6]):[shx-f*2,sy+5];
+      return i>0?(rel?[shx+f*6,sy+2]:[shx+f*5,sy-3]):[shx-f*2,sy+5];
+    }
     if(pose==='hold')return i>0?[shx+f*4,sy+5]:[shx-f*1,sy+6];
-    if(pose==='mark'){const w=Math.sin(G.tick*9+x)>0?1:0;return i>0?[shx+f*5,sy-2-w]:[shx+f*4,sy+6+w];}
+    if(mark){const w=Math.sin(G.tick*9+x)>0?1:0;return i>0?[shx+f*5,sy-2-w]:[shx+f*4,sy+6+w];}
+    if(caught&&ex.ca>0.08)return i>0?[shx+f*3,sy+3]:[shx+f*2,sy+4];   // il disco preso torna al petto
     if(pose==='reach'||pose==='jump')return i>0?[shx+f*3,sy-6]:[shx+f*1,sy-5];
     if(pose==='one')return i>0?[shx+f*4,sy-7]:[shx-f*2,sy+5];
     if(cheer)return i>0?[shx+3,sy-6]:[shx-3,sy-6];
     if(pose==='sad')return i>0?[shx+f,sy+7]:[shx-f,sy+7];
-    return moving?[shx+ri(-sw*i*0.9)+f*(fast?1:0),sy+5-(fast&&i*s*f<0?1:0)]:[shx+(i>0?f:-f),sy+6];
+    return moving?runHand(i):[shx+(i>0?f:-f),sy+6];
   };
+  // braccio lontano (dietro al busto, piu' scuro)
   let h=hand(-1);Lm(shx,sy+1,h[0],h[1],shirt2,skin2,0.45);
   // pantaloncini e busto
   R(x-3,by-8,6,3,un.shorts);
-  R(x-3+lean,sy,6,6,shirt);R(f>0?x-3+lean:x+2+lean,sy,1,6,shirt2);R(x-3+lean,sy+5,6,1,shirt2);
-  // testa: capelli sopra e dietro, occhio davanti
-  const hx0=x-3+lean+f,bk=f>0?hx0:hx0+4;
+  R(x-3+lean,sy,6,6,shirt);
+  if(view===0)R(f>0?x-3+lean:x+2+lean,sy,1,6,shirt2);else R(x-3+lean,sy,1,6,shirt2);
+  R(x-3+lean,sy+5,6,1,shirt2);
+  // TESTA: di lato (capelli dietro, occhio davanti), di schiena (solo capelli) o di fronte (due occhi)
+  const hx0=x-3+lean+(view===0?f:0),bk=f>0?hx0:hx0+4,bald=lk.style===4;
   R(hx0+1,T,4,1,skin);R(hx0,T+1,6,4,skin);R(hx0+1,T+5,4,1,skin);
-  if(lk.style===4){R(hx0+1,T,4,1,skin2);R(bk,T+1,2,1,skin2);}
-  else{
-    R(hx0+1,T,4,1,hair);R(hx0,T+1,6,1,hair);R(bk,T+2,2,lk.style===0?1:(lk.style===1?3:(lk.style===2?6:2)),hair);
-    if(lk.style===3)R(f>0?hx0-2:hx0+6,T+2+(fast&&s>0?1:0),2,3,hair);
+  if(view===1){
+    if(bald){R(hx0+1,T,4,1,skin2);R(hx0,T+1,6,3,skin2);}
+    else{R(hx0+1,T,4,1,hair);R(hx0,T+1,6,4,hair);if(lk.style===2)R(hx0,T+5,6,1,hair);if(lk.style===3)R(hx0+2,T+5,2,3,hair);}
+    if(lk.band)R(hx0,T+2,6,1,lk.band);
+  }else{
+    if(bald){R(hx0+1,T,4,1,skin2);if(view===0)R(bk,T+1,2,1,skin2);}
+    else{
+      R(hx0+1,T,4,1,hair);R(hx0,T+1,6,1,hair);
+      if(view===0){R(bk,T+2,2,lk.style===0?1:(lk.style===1?3:(lk.style===2?6:2)),hair);if(lk.style===3)R(f>0?hx0-2:hx0+6,T+2+(fast&&Math.sin(ph)>0?1:0),2,3,hair);}
+      else if(lk.style>=1){R(hx0,T+2,1,lk.style===2?4:2,hair);R(hx0+5,T+2,1,lk.style===2?4:2,hair);}
+    }
+    if(lk.band)R(hx0,T+1,6,1,lk.band);
+    if(lk.beard){const bc=shade(hair,-0.15);R(hx0+1,T+5,4,1,bc);R(view===0?(f>0?hx0+3:hx0):hx0+1,T+4,view===0?3:4,1,bc);}
+    if(view===0)R(f>0?hx0+4:hx0+1,T+3,1,1,PAL.out);else{R(hx0+1,T+3,1,1,PAL.out);R(hx0+4,T+3,1,1,PAL.out);}
   }
-  if(lk.band)R(hx0,T+1,6,1,lk.band);                                   // fascia sulla fronte
-  if(lk.beard){const bc=shade(hair,-0.15);R(hx0+1,T+5,4,1,bc);R(f>0?hx0+3:hx0,T+4,3,1,bc);}   // barba
-  R(f>0?hx0+4:hx0+1,T+3,1,1,PAL.out);
   // braccio vicino (davanti al busto)
   h=hand(1);Lm(shx,sy+1,h[0],h[1],shirt,skin,0.45);
   ctx.fillStyle=PAL.out;for(let i=0;i<ops.length;i+=5)ctx.fillRect(ops[i]-1,ops[i+1]-1,ops[i+2]+2,ops[i+3]+2);
   for(let i=0;i<ops.length;i+=5){ctx.fillStyle=ops[i+4];ctx.fillRect(ops[i],ops[i+1],ops[i+2],ops[i+3]);}
+  return h;
 }
 // omino in tuffo: disteso in orizzontale, braccia tese in avanti
 function puppetDive(x,y,un,lk,d,lift){
@@ -256,6 +298,7 @@ function poseOf(p){
   if(G.mode==='banner'&&G.banner)return p.t===G.banner.team?'cheer':'sad';
   if(p.cfx&&G.tick<p.cfx.until)return p.cfx.k==='salto'?'jump':(p.cfx.k==='mano'?'one':'reach');
   if((p.armT||0)>0)return 'throw';
+  if(p===G.holder&&p.t===0&&drag&&drag.dirOk&&!G.flight)return 'aim';   // stai mirando: il braccio si carica
   if(p===G.holder||p===G.puller)return 'hold';
   if(p===G.marker&&G.holder&&hyp(p.x-G.holder.x,p.y-G.holder.y)<4)return 'mark';
   const f=G.flight||(G.pull&&!G.pull.landed?G.pull:null);
@@ -281,7 +324,7 @@ function drawRoutes(){
 }
 // NOMI solo per chi conta in quel momento (con tutti i nomi accesi le etichette si sovrapponevano e coprivano i giocatori):
 // chi ha il disco o tira il pull, il compagno agganciato dalla mira o chiamato a correre, il difensore che guidi, chi deve ricevere il lancio in volo
-let aimTgt=null;
+let aimTgt=null,aimKind='backhand';
 function nameKey(p){
   if(p===G.holder||p===G.puller||p===G.ctrl||p===aimTgt)return true;
   if(G.call&&G.call.q===p)return true;
@@ -319,7 +362,14 @@ function drawPlayers(dt){
     else if(p===G.marker&&G.holder)pring(x,y,9,3,G.dmode[p.t]===1?'#ff8a5c':'#ffffff',1,2);   // arancione: marca in anticipo (piu' pressione sul lancio)
     if(p===G.ctrl&&inDefense()){const pu=Math.sin(G.tick*8)>0?1:0;pring(x,y,10+pu,4,PAL.out,3);pring(x,y,10+pu,4,PAL.sky,1);parrow(x,y-h-16-pu,1,PAL.out,5);parrow(x,y-h-15-pu,1,PAL.sky,4);}   // il difensore che stai guidando
     if(dvp>0.45)puppetDive(x+p.dv.dir*6*dvp,y,UNI[p.t],lookOf(p),p.dv.dir,2+7*air);
-    else puppet(x,y,UNI[p.t],lookOf(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1));
+    else{
+      // vista: di schiena se corre verso l'alto dello schermo, di fronte se scende verso la camera, altrimenti di lato
+      const view=sp>1.2&&Math.abs(p.vy)>Math.abs(p.vx)*1.3?(p.vy<0?1:2):0;
+      const kind=pose==='aim'?aimKind:(lastFl&&lastFl.thrower===p?lastFl.kind:'backhand');   // il pull e' un rovescio
+      const ca=p.cfx?G.tick-(p.cfx.until-0.42):-1;
+      const hp=puppet(x,y,UNI[p.t],lookOf(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca});
+      p._hx=hp[0];p._hy=hp[1];p._ht=G.tick;   // il disco in mano segue la mano (drawDisc)
+    }
     // energia: barretta sotto i tuoi quando calano; goccia di sudore sugli avversari sfiniti (li' c'e' un duello da cercare)
     if(G.mode==='play'&&G.inMatch&&!p.dv){
       if(p.t===0&&p.st<62){px(x-5,y+3,11,3,PAL.out);px(x-4,y+4,Math.max(1,Math.round(9*p.st/100)),1,p.st<30?PAL.red:(p.st<46?'#ff9a3a':PAL.gold));}
@@ -358,6 +408,7 @@ function drawDisc(){
   if(!f&&car){
     const fc=car.fc||dirOf(car.t),dvp=car.dv?diveProg(car):0;
     x=sxw(car.x)+fc*6;y=syw(car.y)-8;
+    if(car._ht===G.tick&&!car.dv){x=car._hx+1+fc*2;y=car._hy+1;}   // nella mano vera: si sposta col caricamento del lancio
     if(dvp>0.45){x=sxw(car.x)+car.dv.dir*(6*dvp+14);y=syw(car.y)-5-ri(2+7*diveAir(car));}
     if(G.walk&&!G.walk.stage){x=sxw(d.x);y=syw(d.y);}
     discScr.x=x;discScr.y=y;pdiscSprite(x,y,G.tick*3,0);return;
@@ -381,6 +432,7 @@ function drawAim(){
   if(!drag||!drag.dirOk||!G.holder||G.holder.t!==0||G.flight)return;
   const h=G.holder,w=toWorld(drag.x,drag.y),hx=sxw(h.x)+(h.fc||1)*5,hy=syw(h.y)-9,gx=sxw(h.x),gy=syw(h.y);
   const dist=hyp(w.x-h.x,w.y-h.y),pl=planThrow(h,w.x,w.y,G.high),kd=pl.kind,mk=G.marker;
+  aimKind=kd;
   if(mk&&hyp(mk.x-h.x,mk.y-h.y)<4){   // cono chiuso dal marcatore
     const ang=Math.atan2(mk.y-h.y,mk.x-h.x),half=55*Math.PI/180,R=ri(16*S);
     for(const a of [ang-half,ang+half])pline(gx,gy,gx+Math.cos(a)*R,gy+Math.sin(a)*R,PAL.red,1,3);
@@ -427,7 +479,7 @@ function aimAssist(h,w,dist,pl){
     if(locked){const ay=y-PH()-17-pu;parrow(x,ay-1,1,PAL.out,5);parrow(x,ay,1,col,4);}
   }
   const kd=pl.kind,txt=pl.short?'MAX '+Math.round(pl.mx)+' m: CORTO':Math.round(dist)+' m '+pl.sp.name.toUpperCase();   // oltre la gittata (Sparo) il disco cade corto
-  const tw=ptw(txt,'p')+6,bx=clamp(drag.x-tw/2,2,VW-tw-2),by=clamp(drag.y-26,BAR+2,VH-14);
+  const tw=ptw(txt,'p')+6,bx=clamp(drag.x-tw/2,2,VW-tw-2),by=clamp(drag.y-26,BAR+2,VH-14-ri(36*UIZ*DPR/PXS));   // sopra la fila dei pulsanti in basso
   pbox(bx,by,tw,12,'#000000');ptext(txt,bx+3,by+2,{f:'p',a:'l',c:pl.short?PAL.red:(pl.sp.hi||kd==='scoober'?PAL.gold:'#ffffff'),o:false});
 }
 // sparo in volo: il tuo corridore ha un anello, una freccia e la barra dell'energia
