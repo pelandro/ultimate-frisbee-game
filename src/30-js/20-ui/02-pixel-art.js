@@ -73,19 +73,8 @@ function grassPattern(){
   for(const q of [[1,1],[9,1],[5,5],[13,5],[1,9],[9,9],[5,13],[13,13]])g.fillRect(q[0],q[1],1,1);
   grassPat=ctx.createPattern(c,'repeat');return grassPat;
 }
-// pubblico a bordo campo: omini di pochi pixel, colori fissi per posizione; saltano quando si segna
+// colori del pubblico (le tribune e i tifosi stanno in 17-stadi-pubblico.js)
 const FAN_C=['#2f7bff','#ff4b4b','#ffd23f','#f4f4f4','#3fd183','#b36bff','#ff9a3a','#273043'],FAN_S=['#f0c9a4','#d9a47a','#a56e45','#f6d7ba'];
-function drawCrowd(yBase,up){
-  const step=1.55,k0=Math.floor((toWorld(0,0).x-2)/step),k1=Math.ceil((toWorld(VW,0).x+2)/step),party=G.mode==='banner';
-  for(let k=k0;k<=k1;k++){
-    const h=hashStr('fan'+k+(up?'u':'d'));if(h%7===0)continue;
-    const x=sxw(k*step+((h>>3)%5)*0.12),hop=party?(Math.sin(G.tick*11+h)>0.2?2:0):((Math.sin(G.tick*1.3+h)>0.96)?1:0),y=yBase-hop;
-    px(x-2,y-8,5,9,PAL.out);px(x-1,y-9,3,1,PAL.out);
-    px(x-1,y-8,3,3,FAN_S[h%4]);px(x-1,y-8,3,1,['#2b1b12','#7a4a21','#101010','#c9964a','#8a2f1c'][(h>>5)%5]);
-    px(x-1,y-5,3,4,FAN_C[(h>>2)%8]);
-    if(party&&hop){px(x-2,y-8,1,2,FAN_S[h%4]);px(x+2,y-8,1,2,FAN_S[h%4]);}
-  }
-}
 /* ---- divise e campi: tu sei sempre in blu e l'avversaria in rosso, ma ogni squadra ha la sua variante (tonalita', pantaloncini, calzettoni);
    anche il campo cambia aspetto da una partita all'altra (erba piu' fresca o piu' secca, bordo in terra). Tutto deriva dai nomi: e' sempre uguale per la stessa sfida ---- */
 const KITS=[[{shirt:'#2f7bff',shorts:'#f2f5fa',socks:'#2f7bff'},{shirt:'#1f5fd0',shorts:'#172554',socks:'#f2f5fa'},{shirt:'#3aa0ff',shorts:'#f2f5fa',socks:'#f2f5fa'},{shirt:'#2a4fb8',shorts:'#ffd23f',socks:'#2a4fb8'},{shirt:'#2f7bff',shorts:'#101827',socks:'#101827'}],
@@ -96,10 +85,10 @@ const VENUES=[{grass:'#8ab66b',grass2:'#83af64',dot:'#a8cb8d',apron:'#6f9c58',ap
   {grass:'#7da26a',grass2:'#759a62',dot:'#98bb86',apron:'#8a6f52',apron2:'#7d6448',dim:'#a8c796',num:'#93b582'}];
 let lookKey='';
 function matchLook(){
-  const on=!!G.inMatch,key=on?(G.myName||'')+'|'+(G.oppName||''):'';if(key===lookKey)return;lookKey=key;
+  const on=!!G.inMatch,V=venueNow(),key=(on?(G.myName||'')+'|'+(G.oppName||''):'')+'|'+V.home+'|'+V.v+'|'+V.tier+'|'+V.care;if(key===lookKey)return;lookKey=key;
   Object.assign(UNI[0],KITS[0][on&&G.myName?hashStr('kit|'+G.myName)%KITS[0].length:0]);
   Object.assign(UNI[1],KITS[1][on&&G.oppName?hashStr('kit|'+G.oppName)%KITS[1].length:0]);
-  Object.assign(PAL,VENUES[on&&G.oppName?hashStr('campo|'+G.oppName+'|'+(G.myName||''))%VENUES.length:0]);grassPat=null;
+  Object.assign(PAL,venuePal());grassPat=null;   // prato del club di casa (17-stadi-pubblico.js)
 }
 // STEMMA a pixel (lo stesso scudetto a due colori del cruscotto, dal nome della squadra): a centrocampo e' quello della squadra di casa, in trasparenza
 function crestPx(cx,cy,w,name,alpha){
@@ -116,18 +105,18 @@ function drawField(){
   matchLook();
   const x0=sxw(0),x1=sxw(FIELD_L),y0=syw(0),y1=syw(FIELD_W),H=y1-y0,gl=sxw(EZ),gr=sxw(FIELD_L-EZ);
   px(0,0,VW,VH,PAL.apron);
-  // bordo campo: fascia piu' scura e pubblico
-  px(0,y0-26,VW,14,PAL.apron2);px(0,y1+13,VW,VH,PAL.apron2);
-  // prato tagliato a strisce di 4 m, a due toni ben distinti (prima le fasce erano quasi uguali)
-  if(PAL._g!==PAL.grass){PAL._g=PAL.grass;PAL.grass2=shade(PAL.grass,-0.075);}
-  for(let k=0;k<16;k++){const a=sxw(EZ+k*4),b=sxw(EZ+k*4+4);px(a,y0,b-a,H,k%2?PAL.grass2:PAL.grass);}
+  // bordo campo: fascia piu' scura in basso (quella in alto e' la tribuna, disegnata da drawStands)
+  px(0,y1+13,VW,VH,PAL.apron2);
+  // prato tagliato secondo il club di casa: strisce, strisce larghe, quadri o sintetico (17-stadi-pubblico.js)
+  drawMow(y0,H);
   const blueRight=G.dir[0]>0;
   px(x0,y0,gl-x0,H,blueRight?PAL.redZ:PAL.blueZ);px(gr,y0,x1-gr,H,blueRight?PAL.blueZ:PAL.redZ);
   ezHatch(x0,y0,gl-x0,H);ezHatch(gr,y0,x1-gr,H);   // mete nel colore della squadra, con la trama (15-bordocampo.js)
   const pat=grassPattern();
   if(pat){ctx.save();ctx.translate(-(((CX%16)+16)%16),((OYi%16)+16)%16-16);ctx.fillStyle=pat;ctx.fillRect(0,0,VW+32,VH+32);ctx.restore();}
-  // stemma della squadra di casa a centrocampo (solo in partita, con i nomi delle squadre)
-  if(G.inMatch&&G.myName&&!G.drill)crestPx(sxw(FIELD_L/2),syw(MID),ri(10*S),G.myName,0.3);
+  drawWear();   // erba consumata sui campi comunali
+  // a centrocampo lo stemma della squadra di casa (in campo neutro il nome della manifestazione)
+  drawCenterMark();
   // scritta nelle mete: il nome della squadra che segna in quella meta (Blu e Rossi quando i nomi non ci sono)
   const nmB=G.inMatch&&G.myName?G.myName:'BLU',nmR=G.inMatch&&G.oppName?G.oppName:'ROSSI';
   for(const z of [[EZ/2,blueRight?nmR:nmB,-1],[FIELD_L-EZ/2,blueRight?nmB:nmR,1]]){
@@ -153,9 +142,10 @@ function drawField(){
   px(gl-1,y0,2,H,PAL.line);px(gr-1,y0,2,H,PAL.line);
   // brick
   for(const bx of [EZ+18,FIELD_L-EZ-18]){const x=sxw(bx),y=syw(MID);for(let i=-2;i<=2;i++){px(x+i,y+i,1,1,PAL.line);px(x+i,y-i,1,1,PAL.line);}}
-  drawCrowd(y0-13,true);
+  drawStands(y0);
   drawSideline(y1);
-  for(const c of [[0,0],[0,FIELD_W],[FIELD_L,0],[FIELD_L,FIELD_W],[EZ,0],[EZ,FIELD_W],[FIELD_L-EZ,0],[FIELD_L-EZ,FIELD_W]])cone(sxw(c[0]),syw(c[1]));
+  const fl=cornerFlags();   // negli stadi e nelle partite importanti agli angoli ci sono le bandierine
+  for(const c of [[0,0],[0,FIELD_W],[FIELD_L,0],[FIELD_L,FIELD_W],[EZ,0],[EZ,FIELD_W],[FIELD_L-EZ,0],[FIELD_L-EZ,FIELD_W]])(fl&&(c[0]===0||c[0]===FIELD_L)?cornerFlag:cone)(sxw(c[0]),syw(c[1]));
 }
 // sagoma fatta di righe orizzontali [x0, y, w]: la si allarga di 'g' pixel con gli angoli smussati (g=1 contorno, g=2 alone)
 function spanGrow(rows,g,c){

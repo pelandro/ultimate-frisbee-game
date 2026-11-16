@@ -5,7 +5,7 @@ function renderHome(){
   let nx;
   if(m){
     const op=Math.round((m.roster?rosterPower(m.roster):m.power)+carDiff().plus),me=Math.round(squadPower()),idn=m.roster?teamIdentity(m.name,bestSeven(m.roster)):null;
-    nx=timelineHTML()+`<div class="dvs"><span>${crest(m.name,26)}<b>${esc(m.name)}</b></span><span class="dpw"><i>tu</i> ${me} <i>·</i> ${op} <i>loro</i></span></div>`+(G.opt.wind===false?'':`<small class="dtag dtag1">Meteo: ${esc(meteoTxt(m))}</small>`);
+    nx=timelineHTML()+`<div class="dvs"><span>${crest(m.name,26)}<b>${esc(m.name)}</b></span><span class="dpw"><i>tu</i> ${me} <i>·</i> ${op} <i>loro</i></span></div>`+(G.opt.wind===false?'':`<small class="dtag dtag1">Meteo: ${esc(meteoTxt(m))}</small>`)+`<small class="dtag dtag1">${crowdTxt(m)}</small>`;   // quanta gente aspettarsi (30-stadi.js)
   }else if(SV.event==='camp')nx=timelineHTML()+`<div class="dvs"><span><b>${SV.next?esc(SV.next.short):''}</b></span></div><small class="dtag">Premi e riepilogo in Lega: da lì parte la nuova stagione</small>`;
   else nx=timelineHTML()+`<div class="dvs"><span><b>${euEndTxt()}</b></span></div><small class="dtag">${SV.done?'La prossima edizione, se vi qualificate, è nella nuova stagione':'Si torna al campionato: la prossima edizione è tra una stagione, se vi qualificate'}</small>`;
   $('hNext').innerHTML=nx;
