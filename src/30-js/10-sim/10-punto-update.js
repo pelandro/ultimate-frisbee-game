@@ -106,7 +106,7 @@ function update(dt){
     }
     const waiting=!!G.walk;
     if(waiting){G.think=Math.max(G.think,0.6);G.stallT=0;}
-    if(!waiting&&G.marker&&hyp(G.marker.x-h.x,G.marker.y-h.y)<3.8)G.stallT+=dt;
+    if(!waiting&&G.marker&&hyp(G.marker.x-h.x,G.marker.y-h.y)<3.8)G.stallT+=dt*(h.t===0&&G.stallK!=null?G.stallK:1);   // G.stallK: il tutorial in partita rallenta (o ferma) il conteggio mentre impari a lanciare
     if(G.stallT>=10){HOOKS.sfx('whistle');HOOKS.toast('Stall! Disco perso',1-h.t);turnover(1-h.t,h.x,h.y,G.marker,'',1-h.t);return;}
     if(h.t===1&&!G.auto&&defMan()&&!G.skip){   // il cerchio dell'handblock deve sempre partire intero: se il tuo marcatore arriva quando manca poco al lancio, l'avversario aspetta
       const mk=G.marker;

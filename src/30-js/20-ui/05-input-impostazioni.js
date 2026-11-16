@@ -24,8 +24,9 @@ function nearMate(w,team,r){let b=null,bd=r;for(const q of T[team]){const d=hyp(
 function quickCall(w,long){
   const h=G.holder;if(!h||h.t!==0||G.flight)return;
   const q=nearMate(w,0,3.4);if(!q)return;
-  if(q===h){if(callClear(0)){addFloater('CLEAR!',h.x,h.y,PAL.sky);HOOKS.sfx('ui');HOOKS.vibe(8);}return;}
+  if(q===h){if(callClear(0)){addFloater('CLEAR!',h.x,h.y,PAL.sky);HOOKS.sfx('ui');HOOKS.vibe(8);tutEv('clear');}return;}
   const k=long?callIso(q):callCut(q,'auto');if(!k)return;
+  tutEv(long?'iso':'call');   // il tutorial in partita aspetta questi gesti (14-primi-passi.js)
   addFloater(long?'ISO!':(k==='deep'?'LUNGO!':(k==='reset'?'RESET!':'VIENI!')),q.x,q.y,PAL.sky);HOOKS.sfx('ui');HOOKS.vibe(8);
 }
 function toggleDmode(){G.dmode[0]=1-G.dmode[0];HOOKS.sfx('ui');HOOKS.vibe(8);}

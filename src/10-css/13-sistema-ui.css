@@ -94,3 +94,20 @@ html[data-ew="xs"] .tteams{grid-template-columns:repeat(2,minmax(0,1fr))!importa
 #title #tSlots strong,#title #tSlots small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
 html[data-ew="xs"] #title #tSlots svg{display:none}
 html[data-ew="xs"] #team .seg{flex-wrap:wrap}html[data-ew="xs"] #team .seg .sg{flex:1 1 auto;min-width:0}
+
+/* tutorial in partita (14-primi-passi.js): «prova» con il bordo azzurro, riuscita in verde, suggerimento e «riprova» in un riquadro a parte */
+.ppc.try{border-color:#7fd8ff}
+.ppc.try h3{color:#7fd8ff}
+.ppc.ok{border-color:#4fe58f;background:#0e2a1c}
+.ppc.ok h3{color:#4fe58f}
+.ppc .pph{margin:0 0 8px;padding:5px 8px;font-size:15px;line-height:1.25;color:#fff;background:rgba(255,210,63,.12);border-left:4px solid var(--gold)}
+.ppc.ok .pph{background:rgba(79,229,143,.14);border-left-color:#4fe58f;font-size:16px}
+.ppc .schrow .sec,.ppc .schrow .go{min-height:36px}
+/* durante una prova il campo deve restare visibile: riquadro piu' basso, tasti piccoli; a prova riuscita resta solo il «Ben fatto» */
+.ppc.try,.ppc.ok{padding:6px 12px 7px;width:min(600px,94%)}
+.ppc.try p{font-size:15px;margin-bottom:5px}
+.ppc.try .pph{margin-bottom:5px;font-size:14px}
+.ppc.try .schrow{gap:6px}
+.ppc.try .schrow .sec{min-height:32px;padding:2px 10px;font-size:13px}
+.ppc.ok #ppX{display:none}
+.ppc.ok .pph{margin:2px 0 0}
