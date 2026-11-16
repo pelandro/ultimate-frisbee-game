@@ -1,0 +1,23 @@
+/* ===================== GERARCHIA E COLORE =====================
+   Il giallo segnava tutto (titoli, intestazioni, avvisi, consigli, etichette) e non indicava piu' nulla.
+   Regola: GIALLO = l'azione principale e la selezione (pulsanti .go, schede attive); il titolo della schermata resta oro (identita' del gioco);
+   intestazioni delle sezioni in azzurro chiaro; avvisi in arancione; consigli neutri.
+   Tre livelli che si distinguono a colpo d'occhio: contenitore piatto (bordo sottile e chiaro) < scheda < pulsante (bordo nero e ombra). */
+:root{--hd:#a9c8ff;--warn:#ffb15c}
+/* intestazioni delle sezioni: azzurro chiaro, mai sotto i 12 px nel carattere largo (a 9 px era faticoso da leggere) */
+.todo h3,.ccard h3{color:var(--hd);font-size:12px;line-height:1.5}
+html[data-ew="xs"] .todo h3,html[data-ew="xs"] .ccard h3{font-size:11px}
+/* etichette dei moduli (Partita veloce, Impostazioni): azzurre, non gialle */
+.qcol label,.qdiff label,.srow label{color:var(--hd)}
+/* contenitori piatti: bordo sottile e chiaro al posto di quello nero, cosi' i pulsanti (bordo nero e ombra) spiccano */
+.dcard,.ccard{border:2px solid #29366a;box-shadow:none}
+/* avvisi: arancione con un segno a sinistra */
+.rmsg{color:var(--warn);border-left:4px solid var(--warn);padding-left:8px}
+/* consiglio del cruscotto: testo chiaro, l'etichetta in azzurro, due righe al massimo con i puntini (prima il testo si tagliava a meta') */
+#home .dtick{color:#dfe6f7;max-height:none;border-left:4px solid var(--hd)}
+#home .dtick span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#home .dtick.nw{color:#7fd8ff}
+/* note lunghe in cima alle schermate di scelta: due righe, un tocco le apre (28-note-brevi.js) */
+.nbrief{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;position:relative}
+.nbrief.open{display:block;overflow:visible}
+.nbrief:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
