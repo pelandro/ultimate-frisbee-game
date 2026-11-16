@@ -133,15 +133,16 @@ intro:'Gli schemi decidono dove si mettono i giocatori; la gestione della partit
 les:[
 {id:'sch-menu',t:'Il menu Schemi',w:'In partita › Schemi (a inizio meta)',b:[
 `A inizio meta tocca <b>Schemi</b> per scegliere attacco e difesa; se non lo fai restano quelli di prima. Ogni schema ha una descrizione con punti forti e deboli. Accanto trovi <b>Cambi</b> e <b>Simula meta</b>.`,
-`Ogni schema ha un <b>controgioco</b>: nessuno vince sempre. Impara quale schema batte quale difesa e cambia quando vedi che non funziona.`],
-tip:`Hai segnato con uno schema? Ripeterlo funziona finché l’IA non lo riconosce: alterna.`},
+`Ogni schema ha un <b>controgioco</b>: nessuno vince sempre. Impara quale schema batte quale difesa e cambia quando vedi che non funziona.`,
+`Se ripeti lo stesso schema, la difesa lo <b>impara</b>: ti marca più stretta e anticipa i tagli, e smarcarsi diventa difficile. Cambiare schema la manda di nuovo a zero.`],
+tip:`Hai segnato con uno schema? Ripeterlo funziona finché la difesa non lo riconosce: alterna.`},
 {id:'sch-att',t:'Gli schemi d’attacco',b:[
 [`<b>Verticale</b>: fila al centro; uno viene sotto sul lato aperto, uno va lungo sull’altro. Forte contro l’uomo, soffre la zona.`,
 `<b>Orizzontale</b>: cutter in linea larga; l’interno attacca la profondità, quello accanto viene incontro. Batte la zona; contro l’uomo che forza dentro fatica.`,
 `<b>Esagono</b>: tutti spaziati, molti tagli corti. Buono contro gli aiuti, la zona lo chiude.`,
 `<b>Stack laterale</b>: i cutter in fila su un lato lasciano mezzo campo libero per gli isolamenti. Solido contro l’uomo, meno contro la zona.`,
 `<b>Weave</b>: tre handler che si passano il disco in diagonale correndosi davanti. Guadagna metri contro la zona; contro gli aiuti si complica.`,
-`<b>T1</b>: schema a sequenza, il più efficace: 3 handler dietro e 4 cutter davanti, che eseguono i movimenti tanto meglio quanto è alta la loro Visione. Se lo ripeti, l’IA lo riconosce.`],
+`<b>T1</b>: schema a sequenza, il più efficace: 3 handler dietro e 4 cutter davanti, che eseguono i movimenti tanto meglio quanto è alta la loro Visione (con Visione alta, esattamente come disegnato). Se lo ripeti, la difesa lo riconosce.`],
 `Verticale, Orizzontale, Weave e T1 partono con un’<b>apertura</b> a ogni ripresa del gioco (dopo il pull o un turnover); se il ricevitore previsto è marcato si gioca libero. Vicino alla meta parte da solo l’attacco in meta, con tagli a L.`],
 tip:`Contro la zona: Orizzontale o Weave. Contro l’uomo: Verticale o Stack laterale. Contro gli aiuti: Esagono.`},
 {id:'sch-dif',t:'Gli schemi di difesa',b:[

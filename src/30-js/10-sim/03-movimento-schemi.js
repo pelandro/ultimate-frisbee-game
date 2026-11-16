@@ -60,7 +60,7 @@ const PLAYBOOK={
 SLOTS.side=[[-7,'r',0],[-2,'r',-10],[2,'r',-5],[13,'r',13],[18,'r',13],[24,'r',13],[30,'r',12]];   // stack laterale: i cutter in fila su un lato lasciano libero mezzo campo per il taglio in isolamento
 SLOTS.t1=[[-7,'r',0],[-9,'a',4.6],[-9,'a',33],[30,'a',2.2],[30,'a',13.5],[30,'a',23.5],[30,'a',34.5]];   // formazione di riserva: chi non segue lo schema torna qui
 const PB_ROLES=['H1','H2','H3','C1','C2','C3','C4'];
-const adhOf=p=>clamp(0.3+0.75*visOf(p),0.35,0.99);   // quanto segue lo schema: Visione 45 -> 64%, 60 -> 75%, 90 -> 97%
+const adhOf=p=>clamp(0.58+0.53*visOf(p),0.7,1);   // quanto segue lo schema: Visione 40 -> 79%, 55 -> 87%, 70 -> 95%, da 80 in su esattamente come disegnato (prima 64%, 75%, 97%: anche i bravi sbagliavano)
 // posizione di uno schema: [u, y] si sposta con il punto di partenza del portatore; [u, y, 'a'] e' assoluta (per esempio dentro la meta);
 // [du, dy, 'h'] e' relativa a dove il portatore ha iniziato lo schema (handler di sostegno)
 function pbPos(pb,team,u,y,m){const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ;
@@ -69,7 +69,8 @@ function pbPos(pb,team,u,y,m){const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ;
 function startPlay(team,force){   // force: avvia uno schema preciso (l'attacco in meta) invece di quello scelto
   const sch=force||(team===0?G.sch.att:G.opp.att),book=PLAYBOOK[sch];
   if(!force){if(!G.ezUsed)G.ezUsed=[false,false];G.ezUsed[team]=false;
-    if(G.schR){const R=team===0?G.schR:G.defR,k=team===0?G.sch.att:G.sch.def;(R[k]||(R[k]=[0,0]))[0]++;}}   // per il riepilogo: possessi per schema (tuo attacco, tua difesa)   // nuovo possesso: l'attacco in meta si puo' usare di nuovo
+    if(G.schR){const R=team===0?G.schR:G.defR,k=team===0?G.sch.att:G.sch.def;(R[k]||(R[k]=[0,0]))[0]++;}
+    const rp=G.rep||(G.rep=[{k:'',n:0},{k:'',n:0}]),rr=rp[team];if(rr.k===sch)rr.n++;else{rr.k=sch;rr.n=1;}}   // possessi di fila con lo stesso schema: la difesa avversaria si adatta (adaptOf)   // per il riepilogo: possessi per schema (tuo attacco, tua difesa)   // nuovo possesso: l'attacco in meta si puo' usare di nuovo
   if(!G.pb)G.pb=[null,null];
   const h=G.holder;
   if(!book||!h||h.t!==team){G.pb[team]=null;return;}
@@ -200,9 +201,12 @@ function restPlayers(){
 }
 // % di possessi che finiscono in meta per ogni attacco contro ogni difesa (misurata con migliaia di partite simulate: serve all'IA per scegliere gli schemi).
 // Ogni schema ha un controgioco: la Zona ferma Verticale ed Esagono ma subisce Orizzontale e T1; l'Esagono rende meno ma e' il piu' sicuro contro la zona stretta
-// misurata con le aperture del playbook, i tagli coordinati e gli intercetti lungo il volo: 30 partite per casella, 3 coppie di rose (mete / (mete + turnover)).
+// misurata al primo possesso (nessun adattamento) con i controgiochi SCH_FIT, le aperture del playbook, i tagli coordinati e gli intercetti: 600 possessi per casella, livello Difficile (mete / (mete + turnover)).
 // Il T1 resta il piu' efficace, soprattutto contro la zona: l'IA dei livelli alti lo sa e gli risponde con la difesa a uomo, dove il margine e' piccolo
-const SCH_EFF={vert:{man_out:41,man_in:39,zone:32,man_poach:40},horz:{man_out:37,man_in:35,zone:41,man_poach:38},hex:{man_out:39,man_in:41,zone:32,man_poach:42},t1:{man_out:43,man_in:44,zone:54,man_poach:48},side:{man_out:41,man_in:41,zone:37,man_poach:41},weave:{man_out:40,man_in:39,zone:41,man_poach:37}};
+const SCH_EFF={vert:{man_out:29,man_in:30,zone:17,man_poach:27},horz:{man_out:27,man_in:25,zone:43,man_poach:26},hex:{man_out:19,man_in:26,zone:12,man_poach:25},t1:{man_out:45,man_in:47,zone:41,man_poach:47},side:{man_out:28,man_in:31,zone:19,man_poach:23},weave:{man_out:34,man_in:36,zone:33,man_poach:28}};
+// CONTROGIOCHI: quanto la difesa e' favorita contro ogni attacco (da -1: l'attacco la batte, a +1: la difesa lo legge subito). Marcatura piu' o meno stretta, anticipo e intercetti seguono questo numero:
+// e' cio' che rende importante la scelta dello schema. Come dicono guida e tutorial: la zona ferma Verticale, Esagono e Stack laterale e subisce Orizzontale, Weave e T1; l'uomo che forza dentro soffre l'Orizzontale; gli aiuti (poach) leggono Verticale e Weave ma subiscono l'Esagono.
+const SCH_FIT={vert:{man_out:-0.2,man_in:-0.35,zone:0.65,man_poach:0.3},horz:{man_out:0.1,man_in:0.35,zone:-0.5,man_poach:0.2},hex:{man_out:0.1,man_in:0,zone:0.55,man_poach:-0.4},t1:{man_out:0.25,man_in:0.25,zone:-0.3,man_poach:0},side:{man_out:-0.35,man_in:-0.2,zone:0.4,man_poach:0.1},weave:{man_out:-0.1,man_in:-0.1,zone:-0.45,man_poach:0.55}};
 const SCH_ATT=['vert','horz','hex','t1','side','weave'],SCH_DEF=['man_out','man_in','zone','man_poach'];
 // L'avversario non legge piu' lo schema che hai scelto per questa meta: ricorda quelli che ti ha VISTO usare nelle mete precedenti (G.seen).
 // Facile: sceglie a caso; Medio e Difficile: sempre piu' spesso prende il controgioco dello schema che usi di piu'. L'identita' della squadra pesa sulle scelte a caso.

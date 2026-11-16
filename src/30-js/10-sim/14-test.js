@@ -193,14 +193,43 @@ function selfTestPlan(opt){
     return [row('Timeout: si puo\u2019 chiamare con il disco in mano, una sola volta; lo stall riparte da zero e la squadra recupera',(ok0&&!ok1&&r1&&!r2&&st1===0&&en)?'sì':'no',ok0&&!ok1&&r1&&!r2&&st1===0&&en,'uno a partita, solo per chi ha il disco'),
       row('Etichetta della situazione sopra il portatore',(lbBefore?lbBefore.txt:'-')+', '+(uni?uni.txt:'-')+', '+(lastT?lastT.txt:'-'),lbBefore&&lbBefore.txt==='STALL 8'&&uni&&uni.txt==='UNIVERSE POINT'&&lastT&&lastT.txt==='ULTIMO LANCIO')];
   }]);
+  S.steps.push(['Adattamento della difesa e aderenza agli schemi',()=>{
+    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    newGame();G.auto=true;G.lvl=[0,2];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();G.startRec=1;G.nextRec=1;
+    const mm=Math.max(200,n*30);
+    // possessi di chi riceve il pull con uno schema fisso: quota di mete (mete / (mete + turnover)) quando e' il primo possesso con quello schema e quando e' il quarto di fila
+    const rate=(sch,def,N)=>{let g=0,tn=0;for(let i=0;i<mm;i++){
+      placeTeams(0);G.sch.att=sch;G.opp.def=def;G.rep=[{k:sch,n:N-1},{k:'',n:0}];
+      const p=G.puller;p.s.spa=99;p.s.lan=99;doPull(0.62,dirOf(1)>0?0:Math.PI);G.skip=true;
+      let t=0;while(t++<14400&&G.mode==='play'&&G.poss===0)update(1/60);G.skip=false;
+      if(G.mode==='banner'&&G.banner.team===0)g++;else if(G.poss===1)tn++;G.mode='play';}
+      return [g,g+tn];};
+    const out=[];
+    let a1=0,b1=0,a4=0,b4=0;   // contro la marcatura a uomo (la zona si adatta meno): vert, hex e side
+    for(const [sch,def] of [['vert','man_out'],['hex','man_in'],['side','man_out']]){const x=rate(sch,def,1),y=rate(sch,def,4);a1+=x[0];b1+=x[1];a4+=y[0];b4+=y[1];}
+    const r1=a1/Math.max(1,b1),r4=a4/Math.max(1,b4);
+    out.push(row('Stesso schema di fila: mete per possesso al primo e al quarto possesso (vert, hex e side contro la marcatura a uomo)',pc(r1)+' e '+pc(r4),r4<=r1*0.88&&r4>=r1*0.4,'dal quarto di fila la difesa lo legge: tra il 12% e il 60% in meno'));
+    G.rep=[{k:'vert',n:1},{k:'vert',n:1}];const first=adaptOf(0);G.rep=[{k:'vert',n:9},{k:'vert',n:9}];const top=adaptOf(0);G.lvl=[0,0];const easy=adaptOf(0);G.lvl=[0,2];
+    out.push(row('Adattamento: nessuno al primo possesso, massimo dopo molte ripetizioni, nessuno contro l\u2019IA Facile',first.toFixed(2)+', '+top.toFixed(2)+', '+easy.toFixed(2),first===0&&top>0.5&&easy===0));
+    G.rep=[{k:'',n:0},{k:'',n:0}];
+    // aderenza: chi vede bene segue lo schema esattamente, chi vede poco quasi sempre
+    const lowA=adhOf({s:{vis:40}}),hiA=adhOf({s:{vis:85}});
+    out.push(row('Aderenza allo schema con Visione 40 e 85',pc(lowA)+' e '+pc(hiA),lowA>=0.75&&lowA<0.9&&hiA===1,'a Visione alta esattamente come disegnato, a Visione bassa non perfetto'));
+    return out;
+  }]);
   S.steps.push(['Compagni lontani dal portatore e tuffi che finiscono',()=>{
     const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
     newGame();G.auto=true;G.lvl=[0,0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();G.startRec=0;G.nextRec=0;startPoint(0);
     let g=0;while(g++<60*120&&!(G.mode==='play'&&G.holder&&G.holder.t===0&&G.holdT>1&&!G.flight&&!G.walk))update(1/60);
     // 1) un compagno attaccato al portatore con un taglio che gli passa sopra: non deve restargli addosso
-    const h=G.holder,d=dirOf(0),q=T[0].find(x=>x!==h);
-    q.x=h.x-d*1.8;q.y=clamp(h.y+0.5,3,FIELD_W-3);q.vx=q.vy=0;q.cs='cut';q.tx=h.x+d*12;q.ty=h.y;q.cutT=3;q.cmd=null;
-    let near=99,n1=0;for(let i=0;i<60*3&&G.holder===h&&!G.flight;i++){update(1/60);if(i>=30&&G.holder===h&&!G.flight){n1++;for(const m of T[0])if(m!==h)near=Math.min(near,hyp(m.x-h.x,m.y-h.y));}}
+    let near=99,n1=0;
+    for(let k=0;k<8&&n1<20;k++){   // l'IA lancia in fretta: si riprova con i portatori successivi finche' ci sono abbastanza fotogrammi da misurare
+      let w=0;while(w++<60*40&&!(G.mode==='play'&&G.holder&&G.holder.t===0&&!G.flight&&!G.walk))update(1/60);
+      const h=G.holder,d=dirOf(0),q=h&&T[0].find(x=>x!==h);if(!h)break;
+      q.x=h.x-d*1.8;q.y=clamp(h.y+0.5,3,FIELD_W-3);q.vx=q.vy=0;q.cs='cut';q.tx=h.x+d*12;q.ty=h.y;q.cutT=3;q.cmd=null;
+      for(let i=0;i<60*3&&G.holder===h&&!G.flight;i++){update(1/60);if(i>=12&&G.holder===h&&!G.flight){n1++;for(const m of T[0])if(m!==h)near=Math.min(near,hyp(m.x-h.x,m.y-h.y));}}
+      let z=0;while(z++<60*5&&G.flight)update(1/60);
+    }
     const okNear=n1>=5&&near>=TEAM_R-0.5;
     // 2) in una partita intera di un punto: nessun compagno resta sotto i 2,5 m dal portatore
     let minP=99,fr=0;g=0;while(g++<60*90&&G.mode==='play'){update(1/60);const H=G.holder;if(H&&!G.flight&&!G.walk&&G.holdT>0.5){fr++;for(const m of T[H.t])if(m!==H)minP=Math.min(minP,hyp(m.x-H.x,m.y-H.y));}}
@@ -239,7 +268,7 @@ function selfTestPlan(opt){
     return [row('Brick: difensori accanto al loro uomo appena si riparte, e l\u2019attacco lancia entro 4,5 secondi',bOk+' brick, '+bFar+' difese fuori posto, '+bWait+' attese',bOk>=Math.max(2,K/2-2)&&bFar===0&&bWait===0,'nessuna attesa'),
       row('Dopo il pull l\u2019IA prepara il passaggio d\u2019apertura (nessuno schema finché non è preso)',oOpen+' su '+K,oOpen>=K-2,'tutti i pull non usciti'),
       row('Passaggio d\u2019apertura: tempo dalla presa al lancio',oN?(oT/oN).toFixed(2)+' s':'-',oN>0&&oT/oN<=1.3,'al massimo 1,3 s'),
-      row('Passaggio d\u2019apertura: metri guadagnati e distanza dal centro del ricevitore',oN?(oG/oN).toFixed(0)+' m, '+(oC/oN).toFixed(1)+' m':'-',oN>0&&oG/oN>=12&&oC/oN<=7,'almeno 12 m in avanti, al massimo 7 m dal centro'),
+      row('Passaggio d\u2019apertura: metri guadagnati e distanza dal centro del ricevitore',oN?(oG/oN).toFixed(0)+' m, '+(oC/oN).toFixed(1)+' m':'-',oN>0&&oG/oN>=12&&oC/oN<=12,'almeno 12 m in avanti, al massimo 12 m dal centro (con gli schemi seguiti alla lettera il Weave lancia a un handler a 11 m dal centro)'),
       row('Dopo il passaggio d\u2019apertura parte lo schema',oSch+' su '+oN,oN>0&&oSch>=oN*0.7,'quando il passaggio è preso')];
   }]);
   S.steps.push(['Mira e chiamate',()=>{

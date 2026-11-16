@@ -19,6 +19,9 @@ else{
   try{new Function(js);}catch(e){errs.push('JavaScript non valido: '+e.message+' (spesso: lo stesso nome dichiarato due volte dopo un merge)');}
   const s0=js.indexOf('/*SIM_START*/'),s1=js.indexOf('/*SIM_END*/');
   if(s0<0||s1<0||s1<s0)errs.push('marcatori /*SIM_START*/ e /*SIM_END*/ mancanti o in ordine sbagliato');
+  // funzioni globali dichiarate due volte: in un ambito unico vince l'ultima senza nessun errore e l'altra smette di funzionare (es. due «fitOf»)
+  const fn=[...js.matchAll(/^function +([A-Za-z0-9_$]+)\(/gm)].map(m=>m[1]),fdup=[...new Set(fn.filter((x,i)=>fn.indexOf(x)!==i))];
+  if(fdup.length)errs.push('funzioni dichiarate due volte (una oscura l\'altra): '+fdup.join(', '));
   // id duplicati nell'HTML statico e riferimenti a id inesistenti
   const stat=html.slice(0,a),ids=[...stat.matchAll(/\bid="([A-Za-z0-9_]+)"/g)].map(m=>m[1]);
   const dup=[...new Set(ids.filter((x,i)=>ids.indexOf(x)!==i))];
