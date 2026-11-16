@@ -293,6 +293,7 @@ details ul{margin:6px 0 0;padding-left:18px;line-height:1.3}
 .rn{display:inline-flex;align-items:center;gap:8px}.rn>span{display:block;line-height:1.12}
 .lu .rn>span{display:flex;flex-direction:column}
 .lu button .rn{align-items:center}
+.lu .luov{margin-left:auto;flex:none}
 /* pulsanti piu' curati */
 .hbtn,.go,.sec,.tteam,.ttype,.opt,.back{transition:transform .12s ease,box-shadow .15s ease,filter .15s ease}
 .hbtn{box-shadow:0 6px 16px rgba(0,0,0,.28)}
