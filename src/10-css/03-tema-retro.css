@@ -13,19 +13,26 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;image-rendering:pix
 .chip,.btn,.tbtn{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 /* ---- barra nera in alto: squadre e punteggio a sinistra, meta al centro, stall ed «Esci» a destra ---- */
 #hud::before{content:"";position:absolute;left:0;right:0;top:0;height:28px;background:#000;box-shadow:0 2px 0 rgba(0,0,0,.35)}
-#score,#score.mini{top:0;left:max(10px,var(--sal));height:28px;padding:0;background:none;display:flex;flex-wrap:nowrap;align-items:center;gap:8px;max-width:none}
-#score .tn,#score.mini .tn{display:inline-block;font-size:20px;font-weight:400;max-width:23vw;line-height:28px;letter-spacing:.02em}
-#score .dash,#score.mini .dash{display:inline}
-#score b,#score.mini b{font-family:var(--pfont);font-size:14px;font-weight:400;color:#fff!important;min-width:1em}
-#score small,#score.mini small{display:block;position:fixed;left:auto;right:calc(max(12px,var(--sar)) + 62px);top:0;margin:0;line-height:28px;font-size:17px;color:#c2cbe6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;max-width:calc(100vw - 270px - var(--sal) - var(--sar));flex-basis:auto}
-#score #pt{flex-basis:auto}
+/* punteggio al centro della barra, grande; a sinistra il numero della meta e la modalita' */
+#score,#score.mini{top:0;left:50%;transform:translateX(-50%);height:28px;padding:0;background:none;display:flex;flex-wrap:nowrap;align-items:center;gap:7px;max-width:none}
+#score .tn,#score.mini .tn{display:inline-block;font-size:20px;font-weight:400;max-width:20vw;line-height:28px;letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#score .dash,#score.mini .dash{display:inline;color:#7d89ad}
+#score b,#score.mini b{font-family:var(--pfont);font-size:17px;font-weight:400;color:#fff!important;min-width:1em;text-align:center;display:inline-block}
+#score b.pop{animation:scpop .5s steps(4) 1}
+@keyframes scpop{0%{transform:scale(1.9);color:var(--gold)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
+#pt{top:0;left:max(10px,var(--sal));height:28px;padding:0;background:none;line-height:28px;font-size:17px;color:#c2cbe6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc((50vw - var(--sal)) / var(--ui,1) - 118px)}
+@media (prefers-reduced-motion:reduce){#score b.pop{animation:none}}
 #bExit{top:2px;right:max(12px,var(--sar));height:24px;min-width:44px;padding:0 9px;font-size:18px;font-weight:400;line-height:18px;background:#000;color:#fff;border:2px solid #fff}
 #stall{top:34px;left:max(8px,var(--sal));height:24px;padding:0 9px;font-family:var(--pfont);font-size:11px;line-height:20px;font-weight:400;background:#000;color:#fff;border:2px solid #fff;text-transform:uppercase}
 #stall.hot{background:var(--bad);color:#fff;border-color:#000;animation:blink .3s steps(2) infinite}
 @keyframes blink{50%{opacity:.35}}
 #hint{top:36px;background:#000;border:2px solid #fff;font-size:18px;font-weight:400;padding:3px 10px}
 @media (max-height:420px){#hint{top:34px;font-size:17px}}
-#ctrl .btn,#skip{background:#000;color:#fff;border:2px solid #fff;font-size:19px;font-weight:400;padding:5px 12px;box-shadow:3px 3px 0 rgba(0,0,0,.45)}
+#ctrl .btn,#skip{background:#000;color:#fff;border:2px solid #fff;font-size:17px;font-weight:400;padding:4px 10px;box-shadow:3px 3px 0 rgba(0,0,0,.45)}
+/* pulsanti di partita: icona a pixel prima del testo, piu' compatti (coprivano l'angolo del campo) */
+#ctrl .btn{display:inline-flex;align-items:center;gap:6px}
+#ctrl .bi{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:square;stroke-linejoin:miter;shape-rendering:crispEdges}
+#ctrl #bSimPt .bi{fill:currentColor;stroke:none}
 #skip{top:34px}
 .btn.on{background:var(--gold);color:#1a1c2c;border-color:#000}
 /* ---- pulsanti di gioco: quadrati con gli angoli a scalini, come i tasti di una console ---- */

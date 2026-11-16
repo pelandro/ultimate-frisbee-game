@@ -57,6 +57,12 @@ function drawFx(){
     const k=p.life/p.max,x=sxw(p.x),y=syw(p.y);
     if(p.t==='dust'){const s=k>0.5?2:1;px(x,y-p.z*S*0.5,s,s,k>0.4?'#e8dcb8':'#c9d9ae');}
     else if(p.t==='spark'){px(x,y-p.z*S*0.5,k>0.5?2:1,k>0.5?2:1,k>0.5?'#fff3b0':'#ffd23f');}
+    else if(p.t==='blade'){const yy=y-p.z*S*0.5;px(x,yy-1,1,3,PAL.out);px(x,yy,1,2,k>0.5?PAL.dim:PAL.grass2);}   // zolla d'erba alzata dal disco
+    else if(p.t==='pop'){   // presa: un anello quadrato che si apre in 4 scatti attorno alle mani
+      const st=Math.min(3,((1-k)*4)|0),r=3+st*2,yy=ri(y-p.z*S*0.5),c=st<2?(p.c||'#ffffff'):'#d9ecc8';
+      if(st<3){px(x-r,yy-r,2*r+1,1,c);px(x-r,yy+r,2*r+1,1,c);px(x-r,yy-r,1,2*r+1,c);px(x+r,yy-r,1,2*r+1,c);}
+      else for(const d of [[-1,-1],[1,-1],[-1,1],[1,1]])px(x+d[0]*r,yy+d[1]*r,1,1,c);
+    }
     else{const r=4+(1-k)*14;pring(x,y,r,r*0.55,k>0.5?'#ffffff':'#d9ecc8',1,k>0.5?0:2);}
   }
 }
@@ -148,11 +154,25 @@ function drawField(){
   drawCrowd(y0-13,true);
   for(const c of [[0,0],[0,FIELD_W],[FIELD_L,0],[FIELD_L,FIELD_W],[EZ,0],[EZ,FIELD_W],[FIELD_L-EZ,0],[FIELD_L-EZ,FIELD_W]])cone(sxw(c[0]),syw(c[1]));
 }
-function pdiscSprite(x,y,spin){   // disco a pixel: 9x4 con contorno, riflesso che gira
-  x=ri(x);y=ri(y);
-  px(x-4,y-1,9,3,PAL.out);px(x-3,y-2,7,5,PAL.out);
-  px(x-3,y-1,7,3,'#f6f8f4');px(x-2,y-1,5,1,'#ffffff');px(x-3,y+1,7,1,'#b9c6d8');
-  px(x-2+((spin|0)%4+4)%4,y,2,1,'#7f9bd0');
+// sagoma fatta di righe orizzontali [x0, y, w]: la si allarga di 'g' pixel con gli angoli smussati (g=1 contorno, g=2 alone)
+function spanGrow(rows,g,c){
+  ctx.fillStyle=c;
+  for(const r of rows)ctx.fillRect(r[0]-g,r[1],r[2]+2*g,1);
+  const t=rows[0],b=rows[rows.length-1];
+  for(let k=1;k<=g;k++){ctx.fillRect(t[0]-(g-k),t[1]-k,t[2]+2*(g-k),1);ctx.fillRect(b[0]-(g-k),b[1]+k,b[2]+2*(g-k),1);}
+}
+// DISCO a pixel: sz 0 in mano (7x3), 1 in volo basso (9x3), 2 in volo alto (11x4, piu' vicino alla camera); tl = inclinazione (-1, 0, 1) nei lanci a curva;
+// inv = disco capovolto (hammer: si vede la pancia). L'alone scuro lo stacca dal prato e dalla pioggia
+function pdiscSprite(x,y,spin,sz,tl,inv){
+  x=ri(x);y=ri(y);sz=sz|0;tl=tl|0;
+  const W=sz===2?11:(sz===1?9:7),H=sz===2?4:3,h0=-(H>>1),rows=[];
+  for(let r=0;r<H;r++){const sh=H===4?(r<2?tl:-tl):(r===0?tl:(r===H-1?-tl:0));rows.push([x-(W>>1)+sh,y+h0+r,W]);}
+  if(sz)spanGrow(rows,2,'rgba(22,26,43,.42)');
+  spanGrow(rows,1,PAL.out);
+  const top=inv?'#b9c6d8':'#ffffff',bot=inv?'#ffffff':'#b9c6d8';
+  rows.forEach((r,i)=>{px(r[0],r[1],r[2],1,i===H-1?bot:'#f6f8f4');});
+  px(rows[0][0]+1,rows[0][1],W-2,1,top);   // riflesso in alto, senza toccare gli spigoli
+  const m=rows[H>>1];px(m[0]+((spin|0)%(W-2)+(W-2))%(W-2),m[1],2,1,'#7f9bd0');
 }
 const PH=()=>20;   // altezza dello sprite in pixel: la pixel-art non si scala
 // ---- omino a pixel: testa, busto, pantaloncini, arti spessi 2 pixel; contorno scuro attorno a tutta la sagoma ----
@@ -259,6 +279,15 @@ function drawRoutes(){
     parrow(xe+(ax?(ux>0?1:-1):0),ye+(ax?0:(uy>0?1:-1)),ax?(ux>0?0:2):(uy>0?1:3),c,4);
   }
 }
+// NOMI solo per chi conta in quel momento (con tutti i nomi accesi le etichette si sovrapponevano e coprivano i giocatori):
+// chi ha il disco o tira il pull, il compagno agganciato dalla mira o chiamato a correre, il difensore che guidi, chi deve ricevere il lancio in volo
+let aimTgt=null;
+function nameKey(p){
+  if(p===G.holder||p===G.puller||p===G.ctrl||p===aimTgt)return true;
+  if(G.call&&G.call.q===p)return true;
+  const f=G.flight;if(f&&f.intended===p&&f.team===0)return true;
+  return !!(p.cfx&&G.tick<p.cfx.until+0.6);   // chi ha appena preso al volo
+}
 function drawPlayers(dt){
   const all=T[0].concat(T[1]).sort((a,b)=>a.y-b.y),h=PH();
   if(G.flight&&G.flight!==lastFl){lastFl=G.flight;G.flight.thrower.armT=0.3;}
@@ -299,7 +328,7 @@ function drawPlayers(dt){
     // frenata netta o cambio di direzione (p._brk, dal motore): due sbuffi di polvere ai piedi, una volta per frenata
     if(p._brk&&!p._bd&&G.mode==='play'){p._bd=1;for(let k=0;k<2;k++)addFx({t:'dust',x:p.x,y:p.y,vx:-p.vx*0.12+rnd(-0.6,0.6),vy:-p.vy*0.08+rnd(-0.3,0.3),z:0.2,vz:rnd(0.3,0.9),life:0.45,max:0.45,r:rnd(0.2,0.4)});}
     else if(!p._brk)p._bd=0;
-    if(p===G.holder||p===G.puller||(p.t===0&&S>5))names.push(p);   // nella vista larga (pull) solo chi ha il disco: i nomi si sovrapporrebbero
+    if(nameKey(p))names.push(p);
   }
   // i giocatori simbolo (stelle internazionali e chi ha vinto premi) hanno il nome dorato
   for(const p of names)ptext(p.name,sxw(p.x),syw(p.y)-h-10-(p.dv?4:0),{f:'t',c:(p.star||(p.aw&&p.aw.length)||(p.ro&&p.ro.star))?PAL.gold:(p.t===0?'#ffffff':'#ffd9d9')});
@@ -317,9 +346,13 @@ function drawDisc(){
     if(f.cx!==undefined){for(let i=1;i<24;i+=2){const P=flightAt(f,i/24);px(sxw(P.x),syw(P.y),2,1,'rgba(255,255,255,.55)');}}   // la traiettoria segue la curva del lancio
     else pline(sxw(f.sx),syw(f.sy),tx,ty,'rgba(255,255,255,.55)',1,3);
     pring(tx,ty,7+pu,4,PAL.out,3);pring(tx,ty,7+pu,4,c,1);px(tx-1,ty,3,1,c);px(tx,ty-1,1,3,c);
-    trail.push({x:d.x,y:d.y,z:d.z*(hiF?1.7:1)});if(trail.length>9)trail.shift();
+    trail.push({x:d.x,y:d.y,z:d.z*(hiF?1.7:1)});if(trail.length>12)trail.shift();
   }else if(trail.length)trail.length=0;
-  for(let i=0;i<trail.length-1;i++){const a=trail[i],k=i/trail.length;px(sxw(a.x),syw(a.y)-a.z*S*0.5,k>0.5?2:1,k>0.5?2:1,k>0.5?'#ffffff':'#d9ecc8');}
+  // SCIA a nastro: un tratto continuo che si assottiglia e sbiadisce verso la coda (colori pieni: con la trasparenza i quadratini sovrapposti farebbero macchie)
+  for(let i=0;i<trail.length-1;i++){
+    const a=trail[i],b=trail[i+1],k=(i+1)/trail.length;
+    pline(sxw(a.x),syw(a.y)-a.z*S*0.5,sxw(b.x),syw(b.y)-b.z*S*0.5,k>0.66?'#ffffff':(k>0.33?'#e6f0dc':'#c6dcb2'),k>0.66?2:1);
+  }
   const car=G.holder||(G.mode==='ready'?G.puller:null);
   let x=sxw(d.x),y=syw(d.y),z=f?d.z:0;
   if(!f&&car){
@@ -327,18 +360,23 @@ function drawDisc(){
     x=sxw(car.x)+fc*6;y=syw(car.y)-8;
     if(dvp>0.45){x=sxw(car.x)+car.dv.dir*(6*dvp+14);y=syw(car.y)-5-ri(2+7*diveAir(car));}
     if(G.walk&&!G.walk.stage){x=sxw(d.x);y=syw(d.y);}
-    pdiscSprite(x,y,G.tick*3);return;
+    discScr.x=x;discScr.y=y;pdiscSprite(x,y,G.tick*3,0);return;
   }
   const gy=syw(d.y),lift=ri(z*(f&&(f.high||f===G.pull)?1.7:1)*S*0.5);
+  discScr.x=x;discScr.y=gy-2-lift;
   // ALTEZZA DEL DISCO: l'ombra resta a terra e si stringe e schiarisce man mano che il disco sale; sopra i 3 metri una fila di puntini la collega al disco,
   // cosi' si capisce a colpo d'occhio quanto e' alto (e se un difensore puo' arrivarci) e dove sta per cadere
   const hk=clamp(lift/40,0,1);
   pell(x,gy+1,ri(lerp(4,2,hk)),1,`rgba(10,30,10,${(0.42-0.2*hk).toFixed(2)})`);
   if(lift>12)for(let yy=gy-3;yy>gy-lift;yy-=4)px(x,yy,1,1,'rgba(255,255,255,.38)');
-  pdiscSprite(x,gy-2-lift,G.tick*22);
+  // taglia e inclinazione: piu' alto = piu' grande; nei lanci a curva il disco e' inclinato dal lato della curva, l'hammer vola capovolto
+  const sz=!f?0:(lift>=10?2:1),tl=f&&f!==G.pull&&f.cx!==undefined&&Math.abs(f.cx)>0.4?Math.sign(f.cx):0;
+  pdiscSprite(x,gy-2-lift,G.tick*22,sz,f&&f.kind==='scoober'?0:tl,!!(f&&(f.kind==='hammer'||f.kind==='scoober')));
 }
+const discScr={x:-99,y:-99};   // dove si vede il disco sullo schermo (la pioggia si dirada li' attorno)
 // mira: arco di quadratini bianchi col bordo nero (come la traiettoria di Retro Bowl) e la sua ombra a puntini sul prato
 function drawAim(){
+  aimTgt=null;
   if(drag&&drag.sl&&G.holder&&G.holder.t===0&&!G.flight)drawSling(drag.ox,drag.oy,drag.fx,drag.fy,!drag.dirOk&&!!drag.was);
   if(!drag||!drag.dirOk||!G.holder||G.holder.t!==0||G.flight)return;
   const h=G.holder,w=toWorld(drag.x,drag.y),hx=sxw(h.x)+(h.fc||1)*5,hy=syw(h.y)-9,gx=sxw(h.x),gy=syw(h.y);
@@ -377,7 +415,7 @@ function drawAim(){
 // compagno agganciato dal mirino (anello + freccia; tratteggiato = e' il compagno chiamato a correre li'), distanza e tipo di lancio.
 // In Facile il colore dell'anello dice anche quanto e' rischioso il lancio (verde sicuro, giallo incerto, rosso rischioso)
 function aimAssist(h,w,dist,pl){
-  const sn=aimSnap(h,w.x,w.y,G.high),q=sn.best||(G.call&&G.call.q),locked=!!sn.best;
+  const sn=aimSnap(h,w.x,w.y,G.high),q=sn.best||(G.call&&G.call.q),locked=!!sn.best;aimTgt=q||null;
   let col='#ffffff';
   if(locked&&G.hint){
     const a=computeAim(h,w.x,w.y,G.high,true),pr=estimateThrow(h,a.x,a.y,a.intended,G.high).p;
@@ -427,6 +465,8 @@ function drawHb(){
 }
 // messaggi: riquadri neri sotto la barra, testi che salgono dal punto dell'azione, fascia nera a tutto schermo per i cambi di possesso
 const floaters=[];let band=null;
+// la fascia va nella meta' dello schermo lontana dal disco, cosi' non copre il giocatore che ha appena preso, bloccato o perso il disco
+const bandY=()=>discScr.y>0&&discScr.y<VH*0.52?ri(VH*0.66):ri(VH*0.24);
 function addFloater(txt,x,y,c,f){floaters.push({txt,x,y,c:c||'#ffffff',f:f||'p',t:1.1,max:1.1});if(floaters.length>6)floaters.shift();}
 function drawToasts(dt){
   for(const t of toasts)t.t-=dt;
@@ -441,20 +481,22 @@ function drawToasts(dt){
     band.t-=dt;
     if(band.t<=0)band=null;
     else{
-      const age=band.max-band.t,e=easeOut(clamp(age/0.14,0,1)),out=easeOut(clamp(1-band.t/0.14,0,1)),hh=24,y=ri(VH*0.24),x=-ri(VW*(1-e))+ri(VW*out);
+      if(band.y===undefined)band.y=bandY();   // si decide una volta: la fascia non salta mentre e' sullo schermo
+      const age=band.max-band.t,e=easeOut(clamp(age/0.14,0,1)),out=easeOut(clamp(1-band.t/0.14,0,1)),hh=24,y=band.y,x=-ri(VW*(1-e))+ri(VW*out);
       px(x,y,VW,hh,'#000000');px(x,y-2,VW,1,'#000000');px(x,y+hh+1,VW,1,'#000000');
       px(x,y,6,hh,band.c);px(x+VW-6,y,6,hh,band.c);
       ptext(band.txt,x+VW/2,y+4,{f:'P',c:'#ffffff',o:false});
     }
   }
   toasts.forEach((t,i)=>{
-    const w=ptw(t.txt,'p')+14,x=ri(VW/2-w/2),y=(band?ri(VH*0.24)+31:(elHint.classList.contains('hidden')?BAR+5:ri(70*UIZ*DPR/PXS)))+i*16,   // sotto il suggerimento, se c'e'
+    const w=ptw(t.txt,'t')+14,x=ri(VW/2-w/2),y=(band&&band.y<VH/2?band.y+31:(elHint.classList.contains('hidden')?BAR+5:ri(70*UIZ*DPR/PXS)))+i*16,   // sotto il suggerimento, se c'e'
       col=t.benefit===0?PAL.green:(t.benefit===1?PAL.red:'#ffffff');
     if(t.t<0.2&&((G.tick*24|0)&1))return;
     // le etichette di vento e meteo stanno in alto a destra: un messaggio lungo che le toccherebbe scende sotto di loro
-    const wl=G.inMatch&&G.wind&&G.wind.lv?ptw(WIND_N[G.wind.lv].toUpperCase(),'t')+24:0,xl=G.inMatch&&(G.wx|0)?ptw(WX_N[G.wx|0].toUpperCase(),'t')+10:0,lh=(wl?18:0)+(xl?18:0),lw=Math.max(wl,xl);
-    const yy=lh&&!band&&x+w>VW-lw-8&&y<BAR+4+lh?BAR+4+lh+2+i*16:y;
-    pbox(x,yy,w,13,'#000000');px(x+3,yy+4,4,5,col);ptext(t.txt,x+10,yy+3,{f:'p',a:'l',c:'#ffffff',o:false});
+    const lw=G.inMatch?wxChipW():0,lh=lw?18:0;
+    const yy=lh&&!(band&&band.y<VH/2)&&x+w>VW-lw-8&&y<BAR+4+lh?BAR+4+lh+2+i*16:y;
+    // i messaggi sono frasi: carattere stretto (quello largo dei titoli resta per le parole brevi e i numeri)
+    pbox(x,yy,w,13,'#000000');px(x+3,yy+4,4,5,col);ptext(t.txt,x+10,yy+3,{f:'t',a:'l',c:'#ffffff',o:false});
   });
 }
 // meta: fascia nera, scritta grande nel colore della squadra, coriandoli a quadretti
@@ -466,18 +508,25 @@ function drawBanner(dt){
     b.conf=true;
     for(let i=0;i<90;i++)conf.push({x:Math.random()*VW,y:-Math.random()*VH*0.7,vx:rnd(-14,14),vy:rnd(50,120),c:[col,PAL.gold,'#ffffff',b.team===0?'#2f7bff':'#ff4b4b'][i%4],w:1+(i%2)});
   }
-  if(age<0.07){px(0,0,VW,VH,'rgba(255,255,255,.75)');}
-  const e=easeOut(clamp(age/0.22,0,1)),hh=64,y0=ri(VH*0.5-hh/2),x=-ri(VW*(1-e)),gone=b.t<0.18;
+  if(age<0.06){px(0,0,VW,VH,'rgba(255,255,255,.55)');}
+  // FASCIA nel terzo basso (prima stava al centro e copriva proprio chi aveva segnato): a sinistra la scritta, a destra chi segna, l'assist e il punteggio
+  const e=easeOut(clamp(age/0.22,0,1)),hh=44,y0=VH-hh-12,x=-ri(VW*(1-e)),gone=b.t<0.18;
   if(!gone){
     px(x,y0,VW,hh,'#000000');px(x,y0-3,VW,1,'#000000');px(x,y0+hh+2,VW,1,'#000000');
     px(x,y0+2,VW,2,col);px(x,y0+hh-4,VW,2,col);
     const cal=b.kind==='callahan',title=cal?'CALLAHAN!':'META!',pop=age<0.3&&age>0.22?-2:0,blink=cal&&((G.tick*8|0)&1);
+    const as=!cal&&lastFl&&lastFl.team===b.team&&lastFl.thrower&&lastFl.thrower!==b.scorer?lastFl.thrower:null;   // l'ultimo lancio della squadra che segna e' l'assist
+    const l1=b.scorer.name,l2=cal?'intercetta e segna':(as?'assist '+as.name:'segna'),l3=`${teamAbbr(G.myName||'Blu')} ${G.score[0]} - ${G.score[1]} ${teamAbbr(G.oppName||'Rossi')}`;
+    const rw=Math.max(ptw(l1,'p'),ptw(l2,'t'),ptw(l3,'t'));
+    let tf='B',tw=ptw(title,'B');if(tw+rw+22>VW-8){tf='P';tw=ptw(title,'P');}
+    const sx=x+ri((VW-(tw+rw+16))/2),rx=sx+tw+16;
     if(age>0.2){
-      ptext(title,VW/2,y0+10+pop,{f:cal&&VW<330?'P':'B',c:blink?'#ffffff':(cal?(b.team===0?PAL.green:PAL.red):col),o:false,sh:2});
-      if(age>0.45){
-        const names=`${(G.myName||'Blu')} ${G.score[0]} - ${G.score[1]} ${(G.oppName||'Rossi')}`,who=(cal?'Intercetta e segna ':'Segna ')+b.scorer.name;
-        ptext(who,VW/2,y0+hh-20,{f:'p',c:'#ffffff',o:false});
-        ptext(ptw(names,'p')<VW-10?names:`${G.score[0]} - ${G.score[1]}`,VW/2,y0+hh+8,{f:'p',c:'#ffffff'});
+      ptext(title,sx,y0+(tf==='B'?7:14)+pop,{f:tf,a:'l',c:blink?'#ffffff':(cal?(b.team===0?PAL.green:PAL.red):col),o:false,sh:2});
+      if(age>0.4){
+        px(rx-8,y0+9,1,hh-18,'#3a4466');
+        ptext(l1,rx,y0+8,{f:'p',a:'l',c:b.scorer.star?PAL.gold:'#ffffff',o:false});
+        ptext(l2,rx,y0+19,{f:'t',a:'l',c:'#a9b6d6',o:false});
+        if(age>0.55)ptext(l3,rx,y0+29,{f:'t',a:'l',c:'#ffffff',o:false});
       }
     }
   }

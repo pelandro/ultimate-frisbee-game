@@ -75,7 +75,7 @@ const toasts=[];
 // a tutto schermo come in Retro Bowl, il resto un riquadro nero sotto la barra
 HOOKS.toast=(txt,benefit,ex)=>{
   const d=G.disc,x=G.holder?G.holder.x:d.x,y=G.holder?G.holder.y:d.y;
-  if(txt==='Presa mancata'){burst(d.x,d.y,'dust');band={txt:'PRESA MANCATA',t:1.25,max:1.25,c:benefit===0?PAL.green:PAL.red};return;}
+  if(txt==='Presa mancata'){burst(d.x,d.y,'turf');band={txt:'PRESA MANCATA',t:1.25,max:1.25,c:benefit===0?PAL.green:PAL.red};return;}
   if(/^Presa/.test(txt)){
     burst(x,y,'dust');
     if(ex&&ex.p){   // animazione della presa: salto, una mano, tuffo
@@ -83,13 +83,14 @@ HOOKS.toast=(txt,benefit,ex)=>{
       else ex.p.cfx={k:ex.ck||'',until:G.tick+0.42};
     }
     const plain=txt==='Presa!'||txt==='Presa in corsa!',gain=ex&&ex.gain?Math.round(ex.gain):0;
+    catchPop(x,y,gain>=15||!plain?PAL.gold:'#ffffff');
     if(!plain)addFloater(txt.toUpperCase(),x,y,benefit===0?'#ffffff':'#ffd9d9');
     else if(benefit===0)addFloater(gain>=4?'+'+gain+' m':'Presa!',x,y,gain>=15?PAL.gold:'#ffffff');
     return;
   }
   if(/^Tuff[oi] mancat/.test(txt)){addFloater(txt,d.x,d.y,'#ffffff','t');return;}
   if(/Intercetto|Handblock|Bloccat|Blocco|terra|Fuori!|Stall/.test(txt)){
-    burst(/terra|Fuori/.test(txt)?d.x:x,/terra|Fuori/.test(txt)?d.y:y,/terra|Fuori/.test(txt)?'dust':'spark');
+    burst(/terra|Fuori/.test(txt)?d.x:x,/terra|Fuori/.test(txt)?d.y:y,/terra/.test(txt)?'turf':(/Fuori/.test(txt)?'dust':'spark'));
     if(/tuffo/i.test(txt)&&G.holder&&!G.holder.dv)G.holder.dv={t0:G.tick-0.3,dir:G.holder.fc||1,end:G.tick,landedFx:true};   // il difensore che ha preso il disco in tuffo e' a terra
     band={txt:txt.replace(/!? Disco perso/,'!').toUpperCase(),t:1.25,max:1.25,c:benefit===0?PAL.green:(benefit===1?PAL.red:'#ffffff')};
     return;
@@ -159,13 +160,16 @@ const parts=[],conf=[],trail=[];
 let grassPat=null,lastFl=null,lastPull=null;
 function addFx(o){if(parts.length<240)parts.push(o);}
 function burst(x,y,kind){
-  if(kind==='dust'){
+  if(kind==='dust'||kind==='turf'){
     for(let i=0;i<9;i++){const a=Math.random()*6.283,sp=rnd(0.5,2.2);addFx({t:'dust',x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp*0.6,z:0.3,vz:rnd(0.4,1.4),life:0.7,max:0.7,r:rnd(0.25,0.5)});}
   }else{
     for(let i=0;i<14;i++){const a=Math.random()*6.283,sp=rnd(3,9);addFx({t:'spark',x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp*0.7,z:1,vz:rnd(1,4),life:0.45,max:0.45});}
   }
+  if(kind==='turf')for(let i=0;i<6;i++){const a=Math.random()*6.283,sp=rnd(0.8,2.4);addFx({t:'blade',x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp*0.5,z:0.1,vz:rnd(2.5,4.5),life:0.6,max:0.6});}   // il disco a terra alza qualche filo d'erba
   addFx({t:'ring',x,y,life:0.5,max:0.5});
 }
+// presa: anello che scatta attorno alle mani (oro per le prese lunghe) e due scintille
+function catchPop(x,y,c){addFx({t:'pop',x,y,z:3,c,life:0.3,max:0.3});for(let i=0;i<3;i++)addFx({t:'spark',x,y,vx:rnd(-3,3),vy:rnd(-1,1),z:3,vz:rnd(1,3),life:0.3,max:0.3});}
 function updateFx(dt){
   for(let i=parts.length-1;i>=0;i--){
     const p=parts[i];p.life-=dt;if(p.life<=0){parts.splice(i,1);continue;}
