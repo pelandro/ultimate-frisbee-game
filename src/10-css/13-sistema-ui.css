@@ -1,0 +1,67 @@
+/* ---- SISTEMA DEI CONTROLLI: stati e aree di tocco uguali in tutte le schermate ----
+   Un pulsante disabilitato, scelto o pericoloso deve avere lo stesso aspetto ovunque; le icone piccole («i») restano piccole a vista
+   ma si toccano su un'area di circa 44 px, come chiedono le linee guida per il tocco. */
+
+/* aree di tocco allargate senza cambiare il disegno */
+.infb,.inf{position:relative}
+.infb::after,.inf::after{content:'';position:absolute;inset:-9px}
+.rchk input{width:22px;height:22px}
+.rchk{min-height:40px}
+
+/* disabilitato: piu' spento e senza reazione al tocco, per tutti i pulsanti delle schermate e delle finestre */
+.screen button:disabled,.overlay button:disabled{opacity:.45;cursor:not-allowed;filter:saturate(.35)}
+.screen button:disabled:active,.overlay button:disabled:active{transform:none}
+/* eccezioni: lo slot in uso e i giocatori gia' allenati sono «disabilitati» ma sono informazioni da leggere */
+.slotb.on:disabled{opacity:1;filter:none;cursor:default}
+.prow.dis:disabled{filter:none}
+
+/* scelto: bordo oro e un segno, cosi' non si confonde con il semplice passaggio del dito */
+.seg .sg.on,.qtabs button.on,.gtabs button.on{box-shadow:inset 0 -4px 0 rgba(0,0,0,.28)}
+[aria-pressed="true"]{outline:3px solid var(--gold);outline-offset:-3px}
+
+/* pericoloso: rosso scuro, mai giallo come l'azione principale */
+.sec.danger,.go.danger{background:#7a1f2b;color:#fff;border-color:#000}
+.sec.danger[data-arm],.go.danger[data-arm]{background:#c23a48;animation:armpulse .7s steps(2) infinite}
+.sec[data-arm],.go[data-arm]{outline:3px solid #ff9a8a;outline-offset:2px}
+@keyframes armpulse{50%{filter:brightness(1.25)}}
+@media (prefers-reduced-motion:reduce){.sec.danger[data-arm],.go.danger[data-arm]{animation:none}}
+
+/* confermato: il riquadro del risultato appena ottenuto (allenamento, acquisto, risposta in Posta) */
+.rmsg,.tres,.ali .res{animation:okflash .6s steps(3) 1}
+@keyframes okflash{0%{filter:brightness(1.5)}100%{filter:none}}
+@media (prefers-reduced-motion:reduce){.rmsg,.tres,.ali .res{animation:none}}
+
+/* Posta: l'avviso non letto si tocca per segnarlo come letto */
+.ali.new{cursor:pointer}
+.ali.new p::before{content:'';display:inline-block;width:8px;height:8px;margin:0 6px 2px 0;background:var(--gold);border:2px solid #000;vertical-align:middle}
+
+/* Squadra: riepilogo delle linee (lineSum) */
+.lsum{display:inline-flex;align-items:center;flex-wrap:wrap;gap:2px 6px;padding:2px 8px;background:#0b0f22;border:2px solid #000}
+.lsum i{width:10px;height:10px;border:2px solid #000;background:var(--good)}
+.lsum.warn i{background:#ffb83f}.lsum.bad i{background:var(--bad)}
+.lsum small{font-size:13px;color:#ffb83f}.lsum.bad small{color:#ff9a8a}
+/* Squadra: riepilogo e azioni delle linee su una riga, filtri compatti (prima «Cambi intelligenti» e «Fuori linea» andavano a capo da soli) */
+.rtop{font-size:15px;gap:6px 10px}
+.rtop .sec{font-size:14px;padding:4px 9px;min-height:34px}
+.rtop #rAuto{margin-left:auto}
+.rbar .seg:not(.rview){flex:1 1 auto}
+.rbar .seg:not(.rview) .sg{flex:0 1 auto;min-width:0}
+
+/* scelta del campionato: schede affiancate invece di una lunga colonna (si vedevano due campionati e mezzo su sei) */
+.lgcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.lgcard{width:auto;display:flex;flex-direction:column;align-items:flex-start;text-align:left}
+.lgcard .lgtxt{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;font-size:14px;line-height:1.25}
+html[data-ew="xs"] .lgcards{grid-template-columns:1fr}
+
+/* Partita veloce: le due squadre in colonne uguali e con lo stesso carattere del gioco (il selettore usava quello di sistema) */
+.qpick{font:inherit;font-size:17px;width:100%}
+.qgrid .qcol{flex:1 1 0}
+
+/* fumetti della prima visita (09-consigli-fumetti.js): meno invadenti. Niente velo scuro sulla pagina, che resta usabile;
+   il fumetto sta in basso, accanto al contenuto, e si chiude con OK */
+#tip{background:transparent!important;backdrop-filter:none;pointer-events:none;align-items:flex-end;justify-content:center;padding-bottom:max(10px,var(--sab))}
+#tip .tippanel{pointer-events:auto;max-width:min(560px,92%);text-align:left;padding:8px 12px;border:3px solid var(--gold)!important;box-shadow:0 0 0 3px #000,0 8px 24px rgba(0,0,0,.6)}
+#tip .tippanel p{font-size:calc(15px * min(1, 1.13 / var(--ui)));line-height:1.3;margin:0 0 6px}
+#tip .schrow{justify-content:flex-end;gap:8px}
+html[data-rail="l"] #tip{padding-left:var(--rail)}
+html[data-rail="r"] #tip{padding-right:var(--rail)}

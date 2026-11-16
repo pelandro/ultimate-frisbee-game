@@ -17,7 +17,8 @@ function renderHome(){
     tab=ord.slice(a,a+3).map((n,i)=>`<div class="${n===SV.team?'me':''}"><span>${a+i+1}. ${esc(n)}</span><b>${SV.tab[n].pts}</b></div>`).join('');
   }else tab=euHomeTab();
   $('hTab').innerHTML=tab;
-  $('hBars').innerHTML=`<div class="dcash"><span>Crediti</span><b>${SV.cash}</b></div>`+statBar('Tifosi',fansOf(),'#ff9a3a','%')+`<div class="dbar"><span>Morale</span><span class="cbar"><i style="width:${Math.round(SV.mor)}%;background:#4fe58f"></i></span><b>${moodFace(teamMoodKey())}</b></div>`+statBar('Affiatamento',SV.chem,'#5ac8ff');
+  // i crediti stanno nella barra in alto: qui erano un doppione
+  $('hBars').innerHTML=statBar('Tifosi',fansOf(),'#ff9a3a','%')+`<div class="dbar"><span>Morale</span><span class="cbar"><i style="width:${Math.round(SV.mor)}%;background:#4fe58f"></i></span><b>${moodFace(teamMoodKey())}</b></div>`+statBar('Affiatamento',SV.chem,'#5ac8ff');
   renderTodo();   // «Questa settimana»: cosa serve adesso, ognuna porta alla schermata giusta (24-guscio-carriera.js)
   renderTicker();   // consiglio o novità in fondo (09-consigli-fumetti.js)
   // l'azione principale e' sempre quella che serve adesso: giocare, oppure aprire la nuova stagione (o il nuovo torneo europeo)
@@ -158,7 +159,7 @@ function renderRoster(){
   rOrd=ord.map(p=>p.id);   // l'ordine che vedi: le frecce della scheda scorrono quello
   const cnt=k=>SQ.filter(R_FILT[k][1]).length;
   const bar=`<div class="rbar"><div class="seg rview"><button type="button" class="sg${rView==='c'?' on':''}" data-rv="c">Carte</button><button type="button" class="sg${rView==='t'?' on':''}" data-rv="t">Tabella</button></div><div class="seg">${Object.keys(R_FILT).filter(k=>k==='all'||k===rFilt||cnt(k)).map(k=>`<button type="button" class="sg${rFilt===k?' on':''}" data-rf="${k}">${R_FILT[k][0]}${k==='all'?'':' '+cnt(k)}</button>`).join('')}</div><label class="rsort">Ordina per <select class="qs" data-rsort="1">${Object.keys(R_SORT).map(k=>`<option value="${k}"${rSort===k?' selected':''}>${R_SORT[k][0]}</option>`).join('')}</select></label></div>`;
-  $('rTop').innerHTML=`${infoB('rost')}<span>Rosa <b>${SQ.length}</b>/${SQ_MAX}</span><span class="${SV.lineO.length===7?'':'bad'}">Attacco <b>${SV.lineO.length}</b>/7</span><span class="${SV.lineD.length===7?'':'bad'}">Difesa <b>${SV.lineD.length}</b>/7</span><button type="button" class="sec" id="rAuto">Linee consigliate</button><button type="button" class="sec" id="rSmart">Cambi intelligenti: ${SV.autoSub?'sì':'no'}</button>`;
+  $('rTop').innerHTML=`${infoB('rost')}<span>Rosa <b>${SQ.length}</b>/${SQ_MAX}</span>${lineSum('lineO','Attacco')}${lineSum('lineD','Difesa')}<button type="button" class="sec" id="rAuto">Linee consigliate</button><button type="button" class="sec" id="rSmart">Cambi intelligenti: ${SV.autoSub?'sì':'no'}</button>`;
   const head='<tr><th>Giocatore</th><th>OVR</th><th>POT</th><th>Cond</th><th>Linee</th><th></th></tr>';
   const row=p=>{
     const op=openDet.has(p.id),v=ovr(p);
@@ -229,4 +230,11 @@ function renderEvent(){
     body+=euView();   // EUCF: gironi e tabellone (18-eucf-schermate.js)
   }
   $('eBody').innerHTML=body;
+}
+// riepilogo di una linea in alto nella Squadra: quanti sono, la forza media e che cosa non va (infortunati, stanchi, chi gioca in entrambe)
+function lineSum(k,lab){
+  const L=SV[k].map(byFull).filter(Boolean),n=L.length,avg=n?Math.round(L.reduce((a,p)=>a+ovr(p),0)/n):0;
+  const inj=L.filter(p=>p.inj).length,tired=L.filter(p=>!p.inj&&p.cond<50).length,both=L.filter(p=>SV.lineO.includes(p.full)&&SV.lineD.includes(p.full)).length;
+  const warn=[n<7?`mancano ${7-n}`:'',inj?`${inj} infortunat${inj>1?'i':'o'}`:'',tired?`${tired} stanc${tired>1?'hi':'o'}`:'',both?`${both} in entrambe`:''].filter(Boolean);
+  return `<span class="lsum${n<7||inj?' bad':(warn.length?' warn':' ok')}" title="${esc(warn.join(', ')||'Linea completa')}"><i></i>${lab} <b>${n}/7</b>${n?` · forza <b>${avg}</b>`:''}${warn.length?` <small>${warn.join(' · ')}</small>`:''}</span>`;
 }

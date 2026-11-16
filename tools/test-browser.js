@@ -159,7 +159,7 @@ catch(e){
     if(!/Giulia Rossi/i.test(await page.locator('#coName').innerText()))throw new Error('l\'anteprima non segue il nome');
     await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     if(!(await page.locator('#hCoach svg.av').count()))throw new Error('manca il volto dell\'allenatore nel cruscotto');
-    if(!(await page.locator('.dcash .cr .coin').count()))throw new Error('manca la moneta di fianco a «Crediti» nel cruscotto');
+    if(!(await page.locator('#ctop .ctcash .coin').count()))throw new Error('manca la moneta di fianco ai crediti nella barra in alto');   // i crediti stanno nella barra in alto (sul cruscotto erano un doppione)
   });
   await step('tutorial completo dal cruscotto: il fumetto della schermata Partita viene prima di sponsor e Posta, «Scopri di più» e tasto Tutorial',async()=>{
     // carriera appena iniziata: si apre per primo il fumetto della schermata Partita; sponsor e Posta aspettano che si chiuda

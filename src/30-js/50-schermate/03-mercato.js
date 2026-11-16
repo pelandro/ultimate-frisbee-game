@@ -36,11 +36,12 @@ $('mkBox').addEventListener('click',e=>{
 });
 // riepilogo prima di comprare: prezzo, crediti che restano, stipendio in piu' a ogni partita, posto in rosa e chi sostituirebbe nel suo ruolo
 function mkBuySummary(m,onOk){
-  const o=m.o,v=ovr(o),pos=posOf(o),bill0=wageBill(),bill1=Math.round(wageSeason(SQ.concat([o]))/15),after=SV.cash-m.price;
+  const o=m.o,v=ovr(o),pos=posOf(o),w0=wageSeason(SQ)/15,w1=wageSeason(SQ.concat([o]))/15,dw=w1-w0,after=SV.cash-m.price;
+  const f1=x=>(Math.round(x*10)/10).toString().replace('.',',');
   const same=SQ.filter(p=>posOf(p)===pos).sort((x,y)=>ovr(x)-ovr(y))[0],d=same?v-ovr(same):0;
   const row=(k,val,cls)=>`<tr><td>${k}</td><td${cls?` class="${cls}"`:''}>${val}</td></tr>`;
   const html=`<p><b>${esc(o.label||o.n)}</b> · ${POS_NAME[pos]} · ${o.ae?'circa ':''}${o.age} anni · OVR <b>${v}</b> · pot. ${potTxt(o)}</p>`
-    +`<table class="cfmt">${row('Prezzo',m.price+' crediti')}${row('Crediti dopo l’acquisto',after+' crediti',after<30?'bad':'')}${row('Stipendi a partita',`${bill0} → ${bill1} crediti (+${bill1-bill0})`)}${row('Rosa',`${SQ.length} → ${SQ.length+1} su ${SQ_MAX}`)}${same?row('Nel suo ruolo',`${d>0?'+':''}${d} sul più debole (${esc(same.nick||same.name)}, ${ovr(same)})`,d>0?'ok':(d<0?'bad':'')):''}</table>`
+    +`<table class="cfmt">${row('Prezzo',m.price+' crediti')}${row('Ti restano',after+' crediti',after<30?'bad':'')}${row('Stipendi a partita',`${Math.round(w0)} → ${Math.round(w1)} crediti (+${f1(dw)})`)}${row('Rosa',`${SQ.length} → ${SQ.length+1} su ${SQ_MAX}`)}${same?row('Nel suo ruolo',`${d>0?'+':''}${d} sul più debole (${esc(same.nick||same.name)}, ${ovr(same)})`,d>0?'ok':(d<0?'bad':'')):''}</table>`
     +(m.mot&&MOT[m.mot]?`<p>Motivazione: ${esc(MOT[m.mot][0].toLowerCase())}.</p>`:'');
   return {title:'Confermi l’acquisto?',html,ok:'Acquista per '+m.price,onOk};
 }

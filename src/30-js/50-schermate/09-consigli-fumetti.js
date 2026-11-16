@@ -57,9 +57,10 @@ function adviceText(){
 }
 function renderTicker(){
   const un=(SV.alerts||[]).filter(a=>!a.seen&&!(AL_URGENT[a.k]||a.act)),el=$('hTick'),sp=el.firstElementChild;
-  const txt=un.length?'Novità: '+un[0].txt+(un.length>1?` (+${un.length-1} nella Posta)`:''):'Consiglio: '+adviceText();
+  // le novita' stanno gia' in «Questa settimana» (riga della Posta) e sulla campanella: qui resta solo il consiglio, senza doppioni
+  const txt='Consiglio: '+adviceText();
   if(sp.dataset.t!==txt){sp.dataset.t=txt;sp.textContent=txt;sp.style.animationDuration=Math.max(14,txt.length*0.2)+'s';}
-  el.classList.toggle('nw',un.length>0);
+  el.classList.toggle('nw',false);void un;
 }
 /* ---- fumetti ---- */
 const TIPS={

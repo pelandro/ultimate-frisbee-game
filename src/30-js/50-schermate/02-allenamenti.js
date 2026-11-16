@@ -51,7 +51,7 @@ $('tList').addEventListener('click',e=>{
 });
 $('tTypes').addEventListener('click',e=>{
   const b=e.target.closest('.ttype');if(!b||b.disabled||!trainOpen())return;
-  trPick.ind=trPick.ind===b.dataset.k?null:b.dataset.k;trainRes=null;renderTrain();
+  trPick.ind=trPick.ind===b.dataset.k?null:b.dataset.k;trainRes=null;renderTrain();trCfShow('#tCf .tcf');
 });
 $('tCf').addEventListener('click',e=>{
   if(e.target.closest('[data-trx]')){trPick.ind=null;renderTrain();return;}
@@ -66,7 +66,7 @@ $('tTeamBox').addEventListener('click',e=>{
   if(e.target.closest('[data-prog]')){const pr=progOf();pr.on=!pr.on;trainRes=null;if(pr.on){const t=autoTrain();if(t){trainRes=[];trainRes.note=t;}}persist();renderTrain();return;}
   const it=e.target.closest('[data-int]');if(it){SV.tInt=+it.dataset.int;trainRes=null;persist();renderTrain();return;}   // intensita': vale per le sedute di squadra e per i lavori individuali
   if(e.target.closest('[data-trx]')){trPick.team=null;renderTrain();return;}
-  const pk=e.target.closest('.ttype');if(pk){if(pk.disabled||SV.tTeam||!trainOpen())return;trPick.team=trPick.team===pk.dataset.team?null:pk.dataset.team;trainRes=null;renderTrain();return;}
+  const pk=e.target.closest('.ttype');if(pk){if(pk.disabled||SV.tTeam||!trainOpen())return;trPick.team=trPick.team===pk.dataset.team?null:pk.dataset.team;trainRes=null;renderTrain();trCfShow('#tTeamBox .tcf');return;}
   if(!e.target.closest('[data-trgo]')||!trPick.team||SV.tTeam||!trainOpen())return;
   const opt=TR_OPTS.find(c=>c.id===trPick.team),out=[];trPick.team=null;
   for(const p of SQ){if(!p.inj||opt.id==='rec')out.push(trainApply(p,opt,false));}
@@ -132,3 +132,5 @@ function trCfHTML(w){
   const risk=opt.id!=='rec'&&f.risk>=0.03?' bad':'';
   return `<div class="tcf${risk}"><div><b>${opt.name}</b> per ${who}<small>${forecastTxt(f,opt)}${extra}${f.atRisk?` · ${f.atRisk} ${f.atRisk>1?'giocatori stanchi':'giocatore stanco'}: rischio di infortunio`:''}</small></div><span class="tcfb"><button type="button" class="sec" data-trx="1">Annulla</button><button type="button" class="go" data-trgo="1">Avvia</button></span></div>`;
 }
+// il riquadro con «Avvia» deve vedersi subito anche sul telefono, dove sta sotto la piega
+function trCfShow(sel){const el=document.querySelector(sel);if(el)try{el.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){}}
