@@ -32,7 +32,7 @@ const ADAPT_STEP=1/3,ADAPT_MY=0.7,ADAPT_TIGHT=0.65,ADAPT_LEAD=1.3,ADAPT_CUT=0.6,
 function adaptOf(P){const r=G.rep&&G.rep[P];if(!r||r.n<2)return 0;return Math.min(1,(r.n-1)*ADAPT_STEP)*(P===0?AIK(1).adapt:ADAPT_MY);}
 // Ritorna la mappa attaccante -> punto da coprire (o null): a ogni ripresa, con probabilita' pari all'adattamento, i marcatori dei ricevitori previsti si mettono sulla fine del loro taglio.
 // quanto la difesa che marca l'attacco della squadra P e' favorita dallo schema d'attacco contro il suo (SCH_FIT, da -1 a +1)
-function fitOf(P){const a=P===0?G.sch.att:G.opp.att,d=P===0?G.opp.def:G.sch.def,r=SCH_FIT[a];return r&&r[d]||0;}
+function schFit(P){const a=P===0?G.sch.att:G.opp.att,d=P===0?G.opp.def:G.sch.def,r=SCH_FIT[a];return r&&r[d]||0;}
 function playRead(dTeam){
   const P=1-dTeam,pb=G.pb&&G.pb[P];if(!pb||!pb.active)return null;
   const ak=adaptOf(P);if(ak<=0)return null;
@@ -64,7 +64,7 @@ function updateDefenders(dt){
   let cs=ref.y<MID?1:-1;if(sch==='man_in')cs=-cs;G.closedSide=cs;
   G.zoneT-=dt;
   if(sch==='zone'&&(G.zoneT<=0||G.zoneH!==Hh)){zoneAssign();G.zoneT=1.2;G.zoneH=Hh;}
-  const dTeam=1-P,ai=aiTeam(dTeam),lvD=AIK(dTeam),idn=idOf(dTeam),ak=adaptOf(P),ft=fitOf(P);   // ak: quanto la difesa ha preso le misure dello schema; ft: quanto il suo schema contrasta quello d'attacco
+  const dTeam=1-P,ai=aiTeam(dTeam),lvD=AIK(dTeam),idn=idOf(dTeam),ak=adaptOf(P),ft=schFit(P);   // ak: quanto la difesa ha preso le misure dello schema; ft: quanto il suo schema contrasta quello d'attacco
   // vicino alla propria meta non c'e' piu' profondo da proteggere: l'IA marca davanti all'uomo
   const nearGoal=Hh?((d>0?FIELD_L-EZ-Hh.x:Hh.x-EZ)<16):false,front=G.dmode[dTeam]===1||(ai&&nearGoal)||(ai&&!!Hh&&lvD.smart>=0.6&&throwMax(Hh)<40);   // contro chi non ha il braccio per il lungo l'IA esperta marca davanti: non c'e' profondo da proteggere
   // aiuti lontano dal disco: sempre con lo schema «uomo con aiuti», altrimenti quanto vuole l'identita' della squadra e il livello dell'IA
