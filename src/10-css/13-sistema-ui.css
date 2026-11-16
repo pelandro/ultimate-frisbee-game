@@ -81,3 +81,16 @@ html[data-eh="s"] #rail .rb strong{font-size:11px}
 #menu #bGo{min-width:150px;min-height:44px}
 /* Mercato: lo stipendio a partita accanto al prezzo (prima si scopriva solo dopo l'acquisto) */
 .mwg{font-size:13px;color:#9fb0de}
+
+/* larghezza utile molto stretta: il titolo del menu iniziale e la griglia delle squadre non devono allargare la pagina
+   (con caratteri appena piu' larghi, come quelli di Linux, scorrevano di lato di qualche pixel) */
+#title .hwrap>*{min-width:0}
+html[data-ew="xs"] #title .ttl1{font-size:24px}
+html[data-ew="xs"] #title .ttl2{font-size:34px}
+.tteam{min-width:0}.tteam>*{min-width:0}
+html[data-ew="xs"] .tteams{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+/* «Salvataggi» e' piu' lungo di «Carriere»: il tasto accanto a Carriera non deve uscire dalla riga */
+#title .crow .hbtn{min-width:0}#title .crow .hbtn>span{min-width:0}
+#title #tSlots strong,#title #tSlots small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+html[data-ew="xs"] #title #tSlots svg{display:none}
+html[data-ew="xs"] #team .seg{flex-wrap:wrap}html[data-ew="xs"] #team .seg .sg{flex:1 1 auto;min-width:0}
