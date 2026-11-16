@@ -247,7 +247,7 @@ tip:`Il Mentore è il più utile se punti sui giovani, l’Allenatore se vuoi cr
 {id:'car-soldi',t:'Soldi, tifosi e morale',b:[
 `Ogni partita ha il suo <b>conto</b>, che vedi a fine partita e in Società › Conti:`,
 [`<b>Entrate</b>: i biglietti (solo in casa: più tifosi e partite importanti portano più spettatori, fino ai posti dello stadio), lo sponsor e il premio vittoria.`,
-`<b>Uscite</b>: gli <b>stipendi</b>, la spesa più grande (salgono con l’Overall, quindi ogni acquisto pesa su tutte le partite), poi strutture, staff e, in trasferta, il viaggio. Anche una vittoria può chiudersi in rosso.`],
+`<b>Uscite</b>: gli <b>stipendi</b>, la spesa più grande (salgono con l’Overall, quindi ogni acquisto pesa su tutte le partite; oltre i 14 stipendi più alti le riserve costano metà), poi strutture, staff e, in trasferta, il viaggio. Anche una vittoria può chiudersi in rosso.`],
 `A inizio stagione scegli lo <b>sponsor</b>: Sicuro (più soldi a partita, bonus piccolo), Equilibrato o Ambizioso (meno a partita, bonus grande se raggiungi l’obiettivo). L’obiettivo è scritto sul contratto. Chi sale di categoria riceve un premio della lega.`,
 `<b>Conti in rosso</b>: mercato, strutture e staff si fermano, la dirigenza avvisa e il morale cala. Se dura troppo vieni <b>esonerato</b> e riparti da una squadra più debole.`,
 [`<b>Bilancio previsionale</b> (Società › Conti): come chiuderai la stagione se continui così.`,
