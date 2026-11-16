@@ -419,7 +419,7 @@ catch(e){
     await page.waitForTimeout(500);if(await page.locator('#bTO:not(.hidden)').count())throw new Error('il secondo timeout non dovrebbe essere disponibile');
     await page.keyboard.press('Escape');await vis('#pause');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
   });
-  await step('primi passi: le schede compaiono nelle prime partite, ricordano cio\' che hai visto e si saltano',async()=>{
+  await step('primi passi: il tutorial si fa giocando (prove che non fermano la partita), ricorda i passi fatti e si esce',async()=>{
     const c=await browser.newContext({viewport:{width:844,height:390}}),p=await c.newPage();
     await p.goto('file://'+OUT);await p.waitForTimeout(400);
     await p.click('#tQuick');await p.selectOption('#qS','0');await p.click('#qPlay');await p.waitForTimeout(600);
@@ -427,15 +427,19 @@ catch(e){
     await p.waitForSelector('#pp:not(.hidden)',{timeout:15000});
     if(!/come si gioca/i.test(await p.locator('#ppT').innerText()))throw new Error('la prima scheda deve spiegare come si gioca');
     await p.keyboard.press('Escape');await p.waitForTimeout(150);if(await p.locator('#pause:not(.hidden)').count())throw new Error('con la scheda aperta Esc non deve aprire la pausa sotto');
-    await p.click('#ppOk');await p.waitForSelector('#pp:not(.hidden)',{timeout:15000});
-    if(!/ricevi/i.test(await p.locator('#ppT').innerText()))throw new Error('la seconda scheda deve spiegare la ricezione del pull');
     await p.keyboard.press('Enter');await p.waitForTimeout(200);   // Invio = «Capito»
-    await p.waitForSelector('#pp:not(.hidden)',{timeout:20000});   // la scheda sul lancio compare quando hai il disco
-    if(!/lanciare/i.test(await p.locator('#ppT').innerText()))throw new Error('la terza scheda deve spiegare il lancio');
-    await p.click('#ppSkip');if(await p.locator('#pp:not(.hidden)').count())throw new Error('«Salta il tutorial» deve chiudere la scheda');
+    await p.waitForSelector('#pp:not(.hidden)',{timeout:25000});   // la prima prova: il pull se tocca a te, altrimenti il passaggio quando hai il disco
+    const t2=await p.locator('#ppT').innerText();
+    if(!/prova/i.test(t2)||!/pull|passa/i.test(t2))throw new Error('il secondo passo deve essere una prova (pull o passaggio): '+t2);
+    if(!/salta questo passo/i.test(await p.locator('#ppOk').innerText()))throw new Error('nelle prove il tasto principale deve essere «Salta questo passo»');
+    await p.keyboard.press('Space');await p.waitForTimeout(150);
+    if(await p.locator('#pp.hidden').count())throw new Error('durante una prova i tasti vanno al gioco, non chiudono il riquadro');
+    await p.click('#ppOk');await p.waitForTimeout(200);
+    await p.waitForSelector('#pp:not(.hidden)',{timeout:25000});
+    await p.click('#ppSkip');if(await p.locator('#pp:not(.hidden)').count())throw new Error('«Esci dal tutorial» deve chiudere il riquadro');
     const st=await p.evaluate(()=>JSON.parse(localStorage.getItem('ultimate-primi')));
-    if(!st.off||st.d.length!==3)throw new Error('lo stato deve ricordare tre schede viste e il tutorial spento: '+JSON.stringify(st));
-    await p.waitForTimeout(2500);if(await p.locator('#pp:not(.hidden)').count())throw new Error('saltato il tutorial non devono comparire altre schede');
+    if(!st.off||st.d.length!==3||st.d[0]!=='goal')throw new Error('lo stato deve ricordare tre passi e il tutorial spento: '+JSON.stringify(st));
+    await p.waitForTimeout(2500);if(await p.locator('#pp:not(.hidden)').count())throw new Error('uscito dal tutorial non devono comparire altri passi');
     await c.close();
   });
   await step('pull a tempo, difesa automatica e tasto «Salta»',async()=>{
