@@ -63,12 +63,12 @@ function renderTicker(){
 }
 /* ---- fumetti ---- */
 const TIPS={
-  home:'Benvenuto nella tua carriera! Qui, nella schermata Partita, vedi la prossima partita, «Questa settimana» (cosa serve adesso) e come stanno squadra e tifosi. A sinistra la colonna ti porta in Squadra, Allena, Mercato, Lega e Società. Il tasto giallo fa giocare la partita, «Simula» la fa giocare al posto tuo. Sotto trovi un consiglio.',
-  roster:'Qui conosci i tuoi giocatori. Le stelle dicono quanto sono forti, la barra verde la condizione, la faccina l’umore. Tocca una carta per aprire la scheda: attributi, prestazioni e sviluppo, e le azioni Riposo, Colloquio e Soprannome. Con A e D scegli chi gioca in attacco e in difesa.',
-  market:'Il mercato si rinnova ogni 5 giornate. Giovani promesse, svincolati e giocatori in vendita: osservali per scoprirne il potenziale. Alcuni hanno una motivazione (vuole giocare, ambizioso…) scritta sotto il nome. «Solo chi posso prendere» nasconde chi costa troppo.',
-  club:'La Società è il tuo club: strutture (campo, fisio, vivaio, tribune, osservatori, sede), staff e conti. Ogni livello costa di più ma dà un vantaggio che si vede. Con il tasto «i» accanto a ogni voce leggi cosa fa.',
-  train:'Allenarsi è il modo per far crescere la squadra. Scegli l’intensità e l’indirizzo: sopra i tasti vedi quanti punti ti aspetti e quanta condizione costa. Il programma automatico lo fa al posto tuo.',
-  event:'In Lega trovi la tua serie, le altre e i migliori marcatori. A fine stagione qui ci sono premi e riepilogo, e da qui parte la stagione nuova.'
+  home:'Benvenuto! Questa è la schermata Partita, la pagina principale della carriera: da qui parte ogni giornata. Con «Inizia partita», il tasto giallo, giochi la prossima partita; con «Simula» la gioca il computer al posto tuo. Prima di giocare guarda «Questa settimana»: ti dice cosa sistemare, come linee, allenamento, mercato o Posta. Con la colonna di lato vai in Squadra, Allena, Mercato, Lega e Società, e con «Partita» torni sempre qui.',
+  roster:'Qui ci sono i tuoi giocatori. Su ogni carta: l’Overall (quanto è forte), la barra verde (condizione) e la faccina (umore). Tocca una carta per la scheda e le azioni (Riposo, Colloquio…). A e D dicono chi gioca in attacco e in difesa: si cambiano con ATT e DIF nella scheda, oppure con «Linee consigliate».',
+  market:'Qui compri giocatori; l’elenco cambia ogni 5 giornate. Il potenziale dei giovani è un intervallo: «Osserva» (costa qualche credito) lo restringe. Ogni acquisto ha uno stipendio da pagare a ogni partita. «Solo chi posso prendere» nasconde chi oggi non puoi avere.',
+  club:'Qui gestisci il club: strutture, staff, conti e bacheca. Ogni livello di una struttura dà un vantaggio, ma costa di più e ha una manutenzione a ogni partita. Il tasto «i» spiega ogni voce.',
+  train:'A ogni giornata: una seduta per tutta la squadra e fino a 3 lavori individuali. Sopra ogni tasto vedi i punti che guadagni e la condizione che costa: alterna lavoro e Recupero. Il Programma automatico può farlo al posto tuo.',
+  event:'Qui trovi la classifica della tua serie e delle altre, e i migliori per mete, assist e difese. A fine stagione qui vedi premi e riepilogo, e da qui parte la stagione nuova.'
 };
 const tipsOn=()=>{try{return localStorage.getItem('ultimate-suggerimenti')!=='0';}catch(e){return true;}};
 let tipAfter=null,tipKey='';   // tipKey: quale fumetto e' aperto (per «Scopri di più», 21-tutorial.js)
