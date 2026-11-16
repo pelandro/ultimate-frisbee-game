@@ -206,31 +206,35 @@ const AUD=(function(){
 window.addEventListener('pointerdown',()=>AUD.init(),{capture:true});
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('button'))AUD.sfx('ui');},true);
 window.addEventListener('keydown',()=>AUD.init(),{capture:true});
-for(const id of ['tSnd','sSnd','opSnd','paSnd'])$(id).addEventListener('click',()=>AUD.setOn(!AUD.isOn()));
+for(const id of ['tSnd','sSnd','paSnd'])$(id).addEventListener('click',()=>AUD.setOn(!AUD.isOn()));
 $('sRot').addEventListener('click',()=>{setRotPref(!rotPref);syncToggles();});
-$('opTips').addEventListener('click',()=>{const on=!tipsOn();try{localStorage.setItem('ultimate-suggerimenti',on?'1':'0');}catch(e){}if(on&&SV&&SV.tips)SV.tips={};if(on)ppReset();syncToggles();});   // riaccesi, i fumetti si rivedono tutti
-for(const id of ['sWind','opWind'])$(id).addEventListener('click',()=>{setWindOn(G.opt.wind===false);syncToggles();if(!$('home').classList.contains('hidden'))renderHome();});
-for(const id of ['sDef','opDef','paDef'])$(id).addEventListener('click',()=>{setDefMode((G.opt.def+1)%3);syncToggles();});
-for(const id of ['sCine','opCine','paCine'])$(id).addEventListener('click',()=>{G.opt.cine=!G.opt.cine;try{localStorage.setItem('ultimate-stacchi',G.opt.cine?'1':'0');}catch(e){}syncToggles();});
+$('sTips').addEventListener('click',()=>{const on=!tipsOn();try{localStorage.setItem('ultimate-suggerimenti',on?'1':'0');}catch(e){}if(on&&SV&&SV.tips)SV.tips={};if(on)ppReset();syncToggles();});   // riaccesi, i fumetti si rivedono tutti
+for(const id of ['sWind'])$(id).addEventListener('click',()=>{setWindOn(G.opt.wind===false);syncToggles();if(!$('home').classList.contains('hidden'))renderHome();});
+$('paDef').addEventListener('click',()=>{setDefMode((G.opt.def+1)%3);syncToggles();});   // in pausa un tocco passa alla modalita' successiva
+$('sDefSeg').addEventListener('click',e=>{const b=e.target.closest('[data-def]');if(!b)return;setDefMode(+b.dataset.def);syncToggles();});   // nelle Impostazioni le tre modalita' si vedono tutte
+for(const id of ['sCine','paCine'])$(id).addEventListener('click',()=>{G.opt.cine=!G.opt.cine;try{localStorage.setItem('ultimate-stacchi',G.opt.cine?'1':'0');}catch(e){}syncToggles();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)AUD.hold();else AUD.back();});
 window.addEventListener('pagehide',e=>{AUD.hold();if(!e.persisted)AUD.close();});
 window.addEventListener('pageshow',()=>AUD.back());
 try{if(localStorage.getItem('ultimate-stacchi')==='0')G.opt.cine=false;}catch(e){}
 try{const d=+localStorage.getItem(DEF_KEY);if(d===1||d===2)G.opt.def=d;}catch(e){}
 try{if(localStorage.getItem(WIND_KEY)==='0')G.opt.wind=false;}catch(e){}
-function syncToggles(){   // audio e stacchi laterali si cambiano da piu' punti (menu, impostazioni, opzioni, pausa): le etichette restano allineate
-  const on=AUD.isOn(),c=G.opt.cine;
+function syncToggles(){   // audio, stacchi, meteo, difesa e suggerimenti si cambiano da piu' punti (menu, Impostazioni, pausa): stati ed etichette restano allineati
+  const on=AUD.isOn(),c=G.opt.cine,wOn=G.opt.wind!==false,tp=tipsOn(),fs=fsOn();
+  const sw=(id,v,txt)=>{const b=$(id);if(!b)return;b.setAttribute('aria-checked',String(!!v));b.classList.toggle('on',!!v);if(txt!==undefined){const s=b.querySelector('small');if(s)s.textContent=txt;}};
   $('tSnd').classList.toggle('off',!on);$('tSndT').textContent=on?'Audio sì':'Audio no';
-  $('sSndS').textContent=on?'Acceso: musica, tifo ed effetti':'Spento';$('sCineS').textContent=c?'Accesi: salti, tuffi e replay delle mete spettacolari':'Spenti';
+  sw('sSnd',on,on?'Musica, tifo ed effetti':'Spento');
+  sw('sCine',c,c?'Salti, tuffi e replay delle mete spettacolari':'Spenti');
+  sw('sWind',wOn,wOn?'Vento, pioggia e neve a ogni partita':'Sempre sereno e calmo');
+  sw('sTips',tp,tp?'Fumetti alla prima visita delle schermate e Primi passi nelle prime partite':'Spenti: riaccendendoli si rivedono tutti');
+  sw('sRot',rotPref,rotPref?'In verticale il gioco si gira da solo':'In verticale compare «Gira lo schermo»');
+  sw('sFs',fs);
   $('paSnd').classList.toggle('off',!on);$('paCine').classList.toggle('off',!c);   // nella pausa l'interruttore mostra anche lo stato con il colore
-  for(const id of ['opSnd','paSnd'])$(id).textContent='Audio: '+(on?'sì':'no');
-  for(const id of ['opCine','paCine'])$(id).textContent='Stacchi laterali: '+(c?'sì':'no');
-  $('paFs').textContent='Schermo intero: '+(fsOn()?'sì':'no');$('paFs').classList.toggle('off',!fsOn());
-  for(const id of ['opDef','paDef'])$(id).textContent='Difesa: '+DEF_LBL[G.opt.def].toLowerCase();
+  $('paSnd').textContent='Audio: '+(on?'sì':'no');$('paCine').textContent='Stacchi laterali: '+(c?'sì':'no');
+  $('paFs').textContent='Schermo intero: '+(fs?'sì':'no');$('paFs').classList.toggle('off',!fs);
+  $('paDef').textContent='Difesa: '+DEF_LBL[G.opt.def].toLowerCase();
   $('sDefS').textContent=DEF_LBL[G.opt.def]+': '+DEF_TXT[G.opt.def];
-  $('sRotS').textContent=rotPref?'Accesa: in verticale il gioco si gira da solo':'Spenta: in verticale compare «Gira lo schermo»';
-  $('opTips').textContent='Suggerimenti: '+(tipsOn()?'sì':'no');
-  const wOn=G.opt.wind!==false;$('opWind').textContent='Meteo: '+(wOn?'sì':'no');$('sWindS').textContent=wOn?'Acceso: vento, pioggia e neve a ogni partita':'Spento: sempre sereno e calmo';
+  $('sDefSeg').innerHTML=DEF_LBL.map((n,i)=>`<button type="button" class="sg${G.opt.def===i?' on':''}" data-def="${i}" aria-pressed="${G.opt.def===i}">${n}</button>`).join('');
 }
 syncToggles();
 HOOKS.sfx=(k,a,b)=>AUD.sfx(k,a,b);

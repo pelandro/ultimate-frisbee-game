@@ -171,21 +171,27 @@ function updRings(){
 }
 // ---- schermata Impostazioni (menu principale): velocita' iniziale e rallentamento della carica del lancio, con prova ----
 function timeTo(d){for(let t=0;t<9;t+=0.01)if(chargeDist(t)>=d-0.01)return t;return null;}
-let sView='menu';
+// la schermata e' divisa in quattro schede piatte (Partita, Comandi, Schermo e audio, Avanzate): niente sottomenu da attraversare
+let sView='game';
+const S_TITLE={game:'Impostazioni',ctl:'Impostazioni',scr:'Impostazioni',adv:'Impostazioni'};
 function setSView(v){
-  sView=v;$('sMenu').classList.toggle('hidden',v!=='menu');$('sBtns').classList.toggle('hidden',v!=='btns');$('sCharge').classList.toggle('hidden',v!=='charge');$('sSize').classList.toggle('hidden',v!=='size');$('sDiag').classList.toggle('hidden',v!=='diag');
-  $('sTitle').textContent=v==='diag'?'Diagnostica':v==='charge'?'Lancio':(v==='btns'?'Pulsanti':(v==='size'?'Dimensioni':'Impostazioni'));renderSettings();
+  if(!S_TITLE[v])v='game';sView=v;
+  for(const t of document.querySelectorAll('#sTabs [data-p]')){const on=t.dataset.p===v;t.classList.toggle('on',on);t.setAttribute('aria-selected',String(on));t.tabIndex=on?0:-1;}
+  for(const sec of document.querySelectorAll('#settings .spane'))sec.classList.toggle('hidden',sec.dataset.p!==v);
+  renderSettings();
 }
 function renderSettings(){
-  for(const [id,key,names] of [['sDs','ds',DSL],['sSpd','ci',LVL],['sSlow','cs',SLW],['sBsz','bs',BLBL],['sUz','uz',UZL],['sRl','rl',['Automatica','A destra','A sinistra']]])$(id).innerHTML=names.map((n,i)=>`<button type="button" class="sg${SETT[key]===i?' on':''}" data-k="${key}" data-i="${i}">${n}</button>`).join('');
+  for(const [id,key,names] of [['sDs','ds',DSL],['sSpd','ci',LVL],['sSlow','cs',SLW],['sBsz','bs',BLBL],['sUz','uz',UZL],['sRl','rl',['Automatica','A destra','A sinistra']]])$(id).innerHTML=names.map((n,i)=>`<button type="button" class="sg${SETT[key]===i?' on':''}" data-k="${key}" data-i="${i}" aria-pressed="${SETT[key]===i}">${n}</button>`).join('');
   const f=d=>{const t=timeTo(d);return t===null?'oltre 9 s':t.toFixed(1).replace('.',',')+' s';};
   $('sPrev').textContent=`20 m in ${f(20)} · 30 m in ${f(30)} · 40 m in ${f(40)} · 55 m in ${f(55)}`;
-  $('sSumC').textContent=`Trascinamento: sensibilità ${DSL[SETT.ds].toLowerCase()}`;
-  $('sSumS').textContent=`Interfaccia ${UZL[SETT.uz].toLowerCase()} · pulsanti ${BLBL[SETT.bs].toLowerCase()} · colonna ${['automatica','a destra','a sinistra'][SETT.rl|0]}`;
-  $('sSumP').textContent=SETT.pos?'Personalizzata':'Predefinita';
-  $('sSumB').textContent=`Dimensione: ${BLBL[SETT.bs].toLowerCase()} · posizione: ${SETT.pos?'personalizzata':'predefinita'}`;
+  $('sSumP').textContent=SETT.pos?'Posizione personalizzata':'Posizione predefinita';
+  if(typeof syncToggles==='function')syncToggles();
 }
-$('settings').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)return;SETT[b.dataset.k]=+b.dataset.i;saveSett();if(b.dataset.k==='bs')applyBtnSize();if(b.dataset.k==='uz'){UZS=SETT.uz;resize();}if(b.dataset.k==='rl')applyRail();renderSettings();});
-$('sGoCharge').addEventListener('click',()=>setSView('charge'));
-$('sGoBtns').addEventListener('click',()=>setSView('btns'));
-$('sGoDiag').addEventListener('click',()=>setSView('diag'));
+$('settings').addEventListener('click',e=>{const b=e.target.closest('.sg[data-k]');if(!b)return;SETT[b.dataset.k]=+b.dataset.i;saveSett();if(b.dataset.k==='bs')applyBtnSize();if(b.dataset.k==='uz'){UZS=SETT.uz;resize();}if(b.dataset.k==='rl')applyRail();renderSettings();});
+$('sTabs').addEventListener('click',e=>{const t=e.target.closest('[data-p]');if(t)setSView(t.dataset.p);});
+// frecce sinistra/destra tra le schede, come nelle schede dei sistemi operativi
+$('sTabs').addEventListener('keydown',e=>{
+  if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
+  const ts=[...document.querySelectorAll('#sTabs [data-p]')],i=ts.findIndex(t=>t.dataset.p===sView),n=ts[(i+(e.key==='ArrowRight'?1:ts.length-1))%ts.length];
+  e.preventDefault();setSView(n.dataset.p);n.focus();
+});

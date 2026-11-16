@@ -111,9 +111,9 @@ $('sFs').addEventListener('click',()=>{
   if(fsReq)toggleFs();
   else $('hFs').textContent='iPhone: Condividi › Aggiungi a Home';   // Safari su iPhone non ha lo schermo intero per le pagine web
 });
-const updFs=()=>{$('hFs').textContent=fsOn()?'Attivo: tocca per uscire':'Usa tutto lo schermo';$('paFs').textContent='Schermo intero: '+(fsOn()?'sì':'no');$('paFs').classList.toggle('off',!fsOn());};
+const updFs=()=>{$('hFs').textContent=fsOn()?'Attivo: tocca per uscire':'Usa tutto lo schermo';if(typeof syncToggles==='function')syncToggles();};
 $('paFs').addEventListener('click',toggleFs);   // anche dalla pausa della partita (dove prima serviva uscire al menu)
-if(!fsReq)$('paFs').classList.add('hidden');   // Safari su iPhone non ha lo schermo intero per le pagine web
+if(!fsReq){$('paFs').classList.add('hidden');$('hFs').textContent='Su iPhone: Condividi › Aggiungi alla schermata Home';$('sFs').setAttribute('aria-disabled','true');}   // Safari su iPhone non ha lo schermo intero per le pagine web
 document.addEventListener('fullscreenchange',updFs);document.addEventListener('webkitfullscreenchange',updFs);
 bSch.addEventListener('click',()=>{if(G.mode==='ready')openSchemes(false);});
 skipBtn.addEventListener('click',()=>{if(RP.on)rpEnd(true);else skipCine();});

@@ -2,7 +2,7 @@
    Nelle prime tre partite (di qualsiasi modalita', allenamento escluso) compaiono schede che spiegano come si gioca, una per volta e nel momento in cui servono:
    obiettivo, pull, ricezione, lancio, chiamate ai compagni, stall, lancio alto, difesa, isolamento, schemi, cambi e simulazione, dopo la meta. Ogni scheda ferma il gioco (G.paused) finche' non si preme
    «Capito» (o Invio/Spazio); «Salta il tutorial» le spegne tutte. Cio' che hai gia' visto resta segnato sul dispositivo (chiave «ultimate-primi»).
-   Si riaccendono dalle Opzioni (Suggerimenti: no, poi sì); con Suggerimenti spenti non compaiono. Le regole del gioco non cambiano: e' solo interfaccia. */
+   Si riaccendono dalle Impostazioni (Partita › Suggerimenti: no, poi sì); con Suggerimenti spenti non compaiono. Le regole del gioco non cambiano: e' solo interfaccia. */
 const PP_KEY='ultimate-primi',PP_MAXM=3;
 let PP={d:[],m:0,off:0};   // d: schede viste, m: partite iniziate con il tutorial, off: spento (saltato o finito)
 try{const o=JSON.parse(localStorage.getItem(PP_KEY)||'null');if(o&&Array.isArray(o.d))PP={d:o.d.filter(x=>typeof x==='string').slice(0,20),m:o.m|0,off:o.off?1:0};}catch(e){}

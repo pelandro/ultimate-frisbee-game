@@ -27,10 +27,10 @@ tip:`Se sei nuovo, fai prima il percorso «Allenamento › Tutorial»: ogni lezi
 [`<b>Touch e mouse</b>: si lancia trascinando all’indietro e rilasciando; i compagni si chiamano con un tocco; in difesa i pulsanti rossi in basso fanno handblock e tuffo.`,
 `<b>Tastiera</b>: frecce o WASD per la direzione, Spazio o J per lanciare (tieni premuto per caricare, rilascia per tirare), Maiusc o K per il lancio alto (in difesa il tuffo), E = taglio, Q = isolamento, C = clear, Esc = annulla, Invio = salta il possesso avversario.`,
 `<b>Controller</b>: stick o croce per la direzione, A o RT per lanciare, X o B per il lancio alto, Y per «Salta».`],
-`Dalle <b>Impostazioni</b> regoli sensibilità del trascinamento, dimensione e posizione dei pulsanti, audio, meteo e vento. Sul telefono si gioca in orizzontale: se lo tieni in verticale il gioco si gira da solo.`]},
+`Le <b>Impostazioni</b> hanno quattro schede: <b>Partita</b> (difesa, meteo, stacchi, suggerimenti), <b>Comandi</b> (sensibilità del lancio, dimensione e posizione dei pulsanti), <b>Schermo e audio</b> (dimensione dell’interfaccia, colonna della carriera, audio, rotazione, schermo intero) e <b>Avanzate</b>. Gli interruttori mostrano sì o no e si accendono toccando tutta la riga. Sul telefono si gioca in orizzontale: se lo tieni in verticale il gioco si gira da solo.`]},
 {id:'ini-primi',t:'I «Primi passi» in partita',b:[
 `Nelle prime tre partite compaiono in alto delle schede che spiegano il gioco <b>una alla volta e al momento giusto</b>: pull, ricezione, lancio, chiamate, stall, lancio alto, difesa, isolamento, dopo la meta e timeout, schemi, cambi e simulazione.`,
-`Ogni scheda ferma il gioco: «Capito» (o Invio) per continuare, «Salta il tutorial» per spegnerle tutte. Per rivederle: <b>Opzioni › Suggerimenti</b>, spegni e riaccendi.`],
+`Ogni scheda ferma il gioco: «Capito» (o Invio) per continuare, «Salta il tutorial» per spegnerle tutte. Per rivederle: <b>Impostazioni › Partita › Suggerimenti</b>, spegni e riaccendi.`],
 tip:`Da lì si riattivano anche i fumetti della carriera (quelli che spiegano Squadra, Mercato, Società…).`},
 {id:'ini-alle',t:'Il tutorial guidato e le sfide',w:'Menu › Allenamento',b:[
 `Nel menu <b>Allenamento</b> c’è il tutorial pratico in sette lezioni: lancio, tagli, tipi di lancio, stall, meta, difesa e pull. Una lezione si supera facendo davvero ciò che spiega, e il gioco ricorda a che punto sei («Riprendi»).`,
@@ -93,18 +93,18 @@ tip:`Con lo stall alto non cercare il lancio perfetto: uno scarico corto vale pi
 {id:'att-vento',t:'Vento, pioggia e neve',b:[
 `Ogni partita ha il suo <b>vento</b> (calma, brezza, vento, vento forte), indicato in alto a destra con una freccia. Sposta il disco tanto più quanto più resta in aria: i passaggi corti e tesi quasi non lo sentono, spari e hammer sì. Con il vento alle spalle si lancia più lungo, controvento meno; a ogni meta si cambia campo e si cambia verso.`,
 `A volte piove o nevica: le prese sono più difficili e i lanci un po’ meno precisi. Chi ha Lancio e Sparo alti compensa quasi tutto, e il cerchio tratteggiato della mira mostra comunque dove finirà il disco.`],
-tip:`In carriera il meteo si legge nella schermata Partita prima di giocare: con vento forte scegli schemi a passaggi corti. Si spegne da Impostazioni › Meteo.`}
+tip:`In carriera il meteo si legge nella schermata Partita prima di giocare: con vento forte scegli schemi a passaggi corti. Si spegne da Impostazioni › Partita › Meteo.`}
 ]});
 
 TUT.push({id:'dif',t:'In partita: difesa',sub:'Difesa automatica o manuale, handblock, tuffo, intercetti e Callahan.',
 intro:'Come difendere in modo semplice (da soli o a mano) e come far scattare le giocate che ribaltano il punto.',
 les:[
-{id:'dif-modi',t:'Difesa automatica o manuale',w:'Impostazioni, Opzioni o Pausa',b:[
+{id:'dif-modi',t:'Difesa automatica o manuale',w:'Impostazioni o Pausa',b:[
 `Hai tre modi di difendere:`,
 [`<b>Automatica</b> (predefinita): i tuoi difendono da soli seguendo lo schema scelto. Tu scegli la marcatura con il pulsante <b>Marcatura</b> e, quando vuoi, tocchi <b>Salta</b> (Invio, Y sul controller): il possesso avversario si gioca in un istante e una fascia ti dice com’è finito.`,
 `<b>Manuale</b>: guidi tu un difensore (anello azzurro); se non tocchi nulla marca da solo.`,
 `<b>Saltata</b>: ogni possesso avversario si risolve subito.`],
-`Si cambia da Impostazioni, Opzioni della carriera o Pausa. In automatica ogni tanto arriva un <b>momento a tempo</b>: un tuffo (il gioco rallenta: tocca quando il cerchio si chiude) o un duello in salto.`],
+`Si cambia da Impostazioni › Partita (le tre modalità affiancate) o dalla Pausa. In automatica ogni tanto arriva un <b>momento a tempo</b>: un tuffo (il gioco rallenta: tocca quando il cerchio si chiude) o un duello in salto.`],
 tip:`Hai poco tempo? «Difesa: automatica» più «Salta» ti fa giocare solo l’attacco.`},
 {id:'dif-manuale',t:'Guidare il difensore',b:[
 `In difesa manuale uno dei tuoi difensori ha l’<b>anello azzurro</b>: trascina il dito per farlo correre, tocca un altro difensore per passare a lui (Tab o Q da tastiera).`,
@@ -278,7 +278,7 @@ tip:`Un buon giocatore in panchina troppo a lungo ti lascia: ruotalo oppure prom
 `<b>Albo d’oro, Record e Hall of Fame</b> (Bacheca): trofei, i migliori di sempre della squadra e le carte dorate di chi si ritira dopo una carriera speciale.`]],
 tip:`I traguardi sono una guida gratuita su cosa fare dopo: guardali quando non sai che obiettivo darti.`},
 {id:'car-opzioni',t:'Opzioni e salvataggi',w:'Menu › Opzioni',b:[
-`Dalle <b>Opzioni</b> della carriera regoli difficoltà, durata, vento e meteo, Suggerimenti, difesa, musica e slot.`,
+`Le <b>Opzioni della carriera</b> contengono solo ciò che riguarda questa carriera: difficoltà, durata delle partite, slot e salvataggi, e in fondo «Nuova carriera». Audio, meteo, difesa, suggerimenti, comandi e schermo valgono per tutto il gioco: «Apri le impostazioni» ti porta lì.`,
 [`La carriera si salva da sola a ogni passo; i <b>3 slot</b> sono carriere separate.`,
 `Puoi <b>esportare e importare un file</b> della carriera (per cambiare dispositivo o farne una copia).`]],
 tip:`Prima di una scelta rischiosa (cambiare campionato, per esempio) esporta la carriera: è la tua copia di sicurezza.`}

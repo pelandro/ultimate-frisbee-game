@@ -21,7 +21,6 @@ function runDiag(n){
 }
 $('dgQuick').addEventListener('click',()=>runDiag(3));
 $('dgFull').addEventListener('click',()=>runDiag(8));
-$('sGoSize').addEventListener('click',()=>setSView('size'));
 $('sGoPos').addEventListener('click',()=>showScreen('posedit'));
 // ---- editor della posizione: si trascinano Lancio, Hammer e SCATTO dove si vuole (il centro viene salvato come frazione dello schermo) ----
 let pDrag=null;
@@ -37,7 +36,7 @@ for(const [name,id] of [['throw','pdThrow'],['hammer','pdHammer'],['sprint','pdS
   });
   el.addEventListener('pointerup',endPDrag);el.addEventListener('pointercancel',endPDrag);el.addEventListener('contextmenu',e=>e.preventDefault());
 }
-$('pdDone').addEventListener('click',()=>{showScreen('settings');setSView('btns');});
+$('pdDone').addEventListener('click',()=>{showScreen('settings');setSView('ctl');});
 $('pdReset').addEventListener('click',()=>{SETT.pos=null;saveSett();layoutButtons();});
 let testS=null;const sTest=$('sTest');
 addRingTicks(sTest.querySelector('.ring'));

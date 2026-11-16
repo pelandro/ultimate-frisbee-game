@@ -78,7 +78,7 @@ catch(e){
       if(u<min||u>max||b<1.5||big!=='1')throw new Error(w+'x'+h+': ingrandimento '+u+' (atteso '+min+'-'+max+'), pulsanti '+b);
     }
     // scelta del giocatore: «Molto piu' grande» sul telefono = 1,5, poi si torna all'automatico
-    await page.click('#tSet');await vis('#settings');await page.click('#sGoBtns');await page.click('#sGoSize');
+    await page.click('#tSet');await vis('#settings');await page.click('#sTabScr');
     await page.click('#sUz button[data-i="3"]');await page.waitForTimeout(150);if(await ui(page)!==1.5)throw new Error('«Molto piu\' grande» deve portare il telefono a 1,5');
     if(!(await page.evaluate(()=>document.documentElement.dataset.ew)))throw new Error('con l\'interfaccia ingrandita lo spazio utile stretto deve attivare le disposizioni compatte (data-ew)');
     await page.click('#sUz button[data-i="0"]');await page.waitForTimeout(150);if(await ui(page)!==0.75)throw new Error('«Piu\' piccola» deve portare il telefono a 0,75');
@@ -86,7 +86,7 @@ catch(e){
     await page.click('#sRl button[data-i="1"]');if(await page.evaluate(()=>document.documentElement.dataset.rail)!=='r')throw new Error('«A destra» deve spostare la colonna della carriera');
     await page.click('#sRl button[data-i="2"]');if(await page.evaluate(()=>document.documentElement.dataset.rail)!=='l')throw new Error('«A sinistra» deve mettere la colonna a sinistra');
     await page.click('#sRl button[data-i="0"]');if(await page.evaluate(()=>document.documentElement.dataset.rail)!=='l')throw new Error('«Automatica» senza ritaglio dello schermo deve lasciare la colonna a sinistra');
-    await page.click('#sBack');await page.click('#sBack');await page.click('#sBack');await vis('#title');
+    await page.click('#sBack');await vis('#title');   // le schede non hanno sottolivelli: un solo «Indietro»
   });
   await step('diagnostica: carriera di prova di 12 stagioni',async()=>{
     await page.click('#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgCar');
@@ -186,15 +186,16 @@ catch(e){
     if(await page.locator('#clBox .scard:not(.empty)').count()!==1)throw new Error('dopo l\'assunzione deve esserci una persona nello staff');
     await page.click('#hHome');await vis('#home');
   });
-  await step('vento: si spegne e si riaccende dalle opzioni, il cruscotto si aggiorna',async()=>{
+  await step('vento: si spegne e si riaccende dalle Impostazioni (aperte dalle Opzioni della carriera), il cruscotto si aggiorna',async()=>{
     const meteo=async()=>/Meteo:/.test(await page.locator('#home').innerText());
     if(!(await meteo()))throw new Error('il cruscotto non annuncia il meteo');
-    await menu('#hOpt');await vis('#opts');await page.click('#opWind');
-    if(!/no/.test(await page.locator('#opWind').innerText()))throw new Error('il vento non si spegne');
-    await page.click('#opX');if(await meteo())throw new Error('con il vento spento il cruscotto non deve annunciare il meteo');
-    await menu('#hOpt');await page.click('#opWind');
-    if(!/sì/.test(await page.locator('#opWind').innerText()))throw new Error('il vento non si riaccende');
-    await page.click('#opX');if(!(await meteo()))throw new Error('riacceso il vento il meteo deve tornare');
+    const wind=async()=>{await menu('#hOpt');await vis('#opts');await page.click('#opSet');await vis('#settings');
+      if(!(await page.locator('#sWind').isVisible()))throw new Error('dalle Opzioni le Impostazioni devono aprirsi sulla scheda Partita');
+      await page.click('#sWind');const v=await page.locator('#sWind').getAttribute('aria-checked');await page.click('#sBack');await vis('#home');return v;};
+    if(await wind()!=='false')throw new Error('il vento non si spegne (interruttore)');
+    if(await meteo())throw new Error('con il vento spento il cruscotto non deve annunciare il meteo');
+    if(await wind()!=='true')throw new Error('il vento non si riaccende (interruttore)');
+    if(!(await meteo()))throw new Error('riacceso il vento il meteo deve tornare');
   });
   await step('rosa, allenamenti, mercato, club, classifica, opzioni',async()=>{
     await page.click('#hRoster');await vis('#roster');await page.click('#rBox [data-rv="t"]');await page.click('tr.pl >> nth=0');await vis('tr.dt');await page.click('#rBox [data-dtab="svi"]');   // gli indirizzi e il rapporto degli osservatori stanno nella parte «Sviluppo» della scheda
@@ -571,7 +572,7 @@ catch(e){
     if(await p.locator('#menu').isVisible())await p.click('#bGo');
     await p.waitForSelector('#bExit:not(.hidden)');await p.click('#bExit');await p.waitForSelector('#pause:not(.hidden)');
     await p.click('#paQuit');await p.click('#paQuit');await p.waitForSelector('#quick:not(.hidden)');
-    await p.click('#qBack');await p.click('#tSet');await p.click('#sRot');
+    await p.click('#qBack');await p.click('#tSet');await p.click('#sTabScr');await p.click('#sRot');
     if(await p.evaluate(()=>document.documentElement.classList.contains('rotp')))throw new Error('la rotazione non si spegne dalle Impostazioni');
     await p.click('#sRot').catch(()=>{});await ctx.close();
     if(er.length)throw new Error('errore in verticale: '+er[0]);

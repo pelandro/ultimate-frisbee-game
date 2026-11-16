@@ -59,7 +59,7 @@ $('hOpt').addEventListener('click',()=>{$('opMsg').textContent='';renderOpts();$
 $('opX').addEventListener('click',()=>{$('opts').classList.add('hidden');renderHome();});
 $('opLen').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)return;SV.len=lenOk(+b.dataset.n);persist();renderOpts();});
 $('opDiff').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)return;SV.diff=b.dataset.k;persist();renderOpts();});
-$('opSet').addEventListener('click',()=>{$('opts').classList.add('hidden');setFrom='home';showScreen('settings');});
+$('opSet').addEventListener('click',()=>{$('opts').classList.add('hidden');setFrom='home';showScreen('settings');setSView('game');});
 /* ---- GUIDA a schede: si apre dal menu iniziale, dal cruscotto e dalla pausa, senza uscire da dove si e' ---- */
 let guideBack=null;
 // key: parola con cui comincia la voce da mostrare (guida contestuale: dal tasto «?» di una schermata si arriva al punto che la riguarda)
@@ -154,8 +154,8 @@ $('hPlay').addEventListener('click',()=>{if(suspOk())resumeMatch();else if(nextM
 $('hRoster').addEventListener('click',()=>showScreen('roster'));
 $('tCareer').addEventListener('click',()=>showScreen(hasCareer()?'home':'league'));
 $('tQuick').addEventListener('click',()=>showScreen('quick'));
-$('tSet').addEventListener('click',()=>showScreen('settings'));
-$('sBack').addEventListener('click',()=>{if(sView==='size')setSView('btns');else if(sView!=='menu')setSView('menu');else{const to=setFrom;setFrom='title';showScreen(to);}});
+$('tSet').addEventListener('click',()=>{setFrom='title';showScreen('settings');setSView('game');});
+$('sBack').addEventListener('click',()=>{const to=setFrom;setFrom='title';showScreen(to);});   // le schede non hanno sottolivelli: «Indietro» torna sempre da dove si e' venuti
 $('hBack').addEventListener('click',()=>showScreen('title'));
 $('teamBack').addEventListener('click',()=>showScreen('league'));
 $('qBack').addEventListener('click',()=>showScreen('title'));
