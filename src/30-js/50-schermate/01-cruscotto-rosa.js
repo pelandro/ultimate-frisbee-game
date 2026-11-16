@@ -159,7 +159,7 @@ function renderRoster(){
   rOrd=ord.map(p=>p.id);   // l'ordine che vedi: le frecce della scheda scorrono quello
   const cnt=k=>SQ.filter(R_FILT[k][1]).length;
   const bar=`<div class="rbar"><div class="seg rview"><button type="button" class="sg${rView==='c'?' on':''}" data-rv="c">Carte</button><button type="button" class="sg${rView==='t'?' on':''}" data-rv="t">Tabella</button></div><div class="seg">${Object.keys(R_FILT).filter(k=>k==='all'||k===rFilt||cnt(k)).map(k=>`<button type="button" class="sg${rFilt===k?' on':''}" data-rf="${k}">${R_FILT[k][0]}${k==='all'?'':' '+cnt(k)}</button>`).join('')}</div><label class="rsort">Ordina per <select class="qs" data-rsort="1">${Object.keys(R_SORT).map(k=>`<option value="${k}"${rSort===k?' selected':''}>${R_SORT[k][0]}</option>`).join('')}</select></label></div>`;
-  $('rTop').innerHTML=`${infoB('rost')}<span>Rosa <b>${SQ.length}</b>/${SQ_MAX}</span>${lineSum('lineO','Attacco')}${lineSum('lineD','Difesa')}<button type="button" class="sec" id="rAuto">Linee consigliate</button><button type="button" class="sec" id="rSmart">Cambi intelligenti: ${SV.autoSub?'sì':'no'}</button>`;
+  $('rTop').innerHTML=`${infoB('rost')}<span>Rosa <b>${SQ.length}</b>/${SQ_MAX}</span>${lineSum('lineO','Attacco')}${lineSum('lineD','Difesa')}<span class="ract"><button type="button" class="sec" id="rAuto">Linee consigliate</button><button type="button" class="sec" id="rSmart" aria-pressed="${!!SV.autoSub}">Cambi intelligenti: ${SV.autoSub?'sì':'no'}</button></span>`;
   const head='<tr><th>Giocatore</th><th>OVR</th><th>POT</th><th>Cond</th><th>Linee</th><th></th></tr>';
   const row=p=>{
     const op=openDet.has(p.id),v=ovr(p);

@@ -43,7 +43,8 @@
 /* Squadra: riepilogo e azioni delle linee su una riga, filtri compatti (prima «Cambi intelligenti» e «Fuori linea» andavano a capo da soli) */
 .rtop{font-size:15px;gap:6px 10px}
 .rtop .sec{font-size:14px;padding:4px 9px;min-height:34px}
-.rtop #rAuto{margin-left:auto}
+.rtop .ract{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}   /* le due azioni sulle linee restano insieme */
+#rSmart[aria-pressed]{outline:none}
 .rbar .seg:not(.rview){flex:1 1 auto}
 .rbar .seg:not(.rview) .sg{flex:0 1 auto;min-width:0}
 
