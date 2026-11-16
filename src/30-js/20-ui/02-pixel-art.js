@@ -2,7 +2,7 @@
    Tutto il campo si disegna in un buffer a bassa risoluzione (circa 224 pixel di altezza) che poi viene ingrandito senza sfumature:
    ogni pixel del gioco e' un quadratino netto sullo schermo. Niente curve morbide: solo rettangoli a coordinate intere. */
 const PAL={out:'#161a2b',grass:'#8ab66b',grass2:'#83af64',dot:'#a8cb8d',apron:'#6f9c58',apron2:'#648f4f',line:'#f6f8f2',dim:'#b7d6a0',num:'#a3c888',
-  blueZ:'#86a9cf',redZ:'#d5a08f',gold:'#ffd23f',green:'#4fe58f',red:'#ff6b70',sky:'#7fd8ff'};
+  blueZ:'#6f9ad2',redZ:'#d7826f',gold:'#ffd23f',green:'#4fe58f',red:'#ff6b70',sky:'#7fd8ff'};
 const ri=Math.round;
 const px=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(ri(x),ri(y),w,h);};
 function pline(x0,y0,x1,y1,c,t,dash){   // linea a pixel (Bresenham), spessore t, tratteggio facoltativo
@@ -118,10 +118,12 @@ function drawField(){
   px(0,0,VW,VH,PAL.apron);
   // bordo campo: fascia piu' scura e pubblico
   px(0,y0-26,VW,14,PAL.apron2);px(0,y1+13,VW,VH,PAL.apron2);
-  // prato a fasce di 8 m, con i puntini
-  for(let k=0;k<8;k++){const a=sxw(EZ+k*8),b=sxw(EZ+k*8+8);px(a,y0,b-a,H,k%2?PAL.grass2:PAL.grass);}
+  // prato tagliato a strisce di 4 m, a due toni ben distinti (prima le fasce erano quasi uguali)
+  if(PAL._g!==PAL.grass){PAL._g=PAL.grass;PAL.grass2=shade(PAL.grass,-0.075);}
+  for(let k=0;k<16;k++){const a=sxw(EZ+k*4),b=sxw(EZ+k*4+4);px(a,y0,b-a,H,k%2?PAL.grass2:PAL.grass);}
   const blueRight=G.dir[0]>0;
   px(x0,y0,gl-x0,H,blueRight?PAL.redZ:PAL.blueZ);px(gr,y0,x1-gr,H,blueRight?PAL.blueZ:PAL.redZ);
+  ezHatch(x0,y0,gl-x0,H);ezHatch(gr,y0,x1-gr,H);   // mete nel colore della squadra, con la trama (15-bordocampo.js)
   const pat=grassPattern();
   if(pat){ctx.save();ctx.translate(-(((CX%16)+16)%16),((OYi%16)+16)%16-16);ctx.fillStyle=pat;ctx.fillRect(0,0,VW+32,VH+32);ctx.restore();}
   // stemma della squadra di casa a centrocampo (solo in partita, con i nomi delle squadre)
@@ -152,6 +154,7 @@ function drawField(){
   // brick
   for(const bx of [EZ+18,FIELD_L-EZ-18]){const x=sxw(bx),y=syw(MID);for(let i=-2;i<=2;i++){px(x+i,y+i,1,1,PAL.line);px(x+i,y-i,1,1,PAL.line);}}
   drawCrowd(y0-13,true);
+  drawSideline(y1);
   for(const c of [[0,0],[0,FIELD_W],[FIELD_L,0],[FIELD_L,FIELD_W],[EZ,0],[EZ,FIELD_W],[FIELD_L-EZ,0],[FIELD_L-EZ,FIELD_W]])cone(sxw(c[0]),syw(c[1]));
 }
 // sagoma fatta di righe orizzontali [x0, y, w]: la si allarga di 'g' pixel con gli angoli smussati (g=1 contorno, g=2 alone)
