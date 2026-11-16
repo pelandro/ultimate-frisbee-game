@@ -9,7 +9,7 @@ function aiProb(th,q){
 function aiPick(th,refine){
   const P=th.t,d=dirOf(P),defs=T[1-P];
   let mates=T[P].filter(q=>q!==th);
-  {const al=pbAllowed(th);if(al){const free=q=>defs.every(df=>hyp(df.x-q.x,df.y-q.y)>=3.5),m2=mates.filter(q=>al.includes(q)&&free(q));if(m2.length)mates=m2;}}   // schema a sequenza: il lancio va a chi e' previsto, se e' libero; se lo schema e' chiuso si gioca libero
+  {const al=pbAllowed(th);if(al){const fr=PB_FREE-PB_FREE_D*clamp((visOf(th)-0.5)/0.3,0,1),free=q=>defs.every(df=>hyp(df.x-q.x,df.y-q.y)>=fr),m2=mates.filter(q=>al.includes(q)&&free(q));if(m2.length)mates=m2;}}   // schema a sequenza: il lancio va a chi e' previsto, se e' libero (chi ha Visione alta si accontenta di meno spazio, e lancia come da schema anche con un difensore addosso); se lo schema e' chiuso si gioca libero
   let best=null,bs=-1e9;const lv=AIK(P),idn=idOf(P),dmD=G.dmode[1-P],cands=[];
   // LETTURA DELLA PARTITA: chi e' avanti di 2 o sta per chiudere non regala il disco (meno lanci lunghi e contesi); chi e' sotto di 3 rischia di piu'
   const gap=G.score[P]-G.score[1-P],late=G.score[P]>=G.target-2,risk=lv.smart*((gap>=2?1:(gap<=-3?-0.8:0))+(late&&gap>=0?0.5:0));
