@@ -227,6 +227,42 @@ catch(e){
     await menu('#hOpt');await vis('#opts');await page.click('#opX');
     await page.click('#hBell');await vis('#alerts');   // lo chiude il gestore qui sopra alla prossima azione
   });
+  await step('Posta: «Chiudi» non segna come letto, «Segna tutto come letto» sì; Mercato: conferma prima di comprare; Allena: lavoro individuale in due passi',async()=>{
+    // una notizia nuova di sicuro: un avviso non urgente scritto nel salvataggio, poi ricarica
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(localStorage.getItem(k));d.alerts=d.alerts||[];d.alN=(d.alN|0)+1;d.alerts.unshift({id:d.alN,s:d.season,r:1,k:'grow',txt:'Prova di lettura',full:'',act:'',data:null,seen:0,done:0,sh:1});localStorage.setItem(k,JSON.stringify(d));if(d.slot)localStorage.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
+    // qui i tocchi passano da evaluate: il gestore in cima alla prova chiuderebbe la Posta prima di ogni click
+    const unread=async()=>(await page.locator('#alBody .ali.new').count()),tap=id=>page.evaluate(i=>document.getElementById(i).click(),id);
+    await tap('hBell');await vis('#alerts');const n0=await unread();if(n0<1)throw new Error('la notizia di prova non risulta nuova');
+    await tap('alX');await tap('hBell');await vis('#alerts');
+    if(await unread()!==n0)throw new Error('«Chiudi» ha segnato le notizie come lette');
+    await tap('alAll');if(await unread())throw new Error('«Segna tutto come letto» non ha segnato tutto');
+    await tap('alX');
+    // mercato: con i crediti per comprare, «Acquista» apre il riepilogo; «Annulla» non compra niente
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(localStorage.getItem(k));d.cash=5000;localStorage.setItem(k,JSON.stringify(d));if(d.slot)localStorage.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
+    await page.click('#hMarket');await vis('#market');
+    const buy=page.locator('#mkBox [data-buy]:not([disabled])').first();
+    if(await buy.count()){
+      const r0=await page.locator('#mkTop').innerText();
+      await buy.click();await vis('#cfm');if(!/Stipendi/.test(await page.locator('#cfmBody').innerText()))throw new Error('il riepilogo dell\'acquisto non mostra lo stipendio');
+      await page.click('#cfmNo');if(await page.locator('#cfm:not(.hidden)').count())throw new Error('«Annulla» non chiude la conferma');
+      if(await page.locator('#mkTop').innerText()!==r0)throw new Error('«Annulla» ha comprato lo stesso');
+      await buy.click();await vis('#cfm');await page.keyboard.press('Escape');if(await page.locator('#cfm:not(.hidden)').count())throw new Error('Esc non chiude la conferma');
+    }
+    // allenamento individuale: scegliere un indirizzo non lo esegue, «Avvia» sì
+    await page.click('#hTrain');await vis('#train');
+    const pr=page.locator('#tList .prow:not([disabled])').first();
+    if(await pr.count()){
+      await pr.click();
+      if(await page.locator('#tTypes .ttype[data-k="rec"]:not([disabled])').count()){   // se restano lavori individuali in questa giornata
+        await page.click('#tTypes .ttype[data-k="rec"]');
+        if(await page.locator('#tRes .tres').count())throw new Error('il lavoro individuale parte senza conferma');
+        await vis('#tCf .tcf');await page.click('#tCf [data-trgo]');await vis('#tRes .tres');
+      }
+    }
+    await page.click('#hHome');
+  });
   await step('rosa: filtri, ordinamento e scheda in tre parti; mercato: filtro e ordinamento; guida contestuale',async()=>{
     await vis('#home');await page.click('#hRoster');await vis('#roster');
     await page.click('#rBox [data-rv="c"]');   // la vista scelta resta salvata: qui si controllano le carte
