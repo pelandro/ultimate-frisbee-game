@@ -57,9 +57,10 @@ function adviceText(){
 }
 function renderTicker(){
   const un=(SV.alerts||[]).filter(a=>!a.seen&&!(AL_URGENT[a.k]||a.act)),el=$('hTick'),sp=el.firstElementChild;
-  const txt=un.length?'Novità: '+un[0].txt+(un.length>1?` (+${un.length-1} nella Posta)`:''):'Consiglio: '+adviceText();
+  // le novita' stanno gia' in «Questa settimana» (riga della Posta) e sulla campanella: qui resta solo il consiglio, senza doppioni
+  const txt='Consiglio: '+adviceText();
   if(sp.dataset.t!==txt){sp.dataset.t=txt;sp.textContent=txt;sp.style.animationDuration=Math.max(14,txt.length*0.2)+'s';}
-  el.classList.toggle('nw',un.length>0);
+  el.classList.toggle('nw',false);void un;
 }
 /* ---- fumetti ---- */
 const TIPS={
@@ -73,7 +74,7 @@ const TIPS={
 const tipsOn=()=>{try{return localStorage.getItem('ultimate-suggerimenti')!=='0';}catch(e){return true;}};
 let tipAfter=null,tipKey='';   // tipKey: quale fumetto e' aperto (per «Scopri di più», 21-tutorial.js)
 // un fumetto non copre mai un altro riquadro (avvisi, imprevisti, risultati, pausa): se ce n'e' uno aperto aspetta la prossima volta
-const overlayBusy=()=>['alerts','evt','simres','over','pause','opts','guide','tut','intro','press','hire','pp'].some(id=>{const e=$(id);return e&&!e.classList.contains('hidden');});
+const overlayBusy=()=>['cfm','alerts','evt','simres','over','pause','opts','guide','tut','intro','press','hire','pp'].some(id=>{const e=$(id);return e&&!e.classList.contains('hidden');});
 function tipOnce(key,after){
   if(!tipsOn()||!SV||!SV.team||QM.on||!TIPS[key]||(SV.tips&&SV.tips[key])||overlayBusy())return false;
   if(!SV.tips)SV.tips={};SV.tips[key]=1;persist();

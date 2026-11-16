@@ -36,9 +36,10 @@ function renderHire(){
 }
 $('hireList').addEventListener('click',e=>{
   const b=e.target.closest('[data-hirei]');if(!b||!hireK)return;
-  const t=staffHire(hireK,+b.dataset.hirei);
-  if(!t){hireMsg='Servono più crediti.';renderHire();return;}
-  persist();closeHire();renderClub();
+  const k=hireK,i=+b.dataset.hirei,c=staffCands(k)[i];if(!c)return;const cost=STAFF_HIRE[c.lv];
+  askConfirm({title:'Assumere '+c.n+'?',html:`<table class="cfmt"><tr><td>Livello</td><td>${c.lv}${c.pot>c.lv?` (può arrivare a ${c.pot})`:''}</td></tr><tr><td>Costo dell’assunzione</td><td>${cost} crediti</td></tr><tr><td>Stipendio</td><td>${STAFF_WAGE[c.lv]} a partita</td></tr><tr><td>Crediti dopo</td><td${SV.cash-cost<30?' class="bad"':''}>${SV.cash-cost} crediti</td></tr></table>${staffLv(k)?'<p>Chi ricopre ora il ruolo lascia il posto.</p>':''}`,ok:'Assumi per '+cost,onOk:()=>{
+    const t=staffHire(k,i);if(!t){hireMsg='Servono più crediti.';renderHire();return;}
+    persist();closeHire();renderClub();}});
 });
 $('hireRenew').addEventListener('click',()=>{if(hireK&&staffRenew(hireK)){hireMsg='';persist();}renderHire();});
 $('hireX').addEventListener('click',closeHire);

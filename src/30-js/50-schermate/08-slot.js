@@ -20,9 +20,9 @@ function switchSlot(k){
   slotUndo=SV&&SV.team?(SV.slot||1):null;const help=SV.help;SV={help,slot:k};try{localStorage.removeItem(SAVE_KEY);}catch(e){}showScreen('league');   // slot vuoto: si sceglie la squadra (indietro: torna la carriera di prima)
 }
 $('opSlots').addEventListener('click',e=>{const b=e.target.closest('[data-slot]');if(!b||b.disabled)return;switchSlot(+b.dataset.slot);});
-/* ---- SCHERMATA «CARRIERE» (dal menu iniziale) ----
+/* ---- SCHERMATA «SALVATAGGI» (dal menu iniziale; prima si chiamava «Carriere») ----
    Prima per cambiare slot o iniziare una carriera nuova bisognava entrare nella carriera attuale, aprire le Opzioni e scegliere da li'.
-   Ora il menu iniziale ha il tasto «Carriere»: tre schede, una per slot, con Continua e Nuova carriera. Se inizi una carriera nuova e poi torni
+   Ora il menu iniziale ha il tasto «Salvataggi»: tre schede, una per slot, con Continua e Nuova carriera. Se inizi una carriera nuova e poi torni
    indietro senza scegliere la squadra, la carriera di prima torna com'era (slotUndo). */
 let slotUndo=null;
 function slotData(k){
