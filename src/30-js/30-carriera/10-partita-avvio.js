@@ -1,10 +1,10 @@
 function startMatch(resume){   // resume: ripresa di una partita sospesa (niente presentazione)
   const m=nextMatch();if(!m)return;
   applyRoster(m.roster||makeRoster(m.power,SV.seed+'|'+m.name));
-  const plus=carDiff().plus;oppBoost(plus);   // dal Medio in su: avversarie piu' forti (DIFF_PLUS)
+  const plus=carDiff().plus;oppBoost(plus);oppLinesSet();   // dal Medio in su: avversarie piu' forti (DIFF_PLUS); due linee anche per loro
   SQ.forEach(p=>{p.injNew=false;});fixLineup();   // gli infortunati non giocano
   const first=!SV.help;if(first){SV.help=true;persist();}   // salvo prima della forma del giorno
-  G.formB=teamFormB();applyForm();
+  fixLines();const lo=new Set(matchLine('lineO'));G.formB=teamFormB();applyForm(new Set(matchLine('lineD').filter(id=>lo.has(id))));   // chi sta in entrambe le linee rende DBL_PEN in meno
   G.oppName=m.name;G.myName=SV.team;G.matchLabel=m.label;
   newGame();G.target=carLen();G.lvl=[0,carDiff().ai|0];G.oppPlus=plus||0;G.idn=[null,teamIdentity(m.name,T[1])];G.xtr=SV.diff==='xtr';G.hint=(SV.diff||'easy')==='easy';G.routes=G.hint||SV.diff==='med';G.inMatch=true;G.recorded=false;
   G.duo=duoMap();   // intesa tra le coppie: vale solo in carriera
@@ -41,6 +41,14 @@ const trainWait=()=>{const n=carDiff().n;return n-((SV.played||0)%n);};
 // forza di una squadra = media delle statistiche dei suoi 7 migliori giocatori (3 handler e 4 cutter)
 const teamFormB=()=>clamp(clamp((SV.chem-50)/50*0.9+(SV.mor-50)/50*0.6,-1.5,1.5)+0.5*staffLv('ana')+(hasTr('ana','str')?0.3:0),-1.5,2.5);   // l'Analista si somma ad affiatamento e morale (prima stavano nello stesso tetto e contava poco)
 const squadPower=()=>{const b=pickSeven(SQ,p=>p.role,mean9);return b.reduce((a,p)=>a+mean9(p),0)/b.length;};
+// forza in partita della tua squadra: le due linee che hai scelto (21-due-linee.js), riportate alla scala dei 7 migliori con LINE_REF.
+// Le squadre del computer restano alla forza dei loro 7 migliori, come in tutto il resto del gioco
+function myLinesPow(){
+  const lo=matchLine('lineO').map(id=>SQ[id]),ld=matchLine('lineD').map(id=>SQ[id]);if(!lo.length||!ld.length)return squadPower();
+  const dbl=new Set(lo.filter(p=>ld.includes(p))),av=l=>l.reduce((a,p)=>a+mean9(p)-(dbl.has(p)?DBL_PEN:0),0)/l.length;
+  return (av(lo)+av(ld))/2+LINE_REF;
+}
+const matchPow=n=>n===SV.team?myLinesPow():teamPow(n);
 const teamPower=n=>n===SV.team?squadPower():(SV.rost&&SV.rost[n]?rosterPower(SV.rost[n])+carDiff().plus:null);
 // forza mostrata nella scelta della squadra: la stessa regola della rosa con cui si parte davvero (userRoster: 9 giocatori, un po' meno allenata delle avversarie)
 const previewPower=n=>REAL[n]?rosterPower(realRoster(REAL[n],'preview|'+n,Object.assign(realOpt(n,9),{low:true}))):0;

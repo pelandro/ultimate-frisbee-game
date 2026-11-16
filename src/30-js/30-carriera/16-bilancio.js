@@ -5,7 +5,7 @@
 function budgetForecast(){
   const out={left:0,inc:0,gate:0,spon:0,wb:0,trv:0,wage:0,up:0,prize:0,obj:0,now:SV.cash,winP:0,dem:[]};
   if(SV.event==='eu'||!SV.sched||SV.done)return out;
-  const names=SV.mem[SV.sr],ui=names.indexOf(SV.team),me=squadPower()+teamFormB()*0.8,pr=tixPrice(),cap=stadCap();
+  const names=SV.mem[SV.sr],ui=names.indexOf(SV.team),me=matchPow(SV.team)+teamFormB()*0.8,pr=tixPrice(),cap=stadCap();
   let pw=0;
   const rest=[];   // le partite che restano: avversaria e dove si gioca
   if(isUS()&&SV.us.ph==='reg'){   // USA: giornate di Conference e interregionali nel loro ordine (US_CAL), casa e trasferta si alternano a ogni partita
@@ -19,7 +19,7 @@ function budgetForecast(){
     rest.push([names[pa[0]===ui?pa[1]:pa[0]],venueAlt(r)]);
   }
   for(const [on,v] of rest){
-    const p=matchWinP(simPointP(me-(teamPow(on)+carDiff().plus)+(SIM_DIFF[carDiff().ai|0]||0)),carLen());
+    const p=matchWinP(simPointP(me-(matchPow(on)+carDiff().plus)+(SIM_DIFF[carDiff().ai|0]||0)),carLen());
     out.left++;pw+=p;
     if(v==='H'){const d=demandExp(on);out.dem.push(d);out.gate+=Math.min(cap,d)*pr;}else out.trv+=travelCost();
     out.spon+=SV.sp?SV.sp.fix:0;out.wb+=p*winBonus({name:on},v).v;

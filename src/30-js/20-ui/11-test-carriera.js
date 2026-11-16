@@ -174,6 +174,10 @@ function careerSelfTest(seasons,seed){
        rows.push(row('Economia uguale per tutti i campionati: entrate secondo il livello dei giocatori (Italia come prima), riserve oltre il 14° a metà stipendio, cessione immediata sotto le offerte dei club',
          `peso economico ${c.map(x=>x.toFixed(2).replace('.',',')).join(', ')} · stipendi di 20 giocatori ${Math.round(ws)} invece di ${Math.round(full)} · cessione ${sv} contro un'offerta di ${off}`,
          Math.abs(c[0]-1)<0.01&&Math.abs(c[1]-1.3)<0.01&&Math.abs(c[2]-1.65)<0.01&&c[3]>c[2]&&ws<full&&ws>full*0.8&&sv<off*0.5&&Math.abs(sv-priceOf(p)*0.4)<=1));}
+      {const ro=makeRoster(70,'prof|t'),l14=linesPow(ro),l12=linesPow(ro.slice(0,12)),s1=fatShare({m:{pts:5}},10),s2=fatShare({m:{sh:1}},10);
+       rows.push(row('Profondità della rosa: con meno di 14 giocatori qualcuno gioca in entrambe le linee, rende meno e si stanca il doppio',
+         `due linee con 14 giocatori ${l14.toFixed(1).replace('.',',')}, con 12 ${l12.toFixed(1).replace('.',',')} · fatica: una linea ${s1}, entrambe ${s2}`,
+         l12<l14-0.3&&s1===0.5&&s2===1&&DBL_PEN>0&&COND_PEN>0));}
       rows.push(row('Crescita secondo la serie: più facile in basso, più dura in alto; chi domina la sua serie cresce meno',
         `C ${srGrowK('C').toFixed(2)}, B ${srGrowK('B').toFixed(2)}, A ${srGrowK('A').toFixed(2)}, con 5 punti di vantaggio ×${clamp(1-LEAD_K*5,0.5,1).toFixed(2)}`,srGrowK('C')>srGrowK('B')&&srGrowK('B')>srGrowK('A')&&srGrowK('A')<1&&LEAD_K>0));
       rows.push(row('Sorprese di crescita: qualche giovane si ferma, pochi scoprono più margine, nessuno perde punti',

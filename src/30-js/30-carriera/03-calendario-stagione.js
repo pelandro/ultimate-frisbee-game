@@ -99,7 +99,7 @@ function nextMatch(){
   return euOpponent();   // EUCF: 36-europa/01-eucf.js
 }
 function simPower(a,b){
-  const r=simMatch(teamPow(a),teamPow(b),0,carLen());   // stesse regole delle partite vere: si arriva al punteggio scelto, punto per punto
+  const r=simMatch(matchPow(a),matchPow(b),0,carLen());   // stesse regole delle partite vere: si arriva al punteggio scelto, punto per punto
   return [r.a,r.b];
 }
 function addRes(tab,a,b,sa,sb){
@@ -220,7 +220,9 @@ function recordResult(win,su,so){
   econAfterMatch(incPre);   // registro dei conti, avvisi del rosso, premio a chi ha giocato una partita straordinaria
   // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso l'umore cala sempre di piu' (redPen)
   SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-redPen()+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede')+(hasTr('men','pap')?0.3:0),0,100);
-  for(const p of SQ){const played=p.m&&p.m.pts>0;p.cond=clamp((p.cond===undefined?100:p.cond)-(played?Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+2*staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}   // la partita pesa un po' di piu' di prima: chi gioca sempre va fatto recuperare
+  // la fatica segue i punti giocati (fatShare): chi sta in una sola linea gioca circa meta' delle mete e perde quanto recupera in settimana,
+  // chi sta in attacco e in difesa le gioca tutte e si stanca il doppio. Prima contava solo «ha giocato o no», e la profondita' della rosa non serviva a nulla
+  for(const p of SQ){const sh=fatShare(p,su+so);p.cond=clamp((p.cond===undefined?100:p.cond)-(sh>0?2*sh*Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+2*staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}
   lifeAfterMatch();dynAfterMatch();
   if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0&&!xm)buildMarket();   // il mercato si rinnova ogni 5 giornate
   achCheck();   // traguardi (23-traguardi.js)
