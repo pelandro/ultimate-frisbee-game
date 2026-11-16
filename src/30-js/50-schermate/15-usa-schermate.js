@@ -147,7 +147,7 @@ function usPoolHTML(p,N){
 function usNatView(){
   const U=SV.us,N=U.nat;
   if(!N){
-    let h=`<p class="estat">Nationals · 16 squadre ${infoB('unat')}</p>${infoX('unat',`<p>Ci vanno la 1ª di ogni Conference (8 squadre) e le 8 vincitrici dei Play-in (2ª contro 3ª). Gironi da 4 formati con le fasce del ranking nazionale, senza club della stessa Conference nello stesso girone se possibile. Le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono eliminate. Poi quarti, semifinali e finale.</p>`)}`;
+    let h=`<p class="estat">Nationals · 16 squadre ${infoB('unat')}</p>${infoX('unat',`<p>Ci vanno 16 squadre: per ogni Conference le qualificate dirette e le vincitrici dei Play-in, secondo i posti della regione (da 1 a 4). Gironi da 4 formati con le fasce del ranking nazionale, senza club della stessa Conference nello stesso girone se possibile. Le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono eliminate. Poi quarti, semifinali e finale.</p>`)}`;
     if(U.fin){
       h+=US_CK.map(c=>{const o=U.fin[c];return `<h3 class="eh">${usConfName(c)}</h3><ul class="elist"><li><span>Diretta: ${esc(o[0])}</span><span>${o[0]===SV.team?'Voi':''}</span></li></ul>`;}).join('');
     }else h+='<p class="note">I qualificati si conoscono alla fine della stagione regolare.</p>';

@@ -64,7 +64,7 @@ function renderTourn(){
   }).join('');
   const opp=TOUR.st==='play'?tnOpp():null;
   const head=TOUR.st==='play'?`<div class="hrow" style="max-width:560px;margin-bottom:10px"><button class="hbtn hp" id="tnPlay" type="button"><span><strong>Gioca: ${tnRoundName(tnCur().length)}</strong><small>Contro ${esc(opp)} · forza ${Math.round(qPower(opp))} (tu ${Math.round(qPower(TOUR.team))})</small></span></button><button class="hbtn hsim" id="tnSim" type="button"><span><strong>Simula</strong><small>partita</small></span></button></div>`
-    :`<p class="estat">${TOUR.st==='won'?'Hai vinto il torneo con '+esc(TOUR.team)+'!':'Eliminato. Vince '+esc(TOUR.champ)+'.'}</p>`;
+    :`<p class="estat">${TOUR.st==='won'?'Hai vinto il torneo con '+esc(TOUR.team)+'!':'Eliminati. Vince '+esc(TOUR.champ)+'.'}</p>`;
   $('tnBox').innerHTML=head+`<div class="tncols">${cols}</div><div class="hlinks" style="margin-top:8px"><button class="hlink" id="tnNew" type="button">Nuovo torneo</button><span class="note" style="margin:0">Difficoltà: ${['Facile','Medio','Difficile','Estrema'][TOUR.d|0]} · si vince a ${lenOk(TOUR.len|0)} punti</span></div>`;
 }
 $('tnBox').addEventListener('click',e=>{

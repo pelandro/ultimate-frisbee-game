@@ -134,11 +134,13 @@ const SP_KIND={
   amb:{n:'Ambizioso',fix:0.7,rw:2.4,sh:-2,d:'Meno soldi a ogni partita, bonus grosso se fai meglio del previsto.'}
 };
 const spBase=()=>ECO.K()*(4+0.06*(SV.rep|0));
+// l'obiettivo nelle frasi («bonus 80 se: quarti di finale ai Nationals»): minuscola solo la prima lettera, i nomi propri restano
+const lc1=s=>s.charAt(0).toLowerCase()+s.slice(1);
 function spRankTxt(tgt,n){
-  if(tgt<=1)return 'Vincere il campionato';
+  if(tgt<=1)return 'Primo posto in classifica';
   if(tgt>=n-1)return 'Non chiudere ultimi';
-  if(tgt===n-PROMO)return 'Salvezza: non finire tra le ultime '+PROMO;
-  return 'Chiudere tra le prime '+tgt;
+  if(tgt===n-PROMO)return 'Salvezza (non tra le ultime '+PROMO+')';
+  return `Prime ${tgt} in classifica`;
 }
 // il contratto scelto cambia l'obiettivo: ogni variante parte da quello che la dirigenza si aspetta (SV.obj calcolato da setObjective)
 function spVariant(k,b){
@@ -162,8 +164,8 @@ function spOffer(){
 function spChoose(i){
   const d=SV.sp&&SV.sp.off&&SV.sp.off[i];if(!d)return '';
   SV.sp={y:SV.season,off:null,k:d.k,name:d.name,fix:d.fix};SV.obj=d.obj;
-  news(`Sponsor della stagione: ${d.name} (${SP_KIND[d.k].n.toLowerCase()}), ${d.fix} crediti a partita. Bonus di ${d.obj.reward} crediti: ${d.obj.txt.toLowerCase()}.`);
-  return `${d.name}: ${d.fix} crediti a partita e ${d.obj.reward} di bonus a fine stagione se: ${d.obj.txt.toLowerCase()}.`;
+  news(`Sponsor della stagione: ${d.name} (${SP_KIND[d.k].n.toLowerCase()}), ${d.fix} crediti a partita. Bonus di ${d.obj.reward} crediti se: ${lc1(d.obj.txt)}.`);
+  return `${d.name}: ${d.fix} crediti a partita e ${d.obj.reward} di bonus a fine stagione se: ${lc1(d.obj.txt)}.`;
 }
 // partenza da subentrato e salvataggi di prima: un contratto equilibrato gia' firmato
 function spDefault(){
@@ -175,7 +177,7 @@ const spTxt=()=>SV.sp&&SV.sp.k?`${SV.sp.name} · ${SP_KIND[SV.sp.k].n.toLowerCas
 // la scelta si fa con il riquadro degli imprevisti (si apre da solo sul cruscotto e non si puo' ignorare)
 EVT.spons={w:0,ok:()=>false,mk:()=>({}),
   t:a=>['Gli sponsor della stagione','Tre aziende vogliono il loro nome sulle maglie. Scegli il contratto: i soldi a partita arrivano comunque, il bonus solo se a fine stagione raggiungi l’obiettivo del contratto.'],
-  o:a=>(SV.sp&&SV.sp.off?SV.sp.off:[]).map((d,i)=>[`${SP_KIND[d.k].n} · ${d.name}: ${d.fix} a partita, bonus ${d.obj.reward} se ${d.obj.txt.charAt(0).toLowerCase()+d.obj.txt.slice(1)}`,()=>spChoose(i)])};
+  o:a=>(SV.sp&&SV.sp.off?SV.sp.off:[]).map((d,i)=>[`${SP_KIND[d.k].n} · ${d.name}: ${d.fix} a partita, bonus ${d.obj.reward} se: ${lc1(d.obj.txt)}`,()=>spChoose(i)])};
 // ---------- premio a un giocatore (imprevisto) ----------
 const perfScore=p=>p&&p.lm?p.lm.g*2+p.lm.a*2+p.lm.b*3:0;
 const PERF_MIN=14;   // una partita fuori dal normale: nelle partite di 7 punti il migliore in campo arriva a 14 di rado, e solo per le squadre molto forti (mete e assist pesano 2, le difese 3, come nei premi di stagione)

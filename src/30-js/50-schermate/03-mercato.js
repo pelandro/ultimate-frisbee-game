@@ -32,5 +32,5 @@ $('mkBox').addEventListener('click',e=>{
   const rp=e.target.closest('[data-rp]');if(rp){const m=SV.market[+rp.dataset.rp],k=m&&(m.o.full||m.o.n);if(k){if(mkOpen.has(k))mkOpen.delete(k);else mkOpen.add(k);}renderMarket();return;}
   const sc=e.target.closest('[data-sc]'),by=e.target.closest('[data-buy]');
   if(sc){const m=SV.market[+sc.dataset.sc];if(m&&scoutPlayer(m.o)){mkMsg=`Osservato ${m.o.label||m.o.n}: potenziale ${potTxt(m.o)}.`;persist();}renderMarket();}
-  else if(by){const m=SV.market[+by.dataset.buy];if(m){const nm=m.o.label||m.o.n;if(signPlayer(+by.dataset.buy)){mkMsg=`${nm} è un nuovo giocatore della squadra. Mettilo in una linea dalla Rosa.`;persist();}}renderMarket();}
+  else if(by){const m=SV.market[+by.dataset.buy];if(m){const nm=m.o.label||m.o.n;if(signPlayer(+by.dataset.buy)){mkMsg=`${nm} è un nuovo giocatore della squadra. Mettilo in una linea da Squadra.`;persist();}}renderMarket();}
 });

@@ -30,9 +30,9 @@ const evName=()=>SV.event==='camp'?'Campionato':'Campionato europeo';
 // difficolta' della carriera: ritmo degli allenamenti e forza delle avversarie
 const CAR_DIFF={
   easy:{name:'Facile',n:1,plus:DIFF_PLUS[0],ai:0,txt:'Allenamenti a ogni partita. Avversarie che scelgono in modo semplice.'},
-  med:{name:'Medio',n:2,plus:DIFF_PLUS[1],ai:1,txt:'Allenamenti una volta ogni 2 partite. Avversarie che leggono i mismatch e si adattano un po’ al tuo gioco, e 1 punto più forti.'},
-  hard:{name:'Difficile',n:3,plus:DIFF_PLUS[2],ai:2,txt:'Allenamenti una volta ogni 3 partite. Avversarie che decidono, si posizionano e reagiscono meglio, e 3 punti più forti.'},
-  xtr:{name:'Estrema',n:3,plus:DIFF_PLUS[3],ai:3,txt:'Avversarie ancora più attente e 5 punti più forti; la traiettoria del lancio si vede solo all’inizio.'}
+  med:{name:'Medio',n:2,plus:DIFF_PLUS[1],ai:1,txt:'Allenamenti una volta ogni 2 partite. Avversarie che leggono i mismatch e si adattano un po’ al tuo gioco, con +1 a tutte le statistiche.'},
+  hard:{name:'Difficile',n:3,plus:DIFF_PLUS[2],ai:2,txt:'Allenamenti una volta ogni 3 partite. Avversarie che decidono, si posizionano e reagiscono meglio, con +3 a tutte le statistiche.'},
+  xtr:{name:'Estrema',n:3,plus:DIFF_PLUS[3],ai:3,txt:'Avversarie ancora più attente, con +5 a tutte le statistiche; la traiettoria del lancio si vede solo all’inizio.'}
 };
 const carDiff=()=>CAR_DIFF[(SV&&SV.diff)||'easy']||CAR_DIFF.easy;
 const carLen=()=>lenOk((SV&&SV.len)|0);   // durata delle partite di carriera (Opzioni): 7, 11 o 15 punti
@@ -144,7 +144,7 @@ function renderQuick(){
 function openPick(side){QM.side=side;QM.tab=TEAM[QM[side]].series;renderPick();$('qPick').classList.remove('hidden');}
 function renderPick(){
   const me=QM[QM.side],other=QM[QM.side==='a'?'b':'a'];
-  $('qpT').textContent=QM.side==='a'?'Tua squadra (blu)':'Avversario (rossa)';
+  $('qpT').textContent=QM.side==='a'?'Tua squadra (blu)':'Avversaria (rossa)';
   $('qpTabs').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===QM.tab));
   $('qpG').innerHTML=SERIES[QM.tab].map(n=>`<button type="button" data-n="${n.replace(/"/g,'&quot;')}" class="${n===me?'sel':''}${n===other?' off':''}">${crest(n,22)}<span>${n}</span><b>${Math.round(qPower(n))}</b></button>`).join('');
 }
@@ -157,7 +157,7 @@ function updateQuick(){
   $('qPlay').disabled=a===b;$('qPlay').textContent=a===b?'Scegli due squadre diverse':'Gioca';
   QM.d=+$('qD').value;QM.s=+$('qS').value;QM.len=+$('qL').value;
   $('qS').options[0].textContent=a;$('qS').options[1].textContent=b;   // i nomi delle due squadre
-  $('qDP').textContent=['L’IA avversaria gioca come sempre.','L’IA avversaria sceglie e reagisce un po’ meglio.','L’IA avversaria sceglie e reagisce molto meglio.','Ancora più attenta del Difficile, e la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'][QM.d]+' '+['Le statistiche dei giocatori non cambiano.','Avversari con +1 a tutte le statistiche.','Avversari con +3 a tutte le statistiche.','Avversari con +5 a tutte le statistiche.'][QM.d];
+  $('qDP').textContent=['L’IA avversaria gioca in modo semplice.','L’IA avversaria sceglie e reagisce un po’ meglio.','L’IA avversaria sceglie e reagisce molto meglio.','Ancora più attenta del Difficile, e la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'][QM.d]+' '+['Le statistiche dei giocatori non cambiano.','Avversari con +1 a tutte le statistiche.','Avversari con +3 a tutte le statistiche.','Avversari con +5 a tutte le statistiche.'][QM.d];
 }
 function startQuick(){
   const a=QM.a,b=QM.b;if(!a||!b||a===b)return;
