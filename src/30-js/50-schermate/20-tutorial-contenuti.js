@@ -209,7 +209,7 @@ tip:`Non cambiare tutta la linea a ogni partita: l’intesa si costruisce restan
 [`<b>Solo chi posso prendere</b> nasconde chi costa troppo, chiede più reputazione o non ha posto in rosa.`,`<b>Ordina per</b>: prezzo, forza, potenziale, età, rapporto qualità/prezzo.`,`Ogni scheda dice di quanto migliorerebbe il titolare che sostituisce.`],
 `Alcuni hanno una <b>motivazione</b> sotto il nome: «Vuole giocare» firma solo se sarebbe titolare; «Ambizioso» non scende in Serie C; «Ingaggio alto» costa di più; «Cerca un progetto» fa lo sconto se Vivaio o Campo di allenamento sono almeno al livello 2.`,
 `I <b>giovani</b> sono una scommessa: il potenziale è un intervallo che si stringe osservandoli o tenendoli in rosa, e qualcuno sorprende in meglio o in peggio. Gli <b>adulti</b> rendono subito ma crescono poco.`,
-`Ogni acquisto ha anche uno <b>stipendio</b> che paghi a ogni partita: prima di comprare guarda se i conti reggono. Con i conti in rosso non si compra.`],
+`Ogni acquisto ha anche uno <b>stipendio</b> che paghi a ogni partita (lo vedi sulla carta). Prima di comprare compare un riepilogo con prezzo, crediti che restano e stipendi: si compra solo confermando. Con i conti in rosso non si compra.`],
 tip:`Un giovane col potenziale alto che oggi è scarso diventa il titolare di domani: osservalo prima di decidere.`},
 {id:'car-scouting',t:'Osservazioni e rapporti',w:'Mercato › Osserva / Rapporto',b:[
 `Osservare un giocatore costa qualche credito, di più per chi vale di più; la <b>Rete di osservatori</b> lo rende più economico. Ogni osservazione sblocca una parte del rapporto:`,
@@ -219,7 +219,7 @@ tip:`Con «Occhio clinico» nello staff scopri i potenziali dei tuoi giocatori c
 {id:'car-allenamenti',t:'Gli Allenamenti',w:'Colonna › Allena',b:[
 `A ogni giornata puoi fare <b>una seduta di squadra</b> e fino a <b>3 lavori individuali</b>, che rendono di più. Cinque indirizzi:`,
 [`<b>Tecnica</b>: lancio, buco, sparo, presa.`,`<b>Atletismo</b>: velocità, scatto, agilità, salto, resistenza.`,`<b>Difesa</b>: difesa, tuffo.`,`<b>Tattica</b>: visione e affiatamento.`,`<b>Recupero</b>: ridà condizione, nessuna crescita.`],
-`L’<b>intensità</b> vale per tutte le sedute: Leggero (metà fatica, meno crescita), Normale, Intenso (più crescita, molta più fatica e più rischio di infortuni). Sopra ogni tasto vedi i punti attesi e la condizione che costa.`,
+`L’<b>intensità</b> vale per tutte le sedute: Leggero (metà fatica, meno crescita), Normale, Intenso (più crescita, molta più fatica e più rischio di infortuni). Sopra ogni tasto vedi i punti attesi e la condizione che costa. Toccando un indirizzo lo scegli e vedi l’anteprima: la seduta parte solo con <b>Avvia</b>.`,
 `Chi è scarico rende meno in partita e sotto 45 di condizione rischia di infortunarsi anche in allenamento: alterna lavoro e recupero.`,
 `Il <b>Programma automatico</b> fa le sedute al posto tuo (Recupero se la squadra è scarica, altrimenti l’indirizzo scelto), partendo dai giocatori che hai segnato come priorità. L’esito arriva nella Posta.`],
 tip:`La settimana di una partita importante: Recupero il giorno prima, così arrivi con energie piene.`},
@@ -264,7 +264,7 @@ tip:`Non spendere tutto subito: tieni una riserva per le emergenze (un guasto, u
 `Quando il campionato finisce, in cima alla pagina Lega trovi il riepilogo e il grande tasto <b>Inizia la nuova stagione</b>. Le spiegazioni lunghe stanno dietro il pulsante <b>i</b>.`],
 tip:`Nei playoff ogni partita conta: giocale tu e usa bene i cambi.`},
 {id:'car-avvisi',t:'Posta, ritiri e spogliatoio',b:[
-`La <b>Posta</b> (in alto) divide i messaggi in <b>Da decidere</b>, <b>Novità</b> e <b>Cronologia</b>. Emergenze (infortuni, addii) e decisioni (ritiri, offerte, richieste di cessione) si aprono da sole; le notizie accendono solo il numero.`,
+`La <b>Posta</b> (in alto) divide i messaggi in <b>Da decidere</b>, <b>Novità</b> e <b>Cronologia</b>. Emergenze (infortuni, addii) e decisioni (ritiri, offerte, richieste di cessione) si aprono da sole; le notizie accendono solo il numero. Un avviso resta nuovo finché non lo tocchi: «Chiudi» non segna niente come letto, «Segna tutto come letto» sì.`,
 [`<b>Ritiri</b>: un giocatore prima fa capire che ci pensa, poi annuncia l’ultima stagione: puoi chiedergli un altro anno con un premio di permanenza (un solo tentativo). Chi lascia il segno entra nella Hall of Fame.`,
 `<b>Spogliatoio</b>: un buon giocatore che resta fuori a lungo diventa scontento e poi chiede la cessione (vendilo o promettigli spazio; se non mantieni la promessa se ne va gratis).`,
 `<b>Offerte</b>: ogni tanto una squadra più importante chiede uno dei tuoi migliori: accetti o rifiuti entro la partita successiva.`,

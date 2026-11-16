@@ -73,3 +73,10 @@ html[data-eh="s"] #rail{gap:3px;padding-top:3px;padding-bottom:3px}
 html[data-eh="s"] #rail .rb{gap:0}
 html[data-eh="s"] #rail .rb svg{width:17px;height:17px}
 html[data-eh="s"] #rail .rb strong{font-size:11px}
+
+/* schemi tra una meta e l'altra: «Fatto» a destra, come l'azione principale di tutte le altre finestre */
+#menu .mf{display:flex!important;align-items:center;justify-content:flex-end;gap:12px}
+#menu .mf .note{margin-right:auto!important}
+#menu #bGo{min-width:150px;min-height:44px}
+/* Mercato: lo stipendio a partita accanto al prezzo (prima si scopriva solo dopo l'acquisto) */
+.mwg{font-size:13px;color:#9fb0de}
