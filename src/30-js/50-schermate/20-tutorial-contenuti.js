@@ -339,7 +339,7 @@ les:[
 `<b>Torneo</b>: un torneo a eliminazione diretta a 4, 8 o 16 squadre vere, con la tua squadra, la provenienza delle avversarie e la difficoltà. Le partite le giochi o le simuli e il tabellone resta salvato. Abbandonare una partita è una sconfitta a tavolino.`]],
 tip:`La Partita veloce in Estrema è il banco di prova migliore quando ti sembra tutto troppo facile.`},
 {id:'mod-ut',t:'Ultimate Team',b:[
-`Apri <b>pacchetti</b> di carte Handler, Cutter e Defender, scegli i 7 titolari e giochi il torneo a eliminazione. Ogni partita dà <b>gettoni</b> (di più se vinci e vai avanti) per comprare pacchetti e potenziare le carte.`,
+`Apri <b>pacchetti</b> di carte Handler, Cutter e Defender: sono <b>giocatori veri</b> dei campionati (con il club sulla carta, mai lo stesso due volte). Scegli i 7 titolari e giochi il torneo a eliminazione. Ogni partita dà <b>gettoni</b> (di più se vinci e vai avanti) per comprare pacchetti e potenziare le carte.`,
 [`<b>Negozio</b>: il pacchetto normale (5 carte) e i pacchetti <b>Handler</b> e <b>Cutter</b> (3 carte dello stesso ruolo) per coprire il ruolo che ti manca.`,
 `<b>Pacchetti premio</b>: superando i turni ricevi pacchetti sempre più rari (bronzo, argento, oro, platino) e chi vince il Super pacchetto arcobaleno. Più è raro, migliori sono le carte.`,
 `<b>Potenziamenti</b>: al massimo 4 per carta (2 per linea): Tiro, Atletico, Difesa, Mani e testa. Chi gioca da titolare cresce anche da solo.`,
