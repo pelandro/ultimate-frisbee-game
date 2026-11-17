@@ -21,7 +21,7 @@ function matchStakes(m){
       const near=i=>ord[i]&&Math.abs(me-pts(ord[i]))<=3;
       if(SV.sr==='A'&&rk<=3&&(rk===1?near(1):near(0))){tag=tag||'Ultima giornata';title=title||'Scudetto in palio';lines.push(rk===1?'Siete primi: una vittoria vale il titolo.':'Il primo posto è a un passo: bisogna vincere e sperare.');}
       else if(SV.sr!=='A'&&((rk<=PROMO&&near(PROMO))||(rk>PROMO&&near(PROMO-1)))){tag=tag||'Ultima giornata';title=title||'Promozione in palio';lines.push(rk<=PROMO?'Siete in zona promozione: non si può sbagliare.':'La promozione è a un passo: serve una vittoria.');}
-      else if(SV.sr!=='C'&&((rk>n-PROMO&&near(n-PROMO-1))||(rk<=n-PROMO&&near(n-PROMO)))){tag=tag||'Ultima giornata';title=title||'Salvezza in palio';lines.push(rk>n-PROMO?'Siete in zona retrocessione: vincere per salvarsi.':'La zona retrocessione è vicina: serve un risultato.');}
+      else if(SV.sr!=='C'&&((rk>n-PROMO&&near(n-PROMO-1))||(rk<=n-PROMO&&near(n-PROMO)))){tag=tag||'Ultima giornata';title=title||'Salvezza in palio';lines.push(rk>n-PROMO?'Siete in zona retrocessione: serve una vittoria per salvarsi.':'La zona retrocessione è vicina: serve un risultato.');}
       const vets=SQ.filter(p=>p.ret===1&&(SV.lineO.includes(p.full)||SV.lineD.includes(p.full)));
       for(const p of vets.slice(0,2)){tag=tag||'Ultima giornata';title=title||'L’ultima partita';const c=p.car;lines.push(`Ultima partita di ${pname(p)} (${p.age} anni${c&&c.mp?`: ${c.mp} partite, ${gaTxt(c.g,c.a)}`:''}).`);}
     }

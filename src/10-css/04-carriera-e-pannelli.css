@@ -138,6 +138,7 @@
 #gdBody{overflow:auto;min-height:0;flex:1}
 .gsec{margin:0;padding:0 0 0 18px;font-size:17px;line-height:1.28;color:#d5dcf0}
 .gsec li{margin:0 0 7px}
+.gsec li ul{margin:5px 0 2px;padding-left:16px}.gsec li li{margin:0 0 4px}
 #bExit{font-family:var(--pfont);font-size:9px;font-size-adjust:none;line-height:18px;width:44px;padding:0;text-align:center}
 #ctrl #bSimPt{background:#29366f}
 .estat.big{font-size:20px;color:var(--gold)}

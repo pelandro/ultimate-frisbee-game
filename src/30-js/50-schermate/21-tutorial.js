@@ -26,7 +26,7 @@ function tutRender(){
     const nxt=all.find(x=>!TD[x.l.id]);
     h+=`<p class="tupr">${done?`Hai letto ${done} lezioni su ${all.length}.`:`${all.length} lezioni brevi, in ordine, per scoprire tutto il gioco.`} Ogni capitolo si legge da solo: parti dall’inizio oppure vai dritto a ciò che ti serve.</p><div class="tubar"><i style="width:${Math.round(done/all.length*100)}%"></i></div><div class="tuchs">`;
     h+=TUT.map(x=>`<button type="button" class="tuc" data-tu="c:${x.id}"><strong>${x.t}</strong><span>${x.sub}</span><em>${tutRead(x)===x.les.length?'✓ ':''}${tutRead(x)} di ${x.les.length} lezioni</em></button>`).join('')+'</div>';
-    h+=`<div class="tufoot">${nxt?`<button type="button" class="go" data-tu="l:${nxt.c.id}:${nxt.l.id}">${done?'Continua da dove eri':'Comincia'}</button>`:''}<button type="button" class="sec" data-tu="g">Guida a schede</button>${done?'<button type="button" class="sec" data-tu="r">Azzera i progressi</button>':''}</div>`;
+    h+=`<div class="tufoot">${nxt?`<button type="button" class="go" data-tu="l:${nxt.c.id}:${nxt.l.id}">${done?'Continua da dove eri':'Comincia'}</button>`:''}<button type="button" class="sec" data-tu="g">Guida</button>${done?'<button type="button" class="sec" data-tu="r">Azzera i progressi</button>':''}</div>`;
   }
   $('tuBody').innerHTML=h;$('tuBody').scrollTop=0;
 }

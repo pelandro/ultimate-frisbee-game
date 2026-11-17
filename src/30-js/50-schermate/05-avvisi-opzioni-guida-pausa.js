@@ -85,7 +85,7 @@ function openPause(){
 }
 function closePause(){$('pause').classList.add('hidden');G.paused=false;G.schemeOpen=false;}
 $('paGo').addEventListener('click',closePause);
-$('paHelp').addEventListener('click',()=>{$('pause').classList.add('hidden');openGuide(inDefense()?2:0,()=>$('pause').classList.remove('hidden'));});
+$('paHelp').addEventListener('click',()=>{$('pause').classList.add('hidden');openGuide(inDefense()?2:1,()=>$('pause').classList.remove('hidden'));});
 $('paQuit').addEventListener('click',()=>{
   if(G.drill){closePause();quitMatch();return;}
   // carriera, torneo e Ultimate Team: abbandonare e' una sconfitta a tavolino (prima non veniva registrato nulla e la partita si poteva rigiocare finche' non si vinceva)

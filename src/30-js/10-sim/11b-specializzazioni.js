@@ -5,7 +5,7 @@
 const SPECS={
   reg:{n:'Regista',keys:['lan','buc'],d:'Lancio e Buco: il playmaker che si libera dal marcatore'},
   huck:{n:'Lanciatore lungo',keys:['spa','lan'],d:'Sparo e Lancio: per gli huck che arrivano in meta'},
-  sal:{n:'Saltatore',keys:['sal','pre','tuf'],d:'Salto, Presa e Tuffo: le prese contese e i layout'},
+  sal:{n:'Saltatore',keys:['sal','pre','tuf'],d:'Salto, Presa e Tuffo: le prese contese e i tuffi'},
   vel:{n:'Scattista',keys:['vel','sca','agi'],d:'Velocità, Scatto e Agilità: il cutter che brucia il marcatore'},
   gua:{n:'Guardiano',keys:['dif','tuf','res'],d:'Difesa, Tuffo e Resistenza: il difensore che non molla mai'},
   let:{n:'Lettore di gioco',keys:['vis','pre'],d:'Visione e Presa: la scelta giusta, le mani sicure'}

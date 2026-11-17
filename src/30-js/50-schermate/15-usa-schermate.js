@@ -80,12 +80,12 @@ function usStakes(m){
 }
 // ---- scelta del campionato e della Conference (schermata «Scegli la tua squadra») ----
 let teamLg='IT',teamCf='NE';
-const usPrevCache={},usPreview=n=>usPrevCache[n]||(usPrevCache[n]=Math.round(rosterPower(usRoster(n,'preview|'+n))));   // forza con cui si parte davvero (rosa un po' meno allenata)
+const usPrevCache={},usPreview=n=>usPrevCache[n]||(usPrevCache[n]=Math.round(rosterPower(usRoster(n,'preview|'+n))));   // forza con cui si parte davvero
 function renderTeamsUS(){
   $('tMode').classList.add('hidden');$('tRelief').classList.add('hidden');$('tTeams').classList.remove('hidden');
   $('tSr').innerHTML=US_CK.map(c=>`<button type="button" data-k="${c}">${US_CONF[c]}</button>`).join('');
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamCf);
-  $('tNote').textContent='Men’s Club USA: 48 club veri nelle 8 regioni di USA Ultimate, 6 per Conference. Si gioca nella propria Conference (5 giornate) e contro un club di ciascuna delle altre 7 Conference (interregionali), poi Play-in e Nationals a 16 squadre. Le Conference non cambiano mai: niente promozioni e retrocessioni. Il numero accanto al nome è la forza del club; i più prestigiosi partono più forti, ma le gerarchie cambiano negli anni.';
+  $('tNote').textContent='Men’s Club USA: 48 club veri in 8 Conference da 6. Giochi 5 partite nella tua Conference e 7 contro le altre (interregionali), poi Play-in e Nationals. Niente promozioni né retrocessioni. Il numero accanto al nome è la forza del club.';
   $('tTeams').innerHTML=US_BYCONF[teamCf].slice().sort((a,b)=>favFirst(a,b)||US_TEAM[a].rank-US_TEAM[b].rank).map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${favMark(n)}${esc(n)}<small class="tcity">${esc(US_TEAM[n].city)} · n° ${US_TEAM[n].rank}</small></span></span><b class="tp">${usPreview(n)}</b></button>`).join('');
 }
 // ---- Classifica ----
@@ -147,7 +147,7 @@ function usPoolHTML(p,N){
 function usNatView(){
   const U=SV.us,N=U.nat;
   if(!N){
-    let h=`<p class="estat">Nationals · 16 squadre ${infoB('unat')}</p>${infoX('unat',`<p>Ci vanno 16 squadre: per ogni Conference le qualificate dirette e le vincitrici dei Play-in, secondo i posti della regione (da 1 a 4). Gironi da 4 formati con le fasce del ranking nazionale, senza club della stessa Conference nello stesso girone se possibile. Le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono eliminate. Poi quarti, semifinali e finale.</p>`)}`;
+    let h=`<p class="estat">Nationals · 16 squadre ${infoB('unat')}</p>${infoX('unat',`<p>16 squadre: per ogni Conference le qualificate dirette e le vincitrici dei Play-in, secondo i posti della regione (da 1 a 4). 4 gironi da 4, formati con le fasce del ranking nazionale (se possibile senza club della stessa Conference nello stesso girone). Le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono eliminate. Poi quarti, semifinali e finale.</p>`)}`;
     if(U.fin){
       h+=US_CK.map(c=>{const o=U.fin[c];return `<h3 class="eh">${usConfName(c)}</h3><ul class="elist"><li><span>Diretta: ${esc(o[0])}</span><span>${o[0]===SV.team?'Voi':''}</span></li></ul>`;}).join('');
     }else h+='<p class="note">I qualificati si conoscono alla fine della stagione regolare.</p>';
@@ -163,7 +163,7 @@ function usRankView(){
   const arr=d=>`<td style="color:${d>0?'#4fe58f':(d<0?'#ff7b80':'inherit')}">${d>0?'▲'+d:(d<0?'▼'+(-d):'–')}</td>`,pl=U.ph==='reg'?U.pl:null;
   const rows=usRankList().map((n,i)=>{const d=pos0[n]-(i+1),cf=usConfOf(n),dl=pl&&pl[n]?pl[n]-(i+1):0;
     return `<tr class="${n===SV.team?'me':''}"><td>${i+1}. ${crest(n,15)} ${esc(n)}</td><td>${cf}</td><td>${Math.round(U.pr[n])}</td>${arr(dl)}${arr(d)}</tr>`;}).join('');
-  return `<p class="estat">Ranking nazionale ${infoB('urank')}</p>${infoX('urank',`<p>Cresce con le vittorie, più se l’avversaria è forte e se il margine è largo; cala con le sconfitte. Si aggiorna dopo ogni partita, comprese le 7 interregionali (una contro un club di ciascuna delle altre Conference): è il ranking che decide quanti posti ai Nationals ha ogni regione, le teste di serie e i gironi. E = Eastern, W = Western, C = Central, S = Southern; le frecce sono il cambio dall’ultima giornata e da inizio stagione.</p>`)}<div style="overflow-x:auto"><table class="rt"><tr><th>Club</th><th>Conf.</th><th>Punti</th><th>Giorn.</th><th>Stag.</th></tr>${rows}</table></div>`;
+  return `<p class="estat">Ranking nazionale ${infoB('urank')}</p>${infoX('urank',`<p>Sale con le vittorie (di più contro avversarie forti e con margini larghi) e scende con le sconfitte. Si aggiorna dopo ogni partita, comprese le 7 interregionali. Decide quanti posti ai Nationals ha ogni regione, le teste di serie e i gironi. E = Eastern, W = Western, C = Central, S = Southern; le frecce mostrano il cambio dall’ultima giornata e da inizio stagione.</p>`)}<div style="overflow-x:auto"><table class="rt"><tr><th>Club</th><th>Conf.</th><th>Punti</th><th>Giorn.</th><th>Stag.</th></tr>${rows}</table></div>`;
 }
 function renderEventUS(){
   const U=SV.us,sub=SV.done?'Stagione conclusa.':(U.ph==='reg'?usRegSub()+'.':US_PHASE_NAME[U.ph]+'.');
