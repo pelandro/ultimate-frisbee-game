@@ -71,6 +71,12 @@ function tapSwap(id){
     persist();swapSel=null;
   }else swapSel=id;
 }
+// cambia tutta la formazione in una volta (blockIds); in carriera vale anche per le prossime mete della stessa linea, come un cambio singolo
+function swapAll(){
+  const ids=blockIds(blockDef());if(!ids)return;
+  setLineup(ids);if(G.inMatch&&G.lines&&G.lineK)G.lines[G.lineK]=lineupIds();
+  persist();swapSel=null;
+}
 const openDet=new Set();
 let rView=(()=>{try{return localStorage.getItem('ultimate-vista-rosa')==='t'?'t':'c';}catch(e){return 'c';}})(),cardOpen=null,nickEdit=null,rOrd=[];   // vista: carte (c) o tabella (t)
 // filtri e ordinamenti della Rosa: con 20 e piu' giocatori servono per trovare subito chi cerchi
@@ -187,7 +193,7 @@ function renderLineupBox(){
   // l'Overall accanto al nome: senza, per scegliere chi entra bisognava ricordarsi la rosa a memoria
   const on=new Set(T[0].map(p=>p.id));
   const chip=p=>`<button type="button" class="${on.has(p.id)?'on':''} ${swapRole(p.id)}${p.inj?' inj':''}" data-id="${p.id}"><span class="rn">${avatar(p,26)}<span>${p.name}<small>${p.inj?`infortunato, ${p.inj} ${p.inj>1?'partite':'partita'}`:(p.role==='H'?'handler':'cutter')}</small></span><b class="ov luov ${ovrCls(ovr(p))}">${ovr(p)}</b></span><span class="eb"><i style="width:${Math.round(p.st)}%;background:${barColor(p.st)}"></i></span></button>`;
-  $('subBox').innerHTML=`${selBanner()}<p class="lu-h">In campo</p><div class="lu">${T[0].map(chip).join('')}</div><p class="lu-h">Panchina</p><div class="lu">${SQ.filter(p=>!on.has(p.id)).map(chip).join('')}</div>`;
+  $('subBox').innerHTML=`${selBanner()}<p class="lu-h lu-hr">In campo${blockIds(blockDef())?`<button type="button" class="sec lu-all" data-all="1" title="Fa entrare i 7 migliori della panchina al posto di tutti quelli in campo">Cambia tutti e 7</button>`:''}</p><div class="lu">${T[0].map(chip).join('')}</div><p class="lu-h">Panchina</p><div class="lu">${SQ.filter(p=>!on.has(p.id)).map(chip).join('')}</div>`;
   $('bSubGo').disabled=mustSub();$('bSubAuto').classList.toggle('hidden',!T[0].some(p=>p.inj));
 }
 function standingsHTML(sr){

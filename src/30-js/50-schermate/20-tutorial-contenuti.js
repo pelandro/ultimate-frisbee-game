@@ -102,7 +102,7 @@ tip:`Non premere a caso: nell’handblock conta il tempismo, il verde vale molti
 tip:`Contro la zona: Orizzontale o Weave. Contro l’uomo: Verticale o Stack laterale. Cambia schema ogni due o tre mete.`},
 {id:'sch-cambi',t:'Cambi, energia e infortuni',b:[
 `Ogni scatto consuma <b>energia</b>: un giocatore stanco è più lento (sotto di lui compare una barretta).`,
-`Con i «cambi intelligenti» chi è stanco esce da solo; a inizio meta puoi cambiare a mano con <b>Cambi</b>. Le linee si scelgono in Squadra.`,
+`Con i «cambi intelligenti» chi è stanco esce da solo; a inizio meta puoi cambiare a mano con <b>Cambi</b>: tocca due giocatori per scambiarli, oppure <b>Cambia tutti e 7</b> per far entrare i 7 migliori della panchina in un colpo (di nuovo e tornano i primi). Le linee si scelgono in Squadra.`,
 `Un giocatore molto stanco rischia di <b>infortunarsi</b> a fine meta: l’infortunato salta da 1 a 3 partite.`],
 tip:`Ruota i giocatori: un titolare fresco rende più di una stella sfinita.`},
 {id:'sch-tempo',t:'Timeout, intervallo, pausa e simulazione',b:[

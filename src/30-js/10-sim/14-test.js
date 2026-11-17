@@ -239,6 +239,26 @@ function selfTestPlan(opt){
     out.push(row('T1: quota dei primi passaggi a C4 (come da schema) con Visione 30 e 90',pc(lo)+' e '+pc(hi),hi>=lo+0.1&&hi>=0.4,'a Visione alta lo schema e\u2019 eseguito piu\u2019 alla lettera'));
     return out;
   }]);
+  S.steps.push(['Cambia tutti e 7',()=>{
+    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    newGame();G.inMatch=true;placeTeams(0);
+    const first=new Set(lineupIds()),set=ids=>[...ids].sort((a,b)=>a-b).join(),healthy=SQ.filter(p=>!p.inj).length;
+    // 1) i 7 piu' forti sono in campo: entrano i secondi 7 (nessuno dei primi), con 3 handler e 4 cutter
+    const b1=blockIds(false),out1=b1&&b1.every(id=>!first.has(id)),roles=b1?b1.map(id=>SQ[id].role).sort().join(''):'';
+    const top7=pickSeven(SQ,p=>p.role,ovrX).map(p=>p.id),rest=pickSeven(SQ.filter(p=>!top7.includes(p.id)),p=>p.role,ovrX).map(p=>p.id);
+    const okSecond=!!b1&&set(first)===set(top7)&&set(b1)===set(rest);
+    // 2) premendolo di nuovo tornano i primi 7
+    setLineup(b1);const b2=blockIds(false),okBack=!!b2&&set(b2)===set(first);
+    // 3) un infortunato in panchina non entra; con meno di 7 sani in panchina entrano tutti e restano i migliori
+    setLineup([...first]);const hurt=SQ.find(p=>!first.has(p.id));hurt.inj=2;const b3=blockIds(true),okInj=!!b3&&!b3.includes(hurt.id)&&b3.length===7;hurt.inj=0;
+    const bench=SQ.filter(p=>!first.has(p.id));bench.slice(0,bench.length-3).forEach(p=>{p.inj=1;});const b4=blockIds(false);
+    const okFew=!!b4&&b4.length===7&&new Set(b4).size===7&&bench.slice(-3).every(p=>b4.includes(p.id));bench.forEach(p=>{p.inj=0;});
+    // 4) senza nessuno in panchina non c'e' niente da cambiare
+    const all=SQ.slice();SQ.length=7;setLineup(SQ.map(p=>p.id));const none=blockIds(false)===null;all.forEach((p,i)=>{SQ[i]=p;});
+    setLineup([...first]);
+    return [row('Cambia tutti e 7: entrano i secondi 7 più forti (3 handler e 4 cutter) e premendolo di nuovo tornano i primi',(okSecond&&out1?'sì':'no')+', '+roles+', '+(okBack?'tornano':'non tornano'),okSecond&&out1&&roles==='CCCCHHH'&&okBack&&healthy>=14),
+      row('Cambia tutti e 7: salta gli infortunati; con meno di 7 in panchina entrano tutti; senza panchina non fa nulla',(okInj?'sì':'no')+', '+(okFew?'sì':'no')+', '+(none?'sì':'no'),okInj&&okFew&&none)];
+  }]);
   S.steps.push(['Compagni lontani dal portatore e tuffi che finiscono',()=>{
     const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
     newGame();G.auto=true;G.lvl=[0,0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();G.startRec=0;G.nextRec=0;startPoint(0);
@@ -254,7 +274,11 @@ function selfTestPlan(opt){
     }
     const okNear=n1>=5&&near>=TEAM_R-0.5;
     // 2) in una partita intera di un punto: nessun compagno resta sotto i 2,5 m dal portatore
-    let minP=99,fr=0;g=0;while(g++<60*90&&G.mode==='play'){update(1/60);const H=G.holder;if(H&&!G.flight&&!G.walk&&G.holdT>0.5){fr++;for(const m of T[H.t])if(m!==H)minP=Math.min(minP,hyp(m.x-H.x,m.y-H.y));}}
+    let minP=99,fr=0;
+    for(let k=0;k<6&&fr<=30;k++){   // se il punto in corso finisce subito (dipende dal seme) se ne gioca un altro: servono abbastanza fotogrammi con il disco in mano
+      if(k>0){G.mode='ready';startPoint(G.nextRec);}
+      g=0;while(g++<60*90&&(G.mode==='play'||G.mode==='ready')){update(1/60);const H=G.holder;if(H&&G.mode==='play'&&!G.flight&&!G.walk&&G.holdT>0.5){fr++;for(const m of T[H.t])if(m!==H)minP=Math.min(minP,hyp(m.x-H.x,m.y-H.y));}}
+    }
     // 3) un tuffo senza chiusura (intercetto lungo la traiettoria, Salta) non lascia nessuno a terra
     const p1=T[0][2],p2=T[0][3],p3=T[1][1];
     p1.dv={t0:0,dir:1,end:null};G.dive=null;update(1/60);const orph=p1.dv.end!==null;
