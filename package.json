@@ -13,7 +13,8 @@
     "test:layout": "node tools/test-layout.js",
     "confronto": "node tools/overlap.js",
     "prepare": "node tools/setup-hooks.js",
-    "mappa": "node tools/mappa.js"
+    "mappa": "node tools/mappa.js",
+    "bilanci": "node tools/test-bilanci.js"
   },
   "engines": {
     "node": ">=18"
