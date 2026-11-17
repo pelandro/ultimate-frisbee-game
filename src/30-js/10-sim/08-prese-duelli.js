@@ -88,10 +88,11 @@ function finishTurn(f,p,msg,spot){
 function turnover(newTeam,x,y,picker,msg,benefit){
   const spot={x:clamp(x,1,FIELD_L-1),y:clamp(y,1,FIELD_W-1)};
   const pk=picker||nearestTo(T[newTeam],spot.x,spot.y);
-  // nessun teletrasporto: chi raccoglie corre fino al disco (G.walk, fase 0) e da li' si riparte. Se il disco cade nella meta che il nuovo
-  // possessore attacca non si gioca li': dopo averlo raccolto cammina fino alla linea di meta (fase 1), come dice il regolamento
-  const ez=!picker&&inEZ(spot,newTeam);
-  if(ez){const dr=dirOf(newTeam),line=dr>0?FIELD_L-EZ:EZ;G.walk={pick:{x:spot.x,y:spot.y},line:{x:line-dr*0.6,y:clamp(spot.y,2.5,FIELD_W-2.5)},stage:0};pk.vx=pk.vy=0;}
+  // nessun teletrasporto: chi raccoglie corre fino al disco (G.walk, fase 0) e da li' si riparte. Se si riparte da dentro una meta (quella che il
+  // nuovo possessore attacca o quella che difende, per esempio dopo un handblock o un blocco nella meta avversaria) non si gioca li': dopo averlo
+  // raccolto cammina fino al punto piu' vicino della linea di quella meta (fase 1), come dice il regolamento
+  const ez=spot.x<EZ||spot.x>FIELD_L-EZ;
+  if(ez){const lx=spot.x<EZ?EZ+0.6:FIELD_L-EZ-0.6;G.walk={pick:{x:spot.x,y:spot.y},line:{x:lx,y:clamp(spot.y,2.5,FIELD_W-2.5)},stage:0};pk.vx=pk.vy=0;}
   else if(hyp(pk.x-spot.x,pk.y-spot.y)>0.8){G.walk={pick:{x:spot.x,y:spot.y},line:null,stage:0};pk.vx=pk.vy=0;}
   else{pk.x=spot.x;pk.y=spot.y;pk.vx=pk.vy=0;G.walk=null;}
   G.open=false;
