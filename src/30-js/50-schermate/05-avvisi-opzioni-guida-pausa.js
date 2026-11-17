@@ -10,7 +10,7 @@ function renderAlerts(){
       else if(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)act=`<button type="button" class="go" data-al="${a.id}" data-do="yes">Accetta (+${SV.offer.price})</button><button type="button" class="sec" data-al="${a.id}" data-do="no">Rifiuta</button>`;
       else if(a.act==='unhappy'&&p.mood===2)act=`<button type="button" class="sec" data-al="${a.id}" data-do="prom">Promettigli spazio</button><button type="button" class="sec" data-al="${a.id}" data-do="sell">Cedilo (+${sellValue(p)})</button>`;
     }
-    return `<div class="ali${a.seen?'':' new'}" data-ai="${a.id}"${a.seen?'':' title="Tocca per segnarlo come letto"'}><span class="alk" style="background:${kd[1]}">${kd[0]}</span><div><p>${esc(a.txt)}</p>${a.res?`<div class="res">${esc(a.res)}</div>`:''}${act?`<div class="schrow">${act}</div>`:''}<small>Stagione ${a.s} · giornata ${a.r}</small></div></div>`;
+    return `<div class="ali${a.seen?'':' new'}" data-ai="${a.id}"${a.seen?'':' title="Tocca per segnarlo come letto"'}><span class="alk" style="background:${kd[1]}">${kd[0]}</span><div><p>${esc(a.txt)}</p>${a.k==='mkt'&&a.data&&a.data.mv?`<ul class="almv">${a.data.mv.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}${a.res?`<div class="res">${esc(a.res)}</div>`:''}${act?`<div class="schrow">${act}</div>`:''}<small>Stagione ${a.s} · giornata ${a.r}</small></div></div>`;
   };
   // tre gruppi: da decidere (scelte in sospeso), novita' (non lette), cronologia
   const open=a=>!a.done&&(a.act==='job'||a.act==='trade'||(a.full&&byFull(a.full)&&((a.act==='stay'&&byFull(a.full).ret===1)||(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)||(a.act==='unhappy'&&byFull(a.full).mood===2))));

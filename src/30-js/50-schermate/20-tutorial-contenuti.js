@@ -270,6 +270,7 @@ tip:`Nei playoff ogni partita conta: giocale tu e usa bene i cambi.`},
 [`<b>Ritiri</b>: un giocatore prima fa capire che ci pensa, poi annuncia l’ultima stagione: puoi chiedergli un altro anno con un premio di permanenza (un solo tentativo). Chi lascia il segno entra nella Hall of Fame.`,
 `<b>Spogliatoio</b>: un buon giocatore che resta fuori a lungo diventa scontento e poi chiede la cessione (vendilo o promettigli spazio; se non mantieni la promessa se ne va gratis).`,
 `<b>Offerte</b>: ogni tanto una squadra più importante chiede uno dei tuoi migliori: accetti o rifiuti entro la partita successiva.`,
+`<b>Mercato delle altre squadre</b>: a inizio stagione una notizia riassume i colpi più grandi dell’estate tra i club del computer (acquisti, scambi, svincolati): guardala per sapere chi si è rinforzato.`,
 `<b>Infortuni seri</b> possono lasciare un piccolo calo fisico al rientro.`]],
 tip:`Un buon giocatore in panchina troppo a lungo ti lascia: ruotalo oppure promettigli spazio.`},
 {id:'car-extra',t:'Conferenze, imprevisti e traguardi',b:[
