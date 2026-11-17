@@ -212,7 +212,7 @@ function usRoster(club,seedStr,opt){
     });
     const d=T-rosterPower(out);if(Math.abs(d)<0.35)break;off=clamp(off+d,-34,16);
   }
-  out=ovrFix(club,out,seedStr,'US',opt.low);   // rosa del foglio di revisione 2026 (38-ovr/01-applica.js)
+  out=ovrFix(club,out,seedStr,'US');   // rosa del foglio di revisione 2026 (38-ovr/01-applica.js)
   const cnt={};for(const o of out)cnt[o.n]=(cnt[o.n]||0)+1;
   for(const o of out)if(cnt[o.n]>1)o.n=o.sur+' '+(o.label||'?')[0]+'.';   // due compagni con lo stesso cognome: si aggiunge l'iniziale
   return out;

@@ -161,11 +161,11 @@ function realRoster(rows,seedStr,opt){
     if(cnt[disp]>1){disp=sn(o)+' '+first(o)[0]+'.';if(used[disp])disp=sn(o)+' '+first(o);}
     used[disp]=1;
     // GIOCATORE CON OVERALL ASSEGNATO (o.ov, dalla revisione 2026): statistiche esatte per quel valore (utStats) nel ruolo noto (o.rl) oppure in quello che
-    // dicono le sue statistiche; non seguono lo spostamento della squadra (off). La tua rosa parte un po' meno allenata come gli altri (low). Il potenziale usa lo stesso
+    // dicono le sue statistiche; non seguono lo spostamento della squadra (off). Vale anche per la tua rosa: l'abbassamento di partenza (low) non tocca chi ha l'Overall assegnato. Il potenziale usa lo stesso
     // margine per eta' dei compagni (realGap), sul suo Overall.
     if(o.ov){
-      const L=opt.low?o.ov*0.9+5.5:o.ov,rl=o.rl||role,st0=utStats(rl,Math.round(L),mulberry32(hashStr(seedStr+'|ov|'+full)));
-      if(o.ld&&rl==='H')statsLineaDifesa(st0,Math.round(L));
+      const rl=o.rl||role,st0=utStats(rl,o.ov,mulberry32(hashStr(seedStr+'|ov|'+full)));
+      if(o.ld&&rl==='H')statsLineaDifesa(st0,o.ov);
       const rr=rl==='H'?'H':'C',dd=rl==='H'?0.4:-0.4,tgf=x=>clamp(Math.round(o.ov+gp+x+(R(0,12)-6)/3),45,99);   // come per gli altri: ogni gruppo di statistiche parte dal suo livello (un handler ha i lanci piu' alti del fisico)
       const mx=ks=>Math.max(...ks.map(k=>st0[k])),tl=Math.max(tgf(9*dd),mx(['lan','buc','spa'])),tv=Math.max(tgf(3*dd),st0.vis),tf=Math.max(tgf(-7*dd),mx(KEYS.filter(k=>!['lan','buc','spa','vis'].includes(k))));   // mai sotto le statistiche che ha gia'
       const od={n:disp,label:o.gen?first(o):(o.nm+' '+o.sur),full,sur:o.sur,r:rr,age,tl,tf,tv,s:st0,a:o.a,g:o.g,gen:false,f:o.f,tot,trait:traitFor(full,st0,rr),dev:devOf(full)};

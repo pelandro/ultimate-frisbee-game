@@ -99,7 +99,7 @@ function lnRoster(club,seedStr,opt){
     const d=P-rosterPower(out);if(Math.abs(d)<0.35)break;
     off=nFix?clamp(off+d,0,4):clamp(off+d,-8,8);   // con i fissi si puo' solo alzare (se i fissi portano la rosa sopra il club, resta sopra)
   }
-  out=ovrFix(club,out,seedStr,'LN',opt.low);   // rosa del foglio di revisione 2026 (38-ovr/01-applica.js)
+  out=ovrFix(club,out,seedStr,'LN');   // rosa del foglio di revisione 2026 (38-ovr/01-applica.js)
   const cnt={};for(const o of out)cnt[o.n]=(cnt[o.n]||0)+1;
   for(const o of out)if(cnt[o.n]>1)o.n=o.sur+' '+(o.label||'?')[0]+'.';   // due compagni con lo stesso cognome: si aggiunge l'iniziale
   return out;
