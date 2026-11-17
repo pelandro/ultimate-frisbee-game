@@ -128,6 +128,9 @@ function duelScore(f,a,d,reach){
   const sa=base(a,true)+(f.intended===a.p?4:0)+(a.p.s.pre-60)*0.22+early+qual+run(a)-f.sp.cd*40+(hi&&hasT(a.p,'sky')?7:0),sd=base(d,false)+run(d)+(hasT(d.p,'lock')?5:0)+(hi&&hasT(d.p,'sky')?7:0);
   return {sa,sd};
 }
+// SALTO DA FERMO O IN CORSA: dove stava il giocatore JUMP_LOOK secondi prima della presa (dalla sua velocita'): oltre JUMP_STILL metri dal punto d'arrivo e' arrivato correndo
+const JUMP_STILL=2.5,JUMP_LOOK=0.8;
+const jumpRun=(p,f)=>hyp(p.x-(p.vx||0)*JUMP_LOOK-f.tx,p.y-(p.vy||0)*JUMP_LOOK-f.ty)>JUMP_STILL;
 function duel(f,a,d,reach){
   const hi=f.high,{sa,sd}=duelScore(f,a,d,reach),rA=rnd(0,16),rD=rnd(0,16);   // il caso pesa meno: decidono di piu' statistiche, posizione e tempismo
   const resolve=b=>(sa+rA+(a.p.t===0?b*22:0))>=(sd+rD+(d.p.t===0?b*22:0))?'att':'def';
@@ -136,7 +139,8 @@ function duel(f,a,d,reach){
     if(out==='att'){f._duel=true;catchBy(f,a.p,hi?'Presa in salto!':'Presa contesa!');}
     else finishTurn(f,d.p,hi?'Bloccato in salto!':'Intercetto!',{x:f.tx,y:f.ty});
   };
-  if(hi&&G.opt.cine&&!G.noCine&&HOOKS.cine&&defEvt(f))HOOKS.cine({kind:'jump',a:a.p,d:d.p,resolve,apply});
+  // nella scena laterale chi era gia' vicino al punto della presa salta da fermo, chi arrivava da lontano entra di corsa (jumpRun)
+  if(hi&&G.opt.cine&&!G.noCine&&HOOKS.cine&&defEvt(f))HOOKS.cine({kind:'jump',a:a.p,d:d.p,runA:jumpRun(a.p,f),runD:jumpRun(d.p,f),resolve,apply});
   else apply(resolve(0));
 }
 function diveChain(f,L,atk,def,reach){

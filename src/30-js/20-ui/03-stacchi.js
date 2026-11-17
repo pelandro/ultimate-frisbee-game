@@ -1,6 +1,5 @@
 /* ---- stacchi laterali: salto e tuffo ----
-   Stesso stile del campo: tutto a pixel interi con contorno scuro. Le figure nascono come disegno vettoriale (figure) e vengono
-   trasformate in pixel da athlete(): buffer piccolo, colori netti e ridotti, contorno di 1 pixel. Sfondo e interfaccia sono in drawCine. */
+   Stesso stile del campo: tutto a pixel interi con contorno scuro. Le figure sono sprite a pixel grossi (athlete, sotto). Sfondo e interfaccia sono in drawCine. */
 let cine=null;
 const easeIO=t=>t*t*(3-2*t);
 const bez=(p0,p1,p2,t)=>{const a=1-t;return {x:a*a*p0.x+2*a*t*p1.x+t*t*p2.x,y:a*a*p0.y+2*a*t*p1.y+t*t*p2.y};};
@@ -39,35 +38,32 @@ function endCine(){
 }
 function skipCine(){const c=cine;if(!c)return;if(c.phase==='aim')cineResolve(c);endCine();}
 
-// capsula rastremata (arto, busto) con contorno
-function capsule(p0,p1,w0,w1,c){
-  const dx=p1[0]-p0[0],dy=p1[1]-p0[1],l=Math.hypot(dx,dy)||1,nx=-dy/l,ny=dx/l;
-  ctx.fillStyle=c;ctx.beginPath();
-  ctx.moveTo(p0[0]+nx*w0/2,p0[1]+ny*w0/2);ctx.lineTo(p1[0]+nx*w1/2,p1[1]+ny*w1/2);ctx.lineTo(p1[0]-nx*w1/2,p1[1]-ny*w1/2);ctx.lineTo(p0[0]-nx*w0/2,p0[1]-ny*w0/2);ctx.closePath();ctx.fill();
-  ctx.beginPath();ctx.arc(p0[0],p0[1],w0/2,0,6.283);ctx.fill();ctx.beginPath();ctx.arc(p1[0],p1[1],w1/2,0,6.283);ctx.fill();
-}
-const capO=(p0,p1,w0,w1,c,o)=>{capsule(p0,p1,w0+o,w1+o,'rgba(8,14,30,.6)');capsule(p0,p1,w0,w1,c);};
-// catena di segmenti rastremati: prima tutti i contorni, poi tutti i riempimenti (niente linee scure nelle giunture)
-function chain(pts,ws,c,o){
-  for(let i=0;i<pts.length-1;i++)capsule(pts[i],pts[i+1],ws[i]+o,ws[i+1]+o,'rgba(8,14,30,.6)');
-  for(let i=0;i<pts.length-1;i++)capsule(pts[i],pts[i+1],ws[i],ws[i+1],c);
-}
-// sagoma chiusa e morbida che passa attraverso i punti, con contorno (mode 1: solo contorno, 2: solo riempimento)
-function blob(pts,fill,o,mode){
-  const n=pts.length,mid=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];
-  const path=()=>{const m0=mid(pts[n-1],pts[0]);ctx.beginPath();ctx.moveTo(m0[0],m0[1]);for(let i=0;i<n;i++){const m=mid(pts[i],pts[(i+1)%n]);ctx.quadraticCurveTo(pts[i][0],pts[i][1],m[0],m[1]);}ctx.closePath();};
-  if(mode!==2){path();ctx.lineJoin='round';ctx.strokeStyle='rgba(8,14,30,.6)';ctx.lineWidth=o*2;ctx.stroke();}
-  if(mode!==1){path();ctx.fillStyle=fill;ctx.fill();}
-}
-function figure(hu,col,pose,tt,who){
-  const lk=(who&&who.look)||DEF_LOOK,un=UNI[(who&&who.t)||0]||UNI[0],skin=lk.skin,bw=lk.bw,o=hu*0.026;
-  const sc=a=>a.map(q=>[q[0]*hu,q[1]*hu]);
+/* ---- OMINI A PIXEL: le figure delle scene laterali sono disegnate direttamente su una griglia grossa (di solito 1 pixel dell'omino = 1 pixel del gioco:
+   un omino in piedi e' alto circa 75 pixel, testa compresa), con bordi netti e senza sfumature: arti e busto sono segmenti e poligoni riempiti pixel per pixel,
+   la testa e' uno sprite disegnato a mano (squadrata, profilo verso destra). Ogni materiale ha tre toni: luce sul bordo in alto e sul davanti,
+   ombra sotto e dietro, base in mezzo; linea scura dove un materiale finisce su un altro e contorno quasi nero tutt'intorno, come gli sprite a 8 bit.
+   Lo scheletro delle pose (skelOf) e' in unita' hu dall'anca, come prima: mani e disco restano allineati (handPos). */
+// teste (12x13, profilo verso destra): S pelle, s pelle in ombra, H capelli, h capelli scuri, E occhio, M bocca, W elastico della coda. Stili come makeLook:
+// 0 corti a ciuffi, 1 medi, 2 lunghi, 3 coda, 4 rasati. [righe, centro x, centro y]: il centro e' il punto che sta sopra la spalla
+const PX_HEAD=[
+ [["...H..H.....","..HHH.HH.H..",".HHHHHHHHHH.","HHHHHHHHHHH.","hHHHHHhHHHH.","hHHHhSSShHH.","hHHhSSSSShS.","hHsSSSSSESS.","hhsSsSSSESSS",".hsSSSSSSSS.","..sSSSSSMSS.","...sSSSSSS..",".....ssSS..."],6,6],
+ [["............","...HHHHHH...",".HHHHHHHHHH.","HHHHHHHHHHH.","hHHHHHhHHHH.","hHHHhSSShHH.","hHHhSSSSShS.","hHHSSSSSESS.","hhHSsSSSESSS","hhHSSSSSSSS.","hhhSSSSSMSS.","...sSSSSSS..",".....ssSS..."],6,6],
+ [["............","...HHHHHH...",".HHHHHHHHHH.","HHHHHHHHHHH.","hHHHHHhHHHH.","hHHHhSSShHH.","hHHhSSSSShS.","hHhSSSSSESS.","hhhSsSSSESSS","hhhSSSSSSSS.","hHhSSSSSMSS.","hHhsSSSSSS..","hHh..ssSS...","hHh.........","hHh.........","hhh........."],6,6],
+ [["...............","......HHHHHH...","....HHHHHHHHHH.","...HHHHHHHHHHH.",".hHWHHHHHhHHHH.","hHHWHHHhSSShHH.","hH.hHHhSSSSShS.",".h.hHsSSSSSESS.","...hhsSsSSSESSS","....hsSSSSSSSS.",".....sSSSSSMSS.","......sSSSSSS..","........ssSS..."],9,6],
+ [["............","............",".hhhhhhhhhh.","hhhhhhhhhhh.","hhhhhhhhhhh.","ssSSSSSSSSS.","ssSSSSSSShS.","sssSSSSSESS.","sssSsSSSESSS",".ssSSSSSSSS.","..sSSSSSMSS.","...sSSSSSS..",".....ssSS..."],6,6]
+];
+const OUTRGB=[14,12,24];
+const pxRgb=c=>{if(c[0]==='#'){const n=parseInt(c.slice(1),16);return [n>>16,(n>>8)&255,n&255];}const m=c.match(/[\d.]+/g);return [+m[0],+m[1],+m[2]];};
+const pxTone=(c,k)=>c.map(v=>Math.round(k<0?v*(1+k):v+(255-v)*k));
+const OZ=hu=>Math.max(1,Math.round(hu/20));   // grandezza del pixel dell'omino in pixel del gioco: nelle scene hu vale 37-43, quindi 2 (pixel grossi, come gli sprite a 8 bit; la testa di 12 pixel e' circa mezzo hu)
+// scheletro della posa in unita' hu (0,0 = anca, y verso il basso, profilo verso destra): gambe L, braccia A (spalla, gomito, mano), spalla sh
+function skelOf(pose,tt){
   let L,A,sh=[0,-0.52];
   if(pose==='up'){
     L=[[[-0.05,0],[-0.13,0.42],[-0.42,0.66]],[[0.06,0],[-0.03,0.45],[-0.3,0.74]]];
-    A=[[[-0.1,-0.48],[-0.1,-0.95],[-0.06,-1.38]],[[0.1,-0.48],[0.12,-0.95],[0.14,-1.38]]];sh=[-0.04,-0.52];
+    A=[[[-0.1,-0.48],[-0.3,-0.26],[-0.36,-0.02]],[[0.1,-0.48],[0.1,-0.95],[0.06,-1.38]]];sh=[-0.04,-0.52];   // salto a una mano: quella vicina va al disco, l'altra resta indietro per l'equilibrio
   }else if(pose==='dive'){
-    L=[[[-0.03,0],[-0.06,0.5],[-0.03,0.96]],[[0.04,0],[0.1,0.52],[0.22,0.94]]];   // tuffo: gambe quasi sull'asse del corpo, cosi' i pantaloncini non sporgono oltre la maglia
+    L=[[[-0.03,0],[-0.06,0.5],[-0.03,0.96]],[[0.04,0],[0.1,0.52],[0.22,0.94]]];
     A=[[[-0.08,-0.48],[-0.06,-0.95],[-0.03,-1.4]],[[0.08,-0.48],[0.09,-0.95],[0.1,-1.4]]];
   }else if(pose==='run'){
     sh=[0.14,-0.52];L=[];A=[];
@@ -80,121 +76,120 @@ function figure(hu,col,pose,tt,who){
     }
   }else{
     const b=Math.sin(tt*6)*0.02;
-    L=[[[-0.08,0],[-0.18,0.45+b],[-0.15,0.9]],[[0.08,0],[0.2,0.45+b],[0.13,0.9]]];
-    A=[[[-0.12,-0.46],[-0.3,-0.3],[-0.2,-0.1]],[[0.12,-0.46],[0.32,-0.32],[0.36,-0.1]]];
+    L=[[[-0.09,0],[-0.17,0.45+b],[-0.16,0.9]],[[0.09,0],[0.2,0.45+b],[0.14,0.9]]];
+    A=[[[-0.08,-0.46],[-0.3,-0.3],[-0.36,-0.08]],[[0.08,-0.46],[0.27,-0.34],[0.42,-0.48]]];   // pronto: braccio vicino avanti e in alto (pronto a saltare), l'altro indietro: entrambi fuori dal busto
   }
-  const Ls=L.map(sc),As=A.map(sc),shp=[sh[0]*hu,sh[1]*hu];
-  const mix=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];
-  const leg=l=>{
-    const [hp,kn,ft]=l;
-    // sistema di riferimento di un segmento: t lungo l'osso, s>0 dietro, s<0 davanti
-    const frame=(p0,p1)=>{const dx=p1[0]-p0[0],dy=p1[1]-p0[1],ln=Math.hypot(dx,dy)||1,ux=dx/ln,uy=dy/ln,nx=-uy,ny=ux;return (t,s)=>[p0[0]+ux*ln*t+nx*s*hu,p0[1]+uy*ln*t+ny*s*hu];};
-    const fa=frame(hp,kn),fb=frame(kn,ft);
-    const thigh=[fa(0.1,0),fa(0.12,0.075*bw),fa(0.3,0.088*bw),fa(0.7,0.066),fa(1.02,0.05),fa(1.07,0),fa(1.02,-0.05),fa(0.7,-0.066),fa(0.3,-0.082*bw),fa(0.12,-0.075*bw)];   // coscia piena in alto, ginocchio stretto
-    const shin=[fb(-0.05,0),fb(0,0.056),fb(0.22,0.092),fb(0.5,0.07),fb(0.78,0.048),fb(1.0,0.04),fb(1.05,0),fb(1.0,-0.04),fb(0.75,-0.042),fb(0.45,-0.05),fb(0.1,-0.06)];   // polpaccio solo dietro, caviglia sottile
-    blob(thigh,skin,o,1);blob(shin,skin,o,1);blob(thigh,skin,o,2);blob(shin,skin,o,2);                       // prima i contorni, poi i riempimenti: nessuna linea nel ginocchio
-    const sock=[fb(0.42,0.062),fb(0.75,0.056),fb(1.0,0.05),fb(1.06,0),fb(1.0,-0.05),fb(0.75,-0.05),fb(0.42,-0.052),fb(0.4,0)];
-    blob(sock,un.socks,o*0.7);                                                                             // calza
-    const s0=fb(0.42,-0.052),s1=fb(0.42,0.062);ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=hu*0.016;ctx.beginPath();ctx.moveTo(s0[0],s0[1]);ctx.lineTo(s1[0],s1[1]);ctx.stroke();
-    ctx.fillStyle=un.shoe;ctx.beginPath();ctx.ellipse(ft[0]+hu*0.05,ft[1]+hu*0.012,hu*0.14,hu*0.062,0,0,6.283);ctx.fill();   // scarpa
-    ctx.fillStyle='#eef2f8';ctx.beginPath();ctx.ellipse(ft[0]+hu*0.05,ft[1]+hu*0.044,hu*0.145,hu*0.02,0,0,6.283);ctx.fill();   // suola
-    ctx.fillStyle='rgba(255,255,255,.55)';ctx.beginPath();ctx.ellipse(ft[0]+hu*0.1,ft[1]-hu*0.01,hu*0.045,hu*0.025,0,0,6.283);ctx.fill();
-  };
-  // pantaloncino morbido: bacino + gamba svasata in un unico colore, senza contorni interni; l'orlo e' un filo piu' scuro.
-  // La gamba lontana e' appena piu' scura: si capisce quale sta davanti senza linee nette
-  const shortsFill=(l,k)=>{
-    const [hp,kn]=l,p0=mix(hp,kn,0.04),p1=mix(hp,kn,0.72),w0=hu*0.19*bw,w1=hu*0.23*bw,c=k?shade(un.shorts,k):un.shorts;
-    const dx=p1[0]-p0[0],dy=p1[1]-p0[1],ln=Math.hypot(dx,dy)||1,nx=-dy/ln,ny=dx/ln;
-    ctx.fillStyle=c;ctx.beginPath();ctx.arc(p0[0],p0[1],w0/2,0,6.283);ctx.fill();
-    ctx.beginPath();ctx.moveTo(p0[0]+nx*w0/2,p0[1]+ny*w0/2);ctx.lineTo(p1[0]+nx*w1/2,p1[1]+ny*w1/2);ctx.lineTo(p1[0]-nx*w1/2,p1[1]-ny*w1/2);ctx.lineTo(p0[0]-nx*w0/2,p0[1]-ny*w0/2);ctx.closePath();ctx.fill();
-    ctx.strokeStyle=shade(un.shorts,-0.3);ctx.lineWidth=Math.max(hu*0.022,PIXK||0);ctx.lineCap='butt';ctx.beginPath();
-    ctx.moveTo(p1[0]+nx*w1/2,p1[1]+ny*w1/2);ctx.lineTo(p1[0]-nx*w1/2,p1[1]-ny*w1/2);ctx.stroke();
-  };
-  const pelvis=k=>{ctx.fillStyle=k?shade(un.shorts,k):un.shorts;ctx.beginPath();ctx.ellipse(0,hu*0.07,hu*0.145*bw,hu*0.12,0,0,6.283);ctx.fill();};
-  const arm=a=>{
-    const el=a[1],hd=a[2],s0=[shp[0]+(a[0][0]-shp[0])*0.3,a[0][1]];                                        // la spalla sta vicino al centro del busto, non sporge
-    chain([s0,mix(s0,el,0.35),el,mix(el,hd,0.3),hd],[hu*0.098,hu*0.104,hu*0.082,hu*0.086,hu*0.062],skin,o);   // braccio con bicipite e avambraccio
-    capO(s0,mix(s0,el,0.55),hu*0.125,hu*0.115,col,o*0.8);                                                 // manica corta
-    ctx.fillStyle='rgba(8,14,30,.35)';ctx.beginPath();ctx.arc(hd[0],hd[1],hu*0.075,0,6.283);ctx.fill();ctx.fillStyle=skin;ctx.beginPath();ctx.arc(hd[0],hd[1],hu*0.06,0,6.283);ctx.fill();   // mano
-  };
-  const bk=lk.hair,hx=shp[0],hy=shp[1]-0.27*hu,sway=Math.sin(tt*5)*0.03*hu;
-  // dietro: braccio e gamba lontani, capelli lunghi e coda
-  arm(As[0]);leg(Ls[0]);shortsFill(Ls[0],-0.13);leg(Ls[1]);pelvis(-0.02);shortsFill(Ls[1],0);   // la maglia viene dopo: il suo orlo sta sopra i pantaloncini, come nella realta'
-  if(lk.style===2){capO([hx-hu*0.06,hy-hu*0.02],[hx-hu*0.17+sway,hy+hu*0.42],hu*0.2,hu*0.14,bk,o*0.6);}
-  if(lk.style===3){capO([hx-hu*0.15,hy-hu*0.07],[hx-hu*0.33+sway*1.6,hy+hu*0.2],hu*0.085,hu*0.06,bk,o*0.6);ctx.fillStyle=un.shirt;ctx.beginPath();ctx.arc(hx-hu*0.16,hy-hu*0.06,hu*0.03,0,6.283);ctx.fill();}
-  // busto: sagoma di profilo (torace profondo ~0,27, vita ~0,22, spalla piccola) con sfumatura dalla schiena al petto
-  const hipP=[0,hu*0.02],Lt=Math.hypot(shp[0]-hipP[0],shp[1]-hipP[1]),ux=(shp[0]-hipP[0])/Lt,uy=(shp[1]-hipP[1])/Lt,nx=-uy,ny=ux;
-  const tp=(t,f)=>[hipP[0]+ux*Lt*t+nx*f*hu*bw,hipP[1]+uy*Lt*t+ny*f*hu*bw];   // t: 0 anca → 1 spalla; f>0 petto, f<0 schiena
-  const g0=tp(0.55,-0.14),g1=tp(0.55,0.15),gr=ctx.createLinearGradient(g0[0],g0[1],g1[0],g1[1]);
-  gr.addColorStop(0,shade(col,-0.3));gr.addColorStop(0.3,shade(col,-0.06));gr.addColorStop(0.7,col);gr.addColorStop(1,shade(col,0.2));
-  {   // ombra dell'orlo sui pantaloncini, poi la maglia: lunga, con l'orlo dritto e svasato sotto la vita
-    ctx.fillStyle='rgba(10,14,30,.3)';ctx.beginPath();const s0=tp(-0.15,-0.135),s1=tp(-0.15,0.13),s2=tp(-0.26,0.12),s3=tp(-0.26,-0.125);
-    ctx.moveTo(s0[0],s0[1]);ctx.lineTo(s1[0],s1[1]);ctx.lineTo(s2[0],s2[1]);ctx.lineTo(s3[0],s3[1]);ctx.closePath();ctx.fill();
-    blob([tp(0,-0.125),tp(0.34,-0.112),tp(0.72,-0.135),tp(0.97,-0.105),tp(1.06,0.0),tp(0.97,0.1),tp(0.72,0.145),tp(0.34,0.105),tp(0,0.115)],gr,o);
-    // parte bassa della maglia: orlo dritto e appena svasato, con contorno solo su tre lati (in alto si fonde col busto)
-    const k0=tp(0.1,-0.13),k1=tp(-0.17,-0.15),k2=tp(-0.17,0.14),k3=tp(0.1,0.125);
-    ctx.lineJoin='round';ctx.strokeStyle='rgba(8,14,30,.6)';ctx.lineWidth=o*2;ctx.beginPath();ctx.moveTo(k0[0],k0[1]);ctx.lineTo(k1[0],k1[1]);ctx.lineTo(k2[0],k2[1]);ctx.lineTo(k3[0],k3[1]);ctx.stroke();
-    ctx.fillStyle=gr;ctx.beginPath();ctx.moveTo(k0[0],k0[1]);ctx.lineTo(k1[0],k1[1]);ctx.lineTo(k2[0],k2[1]);ctx.lineTo(k3[0],k3[1]);ctx.closePath();ctx.fill();
-  }
-  capO(shp,[shp[0]+hu*0.02,shp[1]-hu*0.11],hu*0.095,hu*0.085,skin,o);                                      // collo
-  // davanti: gamba e braccio vicini
-  arm(As[1]);
-  // testa (a pixel un po' piu' grande: cosi' il viso ha spazio per occhio, sopracciglio e bocca)
-  if(PIXK){ctx.save();ctx.translate(hx,hy);ctx.scale(1.28,1.28);ctx.translate(-hx,-hy);}
-  ctx.fillStyle='rgba(8,14,30,.6)';ctx.beginPath();ctx.ellipse(hx,hy,hu*0.19,hu*0.21,0,0,6.283);ctx.fill();
-  ctx.fillStyle=skin;ctx.beginPath();ctx.ellipse(hx,hy,hu*0.165*lk.hd,hu*0.185*lk.hd,0,0,6.283);ctx.fill();
-  ctx.fillStyle=shade(skin,-0.1);ctx.beginPath();ctx.arc(hx-hu*0.125,hy+hu*0.03,hu*0.03,0,6.283);ctx.fill();                  // orecchio
-  ctx.fillStyle=skin;ctx.beginPath();ctx.moveTo(hx+hu*0.15,hy-hu*0.01);ctx.lineTo(hx+hu*0.205,hy+hu*0.035);ctx.lineTo(hx+hu*0.14,hy+hu*0.045);ctx.closePath();ctx.fill();   // naso
-  ctx.fillStyle='#1b2433';if(PIXK){ctx.fillRect(hx+hu*0.075,hy-hu*0.04,PIXK*1.5,PIXK*2.5);}else{ctx.beginPath();ctx.ellipse(hx+hu*0.085,hy-hu*0.015,hu*0.02,hu*0.03,0,0,6.283);ctx.fill();}         // occhio
-  ctx.strokeStyle=lk.style===4?shade(skin,-0.35):bk;ctx.lineWidth=Math.max(hu*0.018,PIXK*1.1);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(hx+hu*0.055,hy-hu*0.062);ctx.lineTo(hx+hu*0.125,hy-hu*0.052);ctx.stroke();   // sopracciglio
-  ctx.strokeStyle='rgba(120,50,40,.95)';ctx.lineWidth=Math.max(hu*0.014,PIXK*1.0);ctx.beginPath();ctx.moveTo(hx+hu*0.065,hy+hu*0.085);ctx.lineTo(hx+hu*0.125,hy+hu*0.078);ctx.stroke();   // bocca
-  // capelli sopra
-  if(lk.style===4){ctx.fillStyle=shade(skin,-0.25);ctx.beginPath();ctx.ellipse(hx,hy-hu*0.01,hu*0.172,hu*0.19,0,Math.PI*1.1,Math.PI*1.95);ctx.lineTo(hx-hu*0.02,hy-hu*0.06);ctx.closePath();ctx.fill();}
-  else{
-    ctx.fillStyle=bk;ctx.beginPath();ctx.ellipse(hx,hy-hu*0.012,hu*0.178*lk.hd,hu*0.19*lk.hd,0,Math.PI*1.0,Math.PI*2.0);
-    ctx.quadraticCurveTo(hx+hu*0.09,hy-hu*0.105,hx-hu*0.01,hy-hu*0.07);ctx.lineTo(hx-hu*0.15,hy+hu*0.0);ctx.closePath();ctx.fill();
-    if(lk.style===1){ctx.beginPath();ctx.ellipse(hx-hu*0.1,hy+hu*0.06,hu*0.085,hu*0.15,0,0,6.283);ctx.fill();}
-    if(lk.style===2){ctx.beginPath();ctx.ellipse(hx-hu*0.1,hy+hu*0.07,hu*0.09,hu*0.18,0,0,6.283);ctx.fill();}
-    ctx.fillStyle='rgba(255,255,255,.22)';ctx.beginPath();ctx.ellipse(hx+hu*0.01,hy-hu*0.12,hu*0.07,hu*0.025,-0.2,0,6.283);ctx.fill();   // riflesso sui capelli
-  }
-  if(PIXK)ctx.restore();
+  return {L,A,sh};
 }
-/* ---- pixelizzazione: la figura vettoriale viene disegnata in un buffer piccolo (1 pixel = PIXK pixel del gioco), tagliata a colori netti,
-   ridotta a pochi toni e circondata da un contorno scuro di 1 pixel, come gli omini del campo ma piu' grandi e piu' dettagliati ---- */
-let PIXK=0;
-const FIG={a:document.createElement('canvas'),b:document.createElement('canvas')};
-const q6=v=>Math.min(255,Math.round(v/32)*32);
-const OUTRGB=[22,26,43];
+// materiali: indice nella tavolozza dell'omino
+const PXM={SK:1,SKF:2,HR:3,SH:4,PT:5,PTF:6,SO:7,SHO:8,SOL:9,HD:10,SKD:11,EYE:12,MO:13,WH:14,HSK:15};   // HSK: pelle del viso, coi toni disegnati a mano (senza ombre automatiche)
+const PXM_LN=new Set([PXM.SK,PXM.SKF,PXM.SH,PXM.PT,PXM.PTF,PXM.SO,PXM.SHO]);   // materiali che fanno la linea scura dove finiscono su un altro
+const PX_BUF={c:document.createElement('canvas')};
 function athlete(x,gy,hipH,col,face,pose,rot,tt,hu,alpha,ghost,who){
-  const K=PIXK||1,R=Math.ceil(1.75*hu/K),n=2*R;
-  const hx=Math.round(x/K)*K,hy=Math.round((gy-hipH*hu)/K)*K;
+  const Z=OZ(hu),hs=hu/Z,R=Math.ceil(1.85*hs),n=2*R+2,c0=R+1;
   if(!ghost){   // ombra a pixel sul prato
     const k=clamp(1-(hipH-0.9)*0.25,0.45,1);
     pell(x,gy+hu*0.04,Math.round(hu*0.6*k),Math.max(2,Math.round(hu*0.1*k)),'rgba(40,70,30,.38)');
   }
-  const A=FIG.a,B=FIG.b;if(A.width!==n){A.width=n;A.height=n;B.width=n;B.height=n;}
-  const g=A.getContext('2d',{willReadFrequently:true}),old=ctx;
-  g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,n,n);
-  ctx=g;ctx.save();ctx.scale(1/K,1/K);ctx.translate(R*K,R*K);ctx.scale(face,1);ctx.rotate(rot);
-  figure(hu,col,pose,tt,who);
-  ctx.restore();ctx=old;
-  const im=g.getImageData(0,0,n,n),d=im.data,m=new Uint8Array(n*n);
-  for(let i=0;i<n*n;i++)m[i]=d[i*4+3]>=150?1:0;
-  const gc=ghost?[q6(parseInt(col.slice(1,3),16)*0.6+100),q6(parseInt(col.slice(3,5),16)*0.6+100),q6(parseInt(col.slice(5,7),16)*0.6+100)]:null;
-  const gb=B.getContext('2d'),od=gb.createImageData(n,n),o=od.data;
-  for(let j=0;j<n;j++)for(let i=0;i<n;i++){
-    const p=j*n+i;
-    if(ghost){   // scia: silhouette a scacchiera nel colore della maglia, senza contorno
-      if(m[p]&&((i+j)&1)===0){o[p*4]=gc[0];o[p*4+1]=gc[1];o[p*4+2]=gc[2];o[p*4+3]=255;}
+  const lk=(who&&who.look)||DEF_LOOK,un=UNI[(who&&who.t)||0]||UNI[0],bw=lk.bw||1;
+  const {L,A,sh}=skelOf(pose,tt),cr=Math.cos(rot),sr=Math.sin(rot);
+  const T=p=>{const X=cr*p[0]-sr*p[1],Y=sr*p[0]+cr*p[1];return [c0+face*X*hs,c0+Y*hs];};   // da hu (figura) a pixel dell'omino
+  const id=new Uint8Array(n*n);
+  const seg=(a,b,r0,r1,m)=>{   // segmento rastremato a bordi netti (raggi in hu)
+    const p=T(a),q=T(b),ra=r0*hs,rb=r1*hs,x0=Math.floor(Math.min(p[0],q[0])-Math.max(ra,rb)-1),x1=Math.ceil(Math.max(p[0],q[0])+Math.max(ra,rb)+1);
+    const y0=Math.floor(Math.min(p[1],q[1])-Math.max(ra,rb)-1),y1=Math.ceil(Math.max(p[1],q[1])+Math.max(ra,rb)+1),dx=q[0]-p[0],dy=q[1]-p[1],l2=dx*dx+dy*dy||1;
+    for(let j=Math.max(0,y0);j<=Math.min(n-1,y1);j++)for(let i=Math.max(0,x0);i<=Math.min(n-1,x1);i++){
+      const px_=i+0.5,py_=j+0.5,t=clamp(((px_-p[0])*dx+(py_-p[1])*dy)/l2,0,1),ex=p[0]+dx*t-px_,ey=p[1]+dy*t-py_,r=ra+(rb-ra)*t;
+      if(ex*ex+ey*ey<=r*r+0.15)id[j*n+i]=m;
     }
-    else if(m[p]){o[p*4]=q6(d[p*4]);o[p*4+1]=q6(d[p*4+1]);o[p*4+2]=q6(d[p*4+2]);o[p*4+3]=255;}
-    else if(!ghost&&((i>0&&m[p-1])||(i<n-1&&m[p+1])||(j>0&&m[p-n])||(j<n-1&&m[p+n]))){o[p*4]=OUTRGB[0];o[p*4+1]=OUTRGB[1];o[p*4+2]=OUTRGB[2];o[p*4+3]=255;}
+  };
+  const poly=(pts,m)=>{   // poligono pieno (punti in hu)
+    const P=pts.map(T);let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;for(const p of P){x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1]);}
+    for(let j=Math.max(0,Math.floor(y0));j<=Math.min(n-1,Math.ceil(y1));j++)for(let i=Math.max(0,Math.floor(x0));i<=Math.min(n-1,Math.ceil(x1));i++){
+      const px_=i+0.5,py_=j+0.5;let ins=false;
+      for(let a=0,b=P.length-1;a<P.length;b=a++){const pa=P[a],pb=P[b];if((pa[1]>py_)!==(pb[1]>py_)&&px_<(pb[0]-pa[0])*(py_-pa[1])/(pb[1]-pa[1])+pa[0])ins=!ins;}
+      if(ins)id[j*n+i]=m;
+    }
+  };
+  const mix=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];
+  const fwd=(p,k)=>{const q=T([p[0]+k,p[1]]),r=T(p);return q[0]-r[0];};
+  const quad=(a,b,w0,w1,m,x0,x1)=>{   // segmento a estremi dritti (larghezze in hu); x0/x1 allungano gli estremi lungo l'osso, per chiudere le giunture
+    const dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1,ux=dx/l,uy=dy/l,nx=-uy,ny=ux,A=[a[0]-ux*(x0||0),a[1]-uy*(x0||0)],B=[b[0]+ux*(x1||0),b[1]+uy*(x1||0)];
+    poly([[A[0]+nx*w0/2,A[1]+ny*w0/2],[B[0]+nx*w1/2,B[1]+ny*w1/2],[B[0]-nx*w1/2,B[1]-ny*w1/2],[A[0]-nx*w0/2,A[1]-ny*w0/2]],m);
+  };
+  const arm=(a,sk)=>{const [s,e,h]=a;
+    quad(s,e,0.17,0.15,sk,0.03,0.07);quad(e,h,0.15,0.13,sk,0.03,0.02);   // braccio e avambraccio, gomito chiuso
+    const hd=[h[0]+(h[0]-e[0])*0.25,h[1]+(h[1]-e[1])*0.25];quad(h,hd,0.19,0.19,sk,0.04,0);   // mano a blocco
+    quad(s,mix(s,e,0.5),0.22,0.21,PXM.SH,0.06,0);};   // manica: finisce con un taglio dritto
+  const leg=(l,sk,pt)=>{
+    const [hp,kn,ft]=l,h0=mix(hp,kn,0.18);seg(h0,kn,0.105,0.085,sk);seg(kn,ft,0.085,0.07,sk);   // la coscia parte sotto l'orlo della maglia: niente sporgenze ai lati del busto
+    seg(mix(kn,ft,0.45),ft,0.08,0.075,PXM.SO);   // calza
+    const toe=[ft[0]+0.19,ft[1]+0.02];seg([ft[0]-0.03,ft[1]+0.01],toe,0.085,0.07,PXM.SHO);seg([ft[0]-0.04,ft[1]+0.075],[toe[0]+0.02,toe[1]+0.06],0.022,0.022,PXM.SOL);   // scarpa e suola
+    seg(h0,mix(hp,kn,0.6),0.125*bw,0.12*bw,pt);   // pantaloncino
+  };
+  // dietro: braccio e gamba lontani (pelle piu' scura), poi la gamba vicina, il bacino e il busto
+  arm(A[0],PXM.SKF);leg(L[0],PXM.SKF,PXM.PTF);leg(L[1],PXM.SK,PXM.PT);
+    const hip=[0,0.03],Lt=Math.hypot(sh[0]-hip[0],sh[1]-hip[1]),ux=(sh[0]-hip[0])/Lt,uy=(sh[1]-hip[1])/Lt,nx=-uy,ny=ux;
+  const tp=(t,f)=>[hip[0]+ux*Lt*t+nx*f*bw,hip[1]+uy*Lt*t+ny*f*bw];   // t: 0 anca -> 1 spalla; f>0 petto
+  poly([tp(-0.42,-0.15),tp(-0.42,0.15),tp(-0.05,0.17),tp(-0.05,-0.17)],PXM.PT);   // bacino: blocco dei pantaloncini sotto la maglia, largo quanto il busto
+  poly([tp(-0.2,-0.18),tp(0.35,-0.17),tp(0.75,-0.19),tp(1.02,-0.15),tp(1.1,0.02),tp(1.02,0.16),tp(0.7,0.2),tp(0.35,0.16),tp(-0.2,0.18)],PXM.SH);
+  seg(sh,[sh[0]+0.03,sh[1]-0.14],0.08,0.08,PXM.SK);   // collo
+  // capelli lunghi dietro le spalle
+  // testa: sprite ruotato con la figura (vicino al pixel), centro sopra la spalla
+  const dk=pose==='dive'?clamp(rot/1.25,0,1):0,hrot=rot*(1-0.75*dk),hcr=Math.cos(hrot),hsr=Math.sin(hrot);   // tuffo: testa alzata sopra le braccia, sguardo avanti verso il disco
+  const hc=T([sh[0]+0.04-0.26*dk,sh[1]-0.36+0.06*dk]),HD=PX_HEAD[(lk.style|0)%PX_HEAD.length],hd=HD[0],hw=hd[0].length,hh=hd.length,hcx=HD[1],hcy=HD[2];
+  const hmap={S:PXM.HSK,s:PXM.SKD,H:PXM.HR,h:PXM.HD,E:PXM.EYE,M:PXM.MO,W:PXM.WH};
+  for(let j=Math.floor(hc[1]-24);j<=Math.ceil(hc[1]+24);j++)for(let i=Math.floor(hc[0]-24);i<=Math.ceil(hc[0]+24);i++){
+    if(i<0||j<0||i>=n||j>=n)continue;
+    const dx=(i+0.5-hc[0])*face,dy=j+0.5-hc[1],qx=Math.floor(hcr*dx+hsr*dy+hcx),qy=Math.floor(-hsr*dx+hcr*dy+hcy);
+    if(qx<0||qy<0||qx>=hw||qy>=hh)continue;const ch=hd[qy][qx];if(ch!=='.')id[j*n+i]=hmap[ch];
+  }
+  arm(A[1],PXM.SK);   // davanti: braccio vicino
+  // colori
+  const skin=pxRgb(lk.skin),hair=pxRgb(lk.hair),cs=pxRgb(col),sorts=pxRgb(un.shorts);
+  const base=[null,skin,pxTone(skin,-0.2),hair,cs,sorts,pxTone(sorts,-0.15),pxRgb(un.socks),pxRgb(un.shoe),[238,242,248],pxTone(hair,-0.4),pxTone(skin,-0.22),[20,18,30],pxTone(skin,-0.5),[255,255,255],skin];
+  const auto=new Set([PXM.SK,PXM.SKF,PXM.HR,PXM.SH,PXM.PT,PXM.PTF,PXM.SO,PXM.SHO]);
+  const B=PX_BUF.c;if(B.width!==n){B.width=n;B.height=n;}
+  const gb=B.getContext('2d'),od=gb.createImageData(n,n),o=od.data,at=(i,j)=>i<0||j<0||i>=n||j>=n?0:id[j*n+i],fr=face>0?1:-1;
+  const gc=ghost?pxTone(cs,0.35):null;
+  for(let j=0;j<n;j++)for(let i=0;i<n;i++){
+    const p=j*n+i,k=id[p];let c=null;
+    if(ghost){if(k&&((i+j)&1)===0)c=gc;}
+    else if(k){
+      const dn=at(i,j+1),bk=at(i-fr,j);
+      if(PXM_LN.has(k)&&((dn&&dn!==k&&PXM_LN.has(dn)&&!(k===PXM.SO||dn===PXM.SO))||(bk&&bk!==k&&PXM_LN.has(bk)&&!(k===PXM.SO||bk===PXM.SO))))c=OUTRGB;
+      else if(auto.has(k)){
+        const b=base[k],up=at(i,j-1),fw=at(i+fr,j),lit=(up!==k||fw!==k)&&dn===k,thick=at(i+fr,j)===k&&at(i+2*fr,j)===k&&at(i+3*fr,j)===k,dark=dn!==k||bk!==k||(thick&&(at(i-2*fr,j)!==k||at(i-3*fr,j)!==k));   // nelle parti larghe l'ombra dietro e' di 3 pixel
+        c=lit?pxTone(b,0.22):(dark?pxTone(b,-0.3):b);
+      }else c=base[k];
+    }else if(at(i-1,j)||at(i+1,j)||at(i,j-1)||at(i,j+1))c=OUTRGB;
+    if(c){o[p*4]=c[0];o[p*4+1]=c[1];o[p*4+2]=c[2];o[p*4+3]=255;}
   }
   gb.putImageData(od,0,0);
-  old.save();old.globalAlpha=ghost?0.85:(alpha===undefined?1:alpha);old.imageSmoothingEnabled=false;
-  old.drawImage(B,hx-R*K,hy-R*K,n*K,n*K);old.restore();
+  const hx=Math.round(x),hy=Math.round(gy-hipH*hu);
+  ctx.save();ctx.globalAlpha=ghost?0.85:(alpha===undefined?1:alpha);ctx.imageSmoothingEnabled=false;
+  ctx.drawImage(B,hx-c0*Z,hy-c0*Z,n*Z,n*Z);ctx.restore();
 }
-const handPos=(x,gy,hipH,face,rot,hu)=>({x:x+face*1.38*hu*Math.sin(rot),y:gy-hipH*hu-1.38*hu*Math.cos(rot)});
+// la mano vicina (quella che prende) nella posa: stesso scheletro e stessa rotazione di athlete, in pixel del gioco
+const handPos=(x,gy,hipH,face,rot,hu,pose)=>{
+  const h=skelOf(pose||'dive',0).A[1][2],cr=Math.cos(rot),sr=Math.sin(rot);
+  return {x:Math.round(x)+face*(cr*h[0]-sr*h[1])*hu,y:Math.round(gy-hipH*hu)+(sr*h[0]+cr*h[1])*hu};
+};
+// disco preso. PX_GRIP 'rim': la mano lo stringe dal bordo (il disco sta oltre la mano, lungo il braccio, e la mano si vede sopra il bordo);
+// 'hide': il disco e' centrato sulla mano e la copre. heldAt da' il centro del disco: e' anche il punto d'arrivo del volo, cosi' non scatta alla presa
+let PX_GRIP='rim';
+function heldAt(x,gy,hipH,face,rot,hu,pose){
+  const p=handPos(x,gy,hipH,face,rot,hu,pose),ax=face*Math.sin(rot),ay=-Math.cos(rot),rx=Math.max(5,ri(0.17*hu*1.7)),ry=Math.max(2,ri(rx*0.42));
+  const k=PX_GRIP==='rim'?1/Math.hypot(ax/rx,ay/ry)-1:0;   // distanza dal centro al bordo nella direzione del braccio
+  return {x:p.x+ax*k,y:p.y+ay*k,hx:p.x,hy:p.y};
+}
+function heldDisc(x,gy,hipH,face,rot,hu,pose,who,spin){
+  const q=heldAt(x,gy,hipH,face,rot,hu,pose);discSprite(q.x,q.y,0.17*hu,spin);
+  if(PX_GRIP!=='rim')return;
+  const sk=pxRgb(((who&&who.look)||DEF_LOOK).skin),hx=ri(q.hx),hy=ri(q.hy),s=Math.max(2,Math.round(hu*0.06));
+  px(hx-s-1,hy-s-1,2*s+3,2*s+3,'rgb('+OUTRGB.join(',')+')');px(hx-s,hy-s,2*s+1,2*s+1,'rgb('+sk.join(',')+')');   // la mano sopra il bordo del disco
+  px(hx-s,hy-s,2*s+1,1,'rgb('+pxTone(sk,0.22).join(',')+')');px(hx-s,hy+s,2*s+1,1,'rgb('+pxTone(sk,-0.3).join(',')+')');
+}
 // disco grande a pixel (stesso disegno di quello del campo, ingrandito): bordo scuro, corpo chiaro, ombra sotto e riflesso che gira
 function discSprite(x,y,r,spin){
   x=ri(x);y=ri(y);r=Math.max(5,ri(r*1.7));const ry=Math.max(2,ri(r*0.42));
@@ -245,10 +240,9 @@ const CINE_BOARDS=['#2352c4','#161a2b','#d03a36','#eef1ea'];
 function drawCine(){
   const c=cine,sp=c.spec,w=VW,h=VH,Z=1.5,u0=h*0.115,gy0=h*0.74,fy0=gy0-0.3*u0,cx=ri(w/2);
   const u=u0*Z,gy=ri(fy0+(gy0-fy0)*Z),W=w*Z;   // lo zoom del vecchio stacco (1,5) e' gia' dentro le misure: si disegna tutto direttamente a pixel
-  PIXK=1;   // un pixel dell'omino = un pixel del campo
   const jump=sp.kind==='jump',ct=jump?0.36:0.45;
   const aim=c.phase==='aim',vt=aim?0:slowT(c.rt,ct);
-  const SD=jump?0:(aim?c.t:(c.resT0||0)+(vt<=0.5?vt-vt*vt:0.25));
+  const SD=jump&&!(sp.runA&&sp.runD)?0:(aim?c.t:(c.resT0||0)+(vt<=0.5?vt-vt*vt:0.25));   // lo sfondo scorre nel tuffo e nel salto in cui corrono tutti e due
   let shx=0,shy=0;
   if(!aim&&vt>=ct&&vt<ct+0.3){const a=(1-(vt-ct)/0.3)*u*0.1;shx=ri((Math.random()-0.5)*a);shy=ri((Math.random()-0.5)*a);}
   ctx.save();ctx.translate(shx,shy);
@@ -294,28 +288,47 @@ function drawCine(){
   };
   if(jump){
     const winA=c.out==='att';
-    const A=sp.a,Dd=sp.d,ax=ri(cx-0.42*u),dxp=ri(cx+0.42*u),C={x:cx,y:gy-ri((winA?3.38:3.15)*u)},lean=0.3;
-    const ju=aim?0:clamp(vt/0.72,0,1);
+    const A=sp.a,Dd=sp.d,ax=ri(cx-0.8*u),dxp=ri(cx+0.8*u),lean=0.3;
     const hi=winA?1.16:0.93,lo=winA?0.46:0.66;   // presa: chi prende sale molto piu' dell'altro; disco respinto: differenza piccola come prima
     const lifts=j=>{const pk=Math.pow(Math.sin(Math.PI*j),0.7);return {a:pk*(winA?hi:lo),d:pk*(winA?lo:hi)};};
-    const bob=aim?Math.sin(c.t*7)*0.04:0,pose=aim?'ready':'up',rot=aim?0:lean;
+    // SALTO DA FERMO O IN CORSA (sp.runA/sp.runD, dal motore: jumpRun): chi era gia' vicino al disco aspetta in posizione e salta sul posto;
+    // chi arrivava da lontano entra correndo da sinistra (come nel tuffo), fa gli ultimi passi e stacca all'ultimo, arrivando sul punto della presa nell'istante del contatto.
+    // Se corrono tutti e due lo sfondo scorre come nel tuffo e il difensore corre un po' piu' in basso (piu' vicino a chi guarda)
+    const run={a:!!sp.runA,d:!!sp.runD},both=run.a&&run.d,bob=Math.sin(c.t*7)*0.04,TK=0.16,t0=c.resT0||c.t;
+    const spot={a:both?ri(cx-0.7*u):ax,d:run.d?ri(cx+(both?0.25:-0.05)*u):dxp},gyk={a:gy,d:run.d&&both?gy+ri(0.45*u):gy},huk={a:u,d:run.d&&both?u*1.06:u};
+    const far=tm=>both?1.5:3.4-1.4*clamp(tm/2.4,0,1);   // distanza dal punto di stacco mentre corre (in u): da soli si avvicina durante l'attesa
+    const jst=(k,v)=>{   // posizione, anca, posa e inclinazione del giocatore k ('a' o 'd') al tempo v dello stacco (v<0: attesa)
+      const x0=spot[k],amp=(k==='a')===winA?hi:lo;
+      if(!run[k]){
+        const fc=k==='a'?1:-1;
+        if(v<0)return {x:x0,hip:0.9+(k==='a'?bob:-bob),pose:'ready',rot:0,fc,tt:c.t};
+        return {x:x0,hip:0.9+lifts(clamp(v/0.72,0,1))[k],pose:'up',rot:lean,fc,tt:c.t};
+      }
+      const rt=both?SD*11+(k==='a'?0:1.3):c.t*11;
+      if(v<0)return {x:x0-far(c.t)*u,hip:0.9,pose:'run',rot:0,fc:1,tt:rt};
+      const x=lerp(x0-far(t0)*u,x0,clamp(v/ct,0,1))+0.3*u*Math.max(0,v-ct);
+      if(v<TK)return {x,hip:0.9,pose:'run',rot:0.12,fc:1,tt:rt};   // ultimi passi di corsa
+      const jr=clamp((v-TK)/(2*(ct-TK)),0,1);   // stacco in corsa: il punto piu' alto e' nell'istante del contatto
+      return {x,hip:0.9+Math.pow(Math.sin(Math.PI*jr),0.7)*amp,pose:'up',rot:lean+0.12,fc:1,tt:c.t};
+    };
+    const w=winA?'a':'d',wz=jst(w,ct),C=heldAt(wz.x,gyk[w],wz.hip,wz.fc,wz.rot,huk[w],'up');   // il disco arriva nella mano di chi lo tocca, nell'istante del contatto
+    const v=aim?-1:vt,za=jst('a',v),zd=jst('d',v);
     if(!aim){
       for(const gk of [3,2,1]){
-        const j=clamp((vt-gk*0.045)/0.72,0,1);if(j<=0)continue;
-        const l=lifts(j),al=0.1+(3-gk)*0.07;
-        athlete(ax,gy,0.9+l.a,COL[A.t],1,pose,rot,c.t,u,al,true,A);athlete(dxp,gy,0.9+l.d,COL[Dd.t],-1,pose,rot,c.t,u,al,true,Dd);
+        const vg=vt-gk*0.045;if(vg<=0)continue;const al=0.1+(3-gk)*0.07;
+        for(const [k,who] of [['a',A],['d',Dd]]){const z=jst(k,vg);athlete(z.x,gyk[k],z.hip,COL[who.t],z.fc,z.pose,z.rot,z.tt,huk[k],al,true,who);}
       }
     }
-    const l=aim?{a:bob,d:-bob}:lifts(ju),hipA=0.9+l.a,hipD=0.9+l.d;
-    athlete(ax,gy,hipA,COL[A.t],1,pose,rot,c.t,u,undefined,false,A);athlete(dxp,gy,hipD,COL[Dd.t],-1,pose,rot,c.t,u,undefined,false,Dd);
+    for(const [k,z,who] of [['a',za,A],['d',zd,Dd]])athlete(z.x,gyk[k],z.hip,COL[who.t],z.fc,z.pose,z.rot,z.tt,huk[k],undefined,false,who);
+    const wcur=winA?za:zd;
     const P0={x:cx-W*0.38,y:gy-5.4*u},P1={x:cx-W*0.14,y:gy-6.4*u};
     let dp,pd=null;
     if(aim){pd=clamp(c.t/2.7,0,0.88);dp=bez(P0,P1,C,pd);}
     else if(vt<ct){pd=0.88+0.12*(vt/ct);dp=bez(P0,P1,C,pd);}
-    else if(winA)dp=handPos(ax,gy,hipA,1,lean,u);
+    else if(winA)dp={held:[wcur.x,gyk.a,wcur.hip,wcur.fc,wcur.rot,huk.a,'up',A]};
     else{const t2=vt-ct;dp={x:C.x+u*5.5*t2,y:Math.min(gy-0.2*u,C.y-u*3.2*t2+0.5*u*16*t2*t2)};}
     if(pd!==null)trail(P0,P1,C,pd);
-    discSprite(dp.x,dp.y,0.17*u,c.t*9);
+    if(dp.held)heldDisc(...dp.held,c.t*9);else discSprite(dp.x,dp.y,0.17*u,c.t*9);
     plates=[{x:cx-2.7*u,p:A,col:COL[A.t]},{x:cx+2.7*u,p:Dd,col:COL[Dd.t]}];
     impact=C;
     if(!aim){benefit=(winA?A.t:Dd.t)===0;result=winA?'Presa in salto!':'Bloccato in salto!';}
@@ -333,6 +346,7 @@ function drawCine(){
       }
       return {dx,hip,rot,pose};
     };
+    const Ce=win?(()=>{const z=dpose(win,0.45);return heldAt(z.dx,gyOf(win),z.hip,1,z.rot,huOf(win),'dive');})():Tt;   // punto della presa: la mano di chi arriva prima
     const dps={a:dpose(Aa,aim?-1:vt),d:dpose(Dd,aim?-1:vt)};
     for(const who of [Aa,Dd]){   // prima tutte le scie, poi i corpi: le scie di uno non coprono l'altro
       const dz=who===Aa?dps.a:dps.d,hu=huOf(who),gyw=gyOf(who);
@@ -346,19 +360,19 @@ function drawCine(){
       athlete(dz.dx,gyw,dz.hip,COL[who.t],1,dz.pose,dz.rot,dz.pose==='run'?SD*11+(who===Aa?0:1.3):c.t,hu,undefined,false,who);
     }
     let dp,pd=null;
-    if(aim){pd=clamp(c.t/2.7,0,0.85);dp=bez(P0,P1,Tt,pd);}
-    else if(vt<ct){pd=0.85+0.15*(vt/ct);dp=bez(P0,P1,Tt,pd);}
-    else if(win){const z=win===Aa?dps.a:dps.d;dp=handPos(z.dx,gyOf(win),z.hip,1,z.rot,huOf(win));}
+    if(aim){pd=clamp(c.t/2.7,0,0.85);dp=bez(P0,P1,Ce,pd);}
+    else if(vt<ct){pd=0.85+0.15*(vt/ct);dp=bez(P0,P1,Ce,pd);}
+    else if(win){const z=win===Aa?dps.a:dps.d;dp={held:[z.dx,gyOf(win),z.hip,1,z.rot,huOf(win),z.pose,win]};}
     else{const t2=vt-ct;dp={x:Tt.x+u*3*t2,y:Math.min(gy-0.15*u,Tt.y+u*5*t2*t2)};}
-    if(pd!==null)trail(P0,P1,Tt,pd);
-    discSprite(dp.x,dp.y,0.17*u,c.t*9);
+    if(pd!==null)trail(P0,P1,Ce,pd);
+    if(dp.held)heldDisc(...dp.held,c.t*9);else discSprite(dp.x,dp.y,0.17*u,c.t*9);
     if(!aim&&vt>0.4)dust(c,vt,[Aa,Dd].map(who=>({x:(who===Aa?dps.a:dps.d).dx,y:gyOf(who)})),u);
     plates=[{x:cx-2.2*u,p:Aa,col:COL[Aa.t]},{x:cx+2.2*u,p:Dd,col:COL[Dd.t]}];
-    impact=win?Tt:null;
+    impact=win?Ce:null;
     if(!aim){benefit=win?win.t===0:Dd.t===0;result=out==='att'?'Presa in tuffo!':(out==='def'?'Blocco in tuffo!':'Tuffi mancati');}
   }else{
     const dv=sp.diver,ok=c.out===true,xs=cx-2.6*u,Tt={x:cx+0.9*u,y:gy-0.88*u};
-    const E=ok?Tt:{x:Tt.x+1.5*u,y:Tt.y+0.25*u},P0={x:cx-W*0.42,y:gy-3.6*u},P1={x:cx-W*0.1,y:gy-3.4*u};
+    let E=ok?Tt:{x:Tt.x+1.5*u,y:Tt.y+0.25*u};const P0={x:cx-W*0.42,y:gy-3.6*u},P1={x:cx-W*0.1,y:gy-3.4*u};
     const dpose=v=>{
       let dx=xs,hip=0.9,rot=0,pose='run';
       if(v>0){
@@ -368,6 +382,7 @@ function drawCine(){
       }
       return {dx,hip,rot,pose};
     };
+    if(ok){const z=dpose(0.45);E=heldAt(z.dx,gy,z.hip,1,z.rot,u,'dive');}   // presa: il disco arriva nella mano
     const dpz=dpose(aim?-1:vt);
     if(!aim&&vt<0.75){
       for(const gk of [3,2,1]){const qq=dpose(vt-gk*0.04);if(vt-gk*0.04<=0)continue;athlete(qq.dx,gy,qq.hip,COL[dv.t],1,qq.pose,qq.rot,c.t,u,0.1+(3-gk)*0.07,true,dv);}
@@ -379,13 +394,13 @@ function drawCine(){
     let dp,pd=null;
     if(aim){pd=clamp(c.t/2.7,0,0.85);dp=bez(P0,P1,E,pd);}
     else if(vt<ct){pd=0.85+0.15*(vt/ct);dp=bez(P0,P1,E,pd);}
-    else if(ok)dp=handPos(dpz.dx,gy,dpz.hip,1,dpz.rot,u);
+    else if(ok)dp={held:[dpz.dx,gy,dpz.hip,1,dpz.rot,u,dpz.pose,dv]};
     else{const t2=vt-ct;dp={x:E.x+u*3*t2,y:Math.min(gy-0.15*u,E.y+u*5*t2*t2)};}
     if(pd!==null)trail(P0,P1,E,pd);
-    discSprite(dp.x,dp.y,0.17*u,c.t*9);
+    if(dp.held)heldDisc(...dp.held,c.t*9);else discSprite(dp.x,dp.y,0.17*u,c.t*9);
     if(!aim&&vt>0.4)dust(c,vt,[{x:dpz.dx,y:gy}],u);
     plates=[{x:cx-1.6*u,p:dv,col:COL[dv.t]}];
-    impact={x:Tt.x,y:Tt.y};
+    impact=ok?{x:E.x,y:E.y}:{x:Tt.x,y:Tt.y};
     if(!aim){benefit=(ok?dv.t:1-dv.t)===0;result=ok?(sp.att?'Presa in tuffo!':'Blocco in tuffo!'):'Tuffo mancato';}
   }
   benefitNow=!!benefit;
