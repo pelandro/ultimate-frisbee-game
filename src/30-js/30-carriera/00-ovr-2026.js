@@ -32,16 +32,19 @@ const OVR_SHIFT={
   "Gentle Open":5,
   "Chevron Action Flash":7,
   "NLSU":4,
-  "Cotarica Grandes":1
+  "Cotarica Grandes":1,
+  "One Tribe":-4,
+  "DiscoBolo":-3,
+  "CUS Padova Barbastreji":-6
 };
 const OVR_POW={
   "BFD La Fotta Offence":89.9,
   "BFD La Fotta Defense":88.9,
-  "DiscoBolo":86.1,
+  "DiscoBolo":84,
   "Cotarica Runners":87.3,
-  "One Tribe":86.6,
+  "One Tribe":84.8,
   "Cotarica Grandes":86.3,
-  "CUS Padova Barbastreji":85,
+  "CUS Padova Barbastreji":83.8,
   "360 Milano":81.2,
   "BFD Redbulls":80.5,
   "UFO (A)":79.4,
