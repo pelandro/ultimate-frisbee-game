@@ -529,6 +529,11 @@ function selfTestPlan(opt){
     const gt=S.base?avg(S.base.map(m=>m.time)):0,k=gt/Math.max(0.001,S.ms/1000);
     return [row('Velocità di simulazione',Math.round(S.ms)+' ms a partita ('+Math.round(k)+' volte il tempo reale)',k>=15,'almeno 15 volte')];
   }]);
+  S.steps.push(['Salto da fermo o in corsa nella scena laterale',()=>{
+    const f={tx:30,ty:18},p=(x,y,vx,vy)=>({x,y,vx,vy});
+    const still=!jumpRun(p(30.5,18.3,0.5,0),f),runFar=jumpRun(p(31,18,6,0),f),stand=!jumpRun(p(31,18,0,0),f);
+    return [row('Chi era vicino al disco salta da fermo, chi arrivava da lontano entra di corsa',(still&&stand?'fermo':'no')+', '+(runFar?'in corsa':'no'),still&&stand&&runFar,'oltre '+JUMP_STILL+' m '+JUMP_LOOK+' s prima della presa')];
+  }]);
   return S;
 }
 function selfTestRun(S,i){   // esegue il passo i col suo generatore casuale; i suoni, gli stacchi e le scritte restano spenti
