@@ -236,7 +236,6 @@ function drawMeter(c,w,h){
 }
 // pubblico dello stacco: stessi spettatori a pixel del campo, in file sulle gradinate. Calcolato una volta sola
 const SPEC=[];for(let r=0;r<8;r++)for(let i=0;i<84;i++){let hh=Math.imul(r*977+i*131+7,2654435761)>>>0;hh^=hh>>>15;hh=Math.imul(hh,2246822519)>>>0;hh^=hh>>>13;if(hh%11===0)continue;SPEC.push({r,x:(i+((hh>>4)%9)*0.1)/84,hh});}
-const CINE_BOARDS=['#2352c4','#161a2b','#d03a36','#eef1ea'];
 function drawCine(){
   const c=cine,sp=c.spec,w=VW,h=VH,Z=1.5,u0=h*0.115,gy0=h*0.74,fy0=gy0-0.3*u0,cx=ri(w/2);
   const u=u0*Z,gy=ri(fy0+(gy0-fy0)*Z),W=w*Z;   // lo zoom del vecchio stacco (1,5) e' gia' dentro le misure: si disegna tutto direttamente a pixel
@@ -264,16 +263,10 @@ function drawCine(){
     if(s.r<6){px(x-2,y-9,5,10,'rgba(22,26,60,'+(0.4-s.r*0.065)+')');}   // file lontane piu' scure
     if(hop){px(x-2,y-8,1,2,FAN_S[hh%4]);px(x+2,y-8,1,2,FAN_S[hh%4]);}
   }
-  // cartelloni pubblicitari (bordo scuro, filo chiaro in alto)
-  const pw=ri(3.4*u);ctx.font=PFONT.t;
-  for(let k=-6;k*pw<w+pw*4;k++){
-    const x=ri(k*pw-((SD*u*1.6)%(pw*4))),i=((k%4)+4)%4;
-    px(x,bY,pw,bH,PAL.out);px(x+1,bY+1,pw-2,bH-2,CINE_BOARDS[i]);px(x+1,bY+1,pw-2,1,'rgba(255,255,255,.35)');
-    // cartelloni: le due squadre in campo (stemma e sigla, nei colori delle divise) alternate alle scritte del gioco
-    const tm=i===0?0:(i===2?1:-1),nm=tm<0?'':(tm===0?(G.myName||'Blu'):(G.oppName||'Rossi'));
-    if(tm>=0){px(x+1,bY+1,pw-2,bH-2,UNI[tm].shirt);const cw=Math.min(14,bH-6);crestPx(x+ri(pw*0.22),bY+ri(bH/2),cw,nm,1);ptext(teamAbbr(nm),x+ri(pw*0.6),bY+ri(bH/2)-4,{f:'p',c:'#fff',o:false});}
-    else ptext(i===1?'ULTIMATE':'FRISBEE',x+pw/2,bY+ri(bH/2)-4,{f:'t',c:i===3?PAL.out:'#fff',o:false});
-  }
+  // cartelloni pubblicitari: gli stessi del campo (sponsor, club di casa, competizione: 18-cartelloni.js), che scorrono con la camera;
+  // lunghi come quelli veri, cosi' il nome intero dello sponsor ci sta con il carattere grande e sotto c'e' lo slogan
+  const pw=ri(5.2*u),seq=boardSeq(),bn=seq.length,bsh=(SD*u*1.6)%(pw*bn);
+  for(let k=-Math.ceil(bsh/pw)-1;k*pw-bsh<w;k++)cineBoard(ri(k*pw-bsh),bY,pw,bH,seq[((k%bn)+bn)%bn]);
   // prato: erba del campo, strisce di taglio che scorrono, puntini
   px(-4,gt,w+8,h-gt+4,PAL.grass);
   const sw=ri(2.6*u),off=ri((SD*u*1.4)%(sw*2));
