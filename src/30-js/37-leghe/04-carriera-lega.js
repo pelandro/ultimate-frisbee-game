@@ -7,7 +7,7 @@ function lnStartCareer(name,opt){
   SV.coach=coachNorm(opt.coach);SV.start='cuore';
   SV.ln={tier:B.t,T:null};
   SV.rost={};for(const n of LN_NAMES)if(LN_BY[n].lk===lk&&n!==name)SV.rost[n]=lnRoster(n,SV.seed);
-  setSquad(lnRoster(name,SV.seed+'|user',{low:true}));   // la tua rosa: quella del club, un po' meno allenata delle avversarie
+  setSquad(lnRoster(name,SV.seed+'|user'));   // la tua rosa: quella del club, come per le avversarie
   beginSeason();
   Object.assign(SV,opt.carry||{});
   careerInit();

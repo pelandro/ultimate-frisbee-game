@@ -12,7 +12,7 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
 (async()=>{
   let h=build();const i=h.lastIndexOf('})();');
   // solo per la prova: espone le funzioni del gioco (che vive in un ambito unico, senza moduli)
-  h=h.slice(0,i)+';window.__OVR=()=>({OVR_2026,OVR_OUT,OVR_FORCE,OVR_ADD,OVR_PART,ovrPart,OVR_DUAL_US,OVR_POW:typeof OVR_POW!=="undefined"?OVR_POW:{},ovrEntries,ovrKey,foreignRoster,allClubs,rosterPower,ovr,SQ_MAX});'+h.slice(i);
+  h=h.slice(0,i)+';window.__OVR=()=>({OVR_2026,OVR_OUT,OVR_FORCE,OVR_ADD,OVR_PART,ovrPart,OVR_DUAL_US,OVR_POW:typeof OVR_POW!=="undefined"?OVR_POW:{},ovrEntries,ovrKey,foreignRoster,allClubs,rosterPower,ovr,SQ_MAX,usRoster,lnRoster,realRoster,REAL,realOpt,US_TEAM,LN_BY});'+h.slice(i);
   fs.writeFileSync(OUT,h);
   const browser=await chromium.launch(),page=await browser.newPage(),errs=[];
   page.on('pageerror',e=>errs.push('errore JavaScript: '+e.message));
@@ -36,18 +36,26 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
         if(e.ex&&e.age&&o.age!==e.age)bad.push(e.nm+' '+e.sur+' ('+c+'): eta\' '+o.age+' invece di '+e.age);
       }
     }
+    // la rosa che parte tua (stessa costruzione delle avversarie, altro seme) deve avere gli stessi Overall del foglio
+    let mine=0;
+    for(const c of X.allClubs()){
+      const E=X.ovrEntries(c);if(!E.length)continue;
+      const ro=X.US_TEAM[c]?X.usRoster(c,'prova-ovr-mia'):(X.LN_BY[c]?X.lnRoster(c,'prova-ovr-mia'):X.realRoster(X.REAL[c]||[],'prova-ovr-mia',X.realOpt(c,9)));
+      const by=new Map(ro.map(o=>[X.ovrKey(o.full),o]));
+      for(const e of E){const o=by.get(e.k);if(!o)continue;mine++;if(X.ovr(o)!==e.ov)bad.push('rosa che parte tua, '+e.nm+' '+e.sur+' ('+c+'): Overall '+X.ovr(o)+' invece di '+e.ov);}
+    }
     // correzioni singole ai club fuori dal foglio
     for(const c in X.OVR_PART){const ro=club(c);for(const e of X.ovrPart(c)){const o=ro.find(x=>X.ovrKey(x.full)===e.k);if(!o)bad.push('manca '+e.nm+' '+e.sur+' ('+c+')');else if(X.ovr(o)!==e.ov)bad.push(e.nm+' '+e.sur+' ('+c+'): Overall '+X.ovr(o)+' invece di '+e.ov);else tot++;}}
     // richieste puntuali del progetto
     const find=(c,n)=>club(c).find(o=>X.ovrKey(o.full)===X.ovrKey(n));
     const p=find('Cotarica Grandes','Pietro Puppi');if(!p||X.ovr(p)!==87)bad.push('Puppi deve essere 87');
     for(const n of ['Carlo Mazzo','Marco Ragusa']){const q=find('CUS Padova Barbastreji',n);if(!q||X.ovr(q)!==86||q.r!=='H')bad.push(n+' deve essere un handler da 86');}
-    return {bad,pow,tot,cut,declared:X.OVR_POW};
+    return {bad,pow,tot,cut,mine,declared:X.OVR_POW};
   });
   await browser.close();try{fs.unlinkSync(OUT);}catch(e){}
   if(calcola){console.log('const OVR_POW='+JSON.stringify(res.pow).replace(/","/g,'","')+';');return;}
   for(const c in res.pow){const d=res.declared[c];if(d===undefined)res.bad.push('forza dichiarata mancante: '+c+' (rosa '+res.pow[c]+')');else if(Math.abs(d-res.pow[c])>0.35)res.bad.push('forza di '+c+': dichiarata '+d+', rosa '+res.pow[c]);}
   const all=errs.concat(res.bad);
   if(all.length){console.error('Prova degli Overall: '+all.length+' problemi');for(const e of all.slice(0,40))console.error('  [NO] '+e);process.exit(1);}
-  console.log(`Prova degli Overall: ok (${res.tot} giocatori del foglio esatti in ${Object.keys(res.pow).length} club${res.cut?', '+res.cut+' oltre il limite di rosa':''})`);
+  console.log(`Prova degli Overall: ok (${res.tot} giocatori del foglio esatti in ${Object.keys(res.pow).length} club, anche nella rosa che parte tua (${res.mine})${res.cut?', '+res.cut+' oltre il limite di rosa':''})`);
 })().catch(e=>{console.error('Prova degli Overall interrotta: '+e.message);process.exit(1);});
