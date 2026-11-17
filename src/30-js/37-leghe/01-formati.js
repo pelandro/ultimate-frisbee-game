@@ -40,7 +40,7 @@ const LN_DEF={
 };
 const LN_IDS=Object.keys(LN_DEF);
 const LN_BY={};   // club -> {lk, t (livello), g (girone dei dati), p (forza iniziale)}
-for(const lk of LN_IDS)for(const [n,t,g,p] of LN_CL[lk])LN_BY[n]={lk,t,g,p:OVR_POW[n]||p};   // OVR_POW: forza delle rose rivedute (00-ovr-2026.js)
+for(const lk of LN_IDS)for(const [n,t,g,p] of LN_CL[lk])LN_BY[n]={lk,t,g,p:OVR_POW[n]||LN_POW_FIX[n]||p};   // OVR_POW: forza delle rose rivedute (00-ovr-2026.js); LN_POW_FIX: correzioni a mano (00-dati-integrazioni.js)
 const LN_NAMES=LN_IDS.reduce((a,lk)=>a.concat(LN_CL[lk].map(r=>r[0])),[]);
 const lnKey=(lk,t)=>lk+'.'+t;   // valore di SV.sr: una voce per livello (nome e coefficiente economico in SERIES_NAME e SR_K)
 const LN_TIER={};   // 'BE.N1' -> {lk, i (posizione), ...livello}
