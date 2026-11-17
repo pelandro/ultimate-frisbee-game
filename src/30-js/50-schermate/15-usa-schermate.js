@@ -85,7 +85,7 @@ function renderTeamsUS(){
   $('tMode').classList.add('hidden');$('tRelief').classList.add('hidden');$('tTeams').classList.remove('hidden');
   $('tSr').innerHTML=US_CK.map(c=>`<button type="button" data-k="${c}">${US_CONF[c]}</button>`).join('');
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamCf);
-  $('tNote').textContent='Men’s Club USA: 48 club veri nelle 8 regioni di USA Ultimate, 6 per Conference. Si gioca nella propria Conference (5 giornate) e contro un club di ciascuna delle altre 7 Conference (interregionali), poi Play-in e Nationals a 16 squadre. Le Conference non cambiano mai: niente promozioni e retrocessioni. Il numero accanto al nome è la forza del club; i più prestigiosi partono più forti, ma le gerarchie cambiano negli anni.';
+  $('tNote').textContent='Men’s Club USA: 48 club veri in 8 Conference da 6. Giochi 5 partite nella tua Conference e 7 contro le altre (interregionali), poi Play-in e Nationals. Niente promozioni né retrocessioni. Il numero accanto al nome è la forza del club.';
   $('tTeams').innerHTML=US_BYCONF[teamCf].slice().sort((a,b)=>favFirst(a,b)||US_TEAM[a].rank-US_TEAM[b].rank).map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${favMark(n)}${esc(n)}<small class="tcity">${esc(US_TEAM[n].city)} · n° ${US_TEAM[n].rank}</small></span></span><b class="tp">${usPreview(n)}</b></button>`).join('');
 }
 // ---- Classifica ----

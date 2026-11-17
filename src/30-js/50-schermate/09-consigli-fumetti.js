@@ -64,9 +64,9 @@ function renderTicker(){
 }
 /* ---- fumetti ---- */
 const TIPS={
-  home:'Benvenuto! Questa è la schermata Partita: da qui parte ogni giornata. «Inizia partita» (il tasto giallo) la gioca tu, «Simula» la gioca il computer. Prima di partire guarda «Questa settimana»: ti dice cosa sistemare (linee, allenamento, mercato, Posta). La colonna a lato porta in Squadra, Allena, Mercato, Lega e Società; «Partita» riporta qui.',
-  roster:'Qui ci sono i tuoi giocatori. Su ogni carta: Overall (quanto è forte), barra verde (condizione) e faccina (umore). Tocca una carta per aprire la scheda e le azioni (Riposo, Colloquio…). A e D dicono chi gioca in attacco e in difesa: si cambiano nella scheda con ATT e DIF, oppure con «Linee consigliate».',
-  market:'Qui compri giocatori. L’elenco cambia ogni 5 giornate. Il potenziale dei giovani è un intervallo: «Osserva» (qualche credito) lo restringe. Ogni acquisto ha uno stipendio che paghi a ogni partita. «Solo chi posso prendere» nasconde chi oggi non puoi avere.',
+  home:'Benvenuto! Da qui parte ogni giornata: «Inizia partita» (tasto giallo) la giochi tu, «Simula» la gioca il computer. «Questa settimana» ti dice cosa sistemare prima di partire. La colonna a lato porta alle altre sezioni.',
+  roster:'Qui ci sono i tuoi giocatori. Su ogni carta: Overall (quanto è forte), barra verde (condizione) e faccina (umore). Tocca una carta per aprire la scheda. A e D dicono chi gioca in attacco e in difesa: si cambiano con ATT e DIF, o con «Linee consigliate».',
+  market:'Qui compri giocatori; l’elenco cambia ogni 5 giornate. Il potenziale dei giovani è un intervallo: «Osserva» (qualche credito) lo restringe. Ogni acquisto ha uno stipendio a ogni partita.',
   club:'Qui gestisci il club: strutture, staff, conti e bacheca. Ogni livello di una struttura dà un vantaggio, ma costa di più e ha una manutenzione a ogni partita. Il tasto «i» spiega ogni voce.',
   train:'A ogni giornata: una seduta per tutta la squadra e fino a 3 lavori individuali. Sopra ogni tasto vedi i punti che guadagni e la condizione che costa: alterna lavoro e Recupero. Il Programma automatico può farlo al posto tuo.',
   event:'Qui trovi la classifica della tua serie e delle altre e i migliori per mete, assist e difese. A fine stagione vedi premi e riepilogo, e da qui parte la stagione nuova.'

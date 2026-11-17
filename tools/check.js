@@ -3,7 +3,8 @@
    - segni di conflitto rimasti nei file, file senza a capo finale (romperebbero la concatenazione)
    - errori di sintassi e nomi dichiarati due volte (due sviluppatori che aggiungono la stessa costante)
    - blocco di simulazione senza accessi alla pagina
-   - elementi con lo stesso id, riferimenti $('id') a elementi che non esistono */
+   - elementi con lo stesso id, riferimenti $('id') a elementi che non esistono
+   - testi troppo lunghi: lezioni del tutorial oltre 1000 caratteri, voci della guida oltre 420 */
 const fs=require('fs'),path=require('path'),{build,files,SRC}=require('./build');
 const errs=[],warn=[];
 for(const f of files()){
@@ -37,6 +38,21 @@ else{
   const tl=js.match(/const TIP_LES=\{([^}]*)\}/);
   if(tl)for(const m of tl[1].matchAll(/:'([^']+)'/g))if(!les.includes(m[1]))errs.push('TIP_LES punta a una lezione che non esiste: '+m[1]);
   if(!/const SAVE_V=\d+/.test(js))errs.push('manca la versione del salvataggio (SAVE_V)');
+}
+// testi per il giocatore: tutorial e guida devono restare brevi, niente papiri (regole in docs/STILE-TESTI.md)
+{
+  const strip=x=>String(x).replace(/<[^>]+>/g,'');
+  try{
+    const T=new Function('DBL_PEN',fs.readFileSync(path.join(SRC,'30-js/50-schermate/20-tutorial-contenuti.js'),'utf8')+';return TUT;')(7);
+    if(T.length>8)errs.push(`tutorial: ${T.length} capitoli (massimo 8)`);
+    for(const c of T)for(const l of c.les){
+      const bl=l.b.flatMap(x=>Array.isArray(x)?x:[x]).map(strip),tot=bl.reduce((n,x)=>n+x.length,0),lg=bl.find(x=>x.length>330);
+      if(tot>1000)errs.push(`tutorial, lezione «${l.id}»: ${tot} caratteri (massimo 1000): tagliala o spezzala`);
+      if(lg)errs.push(`tutorial, lezione «${l.id}»: un paragrafo o punto elenco di ${lg.length} caratteri (massimo 330): «${lg.slice(0,40)}…»`);
+    }
+  }catch(e){errs.push('tutorial: i contenuti non si leggono ('+e.message+')');}
+  const g=fs.readFileSync(path.join(SRC,'20-html/07-guida.html'),'utf8');
+  for(const m of g.matchAll(/<li>([\s\S]*?)<\/li>/g)){const t=strip(m[1].split('<ul>')[0]).replace(/\s+/g,' ').trim();if(t.length>420)errs.push(`guida: una voce di ${t.length} caratteri (massimo 420): «${t.slice(0,40)}…»`);}
 }
 for(const w of warn)console.log('  avviso: '+w);
 if(errs.length){console.error('Controlli statici: '+errs.length+' problemi');for(const e of errs)console.error('  - '+e);process.exit(1);}

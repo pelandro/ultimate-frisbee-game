@@ -13,7 +13,7 @@ const TUT_STEPS=[
   {id:'style',def:'off',x0:14,n:1,t:'3 · Tipi di lancio',x:'Un tocco = lancio PIATTO (teso e veloce). Doppio tocco o due dita = lancio ALTO (scavalca i difensori): tocca due volte in un punto libero del campo, tieni giù il secondo tocco per mirare e rilascia. Da tastiera: Maiusc.',g:'Completa 1 lancio ALTO'},
   {id:'stall',def:'mark',x0:14,n:3,t:'4 · Marcatore e stall',x:'Ora un difensore ti marca e conta fino a 10: se arriva in fondo perdi il disco. Lancia sul lato che lascia libero, lontano dalle sue braccia.',g:'Completa 3 passaggi prima dello stall'},
   {id:'goal',def:'on',x0:34,n:1,t:'5 · La meta',x:'Ora c’è tutta la difesa. Si segna ricevendo il disco nella zona di meta avversaria (a destra). Avanza con passaggi sicuri o prova il lancio lungo.',g:'Segna una meta'},
-  {id:'def',side:'def',def:'on',x0:22,n:1,t:'6 · La difesa',x:'In partita la difesa è automatica (si cambia dalle Impostazioni). Qui provi quella manuale: il tuo difensore ha l’anello azzurro, trascina per muoverlo e resta tra il tuo uomo e il disco. Quando compare il cerchio che si stringe, premi il tasto (la mano per l’handblock, TUFFO per il tuffo) mentre arriva sull’anello interno.',g:'Recupera il disco'},
+  {id:'def',side:'def',def:'on',x0:22,n:1,t:'6 · La difesa',x:'Qui provi la difesa manuale: trascina per muovere il difensore con l’anello azzurro e resta tra il tuo uomo e il disco. Quando compare il cerchio che si stringe, premi la mano (handblock) o TUFFO mentre arriva sull’anello interno.',g:'Recupera il disco'},
   {id:'pull',pull:true,n:1,t:'7 · Il pull',x:'Ogni meta comincia col pull, in due tocchi. Primo tocco: ferma la POTENZA nel verde. Secondo tocco: ferma la DIREZIONE al centro. Sul campo vedi dove cadrà il disco e che pull sarebbe: cerca il GRAN PULL, ben in fondo alla meta.',g:'Tira un pull che resta in campo'}
 ];
 // sfide: ogni lancio (o possesso) e' una prova; il punteggio da' una medaglia
@@ -21,7 +21,7 @@ const CHAL={
   prec:{name:'Precisione',def:'off',x0:10,tries:10,unit:'Lanci',medal:[80,115,140],txt:'10 lanci senza difesa: 10 punti a presa, +5 se guadagni almeno 15 metri, 20 se è una meta.'},
   brk:{name:'Break',def:'mark',x0:16,tries:8,unit:'Lanci',medal:[45,75,100],txt:'8 lanci col marcatore addosso: 15 punti per ogni passaggio riuscito sul lato che lui chiude, 3 sul lato aperto.'},
   huck:{name:'Huck e duelli',def:'on',x0:20,tries:8,unit:'Lanci',medal:[60,110,160],txt:'8 lanci lunghi contro la difesa: contano solo le prese con almeno 25 metri guadagnati (tanti punti quanti i metri, +15 in meta).'},
-  dif:{name:'Difesa e layout',side:'def',def:'on',x0:22,tries:6,unit:'Azioni',medal:[60,100,140],txt:'6 azioni avversarie da fermare: 30 punti se il disco lo recupera il difensore che stai guidando, 10 se lo recupera un compagno, 0 se segnano.'}
+  dif:{name:'Difesa e tuffi',side:'def',def:'on',x0:22,tries:6,unit:'Azioni',medal:[60,100,140],txt:'6 azioni avversarie da fermare: 30 punti se il disco lo recupera il difensore che stai guidando, 10 se lo recupera un compagno, 0 se segnano.'}
 };
 const medalOf=(c,v)=>v>=c.medal[2]?3:(v>=c.medal[1]?2:(v>=c.medal[0]?1:0));
 const MEDAL_N=['Nessuna medaglia','Bronzo','Argento','Oro'];

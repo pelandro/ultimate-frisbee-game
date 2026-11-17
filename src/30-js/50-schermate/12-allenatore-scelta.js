@@ -12,12 +12,12 @@ function renderTeams(){
   for(const b of $('tMode').children)b.classList.toggle('on',b.dataset.k===teamMode);
   const sub=teamMode==='sub';
   $('tTeams').classList.toggle('hidden',sub);$('tRelief').classList.toggle('hidden',!sub);
-  if(!sub){$('tNote').textContent='Scegli la serie e tocca una squadra per vederne il roster, poi decidi se allenarla. Puoi partire dalla Serie C e salire, oppure dalla B o dalla A, dove le avversarie sono più forti. Le rose sono quelle vere (nomi ed età reali). Il numero accanto al nome è la forza della squadra: la media dei suoi 7 migliori.';renderTeamList();return;}
+  if(!sub){$('tNote').textContent='Tocca una squadra per vederne la rosa, poi decidi. Dalla Serie C si sale; in A le avversarie sono più forti. Il numero accanto al nome è la forza della squadra (la media dei suoi 7 migliori).';renderTeamList();return;}
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamTab);
   $('tNote').textContent='Scegli la serie: una squadra in crisi ti chiama a una giornata dalla fine. Hai una sola partita per salvarla; poi comincia l’estate.';
   if(!reliefName||!TEAM[reliefName]||TEAM[reliefName].series!==teamTab)reliefName=reliefOffer(teamTab);
   const n=reliefName;
-  $('tRelief').innerHTML=`<div class="ccard coffer"><div class="cof1">${crest(n,48)}<div><h3>${esc(n)}</h3><p>${SERIES_NAME[teamTab]} · forza ${Math.round(qPower(n))}</p></div></div><p>La squadra è in piena crisi: ha perso quasi tutto nelle ultime giornate e lotta per non retrocedere. Il presidente cerca un nuovo allenatore: tu hai <b>una sola partita</b> per salvarla, poi comincia l’estate.</p><div class="schrow"><button type="button" class="go" id="tReAcc">Accetta</button><button type="button" class="sec" id="tReAlt">Un’altra squadra</button></div></div>`;
+  $('tRelief').innerHTML=`<div class="ccard coffer"><div class="cof1">${crest(n,48)}<div><h3>${esc(n)}</h3><p>${SERIES_NAME[teamTab]} · forza ${Math.round(qPower(n))}</p></div></div><p>La squadra è in piena crisi e lotta per non retrocedere. Il presidente cerca un nuovo allenatore: hai <b>una sola partita</b> per salvarla, poi comincia l’estate.</p><div class="schrow"><button type="button" class="go" id="tReAcc">Accetta</button><button type="button" class="sec" id="tReAlt">Un’altra squadra</button></div></div>`;
 }
 $('tMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;teamMode=b.dataset.k;reliefName=null;renderTeams();});
 $('tRelief').addEventListener('click',e=>{

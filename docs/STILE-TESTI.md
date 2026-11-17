@@ -12,6 +12,20 @@ Regole per chi scrive o cambia una scritta visibile al giocatore (tutorial, guid
 - **Testo vero, non sensazioni**: ogni frase deve rispecchiare ciò che il gioco fa. Se cambi una regola, aggiorna nello stesso momento Tutorial (`TUT`), Guida, Primi passi (`PP_STEPS`), fumetti (`TIPS`) e `docs/CHANGELOG.md`.
 - **Niente puntini «…»** per tagliare un testo (si riscrive più corto), niente maiuscole a caso, niente inglese dove c'è una parola italiana chiara.
 
+## Quanto devono essere lunghi
+
+Niente papiri: un testo si legge in pochi secondi. `npm run check` fa fallire la verifica se si superano questi limiti.
+
+| Testo | Limite |
+|---|---|
+| Fumetto della carriera (`TIPS`), prova dei Primi passi | circa 250 caratteri (2-3 frasi) |
+| Lezione del tutorial | 1000 caratteri in tutto, nessun paragrafo o punto elenco oltre 330 (di solito ne bastano 700) |
+| Voce della Guida | 420 caratteri; se serve di più, una frase di apertura e un elenco annidato (`<ul>`) con un'idea per punto |
+| Spiegazione dietro il pulsante «i» | 3 paragrafi brevi al massimo |
+| Notizia, avviso, messaggio | una frase, due al massimo |
+
+Se un testo non entra nel limite, di solito spiega troppe cose insieme: spezzalo, o lascia il dettaglio alla Guida.
+
 ## Parole da usare sempre allo stesso modo
 
 | Parola | Significato |
