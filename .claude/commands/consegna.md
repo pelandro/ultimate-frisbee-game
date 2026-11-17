@@ -6,7 +6,7 @@ Consegna l'aggiornamento di questo ramo. Titolo proposto: $ARGUMENTS
 
 1. Se sei su `main`, fermati e dimmelo.
 2. Esegui prima tutti i passi di `/sincronizza` (così la pull request parte già allineata a `main`).
-3. `npm test` (verifica completa). Non consegnare con test falliti. Se hai toccato Overall, economia, strutture, staff o crescita: anche `node tools/test-bilanci.js --se-serve origin/main` (punti fissi del bilanciamento, 10-30 minuti). Se non li rispetta e nessuno ha chiesto di rendere il gioco più facile o più difficile, correggi; non allargare le soglie.
+3. `npm test` (verifica completa). Non consegnare con test falliti. Se hai toccato Overall, economia, strutture, staff o crescita: anche `node tools/test-bilanci.js --se-serve origin/main` (punti fissi del bilanciamento: su GitHub meno di un minuto, su un computer lento anche mezz'ora). Se non li rispetta e nessuno ha chiesto di rendere il gioco più facile o più difficile, correggi; non allargare le soglie.
 4. Aggiungi una riga in cima a `docs/CHANGELOG.md` (sezione «Non ancora pubblicato»): cosa cambia per chi gioca, in italiano semplice.
 5. Commit con messaggi chiari in italiano (uno per argomento, non uno enorme), poi `git push -u origin <ramo>`.
 6. Scrivi il testo della pull request in un file temporaneo seguendo `.github/pull_request_template.md` (cosa cambia, moduli e funzioni toccati, contratti toccati, verifiche fatte) e aprila con `node tools/pr.js apri "<titolo>" --corpo <file>`. Funziona sia sul computer sia nelle sessioni cloud (dove `gh pr create` non è disponibile).

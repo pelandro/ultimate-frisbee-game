@@ -21,7 +21,7 @@ permissions:
 jobs:
   verifica:
     runs-on: ubuntu-latest
-    timeout-minutes: 50   # di solito 2 minuti; fino a circa 40 quando parte la prova dei punti fissi del bilanciamento
+    timeout-minutes: 20   # di solito 2-5 minuti; la prova dei punti fissi del bilanciamento ne aggiunge circa uno
     permissions:
       contents: read
       pull-requests: read

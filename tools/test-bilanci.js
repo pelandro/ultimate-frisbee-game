@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* PROVA DEI PUNTI FISSI DEL BILANCIAMENTO (tools/bilanci/punti-fissi.js): carriere simulate nel gioco vero (Chromium senza finestra, come la prova
-   nel browser) per l'economia di tutti i campionati e per la crescita dalla Serie C. Lenta (10-30 minuti secondo i processori): non fa parte di
+   nel browser) per l'economia di tutti i campionati e per la crescita dalla Serie C. Su GitHub dura meno di un minuto (su un computer lento anche mezz'ora): non fa parte di
    npm test, la lancia la verifica di GitHub solo quando una pull request cambia Overall, economia, strutture o crescita (vedi «files»).
    Uso:  npm run bilanci                     (tutto)
          node tools/test-bilanci.js economia (solo l'economia)   ·   node tools/test-bilanci.js crescita (solo la crescita dalla Serie C)
