@@ -4,7 +4,9 @@
    Metodo: sui giocatori con affidabilita' alta (50, che hanno riscontri individuali) si misura quanti punti di Overall valgono 1 punto a partita in piu' (circa 4, con una correzione per
    handler e difensori); per gli altri, meta' della distanza tra il valore del foglio e quello atteso dal rendimento, da -2 a +4; per l'affidabilita' media solo se il ritocco e' di almeno 2 punti (motivazione solida). Chi ha affidabilita' alta non si tocca, e nemmeno chi gioca in due leghe (LN_DUAL: vale il valore piu' alto), e vale piu' un buon
    rendimento in un torneo di livello alto che in uno basso: i tornei giovanili e quelli domestici non entrano. Si somma al valore del foglio (e allo scarto di club, OVR_SHIFT) in ovrEntries.
-   Fonti: risultati pubblici dei portali WFDF ed EUF (solo nome, mete e assist). Si rigenera dai portali, non si ritocca a mano. */
+   Club USA del foglio: stesso metodo con le statistiche Fantasy Ultimate dei Nationals 2026 (35-usa/00-fantasy.js: punti a partita e costo di prima del torneo, usFFval), il torneo piu' forte
+   della lega, uguale per tutti i club: ritocco di meta' della distanza dal valore atteso dentro il club (0,64 punti di Overall per punto di valore Fantasy), da -2 a +4 e solo se di almeno 2 punti.
+   Fonti: risultati pubblici dei portali WFDF ed EUF (solo nome, mete e assist) e Fantasy Frisbee. Si rigenera dai portali, non si ritocca a mano. */
 const OVR_ADJ={
   "Tchac":{"Antoine Liron":4, "Quentin Moneuse":4, "Thybaud Brazeau":3, "Simon Madiot":3, "Némo Courtil":2, "Benjamin Broussard":2, "Axel Roger":1, "Hélie Chestier":1, "Marco Delalle":-1, "Mathieu Begouen Demeaux":-1, "Enzo Stanguennec":-2, "Thomas Lelièvre":-2, "Vincent Lepagnol":-2},
   "NLSU":{"Barnabé Earl-Anstee":4, "Jules Quinton":4, "Hugo Donatien":4, "Reiyu Rakotomamonjy":3, "Gaspard Calligaro":2, "Paul Marques":2, "Raphaël Melin":2, "Yoann Cocquebert":1, "Arthur Negre":-1, "Jules Lamare":-1, "Raphaël Chareix":-1, "Amaury Davy":-1, "Eric Becker-Chagneux":-2, "Olivier Gibert":-2, "Rémy Dauvois":-2, "Raphaël Caudron":-2, "Roger Michael":-2, "Arthur Oudomphong":-2},
@@ -16,5 +18,17 @@ const OVR_ADJ={
   "Mooncatchers":{"Cedric Feller":4, "Nicolas Hoquez":4, "John Beeckmans":3, "Gaetan Vanden Broeck":3, "Matthieu Muller":1, "Corentin Schiettecatte":1, "Gregoire Peterkenne":1, "Louis Dawans":1, "Benjamin Jonkers":-1, "Jérôme Deridder":-1, "Andrew Delhaisse":-1, "Arthur Feller":-1, "Diego Nothomb":-2},
   "Cotarica Runners":{"Andrea Bulgarelli":1},
   "Cotarica Grandes":{"Luca Contini":4, "Alessandro Pari":3, "Alberto Pompizii":2, "Arturo Benzi":-1, "Lorenzo Turci":-2},
-  "BFD La Fotta Offence":{"Kaïs Mathè":3}
+  "BFD La Fotta Offence":{"Kaïs Mathè":3},
+  "New York PoNY":{"Cameron Wariner":2, "Jacob Cowan":2, "Vinay Valsaraj":2, "Nicholas Whitlock":2, "John Randolph":-2},
+  "Boston DiG":{"Quentin Bonnaud":-2, "Pawel Janas":-2},
+  "Washington DC Truck Stop":{"Aidan Downey":2, "Jeremy Hess":2, "Christian Boxley":-2},
+  "Raleigh Ring of Fire":{"Andrew Swanson":2, "Matt Gouchoe-Hanas":-2, "Henry Fisher":-2},
+  "Atlanta Chain Lightning":{"Michael-Angelo Humm":2, "Liam Haberfield":2, "Michael Poe":-2, "Stefan McCall":-2, "Jason Evans":-2},
+  "Chicago Machine":{"Paul Arters":-2, "Xavier Payne":-2},
+  "Toronto GOAT":{"Luc Comire":2, "Maxime Ayad":2, "Martin Gallant":-2},
+  "Minneapolis Sub Zero":{"Paul Krenik":2, "Noah Hanson":2, "Max Hanscom":2, "Ryan duSaire":-2},
+  "Denver Johnny Bravo":{"Quinn Finer":-2, "Jordan Kerr":-2, "Jonathan Nethercutt":-2},
+  "Portland Rhino Slam!":{"Felix Moren":3, "Alex Hall-Witt":2, "Callahan Bosworth":-2},
+  "Seattle Sockeye":{"Asher Lantz":2, "Cedar Hines":-2, "Garrett Martin":-2},
+  "San Francisco Revolver":{"Daniel Ritthaler":2, "Seamus Robinson":2, "Max Zwerin":2, "Raekwon Adkins":-2, "Carter Lankford":-2, "Dillon Whited":-2}
 };
