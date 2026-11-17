@@ -65,7 +65,7 @@ function careerSelfTest(seasons,seed){
       if(s===1)anc0=Object.assign({},SV.anc||{});
       const n0=SV.news.length;newSeason();hide();seasonsDone++;
       {const L=aiMarket.last,al=(SV.alerts||[]).find(x=>x.k==='mkt'&&x.s===SV.season),all=Object.values(SV.rost).filter(r=>r&&r.length).flat();   // mercato tra le squadre del computer (31-mercato-ia.js)
-       aimChk.push(!!L&&L.n<=L.cap&&L.per<=AIM.max&&L.bud&&(L.n===0||(!!al&&al.data&&al.data.mv.length===Math.min(AIM.show,L.n)))&&L.ros&&new Set(all).size===all.length);aimN.push(L?L.n:-1);}
+       aimChk.push(!!L&&L.n<=L.cap&&L.per<=AIM.max&&L.perCh<=AIM.chMoves&&L.bud&&(L.n+L.nCh===0||(!!al&&al.data&&al.data.mv.length===Math.min(AIM.show,L.n+L.nCh)))&&L.ros&&new Set(all).size===all.length);aimN.push(L?L.n:-1);}
       worn+=SV.news.filter(x=>/Usura estiva/.test(x.txt)&&x.s===SV.season).length;keep+=SV.news.filter(x=>/Premi di mantenimento/.test(x.txt)&&x.s===SV.season).length;
       for(const a of SV.alerts)a.seen=1;
     }

@@ -20,10 +20,27 @@ const AIM={
   bud:0.22, budLv:0.3, budTop:1.25,    // budget estivo = monte stipendi x (bud + budLv x prestigio), x budTop se e' in crescita
   wUp:0.1, wUpLv:0.08,                 // gli stipendi dopo la mossa possono salire al massimo del 10% (+8% per i club piu' prestigiosi)
   fa:2, faLv:9, minRo:12, minRole:4, maxRo:20, // svincolati provati da chi compra e quanto sotto la forza del club; rosa minima, giocatori minimi per ruolo, rosa massima
-  show:4                               // operazioni raccontate nella Posta
+  show:4,                              // operazioni raccontate nella Posta
+  // INSEGUIMENTO: se la tua squadra e' piu' forte della migliore delle altre della serie piu' alta di oltre chGap punti, le chN piu' forti investono
+  // per inseguirti: sempre attive, budget e tetto degli stipendi piu' alti, possono comprare da club di ogni livello e trovare all'estero un giocatore
+  // sopra il loro livello (chFa: quanto sopra, per ogni punto di distacco, fino a chMax). Non frena la tua crescita: rende il campionato conteso
+  chGap:3, chN:3, chBud:0.35, chBudMax:3, chWage:0.25, chFa:0.5, chMax:6, chMoves:3
 };
 const aimTop=n=>(SV.cyc&&SV.cyc[n]||0)>=1||clubLvl(n)>=0.8;   // punta al vertice: in un ciclo buono o tra i club piu' importanti
 const aimReb=n=>(SV.cyc&&SV.cyc[n]||0)<=-1.5;                  // in ricostruzione: vende volentieri i veterani
+// i club della serie piu' alta del tuo campionato (in Italia la Serie A, negli USA tutta la lega, nelle leghe europee il primo livello)
+function aimTopTier(){
+  if(isUS())return US_NAMES.slice();
+  if(isLN()){const t=SV.ln&&SV.ln.T&&SV.ln.T[LN_DEF[SV.lk].tiers[0].id];return t?t.flatMap(c=>c.pools?c.pools.flat():(c.clubs||[])):[];}
+  return (SV.mem&&SV.mem.A)||SERIES.A.slice();
+}
+// chi ti insegue quest'estate: le piu' forti della serie piu' alta, se le stacchi di oltre AIM.chGap (lead = il distacco dalla migliore)
+function aimChase(names,pw){
+  if(!SV.team||!SQ.length)return {set:new Set(),lead:0};
+  const tt=new Set(aimTopTier()),c=names.filter(n=>tt.has(n)).sort((a,b)=>pw[b]-pw[a]);
+  const lead=c.length?squadPower()-pw[c[0]]:0;
+  return {set:lead>AIM.chGap?new Set(c.slice(0,AIM.chN)):new Set(),lead};
+}
 // valutazioni veloci con i valori dell'estate in memoria (le statistiche non cambiano durante il mercato): aimPow da' lo stesso risultato
 // di rosterPower (3 Handler e 4 Cutter migliori, poi i migliori rimasti) e aimWage di wageSeason, per la rosa con un giocatore in piu' (add)
 // e/o uno in meno (rem), senza costruire rose nuove. Con rosterPower e wageSeason il mercato di una lega costava fino a quasi un secondo
@@ -51,17 +68,19 @@ function aiMarket(){
   const M=o=>{let v=c9.get(o);if(v===undefined){v=mean9(o);c9.set(o,v);}return v;},W=o=>{let v=cw.get(o);if(v===undefined){v=wageOf(o);cw.set(o,v);}return v;},
     PR=o=>{let v=cp.get(o);if(v===undefined){v=priceOf(o);cp.set(o,v);}return v;};
   const st={},pw={};
-  for(const n of names){const ro=SV.rost[n],w=aimWage(ro,null,null,W),lv=clubLvl(n);pw[n]=aimPow(ro,null,null,M);
-    st[n]={bud:Math.round(w*(AIM.bud+AIM.budLv*lv)*(aimTop(n)?AIM.budTop:1)),wcap:w*(1+AIM.wUp+AIM.wUpLv*lv),mv:0};}
+  for(const n of names){const ro=SV.rost[n];pw[n]=aimPow(ro,null,null,M);}
+  const ch=aimChase(names,pw),chK=Math.min(AIM.chBudMax,1+AIM.chBud*Math.max(0,ch.lead-AIM.chGap));
+  for(const n of names){const ro=SV.rost[n],w=aimWage(ro,null,null,W),lv=clubLvl(n),c=ch.set.has(n);
+    st[n]={bud:Math.round(w*(AIM.bud+AIM.budLv*lv)*(aimTop(n)?AIM.budTop:1)*(c?chK:1)),wcap:w*(1+AIM.wUp+AIM.wUpLv*lv+(c?AIM.chWage:0)),mv:0,ch:c};}
   const moved=new Set(),free=o=>o&&o.ret!==1&&!o.inj&&!moved.has(o),cap=Math.ceil(names.length/AIM.cap),done=[];
-  const act=names.filter(n=>R()<AIM.act+(aimTop(n)?AIM.actTop:0)+(aimReb(n)?AIM.actReb:0));
+  const act=names.filter(n=>st[n].ch||R()<AIM.act+(aimTop(n)?AIM.actTop:0)+(aimReb(n)?AIM.actReb:0));
   for(let i=act.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[act[i],act[j]]=[act[j],act[i]];}
   const best=b=>{   // l'operazione migliore per il club b (quella che lo migliora di piu' tra quelle che convengono anche all'altro)
     const rb=SV.rost[b],p0=pw[b],sb=st[b];let pick=null;
     const take=(m,g)=>{if(g>(pick?pick.g:-1))pick=Object.assign(m,{g});};
     const wk={H:aimWeak(rb,'H',M),C:aimWeak(rb,'C',M)},nh=r=>wk[r]||0;
     for(const a of names){
-      if(a===b||st[a].mv>=AIM.max||Math.abs(pw[a]-p0)>AIM.dPow)continue;
+      if(a===b||st[a].mv>=AIM.max||(!sb.ch&&Math.abs(pw[a]-p0)>AIM.dPow)||st[a].ch)continue;   // chi insegue compra anche da club di altro livello; tra inseguitrici non ci si vende i giocatori
       const ra=SV.rost[a],pa=pw[a],reb=aimReb(a)||clubPol(a)[0]==='giovani',wa={H:aimWeak(ra,'H',M),C:aimWeak(ra,'C',M)};
       for(const o of ra){   // acquisto
         if(!free(o)||M(o)<=nh(o.r))continue;
@@ -84,19 +103,23 @@ function aiMarket(){
       }
     }
     for(let i=0;i<AIM.fa;i++){   // svincolato: un adulto un po' sotto il livello del club (chi resta libero non e' un titolare da vertice), senza cartellino
-      const l0=p0-AIM.faLv+R()*5,ag=24+Math.floor(R()*8),o=genPlayer(l0,ag,SV.seed+'|aifa|'+b+'|'+SV.season+'|'+st[b].mv+'|'+i,adultPot(l0,ag,R));
-      const g=aimPow(rb,o,null,M)-p0;if(g>=AIM.gain&&aimWage(rb,o,null,W)<=sb.wcap&&aimRoleOk(rb,o,null))take({k:'fa',o,b,fee:0},g);
+      // chi insegue lo trova all'estero, sopra il suo livello: il cartellino lo paga (meta' del valore), cosi' il budget conta
+      const l0=sb.ch?Math.min(TAL_AI,p0+Math.min(AIM.chMax,AIM.chFa*ch.lead)-1+R()*3):p0-AIM.faLv+R()*5,ag=24+Math.floor(R()*8),o=genPlayer(l0,ag,SV.seed+'|aifa|'+b+'|'+SV.season+'|'+st[b].mv+'|'+i,adultPot(l0,ag,R));
+      const g=aimPow(rb,o,null,M)-p0,fee=sb.ch?Math.round(PR(o)*0.5):0;if(g>=AIM.gain&&fee<=sb.bud&&aimWage(rb,o,null,W)<=sb.wcap&&aimRoleOk(rb,o,null))take({k:sb.ch?'est':'fa',o,b,fee},g);
     }
     return pick;
   };
   const trim=(n,n0)=>{const ro=SV.rost[n];while(ro.length>Math.max(AIM.maxRo,n0)){const w=ro.slice().sort((a,b)=>M(a)-M(b)).find(o=>aimRoleOk(ro,null,o));if(!w)break;ro.splice(ro.indexOf(w),1);}};   // come evolveLeague: chi avanza lascia la rosa
+  act.sort((a,b)=>st[b].ch-st[a].ch);   // chi insegue per primo, e fuori dal tetto di operazioni (cap) del resto del campionato
+  let nN=0;const lim=b=>st[b].ch?AIM.chMoves:AIM.max;
   for(const b of act){
-    if(done.length>=cap)break;
-    for(let t=0;t<AIM.max&&st[b].mv<AIM.max&&done.length<cap;t++){
-      if(t>0&&R()>=AIM.again)break;
+    if(!st[b].ch&&nN>=cap)break;
+    for(let t=0;t<lim(b)&&st[b].mv<lim(b)&&(st[b].ch||nN<cap);t++){
+      if(t>0&&!st[b].ch&&R()>=AIM.again)break;
       const m=best(b);if(!m)break;
       const rb=SV.rost[b],n0=rb.length;   // la rosa non supera la misura che aveva (o AIM.maxRo): chi compra lascia andare il piu' debole
-      if(m.k==='fa')rb.push(m.o);
+      if(!st[b].ch)nN++;
+      if(m.k==='fa'||m.k==='est')rb.push(m.o);
       else{const ra=SV.rost[m.a];ra.splice(ra.indexOf(m.o),1);rb.push(m.o);
         if(m.k==='swap'){rb.splice(rb.indexOf(m.x),1);ra.push(m.x);}
         st[m.a].bud+=m.fee;st[m.a].mv++;pw[m.a]=aimPow(ra,null,null,M);}
@@ -105,7 +128,8 @@ function aiMarket(){
       done.push(Object.assign(m,{ov:Math.max(ovr(m.o),m.x?ovr(m.x):0)}));
     }
   }
-  aiMarket.last={k:['buy','swap','fa'].map(k=>done.filter(m=>m.k===k).length),n:done.length,cap,clubs:names.length,act:act.length,per:Math.max(0,...Object.values(st).map(s=>s.mv)),bud:Object.values(st).every(s=>s.bud>=0),ros:done.every(m=>[m.a,m.b].filter(Boolean).every(n=>aimRoleOk(SV.rost[n],null,null)))};   // per il test della carriera
+  if(ch.set.size&&done.some(m=>st[m.b].ch))news(`Le rivali vi inseguono: ${[...ch.set].join(', ')} investono sul mercato per accorciare il distacco.`);
+  aiMarket.last={k:['buy','swap','fa','est'].map(k=>done.filter(m=>m.k===k).length),n:nN,nCh:done.length-nN,cap,clubs:names.length,act:act.length,per:Math.max(0,...Object.values(st).filter(s=>!s.ch).map(s=>s.mv)),perCh:Math.max(0,...Object.values(st).filter(s=>s.ch).map(s=>s.mv)),bud:Object.values(st).every(s=>s.bud>=0),ros:done.every(m=>[m.a,m.b].filter(Boolean).every(n=>aimRoleOk(SV.rost[n],null,null)))};   // per il test della carriera
   return done;
 }
 // la notizia della Posta: le operazioni con l'Overall piu' alto, con un segno per la tua serie e la tua rivale
@@ -115,8 +139,9 @@ function aiMarketNews(done){
   const who=o=>`${pname(o)} (${POS_NAME[posOf(o)]}, ${ovr(o)})`;
   const line=m=>m.k==='buy'?`Acquisto · ${pname(m.o)} (${POS_NAME[posOf(m.o)]}, ${ovr(m.o)}, ${m.o.age} anni) da ${m.a} a ${m.b} per ${m.fee} crediti${tag(m.a,m.b)}`
     :m.k==='swap'?`Scambio · ${who(m.x)} va a ${m.a}, ${who(m.o)} a ${m.b}${tag(m.a,m.b)}`
+    :m.k==='est'?`Dall’estero · ${pname(m.o)} (${POS_NAME[posOf(m.o)]}, ${ovr(m.o)}, ${m.o.age} anni) firma con ${m.b} per ${m.fee} crediti${tag(m.b)}`
     :`Svincolato · ${pname(m.o)} (${POS_NAME[posOf(m.o)]}, ${ovr(m.o)}, ${m.o.age} anni) firma con ${m.b}${tag(m.b)}`;
   const top=done.slice().sort((a,b)=>b.ov-a.ov).slice(0,AIM.show),n=done.length;
-  const kn=[['buy','acquisto','acquisti'],['swap','scambio','scambi'],['fa','svincolato','svincolati']].map(([k,s1,s2])=>{const c=done.filter(m=>m.k===k).length;return c?c+' '+(c===1?s1:s2):'';}).filter(Boolean).join(', ');
+  const kn=[['buy','acquisto','acquisti'],['swap','scambio','scambi'],['fa','svincolato','svincolati'],['est','dall’estero','dall’estero']].map(([k,s1,s2])=>{const c=done.filter(m=>m.k===k).length;return c?c+' '+(c===1?s1:s2):'';}).filter(Boolean).join(', ');
   alertAdd('mkt',n===1?'Mercato d’estate: un’operazione tra le altre squadre.':`Mercato d’estate: ${n} operazioni tra le altre squadre (${kn}). I colpi più grandi:`,{data:{mv:top.map(line)}});
 }
