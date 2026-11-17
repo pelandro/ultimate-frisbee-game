@@ -55,3 +55,13 @@ function budgetHTML(){
     row('Dopo i premi',f.after,f.after<0?'bad':'tot')+
     `<p>${f.end<0?'<b>Attenzione</b>: a questo ritmo finisci in rosso prima dei premi (niente acquisti e morale in calo). ':''}È una stima: cambia con i risultati, gli acquisti e le strutture.</p></div>`;
 }
+// AVVISO D'INIZIO STAGIONE: se le previsioni dicono che con questa rosa la cassa va sotto zero prima dei premi di fine stagione, la dirigenza lo scrive
+// subito nella Posta (una volta per stagione, SV.wWarn), invece di accorgersene a meta' campionato con il mercato gia' fermo
+function wageWarn(){
+  if(!SV||SV.cash===undefined||SV.wWarn===SV.season||!SQ.length||(SV.round|0)>0||SV.event==='eu')return;
+  let f;try{f=budgetForecast();}catch(e){return;}
+  if(!f.left||f.end>=0)return;
+  SV.wWarn=SV.season;
+  const lots=SQ.length>WAGE_FULL+2;
+  alertAdd('dir',`Previsioni dei conti: a questo ritmo la stagione chiude in rosso, con la cassa intorno a ${f.end} crediti all’ultima giornata (prima dei premi). ${f.wage>f.inc?`Con ${lots?'una rosa di '+SQ.length+' giocatori ':'questa rosa '}gli stipendi (circa ${wageBill()} a partita) costano più di quanto entra dalle partite.`:'Le spese previste superano ciò che resta in cassa e che entrerà.'} Con i conti sotto zero il mercato si ferma e il morale cala: ${lots?'valuta di cedere qualche riserva (le prime cessioni rendono di più).':'valuta una cessione o rimanda le spese.'}`);
+}

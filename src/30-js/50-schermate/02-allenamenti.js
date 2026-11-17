@@ -112,7 +112,7 @@ $('rBox').addEventListener('click',e=>{
   if(se){
     const id=+se.dataset.sell;if(sellArm!==id){sellArm=id;renderRoster();return;}
     sellArm=null;cardOpen=null;const nm=SQ[id].label||SQ[id].name,v=sellValue(SQ[id]);openDet.clear();
-    if(sellPlayer(id)){rosterMsg=`${nm} ceduto per ${v} crediti.`;persist();}
+    if(sellPlayer(id)){rosterMsg=`${nm} ceduto per ${v} crediti. In questa stagione la prossima cessione immediata rende il ${Math.round(sellPct()*100)}% del valore.`;persist();}
     renderRoster();return;
   }
   const r=e.target.closest('tr.pl');if(!r)return;
