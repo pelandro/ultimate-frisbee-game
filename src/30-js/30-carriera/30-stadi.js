@@ -14,7 +14,7 @@ const neutralName=()=>SV.event==='eu'?'EUCF':(isUS()?'NATIONALS':(isLN()?'FINALI
 function careerVenue(m){
   m=m||nextMatch();if(!m)return null;
   const v=venueOf(),K=Math.sqrt(ECO.K()),imp=phaseImp(),derby=v!=='N'&&m.name===SV.riv&&SV.event==='camp';
-  const o={v,home:null,tier:0,n:0,cap:0,my:0.5,big:derby||imp>1,ev:'',spon:'',care:-1};
+  const o={v,home:null,tier:0,n:0,cap:0,my:0.5,big:derby||imp>1,ev:'',spon:'',comp:'',care:-1};
   if(v==='H'){
     const a=attendance(m,'H');Object.assign(o,{home:SV.team,tier:myStadTier(),n:a.att,cap:a.cap,my:0.1,care:facLv('camp')});   // my: i pochi tifosi ospiti
     if(SV.sp&&SV.sp.name)o.spon=SV.sp.name;   // il tuo sponsor sui cartelloni di casa
@@ -26,7 +26,9 @@ function careerVenue(m){
   }else{
     const cap=Math.round(450*K*3.2),fill=clamp(0.5+0.22*(imp-1),0.5,1);
     Object.assign(o,{tier:2,cap,n:Math.round(cap*fill),my:clamp(0.3+fansOf()/100*0.25,0.3,0.55),ev:neutralName()});
+    if(SV.sp&&SV.sp.name)o.spon=SV.sp.name;   // in campo neutro il tuo sponsor e' tra quelli della manifestazione
   }
+  o.comp=SV.event==='eu'?'EUCF':(SERIES_NAME[SV.sr]||'');   // la competizione, su un cartellone (18-cartelloni.js)
   o.fill=o.cap?clamp(o.n/o.cap,0.04,1):0.4;
   return o;
 }

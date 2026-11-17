@@ -4,14 +4,14 @@
    (gradoni su due file, bandierine agli angoli). Il pubblico sta nella fascia sopra il campo, quindi non toglie spazio al gioco: quanta gente
    dipende dagli spettatori della partita, i colori dalla squadra di casa, e la squadra ospite ha i suoi tifosi in un angolo. Esultano solo
    i tifosi di chi segna; nelle partite importanti (derby, playoff, finali) ci sono bandiere, uno striscione e coriandoli.
-   G.vn = {v:'H'|'A'|'N', home, tier 0-2, n, cap, fill 0-1, my (quota dei tifosi della squadra ospite; in campo neutro, dei tuoi), big, ev, spon, care}:
+   G.vn = {v:'H'|'A'|'N', home, tier 0-2, n, cap, fill 0-1, my (quota dei tifosi della squadra ospite; in campo neutro, dei tuoi), big, ev, spon, comp, care}:
    in carriera lo calcola careerVenue (30-carriera/30-stadi.js) a inizio partita, nelle altre modalita' gioca in casa la prima squadra.
    Si azzera in newGame(); tutto deriva da nomi e dati della carriera, quindi lo stesso campo e' sempre uguale. */
 function venueNow(){
   if(G.vn)return G.vn;
   const on=!!G.inMatch&&!G.drill,home=on&&G.myName?G.myName:null,h=hashStr('stadio|'+(home||''));
-  G.vn=on?{v:'H',home,tier:h%3,n:0,cap:0,fill:0.45+((h>>4)%5)*0.12,my:0.12,big:false,ev:'',spon:'',care:-1}
-    :{v:'H',home:null,tier:0,n:0,cap:0,fill:G.drill?0.1:0.3,my:0.12,big:false,ev:'',spon:'',care:-1};
+  G.vn=on?{v:'H',home,tier:h%3,n:0,cap:0,fill:0.45+((h>>4)%5)*0.12,my:0.12,big:false,ev:'',spon:'',comp:'',care:-1}
+    :{v:'H',home:null,tier:0,n:0,cap:0,fill:G.drill?0.1:0.3,my:0.12,big:false,ev:'',spon:'',comp:'',care:-1};
   return G.vn;
 }
 const vnSide=V=>V.v==='A'?1:0;   // squadra di casa in campo: 0 tu (blu), 1 l'avversaria (rossa); in campo neutro conta la tua
@@ -79,7 +79,8 @@ function drawStands(y0){
   if(V.tier>=2)crowdRow(y0-9,1,V);   // fila di dietro: solo negli stadi
   crowdRow(y0-3,0,V);
   if(V.tier===0)drawFence(top);
-  if(V.big)drawStreamer(top);   // lo striscione lo tengono i tifosi (o e' appeso alla rete)
+  if(V.big)drawStreamer(top-2);   // lo striscione lo tengono i tifosi (o e' appeso alla rete): sta dietro ai cartelloni, appena sopra
+  drawTopBoards(y0);   // cartelloni davanti alla tribuna, con i varchi per vedere il pubblico (18-cartelloni.js)
   if(V.big&&G.mode==='banner')drawConfetti(top);
 }
 function crowdRow(yBase,row,V){
@@ -130,13 +131,4 @@ function drawConfetti(top){
     const h=hashStr('cor'+i),sp=10+(h%9),x=((h>>4)%(VW+40))-20+Math.sin(G.tick*3+i)*4,y=top-4+((G.tick*sp*6+(h>>9)%60)%48);
     px(x,y,2,1+((h>>6)&1),cs[(h>>2)%cs.length]);
   }
-}
-// cartelloni: il nome della squadra di casa (in campo neutro la manifestazione), il tuo sponsor quando giochi in casa
-function boardTexts(){
-  const V=venueNow(),hs=vnSide(V),on=G.inMatch&&G.myName,ab=[on?teamAbbr(G.myName):'BLU',on&&G.oppName?teamAbbr(G.oppName):'ROSSI'];
-  const homeTxt=V.ev?V.ev:(V.home?String(V.home).replace(/ \([ABC]\)$/,'').toUpperCase():'ULTIMATE');
-  const sp=V.spon?String(V.spon).toUpperCase():'';
-  // per ogni cartellone i testi dal piu' lungo al piu' corto: si scrive il primo che ci sta
-  return {txt:[['ULTIMATE','ULT'],[homeTxt,homeTxt.split(' ')[0],V.ev?V.ev:ab[hs]],sp?[sp,sp.split(' ')[0],teamAbbr(sp)]:['FRISBEE','UF'],[ab[1-hs]]],
-    bg:['#1d2b53',V.ev?'#1d2b53':UNI[hs].shirt,V.spon?'#f4f4f4':'#ffd23f',UNI[1-hs].shirt],ink:['#ffd23f',V.ev?PAL.gold:'#ffffff','#1a1c2c','#ffffff'],gap:V.tier===0};
 }
