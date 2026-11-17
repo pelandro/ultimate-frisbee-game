@@ -374,6 +374,18 @@ catch(e){
     await page.click('#tQuick');await vis('#quick');await page.click('#qPlay');await page.waitForTimeout(500);
     await page.keyboard.press('Escape');await vis('#pause');await vis('#paFs');if(!/Schermo intero/.test(await page.locator('#paFs').innerText()))throw new Error('il menu pausa deve avere il pulsante dello schermo intero');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
   });
+  await step('Cambi: «Cambia tutti e 7» in partita veloce fa entrare i secondi 7 e premendolo di nuovo tornano i primi',async()=>{
+    await page.click('#tQuick');await vis('#quick');await page.click('#qPlay');await page.waitForTimeout(600);
+    await page.waitForSelector('#bSub:not(.hidden)',{timeout:20000});await page.click('#bSub');await vis('#subs');
+    const field=()=>page.evaluate(()=>[...document.querySelectorAll('#subBox .lu')[0].querySelectorAll('button[data-id]')].map(b=>b.dataset.id).sort().join());
+    const f0=await field();
+    if(await page.locator('#subBox .lu-all').count()!==1)throw new Error('nel pannello Cambi manca il pulsante «Cambia tutti e 7»');
+    await page.click('#subBox .lu-all');const f1=await field();
+    if(f1===f0||f1.split(',').some(id=>f0.split(',').includes(id)))throw new Error('«Cambia tutti e 7» deve far uscire tutti i 7 in campo');
+    if(f1.split(',').length!==7)throw new Error('in campo devono restare 7 giocatori');
+    await page.click('#subBox .lu-all');if(await field()!==f0)throw new Error('premuto di nuovo, «Cambia tutti e 7» deve riportare in campo i primi 7');
+    await page.click('#bSubGo');await page.keyboard.press('Escape');await vis('#pause');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
+  });
   await step('pausa: tutti i pulsanti sono dentro lo schermo, anche sul telefono piccolo (667x375), e Abbandona si raggiunge',async()=>{
     const c=await browser.newContext({viewport:{width:667,height:375}}),p=await c.newPage();p.setDefaultTimeout(15000);
     await p.addInitScript(()=>{try{localStorage.setItem('ultimate-primi','{"d":[],"m":9,"off":1}');}catch(e){}});   // niente schede dei «Primi passi» sopra la partita

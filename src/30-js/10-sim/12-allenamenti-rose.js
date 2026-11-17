@@ -233,6 +233,17 @@ function setLineup(ids){
   T[0]=L;L.forEach((p,i)=>{p.t=0;p.i=i;p.slot=i;});
 }
 const lineupIds=()=>T[0].map(p=>p.id);
+// BLOCCO DI CAMBIO (tasto «Cambia tutti e 7»): al posto di tutta la formazione entrano i 7 migliori tra chi e' in panchina e sta bene (3 handler e 4 cutter se ci sono;
+// in difesa conta la Difesa, in attacco l'Overall). Con la formazione dei 7 piu' forti in campo entrano i secondi 7, e premendolo di nuovo tornano i primi.
+// Con meno di 7 in panchina entrano tutti e gli altri posti restano ai migliori che erano in campo. Ritorna gli id, oppure null se non c'e' nessuno da far entrare.
+function blockIds(def){
+  const on=new Set(lineupIds()),sc=p=>def?rate(p.s,'D'):ovrX(p),pool=SQ.filter(p=>!p.inj&&!on.has(p.id));
+  if(!pool.length)return null;
+  let pick=pickSeven(pool,p=>p.role,sc);
+  if(pick.length<7)pick=pick.concat(T[0].filter(p=>!p.inj).sort((a,b)=>sc(b)-sc(a)).slice(0,7-pick.length));
+  return pick.length===7?pick.map(p=>p.id):null;
+}
+const blockDef=()=>G.lines?G.lineK==='d':G.poss===1;   // la meta che sta per cominciare e' di difesa (in carriera lo dice la linea, altrove chi riceve il pull)
 // infortuni: a fine meta, chi e' in campo ed e' stanco (energia sotto 50) rischia; stop di 1-3 partite
 const INJ_K=0.045;
 function checkInjuries(){
