@@ -66,7 +66,7 @@ function aiMarket(){
       for(const o of ra){   // acquisto
         if(!free(o)||M(o)<=nh(o.r))continue;
         const fee=PR(o);if(fee>sb.bud)continue;
-        const g=aimPow(rb,o,null,M)-p0;if(g<AIM.gain||aimWage(rb,o,null,W)>sb.wcap||!aimRoleOk(ra,null,o))continue;
+        const g=aimPow(rb,o,null,M)-p0;if(g<AIM.gain||aimWage(rb,o,null,W)>sb.wcap||!aimRoleOk(ra,null,o)||!aimRoleOk(rb,o,null))continue;   // anche chi compra deve restare con una rosa valida (una squadra rimasta con un solo Handler non ne esce comprando un Cutter)
         const loss=pa-aimPow(ra,null,o,M);if(loss>AIM.loss&&!(reb&&o.age>=AIM.vetAge&&loss<=AIM.vetLoss))continue;
         take({k:'buy',o,a,b,fee},g);
       }
@@ -85,7 +85,7 @@ function aiMarket(){
     }
     for(let i=0;i<AIM.fa;i++){   // svincolato: un adulto un po' sotto il livello del club (chi resta libero non e' un titolare da vertice), senza cartellino
       const l0=p0-AIM.faLv+R()*5,ag=24+Math.floor(R()*8),o=genPlayer(l0,ag,SV.seed+'|aifa|'+b+'|'+SV.season+'|'+st[b].mv+'|'+i,adultPot(l0,ag,R));
-      const g=aimPow(rb,o,null,M)-p0;if(g>=AIM.gain&&aimWage(rb,o,null,W)<=sb.wcap)take({k:'fa',o,b,fee:0},g);
+      const g=aimPow(rb,o,null,M)-p0;if(g>=AIM.gain&&aimWage(rb,o,null,W)<=sb.wcap&&aimRoleOk(rb,o,null))take({k:'fa',o,b,fee:0},g);
     }
     return pick;
   };
