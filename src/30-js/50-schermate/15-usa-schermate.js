@@ -80,7 +80,7 @@ function usStakes(m){
 }
 // ---- scelta del campionato e della Conference (schermata «Scegli la tua squadra») ----
 let teamLg='IT',teamCf='NE';
-const usPrevCache={},usPreview=n=>usPrevCache[n]||(usPrevCache[n]=Math.round(rosterPower(usRoster(n,'preview|'+n))));   // forza con cui si parte davvero (rosa un po' meno allenata)
+const usPrevCache={},usPreview=n=>usPrevCache[n]||(usPrevCache[n]=Math.round(rosterPower(usRoster(n,'preview|'+n))));   // forza con cui si parte davvero
 function renderTeamsUS(){
   $('tMode').classList.add('hidden');$('tRelief').classList.add('hidden');$('tTeams').classList.remove('hidden');
   $('tSr').innerHTML=US_CK.map(c=>`<button type="button" data-k="${c}">${US_CONF[c]}</button>`).join('');
