@@ -8,7 +8,7 @@
          node tools/test-bilanci.js --se-serve <rif>   (solo se i file cambiati rispetto a <rif>, per esempio origin/main, toccano gli equilibri) */
 const fs=require('fs'),os=require('os'),path=require('path'),{execSync}=require('child_process'),{build}=require('./build');
 const PF=require('./bilanci/punti-fissi');
-if(process.argv.includes('--prova')){PF.economia.runs=PF.economia.runs.slice(0,2);PF.economia.seasons=1;PF.crescita.seeds=[1];PF.crescita.seasons=2;}   // solo per vedere che giri (le soglie qui non hanno senso)
+if(process.argv.includes('--prova')){PF.economia.runs=PF.economia.runs.slice(0,2);PF.economia.seasons=1;PF.crescita.seeds=[1];PF.crescita.seasons=2;PF.leghe.lks=['UK'];PF.leghe.seeds=[1];PF.leghe.seasons=2;}   // solo per vedere che giri (le soglie qui non hanno senso)
 const args=process.argv.slice(2),only=args.find(a=>a==='economia'||a==='crescita');
 const si=args.indexOf('--se-serve');
 if(si>=0){
@@ -33,8 +33,9 @@ const ECO=fs.readFileSync(path.join(__dirname,'bilanci/pagina-economia.js'),'utf
   const jobs=[];
   if(only!=='crescita')for(const r of PF.economia.runs)jobs.push({k:'eco',r,code:`(${ECO.trim()})(${JSON.stringify({team:r.team,mode:r.mode||0,trim:r.trim||0,seasons:PF.economia.seasons,seed:PF.economia.seed})})`});
   if(only!=='economia')for(const seed of PF.crescita.seeds)jobs.push({k:'car',seed,code:`(${CAR.trim()})(${JSON.stringify({seed,seasons:PF.crescita.seasons,skill:PF.crescita.skill,xp:PF.crescita.xp})})`});
+  const L=PF.leghe;if(only!=='economia')for(const lk of L.lks)for(const seed of L.seeds)jobs.push({k:'lega',lk,seed,code:`(${CAR.trim()})(${JSON.stringify({seed,lk,seasons:L.seasons,skill:L.skill,xp:L.xp})})`});
   // le carriere piu' lunghe per prime, cosi' i processori restano occupati fino alla fine
-  jobs.sort((a,b)=>(b.k==='car')-(a.k==='car'));
+  jobs.sort((a,b)=>(b.k!=='eco')-(a.k!=='eco'));
   const par=Math.max(2,Math.min(8,os.cpus().length)),errs=[];let next=0,done=0;
   const work=async()=>{
     while(next<jobs.length){
@@ -79,11 +80,23 @@ const ECO=fs.readFileSync(path.join(__dirname,'bilanci/pagina-economia.js'),'utf
     const n=car.length,inA=car.filter(c=>fA(c)&&fA(c)<=G.reachA[0]).length,tit=car.filter(c=>fT(c)&&fT(c)<=G.title[0]).length,early=car.filter(c=>fT(c)&&fT(c)<G.early[0]).length;
     const fuga=[];for(const c of car)for(const r of c.rows)if(r.sr==='A'&&r.me-r.riv>G.runaway)fuga.push(`seme ${c.seed} stagione ${r.s}: ${r.me} contro ${r.riv}`);
     const w=car.reduce((a,c)=>a+c.win,0)/n;
+
     chk(inA>=G.reachA[1],`G1 In Serie A entro la ${G.reachA[0]}a stagione (almeno ${G.reachA[1]} su ${n})`,inA+' su '+n);
     chk(tit>=G.title[1],`G2 Primo scudetto entro la ${G.title[0]}a stagione (almeno ${G.title[1]} su ${n})`,tit+' su '+n+' · stagioni: '+car.map(c=>fT(c)||'mai').join(', '));
     chk(early<=G.early[1],`G3 Non troppo facile: scudetto prima della ${G.early[0]}a stagione al massimo in ${G.early[1]}`,early+' su '+n);
     chk(!fuga.length,`G4 Niente fughe in Serie A (al massimo ${G.runaway} punti sopra la seconda forza)`,fuga.length?fuga.slice(0,3).join(', '):'nessuna');
     chk(w>=G.win[0]&&w<=G.win[1],`G5 Vittorie tra il ${Math.round(G.win[0]*100)}% e il ${Math.round(G.win[1]*100)}%`,Math.round(w*100)+'%');
+  }
+  // ---- altri campionati ----
+  const lg=jobs.filter(j=>j.k==='lega'&&j.res);
+  if(lg.length){
+    console.log('\nAltri campionati (dal club piu\' debole della serie piu\' bassa, abilita\' +'+L.skill+', '+L.seasons+' stagioni):');
+    const fuga=[];
+    for(const lk of L.lks){const cs=lg.filter(j=>j.lk===lk).map(j=>j.res);if(!cs.length)continue;
+      const tt=c=>{const r=c.rows.find(r=>r.top&&r.tit);return r?r.s:'mai';},mx=c=>Math.max(...c.rows.filter(r=>r.top).map(r=>r.me-r.riv),-99);
+      console.log(`  ${lk}: primo titolo nella serie piu' alta: ${cs.map(tt).join(', ')} · distacco massimo: ${cs.map(c=>Math.round(mx(c))).join(', ')}`);
+      for(const c of cs)for(const r of c.rows)if(r.top&&r.me-r.riv>L.runaway)fuga.push(`${lk} seme ${c.seed} stagione ${r.s}: ${r.me} contro ${r.riv}`);}
+    chk(!fuga.length,`G6 Niente fughe negli altri campionati (al massimo ${L.runaway} punti sopra la migliore delle altre)`,fuga.length?fuga.length+' casi, per esempio '+fuga.slice(0,3).join(', '):'nessuna');
   }
   console.log('\nPunti fissi del bilanciamento:\n'+rows.join('\n'));
   if(fail.length){console.log('\nPUNTI FISSI NON RISPETTATI: '+fail.join(' · ')+'\nSe la modifica voleva davvero rendere il gioco piu\' facile o piu\' difficile, aggiorna tools/bilanci/punti-fissi.js (con il motivo); altrimenti va corretta.');process.exit(1);}
