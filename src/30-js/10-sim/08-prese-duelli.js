@@ -56,7 +56,7 @@ function catchBy(f,p,msg,ck){
   if(G.open){G.open=false;startPlay(f.team);}   // il passaggio d'apertura dopo il pull e' arrivato: adesso parte lo schema, da dove si trova il portatore
   G.st.cmp[f.team]++;
   if(f.team===0&&!G.auto&&G.obs){const gn=(p.x-f.sx)*dirOf(0);G.obs.n++;if(gn>=22)G.obs.d++;else if(gn>=3&&gn<18)G.obs.u++;}   // cio' che l'avversario osserva del tuo gioco
-  for(const q of T[f.team]){q.cs='set';q.cutT=rnd(0.4,1.6);}
+  for(const q of T[f.team]){if(q!==p&&q.cs==='cut'&&!q.cmd&&clearOut(q,p,false))continue;q.cs='set';q.cutT=rnd(0.4,1.6);}   // chi tagliava per un passaggio andato a un altro, se e' nella corsia del nuovo portatore, esce di lato (taglio a liberare)
   if(aiTeam(p.t)&&AIK(p.t).smart>=0.7&&!inEZ(p,f.team)){const pk=aiPick(p);if(pk.open>6&&(pk.best.x-p.x)*dirOf(p.t)>5)G.think*=0.62;}   // continuazione
   G.disc.x=p.x;G.disc.y=p.y;
   {let nd=9;for(const q of T[1-f.team])nd=Math.min(nd,hyp(q.x-p.x,q.y-p.y));if(nd>=3){p.m.cut++;f.thrower.m.dec++;}   // taglio efficace: ha ricevuto libero (e chi ha lanciato ha scelto bene)

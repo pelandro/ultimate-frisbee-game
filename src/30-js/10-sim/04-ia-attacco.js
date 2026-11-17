@@ -87,6 +87,50 @@ function callClear(team){   // tutti tornano in formazione e ripartono con tagli
   for(const q of T[team]){if(q===G.holder)continue;q.cmd=null;q.cs='clear';q.cutT=rnd(0.3,0.9);}
   G.iso=null;return true;
 }
+/* ---- TAGLIO A LIBERARE (clear) ----
+   Un taglio che non riceve il disco non deve restare nella corsia davanti al portatore, dove chiude la linea di passaggio ai compagni:
+   chi lo finisce li' dentro esce di lato (stato 'out'), verso la linea laterale dalla sua parte, poi torna nella formazione ('clear').
+   Succede in due momenti: quando il taglio finisce senza passaggio (se e' arrivato al punto aspetta un attimo prima, OUT_WIN: e' il momento
+   in cui e' libero per ricevere; se il taglio e' scaduto esce subito) e quando il disco va a un altro compagno mentre sta ancora tagliando
+   (catchBy: il taglio e' fallito e il nuovo portatore ha bisogno della corsia). Con Visione alta lo fa sempre, con Visione bassa ogni tanto
+   resta dov'e' (vecchio comportamento). */
+const LANE_HW=5.5,OUT_DY=[3,5],OUT_WIN=[0.35,0.7],OUT_T=1.8;
+function laneOut(p,H,d){
+  const dy=p.y-H.y;if(Math.abs(dy)>=LANE_HW||(p.x-H.x)*d<2)return null;   // fuori dalla corsia (o dietro al portatore): niente da liberare
+  let s=Math.sign(dy)||(H.y<MID?1:-1),y=H.y+s*(LANE_HW+rnd(OUT_DY[0],OUT_DY[1]));
+  if(y<2.5||y>FIELD_W-2.5){s=-s;y=H.y+s*(LANE_HW+rnd(OUT_DY[0],OUT_DY[1]));}   // la corsia e' contro la linea laterale: esce dall'altra parte
+  // continua un poco nel verso in cui correva: uscire di lato non e' un'inversione di corsa
+  return {x:clamp(p.x+clamp(p.vx*0.35,-2.5,2.5),1,FIELD_L-1),y:clamp(y,2.5,FIELD_W-2.5)};
+}
+function clearOut(q,H,arr){   // prova il taglio a liberare: true se q esce di lato (arr: e' arrivato in fondo al taglio)
+  const o=H&&!G.flight&&Math.random()<clamp(0.6+visOf(q)*0.6,0,1)?laneOut(q,H,dirOf(q.t)):null;if(!o)return false;
+  q.cs='out';q.oD=arr?rnd(OUT_WIN[0],OUT_WIN[1]):0;q.tx=o.x;q.ty=o.y;q.cutT=q.oD+OUT_T;(G.st.clr||(G.st.clr=[0,0]))[q.t]++;return true;   // G.st.clr: le partite sospese prima di questo contatore non lo hanno
+}
+/* Chi non sta tagliando e si ritrova sulla linea di passaggio verso un compagno che taglia (fermo in formazione, in attesa nello schema a
+   sequenza o di ritorno) fa un passo di lato: il disco deve poter arrivare a chi si e' liberato. Si guarda sia la linea verso dove il
+   compagno e' adesso sia quella verso il punto in cui sta andando; ci si sposta dalla parte dove si e' gia', di DODGE_D+DODGE_M dalla linea. */
+const DODGE_D=3,DODGE_M=1.5,DODGE_T=1.6,DODGE_V=1;   // DODGE_V: e' un passo di lato, non uno scatto (a velocita' piena rientrare in formazione diventava un ripensamento)
+const cutting=q=>q.cs==='cut'||!!q.cmd||!!q.sq;   // sta tagliando: taglio libero, chiamata rapida o movimento dello schema a sequenza (q.sq)
+function laneDodge(p,H,atk){
+  if(!H||G.flight||G.walk){p.dz=null;return null;}
+  if(p.dz&&(p.dz.h!==H||(p.dz.t-=1/60)<=0))p.dz=null;
+  for(const c of atk){
+    if(c===p||c===H||!cutting(c))continue;
+    for(const t of [[c.x,c.y],c.cmd?[c.cmd.x,c.cmd.y]:(c.sq&&c.rt?[c.rt.x,c.rt.y]:[c.tx,c.ty])]){
+      if(t[0]===undefined)continue;
+      const vx=t[0]-H.x,vy=t[1]-H.y,L2=vx*vx+vy*vy;if(L2<25)continue;
+      const u=((p.x-H.x)*vx+(p.y-H.y)*vy)/L2;if(u<0.1||u>0.95)continue;
+      const qx=H.x+vx*u,qy=H.y+vy*u;if(hyp(p.x-qx,p.y-qy)>=DODGE_D)continue;
+      const L=Math.sqrt(L2),nx=-vy/L,ny=vx/L,vp=p.vx*nx+p.vy*ny,k=DODGE_D+DODGE_M;
+      // il lato resta quello scelto la prima volta (la linea si sposta con chi taglia: cambiare lato era un dondolio); la prima volta chi corre
+      // esce dalla parte verso cui va (mai un'inversione di corsa), chi e' fermo da quella dove si trova
+      let s=p.dz?p.dz.s:(hyp(p.vx,p.vy)>2.5&&Math.abs(vp)>0.3?Math.sign(vp):(((p.x-qx)*nx+(p.y-qy)*ny)>=0?1:-1));
+      if(qy+ny*s*k<2||qy+ny*s*k>FIELD_W-2)s=-s;   // contro la linea laterale: dall'altra parte
+      return p.dz={x:clamp(qx+nx*s*k,1,FIELD_L-1),y:clamp(qy+ny*s*k,2,FIELD_W-2),t:DODGE_T,h:H,s};
+    }
+  }
+  return p.dz;   // fuori dalla linea: resta ancora un po' dove si e' spostato, poi torna al suo posto
+}
 function updateAttackers(dt){
   const P=G.poss,atk=T[P],d=dirOf(P),Hh=G.holder,fl0=G.flight,H=Hh||((fl0&&fl0.team===P)?{x:fl0.tx,y:fl0.ty}:G.ref);   // in volo: ci si dispone attorno al punto d'arrivo
   // il lato in cui si dispone l'attacco cambia solo quando il portatore supera il centro di piu' di 2 m: prima, passando a ridosso della mezzeria, tutti scambiavano lato a ogni passo
@@ -102,7 +146,7 @@ function updateAttackers(dt){
   const mvA=(q,x,y,dt0,am,vm)=>{const g=Hh&&!G.flight&&!G.walk?skirt(q,Hh,x,y,SKIRT_R):{x,y};moveTo(q,g.x,g.y,dt0,am,vm);};   // i compagni aggirano chi ha il disco
   const isoT=G.iso&&G.iso.p.t===P?G.iso.p.cmd:null;   // corridoio da lasciare libero
   for(const p of atk){
-    p.rt=null;   // dove sta andando (solo per disegnare la linea del taglio)
+    p.rt=null;p.sq=0;   // dove sta andando (solo per disegnare la linea del taglio); sq: corre un movimento dello schema a sequenza
     if(p===Hh){
       if(G.walk){const tg=G.walk.stage?G.walk.line:G.walk.pick;if(G.walk.stage)moveTo(p,tg.x,tg.y,dt,0.55,0.4);else moveTo(p,tg.x,tg.y,dt);}   // corre a prendere il disco, poi lo porta camminando alla linea
       else moveTo(p,p.x,p.y,dt);
@@ -118,7 +162,7 @@ function updateAttackers(dt){
       else{p.rt={x:c.x,y:c.y};mvA(p,c.x,c.y,dt,1.15,1);continue;}
     }   // chiamato dal lanciatore: corre nella zona indicata
     {const tg=pbTarget(P,p);if(tg){
-      if(tg.hold)mvA(p,p.x,p.y,dt);
+      if(tg.hold){const o=laneDodge(p,Hh,atk);if(o)mvA(p,o.x,o.y,dt,1,DODGE_V);else mvA(p,p.x,p.y,dt);}
       else if(tg.free){   // non ha un movimento previsto: prova comunque a liberarsi con piccoli tagli attorno al suo posto (fuori e dentro)
         p.fT=(p.fT||0)-dt;
         if(p.fT<=0||p.fx===undefined){
@@ -130,9 +174,9 @@ function updateAttackers(dt){
           p.fT=rnd(4.5,7);   // un nuovo piccolo taglio ogni 5-6 secondi circa (prima 1,4-2,2: il giocatore andava e veniva di continuo)
           if(Math.random()<0.5){p.fx=p.x;p.fy=p.y;}   // ogni tanto resta dov'e': un momento fermo tra un movimento e l'altro
         }
-        mvA(p,p.fx,p.fy,dt);
+        const o=laneDodge(p,Hh,atk);if(o)mvA(p,o.x,o.y,dt,1,DODGE_V);else mvA(p,p.fx,p.fy,dt);
       }
-      else{p.rt={x:tg.x,y:tg.y};mvA(p,tg.x,tg.y,dt,tg.am,tg.vm);}
+      else{p.rt={x:tg.x,y:tg.y};p.sq=G.pb[P].stage!=='set'?1:0;mvA(p,tg.x,tg.y,dt,tg.am,tg.vm);}
       continue;
     }}   // schema a sequenza
     const v=visOf(p),w=wanderW(p);
@@ -141,7 +185,7 @@ function updateAttackers(dt){
     if(p.cs==='set'){
       const a=anchor(sch,p.slot,H,d,side);
       p.wT-=dt;if(p.wT<=0){p.wx=rnd(6,FIELD_L-6);p.wy=rnd(3,FIELD_W-3);p.wT=rnd(0.9,2.2);}
-      const st0=spreadFrom(p,lerp(a.x,p.wx,w),lerp(a.y,p.wy,w),atk,SPREAD_R,SPREAD_K),sg0=awayFrom(H,st0.x,st0.y,MIN_ATT),sg1=isoT?awayFrom(isoT,sg0.x,sg0.y,10):sg0,sg=settleTgt(p,sg1.x,sg1.y,dt),close=hyp(p.x-H.x,p.y-H.y)<MIN_ATT;mvA(p,sg.x,sg.y,dt,close?1.7:0.85,close?1.2:1);
+      const st0=spreadFrom(p,lerp(a.x,p.wx,w),lerp(a.y,p.wy,w),atk,SPREAD_R,SPREAD_K),sg0=awayFrom(H,st0.x,st0.y,MIN_ATT),sg1=isoT?awayFrom(isoT,sg0.x,sg0.y,10):sg0,dz=laneDodge(p,Hh,atk),sg=dz||settleTgt(p,sg1.x,sg1.y,dt),close=hyp(p.x-H.x,p.y-H.y)<MIN_ATT;mvA(p,sg.x,sg.y,dt,close||dz?1.7:0.85,close?1.2:1);
       if(p.cutT<=0&&Hh&&!G.flight&&!isoT){
         let tightD=99;for(const q of T[1-P])tightD=Math.min(tightD,hyp(q.x-p.x,q.y-p.y));
         const tight=tightD<2.2&&G.holdT>0.8;   // marcato stretto: deve liberarsi, non aspettare
@@ -155,9 +199,16 @@ function updateAttackers(dt){
       }
     }else if(p.cs==='cut'){
       p.rt={x:p.tx,y:p.ty};mvA(p,p.tx,p.ty,dt);
-      if(hyp(p.x-p.tx,p.y-p.ty)<1.2||p.cutT<=0){p.cs='hold';p.cutT=rnd(1.2,2.2);}   // dopo il taglio si ferma un momento: prima chi vedeva bene ripartiva subito (0,3-0,8 s) e il campo era un via vai
+      const arr=hyp(p.x-p.tx,p.y-p.ty)<1.2;
+      if(arr||p.cutT<=0){
+        if(!clearOut(p,Hh,arr)){p.cs='hold';p.cutT=rnd(1.2,2.2);}   // fuori dalla corsia si ferma un momento: prima chi vedeva bene ripartiva subito (0,3-0,8 s) e il campo era un via vai
+      }
+    }else if(p.cs==='out'){
+      if(p.oD>0){p.oD-=dt;mvA(p,p.x,p.y,dt);}   // ancora libero per ricevere: un attimo fermo
+      else{p.rt={x:p.tx,y:p.ty};mvA(p,p.tx,p.ty,dt,1.1,1);}
+      if(p.oD<=0&&(hyp(p.x-p.tx,p.y-p.ty)<1.5||p.cutT<=0))p.cs='clear';   // fuori dalla corsia: torna nella formazione
     }else if(p.cs==='hold'){
-      mvA(p,p.x,p.y,dt);
+      const o=laneDodge(p,Hh,atk);if(o)mvA(p,o.x,o.y,dt,1,DODGE_V);else mvA(p,p.x,p.y,dt);
       if(p.cutT<=0){
         if(Math.random()<clamp(v*1.15,0,1))p.cs='clear';
         else{p.cs='set';p.cutT=rnd(1.5+0.9*v,4);}

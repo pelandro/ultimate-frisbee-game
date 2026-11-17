@@ -164,6 +164,7 @@
 .ali p{margin:0;font-size:17px;line-height:1.2;color:#f4f4f4}
 .ali small{display:block;font-size:13px;color:#7f8db8}
 .ali .res{color:var(--gold);font-size:15px;margin-top:2px}
+.almv{margin:3px 0 0;padding-left:16px;color:#d6dcef;font-size:15px;line-height:1.25}.almv li{margin:2px 0}   /* i colpi del mercato delle altre squadre (31-mercato-ia.js) */
 .ali .schrow{margin-top:5px}.ali .schrow .sec,.ali .schrow .go{font-size:15px;padding:4px 10px}
 .tg{display:inline-block;font-size:12px;line-height:1;padding:2px 5px;margin-left:5px;border:2px solid #000;vertical-align:middle;white-space:nowrap}
 .tg.r{background:#c9a0ff;color:#1a1c2c}.tg.m{background:#ff9a3a;color:#1a1c2c}
