@@ -34,7 +34,7 @@ function lnSelfTest(seasons,seed){
      SV=S0;}
     // ---- rose: ogni club, con la forza dei dati ----
     for(const n of LN_NAMES){
-      const ro=lnRoster(n,'t'),pw=rosterPower(ro),sv=ro.some(o=>o.star);
+      const ro=lnRoster(n,'t'),pw=rosterLevel(ro),sv=ro.some(o=>o.star);
       chk('rose',ro.length>=14&&ro.length<=SQ_MAX,'rosa di '+n+': '+ro.length+' giocatori');
       chk('rose',new Set(ro.map(o=>usNameKey(o.label||o.n))).size===ro.length,'giocatore ripetuto in '+n);
       chk('rose',ro.every(o=>ovr(o)>=36&&ovr(o)<=99&&o.age>=16&&o.age<=45),'giocatore fuori misura in '+n);

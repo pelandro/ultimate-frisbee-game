@@ -39,17 +39,35 @@ const carDiff=()=>CAR_DIFF[(SV&&SV.diff)||'easy']||CAR_DIFF.easy;
 const carLen=()=>lenOk((SV&&SV.len)|0);   // durata delle partite di carriera (Opzioni): 7, 11 o 15 punti
 const trainOpen=()=>((SV.played||0)%carDiff().n)===0;       // la sessione e' disponibile prima della 1a partita e poi ogni n partite giocate (anche in Europa)
 const trainWait=()=>{const n=carDiff().n;return n-((SV.played||0)%n);};
-// forza di una squadra = media delle statistiche dei suoi 7 migliori giocatori (3 handler e 4 cutter)
 const teamFormB=()=>clamp(clamp((SV.chem-50)/50*0.9+(SV.mor-50)/50*0.6,-1.5,1.5)+0.5*staffLv('ana')+(hasTr('ana','str')?0.3:0),-1.5,2.5);   // l'Analista si somma ad affiatamento e morale (prima stavano nello stesso tetto e contava poco)
-const squadPower=()=>{const b=pickSeven(SQ,p=>p.role,mean9);return b.reduce((a,p)=>a+mean9(p),0)/b.length;};
-// forza in partita della tua squadra: le due linee che hai scelto (21-due-linee.js), riportate alla scala dei 7 migliori con LINE_REF.
-// Le squadre del computer restano alla forza dei loro 7 migliori, come in tutto il resto del gioco
-function myLinesPow(){
-  const lo=matchLine('lineO').map(id=>SQ[id]),ld=matchLine('lineD').map(id=>SQ[id]);if(!lo.length||!ld.length)return squadPower();
+// POTENZA della tua squadra (formula unica, 12-allenamenti-rose.js): tutta la rosa, senza penalita' di giornata. Per i confronti con le altre squadre e per la forza mostrata
+const squadPower=()=>powerOfVals(SQ.map(mean9));
+// livello dei tuoi 7 titolari (3 handler e 4 cutter): riferimento di crescita, mercato e giovani (rosterLevel), non una potenza
+const squadLevel=()=>{const b=pickSeven(SQ,p=>p.role,mean9);return b.reduce((a,p)=>a+mean9(p),0)/b.length;};
+// potenza di oggi della tua squadra nelle partite simulate: stessa formula, con i valori di oggi dei giocatori. Un infortunato non c'e'; le due linee sono 14 posti: chi sta
+// in entrambe occupa due posti (una linea d'attacco e una di difesa) e in tutti e due rende DBL_PEN in meno (non riposa mai, 21-due-linee.js); chi non e' in nessuna linea e'
+// panchina (un posto, dal 15º). Con cond, chi e' scarico rende COND_PEN per ogni punto di condizione che manca, come in partita (applyForm)
+// PW_MY: carriere simulate con la strategia di sempre (stessa difficolta', stesso vantaggio per chi gioca bene) perdevano con la formula unica circa 1,5 punti di forza nelle
+// Serie A rispetto a prima, perche' le rose del computer di vertice sono piu' profonde di quelle che si costruisce un giocatore, e meta' di quello si recupera con le linee (due
+// posti a chi gioca in entrambe); gli ultimi 0,6 sono l'unica taratura (come LINE_REF prima): con 0,6 scudetto e vittorie tornano a quelli di prima (punti fissi G1-G6)
+const PW_MY=0.6;
+function myPow(cond){
+  const lo=new Set(matchLine('lineO')),ld=new Set(matchLine('lineD'));if(!lo.size||!ld.size)return squadPower();
+  const v=[];
+  for(const p of SQ){
+    if(p.inj)continue;const n=(lo.has(p.id)?1:0)+(ld.has(p.id)?1:0),x=mean9(p)-(n===2?DBL_PEN:0)-(cond?COND_PEN*(100-(p.cond===undefined?100:p.cond)):0);
+    for(let k=0;k<Math.max(1,n);k++)v.push(x);
+  }
+  return powerOfVals(v)+PW_MY;
+}
+const matchPow=n=>n===SV.team?myPow(false):teamPow(n);
+// livello in partita della tua squadra (le due linee che hai scelto, riportate alla scala dei 7 titolari con LINE_REF) e delle altre: solo per il freno alla crescita (carGrowK)
+function myLinesLevel(){
+  const lo=matchLine('lineO').map(id=>SQ[id]),ld=matchLine('lineD').map(id=>SQ[id]);if(!lo.length||!ld.length)return squadLevel();
   const dbl=new Set(lo.filter(p=>ld.includes(p))),av=l=>l.reduce((a,p)=>a+mean9(p)-(dbl.has(p)?DBL_PEN:0),0)/l.length;
   return (av(lo)+av(ld))/2+LINE_REF;
 }
-const matchPow=n=>n===SV.team?myLinesPow():teamPow(n);
+const matchLevel=n=>n===SV.team?myLinesLevel():teamLevel(n);
 const teamPower=n=>n===SV.team?squadPower():(SV.rost&&SV.rost[n]?rosterPower(SV.rost[n])+carDiff().plus:null);
 // forza mostrata nella scelta della squadra: la stessa rosa con cui si parte davvero (userRoster: 9 giocatori, come per le avversarie)
 const previewPower=n=>REAL[n]?rosterPower(realRoster(REAL[n],'preview|'+n,realOpt(n,9))):0;

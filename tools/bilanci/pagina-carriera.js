@@ -12,7 +12,7 @@ const r9=()=>SQ.map(p=>ovr(p)).sort((a,b)=>b-a)[8]||0;
 function shop(){
   for(let k=0;k<4;k++){
     const L=(SV.market||[]).map((m,i)=>({m,i})).filter(x=>!canSign(x.m)&&SV.cash-x.m.price>60);if(!L.length)break;
-    const lv=squadPower(),val=m=>Math.max(ovr(m.o)-r9(),m.o.age<=20?(potX(m.o)-lv-8)*0.6:-99);
+    const lv=squadLevel(),val=m=>Math.max(ovr(m.o)-r9(),m.o.age<=20?(potX(m.o)-lv-8)*0.6:-99);
     const x=L.sort((a,b)=>val(b.m)-val(a.m))[0];if(val(x.m)<=0)break;
     if(SQ.length>=22){const w=SQ.slice().sort((a,b)=>(ovr(a)+(a.age<=21?(potX(a)-ovr(a))*0.5:0))-(ovr(b)+(b.age<=21?(potX(b)-ovr(b))*0.5:0)))[0];if(!sellPlayer(w.id))break;}
     signPlayer(x.i);hide();evt();

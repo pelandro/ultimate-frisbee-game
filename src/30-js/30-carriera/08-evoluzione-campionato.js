@@ -3,7 +3,7 @@ function leagueAnchors(){   // livello storico di ogni squadra (quello di inizio
   if(!SV.anc)SV.anc={};if(!SV.cyc)SV.cyc={};if(!SV.hist)SV.hist={};
   for(const n in SV.rost)if(SV.anc[n]===undefined&&SV.rost[n]&&SV.rost[n].length){
     const sr=TEAM[n]?TEAM[n].series:'C';
-    SV.anc[n]=(SV.season|0)<=1?Math.round(rosterPower(SV.rost[n])*10)/10:(TEAM[n]&&sr!=='C'?TEAM[n].power:Math.min(rosterPower(SV.rost[n]),62));
+    SV.anc[n]=(SV.season|0)<=1?Math.round(rosterLevel(SV.rost[n])*10)/10:(TEAM[n]&&sr!=='C'?TEAM[n].power:Math.min(rosterLevel(SV.rost[n]),62));
   }
   for(const n in SV.anc)if(SV.hist[n]===undefined)SV.hist[n]=SV.anc[n];   // BLASONE: il livello di partenza, che non si sposta (le carriere vecchie partono da quello di adesso)
 }
@@ -31,7 +31,7 @@ function evolveLeague(){
       growBy(o,parts,XP_ROLE[posOf(o)]);
     }
     let out=0;   // ritiri: dai 34 anni in su, al massimo due a stagione per squadra
-    const pw=rosterPower(ro);   // come per i tuoi: chi rende ancora continua, chi e' ai margini smette prima; chi l'aveva annunciato smette di sicuro
+    const pw=rosterLevel(ro);   // come per i tuoi: chi rende ancora continua, chi e' ai margini smette prima; chi l'aveva annunciato smette di sicuro
     for(const o of ro.slice().sort((a,b)=>b.age-a.age)){
       if(out>=2||ro.length<=10)break;
       const sc=aiRetScore(o,pw,starters.has(o));
@@ -50,13 +50,13 @@ function evolveLeague(){
   for(const n in SV.rost){
     const ro=SV.rost[n];if(!ro||!ro.length)continue;
     const acad=0.5+(hashStr(n+'|acad|'+SV.season)%100)/100;   // annata del vivaio: buona o scarsa
-    const lvl=rosterPower(ro),hl=SV.hist&&SV.hist[n]!==undefined?Math.max(0,histFloor(n)+4-lvl):0;   // hl: quanto il club e' sotto il suo blasone
+    const lvl=rosterLevel(ro),hl=SV.hist&&SV.hist[n]!==undefined?Math.max(0,histFloor(n)+4-lvl):0;   // hl: quanto il club e' sotto il suo blasone
     const pol=clubPol(n)[0],ny=pol==='giovani'?3:(pol==='esperienza'?1:2),pk=pol==='giovani'?1.2:(pol==='esperienza'?0.85:1);
     for(let i=0;i<ny||ro.length<14;i++){if(ro.length>=22)break;ro.push(genPlayer(lvl-9+R()*5,16+Math.floor(R()*4),SV.seed+'|yo|'+n+'|'+SV.season+'|'+i,potB(potDraw('mkt',lvl+2+0.5*hl,R,(acad*pk-1)*4).p)));}   // potenziale a fasce come i tuoi (29-potenziali.js): prima arrivava fino a +26 e in Serie A nascevano giocatori da 95
     while(ro.length>20){const w=ro.slice().sort((a,b)=>ovrX(a)-ovrX(b))[0];ro.splice(ro.indexOf(w),1);}
     // la squadra tende al proprio livello storico, spostato dal ciclo del momento: cosi' il campionato resta credibile per decenni, con squadre che salgono e che scendono
     const prev=SV.cyc[n]||0;SV.cyc[n]=clamp(prev*0.75+(R()*2-1)*2.6,-7,7);
-    const gap=clamp(SV.anc[n]+SV.cyc[n]+domBoost(n)-rosterPower(ro),-3,3)*0.8,best=ro.slice().sort((a,b)=>ovrX(b)-ovrX(a)).slice(0,11);
+    const gap=clamp(SV.anc[n]+SV.cyc[n]+domBoost(n)-rosterLevel(ro),-3,3)*0.8,best=ro.slice().sort((a,b)=>ovrX(b)-ovrX(a)).slice(0,11);
     if(Math.abs(gap)>0.3)for(const o of best){
       if(gap>0&&o.age>29)continue;if(gap<0&&o.age<24&&R()<0.4)continue;   // crescono i giovani e chi e' nel pieno, calano soprattutto i meno giovani
       const g=gap*(gap>0?1.5:1.7);
@@ -66,7 +66,7 @@ function evolveLeague(){
     if(SV.cyc[n]-prev>2.2)up.push(n);else if(SV.cyc[n]-prev<-2.2)dn.push(n);
     // il livello storico non e' piu' fisso: ogni anno si sposta un poco verso cio' che la squadra e' diventata. In 10-20 stagioni le gerarchie cambiano davvero
     // la spinta delle rivali quando domini (domBoost) non entra nel livello storico: prima vi si sommava anno dopo anno e tutta la Serie A saliva a 95-99
-    SV.anc[n]=clamp(Math.max(SV.anc[n]+(rosterPower(ro)-domBoost(n)-SV.anc[n])*0.18+(R()*2-1)*0.5,histFloor(n)),36,94);   // un club storico non scende sotto il suo blasone meno histFloor
+    SV.anc[n]=clamp(Math.max(SV.anc[n]+(rosterLevel(ro)-domBoost(n)-SV.anc[n])*0.18+(R()*2-1)*0.5,histFloor(n)),36,94);   // un club storico non scende sotto il suo blasone meno histFloor
   }
   if(ret.length)news('Si ritirano: '+ret.slice(0,4).join(', ')+(ret.length>4?' e altri':'')+'.');
   const mine=new Set(SV.mem[SV.sr]),u=up.filter(n=>mine.has(n)).slice(0,2),d=dn.filter(n=>mine.has(n)).slice(0,2);

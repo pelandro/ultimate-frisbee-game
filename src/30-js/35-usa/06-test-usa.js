@@ -76,7 +76,7 @@ function usaSelfTest(seasons,seed){
       chk('fantasy',ros.length>=20&&ros.length<=SQ_MAX&&ros.every(o=>ovr(o)>=36&&ovr(o)<=99),'rosa '+t+' fuori misura');
       // fama: una stella con un torneo storto non scende molto sotto il suo Overall di mercato; i club con i campioni non perdono il loro rating
       for(const o of ros)if(o.star){const r=STARS.find(x=>x[0]+' '+x[1]===o.full);chk('fantasy',!r||ovr(o)>=r[4]-4,'stella troppo sotto il mercato: '+o.full);}
-      chk('fantasy',Math.abs(rosterPower(ros)-US_TEAM[c].power)<=4.5,'forza della rosa lontana dal rating: '+t);}
+      chk('fantasy',Math.abs(rosterLevel(ros)-US_TEAM[c].power)<=4.5,'forza della rosa lontana dal rating: '+t);}
     // eta' e fama dai dati pubblici UFA: l'eta' delle tabelle arriva in rosa, i convocati giovanili non superano il limite, i premiati All-UFA non restano in fondo
     let agN=0,awN=0;
     for(const c of US_NAMES){const ros=usRoster(c,'t'),ord=ros.map(ovr).sort((x,y)=>y-x),med=ord[Math.floor(ord.length/2)];

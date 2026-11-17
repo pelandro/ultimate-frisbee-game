@@ -38,7 +38,7 @@ Se un testo non entra nel limite, di solito spiega troppe cose insieme: spezzalo
 | **handblock**, **tuffo**, **intercetto**, **Callahan**, **huck** | si usano questi nomi; «rovesciato» non si usa per il lancio alto |
 | **lancio piatto / lancio alto** | i due tipi scelti con le dita; Rovescio, Dritto, Scoober, Hammer sono i lanci che ne derivano |
 | **Handler, Cutter, Defender** | i tre ruoli |
-| **Overall (OVR)** | il valore di un giocatore, da 1 a 99; **forza della squadra** = media dei 7 migliori |
+| **Overall (OVR)** | il valore di un giocatore, da 1 a 99; **forza della squadra** = media pesata dei 21 migliori (7 migliori 60%, dall'8º al 14º 35%, dal 15º al 21º 5%) |
 | **linee ATT e DIF** | le due formazioni (in attacco e in difesa) |
 | **Arcade, Competitiva, Lunga** | durata delle partite (7, 11, 15 mete) |
 | **intervallo** | la pausa a metà partita (mai «half time») |

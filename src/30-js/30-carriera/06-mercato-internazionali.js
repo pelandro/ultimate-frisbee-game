@@ -74,12 +74,12 @@ function buildMarket(){
   // 15 giocatori in tutto, di livello vicino al tuo: giovani (4, fino a 6 col vivaio), 3 in vendita da altre squadre, da 1 a 3 internazionali veri (di piu' con
   // reputazione), il resto svincolati. Prima i fuoriclasse erano 5-6 su 20 e poi 2-3 su 15, a ogni livello e con potenziali molto alti: ora i campioni sono rari
   // (le stelle solo se alla portata del tuo livello, i giovani di talento sono pochi, gli svincolati adulti hanno poco margine, chi e' in vendita e' di un club del tuo livello).
-  const lv=squadPower(),sd=SV.seed+'|mk|'+SV.season+'|'+(SV.mkN=(SV.mkN||0)+1),R=mulberry32(hashStr(sd)),out=[],viv=SV.fac.viv|0,nY=4+Math.min(viv,2),nSale=3,nStar=1+(SV.rep>=40?1:0)+(SV.rep>=70&&R()<0.4?1:0),nFree=MARKET_N-nY-nSale-nStar;
+  const lv=squadLevel(),sd=SV.seed+'|mk|'+SV.season+'|'+(SV.mkN=(SV.mkN||0)+1),R=mulberry32(hashStr(sd)),out=[],viv=SV.fac.viv|0,nY=4+Math.min(viv,2),nSale=3,nStar=1+(SV.rep>=40?1:0)+(SV.rep>=70&&R()<0.4?1:0),nFree=MARKET_N-nY-nSale-nStar;
   // giovani: potenziale a fasce attorno al livello della serie (29-potenziali.js); adulti: livello tra la tua squadra e la tua serie, poco margine
   const ry=potRef('mkt'),la=potRef('adult');
   for(let i=0;i<nY;i++){const o=genPlayer(ry-11+R()*7+viv,16+Math.floor(R()*4),sd+'y'+i,potB(potDraw('mkt',ry,R,viv).p));out.push({o,kind:'Giovane promessa',from:null});}
   for(let i=0;i<nFree;i++){const l0=la-5+R()*9,ag=23+Math.floor(R()*11),o=genPlayer(l0,ag,sd+'f'+i,adultPot(l0,ag,R));out.push({o,kind:'Svincolato',from:null});}   // un adulto ha poco margine
-  const teams=Object.keys(SV.rost).filter(n=>SV.rost[n]&&SV.rost[n].length>14&&teamPow(n)>=lv-14&&teamPow(n)<=lv+12);   // club del tuo livello, non i migliori della lega
+  const teams=Object.keys(SV.rost).filter(n=>SV.rost[n]&&SV.rost[n].length>14&&teamLevel(n)>=lv-14&&teamLevel(n)<=lv+12);   // club del tuo livello, non i migliori della lega
   for(let i=0;i<nSale&&teams.length;i++){
     const n=teams[Math.floor(R()*teams.length)],ro=SV.rost[n].slice().sort((a,b)=>ovrX(b)-ovrX(a)),o=ro[4+Math.floor(R()*Math.max(1,ro.length-4))];
     if(o&&ovrX(o)<=lv+9&&!out.some(m=>m.o===o)){if(o.sk===undefined)o.sk=0;out.push({o,kind:'In vendita',from:n});}

@@ -127,7 +127,7 @@ const flavorAge=(fl,rng)=>fl==='u17'?15+Math.floor(rng()*3):(fl==='u20'?17+Math.
 function realRoster(rows,seedStr,opt){
   if(opt.target!==undefined&&opt.off===undefined&&!(rows.length&&rows.every(r=>r.ov))){   // se tutti hanno un Overall assegnato non c'e' niente da spostare   // forza fissata (Serie A e B): si sposta il livello di tutti finche' la media dei 7 migliori e' quella voluta
     let off=0,r=null;const o0=Object.assign({},opt);
-    for(let i=0;i<4;i++){r=realRoster(rows,seedStr,Object.assign({},o0,{off}));const d=opt.target-rosterPower(r);if(Math.abs(d)<0.4)break;off+=d;}
+    for(let i=0;i<4;i++){r=realRoster(rows,seedStr,Object.assign({},o0,{off}));const d=opt.target-rosterLevel(r);if(Math.abs(d)<0.4)break;off+=d;}
     return r;
   }
   const list=rows.map(r=>({sur:r.sur,nm:r.nm,a:r.a,g:r.g,age:r.age||0,f:!!r.f,gen:false,ov:r.ov||0,rl:r.rl||'',ae:!!r.ae,ld:!!r.ld}));   // ov: Overall assegnato (revisione 2026); rl: ruolo noto (H, C o D); ae: eta' stimata; ld: handler della linea di difesa
@@ -202,7 +202,25 @@ function setSquad(list){
   applySurnames(SQ);
   setLineup(pickSeven(SQ,p=>p.role,mean9).map(p=>p.id));
 }
-const rosterPower=list=>{const b=bestSeven(list);return b.reduce((a,o)=>a+mean9(o),0)/b.length;};
+/* ---- POTENZA DI SQUADRA: una sola formula per tutto il gioco ----
+   Potenza = 60% media dei 7 migliori + 35% media dal 8º al 14º + 5% media dal 15º al 21º, per Overall decrescente e senza vincoli di ruolo (i ruoli non
+   sono sempre verificati). Oltre il 21º non conta nessuno: chi sta in fondo alla rosa non abbassa la potenza. Se la rosa e' piu' corta, ogni posto vuoto vale
+   il giocatore piu' debole che c'e' meno PW_GAP (almeno 25): la profondita' mancante costa poco, mai di piu' che avere un giocatore in piu' di livello basso,
+   e una rosa corta non rende mai piu' di una uguale con dei rincalzi. La usano partite simulate, classifiche, anteprime, mercato, economia e Ultimate Team:
+   per i tuoi giocatori i valori sono quelli di oggi (infortunati fuori, DBL_PEN per chi sta in entrambe le linee, condizione: myPow in 10-partita-avvio.js).
+   rosterLevel e' invece il LIVELLO dei 7 titolari (3 handler e 4 cutter), il riferimento con cui si costruiscono le rose, si generano i giovani e si
+   misurano crescita e mercato: non e' una potenza e non si mostra. */
+const PW_W=[0.60,0.35,0.05],PW_GAP=8,PW_LV=2;   // PW_LV: differenza media tra livello dei 7 titolari e potenza nelle rose dei club (misurata su tutti i campionati: 2,1), per le forze statiche dei club senza rosa
+function powerOfVals(vals){
+  const a=vals.slice().sort((x,y)=>y-x).slice(0,21);
+  if(!a.length)return 0;
+  const fill=Math.max(25,a[a.length-1]-PW_GAP);
+  let s=0,i=0;
+  for(let g=0;g<3;g++){let t=0;for(let k=0;k<7;k++,i++)t+=i<a.length?a[i]:fill;s+=PW_W[g]*t/7;}
+  return s;
+}
+const rosterPower=list=>powerOfVals(list.map(mean9));
+const rosterLevel=list=>{const b=bestSeven(list);return b.reduce((a,o)=>a+mean9(o),0)/b.length;};
 // un anno in piu': fino a 25 anni le statistiche crescono un po', da 26 a 29 restano uguali, da 30 in su calano (i lanci no). Mai oltre il talento
 function agePlayer(o,R){
   const a=o.age;

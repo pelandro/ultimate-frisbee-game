@@ -28,7 +28,7 @@ function ecoK(){
   // dei tuoi 7 migliori rispetto a uno al livello medio del campionato (ECO_OWN). Conta la forza, non la lunghezza della rosa: vendere le riserve non cambia
   // le entrate. Senza, i club di vertice europei (una squadra da Europa in un campionato debole, rose vere fino a 28) pagavano stipendi doppi o tripli
   // della media e perdevano centinaia di crediti a stagione anche vincendo tutto
-  const W=ns.reduce((a,n)=>a+w16(SV.rost[n]),0)/ns.length,lp=ns.reduce((a,n)=>a+teamPow(n),0)/ns.length,me=SQ.length?squadPower():lp;
+  const W=ns.reduce((a,n)=>a+w16(SV.rost[n]),0)/ns.length,lp=ns.reduce((a,n)=>a+teamLevel(n),0)/ns.length,me=SQ.length?squadLevel():lp;   // il peso economico segue il livello dei titolari (wOv), non la potenza
   ecoKC={key,v:ecoCurve(W*Math.pow(Math.max(1,wOv(me)/wOv(lp)),ECO_OWN))};return ecoKC.v;
 }
 const wOv=v=>4+Math.pow(Math.max(0,v-40),2)/50;   // lo stipendio di wageOf per un Overall dato
@@ -70,7 +70,7 @@ function phaseImp(){
   if(SV.po&&SV.po.on)return SV.po.round?2.5:2;
   return 1;
 }
-const oppPowOf=n=>{const t=teamPower(n);if(t!=null)return t;if(typeof euPowOf==='function'){const e=euPowOf(n);if(e)return e;}return TEAM[n]?TEAM[n].power:squadPower();};
+const oppPowOf=n=>{const t=teamPower(n);if(t!=null)return t;if(typeof euPowOf==='function'){const e=euPowOf(n);if(e)return e;}return TEAM[n]?TEAM[n].power-PW_LV:squadPower();};
 // ---------- spettatori ----------
 const stadCap=()=>Math.round(450*Math.sqrt(ECO.K())*(1+0.55*facLv('stad')));   // le Tribune allargano lo stadio
 const tixPrice=()=>0.07*Math.sqrt(ECO.K());                                   // crediti per spettatore
