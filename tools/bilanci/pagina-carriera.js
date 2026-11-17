@@ -1,7 +1,8 @@
 /* Eseguito DENTRO la pagina del gioco (tools/test-bilanci.js): un «buon allenatore» che parte dall'ultima della Serie C a difficolta' facile.
    Compra (il migliore che si puo' permettere tra chi migliora i primi 9, o un giovane di grande potenziale), usa il programma di allenamento, le linee
    consigliate e simula le partite; «giocare bene» e' un vantaggio di P.skill punti di forza nelle SUE partite (non in quelle delle altre squadre) e un po'
-   piu' di esperienza (P.xp). P = {seed, seasons, skill, xp}. Restituisce stagione per stagione serie, posizione, titolo, forza e migliore rivale. */
+   piu' di esperienza (P.xp). P = {seed, seasons, skill, xp, lk}: con lk ('US', 'BE', 'FR', 'DE', 'UK') parte dal club piu' debole della serie piu'
+   bassa (tra quelle da cui si puo' partire) di quel campionato invece che dall'ultima della Serie C. Restituisce stagione per stagione serie, posizione, titolo, forza e migliore rivale. */
 (P=>{const R0=Math.random,SM=simMatch,SP=simParts;let mine=false,W=0,N=0;
 simMatch=function(a,b,ai,len){const k=mine?P.skill:0,u=mine;mine=false;const r=SM(a+k,b,ai,len);if(u){W+=r.a>r.b?1:0;N++;}return r;};   // solo la prima chiamata: la tua partita
 simParts=function(x,sh){const o=SP(x,sh);if(P.xpOn)for(const k in o)o[k]*=P.xp;return o;};
@@ -23,14 +24,18 @@ function invest(){
 }
 const play=()=>{autoTrain();autoLines();fixLines();mine=true;P.xpOn=true;simCareerMatch();mine=false;P.xpOn=false;hide();evt();};
 const C=SERIES.C.slice().sort((a,b)=>TEAM[a].power-TEAM[b].power);
-Math.random=mulberry32(P.seed);QM.on=true;startCareer(C[0],{});SV.diff='easy';progOf().on=true;hide();evt();
+const weakest=lk=>{if(lk==='US')return US_NAMES.slice().sort((a,b)=>US_TEAM[a].power-US_TEAM[b].power)[0];
+  const ts=LN_DEF[lk].tiers;for(let i=ts.length-1;i>=0;i--){const L=LN_NAMES.filter(n=>LN_BY[n].lk===lk&&LN_BY[n].t===ts[i].id&&lnPlayable(n));if(L.length)return L.sort((a,b)=>LN_BY[a].p-LN_BY[b].p)[0];}};   // la serie piu' bassa da cui si puo' partire
+const topTier=()=>isUS()||(isLN()?SV.ln.tier===LN_DEF[SV.lk].tiers[0].id:SV.sr==='A');
+Math.random=mulberry32(P.seed);QM.on=true;startCareer(P.lk?weakest(P.lk):C[0],{});SV.diff='easy';progOf().on=true;hide();evt();
 const rows=[];
 for(let s=0;s<P.seasons;s++){
   const sr=SV.sr;shop();
   if(SV.euUnlocked&&SV.eu&&SV.eu.state==='on'&&!isUS()){SV.event='eu';try{euEnsure();let k=0;while(SV.event==='eu'&&SV.eu.state==='on'&&k++<14){if(!nextMatch())break;play();}}catch(e){}SV.event='camp';}
   let g=0;while(!SV.done&&g<50){if(g%5===0){invest();shop();}play();g++;}
-  const x=SV.next,rv=(SV.mem[SV.sr]||[]).filter(n=>n!==SV.team).map(teamPow).sort((a,b)=>b-a);
-  rows.push({s:SV.season,sr,rank:x.rank,tit:!!x.tit,me:+squadPower().toFixed(1),riv:+(rv[0]||0).toFixed(1)});
+  // la migliore delle altre in tutta la serie (in USA tutta la lega, nelle leghe europee tutto il livello, non solo il tuo girone)
+  const x=SV.next,rv=ecoPeers().filter(n=>n!==SV.team&&SV.rost[n]).map(teamPow).sort((a,b)=>b-a);
+  rows.push({s:SV.season,sr,top:topTier(),rank:x.rank,tit:!!x.tit,me:+squadPower().toFixed(1),riv:+(rv[0]||0).toFixed(1)});
   newSeason();hide();evt();
 }
 simMatch=SM;simParts=SP;Math.random=R0;QM.on=false;
