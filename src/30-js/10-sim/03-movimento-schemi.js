@@ -60,6 +60,9 @@ const PLAYBOOK={
 SLOTS.side=[[-7,'r',0],[-2,'r',-10],[2,'r',-5],[13,'r',13],[18,'r',13],[24,'r',13],[30,'r',12]];   // stack laterale: i cutter in fila su un lato lasciano libero mezzo campo per il taglio in isolamento
 SLOTS.t1=[[-7,'r',0],[-9,'a',4.6],[-9,'a',33],[30,'a',2.2],[30,'a',13.5],[30,'a',23.5],[30,'a',34.5]];   // formazione di riserva: chi non segue lo schema torna qui
 const PB_ROLES=['H1','H2','H3','C1','C2','C3','C4'];
+// varianti di uno schema: [libro, probabilita']. A ogni ripresa se ne sceglie una (anche per la tua squadra: decide i tagli dei compagni; chi lancia resta libero)
+const PB_VAR={};
+const pbBook=sch=>{const v=PB_VAR[sch];if(!v)return sch;let r=Math.random();for(const [k,w] of v){r-=w;if(r<=0)return k;}return v[v.length-1][0];};
 const adhOf=p=>clamp(0.58+0.53*visOf(p),0.7,1);   // quanto segue lo schema: Visione 40 -> 79%, 55 -> 87%, 70 -> 95%, da 80 in su esattamente come disegnato (prima 64%, 75%, 97%: anche i bravi sbagliavano)
 // posizione di uno schema: [u, y] si sposta con il punto di partenza del portatore; [u, y, 'a'] e' assoluta (per esempio dentro la meta);
 // [du, dy, 'h'] e' relativa a dove il portatore ha iniziato lo schema (handler di sostegno)
@@ -67,7 +70,7 @@ function pbPos(pb,team,u,y,m){const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ;
   const uu=m==='a'?u:(m==='h'?pb.hu+u:u+pb.shift),yy=m==='h'?pb.hy+y:y;
   return {x:clamp(own+d*uu,1,FIELD_L-1),y:clamp(yy,2.5,FIELD_W-2.5)};}
 function startPlay(team,force){   // force: avvia uno schema preciso (l'attacco in meta) invece di quello scelto
-  const sch=force||(team===0?G.sch.att:G.opp.att),book=PLAYBOOK[sch];
+  const sch=force||(team===0?G.sch.att:G.opp.att),bk=pbBook(sch),book=PLAYBOOK[bk];
   if(!force){if(!G.ezUsed)G.ezUsed=[false,false];G.ezUsed[team]=false;
     if(G.schR){const R=team===0?G.schR:G.defR,k=team===0?G.sch.att:G.sch.def;(R[k]||(R[k]=[0,0]))[0]++;}
     const rp=G.rep||(G.rep=[{k:'',n:0},{k:'',n:0}]),rr=rp[team];if(rr.k===sch)rr.n++;else{rr.k=sch;rr.n=1;}}   // possessi di fila con lo stesso schema: la difesa avversaria si adatta (adaptOf)   // per il riepilogo: possessi per schema (tuo attacco, tua difesa)   // nuovo possesso: l'attacco in meta si puo' usare di nuovo
@@ -75,7 +78,7 @@ function startPlay(team,force){   // force: avvia uno schema preciso (l'attacco 
   const h=G.holder;
   if(!book||!h||h.t!==team){G.pb[team]=null;return;}
   const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ,uh=(h.x-own)*d;   // dove parte il portatore: la formazione si muove con lui
-  const pb={id:sch,phase:0,stage:'go',stageT:0,shift:clamp(uh,-2,30)-0.6,hu:uh,hy:h.y,follow:{},role:{},rp:{},wp:{},post:{},active:true,ready:false};   // se si riparte lontano dalla linea di meta si parte subito in corsa
+  const pb={id:bk,phase:0,stage:'go',stageT:0,shift:clamp(uh,-2,30)-0.6,hu:uh,hy:h.y,follow:{},role:{},rp:{},wp:{},post:{},active:true,ready:false};   // se si riparte lontano dalla linea di meta si parte subito in corsa
   const others=T[team].filter(p=>p!==h),roles=PB_ROLES.slice(1),setPos={};
   for(const r of roles){const sp=book.phases[0].set[r];setPos[r]=sp?pbPos(pb,team,sp[0],sp[1],sp[2]):{x:h.x,y:h.y};}
   const pairs=[];
@@ -112,22 +115,26 @@ function updatePlay(dt){
       if(!rp||!pb.follow[rp.id])pb.ready=true;
       else{const way=ph.go[ph.ready],w1=way[way.length-1],f=pbPos(pb,team,w1[0],w1[1],w1[2]);pb.ready=hyp(rp.x-f.x,rp.y-f.y)<10||pb.stageT>3.2;}
     }else pb.ready=pb.stageT>0.8;
+    if(ph.auto&&pb.stage==='go'&&pb.ready&&book.phases[pb.phase+1]){pb.phase++;pb.stageT=0;pb.ready=false;pb.wp={};}   // fase senza passaggio: quando il taglio e' pronto parte la successiva
   }
 }
 // il portatore aspetta che lo schema sia pronto, ma non oltre lo stall 3: da li' lo schema si abbandona e si gioca libero (PB_STALL)
 const PB_STALL=3;
 const PB_FREE=3.5,PB_FREE_D=2.7;   // distanza minima di un difensore dal ricevitore previsto perche' sia «libero»: 3,5 m con Visione bassa, 0,8 m con Visione alta (da 80)
-const pbWait=h=>{const pb=G.pb&&G.pb[h.t];return !!(pb&&pb.active&&pb.follow[h.id]&&G.stallT<PB_STALL&&(pb.stage==='set'||!pb.ready));};
+const pbStall=pb=>PLAYBOOK[pb.id].stall||PB_STALL;   // gli schemi con piu' tagli di fila (1 in 3-4) aspettano un po' di piu'
+const pbWait=h=>{const pb=G.pb&&G.pb[h.t];return !!(pb&&pb.active&&pb.follow[h.id]&&G.stallT<pbStall(pb)&&(pb.stage==='set'||!pb.ready));};
 function pbAllowed(th){   // a chi puo' lanciare chi segue lo schema
-  const pb=G.pb&&G.pb[th.t];if(!pb||!pb.active||!pb.follow[th.id]||pb.stage==='set'||G.stallT>=PB_STALL)return null;
-  const ph=PLAYBOOK[pb.id].phases[pb.phase];if(!ph.pass)return null;
+  const pb=G.pb&&G.pb[th.t];if(!pb||!pb.active||!pb.follow[th.id]||pb.stage==='set'||G.stallT>=pbStall(pb))return null;
+  const ph=PLAYBOOK[pb.id].phases[pb.phase];if(!ph.pass||!ph.pass.length)return null;
   const al=ph.pass.map(r=>pb.rp[r]).filter(q=>q&&pb.follow[q.id]);
   return al.length?al:null;
 }
 function playOnCatch(team,p){   // (il primo passaggio dopo un pull preso dall'IA non ha ancora uno schema: lo avvia catchBy)
   const pb=G.pb&&G.pb[team];if(!pb||!pb.active)return;
   const book=PLAYBOOK[pb.id],ph=book.phases[pb.phase],nxt=book.phases[pb.phase+1];
-  if(nxt&&ph.pass&&pb.role[p.id]===ph.pass[0]){pb.phase++;pb.stage='go';pb.stageT=0;pb.ready=false;pb.wp={};}   // il ricevitore previsto ha preso: parte la fase successiva
+  const alt=ph.alt&&ph.alt[pb.role[p.id]];
+  if(alt){pb.id=alt[0];pb.phase=alt[1];pb.stage='go';pb.stageT=0;pb.ready=false;pb.wp={};}   // il disco e' andato al ricevitore dell'altra variante: si continua con quella
+  else if(nxt&&ph.pass&&pb.role[p.id]===ph.pass[0]){pb.phase++;pb.stage='go';pb.stageT=0;pb.ready=false;pb.wp={};}   // il ricevitore previsto ha preso: parte la fase successiva
   else pb.active=false;
 }
 // BRICK: il pull e' uscito e si riparte dal segno al centro. Nessuno aspetta: l'attacco si dispone subito dove lo schema lo vuole (attorno a chi ha
@@ -216,7 +223,7 @@ function seenTop(o){let b=null,bn=0;for(const k in o)if(o[k]>bn){bn=o[k];b=k;}re
 function oppSchemes(){
   if(G.fix){Object.assign(G.sch,G.fix.sch);Object.assign(G.opp,G.fix.opp);return;}   // test: schemi fissati
   const lv=AIK(1),idn=idOf(1),sa=G.seen?seenTop(G.seen.att):null,sd=G.seen?seenTop(G.seen.def):null;
-  const wA=k=>1+(k==='vert'||k==='t1'||k==='side'?idn.deep*0.6:-idn.deep*0.6),wD=k=>k==='man_poach'?0.4+idn.poach:(k==='zone'?0.8+Math.max(0,idn.pat)*0.5:1);
+  const wA=k=>1+(k==='vert'||k==='t1'||k==='side'||k==='i34'?idn.deep*0.6:-idn.deep*0.6),wD=k=>k==='man_poach'?0.4+idn.poach:(k==='zone'?0.8+Math.max(0,idn.pat)*0.5:1);
   const wpick=(arr,w)=>{let t=0;const ws=arr.map(k=>{const x=Math.max(0.1,w(k));t+=x;return x;});let r=Math.random()*t;for(let i=0;i<arr.length;i++){r-=ws[i];if(r<=0)return arr[i];}return arr[arr.length-1];};
   // schema d'attacco che in questa partita le fa perdere troppi dischi: l'IA lo usa sempre meno (G.aiRec: [mete, turnover] per schema)
   const rec=G.aiRec||{},bad=k=>{const r=rec[k];return r&&r[1]-2*r[0]>=3;};

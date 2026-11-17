@@ -529,6 +529,25 @@ function selfTestPlan(opt){
     const gt=S.base?avg(S.base.map(m=>m.time)):0,k=gt/Math.max(0.001,S.ms/1000);
     return [row('Velocità di simulazione',Math.round(S.ms)+' ms a partita ('+Math.round(k)+' volte il tempo reale)',k>=15,'almeno 15 volte')];
   }]);
+  S.steps.push(['Schema 1 in 3-4',()=>{
+    const ra=ros(62,'a'),rb=ros(62,'b');for(const o of ra)o.s.vis=90;setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    newGame();G.auto=true;G.lvl=[0,1];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();G.startRec=1;G.nextRec=1;
+    let nb=0,na=0,fullB=0,fullA=0;const N=Math.max(60,n*10);
+    for(let i=0;i<N;i++){
+      placeTeams(0);G.sch.att='i34';G.opp.def='man_out';G.rep=[{k:'',n:0},{k:'',n:0}];
+      const p=G.puller;p.s.spa=99;p.s.lan=99;doPull(0.62,dirOf(1)>0?0:Math.PI);G.skip=true;
+      let t=0,first=null;const log=[];
+      while(t++<14400&&G.mode==='play'&&G.poss===0){update(1/60);const pb=G.pb&&G.pb[0],f=G.flight;
+        if(pb&&pb.active&&!first)first=pb.id;
+        if(f&&f.team===0&&!f._t){f._t=1;if(pb&&pb.active&&f.intended)log.push(pb.id+pb.phase+pb.role[f.intended.id]);}}
+      G.skip=false;G.mode='play';
+      if(first==='i34b')nb++;else if(first==='i34a')na++;
+      const sq=log.join(' ');if(sq.includes('i34b1C4')&&sq.includes('i34b2C3'))fullB++;if(sq.includes('i34a0C2')&&sq.includes('i34a1C4'))fullA++;
+    }
+    const pB=nb/Math.max(1,nb+na);
+    return [row('1 in 3-4: variante B scelta circa 7 volte su 10',pc(pB),pB>=0.55&&pB<=0.85),
+      row('1 in 3-4 con Visione 90: sequenze complete (B: C4 che torna, poi lungo a C3; A: C2 sotto, poi C4)','B '+fullB+', A '+fullA+' su '+N,fullB>=N*0.15&&fullA>=N*0.08,'i passaggi seguono lo schema disegnato')];
+  }]);
   S.steps.push(['Salto da fermo o in corsa nella scena laterale',()=>{
     const f={tx:30,ty:18},p=(x,y,vx,vy)=>({x,y,vx,vy});
     const still=!jumpRun(p(30.5,18.3,0.5,0),f),runFar=jumpRun(p(31,18,6,0),f),stand=!jumpRun(p(31,18,0,0),f);

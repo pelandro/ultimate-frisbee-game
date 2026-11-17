@@ -6,7 +6,7 @@ function pickCut(p,H,d,sch,w){
   const hand=p.role==='H',speedy=(p.s.vel+p.s.sal)/2;
   // velocita' e salto alti: il giocatore tende ad andare lungo (piu' spari, meno passaggi per fare meta)
   const th=H.s?H:null;   // in volo H e' solo il punto d'arrivo: nessuna stima del lanciatore
-  const deepP=hand?0.05:clamp(clamp((sch==='vert'||sch==='t1'||sch==='side'?0.24:(sch==='horz'?0.22:0.18))+(speedy-55)/100*0.8,0.05,0.8)*deepAppetite(p,th),0.03,0.85);   // chi lancia non spara: pochi tagli lunghi; sparo da tutto campo e intesa: molti
+  const deepP=hand?0.05:clamp(clamp((sch==='vert'||sch==='t1'||sch==='side'||sch==='i34'?0.24:(sch==='horz'?0.22:0.18))+(speedy-55)/100*0.8,0.05,0.8)*deepAppetite(p,th),0.03,0.85);   // chi lancia non spara: pochi tagli lunghi; sparo da tutto campo e intesa: molti
   let tx,ty,deep=false;
   if(Math.random()<deepP){deep=true;const dm=deepRun(p,th);tx=H.x+d*rnd(Math.min(24,dm*0.8),Math.max(24,dm));ty=rnd(4,FIELD_W-4);}
   else{const dx=hand?rnd(-6,4):rnd(8,14),sg=p.cSide=(p.cSide&&Math.random()<0.68)?p.cSide:-(p.cSide||(Math.random()<0.5?1:-1));   // il lato dei tagli successivi resta lo stesso piu' spesso: meno andirivieni da un lato all'altro
