@@ -32,3 +32,7 @@ for(const lk in LN_PL_PLUS){
   const seen=new Set();for(const c in LN_PL[lk])for(const r of LN_PL[lk][c])seen.add(usNameKey(r[1]+' '+r[0]));
   for(const c in LN_PL_PLUS[lk])for(const r of LN_PL_PLUS[lk][c]){const k=usNameKey(r[1]+' '+r[0]);if(seen.has(k))continue;seen.add(k);(LN_PL[lk][c]=LN_PL[lk][c]||[]).push(r);}
 }
+// forza dei club corretta a mano rispetto ai dati generati (LN_CL), con la fonte. Freezzz Beezzz one: all'EUCF 2026 (Breslavia) 2 vittorie (15-9 Freespeed, 15-8 Quijotes) e 4 sconfitte
+// di misura con Clapham (14-15), Cotarica Grandes (13-15), GRUT (12-15) e Mooncatchers (8-15); il rating ricavato dai punteggi di tutte le 55 partite Open (minimi quadrati sulla differenza mete)
+// e portato sulla scala del gioco con i club noti (correlazione 0,85) li dava a circa 83 contro i 74 dei dati; con solo 6 partite si va a meta' strada, circa 78.
+const LN_POW_FIX={'Freezzz Beezzz one':78};
