@@ -52,7 +52,7 @@ html[data-ew="xs"] #home .hdash .hr{order:-1}
 
 /* Posta, Opzioni e altri testi descrittivi: stesso tetto delle spiegazioni lunghe (non crescono oltre ~17 px a schermo) */
 .ali p{font-size:16px;line-height:1.28}
-.ali small,.ali .res{font-size:14px}
+.ali small,.ali .res,.almv{font-size:14px}
 .alk{width:84px}
 .qp,.orow h2 span,#alSub,#opSub{font-size:14px}
 .note{font-size:14px}

@@ -169,9 +169,9 @@ function newSeason(){
   agePlayers();
   potNews();   // 29-potenziali.js: chi si e' fermato e chi ha scoperto piu' margine
   for(const p of SQ){p.sk=Math.min(3,(p.sk|0)+1+(hasTr('ana','occ')?1:0));p.cond=100;}   // un anno insieme: conosci meglio il potenziale dei tuoi
-  summerChanges(was);evolveLeague();
+  summerChanges(was);evolveLeague();const aim=aiMarket();   // mercato tra le squadre del computer (31-mercato-ia.js), prima del tuo
   SV.chem=clamp(50+(SV.chem-50)*0.6,0,100);SV.mor=clamp(60+(SV.mor-60)*0.5,0,100);   // estate: l'intesa si allenta un poco, l'umore torna verso la norma
-  beginSeason();buildMarket();pickRival();
+  beginSeason();buildMarket();pickRival();aiMarketNews(aim);   // la notizia dopo la scelta della rivale: la segna nei colpi che la riguardano
   seasonStartDyn();   // premi di mantenimento e usura delle strutture, nuova sfida
   retireCheck('start');starsRetire();   // chi comincia a pensare al ritiro lo dice subito
   persist();

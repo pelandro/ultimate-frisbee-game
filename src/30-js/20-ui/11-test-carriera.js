@@ -6,7 +6,7 @@ function careerSelfTest(seasons,seed){
   const bak=hasCareer()?(persist(),JSON.stringify(SV)):null,R0=Math.random,q0=QM.on,rows=[],row=(name,val,ok,note)=>({name,val,ok:!!ok,note:note||''});
   Math.random=mulberry32(seed||2026);QM.on=true;talentGrow.n=0;
   const hide=()=>{for(const id of ['simres','alerts','evt'])$(id).classList.add('hidden');};
-  let lgBad=[],stories=0,derby=0,spec=0,goalsOk=0,goalsKo=0,duoMax=0,err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,worn=0,keep=0,signed=0,poDays=0,poTit=0,sizeBad=[],sz0=null,moneyBad=[],ven={H:0,A:0,N:0},spBad=[],spSeen=new Set(),bonusEv=0,netTot=0,matchesTot=0;
+  let aimChk=[],aimN=[],lgBad=[],stories=0,derby=0,spec=0,goalsOk=0,goalsKo=0,duoMax=0,err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,worn=0,keep=0,signed=0,poDays=0,poTit=0,sizeBad=[],sz0=null,moneyBad=[],ven={H:0,A:0,N:0},spBad=[],spSeen=new Set(),bonusEv=0,netTot=0,matchesTot=0;
   try{
     startCareer(SERIES.C[2]);
     sz0={A:SV.mem.A.length,B:SV.mem.B.length,C:SV.mem.C.length};
@@ -64,6 +64,8 @@ function careerSelfTest(seasons,seed){
       {const on=SV.mem[SV.sr].find(n=>n!==SV.team),sg=(SV.rost[on]||[]).reduce((a,o)=>a+(o.ss?o.ss.g:0),0),pf=SV.tab[on].pf;lsChk.push(lsLive()&&sg<=pf&&sg>=pf*0.8);}
       if(s===1)anc0=Object.assign({},SV.anc||{});
       const n0=SV.news.length;newSeason();hide();seasonsDone++;
+      {const L=aiMarket.last,al=(SV.alerts||[]).find(x=>x.k==='mkt'&&x.s===SV.season),all=Object.values(SV.rost).filter(r=>r&&r.length).flat();   // mercato tra le squadre del computer (31-mercato-ia.js)
+       aimChk.push(!!L&&L.n<=L.cap&&L.per<=AIM.max&&L.bud&&(L.n===0||(!!al&&al.data&&al.data.mv.length===Math.min(AIM.show,L.n)))&&L.ros&&new Set(all).size===all.length);aimN.push(L?L.n:-1);}
       worn+=SV.news.filter(x=>/Usura estiva/.test(x.txt)&&x.s===SV.season).length;keep+=SV.news.filter(x=>/Premi di mantenimento/.test(x.txt)&&x.s===SV.season).length;
       for(const a of SV.alerts)a.seen=1;
     }
@@ -102,6 +104,7 @@ function careerSelfTest(seasons,seed){
      rows.push(row('Mercato: motivazioni dei giocatori rispettate',withMot+' con una motivazione su '+mm.length+(bad?', '+bad+' non rispettate':''),mm.length>0&&bad===0));}
     rows.push(row('Gerarchie di inizio carriera calcolate con la rosa scelta',expOk?'sì':'no',expOk));
     rows.push(row('Sfida «Conti in ordine» giudicata prima dei premi',chalWhen.length?(chalWhen.every(x=>x==='prima')?'sì':'no')+' ('+chalWhen.length+' volte)':'mai capitata',chalWhen.length>0&&chalWhen.every(x=>x==='prima')));
+    rows.push(row('Mercato tra le squadre del computer: poche mosse a estate, budget rispettati, rose valide, notizia nella Posta',aimN.length?aimN.join(', ')+' operazioni':'nessuna estate',aimN.length>0&&aimChk.every(Boolean)&&aimN.some(x=>x>0),'al massimo '+AIM.max+' per squadra e una ogni '+AIM.cap+' squadre'));
     rows.push(row('Playoff: squadre sempre complete dopo promozioni e retrocessioni, albo d\u2019oro aggiornato',sizeBad.length?'problemi: '+sizeBad.join(', '):`sì (${poDays} partite di playoff giocate dalla tua squadra, ${(SV.alb||[]).length} edizioni nell\u2019albo)`,!sizeBad.length&&(SV.alb||[]).length>=Math.min(seasonsDone,60)));
     {const c0=SV.cash,n0=Object.keys(SV.ach||{}).length;achCheck();achCheck();const g=achPct(),pg=ACH.map(achState),html=achHTML()+albHTML()+hofHTML()+(SV.hof||[]).slice(0,12).map(hofCard).join('');
      const okA=SV.cash===c0&&Object.keys(SV.ach).length===n0&&g.n===ACH.filter(a=>SV.ach[a[0]]).length&&pg.every(a=>a.pct>=0&&a.pct<=100&&(a.done?a.pct===100:a.pct<100))&&!/undefined|NaN|null/.test(html)&&roman(14)==='XIV'&&roman(1994)==='MCMXCIV';
