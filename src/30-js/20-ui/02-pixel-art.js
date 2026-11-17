@@ -79,15 +79,16 @@ const FAN_C=['#2f7bff','#ff4b4b','#ffd23f','#f4f4f4','#3fd183','#b36bff','#ff9a3
    anche il campo cambia aspetto da una partita all'altra (erba piu' fresca o piu' secca, bordo in terra). Tutto deriva dai nomi: e' sempre uguale per la stessa sfida ---- */
 const KITS=[[{shirt:'#2f7bff',shorts:'#f2f5fa',socks:'#2f7bff'},{shirt:'#1f5fd0',shorts:'#172554',socks:'#f2f5fa'},{shirt:'#3aa0ff',shorts:'#f2f5fa',socks:'#f2f5fa'},{shirt:'#2a4fb8',shorts:'#ffd23f',socks:'#2a4fb8'},{shirt:'#2f7bff',shorts:'#101827',socks:'#101827'}],
   [{shirt:'#ff4b4b',shorts:'#1f2740',socks:'#ff4b4b'},{shirt:'#d93636',shorts:'#f2f5fa',socks:'#d93636'},{shirt:'#ff6a3d',shorts:'#1f2740',socks:'#1f2740'},{shirt:'#c22d55',shorts:'#f2f5fa',socks:'#f2f5fa'},{shirt:'#ff4b4b',shorts:'#101010',socks:'#ffd23f'}]];
+const KIT_AWAY={shirt:'#f2f5fa',shorts:'#1f2740',socks:'#f2f5fa'};
 const VENUES=[{grass:'#8ab66b',grass2:'#83af64',dot:'#a8cb8d',apron:'#6f9c58',apron2:'#648f4f',dim:'#b7d6a0',num:'#a3c888'},
   {grass:'#7fae72',grass2:'#77a66a',dot:'#9cc590',apron:'#5f8f63',apron2:'#55835a',dim:'#a9cf9f',num:'#97c08b'},
   {grass:'#9bb866',grass2:'#93b05e',dot:'#b6cd88',apron:'#86995a',apron2:'#7a8d50',dim:'#c3d69c',num:'#b0c684'},
   {grass:'#7da26a',grass2:'#759a62',dot:'#98bb86',apron:'#8a6f52',apron2:'#7d6448',dim:'#a8c796',num:'#93b582'}];
 let lookKey='';
 function matchLook(){
-  const on=!!G.inMatch,V=venueNow(),key=(on?(G.myName||'')+'|'+(G.oppName||''):'')+'|'+V.home+'|'+V.v+'|'+V.tier+'|'+V.care;if(key===lookKey)return;lookKey=key;
-  Object.assign(UNI[0],KITS[0][on&&G.myName?hashStr('kit|'+G.myName)%KITS[0].length:0]);
-  Object.assign(UNI[1],KITS[1][on&&G.oppName?hashStr('kit|'+G.oppName)%KITS[1].length:0]);
+  const on=!!G.inMatch,V=venueNow(),uk=on&&typeof utKitNow==='function'?utKitNow():null,key=(on?(G.myName||'')+'|'+(G.oppName||''):'')+'|'+V.home+'|'+V.v+'|'+V.tier+'|'+V.care+'|'+(uk?uk.shirt+uk.shorts+uk.socks+uk.shirtB+uk.pat:'');if(key===lookKey)return;lookKey=key;
+  Object.assign(UNI[0],{pat:'',shirtB:''},uk||KITS[0][on&&G.myName?hashStr('kit|'+G.myName)%KITS[0].length:0]);   // in Ultimate Team la divisa la scegli tu (Equipaggiamento), anche a motivi (pat, shirtB)
+  Object.assign(UNI[1],uk&&uk.hot?KIT_AWAY:KITS[1][on&&G.oppName?hashStr('kit|'+G.oppName)%KITS[1].length:0]);   // se ti vesti di rosso o arancione l'avversaria gioca in bianco
   Object.assign(PAL,venuePal());grassPat=null;   // prato del club di casa (17-stadi-pubblico.js)
 }
 // STEMMA a pixel (lo stesso scudetto a due colori del cruscotto, dal nome della squadra): a centrocampo e' quello della squadra di casa, in trasparenza
@@ -238,6 +239,7 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   R(x-3+lean,sy,6,6,shirt);
   if(view===0)R(f>0?x-3+lean:x+2+lean,sy,1,6,shirt2);else R(x-3+lean,sy,1,6,shirt2);
   R(x-3+lean,sy+5,6,1,shirt2);
+  if(un.pat){const sB=un.shirtB,sB2=shade(sB,-0.22);for(let j=0;j<6;j++)for(let i=0;i<6;i++)if(eqPatHit(un.pat,((view===0&&f<0?5-i:i)+0.5)/6,(j+0.5)/6))R(x-3+lean+i,sy+j,1,1,j===5||(view===0?(f>0?i===0:i===5):i===0)?sB2:sB);}   // maglia a motivi (Equipaggiamento di Ultimate Team), con le stesse ombre
   // TESTA: di lato (capelli dietro, occhio davanti), di schiena (solo capelli) o di fronte (due occhi)
   const hx0=x-3+lean+(view===0?f:0),bk=f>0?hx0:hx0+4,bald=lk.style===4;
   R(hx0+1,T,4,1,skin);R(hx0,T+1,6,4,skin);R(hx0+1,T+5,4,1,skin);
@@ -268,7 +270,7 @@ function puppetDive(x,y,un,lk,d,lift){
   const ops=[],R=(a,w,b,h,c)=>ops.push(d>0?x+a:x-a-w,y+b,w,h,c);   // a = distanza in avanti lungo la direzione del tuffo
   const skin=lk.skin;
   R(-11,5,-4,2,skin);R(-13,3,-4,2,un.shoe);R(-10,4,-2,2,skin);R(-12,3,-2,2,un.shoe);   // gambe e scarpe
-  R(-6,4,-6,4,un.shorts);R(-2,7,-6,4,un.shirt);R(-2,7,-3,1,shade(un.shirt,-0.22));   // pantaloncini e busto
+  R(-6,4,-6,4,un.shorts);R(-2,7,-6,4,un.shirt);if(un.pat)for(let j=0;j<4;j++)for(let i=0;i<7;i++)if(eqPatHit(un.pat,(j+0.5)/4,(6.5-i)/7))R(-2+i,1,-6+j,1,un.shirtB);R(-2,7,-3,1,shade(un.shirt,-0.22));   // pantaloncini e busto (a motivi: il busto e' disteso)
   R(5,5,-7,5,skin);R(5,5,-8,2,lk.style===4?shade(skin,-0.16):lk.hair);R(9,1,-5,1,PAL.out);   // testa
   R(7,6,-3,2,skin);R(8,5,-5,2,skin);   // braccia tese
   ctx.fillStyle=PAL.out;for(let i=0;i<ops.length;i+=5)ctx.fillRect(ops[i]-1,ops[i+1]-1,ops[i+2]+2,ops[i+3]+2);

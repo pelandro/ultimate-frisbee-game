@@ -23,8 +23,8 @@ function utMakePack(v){
   const taken=new Set(UT.col.map(c=>c.full));   // giocatori veri dei campionati (06-ut-carte-reali.js): non si ripete chi hai gia'
   return roles.map((r,i)=>utCardFor(r,utTierOvr(tiers[i],Math.random),Math.random,taken)).sort((a,b)=>a.ovr-b.ovr);
 }
-const utPackName=v=>utPkRole(v)?(utPkRole(v)===1?'Pacchetto Handler':'Pacchetto Cutter'):utPkQ(v)===0&&!UT.col.length?'Pacchetto iniziale':(UT.rp&&utPkQ(v)===6?'Super pacchetto':UT_PQN[utPkQ(v)]);
-const utPackTip=v=>{const q=utPkQ(v);if(utPkRole(v))return utPkRole(v)===1?'solo carte Handler':'solo carte Cutter';return q>=6?'almeno un Epico garantito':(q>=2?'almeno un Raro garantito':((UT.pity|0)+1>=UT_PITY?'questo contiene di sicuro un Epico':'più sono forti, più sono rari'));};
+const utPackName=v=>utPkRole(v)===EQ_PK?(utPkQ(v)>=6?'Super pacchetto equipaggiamento':(utPkQ(v)>=2?'Pacchetto equipaggiamento '+UT_PQN[utPkQ(v)].split(' ')[1]:'Pacchetto equipaggiamento')):utPkRole(v)?(utPkRole(v)===1?'Pacchetto Handler':'Pacchetto Cutter'):utPkQ(v)===0&&!UT.col.length?'Pacchetto iniziale':(UT.rp&&utPkQ(v)===6?'Super pacchetto':UT_PQN[utPkQ(v)]);
+const utPackTip=v=>{const q=utPkQ(v);if(utPkRole(v)===EQ_PK)return q>=6?'almeno un Epico garantito':(q>=3?'almeno un Raro garantito':'accessori per tutta la squadra');if(utPkRole(v))return utPkRole(v)===1?'solo carte Handler':'solo carte Cutter';return q>=6?'almeno un Epico garantito':(q>=2?'almeno un Raro garantito':((UT.pity|0)+1>=UT_PITY?'questo contiene di sicuro un Epico':'più sono forti, più sono rari'));};
 // squadra avversaria del turno: 7 titolari con media esatta = forza del turno, 7 di panchina piu' deboli
 function utOppRoster(power,seed){
   const rng=mulberry32(hashStr(seed)),v=[],roles=['H','H','H','C','C','C','C'];let tot=0;
@@ -34,8 +34,8 @@ function utOppRoster(power,seed){
   return out;
 }
 const UT_DIFF=[{name:'Facile',txt:'L’IA avversaria gioca come sempre.'},{name:'Medio',txt:'L’IA avversaria sceglie e reagisce un po’ meglio.'},{name:'Difficile',txt:'L’IA avversaria sceglie e reagisce molto meglio.'},{name:'Estrema',txt:'Ancora più attenta del Difficile, e la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'}];
-const UT={on:false,d:0,manual:false,col:[],sel:[],round:0,tid:0,packs:[],st:'play',res:'',opp:[],stage:'closed',cur:[],coins:0,stat:{w:0,t:0,up:0},claimed:{},mode:'sel',pity:0,rp:false,ms:0};   // pity: pacchetti di fila senza Epici   // rp: e' caricata la squadra di Real player (false = quella del torneo contro il computer); ms: traguardi di punti gia' premiati (solo Real player)   // col: giocatori; sel: indici dei 7 titolari; packs: qualita' dei pacchetti da aprire
-function utSave(){try{localStorage.setItem(UT.rp?UTR_KEY:UT_KEY,JSON.stringify({v:2,ms:UT.ms|0,d:UT.d,manual:UT.manual,col:UT.col,sel:UT.sel,round:UT.round,tid:UT.tid,packs:UT.packs,st:UT.st,res:UT.res,coins:UT.coins,stat:UT.stat,claimed:UT.claimed,pity:UT.pity|0}));}catch(e){}}
+const UT={on:false,d:0,manual:false,col:[],sel:[],round:0,tid:0,packs:[],st:'play',res:'',opp:[],stage:'closed',cur:[],coins:0,stat:{w:0,t:0,up:0},claimed:{},mode:'sel',pity:0,rp:false,ms:0,mse:0,eq:eqInit()};   // mse: traguardi di cui hai gia' avuto gli accessori   // pity: pacchetti di fila senza Epici   // rp: e' caricata la squadra di Real player (false = quella del torneo contro il computer); ms: traguardi di punti gia' premiati (solo Real player)   // col: giocatori; sel: indici dei 7 titolari; packs: qualita' dei pacchetti da aprire
+function utSave(){try{localStorage.setItem(UT.rp?UTR_KEY:UT_KEY,JSON.stringify({v:2,ms:UT.ms|0,d:UT.d,manual:UT.manual,col:UT.col,sel:UT.sel,round:UT.round,tid:UT.tid,packs:UT.packs,st:UT.st,res:UT.res,coins:UT.coins,stat:UT.stat,claimed:UT.claimed,pity:UT.pity|0,eq:UT.eq,mse:UT.mse|0}));}catch(e){}}
 function utOpps(){   // 6 avversarie del torneo: squadre vere scelte con un seme
   const names=Object.keys(TEAM),rng=mulberry32(hashStr('utopp|'+UT.tid)),pick=[];
   while(pick.length<6){const n=names[Math.floor(rng()*names.length)];if(!pick.includes(n))pick.push(n);}
@@ -44,9 +44,9 @@ function utOpps(){   // 6 avversarie del torneo: squadre vere scelte con un seme
 // Le due squadre (torneo contro il computer e Real player) sono separate: giocatori, gettoni, pacchetti e potenziamenti dell'una non toccano l'altra.
 // In memoria ce n'e' una alla volta, sempre nello stesso oggetto UT: utUse salva quella caricata e legge l'altra dalla sua chiave
 function utLoad(){
-  Object.assign(UT,{d:0,manual:false,col:[],sel:[],round:0,tid:0,packs:[],st:'play',res:'',opp:[],stage:'closed',cur:[],coins:0,stat:{w:0,t:0,up:0},claimed:{},mode:'sel',pity:0,ms:0,upSel:undefined});
+  Object.assign(UT,{d:0,manual:false,col:[],sel:[],round:0,tid:0,packs:[],st:'play',res:'',opp:[],stage:'closed',cur:[],coins:0,stat:{w:0,t:0,up:0},claimed:{},mode:'sel',pity:0,ms:0,upSel:undefined,eq:eqInit(),mse:0});
   try{const o=JSON.parse(localStorage.getItem(UT.rp?UTR_KEY:UT_KEY)||'null');if(o&&Array.isArray(o.col)){for(const c of o.col)if(c&&c.s)fillStats(c.s);for(const pk of (o.packs||[]))for(const c of (Array.isArray(pk)?pk:[]))if(c&&c.s)fillStats(c.s);UT.col=o.col;UT.d=(o.d>=0&&o.d<4)?o.d|0:0;UT.manual=!!o.manual;UT.sel=(o.sel||[]).filter(i=>o.col[i]);UT.round=o.round|0;UT.tid=o.tid|0;UT.packs=o.packs||[];UT.st=o.st||'play';UT.res=o.res||'';UT.coins=o.coins|0;UT.stat=Object.assign({w:0,t:0,up:0},o.stat||{});UT.claimed=o.claimed||{};
-    UT.pity=o.pity|0;UT.ms=o.ms|0;
+    UT.pity=o.pity|0;UT.ms=o.ms|0;UT.eq=eqInit(o.eq);UT.mse=o.mse|0;   // equipaggiamento (10-sim/25-ut-equipaggiamento.js)
     for(const c of UT.col){c.ovr=ovr(c);if(c.trait===undefined)c.trait=traitFor(c.full||c.n,c.s,c.r);c.up=c.up|0;}}}catch(e){}   // salvataggi precedenti: il valore delle carte diventa l'Overall nel ruolo
   if(UT.tid)utOpps();
 }
@@ -61,7 +61,7 @@ function utAuto(){   // i 3 migliori handler e i 4 migliori cutter
   if(sel.length<7)sel=sel.concat(idx.filter(i=>!sel.includes(i)).slice(0,7-sel.length));
   UT.sel=sel;
 }
-const utPower=()=>UT.sel.length?Math.round(UT.sel.reduce((a,i)=>a+ovrX(UT.col[i]),0)/UT.sel.length):0;
+const utPower=()=>UT.sel.length?Math.round(UT.sel.reduce((a,i)=>a+ovrX(eqApply(UT.col[i],UT.eq)),0)/UT.sel.length):0;   // con l'equipaggiamento indossato
 function renderUT(){
   const has=UT.col.length>0,pend=UT.packs.length,playing=UT.st==='play'&&!pend&&UT.sel.length===7;
   $('uStats').innerHTML=has?`Rosa: <b>${UT.col.length}</b> giocatori · Forza: <b>${utPower()}</b> (titolari ${UT.sel.length}/7) · Gettoni: <b>${UT.coins}</b>`:'Apri il tuo primo pacchetto per iniziare.';
@@ -78,6 +78,7 @@ function renderUT(){
   $('uPlayS').textContent=o?(UT.sel.length===7?`Contro ${o.name} · forza ${o.power} (tu ${utPower()})`:'Scegli 7 titolari nella tua squadra'):'';
   $('uTeam').classList.toggle('hidden',!has);
   $('uTeamS').textContent=has?`${UT.col.length} giocatori · scegli i 7 titolari`:'';
+  $('uEquip').classList.toggle('hidden',!has);$('uEquipS').textContent=eqSubTxt();
   $('uNew').classList.toggle('hidden',UT.st==='play');
   $('uDiff').innerHTML=UT_DIFF.map((d,i)=>`<button type="button" class="sg${i===UT.d?' on':''}" data-d="${i}">${d.name}</button>`).join('');$('uDiffN').textContent=UT_DIFF[UT.d].txt+' Le avversarie hanno la forza del turno'+(DIFF_PLUS[UT.d|0]?', con +'+DIFF_PLUS[UT.d|0]+' a tutte le statistiche.':'.');
   $('uMsg').textContent=UT.res||'';
@@ -98,14 +99,17 @@ const utPos=p=>POS_NAME[posOf(p)];
 const utCard=(p,i)=>{const [rn,rc]=utRar(p.ovr);return `<div class="ucard ${rc}" style="animation-delay:${(i*0.3).toFixed(2)}s"><b>${p.ovr}</b><span>${p.n}</span><i>${utPos(p)} · ${rn}</i>${p.cl?`<i>${p.cl}</i>`:''}${p.trait&&TRAITS[p.trait]?`<i style="color:#e0b3ff">${TRAITS[p.trait][0]}</i>`:''}</div>`;};
 function renderPack(){
   const open=UT.stage==='open';
-  $('pkTitle').textContent=open?'Ecco i tuoi giocatori':utPackName(UT.packs[0]);
-  $('pkBody').innerHTML=open?`<div class="ucards">${UT.cur.map(utCard).join('')}</div>`:`<div class="dpk">${utDisc(utPkQ(UT.packs[0]),utPackSize(UT.packs[0]),utPkRole(UT.packs[0])===1?'H':(utPkRole(UT.packs[0])===2?'C':''))}<b>giocatori</b><small>${utPackTip(UT.packs[0])}</small></div>`;
+  $('pkTitle').textContent=open?(UT.cur[0]&&UT.cur[0].eq?'Ecco i tuoi accessori':'Ecco i tuoi giocatori'):utPackName(UT.packs[0]);
+  const v=UT.packs[0],eq=utPkRole(v)===EQ_PK;
+  $('pkBody').innerHTML=open?`<div class="ucards">${UT.cur.map((p,i)=>p.eq?eqCard(p,i):utCard(p,i)).join('')}</div>${UT.eqMsg?`<p class="qp" style="text-align:center">${UT.eqMsg}</p>`:''}`:`<div class="dpk">${utDisc(utPkQ(v),utPackSize(v),eq?'E':(utPkRole(v)===1?'H':(utPkRole(v)===2?'C':'')))}<b>${eq?'accessori':'giocatori'}</b><small>${utPackTip(v)}</small></div>`;
   $('pkGo').textContent=open?(UT.packs.length?`Prossimo pacchetto (${UT.packs.length})`:'Continua'):'Apri';
 }
 $('pkGo').addEventListener('click',()=>{
   if(UT.stage==='closed'){
-    UT.cur=utMakePack(UT.packs.shift());UT.cur.forEach(p=>{p.isNew=true;UT.col.push(p);});
-    if(UT.sel.length<7||!UT.manual)utAuto();   // finche' non scegli tu i titolari, restano i migliori 7
+    const v=UT.packs.shift();UT.eqMsg='';
+    if(utPkRole(v)===EQ_PK)UT.cur=utEqOpen(v);   // accessori (07-ut-equipaggiamento.js)
+    else{UT.cur=utMakePack(v);UT.cur.forEach(p=>{p.isNew=true;UT.col.push(p);});
+    if(UT.sel.length<7||!UT.manual)utAuto();}   // finche' non scegli tu i titolari, restano i migliori 7
     utSave();UT.stage='open';renderPack();
   }else if(UT.packs.length){UT.stage='closed';renderPack();}
   else showScreen(UT.rp?'utReal':'ut');
@@ -182,7 +186,7 @@ function simCareerMatch(){
 }
 function simUTMatch(){
   if(UT.sel.length!==7||UT.st!=='play'||UT.packs.length)return;
-  const o=UT.opp[UT.round],my=UT.sel.reduce((a,i)=>a+mean9(UT.col[i]),0)/7;
+  const o=UT.opp[UT.round],my=UT.sel.reduce((a,i)=>a+mean9(eqApply(UT.col[i],UT.eq)),0)/7;
   const r=simMatch(my,o.power+(DIFF_PLUS[clamp(UT.d|0,0,3)]||0),UT.d),w=r.a>r.b,msg=utRecord(w);
   showSim(w,`Ultimate Team ${r.a} – ${r.b} ${o.name}`,msg,()=>renderUT());
 }
@@ -191,7 +195,7 @@ function startUT(){
   const r=UT.round,opp=UT.opp[r];
   if(hasCareer()){persist();QM.bak=JSON.stringify(SV);}else QM.bak=null;   // la carriera resta com'e': viene rimessa alla fine
   QM.on=true;UT.on=true;
-  setSquad(UT.col);setLineup(UT.sel.slice());
+  setSquad(UT.col.map(p=>eqApply(p,UT.eq)));setLineup(UT.sel.slice());   // l'equipaggiamento vale solo in partita: le carte restano com'erano
   applyRoster(utOppRoster(UT_POWERS[r],'ut|'+UT.tid+'|'+r));oppBoost(DIFF_PLUS[clamp(UT.d|0,0,3)]);
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;
@@ -221,7 +225,7 @@ function utRecord(win){
   const r=UT.round,gain=win?40+15*r:15;UT.coins+=gain;if(win){UT.stat.w++;if(r>=5)UT.stat.t++;}
   const grown=utGrowCards();
   if(win){
-    if(r>=5){UT.st='won';UT.round=6;UT.packs.push(6);UT.res='Campioni! Hai vinto il torneo e ottieni il Super pacchetto.';}
+    if(r>=5){UT.st='won';UT.round=6;UT.packs.push(6,eqCode(4,2));UT.res='Campioni! Hai vinto il torneo e ottieni il Super pacchetto e un pacchetto equipaggiamento.';}
     else{UT.round=r+1;UT.packs.push(r+1);UT.res=`Passi ${UT_TO[r+1]}: hai ottenuto un nuovo pacchetto.`;}
   }else{UT.st='out';UT.res=`Eliminati ${UT_TO[r]}. Puoi iniziare un nuovo torneo e tenere i tuoi giocatori.`;}
   UT.res+=` +${gain} gettoni.`+(grown.length?` ${grown.length===1?grown[0]+' è cresciuto':grown.length+' carte sono cresciute'} giocando.`:'');
