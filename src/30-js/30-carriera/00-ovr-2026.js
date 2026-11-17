@@ -15,7 +15,7 @@ const OVR_OUT={
 // Overall voluto a mano, sopra quello del foglio: «nome cognome» per club
 const OVR_FORCE={
   'Cotarica Grandes':{'Pietro Puppi':87},
-  'CUS Padova Barbastreji':{'Francesco Martini':85,'Alessandro Spiritigliozzi':85}   // bilanciamenti
+  'CUS Padova Barbastreji':{'Francesco Martini':85,'Alessandro Spiritigliozzi':84}   // bilanciamenti
 };
 // giocatori aggiunti a mano, nello stesso formato delle righe di OVR_2026. H = portatore; il segno d lo mette nella linea di difesa (piu' difesa, sempre handler)
 const OVR_ADD={
@@ -45,7 +45,7 @@ const OVR_POW={
   "Cotarica Runners":87.3,
   "One Tribe":84.8,
   "Cotarica Grandes":86.3,
-  "CUS Padova Barbastreji":84.1,
+  "CUS Padova Barbastreji":84,
   "360 Milano":81.2,
   "BFD Redbulls":80.5,
   "UFO (A)":79.4,
