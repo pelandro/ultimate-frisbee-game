@@ -5,91 +5,108 @@
    Il tutorial dice cio' che serve per giocare bene: niente formule, tarature o conti interni dell'economia (quelli stanno nella Guida). */
 const TUT=[];
 
-TUT.push({id:'ini',t:'Per iniziare',sub:'L’obiettivo, i menu, i comandi e il primo allenamento.',
-intro:'Cinque lezioni per partire bene: che cosa si fa, dove si trova ogni cosa e come si comanda il gioco.',
+TUT.push({id:'ini',t:'Per iniziare',sub:'Le regole in breve, le parole da sapere, i menu, i comandi e le prove guidate.',
+intro:'Sei lezioni per partire: come si gioca, il vocabolario, dove trovare le cose e come si comanda il gioco.',
 les:[
-{id:'ini-gioco',t:'Che cosa si fa',b:[
-`L’Ultimate si gioca in due squadre da 7, con un disco. Per segnare devi portare il disco nella <b>meta</b> avversaria passandolo ai compagni: <b>chi ha il disco non può correre</b>, quindi si avanza solo lanciando.`,
-`Vince chi arriva per primo a 7 mete in modalità Arcade, 11 in Competitiva, 15 in Lunga.`,
-[`Se il disco cade a terra, esce dal campo o viene intercettato, passa agli avversari: è un <b>turnover</b>.`,`Chi ha il disco ha <b>10 secondi</b> per lanciare (lo stall): a 10 perde il disco.`,`Dopo ogni meta le squadre cambiano campo e chi ha segnato tira il <b>pull</b> (il lancio lungo di inizio punto).`]],
-tip:`Non serve sapere le regole a memoria: nelle prime tre partite compaiono delle schede che spiegano ogni cosa nel momento in cui serve.`},
-{id:'ini-menu',t:'I menu del gioco',w:'Menu iniziale',b:[
-`Dal menu iniziale scegli come giocare:`,
-[`<b>Carriera</b>: la modalità principale. Guidi una squadra per più stagioni, con rosa, mercato, allenamenti, strutture, staff e campionati veri. «Salvataggi» mostra i tre slot di salvataggio.`,
-`<b>Partita veloce</b>: due squadre qualsiasi, subito in campo, senza conseguenze.`,
-`<b>Ultimate Team</b>: apri pacchetti di carte, scegli i 7 titolari e sfida il computer o le squadre degli altri giocatori.`,
-`<b>Torneo</b>: un torneo a eliminazione diretta con 4, 8 o 16 squadre.`,
-`<b>Allenamento</b>: il tutorial pratico, l’allenamento libero e le sfide con medaglie.`],
-`In alto trovi <b>Tutorial</b> (questo manuale), <b>Guida</b> (le regole a schede, con tutti i dettagli), <b>Audio</b> e <b>Impostazioni</b>.`],
-tip:`Se sei nuovo, fai prima il percorso «Allenamento › Tutorial»: ogni lezione si supera facendo ciò che spiega.`},
+{id:'ini-gioco',t:'Come si gioca',b:[
+`Due squadre da 7 giocatori e un disco. Per fare una <b>meta</b> (un punto) devi prendere il disco dentro la zona di meta avversaria.`,
+`La regola da ricordare: <b>chi ha il disco non può correre</b>. Si avanza solo passandolo ai compagni.`,
+[`Se il disco cade, esce dal campo o viene intercettato, passa agli avversari: è un <b>turnover</b>.`,
+`Se un avversario ti marca da vicino hai <b>10 secondi</b> per lanciare (lo <b>stall</b>). A 10 perdi il disco.`,
+`Dopo ogni meta le squadre cambiano campo e chi ha segnato tira il <b>pull</b>, il lancio lungo che fa ripartire il gioco.`,
+`Vince chi arriva per primo a 7 mete (11 o 15 nelle partite più lunghe).`]],
+tip:`Non serve imparare tutto subito: nelle prime tre partite compaiono delle schede che spiegano ogni cosa quando serve.`},
+{id:'ini-parole',t:'Le parole da sapere',b:[
+[`<b>Meta</b>: un punto segnato (e la zona in fondo al campo dove si segna).`,
+`<b>Pull</b>: il lancio lungo che fa iniziare ogni meta. <b>Brick</b>: se il pull esce dal campo, si riparte dal punto segnato con una × al centro.`,
+`<b>Stall</b>: il conteggio fino a 10 di chi ha il disco marcato da vicino.`,
+`<b>Turnover</b>: il disco passa agli avversari (caduto, uscito, intercettato o stall).`,
+`<b>Handler</b>: chi gestisce e lancia il disco. <b>Cutter</b>: chi taglia e riceve. <b>Defender</b>: specialista della difesa.`,
+`<b>Taglio</b>: la corsa per smarcarsi e ricevere. <b>Marcatore</b>: il difensore che marca chi ha il disco.`,
+`<b>Handblock</b>: il blocco del lancio con la mano, appena parte. <b>Tuffo</b>: lo slancio per prendere o fermare un disco lontano.`,
+`<b>Huck</b>: un lancio lungo e alto verso la meta.`,
+`<b>Overall</b> (OVR): il valore di un giocatore, da 1 a 99.`]],
+tip:`Non devi impararle a memoria: il gioco le spiega di nuovo quando servono, e le trovi anche nella Guida.`},
+{id:'ini-menu',t:'Il menu iniziale',w:'Menu iniziale',b:[
+`Scegli come giocare:`,
+[`<b>Carriera</b>: guidi una squadra per più stagioni, con rosa, mercato, allenamenti, strutture, staff e campionati veri. «Salvataggi» mostra i tre slot.`,
+`<b>Partita veloce</b>: due squadre a scelta, subito in campo, senza conseguenze.`,
+`<b>Ultimate Team</b>: apri pacchetti di carte, scegli i 7 titolari e sfida il computer o le squadre di altri giocatori.`,
+`<b>Torneo</b>: eliminazione diretta con 4, 8 o 16 squadre.`,
+`<b>Allenamento</b>: tutorial pratico, allenamento libero e sfide con medaglie.`],
+`In alto: <b>Guida</b> (le regole in dettaglio), <b>Tutorial</b> (questo manuale), <b>Audio</b> e <b>Impostazioni</b>.`],
+tip:`Se sei nuovo, parti da «Allenamento › Tutorial»: ogni lezione si supera facendo ciò che spiega.`},
 {id:'ini-comandi',t:'I comandi',b:[
-`Il gioco funziona con il tocco, la tastiera, il mouse e il controller.`,
-[`<b>Touch e mouse</b>: si lancia trascinando all’indietro e rilasciando; i compagni si chiamano con un tocco; in difesa i pulsanti rossi in basso fanno handblock e tuffo.`,
-`<b>Tastiera</b>: frecce o WASD per la direzione, Spazio o J per lanciare (tieni premuto per caricare, rilascia per tirare), Maiusc o K per il lancio alto (in difesa il tuffo), E = taglio, Q = isolamento, C = clear, Esc = annulla, Invio = salta il possesso avversario.`,
-`<b>Controller</b>: stick o croce per la direzione, A o RT per lanciare, X o B per il lancio alto, Y per «Salta».`],
-`Le <b>Impostazioni</b> hanno quattro schede: <b>Partita</b> (difesa, meteo, stacchi, suggerimenti), <b>Comandi</b> (sensibilità del lancio, dimensione e posizione dei pulsanti), <b>Schermo e audio</b> (dimensione dell’interfaccia, colonna della carriera, audio, rotazione, schermo intero) e <b>Avanzate</b>. Gli interruttori mostrano sì o no e si accendono toccando tutta la riga. Sul telefono si gioca in orizzontale: se lo tieni in verticale il gioco si gira da solo.`]},
+`Si gioca con il tocco, il mouse, la tastiera o il controller.`,
+[`<b>Touch e mouse</b>: per lanciare trascina il dito all’indietro e rilascia; per chiamare un compagno toccalo; in difesa usa i pulsanti rossi in basso (handblock e tuffo).`,
+`<b>Tastiera</b>: frecce o WASD = direzione; Spazio o J = lancio (tieni premuto per caricare, rilascia per tirare); Maiusc o K = lancio alto (in difesa, tuffo); E = taglio; Q = isolamento; C = clear; Esc = annulla; Invio = salta il possesso avversario.`,
+`<b>Controller</b>: stick o croce = direzione; A o RT = lancio; X o B = lancio alto; Y = «Salta».`],
+`Le <b>Impostazioni</b> hanno quattro schede: <b>Partita</b> (difesa, meteo, salti e tuffi, suggerimenti), <b>Comandi</b> (sensibilità del lancio, pulsanti), <b>Schermo e audio</b> e <b>Avanzate</b>. Sul telefono si gioca in orizzontale: se lo tieni in verticale il gioco si gira da solo.`]},
 {id:'ini-primi',t:'I «Primi passi» in partita',b:[
-`La prima partita è anche il tutorial: <b>si impara giocando</b>. In alto un riquadro ti chiede una cosa alla volta (tirare il pull, passare il disco, chiamare un taglio, l’isolamento, il lancio alto, passare prima del 10, difendere, segnare) e la partita continua mentre la provi.`,
-`Quando ci riesci il riquadro diventa verde («Ben fatto») e passa alla prova dopo; se sbagli ti dice di riprovare e, se tardi, aggiunge un suggerimento. Mentre impari a lanciare il conteggio dello stall è fermo o rallentato; torna normale con la prova sullo stall.`,
-`Poche schede si leggono soltanto (obiettivo, timeout, schemi, cambi e pausa): fermano il gioco finché premi «Capito» o Invio. «Salta questo passo» passa oltre, «Esci dal tutorial» lo spegne. Dura le prime tre partite. Per rifarlo: <b>Impostazioni › Partita › Suggerimenti</b>, spegni e riaccendi.`],
-tip:`Da lì si riattivano anche i fumetti della carriera (quelli che spiegano Squadra, Mercato, Società…).`},
+`La prima partita è anche un tutorial: <b>impari giocando</b>. In alto un riquadro ti chiede una cosa alla volta (tirare il pull, passare il disco, chiamare un taglio, un isolamento, un lancio alto, passare prima del 10, difendere, segnare) e la partita continua mentre provi.`,
+`Quando ci riesci il riquadro diventa verde («Ben fatto») e passa alla prova dopo; se sbagli ti dice di riprovare e, se tardi, aggiunge un suggerimento. Mentre impari a lanciare lo stall è fermo o rallentato.`,
+`Poche schede si leggono soltanto (obiettivo, timeout, schemi, cambi e pausa) e fermano il gioco finché premi «Capito». «Salta questo passo» va avanti, «Esci dal tutorial» lo spegne.`,
+`Dura le prime tre partite. Per rifarlo: <b>Impostazioni › Partita › Suggerimenti</b>, spegni e riaccendi.`],
+tip:`Così si riattivano anche i fumetti della carriera (quelli che spiegano Squadra, Mercato, Società…).`},
 {id:'ini-alle',t:'Il tutorial guidato e le sfide',w:'Menu › Allenamento',b:[
 `Nel menu <b>Allenamento</b> c’è il tutorial pratico in sette lezioni: lancio, tagli, tipi di lancio, stall, meta, difesa e pull. Una lezione si supera facendo davvero ciò che spiega, e il gioco ricorda a che punto sei («Riprendi»).`,
-`Poi ci sono l’<b>allenamento libero</b> e le <b>sfide con medaglie</b> (vedi «Allenamento libero e sfide» nel capitolo delle altre modalità).`],
-tip:`L’allenamento libero senza difesa è il posto migliore per imparare a mirare un huck o un rovesciato senza paura di perdere il disco.`}
+`Poi ci sono l’<b>allenamento libero</b> e le <b>sfide con medaglie</b> (vedi «Allenamento libero e sfide»).`],
+tip:`L’allenamento libero senza difesa è il posto migliore per imparare a mirare un huck o un lancio alto senza paura di perdere il disco.`}
 ]});
 
-TUT.push({id:'att',t:'In partita: attacco',sub:'Pull, lanci, rovesciato, chiamate ai compagni, scatto, stall.',
+TUT.push({id:'att',t:'In partita: attacco',sub:'Pull, lanci, chiamate ai compagni, scatto, stall.',
 intro:'Tutto quello che puoi fare quando hai il disco o lo stai per avere.',
 les:[
 {id:'att-pull',t:'Il pull',b:[
-`Ogni punto comincia con un pull. Si decide in due tocchi:`,
-[`Prima la barra della <b>POTENZA</b>: tocca (o Spazio) per fermare il cursore. <b>Verde</b> = il disco arriva nella meta avversaria; giallo o prima = corto; rosso = rischia di uscire dal fondo.`,
-`Poi la barra della <b>DIREZIONE</b>: ferma nel verde (al centro) o almeno nel giallo. Nel rosso esce di lato.`],
-`Sul campo vedi dove cadrebbe il disco: <b>FUORI</b>, <b>CORTO</b>, <b>BUON PULL</b> o <b>GRAN PULL</b> (oro, ben in fondo alla meta).`,
-`Un gran pull mette in difficoltà chi riceve per qualche secondo (stall che parte più alto, tagliatori in ritardo); un pull corto o fuori dà via libera all’attacco avversario. Se il pull esce si riparte dal brick (il segno × al centro) e tutti vanno subito al loro posto.`],
-tip:`Chi tira conta: con Lancio e Sparo alti le barre vanno più piano. Scegli come tiratore chi ha i valori migliori.`},
-{id:'att-lancio',t:'Il lancio a trascinamento',b:[
-`Non c’è nessun pulsante: quando hai il disco <b>tocca dove vuoi, trascina il dito all’indietro e rilascia</b>. Il disco parte nella direzione opposta al trascinamento e tanto più lontano quanto più lo allunghi.`,
-[`L’arco a quadretti mostra dove arriva e accanto compare la distanza.`,`I passaggi corti sono più precisi; da 30 m in su è uno sparo.`,`Per annullare riporta il dito vicino a dove avevi toccato: compare «ANNULLA».`],
+`Ogni meta comincia con il pull, un lancio lungo verso gli avversari. Lo tiri con due tocchi:`,
+[`<b>Potenza</b>: tocca (o premi Spazio) per fermare il cursore. Nel <b>verde</b> il disco arriva nella meta avversaria; prima è corto, nel rosso rischia di uscire dal fondo.`,
+`<b>Direzione</b>: ferma il cursore al centro (verde, o almeno giallo). Nel rosso il disco esce di lato.`],
+`Sul campo vedi dove cadrà: <b>FUORI</b>, <b>CORTO</b>, <b>BUON PULL</b> o <b>GRAN PULL</b> (in oro, ben dentro la meta).`,
+`Un gran pull mette in difficoltà chi riceve per qualche secondo (stall che parte più alto, tagliatori in ritardo). Un pull corto o fuori aiuta l’attacco avversario; se esce si riparte dal <b>brick</b> (la × al centro) e tutti vanno subito al loro posto.`],
+tip:`Per il pull scegli chi ha Lancio e Sparo più alti: le barre vanno più piano.`},
+{id:'att-lancio',t:'Il lancio',b:[
+`Non ci sono pulsanti: quando hai il disco <b>tocca, trascina il dito all’indietro e rilascia</b>, come una fionda. Il disco parte nella direzione opposta al trascinamento, tanto più lontano quanto più lo allunghi.`,
+[`L’arco a quadretti mostra dove arriva, con la distanza.`,`I passaggi corti sono più precisi; da 30 m in su è uno sparo.`,`Per annullare riporta il dito vicino a dove avevi toccato: compare «ANNULLA».`],
 `Toccare un compagno <b>non</b> gli passa il disco: lo manda in taglio (vedi «Chiamare i compagni»).`],
 tip:`Lancia dove il compagno sta correndo, non dove si trova adesso: l’arco ti mostra il punto d’arrivo.`},
-{id:'att-mira',t:'Mira assistita e leggere il lancio',b:[
-`La direzione del dito conta più della distanza: se punti verso un compagno e carichi più o meno fino a lui, il lancio si <b>aggancia</b> a lui anche se sbagli di qualche metro. Il compagno agganciato ha un anello e una freccia.`,
-[`Il <b>cerchio tratteggiato</b> attorno al mirino è l’errore possibile: cresce con la distanza, con la pressione (stall alto, marcatore addosso), con i lanci difficili e se rilasci in fretta.`,
-`L’<b>arco rosso</b> è il limite della tua gittata (dipende dallo Sparo). Oltre, il disco cade corto: la mira scrive «MAX … m: CORTO».`,
-`Se un difensore può mettersi sulla traiettoria, l’arco <b>lampeggia in rosso con una croce</b> nel punto dell’intercetto: cambia bersaglio o lancia alto.`],
-`In Facile l’anello del compagno è verde (sicuro), giallo (incerto) o rosso (rischioso). Dal Medio in su il colore sparisce, in Estrema anche l’anello e la traiettoria.`],
+{id:'att-mira',t:'Mira assistita e lettura del lancio',b:[
+`Conta più la direzione del dito che la distanza: se punti verso un compagno e carichi più o meno fino a lui, il lancio si <b>aggancia</b> a lui anche se sbagli di qualche metro. Il compagno agganciato ha un anello e una freccia.`,
+[`<b>Cerchio tratteggiato</b> attorno al mirino: l’errore possibile. Cresce con la distanza, con la pressione (stall alto, marcatore addosso), con i lanci difficili e se rilasci in fretta.`,
+`<b>Arco rosso</b>: il limite della tua gittata, che dipende dallo Sparo. Oltre, il disco cade corto («MAX … m: CORTO»).`,
+`<b>Arco che lampeggia in rosso con una croce</b>: un difensore può intercettare proprio lì. Cambia bersaglio o lancia alto.`],
+`Gli aiuti dipendono dalla difficoltà: in Facile l’anello del compagno è verde (sicuro), giallo (incerto) o rosso (rischioso); dal Medio in su il colore sparisce, in Estrema anche l’anello e la traiettoria.`],
 tip:`Prima di rilasciare guarda sempre la croce rossa: è il modo più semplice per non regalare intercetti.`},
-{id:'att-tipi',t:'Tipi di lancio e rovesciato',b:[
-`Il tipo si sceglie con le <b>dita</b>: <b>un tocco = piatto</b>, <b>doppio tocco = alto</b> (il rovesciato): tocca una volta in un punto libero del campo, poi tocca di nuovo e tieni premuto per mirare. Funzionano anche <b>due dita insieme</b>, anche mentre stai già mirando. Dal lancio dopo si torna al piatto.`,
-[`<b>Piatto</b>: Rovescio o Dritto, secondo il lato che gira attorno al marcatore. Il rovescio è il più preciso; il dritto parte prima (meno handblock) ma perde precisione sulle distanze lunghe. Da 30 m è un <b>huck</b>, lungo e galleggiante.`,
-`<b>Alto — Scoober</b> (fino a 14 m): rapido, scavalca le mani del marcatore.`,
-`<b>Alto — Hammer</b> (oltre 14 m): arco alto che nessuno intercetta lungo la linea e difficile da bloccare, ma lento e meno preciso.`],
-`Il gioco sceglie da solo il lancio adatto e lo scrive accanto al mirino. I lanci piatti curvano: la traiettoria che vedi è quella vera.`],
-tip:`Marcatore addosso e cono rosso davanti? Prova il rovesciato (doppio tocco): passa sopra la testa del difensore. Con Lancio basso, però, meglio il piatto.`},
+{id:'att-tipi',t:'Tipi di lancio',b:[
+`Il tipo di lancio si sceglie con le <b>dita</b>: <b>un tocco = piatto</b>; <b>doppio tocco = alto</b> (tocca una volta in un punto libero del campo, poi tocca di nuovo e tieni premuto per mirare). Vanno bene anche <b>due dita insieme</b>, pure mentre stai già mirando. Dal lancio dopo si torna al piatto.`,
+[`<b>Piatto</b> (Rovescio o Dritto, secondo il lato che gira attorno al marcatore): il rovescio è il più preciso; il dritto parte prima (meno handblock) ma perde precisione da lontano. Da 30 m è un <b>huck</b>, lungo e galleggiante.`,
+`<b>Alto, Scoober</b> (fino a 14 m): rapido, scavalca le mani del marcatore.`,
+`<b>Alto, Hammer</b> (oltre 14 m): arco alto che nessuno intercetta lungo la linea e difficile da bloccare, ma lento e meno preciso.`],
+`Il gioco sceglie da solo il lancio giusto e lo scrive accanto al mirino. I lanci piatti curvano: la traiettoria che vedi è quella vera.`],
+tip:`Marcatore addosso e cono rosso davanti? Prova il lancio alto (doppio tocco): passa sopra la testa del difensore. Con Lancio basso, però, meglio il piatto.`},
 {id:'att-chiama',t:'Chiamare i compagni',b:[
-`Le <b>chiamate rapide</b> si fanno toccando i compagni senza trascinare:`,
-[`<b>Tocco su un compagno</b> = taglio: un cutter vicino al disco va lungo, uno già lontano torna incontro sul lato aperto; un handler ti offre lo scarico (<b>reset</b>) sul lato lasciato libero dal marcatore.`,
-`<b>Tieni premuto</b> su un compagno = <b>isolamento</b>: taglia lui e gli altri liberano il corridoio.`,
+`Le <b>chiamate rapide</b> si fanno toccando i compagni, senza trascinare:`,
+[`<b>Tocco su un compagno</b> = taglio. Un cutter vicino al disco va lungo, uno già lontano torna incontro sul lato aperto; un handler ti offre lo scarico (<b>reset</b>) sul lato lasciato libero dal marcatore.`,
+`<b>Tieni premuto</b> su un compagno = <b>isolamento</b>: taglia solo lui e gli altri liberano il corridoio.`,
 `<b>Tocco su chi ha il disco</b> = clear: tutti tornano in posizione e ripartono.`],
 `Da tastiera: E = taglio, Q = isolamento, C = clear, verso il compagno indicato dalle frecce.`,
-`Se miri su una <b>zona libera</b> del campo, un compagno ci corre: quello che ci arriva prima, non per forza il più vicino. Più alta è la Visione di chi ha il disco, più lontano dai compagni può essere la zona. Il disco va esattamente dove hai mirato.`,
-`In Facile e Medio un breve tratto verde mostra in che direzione parte ogni compagno (azzurro quello che hai chiamato tu); in Difficile ed Estrema non c’è nessun segnale.`],
+`Se miri su una <b>zona libera</b>, ci corre il compagno che arriva prima (non per forza il più vicino). Più alta è la Visione di chi ha il disco, più lontano dai compagni può essere la zona. Il disco va esattamente dove hai mirato.`,
+`In Facile e Medio un breve tratto verde mostra dove parte ogni compagno (azzurro quello che hai chiamato tu); in Difficile ed Estrema non c’è nessun segnale.`],
 tip:`Isola il tuo cutter più veloce contro il marcatore più lento: è il modo più facile di creare un vantaggio.`},
 {id:'att-sparo',t:'Sparo, scatto e gioco lungo',b:[
 `Oltre 30 m il lancio è uno <b>sparo</b>. Quanto lontano arriva dipende dalla statistica Sparo: con 20 circa 30 m, con 60 circa 65 m, con 99 tutto il campo.`,
-`Sui lanci lunghi il tuo giocatore che corre al punto d’arrivo ha una freccia, un cerchio e una barra di energia: <b>tieni premuto lo schermo</b> (o il pulsante col fulmine in basso a destra) per farlo <b>scattare</b>. Va più veloce ma consuma più energia (meno con la Resistenza alta).`,
+`Sui lanci lunghi, il giocatore che corre al punto d’arrivo ha una freccia, un cerchio e una barra di energia. <b>Tieni premuto lo schermo</b> (o il pulsante col fulmine in basso a destra) per farlo <b>scattare</b>: va più veloce ma consuma più energia (meno con la Resistenza alta).`,
 `I compagni si regolano su chi lancia: con un lanciatore che non spara partono pochi tagli lunghi, con uno da tutto campo ne partono di più e più lontano.`],
-tip:`Uno scatto sprecato stanca il giocatore per il resto del punto: usalo solo quando il disco è davvero contendibile.`},
+tip:`Uno scatto sprecato stanca il giocatore per il resto della meta: usalo solo quando il disco è davvero contendibile.`},
 {id:'att-prese',t:'Prese, duelli e tuffi',b:[
-`Una presa facile riesce quasi sempre; diventa difficile se il disco arriva al limite della portata, in corsa, con un difensore addosso, su un hammer o quando si è stanchi. Conta la statistica <b>Presa</b> di chi riceve.`,
+`Una presa facile riesce quasi sempre. Diventa difficile se il disco arriva al limite della portata, in corsa, con un difensore addosso, su un hammer o quando si è stanchi. Conta la statistica <b>Presa</b> di chi riceve.`,
 `Nei duelli contano salto, posizione, chi arriva prima e le mani di chi riceve. L’Agilità decide quanto in fretta si frena e si cambia direzione.`,
 `Il <b>tuffo</b> scatta da solo se il disco cade appena oltre la portata. Nei duelli in aria e nei tuffi <b>tocca quando l’indicatore è nel verde</b> per avere un bonus.`],
 tip:`Gli avversari sfiniti hanno una goccia di sudore: è lì che conviene cercare il duello.`},
-{id:'att-stall',t:'Stall, serie e momenti decisivi',b:[
-`Quando un difensore ti marca conta fino a 10: lo vedi scritto in alto («Stall 3»…) e, da 6, anche sopra chi ha il disco. A 9 c’è l’<b>ULTIMO LANCIO</b>, a 10 perdi il disco. Se il numero sale, passa subito, anche corto (o chiama il timeout: vedi «Timeout, half time e pausa»).`,
-[`<b>Serie positiva</b>: tanti lanci riusciti di fila accendono un alone rosso e i lanci vengono un po’ meglio, finché sbagli.`,`<b>Serie negativa</b>: due errori di fila accendono un alone azzurro e i lanci vengono un po’ peggio, finché ne completi due.`,`<b>MATCH POINT</b> a un punto dalla vittoria, <b>UNIVERSE POINT</b> se lo sono entrambe.`]],
+{id:'att-stall',t:'Stall e momenti decisivi',b:[
+`Quando un difensore ti marca, il conteggio parte: lo vedi in alto («Stall 3») e, da 6, anche sopra chi ha il disco. A 9 c’è l’<b>ULTIMO LANCIO</b>, a 10 perdi il disco. Se il numero sale, passa subito, anche corto (o chiama il timeout: vedi «Timeout, intervallo e pausa»).`,
+[`<b>Serie positiva</b>: tanti lanci riusciti di fila accendono un alone rosso e i lanci vengono un po’ meglio, finché sbagli.`,
+`<b>Serie negativa</b>: due errori di fila accendono un alone azzurro e i lanci vengono un po’ peggio, finché ne completi due.`,
+`<b>MATCH POINT</b> a una meta dalla vittoria, <b>UNIVERSE POINT</b> se lo sono entrambe.`]],
 tip:`Con lo stall alto non cercare il lancio perfetto: uno scarico corto vale più di un huck forzato.`},
 {id:'att-vento',t:'Vento, pioggia e neve',b:[
 `Ogni partita ha il suo <b>vento</b> (calma, brezza, vento, vento forte), indicato in alto a destra con una freccia. Sposta il disco tanto più quanto più resta in aria: i passaggi corti e tesi quasi non lo sentono, spari e hammer sì. Con il vento alle spalle si lancia più lungo, controvento meno; a ogni meta si cambia campo e si cambia verso.`,
@@ -98,12 +115,12 @@ tip:`In carriera il meteo si legge nella schermata Partita prima di giocare: con
 ]});
 
 TUT.push({id:'dif',t:'In partita: difesa',sub:'Difesa automatica o manuale, handblock, tuffo, intercetti e Callahan.',
-intro:'Come difendere in modo semplice (da soli o a mano) e come far scattare le giocate che ribaltano il punto.',
+intro:'Come difendere (da soli o a mano) e come far scattare le giocate che ribaltano la meta.',
 les:[
 {id:'dif-modi',t:'Difesa automatica o manuale',w:'Impostazioni o Pausa',b:[
 `Hai tre modi di difendere:`,
 [`<b>Automatica</b> (predefinita): i tuoi difendono da soli seguendo lo schema scelto. Tu scegli la marcatura con il pulsante <b>Marcatura</b> e, quando vuoi, tocchi <b>Salta</b> (Invio, Y sul controller): il possesso avversario si gioca in un istante e una fascia ti dice com’è finito.`,
-`<b>Manuale</b>: guidi tu un difensore (anello azzurro); se non tocchi nulla marca da solo.`,
+`<b>Manuale</b>: guidi tu un difensore (con l’anello azzurro); se non tocchi nulla marca da solo.`,
 `<b>Saltata</b>: ogni possesso avversario si risolve subito.`],
 `Si cambia da Impostazioni › Partita (le tre modalità affiancate) o dalla Pausa. In automatica ogni tanto arriva un <b>momento a tempo</b>: un tuffo (il gioco rallenta: tocca quando il cerchio si chiude) o un duello in salto.`],
 tip:`Hai poco tempo? «Difesa: automatica» più «Salta» ti fa giocare solo l’attacco.`},
@@ -112,7 +129,7 @@ tip:`Hai poco tempo? «Difesa: automatica» più «Salta» ti fa giocare solo l�
 `Quando l’avversario lancia, il controllo passa da solo al difensore che arriva prima al punto d’arrivo: portalo lì per intercettare o contendere il disco.`,
 `Il pulsante <b>Marcatura</b> (tasto F) sceglie tra:`,
 [`<b>Contenimento</b>: dietro all’uomo, protegge il profondo.`,`<b>Anticipo</b>: davanti all’uomo, toglie i passaggi corti ma rischia sui lanci lunghi. L’anello diventa arancione.`]],
-tip:`Contro un attacco che spara tanti huck scegli il contenimento; contro uno che gioca corto e paziente l’anticipo.`},
+tip:`Contro un attacco che spara tanti huck scegli il contenimento; contro uno che gioca corto e paziente, l’anticipo.`},
 {id:'dif-block',t:'L’handblock',b:[
 `Il marcatore può bloccare il lancio con la mano proprio mentre parte, soprattutto se il lancio passa nel <b>cono rosso</b> (il lato che chiude).`,
 `In difesa manuale, quando l’avversario sta per lanciare, sul tuo marcatore compare un <b>cerchio che si stringe</b>: premi il pulsante a destra (la mano) quando arriva sull’anello interno. Il cerchio diventa <b>verde</b> (tempismo giusto), <b>giallo</b> (discreto) o <b>rosso</b> (sbagliato).`,
@@ -124,18 +141,18 @@ tip:`Non premere a caso: il verde conta moltissimo. Aspetta che il cerchio arriv
 `I lanci alti (hammer, huck) scavalcano la difesa a metà volo; la zona chiude invece molte linee basse.`],
 tip:`In difesa automatica, per il tuffo basta toccare lo schermo in un punto qualsiasi quando il cerchio si chiude.`},
 {id:'dif-call',t:'Callahan e dopo il turnover',b:[
-`Se un tuo difensore intercetta e prende il disco <b>nella meta che attacchi tu</b>, segna lui il punto: compare <b>CALLAHAN!</b> in verde. Se succede a te compare in rosso.`,
+`Il <b>Callahan</b> è una meta che si segna in difesa: se un tuo difensore intercetta e prende il disco <b>nella meta che attacchi tu</b>, segna lui. Compare <b>CALLAHAN!</b> in verde (in rosso se succede a te).`,
 `Dopo un turnover il giocatore più vicino corre a raccogliere il disco e si riparte da lì (se il disco è uscito, dal punto in cui ha lasciato il campo).`],
 tip:`Vicino alla tua meta, con un difensore addosso, un passaggio corto e sicuro vale più di un lancio rischioso.`}
 ]});
 
-TUT.push({id:'sch',t:'Schemi e gestione della partita',sub:'Gli schemi d’attacco e di difesa, i cambi, il timeout, l’half time, la simulazione.',
+TUT.push({id:'sch',t:'Schemi e gestione della partita',sub:'Gli schemi d’attacco e di difesa, i cambi, il timeout, l’intervallo, la simulazione.',
 intro:'Gli schemi decidono dove si mettono i giocatori; la gestione della partita decide quando cambiarli.',
 les:[
 {id:'sch-menu',t:'Il menu Schemi',w:'In partita › Schemi (a inizio meta)',b:[
-`A inizio meta tocca <b>Schemi</b> per scegliere attacco e difesa; se non lo fai restano quelli di prima. Ogni schema ha una descrizione con punti forti e deboli. Accanto trovi <b>Cambi</b> e <b>Simula meta</b>.`,
-`Ogni schema ha un <b>controgioco</b>: nessuno vince sempre. Impara quale schema batte quale difesa e cambia quando vedi che non funziona.`,
-`Se ripeti lo stesso schema, la difesa lo <b>impara</b>: ti marca più stretta e anticipa i tagli, e smarcarsi diventa difficile. Cambiare schema la manda di nuovo a zero.`],
+`A inizio meta tocca <b>Schemi</b> per scegliere come attaccare e come difendere; se non lo fai restano quelli di prima. Ogni schema ha una descrizione con punti di forza e punti deboli. Accanto trovi <b>Cambi</b> e <b>Simula meta</b>.`,
+`Nessuno schema vince sempre: ognuno ha il suo <b>controgioco</b>. Impara quale schema batte quale difesa e cambia quando vedi che non funziona.`,
+`Se ripeti lo stesso schema, la difesa lo <b>impara</b>: ti marca più stretta e anticipa i tagli, e smarcarsi diventa difficile. Cambiando schema riparte da zero.`],
 tip:`Hai segnato con uno schema? Ripeterlo funziona finché la difesa non lo riconosce: alterna.`},
 {id:'sch-att',t:'Gli schemi d’attacco',b:[
 [`<b>Verticale</b>: fila al centro; uno viene sotto sul lato aperto, uno va lungo sull’altro. Forte contro l’uomo, soffre la zona.`,
@@ -143,7 +160,7 @@ tip:`Hai segnato con uno schema? Ripeterlo funziona finché la difesa non lo ric
 `<b>Esagono</b>: tutti spaziati, molti tagli corti. Buono contro gli aiuti, la zona lo chiude.`,
 `<b>Stack laterale</b>: i cutter in fila su un lato lasciano mezzo campo libero per gli isolamenti. Solido contro l’uomo, meno contro la zona.`,
 `<b>Weave</b>: tre handler che si passano il disco in diagonale correndosi davanti. Guadagna metri contro la zona; contro gli aiuti si complica.`,
-`<b>T1</b>: schema a sequenza, il più efficace: 3 handler dietro e 4 cutter davanti, che eseguono i movimenti tanto meglio quanto è alta la loro Visione (con Visione alta, esattamente come disegnato). Se lo ripeti, la difesa lo riconosce.`],
+`<b>T1</b>: schema a sequenza, il più efficace: 3 handler dietro e 4 cutter davanti. Eseguono i movimenti tanto meglio quanto è alta la loro Visione (con Visione alta, esattamente come disegnato). Se lo ripeti, la difesa lo riconosce.`],
 `Verticale, Orizzontale, Weave e T1 partono con un’<b>apertura</b> a ogni ripresa del gioco (dopo il pull o un turnover); se il ricevitore previsto è marcato si gioca libero. Vicino alla meta parte da solo l’attacco in meta, con tagli a L.`],
 tip:`Contro la zona: Orizzontale o Weave. Contro l’uomo: Verticale o Stack laterale. Contro gli aiuti: Esagono.`},
 {id:'sch-dif',t:'Gli schemi di difesa',b:[
@@ -151,29 +168,29 @@ tip:`Contro la zona: Orizzontale o Weave. Contro l’uomo: Verticale o Stack lat
 `<b>Uomo, forza dentro</b>: il marcatore chiude la linea, i lanci vanno verso il centro.`,
 `<b>Zona a coppa</b>: tre sul disco, quattro dietro a chiudere gli spazi. Ferma Verticale ed Esagono ma subisce Orizzontale, T1 e i lanci alti.`,
 `<b>Uomo con aiuti</b>: chi marca lontano dal disco scala sulle linee di passaggio. Più intercetti, ma un taglio improvviso trova il difensore in ritardo.`]],
-tip:`Una zona è ottima contro un attacco che gioca corto, ma un huck ben fatto la batte sempre.`},
+tip:`La zona è ottima contro un attacco che gioca corto, ma un huck ben fatto la batte sempre.`},
 {id:'sch-ia',t:'Come ragionano gli avversari',b:[
 `Ogni squadra ha uno <b>stile suo</b> (gioco lungo o corto, ritmo alto o possesso paziente, difesa in anticipo o di contenimento, aiuti). Lo leggi nel menu Schemi e, in carriera, nella schermata Partita.`,
-[`L’avversario cerca i <b>mismatch</b> (il tuo giocatore più lento o più basso del suo) e sceglie il lancio con più probabilità di arrivare.`,
+[`Cerca i <b>mismatch</b> (il tuo giocatore più lento o più basso del suo) e sceglie il lancio con più probabilità di arrivare.`,
 `<b>Ricorda gli schemi che usi</b> e, dal Medio in su, sceglie sempre più spesso il controgioco di quello che ripeti.`,
-`Se completi tanti passaggi corti passa all’anticipo; se lanci spesso lungo al contenimento.`,
+`Se completi tanti passaggi corti passa all’anticipo; se lanci spesso lungo, al contenimento.`,
 `Cambia i giocatori stanchi e mette il difensore migliore su chi gli fa più male.`],
-`Più sale la difficoltà, meglio l’avversario decide e reagisce; dal Medio in su i suoi giocatori hanno anche qualche punto in più nelle statistiche, e in Estrema parecchi.`],
-tip:`Cambia schema ogni due o tre mete, anche se funziona: renderai l’IA meno efficace.`},
+`Più sale la difficoltà, meglio l’avversario decide e reagisce. Dal Medio in su i suoi giocatori hanno anche qualche punto in più nelle statistiche, e in Estrema parecchi.`],
+tip:`Cambia schema ogni due o tre mete, anche se funziona: renderai l’avversario meno efficace.`},
 {id:'sch-cambi',t:'Cambi, energia e infortuni',b:[
 `Ogni scatto consuma <b>energia</b> e un giocatore stanco è più lento. Sotto i tuoi giocatori compare una barretta (gialla, arancione, rossa) quando l’energia cala.`,
 `Nella <b>Squadra</b> scegli le due linee (ATT e DIF, vedi «Le linee ATT e DIF»). Con i «cambi intelligenti» chi è stanco esce da solo per una meta; a inizio meta puoi sempre cambiare a mano con <b>Cambi</b>.`,
 `Un giocatore molto stanco rischia di <b>infortunarsi</b> a fine meta: compare un pannello per scegliere chi entra. L’infortunato salta da 1 a 3 partite e non può né giocare né allenarsi. Sotto 35 di condizione un giocatore è «molto affaticato» e rischia di più.`],
 tip:`Ruota i giocatori: un titolare fresco rende più di una stella sfinita.`},
-{id:'sch-tempo',t:'Timeout, half time e pausa',b:[
+{id:'sch-tempo',t:'Timeout, intervallo e pausa',b:[
 [`<b>Timeout</b>: uno a partita, solo con il disco in mano (tasto in basso a sinistra). Azzera lo stall, fa recuperare un po’ di energia e permette di cambiare schema.`,
-`<b>Half time</b>: a metà dei punti (4 su 7, 6 su 11, 8 su 15) compare «Half time» con Schemi, Cambi e Continua. Chi ha iniziato in difesa riprende in attacco.`,
-`<b>Pausa</b> (tasto «II» in alto a destra): riprendi, sospendi (in carriera), regoli audio, stacchi, difesa e schermo intero, apri la guida o abbandoni.`],
+`<b>Intervallo</b>: quando una squadra segna la 4ª meta (la 6ª su 11, l’8ª su 15) compare «Intervallo» con Schemi, Cambi e Continua. Chi aveva iniziato in difesa riprende in attacco.`,
+`<b>Pausa</b> (tasto «II» in alto a destra): riprendi, sospendi (in carriera), regoli audio, salti e tuffi, difesa e schermo intero, apri la guida o abbandoni.`],
 `<b>Attenzione</b>: in carriera, nel torneo e in Ultimate Team abbandonare è una <b>sconfitta a tavolino</b>. Per fermarti usa <b>Sospendi e continua più tardi</b>: la partita si salva com’è e riparte con «Riprendi la partita». Se chiudi il gioco durante una partita di carriera, la sospensione si salva da sola.`],
 tip:`Usa il timeout quando stai per perdere il disco per stall o nel momento decisivo, non a caso.`},
 {id:'sch-sim',t:'Simula meta, Salta e durata',b:[
-`<b>Simula meta</b> (a inizio meta) gioca la meta in un istante con l’IA per entrambe le squadre, con le stesse statistiche, la stessa fatica e gli stessi schemi; i giocatori fanno la stessa esperienza. <b>Salta</b> (in difesa automatica) fa giocare in un istante solo il possesso avversario.`,
-`La <b>durata</b> si sceglie nelle Opzioni della carriera, nella partita veloce e nel torneo: <b>Arcade</b> (7 punti), <b>Competitiva</b> (11), <b>Lunga</b> (15). In Ultimate Team si gioca sempre ai 7. Le partite lunghe non fanno crescere di più.`,
+`<b>Simula meta</b> (a inizio meta) fa giocare la meta al computer per entrambe le squadre, con le stesse statistiche, la stessa fatica e gli stessi schemi; i giocatori fanno la stessa esperienza. <b>Salta</b> (in difesa automatica) fa giocare in un istante solo il possesso avversario.`,
+`La <b>durata</b> si sceglie nelle Opzioni della carriera, nella partita veloce e nel torneo: <b>Arcade</b> (7 mete), <b>Competitiva</b> (11), <b>Lunga</b> (15). In Ultimate Team si gioca sempre a 7. Le partite lunghe non fanno crescere di più.`,
 `La <b>difficoltà</b> va da Facile a Estrema: più sale, meno aiuti grafici vedi e più forte è l’avversario.`],
 tip:`Per le partite senza storia simula; per i derby, le finali e quando c’è qualcosa in palio gioca tu.`}
 ]});
@@ -346,7 +363,7 @@ tip:`La Partita veloce in Estrema è il banco di prova migliore quando ti sembra
 [`<b>Negozio</b>: il pacchetto normale (5 carte) e i pacchetti <b>Handler</b> e <b>Cutter</b> (3 carte dello stesso ruolo) per coprire il ruolo che ti manca.`,
 `<b>Pacchetti premio</b>: superando i turni ricevi pacchetti sempre più rari (bronzo, argento, oro, platino) e chi vince il Super pacchetto arcobaleno. Più è raro, migliori sono le carte.`,
 `<b>Potenziamenti</b>: al massimo 4 per carta (2 per linea): Tiro, Atletico, Difesa, Mani e testa. Chi gioca da titolare cresce anche da solo.`,
-`I <b>doppioni</b> si scartano per recuperare gettoni; gli <b>obiettivi</b> danno altri gettoni. Si gioca sempre ai 7 punti.`]],
+`I <b>doppioni</b> si scartano per recuperare gettoni; gli <b>obiettivi</b> danno altri gettoni. Si gioca sempre a 7 mete.`]],
 tip:`Potenzia linee diverse: la squadra è più completa e meno prevedibile.`},
 {id:'mod-real',t:'Real player',b:[
 `In Ultimate Team scegli «Real player» invece di «Computer»: sfidi le squadre di altri giocatori, senza che siano online nello stesso momento (la loro squadra la guida l’IA, sempre a livello Difficile). La squadra è separata da quella del torneo e si parte da un pacchetto di 10 giocatori.`,
@@ -371,7 +388,7 @@ les:[
 [`Lancia <b>dove il compagno corre</b>, non dove si trova.`,
 `Se la croce rossa lampeggia, <b>cambia bersaglio</b> o lancia alto.`,
 `Con lo stall alto, uno <b>scarico corto</b> vale più di un huck forzato.`,
-`Il <b>rovesciato</b> (doppio tocco) passa sopra il marcatore: usalo nel cono rosso.`,
+`Il <b>lancio alto</b> (doppio tocco) passa sopra il marcatore: usalo nel cono rosso.`,
 `Con <b>vento forte</b> accorcia i lanci e usa passaggi tesi.`,
 `<b>Isola</b> il tuo cutter più veloce (tieni premuto) contro il marcatore più lento.`,
 `Alterna gli <b>schemi</b>: l’IA ricorda quelli che ripeti.`,
