@@ -13,11 +13,11 @@ const POS_NAME={H:'Handler',C:'Cutter',D:'Defender'};
 /* ---- TRATTI: pochi, con effetti reali ma moderati. Circa un giocatore su quattro ne ha uno, legato a cio' che sa fare meglio ---- */
 const TRAITS={deep:['Deep Threat','Sui lanci lunghi parte prima e arriva più in alto'],break:['Break Specialist','Il marcatore lo disturba la metà quando lancia sul lato chiuso'],
   general:['Field General','Con lui al disco i compagni tagliano con i tempi giusti e lo stall pesa meno'],lock:['Lockdown','Segue il suo uomo più da vicino e vince più duelli in difesa'],
-  sky:['Sky Dominator','Più forte nei duelli in aria'],hands:['Safe Hands','Perde molte meno prese difficili'],explosive:['Explosive Cutter','Accelera e cambia direzione più in fretta'],iron:['Ironman','Si stanca molto meno']};
+  sky:['Sky Dominator','Più forte nei duelli in aria'],hands:['Safe Hands','Perde molte meno prese difficili'],explosive:['Explosive Cutter','Accelera e cambia direzione più in fretta'],iron:['Ironman','Si stanca molto meno'],poser:['Poser','Con il disco in mano, più lo stall sale più tutte le sue statistiche aumentano']};
 function traitFor(name,st,role){
   if(hashStr('trait|'+name)%100>=42)return null;
   const m=KEYS.reduce((a,k)=>a+st[k],0)/KEYS.length,h=role==='H';
-  const c=[['deep',(st.vel+st.sal)/2-m-(h?6:0)],['break',st.buc-m-(h?2:8)],['general',st.vis-m-(h?2:9)],['lock',st.dif-m-2],['sky',st.sal-m-3],['hands',st.pre-m-2],['explosive',(st.sca+st.agi)/2-m-2],['iron',st.res-m-3]].sort((a,b)=>b[1]-a[1]);
+  const c=[['deep',(st.vel+st.sal)/2-m-(h?6:0)],['break',st.buc-m-(h?2:8)],['general',st.vis-m-(h?2:9)],['lock',st.dif-m-2],['sky',st.sal-m-3],['hands',st.pre-m-2],['explosive',(st.sca+st.agi)/2-m-2],['iron',st.res-m-3],['poser',(st.lan+st.spa)/2-m-(h?3:12)]].sort((a,b)=>b[1]-a[1]);
   return c[0][1]>=2?c[0][0]:null;
 }
 const hasT=(p,t)=>!!p&&p.trait===t;

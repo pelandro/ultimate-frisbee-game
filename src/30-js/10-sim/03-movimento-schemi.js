@@ -168,6 +168,7 @@ function dangerMark(atk,def){
   cur.mark=best.mark;best.mark=ta;G.st.dm[dT]++;
 }
 function placeTeams(rec){
+  poserReset();   // nessuna statistica maggiorata (Poser) resta da un punto all'altro
   G.poss=rec;const d=dirOf(rec),atk=T[rec],def=T[1-rec],pt=1-rec;
   const hx=d>0?EZ:FIELD_L-EZ,px=dirOf(pt)>0?EZ:FIELD_L-EZ;
   G.ref={x:hx,y:MID};

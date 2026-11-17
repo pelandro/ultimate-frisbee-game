@@ -480,6 +480,27 @@ function selfTestPlan(opt){
     return [row('Livelli dell\u2019IA: quattro, con attenzione, reazione, marcatura e scatto che crescono a ogni passo',DIFF_AI.length+' livelli',beh,'Facile, Medio, Difficile, Estrema'),
       row('Bonus di statistiche agli avversari per livello (Facile, Medio, Difficile, Estrema)',gain.map(g=>'+'+g.toFixed(1)).join(', '),ok,DIFF_PLUS.map(v=>'+'+v).join(', ')+' alla media dei 7 in campo')];
   }]);
+  S.steps.push(['Tratto Poser',()=>{
+    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);newGame();placeTeams(0);
+    const p=T[0][0],q=T[0][1],base=p.s,b0=Object.assign({},base),tr0=[p.trait,q.trait];
+    p.trait='poser';q.trait=null;G.holder=p;G.flight=null;G.marker=T[1][0];
+    const at=st=>{G.stallT=st;poserTick();};
+    at(0);const z=p.s===base;                                            // stall a zero: niente cambia
+    at(5);const e5=KEYS.every(k=>Math.abs(p.s[k]-Math.min(99,b0[k]+5*POSER_PT))<1e-9);   // stall 5: +5 a tutte le statistiche
+    const sk5=throwInfo(p,1,0,12).skill;at(0);const sk0=throwInfo(p,1,0,12).skill;
+    at(30);const cap=KEYS.every(k=>Math.abs(p.s[k]-Math.min(99,b0[k]+POSER_MAX))<1e-9);   // oltre il tetto non sale piu'
+    const own=base===p.pzb&&KEYS.every(k=>base[k]===b0[k]);                // l'originale non si tocca mai
+    G.flight={};poserTick();const flying=p.s===base;G.flight=null;       // disco in volo: statistiche di prima
+    at(6);G.holder=null;poserTick();const back=p.s===base&&G.pz.length===0;   // ha lanciato: tornano quelle di prima
+    G.holder=q;G.stallT=8;const sq=q.s;poserTick();const other=q.s===sq&&q.pzb===undefined;   // chi non e' Poser non cambia
+    G.holder=p;G.stallT=6;poserTick();placeTeams(1);const rst=p.s===base&&G.pz.length===0;   // a ogni punto si ricomincia
+    G.holder=p;G.stallT=6;poserTick();restoreForm();const end=p.s===base||p.s===p.b;   // a fine partita (restoreForm) anche
+    p.s=base;p.pzb=null;G.pz=[];G.holder=null;G.stallT=0;G.marker=null;p.trait=tr0[0];q.trait=tr0[1];
+    return [row('Poser: statistiche invariate a stall 0, +'+(5*POSER_PT)+' a tutte a stall 5, tetto +'+POSER_MAX,(z&&e5&&cap)?'sì':'no',z&&e5&&cap,'più sale lo stall, più salgono tutte le statistiche'),
+      row('Poser: il lancio a stall 5 è più preciso di quello a stall 0 (abilità di lancio)',sk5.toFixed(1)+' contro '+sk0.toFixed(1),sk5>sk0+3,'almeno +3'),
+      row('Poser: le statistiche tornano quelle di prima dopo il lancio, a disco in volo, a ogni punto e a fine partita; l\u2019originale non si modifica',(own&&flying&&back&&rst&&end)?'sì':'no',own&&flying&&back&&rst&&end),
+      row('Chi non è Poser non cambia mai',other?'sì':'no',other)];
+  }]);
   S.steps.push(['Prestazioni',()=>{
     const gt=S.base?avg(S.base.map(m=>m.time)):0,k=gt/Math.max(0.001,S.ms/1000);
     return [row('Velocità di simulazione',Math.round(S.ms)+' ms a partita ('+Math.round(k)+' volte il tempo reale)',k>=15,'almeno 15 volte')];
