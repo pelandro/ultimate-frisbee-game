@@ -28,7 +28,8 @@ function utDisc(q,n,role){
   if(q>=5){for(const [x,y] of [[60,19],[60,77]])s+=utStar(x,y,5,c[3]);s+=utStar(98,30,3,'#fff')+utStar(22,66,3,'#fff');}   // scintille: platino e oltre
   if(q===3)s+=utStar(100,32,3,'#fff');
   s+=`<text x="60" y="${role?47:53}" text-anchor="middle" font-size="26" font-weight="900" fill="#fff" stroke="#000" stroke-width="5" paint-order="stroke" font-family="inherit">${n}</text>`;
-  if(role)s+=`<circle cx="60" cy="64" r="8" fill="${role==='H'?'#ff8a3d':'#3ddc97'}" stroke="#000" stroke-width="2.5"/><text x="60" y="68" text-anchor="middle" font-size="11" font-weight="900" fill="#000" font-family="inherit">${role}</text>`;
+  if(role==='E')s+=`<circle cx="60" cy="64" r="10" fill="#ff6fb5" stroke="#000" stroke-width="2.5"/><path d="M55 57h4v5h3l4 2v3H55z" fill="#000"/><rect x="56" y="58" width="2" height="4" fill="#fff"/><rect x="55" y="68" width="11" height="1.6" fill="#000"/>`;   // pacchetto equipaggiamento: uno scarpino nel distintivo
+  else if(role)s+=`<circle cx="60" cy="64" r="8" fill="${role==='H'?'#ff8a3d':'#3ddc97'}" stroke="#000" stroke-width="2.5"/><text x="60" y="68" text-anchor="middle" font-size="11" font-weight="900" fill="#000" font-family="inherit">${role}</text>`;
   return s+'</svg>';
 }
 // ---- il Negozio: tre pacchetti, con il prezzo per [torneo contro il computer, Real player] (i gettoni dell'una e dell'altra squadra sono separati) ----
@@ -37,7 +38,8 @@ function utDisc(q,n,role){
 const UT_SHOP=[
   {k:'std',n:'Pacchetto',cards:5,code:1,q:1,role:'',cost:[90,UTO_PACK],d:'5 carte: handler, cutter e defender. Più sono forti, più sono rare.'},
   {k:'han',n:'Pacchetto Handler',cards:3,code:131,q:1,role:'H',cost:[65,90],d:'3 carte, tutte Handler: per costruire il tuo gioco al disco.'},
-  {k:'cut',n:'Pacchetto Cutter',cards:3,code:231,q:1,role:'C',cost:[65,90],d:'3 carte, tutte Cutter: per tagliare e correre in campo.'}
+  {k:'cut',n:'Pacchetto Cutter',cards:3,code:231,q:1,role:'C',cost:[65,90],d:'3 carte, tutte Cutter: per tagliare e correre in campo.'},
+  {k:'eq',n:'Pacchetto equipaggiamento',cards:2,code:321,q:1,role:'E',cost:[120,160],d:'2 accessori diversi che potenziano tutta la squadra. I doppioni diventano gettoni.'}   // equipaggiamento: 10-sim/25-ut-equipaggiamento.js
 ];
 let shMsg='';
 function renderShop(){

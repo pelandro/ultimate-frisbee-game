@@ -58,7 +58,7 @@ const uoRows=j=>Object.keys(j||{}).map(id=>uoRow(id,j[id])).filter(Boolean);
 // carica la tua squadra e i tuoi punti (se un risultato non e' ancora partito, parte adesso)
 async function uoSync(){
   if(!UOP||UT.sel.length!==7)return null;
-  const pk=utoPack(UT.col,UT.sel);
+  const pk=utoPack(UT.col.map(p=>eqApply(p,UT.eq)),UT.sel);   // online la squadra va con l'equipaggiamento che indossi: e' quella che gli altri affrontano
   if(UOP.fresh){await uoDb('PUT','ut/players/'+UOP.id,uoNode(pk.pw));UOP.fresh=false;UOP.dirty=false;}
   else{
     const patch={n:UOP.name,pw:pk.pw,u:Date.now()};
@@ -89,7 +89,7 @@ function uoLaunch(o,ros){
   if(hasCareer()){persist();QM.bak=JSON.stringify(SV);}else QM.bak=null;   // la carriera resta com'e': viene rimessa alla fine
   QM.on=true;UT.on=true;UO.on=true;UO.opp=o;
   UOP.op=o.p;uoSaveP();   // se il gioco si chiude prima della fine, alla prossima apertura conta come sconfitta (come abbandonare)
-  setSquad(UT.col);setLineup(UT.sel.slice());
+  setSquad(UT.col.map(p=>eqApply(p,UT.eq)));setLineup(UT.sel.slice());
   applyRoster(ros);oppBoost(DIFF_PLUS[UTO_DIFF]);
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;
@@ -122,7 +122,7 @@ function uoRecord(win){
   UT.coins+=c.base+c.bonus;if(win)UT.stat.w++;
   const grown=utGrowCards(),pk=uoMiles();utSave();
   const msg=`Real player · ${win?'vittoria':'sconfitta'} contro ${UO.opp.n} (${UO.opp.p} punti): ${real>=0?'+':''}${real} punti, ora ne hai ${np}. +${c.base+c.bonus} gettoni${c.bonus?` (${c.bonus} in più perché l’avversario aveva più punti di te)`:''}.`
-    +(pk?` Traguardo dei ${utoMilePts(UT.ms)} punti raggiunto: ${pk>1?pk+' pacchetti premio':'un pacchetto premio'} da aprire${UT.ms===pk?', e da ora puoi potenziare le carte':''}.`:'')
+    +(pk?` Traguardo dei ${utoMilePts(UT.ms)} punti raggiunto: ${pk>1?pk+' coppie di pacchetti premio (giocatori e accessori)':'un pacchetto di giocatori e uno di accessori'} da aprire${UT.ms===pk?', e da ora puoi potenziare le carte':''}.`:'')
     +(grown.length?` ${grown.length===1?grown[0]+' è cresciuto':grown.length+' carte sono cresciute'} giocando.`:'');
   UO.msg=msg;uoPush();return msg;
 }
@@ -130,6 +130,7 @@ function uoRecord(win){
 function uoMiles(){
   if(!UOP||!UT.rp)return 0;
   let n=0;while((UT.ms|0)<utoMiles(UOP.p)){UT.ms=(UT.ms|0)+1;UT.packs.push(utoMilePack(UT.ms));n++;}
+  while((UT.mse|0)<(UT.ms|0)){UT.mse=(UT.mse|0)+1;UT.packs.push(utoMileEq(UT.mse));}   // e gli accessori dello stesso traguardo (anche quelli gia' raggiunti prima che esistesse l'equipaggiamento)
   return n;
 }
 // ingresso in Real player: si carica la sua squadra (quella del torneo resta salvata com'e') e, la prima volta, arriva il pacchetto iniziale
@@ -153,7 +154,7 @@ function renderMiles(){
   for(let i=N;i>=1;i--){
     const pk=utoMilePack(i),q=utPkQ(pk),n=utPackSize(pk),pt=utoMilePts(i),st=i<=got?'done':(i===nx?'next':'');
     if(!me&&p>=pt)h+=you();
-    h+=`<div class="urmr ${st}">${utDisc(q,n,'')}<span><b>${pt} punti</b><small>${q===6?'Super pacchetto':UT_PQN[q]} · ${n} giocatori${i===1?' · potenziamenti':''}</small></span><em>${st==='done'?'✓ ottenuto':(st==='next'?'mancano '+Math.max(0,pt-p):'')}</em></div>`;
+    h+=`<div class="urmr ${st}">${utDisc(q,n,'')}<span><b>${pt} punti</b><small>${q===6?'Super pacchetto':UT_PQN[q]} · ${n} giocatori + ${utPackSize(utoMileEq(i))} accessori${i===1?' · potenziamenti':''}</small></span><em>${st==='done'?'✓ ottenuto':(st==='next'?'mancano '+Math.max(0,pt-p):'')}</em></div>`;
   }
   if(!me)h+=you();
   h+=got>=N?`<p class="urmf">Poi un Super pacchetto ogni ${UTO_MILE} punti: il prossimo a ${utoMilePts(got+1)}.</p>`:'';
@@ -171,6 +172,7 @@ function renderUtReal(){
   $('urPackS').textContent=pend?`${utPackSize(UT.packs[0])} giocatori · ${utPackTip(UT.packs[0])}`:'';
   $('urTeam').classList.toggle('hidden',!UT.col.length);
   $('urTeamS').textContent=`${UT.col.length} giocatori · titolari ${UT.sel.length}/7`;
+  $('urEquip').classList.toggle('hidden',!UT.col.length);$('urEquipS').textContent=eqSubTxt();
   $('urShop').classList.toggle('hidden',!UT.col.length);
   renderMiles();
   $('urGoal').textContent=UT.col.length?`Vittoria ${UTO_COIN_W} gettoni (fino a +${UTO_UPSET[0][1]} se l’avversario ha più punti), sconfitta ${UTO_COIN_L}.`:'';

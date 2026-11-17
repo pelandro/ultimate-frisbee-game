@@ -1,0 +1,31 @@
+/* Ultimate Team · Equipaggiamento: manichino al centro, tre posti per lato, a destra la rarita' da indossare e i colori della divisa */
+.eqwrap{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.eqdoll{flex:1 1 360px;display:flex;align-items:center;justify-content:center;gap:10px;padding:10px;background:#141a36;border:3px solid #000;box-shadow:4px 4px 0 #000}
+.eqslots{display:flex;flex-direction:column;gap:10px;flex:0 1 150px;min-width:0}
+.eqfig{flex:0 0 auto;width:140px;align-self:center}
+.eqfig svg{display:block;width:100%;height:auto;image-rendering:pixelated}
+.eqs{display:flex;align-items:center;gap:6px;text-align:left;padding:5px 6px;background:#1f2748;color:#fff;border:3px solid #3b4470;box-shadow:3px 3px 0 #000;cursor:pointer;font:inherit;min-height:58px}
+.eqs svg{flex:0 0 auto}
+.eqs span{display:flex;flex-direction:column;min-width:0}
+.eqs b{font-size:12px;line-height:1.15}.eqs small{font-size:10.5px;opacity:.85}
+.eqs.com,.eqs.rar,.eqs.epi{border-color:var(--rc)}
+.eqs.epi{box-shadow:3px 3px 0 #000,0 0 9px rgba(179,107,255,.55)}
+.eqs.on{outline:3px solid var(--gold);outline-offset:1px}
+.eqside{flex:1 1 280px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.eqpick,.eqkit{padding:10px;background:#141a36;border:3px solid #000;box-shadow:4px 4px 0 #000}
+.eqph{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.eqrs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.eqr{flex:1 1 90px;display:flex;align-items:center;gap:6px;padding:5px 6px;background:#1f2748;color:#fff;border:3px solid var(--rc);box-shadow:3px 3px 0 #000;font:inherit;cursor:pointer;text-align:left}
+.eqr span{display:flex;flex-direction:column}.eqr b{font-size:12px}.eqr small{font-size:10px;opacity:.85;white-space:nowrap}
+.eqr.on{background:#3b4d99;outline:3px solid var(--gold);outline-offset:1px}
+.eqr:disabled{opacity:.45;cursor:default;border-color:#3b4470}
+.eqkr{margin-top:6px}
+.eqkr small{display:block;font-size:11px;margin-bottom:3px;opacity:.85}
+.eqsws{display:flex;flex-wrap:wrap;gap:4px}
+.eqsw{width:29px;height:28px;border:3px solid #000;box-shadow:2px 2px 0 #000;cursor:pointer;padding:0}
+.eqsw.on{outline:3px solid var(--gold);outline-offset:1px}
+/* carta di un accessorio nel pacchetto */
+.ucard.eqc{gap:2px}
+.ucard.eqc .eqci{display:block;margin:2px auto}
+html[data-ew="xs"] .eqslots{flex-basis:118px}html[data-ew="xs"] .eqfig{width:110px}html[data-ew="xs"] .eqs small{display:none}
+.eqpat{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.eqpat .sg{min-height:30px;padding:4px 8px;font-size:12px}
