@@ -21,7 +21,7 @@ permissions:
 jobs:
   verifica:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20   # di solito 2-5 minuti; la prova dei punti fissi del bilanciamento ne aggiunge circa uno
     permissions:
       contents: read
       pull-requests: read
@@ -70,6 +70,13 @@ jobs:
       - name: Verifica completa
         if: steps.gia.outputs.gia != 'si'
         run: npm test
+      - name: Punti fissi del bilanciamento (solo se la pull request tocca Overall, economia, strutture o crescita)
+        # carriere simulate nel gioco vero: economia di tutti i campionati e crescita dalla Serie C (tools/bilanci/punti-fissi.js). Lenta, quindi solo
+        # quando serve: tools/test-bilanci.js confronta i file cambiati con main e se nessuno riguarda gli equilibri esce subito
+        if: steps.gia.outputs.gia != 'si' && github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+          node tools/test-bilanci.js --se-serve FETCH_HEAD
       - name: Costruzione del gioco
         if: steps.gia.outputs.gia != 'si'
         run: npm run build
