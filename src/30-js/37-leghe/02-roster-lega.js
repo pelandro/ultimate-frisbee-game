@@ -18,7 +18,7 @@ const LN_HOMONYM=US_HOMONYM;
 // LN_DUAL = Overall del giocatore in Europa: il piu' alto tra il valore europeo e quello americano (Fantasy dei Nationals), ma l'America non lo alza di piu' di 5 punti e
 // nessuno supera 92 tranne De Marrée (97: il migliore del mondo) (un solo torneo non fa un fuoriclasse: la regola e' la stessa di US_REP). McHale e Hill sono stati assegnati ai Clapham per scelta del progetto. I quattro che erano stelle del mercato alzano anche il loro Overall in STARS.
 const LN_OUT=new Set(['Orion Cable'].map(usNameKey));
-const LN_DUAL={'Lander Decraene':88,'Sofiène Bontemps':88,'Louis Betrancourt':83,'Gael Ancelin':82,'Daan De Marrée':97,'David Barzasi':89,'Thomas Edmonds':89,'Elliot Bonnet':90,'Connor McHale':84,'Sam Hill':76};
+const LN_DUAL={'Lander Decraene':90,'Sofiène Bontemps':92,'Louis Betrancourt':89,'Gael Ancelin':90,'Daan De Marrée':97,'David Barzasi':92,'Thomas Edmonds':81,'Elliot Bonnet':94,'Connor McHale':90,'Sam Hill':90};   // Overall del foglio di revisione 2026 (00-dati-ovr-2026.js)
 let lnDualMap=null;
 const lnDual=(sur,nm)=>{if(!lnDualMap){lnDualMap={};for(const n in LN_DUAL)lnDualMap[usNameKey(n)]=LN_DUAL[n];}return lnDualMap[usNameKey(nm+' '+sur)]|0;};
 for(const r of STARS)r[4]=Math.max(r[4],lnDual(r[0],r[1]));
@@ -69,7 +69,7 @@ function lnRoster(club,seedStr,opt){
   opt=opt||{};const B=LN_BY[club],P=opt.p!==undefined?opt.p:(opt.low?usStartPow(B.p):B.p),dl=opt.low?Math.max(0,B.p-P):0,rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
   for(const r of STARS)if(LN_STAR_CLUB[usStarKey(r)]===club)specs.push({k:'s',row:r});
   const star=new Set(specs.map(s=>usNameKey(s.row[1]+' '+s.row[0])));   // chi e' gia' una stella non si ripete dalle tabelle
-  const real=(LN_PL[B.lk][club]||[]).filter(r=>{const k=usNameKey(r[1]+' '+r[0]);return !star.has(k)&&!LN_OUT.has(k);}).map(r=>{const ag=lnAgeOf(r[1]+' '+r[0],r[2],r[3]);return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+r[5],fx:lnDual(r[0],r[1])};});
+  const gone=ovrOutSet(club),real=(LN_PL[B.lk][club]||[]).filter(r=>{const k=usNameKey(r[1]+' '+r[0]);return !star.has(k)&&!LN_OUT.has(k)&&!gone.has(k);}).map(r=>{const ag=lnAgeOf(r[1]+' '+r[0],r[2],r[3]);return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+r[5],fx:lnDual(r[0],r[1])};});
   real.sort((a,b)=>(b.fx>0?100:b.base)-(a.fx>0?100:a.base)).slice(0,Math.max(0,20-specs.length)).forEach(s=>specs.push(s));   // una rosa ha al massimo 20 giocatori
   const N=Math.min(20,Math.max(opt.n||16,specs.length)),used=new Set(specs.map(s=>s.row[0]+s.row[1])),pool=LN_POOL[B.lk];
   for(let i=0;specs.length<N;i++){   // riempimento: nomi del paese, ruoli bilanciati (almeno 6 handler), livello decrescente
@@ -99,6 +99,7 @@ function lnRoster(club,seedStr,opt){
     const d=P-rosterPower(out);if(Math.abs(d)<0.35)break;
     off=nFix?clamp(off+d,0,4):clamp(off+d,-8,8);   // con i fissi si puo' solo alzare (se i fissi portano la rosa sopra il club, resta sopra)
   }
+  out=ovrFix(club,out,seedStr,'LN',opt.low);   // rosa del foglio di revisione 2026 (38-ovr/01-applica.js)
   const cnt={};for(const o of out)cnt[o.n]=(cnt[o.n]||0)+1;
   for(const o of out)if(cnt[o.n]>1)o.n=o.sur+' '+(o.label||'?')[0]+'.';   // due compagni con lo stesso cognome: si aggiunge l'iniziale
   return out;

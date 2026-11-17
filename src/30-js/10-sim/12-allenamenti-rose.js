@@ -125,12 +125,12 @@ function realGap(age,r){
 }
 const flavorAge=(fl,rng)=>fl==='u17'?15+Math.floor(rng()*3):(fl==='u20'?17+Math.floor(rng()*3):(fl==='newgen'?17+Math.floor(rng()*5):(fl==='wise'?35+Math.floor(rng()*20):19+Math.floor(rng()*12))));
 function realRoster(rows,seedStr,opt){
-  if(opt.target!==undefined&&opt.off===undefined){   // forza fissata (Serie A e B): si sposta il livello di tutti finche' la media dei 7 migliori e' quella voluta
+  if(opt.target!==undefined&&opt.off===undefined&&!(rows.length&&rows.every(r=>r.ov))){   // se tutti hanno un Overall assegnato non c'e' niente da spostare   // forza fissata (Serie A e B): si sposta il livello di tutti finche' la media dei 7 migliori e' quella voluta
     let off=0,r=null;const o0=Object.assign({},opt,{low:false});
     for(let i=0;i<4;i++){r=realRoster(rows,seedStr,Object.assign({},o0,{off}));const d=opt.target-rosterPower(r);if(Math.abs(d)<0.4)break;off+=d;}
     return opt.low?realRoster(rows,seedStr,Object.assign({},opt,{off})):r;
   }
-  const list=rows.map(r=>({sur:r.sur,nm:r.nm,a:r.a,g:r.g,age:r.age||0,f:!!r.f,gen:false}));
+  const list=rows.map(r=>({sur:r.sur,nm:r.nm,a:r.a,g:r.g,age:r.age||0,f:!!r.f,gen:false,ov:r.ov||0,rl:r.rl||'',ae:!!r.ae,ld:!!r.ld}));   // ov: Overall assegnato (revisione 2026); rl: ruolo noto (H, C o D); ae: eta' stimata; ld: handler della linea di difesa
   const ages=list.map(o=>o.age).filter(Boolean).sort((x,y)=>x-y);
   // GIOCATORI INVENTATI: solo se il roster vero non arriva al minimo (7 per giocare, 9 per la tua squadra). Sono coerenti con i compagni:
   // l'eta' e' quella di un compagno vero (piu' o meno un anno) e il livello e' da riserva, tra il compagno piu' debole e quello a meta' classifica
@@ -157,6 +157,21 @@ function realRoster(rows,seedStr,opt){
     // talento (il massimo raggiungibile): il livello vero piu' un margine che dipende dall'eta' e da una fascia fissata per giocatore (realGap).
     // Prima era il livello piu' 24-36 punti, mai sotto 72: anche un trentenne medio poteva arrivare a 90 e ogni rosa cresceva senza freni
     const gp=realGap(age,mulberry32(hashStr(seedStr+'|tal|'+full))());
+    let disp=sn(o);
+    if(cnt[disp]>1){disp=sn(o)+' '+first(o)[0]+'.';if(used[disp])disp=sn(o)+' '+first(o);}
+    used[disp]=1;
+    // GIOCATORE CON OVERALL ASSEGNATO (o.ov, dalla revisione 2026): statistiche esatte per quel valore (utStats) nel ruolo noto (o.rl) oppure in quello che
+    // dicono le sue statistiche; non seguono lo spostamento della squadra (off). La tua rosa parte un po' meno allenata come gli altri (low). Il potenziale usa lo stesso
+    // margine per eta' dei compagni (realGap), sul suo Overall.
+    if(o.ov){
+      const L=opt.low?o.ov*0.9+5.5:o.ov,rl=o.rl||role,st0=utStats(rl,Math.round(L),mulberry32(hashStr(seedStr+'|ov|'+full)));
+      if(o.ld&&rl==='H')statsLineaDifesa(st0,Math.round(L));
+      const rr=rl==='H'?'H':'C',dd=rl==='H'?0.4:-0.4,tgf=x=>clamp(Math.round(o.ov+gp+x+(R(0,12)-6)/3),45,99);   // come per gli altri: ogni gruppo di statistiche parte dal suo livello (un handler ha i lanci piu' alti del fisico)
+      const mx=ks=>Math.max(...ks.map(k=>st0[k])),tl=Math.max(tgf(9*dd),mx(['lan','buc','spa'])),tv=Math.max(tgf(3*dd),st0.vis),tf=Math.max(tgf(-7*dd),mx(KEYS.filter(k=>!['lan','buc','spa','vis'].includes(k))));   // mai sotto le statistiche che ha gia'
+      const od={n:disp,label:o.gen?first(o):(o.nm+' '+o.sur),full,sur:o.sur,r:rr,age,tl,tf,tv,s:st0,a:o.a,g:o.g,gen:false,f:o.f,tot,trait:traitFor(full,st0,rr),dev:devOf(full)};
+      if(rl==='D')od.pos='D';if(o.ae)od.ae=1;
+      return od;
+    }
     const tg=x=>{const u=R(0,12);return clamp(Math.round(lvl+REAL_TK+gp+x+(u-6)/3),45,99);};   // R(0,12) resta: le statistiche usano lo stesso generatore e non devono cambiare
     const tl=tg(9*d),tf=tg(-7*d),tv=tg(3*d);   // ogni gruppo parte dal livello delle sue statistiche (un handler ha i lanci piu' alti del fisico)
     const s={};
@@ -165,9 +180,6 @@ function realRoster(rows,seedStr,opt){
       const off=g==='L'?9*d:(g==='V'?3*d:-7*d);
       s[k]=clamp(Math.round(Rv+off+R(-4,4)),28,capVal(full,k,g==='L'?tl:(g==='V'?tv:tf)));
     });
-    let disp=sn(o);
-    if(cnt[disp]>1){disp=sn(o)+' '+first(o)[0]+'.';if(used[disp])disp=sn(o)+' '+first(o);}
-    used[disp]=1;
     return {n:disp,label:o.gen?first(o):(o.nm+' '+o.sur),full,sur:o.sur,r:role,age,tl,tf,tv,s,a:o.a,g:o.g,gen:o.gen,f:o.f,tot,trait:traitFor(full,s,role),dev:devOf(full)};
   });
 }

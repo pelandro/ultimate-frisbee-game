@@ -28,7 +28,7 @@ const US_RAW=[
 const US_TEAM={},US_BYCONF={},US_NAMES=[];for(const c of US_CK)US_BYCONF[c]=[];
 const US_ORD=US_RAW.slice().sort((a,b)=>b[3]-a[3]),US_RMAX=US_ORD[0][3],US_RMIN=US_ORD[US_ORD.length-1][3];
 US_ORD.forEach(([n,city,cf,rt],i)=>{   // forza di partenza dal rating: dal 94 del primo al 72 dell'ultimo (la Serie A italiana va da 88 a 75)
-  US_TEAM[n]={series:'U',conf:cf,city,rank:i+1,rating:rt,power:Math.round((72+(rt-US_RMIN)/(US_RMAX-US_RMIN)*19.5)*10)/10};
+  US_TEAM[n]={series:'U',conf:cf,city,rank:i+1,rating:rt,power:OVR_POW[n]||Math.round((72+(rt-US_RMIN)/(US_RMAX-US_RMIN)*19.5)*10)/10};   // OVR_POW: forza delle rose rivedute (00-ovr-2026.js)
 });
 for(const [n,,cf] of US_RAW){US_BYCONF[cf].push(n);US_NAMES.push(n);}   // l'ordine delle Conference resta quello dell'elenco
 // la Serie italiana e' 'A'|'B'|'C'; per il campionato USA la serie del giocatore e' 'U' (un solo livello, le Conference non si sale e non si scende)
