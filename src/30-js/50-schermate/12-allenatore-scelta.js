@@ -12,7 +12,7 @@ function renderTeams(){
   for(const b of $('tMode').children)b.classList.toggle('on',b.dataset.k===teamMode);
   const sub=teamMode==='sub';
   $('tTeams').classList.toggle('hidden',sub);$('tRelief').classList.toggle('hidden',!sub);
-  if(!sub){$('tNote').textContent='Tocca una squadra per vederne la rosa, poi decidi. Dalla Serie C si sale; in A le avversarie sono più forti. Il numero accanto al nome è la forza della squadra (la media dei suoi 7 migliori).';renderTeamList();return;}
+  if(!sub){$('tNote').textContent='Tocca una squadra per vederne la rosa, poi decidi. Dalla Serie C si sale; in A le avversarie sono più forti. Il numero accanto al nome è la forza della squadra (contano soprattutto i 7 migliori, poi la panchina).';renderTeamList();return;}
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamTab);
   $('tNote').textContent='Scegli la serie: una squadra in crisi ti chiama a una giornata dalla fine. Hai una sola partita per salvarla; poi comincia l’estate.';
   if(!reliefName||!TEAM[reliefName]||TEAM[reliefName].series!==teamTab)reliefName=reliefOffer(teamTab);

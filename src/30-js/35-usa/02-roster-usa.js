@@ -208,7 +208,7 @@ function usRoster(club,seedStr,opt){
       if(s.k==='s'||s.k==='sf'){const row=s.k==='sf'?s.row.slice():s.row;if(s.k==='sf'){row[3]=s.role||row[3];row[4]=Math.round(lv(s,off));}const o=starPlayer(row,rng);if(US_AGE[usNameKey(o.label)])o.ae=undefined;o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
       return usCard(sur,nm,age,role,lv(s,off),rng,s.k==='g'?{gen:true}:(s.ex?{}:{ae:1}));
     });
-    const d=T-rosterPower(out);if(Math.abs(d)<0.35)break;off=clamp(off+d,-34,16);
+    const d=T-rosterLevel(out);if(Math.abs(d)<0.35)break;off=clamp(off+d,-34,16);
   }
   out=ovrFix(club,out,seedStr,'US');   // rosa del foglio di revisione 2026 (38-ovr/01-applica.js)
   const cnt={};for(const o of out)cnt[o.n]=(cnt[o.n]||0)+1;

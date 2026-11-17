@@ -177,10 +177,13 @@ function careerSelfTest(seasons,seed){
        rows.push(row('Economia uguale per tutti i campionati: entrate secondo il livello dei giocatori (Italia come prima), riserve oltre il 14° a metà stipendio, cessione immediata sotto le offerte dei club',
          `peso economico ${c.map(x=>x.toFixed(2).replace('.',',')).join(', ')} · stipendi di 20 giocatori ${Math.round(ws)} invece di ${Math.round(full)} · cessione ${sv} (alla settima della stagione ${sv6}) contro un'offerta di ${off}`,
          Math.abs(c[0]-1)<0.01&&Math.abs(c[1]-1.3)<0.01&&Math.abs(c[2]-1.65)<0.01&&c[3]>c[2]&&ws<full&&ws>full*0.8&&sv<off*0.5&&Math.abs(sv-priceOf(p)*0.4)<=1&&Math.abs(sv6-priceOf(p)*0.16)<=1));}
-      {const ro=makeRoster(70,'prof|t'),l14=linesPow(ro),l12=linesPow(ro.slice(0,12)),s1=fatShare({m:{pts:5}},10),s2=fatShare({m:{sh:1}},10);
-       rows.push(row('Profondità della rosa: con meno di 14 giocatori qualcuno gioca in entrambe le linee, rende meno e si stanca il doppio',
-         `due linee con 14 giocatori ${l14.toFixed(1).replace('.',',')}, con 12 ${l12.toFixed(1).replace('.',',')} · fatica: una linea ${s1}, entrambe ${s2}`,
-         l12<l14-0.3&&s1===0.5&&s2===1&&DBL_PEN>0&&COND_PEN>0));}
+      {const ro=makeRoster(70,'prof|t'),big=ro.concat(makeRoster(60,'prof|x'),makeRoster(60,'prof|y')),pw=n=>rosterPower(ro.slice(0,n)),s1=fatShare({m:{pts:5}},10),s2=fatShare({m:{sh:1}},10);
+       const top21=big.slice().sort((x,y)=>mean9(y)-mean9(x)).slice(0,21),plus=big.length>21&&Math.abs(rosterPower(top21)-rosterPower(big))<1e-9&&rosterPower(big.concat([ro[0]]))>=rosterPower(big)-1e-9;   // oltre il 21º nessuno conta: ne' in piu' ne' in meno
+       const weak=rosterPower(ro.concat([Object.assign({},ro[ro.length-1],{s:Object.fromEntries(KEYS.map(k=>[k,30]))})]))<=rosterPower(ro)+1e-9;   // un rincalzo debole in piu' non alza mai la potenza
+       const ok=ro.length>=14&&pw(14)>pw(12)&&pw(12)>pw(10)&&pw(10)>pw(7)&&pw(7)>0&&pw(14)-pw(12)<4&&pw(12)<=pw(ro.length)&&rosterPower([])===0&&plus&&weak;   // rose corte: penalita' moderata, nessun vantaggio
+       rows.push(row('Potenza di squadra: 60% i 7 migliori, 35% dal 8º al 14º, 5% dal 15º al 21º, senza vincoli di ruolo; una rosa corta pesa poco ma non rende mai di più, oltre il 21º non conta nessuno',
+         `rosa da ${ro.length}: potenza ${pw(ro.length).toFixed(1).replace('.',',')}, con 14 giocatori ${pw(14).toFixed(1).replace('.',',')}, con 12 ${pw(12).toFixed(1).replace('.',',')}, con 7 ${pw(7).toFixed(1).replace('.',',')} · fatica: una linea ${s1}, entrambe ${s2}`,
+         ok&&s1===0.5&&s2===1&&DBL_PEN>0&&COND_PEN>0));}
       rows.push(row('Crescita secondo la serie: più facile in basso, più dura in alto; chi domina la sua serie cresce meno',
         `C ${srGrowK('C').toFixed(2)}, B ${srGrowK('B').toFixed(2)}, A ${srGrowK('A').toFixed(2)}, con 5 punti di vantaggio ×${clamp(1-LEAD_K*5,0.5,1).toFixed(2)}`,srGrowK('C')>srGrowK('B')&&srGrowK('B')>srGrowK('A')&&srGrowK('A')<1&&LEAD_K>0));
       rows.push(row('Sorprese di crescita: qualche giovane si ferma, pochi scoprono più margine, nessuno perde punti',

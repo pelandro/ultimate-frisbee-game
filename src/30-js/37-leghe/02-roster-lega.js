@@ -99,7 +99,7 @@ function lnRoster(club,seedStr,opt){
       if(s.fx>0)return usCard(sur,nm,age,role,s.fx,rng,s.ex?{}:{ae:1});
       return usCard(sur,nm,age,role,Math.min(capFree,Math.max(clamp(P+s.lv+off,36,95),usAward(sur,nm))),rng,s.k==='g'?{gen:true}:(s.ex?{}:{ae:1}));
     });
-    const d=P-rosterPower(out);if(Math.abs(d)<0.35)break;
+    const d=P-rosterLevel(out);if(Math.abs(d)<0.35)break;
     off=nFix?clamp(off+d,0,4):clamp(off+d,-8,8);   // con i fissi si puo' solo alzare (se i fissi portano la rosa sopra il club, resta sopra)
   }
   out=ovrFix(club,out,seedStr,'LN');   // rosa del foglio di revisione 2026 (38-ovr/01-applica.js)

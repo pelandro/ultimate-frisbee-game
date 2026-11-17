@@ -11,7 +11,7 @@ const POT_BANDS={   // [peso %, da, a] = scarto del potenziale dal riferimento: 
 const POT_VIV=[-1.4,-1.6,1.6,1,0.4];   // ogni livello del vivaio sposta un po' di probabilita' verso le fasce alte (mercato e vivaio, non il provino)
 function seriesPow(){   // forza media delle altre squadre della tua divisione (girone o Conference)
   const ns=((SV.mem&&SV.mem[SV.sr])||[]).filter(n=>n!==SV.team);
-  return ns.length?ns.reduce((a,n)=>a+teamPow(n),0)/ns.length:squadPower();
+  return ns.length?ns.reduce((a,n)=>a+teamLevel(n),0)/ns.length:squadLevel();   // livello dei titolari, non potenza
 }
 // riferimento: il livello della serie conta piu' della tua squadra. Sotto la media della serie (per esempio appena promosso) il mercato ti offre giocatori
 // della categoria, cosi' puoi rinforzarti spendendo; sopra la media cresce molto meno della tua forza: prima seguiva la tua squadra e ogni anno
@@ -25,7 +25,7 @@ const euTier=()=>!!SV&&!isUS()&&(isLN()?!!(LN_DEF[SV.lk]&&LN_DEF[SV.lk].eu&&SV.l
 const EU_GAP=8;   // nel mercato di queste serie la media non scende sotto il livello europeo meno 8 (la Serie A, a 81, non cambia)
 function potRef(kind){
   let S=seriesPow();if(kind!=='prov'&&euTier())S=Math.max(S,euTop()-EU_GAP);
-  const T=squadPower(),rp=kind==='adult'?0:clamp(((SV.rep|0)-50)*0.04,-2,2);
+  const T=squadLevel(),rp=kind==='adult'?0:clamp(((SV.rep|0)-50)*0.04,-2,2);
   if(kind==='prov')return S;
   const wT=kind==='viv'?0.4:(kind==='adult'?0.2:0.3);   // sotto la media: quanto conta ancora la tua forza (poco: chi sale trova giocatori della categoria, se li paga)
   return (T<=S?S+wT*(T-S):S+0.4*(T-S))+rp;
@@ -62,6 +62,6 @@ function carGrowK(){
   const key=SV.team+'|'+SV.season+'|'+SV.sr+'|'+(SV.played|0);if(cgk.key===key)return cgk.v;
   const k=srGrowK(SV.sr);
   const ns=((SV.mem&&SV.mem[SV.sr])||[]).filter(n=>n!==SV.team);
-  const lead=ns.length?matchPow(SV.team)-Math.max(...ns.map(matchPow),euTier()?euTop():0):0;   // nelle serie con posti europei il riferimento e' anche il livello europeo
+  const lead=ns.length?matchLevel(SV.team)-Math.max(...ns.map(matchLevel),euTier()?euTop():0):0;   // nelle serie con posti europei il riferimento e' anche il livello europeo
   cgk={key,v:k*(lead>0?clamp(1-LEAD_K*lead,0.5,1):1)};return cgk.v;
 }

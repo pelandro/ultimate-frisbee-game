@@ -34,7 +34,7 @@ function usRanking(tab,names){
   return out;
 }
 // ---- ranking nazionale (Elo) ----
-const usBaseRating=n=>1500+(teamPow(n)-82)*18;   // forza attuale della rosa (la tua compresa)
+const usBaseRating=n=>1500+(teamPow(n)-(82-PW_LV))*18;   // forza attuale della rosa (la tua compresa)
 function usRate(a,b,sa,sb){   // dopo ogni partita ufficiale: conta chi hai battuto e di quanto
   const P=SV.us.pr;if(P[a]===undefined||P[b]===undefined)return;
   const e=1/(1+Math.pow(10,(P[b]-P[a])/400)),w=sa>sb?1:0,k=(SV.us.ph==='reg'?32:22)*(1+Math.min(10,Math.abs(sa-sb))/10);

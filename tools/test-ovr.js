@@ -12,7 +12,7 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
 (async()=>{
   let h=build();const i=h.lastIndexOf('})();');
   // solo per la prova: espone le funzioni del gioco (che vive in un ambito unico, senza moduli)
-  h=h.slice(0,i)+';window.__OVR=()=>({OVR_2026,OVR_OUT,OVR_FORCE,OVR_ADD,OVR_PART,ovrPart,OVR_DUAL_US,OVR_POW:typeof OVR_POW!=="undefined"?OVR_POW:{},ovrEntries,ovrKey,foreignRoster,allClubs,rosterPower,ovr,SQ_MAX,usRoster,lnRoster,realRoster,REAL,realOpt,US_TEAM,LN_BY});'+h.slice(i);
+  h=h.slice(0,i)+';window.__OVR=()=>({OVR_2026,OVR_OUT,OVR_FORCE,OVR_ADD,OVR_PART,ovrPart,OVR_DUAL_US,OVR_POW:typeof OVR_POW!=="undefined"?OVR_POW:{},ovrEntries,ovrKey,foreignRoster,allClubs,rosterPower,rosterLevel,ovr,SQ_MAX,usRoster,lnRoster,realRoster,REAL,realOpt,US_TEAM,LN_BY});'+h.slice(i);
   fs.writeFileSync(OUT,h);
   const browser=await chromium.launch(),page=await browser.newPage(),errs=[];
   page.on('pageerror',e=>errs.push('errore JavaScript: '+e.message));
@@ -26,7 +26,7 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
         const v=X.ovr(o);if(!(v>=25&&v<=99))bad.push('Overall fuori scala in '+c+': '+o.full+' '+v);if(!(o.age>=14&&o.age<=70))bad.push('eta\' strana in '+c+': '+o.full+' '+o.age);}
       for(const n of (X.OVR_OUT[c]||[]))if(keys.has(X.ovrKey(n)))bad.push(n+' dovrebbe essere uscito da '+c);
       const E=X.ovrEntries(c);if(!E.length)continue;
-      pow[c]=Math.round(X.rosterPower(ro)*10)/10;
+      pow[c]=Math.round(X.rosterLevel(ro)*10)/10;
       const minOv=Math.min(...ro.map(o=>X.ovr(o)));
       for(const e of E){
         if(X.OVR_DUAL_US.has(c+'|'+e.k))continue;
@@ -46,6 +46,12 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
     }
     // correzioni singole ai club fuori dal foglio
     for(const c in X.OVR_PART){const ro=club(c);for(const e of X.ovrPart(c)){const o=ro.find(x=>X.ovrKey(x.full)===e.k);if(!o)bad.push('manca '+e.nm+' '+e.sur+' ('+c+')');else if(X.ovr(o)!==e.ov)bad.push(e.nm+' '+e.sur+' ('+c+'): Overall '+X.ovr(o)+' invece di '+e.ov);else tot++;}}
+    // valori bloccati: affidabilita' alta, forzati (OVR_FORCE) e aggiunti a mano (OVR_ADD) hanno il valore del foglio o quello chiesto, senza scarti di club ne' ritocchi
+    for(const c in X.OVR_2026){const by=new Map(X.ovrEntries(c).map(e=>[e.k,e])),fo=X.OVR_FORCE[c]||{},fk=new Set(Object.keys(fo).map(X.ovrKey));
+      for(const r of X.OVR_2026[c]){const k=X.ovrKey(r[1]+' '+r[0]),e=by.get(k);if(!e)continue;
+        if(fk.has(k)){const v=Object.keys(fo).find(n=>X.ovrKey(n)===k);if(e.ov!==fo[v])bad.push('forzato modificato: '+r[1]+' '+r[0]+' ('+c+')');}
+        else if(r[6]==='a'&&e.ov!==r[2])bad.push('affidabilita\' alta modificata: '+r[1]+' '+r[0]+' ('+c+'): '+r[2]+' -> '+e.ov);}
+      for(const r of (X.OVR_ADD[c]||[])){const e=by.get(X.ovrKey(r[1]+' '+r[0]));if(e&&e.ov!==r[2])bad.push('aggiunto a mano modificato: '+r[1]+' '+r[0]+' ('+c+')');}}
     // richieste puntuali del progetto
     const find=(c,n)=>club(c).find(o=>X.ovrKey(o.full)===X.ovrKey(n));
     const p=find('Cotarica Grandes','Pietro Puppi');if(!p||X.ovr(p)!==87)bad.push('Puppi deve essere 87');

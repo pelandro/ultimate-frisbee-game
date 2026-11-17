@@ -32,11 +32,19 @@ for(const lk in LN_PL_PLUS){
   const seen=new Set();for(const c in LN_PL[lk])for(const r of LN_PL[lk][c])seen.add(usNameKey(r[1]+' '+r[0]));
   for(const c in LN_PL_PLUS[lk])for(const r of LN_PL_PLUS[lk][c]){const k=usNameKey(r[1]+' '+r[0]);if(seen.has(k))continue;seen.add(k);(LN_PL[lk][c]=LN_PL[lk][c]||[]).push(r);}
 }
-// forza dei club corretta a mano rispetto ai dati generati (LN_CL), per i club fuori dal foglio Overall (quelli del foglio usano OVR_SHIFT, 30-carriera/00-ovr-2026.js). Metodo: piazzamento
-// medio pesato all'EUCF Open (2026 1,0 · 2025 0,85 · 2024 0,7; 2026 per esteso con l'ordine dei soli europei al WUCC; semifinalisti 3,5; anni senza dato 10,5; fonti: portali EUF e albo
-// d'oro EUCS), forza = media tra quella di prima e 93,5 - 1,15 x piazzamento, piu' 1 punto di prestigio per chi ha giocato l'EUCF. Chi non c'era non supera chi del suo paese c'era:
-// Jetset Open (4º belga) sotto Freezzz Beezzz. Freezzz Beezzz alzati a 82 su richiesta: all'EUCF 14-15 con Clapham e 13-15 con Cotarica, 9ª dei club europei al WUCC, sopra Chevron e NLSU.
-const LN_POW_FIX={'Freezzz Beezzz one':85.5,'Heidees':82};
+// Livello dei 7 titolari (come LN_CL, vedi 01-formati.js) corretto a mano rispetto ai dati generati, per i club fuori dal foglio Overall (quelli del foglio usano OVR_SHIFT, 30-carriera/00-ovr-2026.js).
+// Due regole, per tutte le leghe: (1) chi gioca gli eventi piu' importanti e' di norma piu' forte di chi non li gioca. EUCF Breslavia e WUCC Limerick 2026 (Freezzz Beezzz, Heidees) con il rating dai
+// punteggi (rating = media tra WUCC e EUCF, potenza attesa = 84,3 + 0,83 x rating, piu' 1,5 punti di prestigio) e piazzamenti 2024-2026. (2) Una serie piu' alta e' di norma piu' forte di una piu' bassa:
+// nessun club di una serie supera di oltre 3 punti la potenza del club piu' debole della serie sopra meno 0,5 (Belgio, Francia, Germania; chi supera il tetto ci va sotto in fila, nello stesso ordine di prima): erano al contrario club come Eclipse Solaire (3º livello belga, 10 punti sopra
+// l'ultimo del 2º). Jetset Open (4º belga) resta sotto Freezzz Beezzz.
+const LN_POW_FIX={
+  'Freezzz Beezzz one':87.5,
+  'Heidees':84,
+  'Helgtre Open':69.8,
+  'Éclipse Solaire':65.3,
+  'Bremen Ultimate':58.5,
+  'Gummibärchen':58.4
+};
 // livello (bonus) dei giocatori corretto a mano, con la fonte: Freezzz Beezzz one. I bonus dei dati generati seguivano poco le statistiche (correlazione 0,54 con mete+assist a partita del
 // WUCC 2026, contro 0,76-0,87 degli altri club Open) e Victor Weller (2,0 punti a partita, terzo della squadra) era fuori dalla rosa; con le 10 partite Open del WUCC 2026 (Limerick, portali
 // WFDF) il bonus e' la media tra il vecchio e la retta ricavata dagli altri club (bonus = -3,14 + 2,41 x punti a partita), solo la retta per chi non aveva dati; a meta' interi.

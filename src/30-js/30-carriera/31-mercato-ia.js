@@ -1,7 +1,7 @@
 /* ---- MERCATO TRA LE SQUADRE DEL COMPUTER (solo d'estate) ----
    Nel passaggio alla stagione nuova, dopo invecchiamento, ritiri e giovani (evolveLeague), alcune squadre del computer fanno un'operazione
    (di rado due) per sistemare la rosa: un ACQUISTO da un altro club, uno SCAMBIO Handler contro Cutter o un giocatore SVINCOLATO.
-   Si fa solo cio' che conviene a entrambe, misurato con la forza dei 7 titolari che decide i risultati (rosterPower):
+   Si fa solo cio' che conviene a entrambe, misurato con la potenza di squadra (rosterPower: 60% i 7 migliori, 35% dal 8º al 14º, 5% dal 15º al 21º):
    - chi compra deve migliorare davvero (AIM.gain); chi vende non deve peggiorare quasi per niente (AIM.loss: una riserva o un giocatore
      che ha gia' chi lo sostituisce) e incassa il cartellino. Un club in ricostruzione o che punta sui giovani puo' vendere un veterano anche
      se perde di piu' (AIM.vetLoss): incassa e fa giocare i suoi;
@@ -42,24 +42,19 @@ function aimChase(names,pw){
   return {set:lead>AIM.chGap?new Set(c.slice(0,AIM.chN)):new Set(),lead};
 }
 // valutazioni veloci con i valori dell'estate in memoria (le statistiche non cambiano durante il mercato): aimPow da' lo stesso risultato
-// di rosterPower (3 Handler e 4 Cutter migliori, poi i migliori rimasti) e aimWage di wageSeason, per la rosa con un giocatore in piu' (add)
-// e/o uno in meno (rem), senza costruire rose nuove. Con rosterPower e wageSeason il mercato di una lega costava fino a quasi un secondo
+// di rosterPower e aimWage di wageSeason, per la rosa con un giocatore in piu' (add) e/o uno in meno (rem), senza costruire rose nuove. Con rosterPower e wageSeason il mercato di una lega costava fino a quasi un secondo
 const aimDesc=(a,b)=>b-a;
-function aimPow(ro,add,rem,M){
-  const h=[],c=[],x=[],put=o=>{(o.r==='H'?h:(o.r==='C'?c:x)).push(M(o));};
-  for(const o of ro)if(o!==rem)put(o);if(add)put(add);
-  h.sort(aimDesc);c.sort(aimDesc);let s=0,n=0;
-  for(let i=0;i<3&&i<h.length;i++){s+=h[i];n++;}for(let i=0;i<4&&i<c.length;i++){s+=c[i];n++;}
-  if(n<7){const r=h.slice(3).concat(c.slice(4),x).sort(aimDesc);for(let i=0;n<7&&i<r.length;i++){s+=r[i];n++;}}
-  return n?s/n:0;
+function aimPow(ro,add,rem,M){   // potenza (12-allenamenti-rose.js) della rosa con un giocatore in piu' (add) e/o in meno (rem), con i valori in memoria
+  const v=[];for(const o of ro)if(o!==rem)v.push(M(o));if(add)v.push(M(add));
+  return powerOfVals(v);
 }
 function aimWage(ro,add,rem,W){
   const v=[];for(const o of ro)if(o!==rem)v.push(W(o));if(add)v.push(W(add));v.sort(aimDesc);
   let s=0;for(let i=0;i<v.length;i++)s+=i<WAGE_FULL?v[i]:v[i]*0.5;return s;   // il mercato delle squadre del computer e' tarato cosi': il quarto oltre il ventesimo (wageW) vale solo per la tua rosa
 }
 function aimRoleOk(ro,add,rem){let n=0,h=0;for(const o of ro)if(o!==rem){n++;if(o.r==='H')h++;}if(add){n++;if(add.r==='H')h++;}return n>=AIM.minRo&&h>=AIM.minRole&&n-h>=AIM.minRole;}
-function aimWeak(ro,r,M){   // il titolare piu' debole del ruolo (3 Handler, 4 Cutter): chi non lo supera non cambia la forza
-  const v=ro.filter(o=>o.r===r).map(M).sort(aimDesc),k=r==='H'?3:4;return v.length<k?0:v[k-1];
+function aimWeak(ro,r,M){   // il 14º della rosa (r non conta: nessun vincolo di ruolo): chi non lo supera cambia la potenza di meno di un decimo, non vale la pena provarlo
+  const v=ro.map(M).sort(aimDesc);return v.length<14?(v.length?v[v.length-1]:0):v[13];
 }
 function aiMarket(){
   const R=Math.random,names=Object.keys(SV.rost||{}).filter(n=>n!==SV.team&&SV.rost[n]&&SV.rost[n].length>=AIM.minRo);

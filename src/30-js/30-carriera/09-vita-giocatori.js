@@ -18,7 +18,7 @@ function alertAdd(k,txt,o){
 const retBase=x=>33+hashStr('rit|'+(x.full||x.name||x.n))%7;
 function retAnchor(x){if(x.ra===undefined)x.ra=Math.max(retBase(x),x.age+1+hashStr('ra|'+(x.full||x.name||x.n))%4);return x.ra;}   // chi a 45 anni gioca ancora non smette domani
 function retScore(p){   // sopra zero: e' il momento in cui pensa di smettere
-  const c=p.car,rel=ovrX(p)-squadPower(),tot=SV.sched?SV.sched.length:15;
+  const c=p.car,rel=ovrX(p)-squadLevel(),tot=SV.sched?SV.sched.length:15;
   const half=SV.event==='camp'&&(SV.round|0)>=Math.floor(tot/2),st=c?(half?c.ss:c.ls):null,share=st?st.mp/Math.max(1,half?SV.round:tot):0.5;
   let thr=retAnchor(p)+clamp(rel/3,-2.5,3)+(p.trait==='iron'?2:0)+(share>=0.7?1:(share<=0.25?-1.5:0))-(p.injC|0)*0.7+clamp((SV.mor-60)/40,-0.7,0.7);
   if(st&&st.mp>=4&&(st.g*2+st.a*2+st.b*3)/st.mp>=3.2)thr+=1;   // stagione da protagonista: la voglia resta
@@ -37,14 +37,14 @@ function retireCheck(when){   // a inizio e a meta' stagione: chi ci sta pensand
 const stayCost=p=>Math.round(wageOf(p)*0.5)+5;
 function retPersuade(p){   // un solo tentativo: piu' facile se rende ancora e se l'ambiente e' buono
   const cost=stayCost(p);if(SV.cash<cost)return {ok:false,again:true,txt:`Servono ${cost} crediti per il premio di permanenza.`};
-  const sc=retScore(p),ch=clamp(0.6-sc*0.18+(ovrX(p)>=squadPower()?0.15:0)+(SV.mor-60)/200,0.08,0.92);
+  const sc=retScore(p),ch=clamp(0.6-sc*0.18+(ovrX(p)>=squadLevel()?0.15:0)+(SV.mor-60)/200,0.08,0.92);
   if(Math.random()<ch){SV.cash-=cost;p.ret=0;p.retHold=SV.season+1;news(`${pname(p)} ci ripensa: giocherà un’altra stagione.`);return {ok:true,txt:`${pname(p)} ci ripensa: resta ancora una stagione (premio di ${cost} crediti).`};}
   return {ok:false,txt:`${pname(p)} ringrazia ma ha deciso: a fine stagione smette.`};
 }
 function leagueRetAnnounce(){   // anche nelle altre squadre del tuo campionato i titolari piu' anziani annunciano l'addio
   const out=[];
   for(const n of SV.mem[SV.sr]){
-    if(n===SV.team)continue;const ro=SV.rost[n]||[],pw=rosterPower(ro);
+    if(n===SV.team)continue;const ro=SV.rost[n]||[],pw=rosterLevel(ro);
     for(const o of ro.slice().sort((a,b)=>ovrX(b)-ovrX(a)).slice(0,7))if(!o.ret&&aiRetScore(o,pw,true)>0.5&&Math.random()<0.6){o.ret=1;out.push(`${o.label||o.n} (${n}, ${o.age} anni)`);}
   }
   if(out.length)news('Annunciano il ritiro a fine stagione: '+out.slice(0,4).join(', ')+(out.length>4?' e altri':'')+'.');
@@ -64,7 +64,7 @@ function leaveSquad(list){if(!list.length)return;setSquad(squadData().filter(o=>
 function lifeAfterMatch(){   // dopo ogni partita: minutaggio e umore, offerte
   talkCool();
   if(SV.offer&&SV.round>SV.offer.round){const a=SV.alerts.find(x=>x.act==='offer'&&!x.done&&x.full===SV.offer.full);if(a){a.done=1;a.res='Offerta scaduta.';}SV.offer=null;}
-  const ref=squadPower(),gone=[];
+  const ref=squadLevel(),gone=[];
   for(const p of SQ){
     if(p.m&&p.m.pts>0){if(p.mood)alertAdd('mood',`${pname(p)} è tornat${oa(p)} in campo e ha ritrovato il sorriso.`,{full:p.full,seen:1});p.idle=0;p.mood=0;p.prom=0;continue;}
     if(p.inj)continue;

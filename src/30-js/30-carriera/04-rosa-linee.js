@@ -3,7 +3,8 @@
 const SAVE_V=3,SQ_MIN=12,SQ_MAX=28;
 const SURN=['Rossi','Bianchi','Ferrari','Russo','Romano','Gallo','Costa','Fontana','Conti','Esposito','Ricci','Bruno','Greco','Marino','Giordano','Rinaldi','Lombardi','Moretti','Barbieri','Colombo','Mancini','Longo','Leone','Martinelli','Serra','Santoro','Mariani','Vitale','Coppola','De Luca','Ferri','Bianco','Grasso','Pellegrini','Caruso','Fabbri','Monti','Sala','Villa','Marchetti'];
 const SR_K={C:1,B:1.3,A:1.65};
-const teamPow=n=>n===SV.team?squadPower():(SV.rost[n]?rosterPower(SV.rost[n]):(TEAM[n]?TEAM[n].power:50));
+const teamPow=n=>n===SV.team?squadPower():(SV.rost[n]?rosterPower(SV.rost[n]):(TEAM[n]?TEAM[n].power-PW_LV:50));   // potenza (12-allenamenti-rose.js); il livello statico dei club senza rosa si porta alla scala della potenza con PW_LV
+const teamLevel=n=>n===SV.team?squadLevel():(SV.rost[n]?rosterLevel(SV.rost[n]):(TEAM[n]?TEAM[n].power:50));   // livello dei 7 titolari: riferimento di crescita e mercato
 // giocatore generato (giovane del vivaio, svincolato, rincalzo di una squadra): livello ed eta' richiesti, potenziale variabile
 function genPlayer(level,age,seedStr,potB){
   const rng=mulberry32(hashStr(seedStr)),R=(a,b)=>a+rng()*(b-a);

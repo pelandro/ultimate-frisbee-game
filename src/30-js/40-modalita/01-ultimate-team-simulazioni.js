@@ -166,12 +166,10 @@ function simCareerMatch(){
   const m=nextMatch();if(!m)return;
   SQ.forEach(p=>{p.injNew=false;});fixLineup();   // gli infortunati non giocano, come nella partita vera
   fixLines();
-  const lo=matchLine('lineO').map(id=>SQ[id]),ld=matchLine('lineD').map(id=>SQ[id]),all=lo.concat(ld),dbl=new Set(lo.filter(p=>ld.includes(p)));
-  const avg=l=>l.reduce((a,p)=>a+mean9(p)-(dbl.has(p)?DBL_PEN:0),0)/Math.max(1,l.length);   // chi sta in entrambe le linee rende DBL_PEN in meno, come nella partita giocata
-  const tired=all.reduce((a,p)=>a+(100-p.cond),0)/Math.max(1,all.length);
-  // forza = media delle due linee, con gli stessi effetti di una partita giocata: affiatamento e morale, condizione fisica
-  // le tue due linee riportate alla scala dei 7 migliori (LINE_REF, 21-due-linee.js): una rosa di profondita' normale vale come prima
-  const opp=(m.roster?rosterPower(m.roster):m.power)+carDiff().plus,my=(avg(lo)+avg(ld))/2+LINE_REF+teamFormB()*0.8-tired*COND_PEN;
+  const lo=matchLine('lineO').map(id=>SQ[id]),ld=matchLine('lineD').map(id=>SQ[id]);
+  // potenza di oggi della tua squadra con la formula unica (myPow, 10-partita-avvio.js): infortunati fuori, DBL_PEN per chi sta in entrambe le linee e condizione
+  // fisica, con gli stessi effetti di una partita giocata; poi affiatamento e morale. L'avversario: la potenza della sua rosa (il livello statico, se non ce l'ha, va portato alla stessa scala)
+  const opp=(m.roster?rosterPower(m.roster):m.power-PW_LV)+carDiff().plus,my=myPow(true)+teamFormB()*0.8;
   const r=simMatch(my,opp,carDiff().ai|0,carLen()),w=r.a>r.b;   // la difficolta' scelta vale anche qui: l'IA migliore vale qualche punto di forza in piu'
   // una partita simulata vale come una giocata: stessa esperienza media, statistiche personali, fatica e (ora) anche gli infortuni
   const on=new Set(matchLine('lineO').concat(matchLine('lineD')));

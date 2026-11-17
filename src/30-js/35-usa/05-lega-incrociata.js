@@ -37,7 +37,7 @@ function crossLgOffer(){
 // ---- scambio di giocatori ----
 function crossLgTrade(){
   if(SV.trade||SV.job||SV.event!=='camp'||SV.done||SQ.length<=SQ_MIN+1)return;
-  const mine=SQ.filter(p=>!p.inj&&p.ret!==1&&p.age<=33&&ovr(p)>=squadPower()-14).sort(()=>Math.random()-0.5)[0];if(!mine)return;
+  const mine=SQ.filter(p=>!p.inj&&p.ret!==1&&p.age<=33&&ovr(p)>=squadLevel()-14).sort(()=>Math.random()-0.5)[0];if(!mine)return;
   const clubs=tradeClubs().sort(()=>Math.random()-0.5);
   for(const club of clubs.slice(0,6)){
     const ro=tradeRoster(club,SV.seed+'|x|'+SV.season+'|'+(SV.played|0)),cand=ro.filter(o=>Math.abs(ovrX(o)-ovr(mine))<=4&&!SQ.some(p=>p.full===o.full)).sort(()=>Math.random()-0.5)[0];

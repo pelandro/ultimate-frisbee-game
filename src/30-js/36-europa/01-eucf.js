@@ -15,7 +15,7 @@ const EU_SLOTS={IT:3,BE:3,FR:2,UK:2,DE:1},EU_CC={IT:'ITA',BE:'BEL',FR:'FRA',UK:'
 const EU_PRIZE=[12,16,22,34,60];   // crediti (per il coefficiente della Serie A): qualificazione ai quarti o ai prequarti, poi prequarti, quarti, semifinale, finale vinti
 const euNew=season=>({s:season|0,state:'on',nat:null,it:(SV&&SV.next&&SV.next.euQ)||null,cash:0});   // la lista dei club si costruisce al primo uso (euEnsure)
 const euCountry=n=>LN_BY[n]?EU_CC[LN_BY[n].lk]:(EU_BY[n]?EU_BY[n].c:'ITA');
-const euPowOf=n=>(n===SV.team||(SV.rost&&SV.rost[n]))?teamPow(n):((SV.eup&&SV.eup[n])||(EU_BY[n]?EU_BY[n].p:70));
+const euPowOf=n=>(n===SV.team||(SV.rost&&SV.rost[n]))?teamPow(n):(((SV.eup&&SV.eup[n])||(EU_BY[n]?EU_BY[n].p:70))-PW_LV);
 function euRate(a,b,sa,sb){   // ranking del torneo (serve alle fasce e ai quarti)
   const P=SV.eu.rk;if(!P||P[a]===undefined||P[b]===undefined)return;
   const e=1/(1+Math.pow(10,(P[b]-P[a])/400)),w=sa>sb?1:0,k=22*(1+Math.min(10,Math.abs(sa-sb))/10);P[a]+=k*(w-e);P[b]-=k*(w-e);
