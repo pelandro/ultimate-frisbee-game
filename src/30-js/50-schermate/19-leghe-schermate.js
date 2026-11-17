@@ -44,7 +44,7 @@ function lnStakes(m){
   return {tag,title,lines};
 }
 // ---- scelta del livello e del club (schermata «Scegli la tua squadra») ----
-const lnPrevCache={},lnPreview=n=>lnPrevCache[n]||(lnPrevCache[n]=Math.round(rosterPower(lnRoster(n,'preview|'+n,{low:true}))));   // forza con cui si parte davvero
+const lnPrevCache={},lnPreview=n=>lnPrevCache[n]||(lnPrevCache[n]=Math.round(rosterPower(lnRoster(n,'preview|'+n))));   // forza con cui si parte davvero
 function renderTeamsLN(){
   const lk=teamLg,D=LN_DEF[lk];
   $('tMode').classList.add('hidden');$('tRelief').classList.add('hidden');$('tTeams').classList.remove('hidden');

@@ -36,11 +36,11 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
         if(e.ex&&e.age&&o.age!==e.age)bad.push(e.nm+' '+e.sur+' ('+c+'): eta\' '+o.age+' invece di '+e.age);
       }
     }
-    // la rosa che parte tua (low) deve avere gli stessi Overall del foglio: l'abbassamento di partenza non tocca chi e' nel foglio
+    // la rosa che parte tua (stessa costruzione delle avversarie, altro seme) deve avere gli stessi Overall del foglio
     let mine=0;
     for(const c of X.allClubs()){
       const E=X.ovrEntries(c);if(!E.length)continue;
-      const ro=X.US_TEAM[c]?X.usRoster(c,'prova-ovr-mia',{low:true}):(X.LN_BY[c]?X.lnRoster(c,'prova-ovr-mia',{low:true}):X.realRoster(X.REAL[c]||[],'prova-ovr-mia',Object.assign(X.realOpt(c,9),{low:true})));
+      const ro=X.US_TEAM[c]?X.usRoster(c,'prova-ovr-mia'):(X.LN_BY[c]?X.lnRoster(c,'prova-ovr-mia'):X.realRoster(X.REAL[c]||[],'prova-ovr-mia',X.realOpt(c,9)));
       const by=new Map(ro.map(o=>[X.ovrKey(o.full),o]));
       for(const e of E){const o=by.get(e.k);if(!o)continue;mine++;if(X.ovr(o)!==e.ov)bad.push('rosa che parte tua, '+e.nm+' '+e.sur+' ('+c+'): Overall '+X.ovr(o)+' invece di '+e.ov);}
     }

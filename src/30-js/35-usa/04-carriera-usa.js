@@ -8,7 +8,7 @@ function usStartCareer(name,opt){
   SV.coach=coachNorm(opt.coach);SV.start='cuore';
   usInit(name);
   SV.rost={};for(const n of US_NAMES)if(n!==name)SV.rost[n]=usRoster(n,SV.seed);
-  setSquad(usRoster(name,SV.seed+'|user',{low:true}));   // la tua rosa: quella del club, un po' meno allenata delle avversarie
+  setSquad(usRoster(name,SV.seed+'|user'));   // la tua rosa: quella del club, come per le avversarie
   beginSeason();
   Object.assign(SV,opt.carry||{});   // se arrivi dall'Italia: allenatore, storico e traguardi restano tuoi
   careerInit();

@@ -51,8 +51,8 @@ function myLinesPow(){
 }
 const matchPow=n=>n===SV.team?myLinesPow():teamPow(n);
 const teamPower=n=>n===SV.team?squadPower():(SV.rost&&SV.rost[n]?rosterPower(SV.rost[n])+carDiff().plus:null);
-// forza mostrata nella scelta della squadra: la stessa regola della rosa con cui si parte davvero (userRoster: 9 giocatori, un po' meno allenata delle avversarie)
-const previewPower=n=>REAL[n]?rosterPower(realRoster(REAL[n],'preview|'+n,Object.assign(realOpt(n,9),{low:true}))):0;
+// forza mostrata nella scelta della squadra: la stessa rosa con cui si parte davvero (userRoster: 9 giocatori, come per le avversarie)
+const previewPower=n=>REAL[n]?rosterPower(realRoster(REAL[n],'preview|'+n,realOpt(n,9))):0;
 // stemma della squadra: scudetto con due colori e iniziali, generato dal nome
 function crest(name,px){
   const h=hashStr('crest|'+name),h1=h%360,h2=(h1+130+(h>>8)%90)%360,ini=name.replace(/[^A-Za-zÀ-ÿ0-9 ]/g,'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
