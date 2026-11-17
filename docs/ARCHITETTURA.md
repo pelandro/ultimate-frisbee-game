@@ -104,3 +104,4 @@ Sono i punti in cui due modifiche indipendenti possono rompersi a vicenda senza 
 | Schermate ed elementi | `SCREENS`, `showScreen`, `id` | `tools/check.js` (id doppi, riferimenti mancanti) |
 | Ordine dei file | nomi numerati in `src/` | `tools/check.js` (sintassi), prova nel browser (errori al caricamento) |
 | Bilanciamento | costanti del motore | `tools/test-sim.js` (fasce attese) |
+| Punti fissi di economia e crescita | `tools/bilanci/punti-fissi.js` (soglie e file che li riguardano), `pagina-economia.js`, `pagina-carriera.js` | `tools/test-bilanci.js` (`npm run bilanci`; la verifica di GitHub lo lancia sulle pull request che toccano quei file) |
