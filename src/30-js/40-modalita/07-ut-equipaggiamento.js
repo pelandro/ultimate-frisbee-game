@@ -86,6 +86,8 @@ function renderEquip(){
   const pat=`<div class="eqkr"><small>Motivo della maglia</small><div class="seg eqpat">${EQ_KIT_PAT.map(([m,n])=>`<button type="button" class="sg${e.kit.m===m?' on':''}" data-m="${m}">${n}</button>`).join('')}</div></div>`;
   $('eqKit').innerHTML=`<div class="eqph">Divisa</div>${[['s','Maglia'],['p','Pantaloncini'],['c','Calzettoni']].map(([z,n])=>`<div class="eqkr"><small>${n}</small><div class="eqsws">${sw(z)}</div></div>`).join('')}${pat}${e.kit.m!=='uni'?`<div class="eqkr"><small>Secondo colore della maglia</small><div class="eqsws">${sw('b')}</div></div>`:''}${EQ_KIT_HOT.includes(e.kit.s)?'<p class="qp" style="margin:6px 0 0">Con la maglia rossa o arancione l’avversaria gioca in bianco.</p>':''}`;
   $('eqMsg').textContent=eqMsgT;
+  const sh=$('utEquip').querySelector('.shead');   // il manichino resta fermo sotto il titolo (che sugli schermi bassi resta fermo anche lui)
+  $('utEquip').style.setProperty('--eqtop',(getComputedStyle(sh).position==='sticky'?sh.offsetHeight:0)+8+'px');
 }
 $('eqL').parentElement.addEventListener('click',e=>{const b=e.target.closest('.eqs');if(!b)return;eqSel=b.dataset.k;eqMsgT='';renderEquip();});
 $('eqPick').addEventListener('click',e=>{
