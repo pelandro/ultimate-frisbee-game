@@ -3,6 +3,7 @@
    peso della forza e degli attributi, coerenza tra partite simulate e giocate, crescita dei giocatori, prestazioni.
    Ogni passo usa un generatore casuale con seme fisso: con lo stesso seme e lo stesso numero di partite i risultati sono identici a ogni esecuzione.
    Si lancia da Impostazioni > Diagnostica oppure da riga di comando (node test_ultimate_frisbee.js). */
+const LANE_MAX=0.14;   // linee di passaggio verso chi taglia chiuse da un compagno che non taglia: su 24 partite 11% senza tagli a liberare e passi di lato, 9% con (lo stack verticale sta per forza nella corsia); una sola partita va dal 6 al 15%, quindi il tetto ferma i peggioramenti netti, non il caso
 const REV_MAX=6;   // prima delle correzioni (tagli liberi che dondolano, lato dell'attacco che si scambia) erano circa 13 al minuto; poi circa 7; con attese piu' lunghe tra un taglio e l'altro circa 4
 function testMatch(ra,rb,o){   // una partita IA contro IA: ritorna punteggio, statistiche e controlli
   o=o||{};
@@ -11,7 +12,7 @@ function testMatch(ra,rb,o){   // una partita IA contro IA: ritorna punteggio, s
   newGame();if(o.len)G.target=o.len;if(o.wind)setWind(o.wind[0],o.wind[1]);G.auto=true;G.lvl=[o.lvl|0,o.lvl|0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;
   applyForm();
   G.startRec=o.rec|0;G.nextRec=G.startRec;startPoint(G.startRec);
-  const dt=1/60,r={time:0,nan:0,stuck:false,hold:0,pts:0,ptT:[],rev:0,revT:0,halfAt:-1};let pt=0,last=0,rec=-1,fr=0;
+  const dt=1/60,r={time:0,nan:0,stuck:false,hold:0,pts:0,ptT:[],rev:0,revT:0,halfAt:-1,lane:0,laneT:0};let pt=0,last=0,rec=-1,fr=0;
   while(G.mode!=='over'&&r.time<3600){
     update(dt);r.time+=dt;pt+=dt;fr++;
     if(G.mode==='half'){r.halfAt=Math.max(G.score[0],G.score[1]);startSecondHalf();}
@@ -21,6 +22,12 @@ function testMatch(ra,rb,o){   // una partita IA contro IA: ritorna punteggio, s
     if(pt>240){r.stuck=true;break;}
     if(fr%6===0){   // ripensamenti: chi non ha il disco, mentre il portatore aspetta, inverte la corsa (angolo oltre 120 gradi rispetto a 0,4 secondi prima)
       if(G.mode==='play'&&G.holder&&!G.flight&&!G.pull&&G.holdT>1){   // solo a formazione assestata (dopo 1 s dalla presa): e' quando chi ha il disco sta decidendo o mirando
+        const Hh=G.holder;   // linee di passaggio intasate: un compagno che non taglia sta a meno di 2 m dalla linea tra il portatore e chi taglia (taglio a liberare)
+        for(const c of T[G.poss]){
+          if(c===Hh||!cutting(c))continue;
+          const vx=c.x-Hh.x,vy=c.y-Hh.y,L2=vx*vx+vy*vy;if(L2<25)continue;r.laneT++;
+          for(const q of T[G.poss]){if(q===Hh||q===c||cutting(q))continue;const u=((q.x-Hh.x)*vx+(q.y-Hh.y)*vy)/L2;if(u<0.15||u>0.9)continue;if(hyp(Hh.x+vx*u-q.x,Hh.y+vy*u-q.y)<2){r.lane++;break;}}
+        }
         for(const p of T[G.poss]){
           if(p===G.holder){p._hq=null;continue;}
           const q=p._hq||(p._hq=[]),sp=hyp(p.vx,p.vy);q.push([p.vx,p.vy]);if(q.length>4)q.shift();r.revT+=0.1;
@@ -50,6 +57,7 @@ function selfTestPlan(opt){
     const thr=avg(ms.map(m=>m.st.thr[0]+m.st.thr[1])),cmp=avg(ms.map(m=>m.st.cmp[0]+m.st.cmp[1]))/thr,to=avg(ms.map(m=>m.st.to[0]+m.st.to[1]));
     const lose=avg(ms.map(m=>Math.min(m.score[0],m.score[1]))),hold=avg(ms.map(m=>m.hold/Math.max(1,m.pts))),ptT=avg([].concat(...ms.map(m=>m.ptT)));
     const rev=ms.reduce((a,m)=>a+m.rev,0)/Math.max(1,ms.reduce((a,m)=>a+m.revT,0)/60);
+    const lane=ms.reduce((a,m)=>a+m.lane,0)/Math.max(1,ms.reduce((a,m)=>a+m.laneT,0));
     const htol=2.6*Math.sqrt(0.25/Math.max(1,ms.reduce((a,m)=>a+m.pts,0)));   // con poche mete il caso pesa: il margine si stringe quando le partite aumentano
     const bad=ms.filter(m=>m.stuck||m.nan||Math.max(m.score[0],m.score[1])!==MATCH_TARGET||Math.min(m.score[0],m.score[1])>=MATCH_TARGET).length;
     return [row('Partite concluse senza blocchi né errori numerici',(n-bad)+' su '+n,bad===0),
@@ -58,7 +66,8 @@ function selfTestPlan(opt){
       row('Turnover a partita',to.toFixed(1),to>=6&&to<=24,'attesa tra 6 e 24'),
       row('Mete segnate da chi riceve il pull',pc(hold),hold>=0.38-htol&&hold<=0.8+htol,'attesa tra 38% e 80%, con un margine di '+pc(htol)+' per il numero di mete giocate'),
       row('Durata media di una meta',ptT.toFixed(0)+' s',ptT>=10&&ptT<=60,'attesa tra 10 e 60 secondi'),
-      row('Ripensamenti: inversioni di corsa di un attaccante senza disco, ogni minuto',rev.toFixed(1),rev<=REV_MAX,'meno di '+REV_MAX+': chi parte per uno scatto lo porta a termine')];
+      row('Ripensamenti: inversioni di corsa di un attaccante senza disco, ogni minuto',rev.toFixed(1),rev<=REV_MAX,'meno di '+REV_MAX+': chi parte per uno scatto lo porta a termine'),
+      row('Linee di passaggio verso chi taglia chiuse da un compagno',pc(lane),lane<=LANE_MAX,'al massimo '+pc(LANE_MAX)+': chi finisce un taglio a vuoto esce di lato (taglio a liberare)')];
   }]);
   S.steps.push(['Equilibrio degli schemi',()=>{
     const k=Math.max(4,Math.round(n/2)),ra=ros(62,'a'),rb=ros(62,'b'),res=[];   // 4 partite per coppia: con 3 il T1 esatto (Visione alta) sfiorava il limite per puro caso, con 12 lo scarto vero e' 25-30 punti
