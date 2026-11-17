@@ -33,6 +33,11 @@ module.exports={
     runaway:4,               // G4: niente fughe: in Serie A mai piu' di 4 punti di forza sopra la migliore delle altre (era 97 contro 92)
     win:[0.6,0.82]           // G5: vittorie della tua squadra in tutta la carriera
   },
+  // gli altri campionati: con numeri di squadre e livelli diversi possono andare a ritmi diversi (accordo del 17/11/2026), ma nessuno deve scappare
+  leghe:{
+    lks:['US','BE','FR','DE','UK'],seeds:[1,2,3,4,5,6],seasons:10,skill:7,xp:1.3,   // dal club piu' debole della serie piu' bassa
+    runaway:8                // G6: nella serie piu' alta mai piu' di 8 punti di forza sopra la migliore delle altre (oltre 10 e' «grave»)
+  },
   // file che toccano questi equilibri: se una pull request ne cambia uno, la verifica di GitHub lancia anche tools/test-bilanci.js
   files:[
     /^src\/30-js\/30-carriera\/00-.*ovr/, /^src\/30-js\/38-ovr\//, /^src\/30-js\/35-usa\/0[0-3]-/, /^src\/30-js\/37-leghe\/0[0-2]-/,
