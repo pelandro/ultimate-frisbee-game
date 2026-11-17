@@ -14,7 +14,7 @@ const TIRED_AT=35;   // sotto questa condizione un giocatore e' «molto affatica
 // osservare costa secondo il valore del giocatore (prima 6 crediti per tutti): un ragazzo di Serie C circa 6, un giocatore da 230 crediti circa 22. Gli Osservatori tolgono il 15% per livello
 const scoutCost=x=>Math.max(2,Math.round((SCOUT_COST+0.08*(x?priceOf(x):0))*(1-0.15*facLv('oss'))));
 // manutenzione a partita: cresce piu' che in proporzione, cosi' tenere tutto al massimo e' una scelta e non un obbligo
-const facUpkeep=()=>Math.round(Object.keys(FAC).reduce((a,k)=>a+facLv(k)*(facLv(k)+1)/2,0)*0.2);   // era 0,25: ora pesano gli stipendi dei giocatori
+const facUpkeep=()=>Math.round(Object.keys(FAC).reduce((a,k)=>a+facLv(k),0)*0.2);   // 0,2 a partita per livello: crescendo come lv(lv+1)/2, con tutto al livello 5 costava 18 a partita (circa 300 a stagione) e mandava in rosso anche chi vinceva
 const KEEP_LV=3;
 const FAC_KEEP={camp:'ritiro estivo: i giocatori fino a 23 anni migliorano',fis:'prevenzione: i primi due infortuni della stagione durano la metà',viv:'un giovane del vivaio sale in prima squadra',
   stad:'abbonamenti: crediti a inizio stagione',oss:'rapporto estivo: potenziale già noto per tutto il mercato',sede:'ambiente: reputazione e morale in più'};

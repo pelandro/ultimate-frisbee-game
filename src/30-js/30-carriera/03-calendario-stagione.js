@@ -26,7 +26,7 @@ function freshTab(names){const t={};for(const n of names)t[n]={pts:0,w:0,l:0,pf:
 function beginSeason(){
   if(isLN())lnPrepSeason();   // leghe europee: promozioni e retrocessioni, gironi, il tuo girone (37-leghe/)
   const names=SV.mem[SV.sr];
-  SV.sched=roundRobin(names.length);SV.round=0;SV.tab=isUS()||isLN()?usFreshTab(names):freshTab(names);SV.res=[];SV.done=false;SV.next=null;SV.sgp=0;   // giornate di campionato giocate in questa stagione (28-allenamenti-fuori-stagione.js)
+  SV.sched=roundRobin(names.length);SV.round=0;SV.tab=isUS()||isLN()?usFreshTab(names):freshTab(names);SV.res=[];SV.done=false;SV.next=null;SV.sgp=0;SV.sellN=0;   // giornate di campionato giocate in questa stagione (28-allenamenti-fuori-stagione.js)
   leagueBegin();   // le altre due serie hanno ora un calendario vero
   if(SV.rost)lsSeasonStart();   // statistiche individuali del girone: la stagione scorsa passa alla carriera, il contatore riparte
   if(SV.rost)SV.expOrd=names.slice().sort((a,b)=>teamPow(b)-teamPow(a));   // gerarchie a inizio stagione: servono al premio per l'allenatore dell'anno
@@ -173,6 +173,7 @@ function newSeason(){
   SV.chem=clamp(50+(SV.chem-50)*0.6,0,100);SV.mor=clamp(60+(SV.mor-60)*0.5,0,100);   // estate: l'intesa si allenta un poco, l'umore torna verso la norma
   beginSeason();buildMarket();pickRival();aiMarketNews(aim);   // la notizia dopo la scelta della rivale: la segna nei colpi che la riguardano
   seasonStartDyn();   // premi di mantenimento e usura delle strutture, nuova sfida
+  wageWarn();         // 16-bilancio.js: se con questa rosa i conti vanno sotto zero, la dirigenza avvisa subito
   retireCheck('start');starsRetire();   // chi comincia a pensare al ritiro lo dice subito
   persist();
 }

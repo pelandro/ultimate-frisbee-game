@@ -11,7 +11,7 @@
 // campionato (in USA tutta la lega, nelle leghe europee tutto il livello, in Italia la serie: le Conference e i gironi sono troppo diversi tra loro),
 // non un valore fisso per campionato: dove i giocatori sono piu' forti costano e incassano di piu'. La rosa di riferimento ha 16 giocatori, uguale per tutti:
 // le entrate non dipendono dalla tua rosa. La curva passa per i valori dell'Italia (Serie C 1, B 1,3, A 1,65), che restano come prima.
-const ECO_REF=[[84,1],[253,1.3],[511,1.65]],ECO_RS=16;
+const ECO_REF=[[84,1],[253,1.3],[511,1.65]],ECO_RS=16,ECO_OWN=0.8;
 function ecoPeers(){
   if(isUS())return US_NAMES;
   if(isLN()&&SV.ln&&SV.ln.T&&SV.ln.T[SV.ln.tier])return SV.ln.T[SV.ln.tier].flatMap(c=>c.pools?c.pools.flat():(c.clubs||[]));
@@ -24,8 +24,14 @@ function ecoK(){
   const key=SV.team+'|'+SV.season+'|'+SV.sr;if(ecoKC.key===key)return ecoKC.v;
   const ns=ecoPeers().filter(n=>n!==SV.team&&SV.rost&&SV.rost[n]&&SV.rost[n].length);
   if(!ns.length){ecoKC={key,v:SR_K[SV.sr]||1};return ecoKC.v;}
-  ecoKC={key,v:ecoCurve(ns.reduce((a,n)=>a+w16(SV.rost[n]),0)/ns.length)};return ecoKC.v;
+  // un club piu' forte della media del campionato ha piu' tifosi e sponsor piu' ricchi: il riferimento sale con lo stipendio di un giocatore al livello
+  // dei tuoi 7 migliori rispetto a uno al livello medio del campionato (ECO_OWN). Conta la forza, non la lunghezza della rosa: vendere le riserve non cambia
+  // le entrate. Senza, i club di vertice europei (una squadra da Europa in un campionato debole, rose vere fino a 28) pagavano stipendi doppi o tripli
+  // della media e perdevano centinaia di crediti a stagione anche vincendo tutto
+  const W=ns.reduce((a,n)=>a+w16(SV.rost[n]),0)/ns.length,lp=ns.reduce((a,n)=>a+teamPow(n),0)/ns.length,me=SQ.length?squadPower():lp;
+  ecoKC={key,v:ecoCurve(W*Math.pow(Math.max(1,wOv(me)/wOv(lp)),ECO_OWN))};return ecoKC.v;
 }
+const wOv=v=>4+Math.pow(Math.max(0,v-40),2)/50;   // lo stipendio di wageOf per un Overall dato
 // dal costo medio di una rosa da 16 al peso economico: interpolazione sui punti italiani, fuori dai punti si prolunga il primo o l'ultimo tratto
 function ecoCurve(W){
   const R=ECO_REF;let k;

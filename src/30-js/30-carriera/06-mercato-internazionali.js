@@ -109,7 +109,7 @@ function keepFormer(p){const c=p.car;if(!c||!c.mp)return;SV.former.push({name:(p
 function sellPlayer(id){
   const p=SQ[id];if(!p||SQ.length<=SQ_MIN)return false;
   keepFormer(p);
-  const v=sellValue(p);SV.cash+=v;
+  const v=sellValue(p);SV.cash+=v;SV.sellN=(SV.sellN|0)+1;
   const list=squadData();list.splice(id,1);setSquad(list);fixLines();SV.chem=Math.max(0,SV.chem-2);
   news('Ceduto '+(p.label||p.name)+' per '+v+' crediti.');return true;
 }
