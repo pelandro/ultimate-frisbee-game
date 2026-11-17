@@ -46,19 +46,22 @@ const LN_POOL={
       l:['Smith','Jones','Taylor','Brown','Williams','Wilson','Johnson','Davies','Robinson','Wright','Thompson','Evans','Walker','White','Roberts','Green','Hall','Wood','Jackson','Clarke','Patel','Khan','Lewis','Harrison']}
 };
 // eta': esatta se nota (anche dalle schede UFA, se il giocatore gioca pure in America); altrimenti la stima USA se c'e', o 22-33; se c'e' un limite delle nazionali giovanili
-// (U20/U24, di qui o di la') e la stima lo supera, il limite meno uno. Chi gioca in entrambe le leghe ha cosi' la stessa eta' in tutte e due. Ritorna [eta', esatta?]
+// (U17/U20/U24, di qui o di la') e la stima lo supera, un valore tra il limite meno tre e il limite meno uno. Chi gioca in entrambe le leghe ha cosi' la stessa eta' in tutte e due. Ritorna [eta', esatta?]
 let lnUsAge=null,lnHiMap=null;
 function lnHiOf(k){   // limite d'eta' dalle convocazioni giovanili nei dati europei (0 = nessuno)
-  if(!lnHiMap){lnHiMap={};for(const lk of LN_IDS)for(const club in LN_PL[lk])for(const r of LN_PL[lk][club])if(r[3]>0){const key=usNameKey(r[1]+' '+r[0]);lnHiMap[key]=Math.min(lnHiMap[key]||99,r[3]);}}
+  if(!lnHiMap){lnHiMap={};for(const lk of LN_IDS)for(const club in LN_PL[lk])for(const r of LN_PL[lk][club])if(r[3]>0){const key=usNameKey(r[1]+' '+r[0]);lnHiMap[key]=Math.min(lnHiMap[key]||99,r[3]);}
+    for(const n in LN_AGE_HI){const key=usNameKey(n);lnHiMap[key]=Math.min(lnHiMap[key]||99,LN_AGE_HI[n]);}}   // + i tornei giovanili (00-eta-giovanili.js)
   return lnHiMap[k]||0;
 }
+// sotto il limite dei tornei giovanili: tra limite-3 e limite-1 (almeno 16; hh = hash del nome), cosi' chi ha giocato lo stesso torneo non ha tutti la stessa eta'
+const ageCap=(h,hh)=>Math.max(16,h-1-Math.floor(hh/625)%3);
 function lnAgeOf(full,age,hi){
   if(age>0)return [age,true];
   const k=usNameKey(full);
   if(US_AGE[k])return [US_AGE[k],true];
   if(!lnUsAge){lnUsAge={};for(const c in US_CORE)for(const r of US_CORE[c])lnUsAge[usNameKey(r[1]+' '+r[0])]=r[2];}
-  const hh=hashStr('ln|'+full),est=lnUsAge[k]||20+hh%5+Math.floor(hh/5)%5+Math.floor(hh/25)%5+Math.floor(hh/125)%4,h=Math.min(hi>0?hi:99,US_AGE_HI[k]||99);   // 20-35 anni, con la media intorno ai 27
-  return [h<99&&est>h?Math.max(16,h-1):est,false];
+  const hh=hashStr('ln|'+full),est=lnUsAge[k]||20+hh%5+Math.floor(hh/5)%5+Math.floor(hh/25)%5+Math.floor(hh/125)%4,h=Math.min(hi>0?hi:99,US_AGE_HI[k]||99,lnHiOf(k)||99);   // 20-35 anni, con la media intorno ai 27
+  return [h<99&&est>h?ageCap(h,hh):est,false];
 }
 // forma della rosa: il giocatore al posto j (0 = il migliore) sta a P + lnShape(j). I primi 7 hanno media 0, cosi' la forza della rosa e' quella del club; il fondo scende piano.
 // I giocatori fissi (stelle del mercato e doppioni) tengono il loro Overall e occupano meta' dei posti in alto: chi gioca con loro non scende sotto il livello del club.

@@ -139,7 +139,7 @@ const usFFabs=(f,m,aw)=>{const a=62+30*usFFval(f);return clamp(Math.max(a,m?m-3:
 function usAgeOf(sur,nm,def){
   const k=usNameKey(nm+' '+sur),h0=lnHiOf(k),h=Math.min(US_AGE_HI[k]||99,h0||99);   // anche i limiti delle convocazioni giovanili europee (37-leghe/)
   if(US_AGE[k])return [US_AGE[k],true];
-  return h<99&&def>h?[h-1,false]:[def,false];
+  return h<99&&def>h?[ageCap(h,hashStr('hi|'+k)),false]:[def,false];
 }
 // ruolo dai punteggi per ruolo: si cambia solo se uno e' nettamente avanti e il campione non e' minuscolo
 function usFFrole(f){
