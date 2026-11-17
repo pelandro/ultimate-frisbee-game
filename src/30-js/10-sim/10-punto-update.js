@@ -85,6 +85,7 @@ function update(dt){
     return;
   }
   if(G.mode!=='play')return;
+  poserTick();   // tratto Poser (24-poser.js): chi ha il disco sotto stall rende di piu'
   G.gt=(G.gt||0)+dt;   // tempo di gioco (vale anche nei test e nelle mete simulate, dove G.tick non avanza)
   if(G.drill&&G.drill.wait>0){G.drill.wait-=dtr;if(G.drill.wait<=0){if(G.drill.done){G.drill.wait=0;HOOKS.drill('end');return;}drillStart();return;}}
   if(G.freeze>0){G.freeze-=dt;return;}

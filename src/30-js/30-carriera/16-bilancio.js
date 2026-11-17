@@ -63,5 +63,5 @@ function wageWarn(){
   if(!f.left||f.end>=0)return;
   SV.wWarn=SV.season;
   const lots=SQ.length>WAGE_FULL+2;
-  alertAdd('dir',`Previsioni dei conti: la stagione chiude in rosso. Con ${lots?'una rosa di '+SQ.length+' giocatori ':'questa rosa '}${f.wage>f.inc?`gli stipendi (circa ${wageBill()} crediti a partita) costano più di quanto entra dalle partite`:'le spese previste superano quello che resta in cassa e che entrerà'}: se non cambia nulla, all’ultima giornata la cassa sarà intorno a ${f.end} crediti, prima dei premi di fine stagione. Con i conti sotto zero il mercato si ferma e il morale cala. ${lots?'Valuta di cedere qualche riserva: le prime cessioni della stagione rendono di più.':'Valuta una cessione o rimanda le spese.'}`);
+  alertAdd('dir',`Previsioni dei conti: a questo ritmo la stagione chiude in rosso, con la cassa intorno a ${f.end} crediti all’ultima giornata (prima dei premi). ${f.wage>f.inc?`Con ${lots?'una rosa di '+SQ.length+' giocatori ':'questa rosa '}gli stipendi (circa ${wageBill()} a partita) costano più di quanto entra dalle partite.`:'Le spese previste superano ciò che resta in cassa e che entrerà.'} Con i conti sotto zero il mercato si ferma e il morale cala: ${lots?'valuta di cedere qualche riserva (le prime cessioni rendono di più).':'valuta una cessione o rimanda le spese.'}`);
 }
