@@ -275,7 +275,7 @@ function selfTestPlan(opt){
       tick(60*12,()=>!G.pull&&!!G.holder);
       const h=G.holder,d=T[1-G.poss];if(!h||!G.brick||G.open)continue;
       bOk++;if(d.some(q=>!q.mark||hyp(q.x-q.mark.x,q.y-q.mark.y)>3.2))bFar++;
-      const t=tick(60*6,()=>!!G.flight||G.mode!=='play');if(t>=4.5)bWait++;   // l'IA lancia entro pochi secondi, non aspetta la difesa (misurato su 40 brick: da 1,1 a 3,3 s, in genere 2,7 s, il tempo normale di uno schema che parte; con 3 s di soglia un solo brick lento faceva fallire il controllo)
+      const t=tick(60*6,()=>G.holder!==h||G.mode!=='play');if(t>=4.5)bWait++;   // l'IA lancia entro pochi secondi, non aspetta la difesa (misurato su 40 brick: da 1,1 a 3,3 s, in genere 2,7 s, il tempo normale di uno schema che parte; con 3 s di soglia un solo brick lento faceva fallire il controllo). Il conto si ferma quando il portatore perde il disco, anche se il lancio viene murato sul nascere (handblock: il disco passa subito alla difesa senza volo): prima quel caso, circa 1 seme su 20, contava come attesa lunghissima
     }
     // PASSAGGIO D'APERTURA: l'IA che riceve un pull normale lancia subito in avanti, verso il centro, poi parte lo schema
     let oN=0,oT=0,oG=0,oC=0,oSch=0,oOpen=0;
