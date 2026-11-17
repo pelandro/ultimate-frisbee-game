@@ -36,3 +36,7 @@ for(const lk in LN_PL_PLUS){
 // di misura con Clapham (14-15), Cotarica Grandes (13-15), GRUT (12-15) e Mooncatchers (8-15); il rating ricavato dai punteggi di tutte le 55 partite Open (minimi quadrati sulla differenza mete)
 // e portato sulla scala del gioco con i club noti (correlazione 0,85) li dava a circa 83 contro i 74 dei dati; con solo 6 partite si va a meta' strada, circa 78.
 const LN_POW_FIX={'Freezzz Beezzz one':78};
+// livello (bonus) dei giocatori corretto a mano, con la fonte: Freezzz Beezzz one. I bonus dei dati generati seguivano poco le statistiche (correlazione 0,54 con mete+assist a partita del
+// WUCC 2026, contro 0,76-0,87 degli altri club Open) e Victor Weller (2,0 punti a partita, terzo della squadra) era fuori dalla rosa; con le 10 partite Open del WUCC 2026 (Limerick, portali
+// WFDF) il bonus e' la media tra il vecchio e la retta ricavata dagli altri club (bonus = -3,14 + 2,41 x punti a partita), solo la retta per chi non aveva dati; a meta' interi.
+const LN_BONUS_FIX={'Freezzz Beezzz one':{'Lucca Rogissart':4,'Kamiel Van Mullem':2.5,'Corneel Descan':2,'Arthur Moyersoen':2,'Victor Weller':1.5,'Arne Geernaert':1,'Stan Vanhecke':1,'Tom Van Quathem':0.5,'August Smessaert':0.5,'Adrien Aurousseau':0.5,'Raf De Vlaemynck':-0.5,'Raven Proot':-0.5,'Ewoud Delanote':-0.5,'Stan Coppejans':-1,'Emile Willems':-1.5,'William Dumon':-1.5,'Bavo Delanote':-1.5,'Broes Delanote':-2,'Robbe Wets':-2,'Joseph Delachat':-2,'Lars Vanderbeck':-2.5,'Seppe Demeulemeester':-2.5}};

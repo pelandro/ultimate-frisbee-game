@@ -72,7 +72,7 @@ function lnRoster(club,seedStr,opt){
   opt=opt||{};const B=LN_BY[club],P=opt.p!==undefined?opt.p:B.p,rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
   for(const r of STARS)if(LN_STAR_CLUB[usStarKey(r)]===club)specs.push({k:'s',row:r});
   const star=new Set(specs.map(s=>usNameKey(s.row[1]+' '+s.row[0])));   // chi e' gia' una stella non si ripete dalle tabelle
-  const gone=ovrOutSet(club),real=(LN_PL[B.lk][club]||[]).filter(r=>{const k=usNameKey(r[1]+' '+r[0]);return !star.has(k)&&!LN_OUT.has(k)&&!gone.has(k);}).map(r=>{const ag=lnAgeOf(r[1]+' '+r[0],r[2],r[3]);return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+r[5],fx:lnDual(r[0],r[1])};});
+  const gone=ovrOutSet(club),real=(LN_PL[B.lk][club]||[]).filter(r=>{const k=usNameKey(r[1]+' '+r[0]);return !star.has(k)&&!LN_OUT.has(k)&&!gone.has(k);}).map(r=>{const ag=lnAgeOf(r[1]+' '+r[0],r[2],r[3]);const bf=(LN_BONUS_FIX[club]||{})[r[1]+' '+r[0]];return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+(bf!==undefined?bf:r[5]),fx:lnDual(r[0],r[1])};});
   real.sort((a,b)=>(b.fx>0?100:b.base)-(a.fx>0?100:a.base)).slice(0,Math.max(0,20-specs.length)).forEach(s=>specs.push(s));   // una rosa ha al massimo 20 giocatori
   const N=Math.min(20,Math.max(opt.n||16,specs.length)),used=new Set(specs.map(s=>s.row[0]+s.row[1])),pool=LN_POOL[B.lk];
   for(let i=0;specs.length<N;i++){   // riempimento: nomi del paese, ruoli bilanciati (almeno 6 handler), livello decrescente
