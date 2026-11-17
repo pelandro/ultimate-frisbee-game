@@ -73,7 +73,7 @@ function usaSelfTest(seasons,seed){
       const ffl=US_FF[t].filter(f=>!US_OUT.has(usNameKey(f[0]))),best=ffl.slice().sort((a,b)=>usFFval(b)-usFFval(a))[0],bo=ros.find(o=>usNameKey(o.label||o.n)===usNameKey(best[0]));
       ffAll++;chk('fantasy',!!bo&&ros.filter(o=>by(o)>by(bo)).length<=4,'il migliore di '+t+' non e\' tra i primi 5: '+best[0]);
       for(const f of ffl)if(usFFval(f)>0.45){ffAll++;if(keys.has(usNameKey(f[0])))ffIn++;}
-      chk('fantasy',ros.length===20&&ros.every(o=>ovr(o)>=36&&ovr(o)<=99),'rosa '+t+' fuori misura');
+      chk('fantasy',ros.length>=20&&ros.length<=SQ_MAX&&ros.every(o=>ovr(o)>=36&&ovr(o)<=99),'rosa '+t+' fuori misura');
       // fama: una stella con un torneo storto non scende molto sotto il suo Overall di mercato; i club con i campioni non perdono il loro rating
       for(const o of ros)if(o.star){const r=STARS.find(x=>x[0]+' '+x[1]===o.full);chk('fantasy',!r||ovr(o)>=r[4]-4,'stella troppo sotto il mercato: '+o.full);}
       chk('fantasy',Math.abs(rosterPower(ros)-US_TEAM[c].power)<=4.5,'forza della rosa lontana dal rating: '+t);}
@@ -88,7 +88,7 @@ function usaSelfTest(seasons,seed){
     const PAESI=new Set(['USA','Nord America','Paesi Bassi','Lettonia','Repubblica Ceca','Germania']),starKeys=new Set();
     for(const r of STARS){const k=usNameKey(r[1]+' '+r[0]);chk('stelle',!starKeys.has(k),'stella ripetuta: '+r[1]+' '+r[0]);starKeys.add(k);
       chk('stelle',US_NAMES.includes(r[5])||LN_NAMES.includes(r[5])||PAESI.has(r[5]),'provenienza non valida (squadra UFA?): '+r[1]+' '+r[0]+' -> '+r[5]);
-      chk('stelle',r[4]>=usAward(r[0],r[1]),'Overall sotto ai premi: '+r[1]+' '+r[0]);
+      chk('stelle',r[4]>=usAward(r[0],r[1])||ovrAssigned(r[1]+' '+r[0]),'Overall sotto ai premi: '+r[1]+' '+r[0]);   // chi e' nel foglio di revisione 2026 vale quel valore
       const cl=US_STAR_CLUB[usStarKey(r)]||LN_STAR_CLUB[usStarKey(r)];if(cl)chk('stelle',r[5]===cl,'provenienza diversa dal club del gioco: '+r[1]+' '+r[0]+' '+r[5]+' / '+cl);}
     chk('eta',agN>=60,'poche eta\' dalle schede UFA: '+agN);chk('premi',awN>=15,'pochi premiati in rosa: '+awN);
     chk('fantasy',ffIn>=ffAll*0.88,'giocatori di rendimento mancanti nelle rose: '+ffIn+'/'+ffAll);
@@ -121,7 +121,7 @@ function usaSelfTest(seasons,seed){
   r('Ranking nazionale numerico e storico di stagione','ranking','sì');r('Storico della stagione con esito USA','storico','sì');
   r('Salvataggio: ricarica a metà stagione','salvataggio','sì');
   r('Stelle del mercato presenti nei club USA: nel club, non sul mercato','stelle','sì');
-  r('Overall dai dati Fantasy dei Nationals: il migliore di ogni club sta tra i primi 5, i giocatori di rendimento sono in rosa, le stelle non scendono sotto la fama, rose da 20','fantasy','sì');
+  r('Overall dai dati Fantasy dei Nationals: il migliore di ogni club sta tra i primi 5, i giocatori di rendimento sono in rosa, le stelle non scendono sotto la fama, rose da 20 (fino a 28 dove il foglio di revisione ha più giocatori)','fantasy','sì');
   r('Età dalle schede pubbliche UFA e dai limiti delle convocazioni giovanili U20/U24: in rosa, esatte dove note, mai oltre il limite','eta','sì');
   r('Premiati All-UFA 2026 almeno a metà della propria rosa','premi','sì');
   r('Internazionali del mercato: provenienza solo da club dei Nationals/europei o paese (mai squadre UFA), senza doppioni, Overall coerente con i premi','stelle',`sì (${STARS.length} giocatori)`);

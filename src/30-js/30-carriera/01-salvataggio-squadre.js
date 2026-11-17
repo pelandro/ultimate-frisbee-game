@@ -18,7 +18,7 @@ const SERIES={A:[],B:[],C:[]},TEAM={};
   let rank=0;
   for(const sr of ['A','B','C'])for(const n0 of SERIES_RAW[sr]){
     const n=n0.trim(),nm=cnt[norm(n)]>1?`${n} (${sr})`:n;
-    rank++;SERIES[sr].push(nm);TEAM[nm]={series:sr,rank,power:Math.round((88-(rank-1)*40/45)*10)/10};
+    rank++;SERIES[sr].push(nm);TEAM[nm]={series:sr,rank,power:OVR_POW[nm]||Math.round((88-(rank-1)*40/45)*10)/10};   // OVR_POW: forza delle rose rivedute (00-ovr-2026.js)
   }
 })();
 // ROSTER UFFICIALI 2026: per ogni squadra di Serie A, B e C tutti i giocatori scesi in campo almeno una volta, presi dai roster dei report partita
