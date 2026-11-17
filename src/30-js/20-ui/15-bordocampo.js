@@ -14,21 +14,11 @@ function ezHatch(x,y,w,h){
   ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
   ctx.translate(-(((CX%8)+8)%8),((OYi%8)+8)%8-8);ctx.fillStyle=p;ctx.fillRect(x-8,y-8,w+24,h+24);ctx.restore();
 }
-// cartelloni lungo il lato basso e le due panchine a meta' campo (a sinistra la squadra che difende la meta di sinistra)
-const BOARD_W=9;   // metri
+// cartelloni lungo il lato basso (18-cartelloni.js) e le due panchine a meta' campo (a sinistra la squadra che difende la meta di sinistra)
 function drawSideline(y1){
-  const y=y1+5,h=7;if(y>VH)return;
-  const B=boardTexts();   // testi e colori dei cartelloni dipendono dal campo (17-stadi-pubblico.js)
+  const y=y1+5;if(y>VH)return;
   const mid=FIELD_L/2,benchL=[mid-15,mid-5],benchR=[mid+5,mid+15];
-  const k0=Math.floor((toWorld(0,0).x+4)/BOARD_W)-1,k1=Math.ceil((toWorld(VW,0).x+4)/BOARD_W);
-  for(let k=k0;k<=k1;k++){
-    const wx=k*BOARD_W-4;if(wx+BOARD_W>benchL[0]&&wx<benchR[1])continue;   // davanti alle panchine niente cartelloni
-    if(B.gap&&(k&1))continue;   // campo comunale: pochi cartelloni, con i buchi
-    const a=sxw(wx)+1,b=sxw(wx+BOARD_W)-1,i=((k%4)+4)%4;if(b<0||a>VW)continue;
-    px(a-1,y-1,b-a+2,h+2,PAL.out);px(a,y,b-a,h,B.bg[i]);px(a,y,b-a,1,'rgba(255,255,255,.22)');
-    const t=B.txt[i].find(s=>b-a>ptw(s,'t')+4);   // il testo piu' lungo che ci sta (nome intero, prima parola, sigla)
-    if(t)ptext(t,(a+b)/2,y,{f:'t',c:B.ink[i],o:false});
-  }
+  drawBottomBoards(y,[benchL[0],benchR[1]]);   // davanti alle panchine niente cartelloni
   const blueLeft=G.dir[0]>0;
   for(const [r,t] of [[benchL,blueLeft?0:1],[benchR,blueLeft?1:0]])bench(r,t,y);
 }

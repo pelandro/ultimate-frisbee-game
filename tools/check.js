@@ -54,6 +54,17 @@ else{
   const g=fs.readFileSync(path.join(SRC,'20-html/07-guida.html'),'utf8');
   for(const m of g.matchAll(/<li>([\s\S]*?)<\/li>/g)){const t=strip(m[1].split('<ul>')[0]).replace(/\s+/g,' ').trim();if(t.length>420)errs.push(`guida: una voce di ${t.length} caratteri (massimo 420): «${t.slice(0,40)}…»`);}
 }
+// sponsor: ogni nome che puo' finire su un cartellone ha il suo marchio, e lo slogan sta su un cartellone del campo (20-ui/18-cartelloni.js)
+try{
+  const rd=f=>fs.readFileSync(path.join(SRC,f),'utf8'),eco=rd('30-js/30-carriera/26-economia-partita.js'),car=rd('30-js/20-ui/18-cartelloni.js');
+  const arr=(src,k)=>new Function('return '+src.match(new RegExp('const '+k+'=(\\[[^\\]]*\\])'))[1])();
+  const names=arr(eco,'SP_NAMES').concat(arr(car,'SP_LOCAL')),icons=new Function(car.match(/const SP_ICON=\{[\s\S]*?\n\};/)[0]+';return SP_ICON;')();
+  for(const n of names){
+    const m=car.match(new RegExp("'"+n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+"':\\{[^}]*ic:'(\\w+)'[^}]*sl:'([^']*)'"));
+    if(!m)errs.push(`sponsor «${n}» senza marchio in SP_BRAND`);
+    else{if(!icons[m[1]])errs.push(`sponsor «${n}»: l'icona «${m[1]}» non esiste in SP_ICON`);if(m[2].length>18)errs.push(`sponsor «${n}»: slogan di ${m[2].length} lettere (massimo 18)`);}
+  }
+}catch(e){errs.push('sponsor: i marchi non si leggono ('+e.message+')');}
 for(const w of warn)console.log('  avviso: '+w);
 if(errs.length){console.error('Controlli statici: '+errs.length+' problemi');for(const e of errs)console.error('  - '+e);process.exit(1);}
 console.log(`Controlli statici: ok (${files().length} moduli)`);

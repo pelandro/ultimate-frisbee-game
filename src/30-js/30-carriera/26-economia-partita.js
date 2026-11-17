@@ -182,8 +182,10 @@ function spDefault(){
 const spTxt=()=>SV.sp&&SV.sp.k?`${SV.sp.name} · ${SP_KIND[SV.sp.k].n.toLowerCase()}`:'Da scegliere';
 // la scelta si fa con il riquadro degli imprevisti (si apre da solo sul cruscotto e non si puo' ignorare)
 EVT.spons={w:0,ok:()=>false,mk:()=>({}),
-  t:a=>['Gli sponsor della stagione','Tre aziende vogliono il loro nome sulle maglie. Scegli il contratto: i soldi a partita arrivano comunque, il bonus solo se a fine stagione raggiungi l’obiettivo del contratto.'],
-  o:a=>(SV.sp&&SV.sp.off?SV.sp.off:[]).map((d,i)=>[`${SP_KIND[d.k].n} · ${d.name}: ${d.fix} a partita, bonus ${d.obj.reward} se: ${lc1(d.obj.txt)}`,()=>spChoose(i)])};
+  t:a=>['Gli sponsor della stagione','Tre aziende vogliono il loro marchio sui cartelloni del tuo campo. Scegli il contratto: i soldi a partita arrivano comunque, il bonus solo se a fine stagione raggiungi l’obiettivo del contratto.'],
+  // il quarto elemento e' il pulsante disegnato: il cartellone dello sponsor (18-cartelloni.js) sopra le condizioni del contratto
+  o:a=>(SV.sp&&SV.sp.off?SV.sp.off:[]).map((d,i)=>{const t=`${SP_KIND[d.k].n} · ${d.name}: ${d.fix} a partita, bonus ${d.obj.reward} se: ${lc1(d.obj.txt)}`;
+    return [t,()=>spChoose(i),null,`${spStripHTML(d.name)}<span class="spo"><b>${SP_KIND[d.k].n}</b> · ${d.fix} a partita, bonus ${d.obj.reward} se: ${esc(lc1(d.obj.txt))}</span>`];})};
 // ---------- premio a un giocatore (imprevisto) ----------
 const perfScore=p=>p&&p.lm?p.lm.g*2+p.lm.a*2+p.lm.b*3:0;
 const PERF_MIN=14;   // una partita fuori dal normale: nelle partite di 7 punti il migliore in campo arriva a 14 di rado, e solo per le squadre molto forti (mete e assist pesano 2, le difese 3, come nei premi di stagione)

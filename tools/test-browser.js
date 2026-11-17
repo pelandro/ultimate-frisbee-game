@@ -169,6 +169,8 @@ catch(e){
     if(!/schermata Partita/i.test(await page.locator('#tuH').innerText()))throw new Error('«Scopri di più» deve aprire la lezione sulla schermata Partita: '+await page.locator('#tuH').innerText());
     await page.evaluate(()=>document.getElementById('tuX').click());await page.waitForTimeout(300);
     if(!(await page.locator('#evt:not(.hidden)').count()))throw new Error('chiuso il fumetto deve arrivare la scelta dello sponsor');
+    // ogni sponsor ha il suo marchio (18-cartelloni.js): i tre della scelta mostrano il cartellone (che ogni nome abbia il marchio lo controlla check.js)
+    if(await page.locator('#evOpts .spb').count()!==3)throw new Error('la scelta dello sponsor deve mostrare i tre cartelloni');
     await vis('#home');await menu('#hTut');await vis('#tut');await page.click('#tuX');await vis('#home');
   });
   await step('allenatore e staff: cambio nome dal cruscotto, candidati, assunzione e rinnovo dell\'elenco',async()=>{

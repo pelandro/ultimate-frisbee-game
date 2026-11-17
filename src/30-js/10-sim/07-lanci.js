@@ -286,10 +286,9 @@ function updateDisc(dt){
         G.edge={team:eg.k>0?pu.team:G.poss,rec:G.poss,k:Math.abs(eg.k),thr:eg.thr,t:PULL_EDGE_T};
         for(const q of T[G.poss]){q.cs='set';q.cutT=rnd(0.5,1.6)*eg.cut;}
         assignMarks();
-        // l'IA che riceve il pull non aspetta lo schema: prima lancia subito in avanti, verso il centro, per guadagnare metri mentre la difesa
-        // sta ancora arrivando, e lo schema parte da chi riceve quel passaggio (catchBy). Con il brick si riparte gia' dal segno: schema subito
-        if(!pu.oob&&(G.poss===1||G.auto)){G.open=true;G.pb[G.poss]=null;G.think=thinkFor(c.t,0.35,0.7,c);}
-        else startPlay(G.poss);
+        // parte subito lo schema: tutti vanno nella formazione e, se chi ha preso il pull non e' al centro, il primo passaggio va all'handler centrale
+        // (pb.prep in startPlay); i tagli partono solo dopo. Con il brick si riparte gia' dal segno, al centro
+        startPlay(G.poss);
         if(pu.oob)brickSet();
       }
     }

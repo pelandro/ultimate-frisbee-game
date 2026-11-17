@@ -7,6 +7,7 @@ const ATTS=[
 ATTS.push({id:'side',name:'Stack laterale',desc:'Cutter in fila su un lato: mezzo campo libero per i tagli in isolamento. Solido contro ogni marcatura a uomo, meno efficace contro la zona.',pos:[[.1,.5],[.24,.2],[.3,.36],[.46,.85],[.58,.85],[.7,.85],[.82,.84]]});
 ATTS.push({id:'weave',name:'Weave',desc:'Tre handler che si passano il disco in diagonale correndosi davanti. Guadagna metri contro la zona; contro gli aiuti i passaggi corti si complicano.',pos:[[.1,.5],[.18,.2],[.06,.8],[.42,.12],[.52,.38],[.62,.62],[.72,.88]]});
 ATTS.push({id:'t1',name:'T1',desc:'Sequenza: un cutter taglia verso il disco, poi taglio in meta o di rientro. Il più efficace, ma se lo ripeti l’IA lo riconosce. Si segue alla lettera con Visione alta.',pos:[[.19,.51],[.09,.13],[.09,.90],[.5,.06],[.5,.36],[.5,.63],[.5,.93]]});
+ATTS.push({id:'i34',name:'1 in 3-4',desc:'Sequenza: quattro cutter in fila larga. Due vengono incontro, uno va lungo; di solito chi è andato lungo torna incontro e poi si lancia lungo a chi va in meta. Si segue alla lettera con Visione alta.',pos:[[.17,.5],[.07,.2],[.07,.8],[.44,.08],[.44,.37],[.44,.63],[.44,.92]]});
 const DEFS=[
   {id:'man_out',name:'Uomo, forza fuori',desc:'Il marcatore chiude il centro: il disco va verso la linea laterale.',pos:[[.1,.5],[.26,.15],[.26,.85],[.46,.5],[.6,.5],[.74,.5],[.88,.5]]},
   {id:'man_in',name:'Uomo, forza dentro',desc:'Il marcatore chiude la linea laterale: lanci verso il centro.',pos:[[.1,.5],[.26,.15],[.26,.85],[.46,.5],[.6,.5],[.74,.5],[.88,.5]]},

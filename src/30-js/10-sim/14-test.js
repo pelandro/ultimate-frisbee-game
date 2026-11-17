@@ -288,7 +288,7 @@ function selfTestPlan(opt){
       row('Distanza minima dei compagni dal portatore in un punto intero',fr>30?minP.toFixed(1)+' m':'-',fr>30&&minP>=2.5,'mai sotto 2,5 m'),
       row('Tuffo senza chiusura: il giocatore si rialza (nessuno steso per tutta la partita)',(orph?'sì':'no')+', '+(ended?'sì':'no')+', '+(reset?'sì':'no'),orph&&ended&&reset,'rete di sicurezza, endDive e nuovo punto')];
   }]);
-  S.steps.push(['Brick e passaggio d\u2019apertura dopo il pull',()=>{
+  S.steps.push(['Brick e partenza dal centro dopo il pull',()=>{
     const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);schReset();G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
     newGame();G.auto=true;G.lvl=[0,0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();setWind(0,0);
     const fwd=dirOf(0)>0?0:Math.PI,K=12,tick=(max,stop)=>{let g=0;while(g++<max&&!stop())update(1/60);return g/60;};
@@ -301,21 +301,21 @@ function selfTestPlan(opt){
       bOk++;if(d.some(q=>!q.mark||hyp(q.x-q.mark.x,q.y-q.mark.y)>3.2))bFar++;
       const t=tick(60*6,()=>G.holder!==h||G.mode!=='play');if(t>=4.5)bWait++;   // l'IA lancia entro pochi secondi, non aspetta la difesa (misurato su 40 brick: da 1,1 a 3,3 s, in genere 2,7 s, il tempo normale di uno schema che parte; con 3 s di soglia un solo brick lento faceva fallire il controllo). Il conto si ferma quando il portatore perde il disco, anche se il lancio viene murato sul nascere (handblock: il disco passa subito alla difesa senza volo): prima quel caso, circa 1 seme su 20, contava come attesa lunghissima
     }
-    // PASSAGGIO D'APERTURA: l'IA che riceve un pull normale lancia subito in avanti, verso il centro, poi parte lo schema
-    let oN=0,oT=0,oG=0,oC=0,oSch=0,oOpen=0;
+    // PARTENZA DAL CENTRO: dopo il pull chi ha il disco lontano dal centro passa all'handler centrale; nessuno taglia finche' il disco non e' a lui
+    let pN=0,pH1=0,pC=0,pCut=0,pGo=0,pT=0;
     for(let i=0;i<K;i++){
       placeTeams(1);doPull(0.8,fwd);if(!G.pull||G.pull.oob)continue;
-      tick(60*12,()=>!G.pull&&!!G.holder);if(!G.holder||G.holder.t!==1||!G.open)continue;
-      oOpen++;const h=G.holder,x0=h.x;
-      const t=tick(60*6,()=>!!G.flight);if(!G.flight)continue;
-      oN++;oT+=t;oG+=(G.flight.tx-x0)*dirOf(1);oC+=Math.abs(G.flight.ty-MID);
-      tick(60*6,()=>!G.flight);if(G.holder&&G.holder.t===1&&!G.open)oSch++;
+      tick(60*12,()=>!G.pull&&!!G.holder);const h=G.holder;if(!h||h.t!==1)continue;
+      h.y=i%2?4:FIELD_W-4;h.vx=h.vy=0;G.pb[1]=null;startPlay(1);const pb=G.pb[1];if(!pb||!pb.prep)continue;
+      pN++;let cut=false;
+      const t=tick(60*8,()=>{if(pb.stage!=='set')cut=true;return !!G.flight;});if(!G.flight)continue;
+      pT+=t;if(cut)pCut++;
+      if(pb.role[G.flight.intended&&G.flight.intended.id]==='H1')pH1++;if(Math.abs(G.flight.ty-MID)<=PB_CENTER+1)pC++;
+      tick(60*6,()=>!G.flight);if(G.holder&&G.holder.t===1&&pb.active&&!pb.prep){tick(60*3,()=>pb.stage==='go');if(pb.stage==='go')pGo++;}
     }
     return [row('Brick: difensori accanto al loro uomo appena si riparte, e l\u2019attacco lancia entro 4,5 secondi',bOk+' brick, '+bFar+' difese fuori posto, '+bWait+' attese',bOk>=Math.max(2,K/2-2)&&bFar===0&&bWait===0,'nessuna attesa'),
-      row('Dopo il pull l\u2019IA prepara il passaggio d\u2019apertura (nessuno schema finché non è preso)',oOpen+' su '+K,oOpen>=K-2,'tutti i pull non usciti'),
-      row('Passaggio d\u2019apertura: tempo dalla presa al lancio',oN?(oT/oN).toFixed(2)+' s':'-',oN>0&&oT/oN<=1.3,'al massimo 1,3 s'),
-      row('Passaggio d\u2019apertura: metri guadagnati e distanza dal centro del ricevitore',oN?(oG/oN).toFixed(0)+' m, '+(oC/oN).toFixed(1)+' m':'-',oN>0&&oG/oN>=12&&oC/oN<=12,'almeno 12 m in avanti, al massimo 12 m dal centro (con gli schemi seguiti alla lettera il Weave lancia a un handler a 11 m dal centro)'),
-      row('Dopo il passaggio d\u2019apertura parte lo schema',oSch+' su '+oN,oN>0&&oSch>=oN*0.7,'quando il passaggio è preso')];
+      row('Partenza dal centro: chi ha preso il pull lontano dal centro passa all\u2019handler centrale',pH1+' su '+pN+', vicino al centro '+pC,pN>=K-3&&pH1>=pN*0.75&&pC>=pN*0.75,'il primo passaggio va al centro'),
+      row('Partenza dal centro: nessun taglio prima del passaggio, poi lo schema parte',(pCut?pCut+' tagli in anticipo':'nessun taglio in anticipo')+', parte '+pGo+' volte su '+pH1+(pN?' (passaggio dopo '+(pT/pN).toFixed(1)+' s)':''),pCut===0&&pGo>=pH1*0.7&&pN>0&&pT/pN<=4,'passaggio entro 4 s')];
   }]);
   S.steps.push(['Mira e chiamate',()=>{
     // il giocatore mira una zona libera con il dito che trema (e ogni tanto sfiora un compagno): il compagno chiamato deve correrci senza ripensamenti
@@ -528,6 +528,34 @@ function selfTestPlan(opt){
   S.steps.push(['Prestazioni',()=>{
     const gt=S.base?avg(S.base.map(m=>m.time)):0,k=gt/Math.max(0.001,S.ms/1000);
     return [row('Velocità di simulazione',Math.round(S.ms)+' ms a partita ('+Math.round(k)+' volte il tempo reale)',k>=15,'almeno 15 volte')];
+  }]);
+  S.steps.push(['Schema 1 in 3-4',()=>{
+    const ra=ros(62,'a'),rb=ros(62,'b');for(const o of ra)o.s.vis=90;setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    newGame();G.auto=true;G.lvl=[0,1];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();G.startRec=1;G.nextRec=1;
+    let nb=0,na=0,fullB=0,fullA=0;const N=Math.max(60,n*10);
+    for(let i=0;i<N;i++){
+      placeTeams(0);G.sch.att='i34';G.opp.def='man_out';G.rep=[{k:'',n:0},{k:'',n:0}];
+      const p=G.puller;p.s.spa=99;p.s.lan=99;doPull(0.62,dirOf(1)>0?0:Math.PI);G.skip=true;
+      let t=0,first=null;const log=[];
+      while(t++<14400&&G.mode==='play'&&G.poss===0){update(1/60);const pb=G.pb&&G.pb[0],f=G.flight;
+        if(pb&&pb.active&&!first)first=pb.id;
+        if(f&&f.team===0&&!f._t){f._t=1;if(pb&&pb.active&&f.intended)log.push(pb.id+pb.phase+pb.role[f.intended.id]);}}
+      G.skip=false;G.mode='play';
+      if(first==='i34b')nb++;else if(first==='i34a')na++;
+      const sq=log.join(' ');if(sq.includes('i34b1C4')&&sq.includes('i34b2C3'))fullB++;if(sq.includes('i34a0C2')&&sq.includes('i34a1C4'))fullA++;
+    }
+    const pB=nb/Math.max(1,nb+na);
+    return [row('1 in 3-4: variante B scelta circa 7 volte su 10',pc(pB),pB>=0.55&&pB<=0.85),
+      row('1 in 3-4 con Visione 90: sequenze complete (B: C4 che torna, poi lungo a C3; A: C2 sotto, poi C4)','B '+fullB+', A '+fullA+' su '+N,fullB>=N*0.15&&fullA>=N*0.08,'i passaggi seguono lo schema disegnato')];
+  }]);
+  S.steps.push(['Ripresa dalla linea di meta',()=>{
+    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    newGame();G.inMatch=true;placeTeams(0);G.mode='play';
+    const tryAt=(x,pk)=>{G.walk=null;const q=T[1][2];q.x=x;q.y=12;turnover(1,x,12,pk?q:null,'',1);return G.walk;};
+    const w1=tryAt(EZ*0.5,true),w2=tryAt(FIELD_L-EZ*0.5,true),w3=tryAt(FIELD_L/2,true),w4=tryAt(EZ*0.5,false);
+    const ok1=!!(w1&&w1.line&&Math.abs(w1.line.x-(EZ+0.6))<0.01),ok2=!!(w2&&w2.line&&Math.abs(w2.line.x-(FIELD_L-EZ-0.6))<0.01),ok3=!w3||!w3.line,ok4=!!(w4&&w4.line);
+    G.walk=null;
+    return [row('Turnover dentro una meta (anche con chi raccoglie al volo, come dopo un handblock): si riparte dalla linea di meta',[ok1,ok2,ok3,ok4].map(v=>v?'sì':'no').join(', '),ok1&&ok2&&ok3&&ok4,'nelle due mete sì, a centrocampo no')];
   }]);
   S.steps.push(['Salto da fermo o in corsa nella scena laterale',()=>{
     const f={tx:30,ty:18},p=(x,y,vx,vy)=>({x,y,vx,vy});
