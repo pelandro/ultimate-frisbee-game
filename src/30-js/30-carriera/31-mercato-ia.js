@@ -89,23 +89,23 @@ function aiMarket(){
     }
     return pick;
   };
-  const trim=n=>{const ro=SV.rost[n];while(ro.length>AIM.maxRo){const w=ro.slice().sort((a,b)=>M(a)-M(b)).find(o=>aimRoleOk(ro,null,o));if(!w)break;ro.splice(ro.indexOf(w),1);}};   // come evolveLeague: chi avanza lascia la rosa
+  const trim=(n,n0)=>{const ro=SV.rost[n];while(ro.length>Math.max(AIM.maxRo,n0)){const w=ro.slice().sort((a,b)=>M(a)-M(b)).find(o=>aimRoleOk(ro,null,o));if(!w)break;ro.splice(ro.indexOf(w),1);}};   // come evolveLeague: chi avanza lascia la rosa
   for(const b of act){
     if(done.length>=cap)break;
     for(let t=0;t<AIM.max&&st[b].mv<AIM.max&&done.length<cap;t++){
       if(t>0&&R()>=AIM.again)break;
       const m=best(b);if(!m)break;
-      const rb=SV.rost[b];
+      const rb=SV.rost[b],n0=rb.length;   // la rosa non supera la misura che aveva (o AIM.maxRo): chi compra lascia andare il piu' debole
       if(m.k==='fa')rb.push(m.o);
       else{const ra=SV.rost[m.a];ra.splice(ra.indexOf(m.o),1);rb.push(m.o);
         if(m.k==='swap'){rb.splice(rb.indexOf(m.x),1);ra.push(m.x);}
         st[m.a].bud+=m.fee;st[m.a].mv++;pw[m.a]=aimPow(ra,null,null,M);}
-      st[b].bud-=m.fee;st[b].mv++;trim(b);pw[b]=aimPow(rb,null,null,M);
+      st[b].bud-=m.fee;st[b].mv++;trim(b,n0);pw[b]=aimPow(rb,null,null,M);
       moved.add(m.o);if(m.x)moved.add(m.x);   // chi ha cambiato squadra quest'estate resta dov'e': niente acquisti rivenduti subito
       done.push(Object.assign(m,{ov:Math.max(ovr(m.o),m.x?ovr(m.x):0)}));
     }
   }
-  aiMarket.last={k:['buy','swap','fa'].map(k=>done.filter(m=>m.k===k).length),n:done.length,cap,clubs:names.length,act:act.length,per:Math.max(0,...Object.values(st).map(s=>s.mv)),bud:Object.values(st).every(s=>s.bud>=0),ros:done.every(m=>[m.a,m.b].filter(Boolean).every(n=>SV.rost[n].length<=AIM.maxRo&&aimRoleOk(SV.rost[n],null,null)))};   // per il test della carriera
+  aiMarket.last={k:['buy','swap','fa'].map(k=>done.filter(m=>m.k===k).length),n:done.length,cap,clubs:names.length,act:act.length,per:Math.max(0,...Object.values(st).map(s=>s.mv)),bud:Object.values(st).every(s=>s.bud>=0),ros:done.every(m=>[m.a,m.b].filter(Boolean).every(n=>aimRoleOk(SV.rost[n],null,null)))};   // per il test della carriera
   return done;
 }
 // la notizia della Posta: le operazioni con l'Overall piu' alto, con un segno per la tua serie e la tua rivale
