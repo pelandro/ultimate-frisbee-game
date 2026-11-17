@@ -97,7 +97,8 @@ tip:`Non premere a caso: nell’handblock conta il tempismo, il verde vale molti
 `<b>Esagono</b>: tagli corti, buono contro gli aiuti.`,
 `<b>Stack laterale</b>: libera mezzo campo per gli isolamenti, solido contro l’uomo.`,
 `<b>Weave</b>: tre handler che si passano il disco, guadagna metri contro la zona.`,
-`<b>T1</b>: il più efficace, ma va eseguito bene (serve Visione alta).`],
+`<b>T1</b>: il più efficace, ma va eseguito bene (serve Visione alta).`,
+`<b>1 in 3-4</b>: quattro cutter in fila larga; chi va lungo spesso torna incontro e poi si lancia lungo verso la meta. Forte contro l’uomo che forza dentro, soffre zona e aiuti.`],
 `In difesa: <b>Uomo, forza fuori</b>, <b>Uomo, forza dentro</b>, <b>Uomo con aiuti</b> e <b>Zona a coppa</b> (ferma Verticale ed Esagono, subisce Orizzontale e T1). Ogni schema ha una descrizione nel menu.`],
 tip:`Contro la zona: Orizzontale o Weave. Contro l’uomo: Verticale o Stack laterale. Cambia schema ogni due o tre mete.`},
 {id:'sch-cambi',t:'Cambi, energia e infortuni',b:[

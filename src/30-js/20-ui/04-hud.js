@@ -10,7 +10,7 @@ function teamAbbr(n){
 const hud=$('hud'),elScore0=$('s0'),elScore1=$('s1'),elPt=$('pt'),elStall=$('stall'),elHint=$('hint'),bThr=$('thr'),bSprint=$('bSprint'),bThrow=$('bThrow'),bHammer=$('bHammer'),bSch=$('bSch'),skipBtn=$('skip');
 const cache=new Map();
 function setHTML(el,html){if(cache.get(el)!==html){cache.set(el,html);el.innerHTML=html;}}
-const ATT_NAME={vert:'Verticale',horz:'Orizzontale',hex:'Esagono',side:'Stack laterale',t1:'T1',weave:'Weave'},DEF_NAME={man_out:'Uomo, forza fuori',man_in:'Uomo, forza dentro',zone:'Zona',man_poach:'Uomo con aiuti'};
+const ATT_NAME={vert:'Verticale',horz:'Orizzontale',hex:'Esagono',side:'Stack laterale',t1:'T1',weave:'Weave',i34:'1 in 3-4'},DEF_NAME={man_out:'Uomo, forza fuori',man_in:'Uomo, forza dentro',zone:'Zona',man_poach:'Uomo con aiuti'};
 // in difesa (l'avversario ha il disco o lo ha lanciato) i due pulsanti diventano handblock (destra) e tuffo (sinistra)
 // il numero che cambia (una meta) salta in oro per un attimo; il primo valore di una partita no
 function scoreSet(el,v){
