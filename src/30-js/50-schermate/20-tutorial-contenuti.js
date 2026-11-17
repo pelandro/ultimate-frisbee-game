@@ -158,7 +158,7 @@ tip:`Con pochi crediti parti dal Campo di allenamento. Le Tribune servono solo s
 `Ogni partita ha il suo <b>conto</b>, in Società › Conti:`,
 [`<b>Entrate</b>: biglietti (solo in casa), sponsor e premio vittoria.`,
 `<b>Uscite</b>: gli <b>stipendi</b> sono la spesa più grande, poi strutture, staff e viaggi. Anche una vittoria può chiudersi in rosso.`],
-`A inizio stagione scegli lo <b>sponsor</b>: Sicuro (più soldi a partita, bonus piccolo) o Ambizioso (meno soldi, bonus grande se raggiungi l’obiettivo).`,
+`A inizio stagione scegli lo <b>sponsor</b>: Sicuro (più soldi a partita, bonus piccolo) o Ambizioso (meno soldi, bonus grande se raggiungi l’obiettivo). Il suo marchio va sui cartelloni del tuo campo.`,
 `<b>Conti in rosso</b>: mercato, strutture e staff si fermano e il morale cala. Se dura troppo vieni <b>esonerato</b> e riparti da una squadra più debole.`,
 `I <b>tifosi</b> riempiono lo stadio, il <b>morale</b> sale con vittorie e Recupero, la <b>reputazione</b> apre porte (mercato, offerte).`],
 tip:`Tieni una riserva di crediti per le emergenze e guarda il bilancio prima di ogni acquisto grosso.`},
