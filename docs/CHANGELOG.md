@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Bilanciamenti.
 - Avversari più forti: a ogni livello di difficoltà i loro 7 in campo hanno un punto in più a tutte le statistiche (Medio +2, Difficile +4, Estrema +6; Facile resta senza bonus).
 - Schemi che partono dal centro. A ogni ripresa del gioco (dopo il pull o un turnover) tutti vanno prima nella formazione dello schema; se chi ha il disco è lontano dal centro, un handler si mette al centro e riceve il primo passaggio, e solo allora partono i tagli. Prima, dopo il pull, il computer lanciava subito in avanti verso il centro e i tagli partivano da chi aveva il disco, ovunque fosse.
 - «1 in 3-4» più fedele allo schema disegnato: chi va lungo arriva davvero in profondità prima di tornare incontro, il passaggio a lui parte quando è tornato, e chi nello schema resta fermo non si muove più.
