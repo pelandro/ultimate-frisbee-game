@@ -9,7 +9,7 @@ const STAFF={
   ana:{n:'Analista tattico',d:'+0,5 di forma di squadra per livello e il rapporto sulla prossima avversaria'},
   men:{n:'Mentore dei giovani',d:'Chi ha fino a 23 anni cresce il 7% in più per livello; gli obiettivi personali pagano di più'}
 };
-const STAFF_MAX=3,STAFF_WAGE=[0,1,2,4];   // a partita, per ruolo (era 0,1,3,6: ora pesano gli stipendi dei giocatori, wageOf)
+const STAFF_MAX=3,STAFF_WAGE=[0,1,2,3];   // con tutto lo staff al livello 3 si pagavano 16 a partita: insieme alle strutture al massimo, piu' di meta' delle entrate di un club di Serie A   // a partita, per ruolo (era 0,1,3,6: ora pesano gli stipendi dei giocatori, wageOf)
 const staffLv=k=>(SV&&SV.staff&&SV.staff[k])|0;
 const staffCost=k=>50*(staffLv(k)+1);
 const staffWage=()=>Object.keys(STAFF).reduce((a,k)=>a+STAFF_WAGE[staffLv(k)],0);

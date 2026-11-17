@@ -172,11 +172,11 @@ function careerSelfTest(seasons,seed){
        rows.push(row('Stipendi, osservazioni e premio promozione: lo stipendio sale con l\'Overall, osservare costa di più chi vale di più, gli Osservatori fanno risparmiare, la promozione in A paga più di quella in B',
          `stipendio ${w1.toFixed(1)} e ${w2.toFixed(1)} a stagione, osservare ${s1} e ${s2} (${s3} con Osservatori 3), promozione ${promoPrize('B')} e ${promoPrize('A')}`,
          w2>w1*4&&w1>=5&&s2>s1&&s3<s2&&promoPrize('A')>promoPrize('B')));}
-      {const ro=[];for(let i=0;i<20;i++)ro.push(genPlayer(60+i,26,'ws|'+i,potB(62+i)));const full=ro.reduce((a,o)=>a+wageOf(o),0),ws=wageSeason(ro),p=ro[19],sv=sellValue(p),off=Math.round(priceOf(p)*1.35+5);
+      {const ro=[];for(let i=0;i<20;i++)ro.push(genPlayer(60+i,26,'ws|'+i,potB(62+i)));const full=ro.reduce((a,o)=>a+wageOf(o),0),ws=wageSeason(ro),p=ro[19],n0=SV.sellN;SV.sellN=0;const sv=sellValue(p);SV.sellN=6;const sv6=sellValue(p);SV.sellN=n0;const off=Math.round(priceOf(p)*1.35+5);
        const c=[84,253,511,676].map(ecoCurve);
        rows.push(row('Economia uguale per tutti i campionati: entrate secondo il livello dei giocatori (Italia come prima), riserve oltre il 14° a metà stipendio, cessione immediata sotto le offerte dei club',
-         `peso economico ${c.map(x=>x.toFixed(2).replace('.',',')).join(', ')} · stipendi di 20 giocatori ${Math.round(ws)} invece di ${Math.round(full)} · cessione ${sv} contro un'offerta di ${off}`,
-         Math.abs(c[0]-1)<0.01&&Math.abs(c[1]-1.3)<0.01&&Math.abs(c[2]-1.65)<0.01&&c[3]>c[2]&&ws<full&&ws>full*0.8&&sv<off*0.5&&Math.abs(sv-priceOf(p)*0.4)<=1));}
+         `peso economico ${c.map(x=>x.toFixed(2).replace('.',',')).join(', ')} · stipendi di 20 giocatori ${Math.round(ws)} invece di ${Math.round(full)} · cessione ${sv} (alla settima della stagione ${sv6}) contro un'offerta di ${off}`,
+         Math.abs(c[0]-1)<0.01&&Math.abs(c[1]-1.3)<0.01&&Math.abs(c[2]-1.65)<0.01&&c[3]>c[2]&&ws<full&&ws>full*0.8&&sv<off*0.5&&Math.abs(sv-priceOf(p)*0.4)<=1&&Math.abs(sv6-priceOf(p)*0.16)<=1));}
       {const ro=makeRoster(70,'prof|t'),l14=linesPow(ro),l12=linesPow(ro.slice(0,12)),s1=fatShare({m:{pts:5}},10),s2=fatShare({m:{sh:1}},10);
        rows.push(row('Profondità della rosa: con meno di 14 giocatori qualcuno gioca in entrambe le linee, rende meno e si stanca il doppio',
          `due linee con 14 giocatori ${l14.toFixed(1).replace('.',',')}, con 12 ${l12.toFixed(1).replace('.',',')} · fatica: una linea ${s1}, entrambe ${s2}`,

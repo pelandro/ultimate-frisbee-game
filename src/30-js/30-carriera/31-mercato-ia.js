@@ -38,7 +38,7 @@ function aimPow(ro,add,rem,M){
 }
 function aimWage(ro,add,rem,W){
   const v=[];for(const o of ro)if(o!==rem)v.push(W(o));if(add)v.push(W(add));v.sort(aimDesc);
-  let s=0;for(let i=0;i<v.length;i++)s+=i<WAGE_FULL?v[i]:v[i]*0.5;return s;
+  let s=0;for(let i=0;i<v.length;i++)s+=i<WAGE_FULL?v[i]:v[i]*0.5;return s;   // il mercato delle squadre del computer e' tarato cosi': il quarto oltre il ventesimo (wageW) vale solo per la tua rosa
 }
 function aimRoleOk(ro,add,rem){let n=0,h=0;for(const o of ro)if(o!==rem){n++;if(o.r==='H')h++;}if(add){n++;if(add.r==='H')h++;}return n>=AIM.minRo&&h>=AIM.minRole&&n-h>=AIM.minRole;}
 function aimWeak(ro,r,M){   // il titolare piu' debole del ruolo (3 Handler, 4 Cutter): chi non lo supera non cambia la forza

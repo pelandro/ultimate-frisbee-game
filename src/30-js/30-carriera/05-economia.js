@@ -1,7 +1,10 @@
 /* ---- economia: crediti da partite (biglietti, sponsor, premi), classifica e obiettivi; si spendono in giocatori, osservatori e strutture ---- */
 function priceOf(o){const v=ovrX(o),pr=potRange(o),pm=(pr[0]+pr[1])/2;return Math.max(3,Math.round(Math.pow(Math.max(0,v-34),2)/11*(o.age<=21?1.25:(o.age>=31?0.55:1))*(1+Math.max(0,pm-v)/60)));}
 // chi ha annunciato il ritiro vale poco (gli resta mezza stagione), un infortunato un po' meno: prima si incassava il prezzo pieno alla vigilia dell'addio
-const sellValue=o=>Math.round(priceOf(o)*0.4*(o.ret===1?0.35:1)*(o.inj?0.8:1));   // cessione immediata, senza compratore: il 40% del valore (era il 60%). Le offerte dei club pagano di piu'
+// cessione immediata, senza compratore: la prima della stagione rende il 40% del valore, ogni altra 4 punti in meno fino al 16% (SV.sellN, azzerato in
+// beginSeason). Chi svuotava in un colpo una rosa da 28 incassava quasi 1000 crediti; vendere 2-3 giocatori resta come prima. Le offerte dei club pagano di piu'
+const sellPct=()=>Math.max(0.16,0.4-0.04*((SV&&SV.sellN)|0));
+const sellValue=o=>Math.round(priceOf(o)*sellPct()*(o.ret===1?0.35:1)*(o.inj?0.8:1));
 const repCap=()=>48+SV.rep*0.5;   // Overall massimo dei giocatori disposti a venire, in base alla reputazione
 // l'incasso di una partita e' in 26-economia-partita.js (matchMoney): biglietti secondo i tifosi (20-tifosi-umore.js) e la capienza delle Tribune, sponsor, premio vittoria
 // stipendi: ogni giocatore costa in base al suo Overall (a stagione); si pagano a ogni partita. Una rosa lunga e forte costa: tenere le riserve giuste e' una scelta
@@ -10,10 +13,13 @@ const wageOf=o=>4+Math.pow(Math.max(0,ovrX(o)-40),2)/50;   // prima 2+(Ov-40)²/
 const promoPrize=sr=>Math.round(150*(SR_K[sr]||1));
 // stipendi a partita: i 14 stipendi piu' alti per intero, le riserve oltre il quattordicesimo a meta' (un rimborso, non un ingaggio). Le rose da 20 di USA ed
 // Europa altrimenti costavano piu' di quanto il campionato incassa, e vendere le riserve era il modo piu' facile di fare soldi
-const WAGE_FULL=14;
-const wageSeason=list=>{const v=list.map(o=>wageOf(o)).sort((a,b)=>b-a);return v.reduce((a,w,i)=>a+(i<WAGE_FULL?w:w*0.5),0);};
+// Oltre il ventesimo (rose vere fino a 28 in Europa) si paga un quarto: sono giocatori che non entrano quasi mai in linea
+const WAGE_FULL=14,WAGE_HALF=20;
+const wageW=i=>i<WAGE_FULL?1:(i<WAGE_HALF?0.5:0.25);   // quota pagata dello stipendio per posizione (0 = il piu' alto)
+const wageSeason=list=>{const v=list.map(o=>wageOf(o)).sort((a,b)=>b-a);return v.reduce((a,w,i)=>a+w*wageW(i),0);};
 const wageBill=()=>Math.round(wageSeason(SQ)/15);
-const wageRes=p=>SQ.length>WAGE_FULL&&SQ.slice().sort((a,b)=>wageOf(b)-wageOf(a)).indexOf(p)>=WAGE_FULL;   // riserva: oltre i 14 stipendi piu' alti
+const wagePart=p=>SQ.length>WAGE_FULL?wageW(SQ.slice().sort((a,b)=>wageOf(b)-wageOf(a)).indexOf(p)):1;
+const wageRes=p=>wagePart(p)<1;   // riserva: oltre i 14 stipendi piu' alti
 // STRUTTURE: sei, fino al livello 5 (FAC_MAX). Costano sempre di piu', hanno una manutenzione a partita e d'estate possono perdere un livello (11-carriera-dinamica.js)
 const FAC_MAX=5;
 const FAC={camp:['Campo di allenamento','Gli allenamenti rendono il 6% in più per livello e stancano il 6% in meno'],fis:['Fisioterapia','Più recupero a ogni giornata e infortuni meno frequenti (−12% per livello)'],viv:['Vivaio','Più giovani promesse sul mercato, e più forti'],
