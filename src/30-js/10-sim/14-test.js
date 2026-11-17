@@ -41,6 +41,9 @@ function selfTestPlan(opt){
   const ros=(pw,tag)=>makeRoster(pw,'test|'+tag),avg=a=>a.reduce((x,y)=>x+y,0)/Math.max(1,a.length),pc=x=>Math.round(x*100)+'%';
   const run=(ra,rb,k,o)=>{const out=[];for(let i=0;i<k;i++)out.push(testMatch(ra,rb,Object.assign({rec:i%2},o||{})));return out;};
   const row=(name,val,ok,note)=>({name,val,ok:!!ok,note:note||''});
+  // schemi di una partita nuova: i passi che giocano possessi con placeTeams (senza startPoint) altrimenti ereditano gli schemi lasciati dal passo prima,
+  // e l'esito cambiava con lo schema rimasto (con il T1 un Gran pull vale poco e dopo un brick si parte piu' tardi anche senza difetti)
+  const schReset=()=>{Object.assign(G.sch,{att:'vert',def:'man_out'});Object.assign(G.opp,{att:'vert',def:'man_out'});};
   const margin=ms=>avg(ms.map(m=>m.score[0]-m.score[1]));
   S.steps.push(['Stabilità, ritmo e regole',()=>{
     const t0=Date.now(),ms=run(ros(62,'a'),ros(62,'b'),n);S.base=ms;S.ms=(Date.now()-t0)/n;
@@ -106,7 +109,7 @@ function selfTestPlan(opt){
   }]);
   S.steps.push(['Pull e difesa automatica',()=>{
     const k=Math.max(120,n*40),ra=ros(62,'a'),rb=ros(62,'b'),d0=G.opt.def;
-    setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    setSquad(ra);applyRoster(rb);schReset();G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
     newGame();G.lvl=[0,0];G.oppPlus=0;G.idn=[null,null];G.inMatch=true;G.schemeOpen=false;
     // 1) i pull dell'IA: una parte deve uscire, la maggior parte deve arrivare nella meta avversaria
     let brick=0,deep=0;
@@ -253,7 +256,7 @@ function selfTestPlan(opt){
       row('Tuffo senza chiusura: il giocatore si rialza (nessuno steso per tutta la partita)',(orph?'sì':'no')+', '+(ended?'sì':'no')+', '+(reset?'sì':'no'),orph&&ended&&reset,'rete di sicurezza, endDive e nuovo punto')];
   }]);
   S.steps.push(['Brick e passaggio d\u2019apertura dopo il pull',()=>{
-    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);schReset();G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
     newGame();G.auto=true;G.lvl=[0,0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();setWind(0,0);
     const fwd=dirOf(0)>0?0:Math.PI,K=12,tick=(max,stop)=>{let g=0;while(g++<max&&!stop())update(1/60);return g/60;};
     // BRICK: pull fuori dal campo (di lato). Appena il disco e' preso tutti sono al loro posto: i difensori accanto al loro uomo, nessuna attesa
@@ -291,7 +294,8 @@ function selfTestPlan(opt){
       G.auto=false;   // adesso decide il giocatore: l'azione aspetta il lancio
       // una zona libera davvero: nessun compagno agganciato dal mirino, ma uno abbastanza vicino da essere chiamato
       let zx=clamp(th.x+d*24,6,FIELD_L-6),zy=th.y<MID?MID+8:MID-8,found=false;
-      for(const ax of [24,18,30,14])for(const ay of [-12,-8,8,12,-4,4]){
+      // prima in avanti, poi di lato e indietro: appena dopo il pull i compagni possono essere tutti alle spalle del portatore (prima, senza zona, il controllo passava solo se un compagno ci arrivava per caso)
+      for(const ax of [24,18,30,14,10,6,2,-4,-10])for(const ay of [-12,-8,8,12,-4,4,0,-16,16]){
         if(found)continue;const x=clamp(th.x+d*ax,6,FIELD_L-6),y=clamp(th.y+ay,4,FIELD_W-4);let nd=99;for(const q of T[0])if(q!==th)nd=Math.min(nd,hyp(q.x-x,q.y-y));
         if(!computeAim(th,x,y,false,true).intended&&nd>=5&&nd<=callMax(th)-3&&hyp(x-th.x,y-th.y)>=8){zx=x;zy=y;found=true;}
       }
