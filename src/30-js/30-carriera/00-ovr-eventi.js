@@ -1,0 +1,20 @@
+/* ===================== OVERALL 2026: RITOCCHI DAI TORNEI DI ALTO LIVELLO =====================
+   Per i giocatori del foglio stimati (affidabilita' media o bassa) di 11 club che hanno giocato l'EUCF (Breslavia) e il WUCC (Limerick) 2026, il livello puo' salire o scendere di qualche
+   punto secondo il rendimento in quei due tornei Open, i piu' forti a cui un club europeo partecipa: mete e assist a partita (da almeno 8 partite), a parita' di ruolo, rispetto ai compagni.
+   Metodo: sui giocatori con affidabilita' alta (50, che hanno riscontri individuali) si misura quanti punti di Overall valgono 1 punto a partita in piu' (circa 4, con una correzione per
+   handler e difensori); per gli altri, meta' della distanza tra il valore del foglio e quello atteso dal rendimento, da -2 a +4. Chi ha affidabilita' alta non si tocca, e nemmeno chi gioca in due leghe (LN_DUAL: vale il valore piu' alto), e vale piu' un buon
+   rendimento in un torneo di livello alto che in uno basso: i tornei giovanili e quelli domestici non entrano. Si somma al valore del foglio (e allo scarto di club, OVR_SHIFT) in ovrEntries.
+   Fonti: risultati pubblici dei portali WFDF ed EUF (solo nome, mete e assist). Si rigenera dai portali, non si ritocca a mano. */
+const OVR_ADJ={
+  "Tchac":{"Antoine Liron":4, "Quentin Moneuse":4, "Thybaud Brazeau":3, "Simon Madiot":3, "Némo Courtil":2, "Benjamin Broussard":2, "Axel Roger":1, "Hélie Chestier":1, "Marco Delalle":-1, "Mathieu Begouen Demeaux":-1, "Enzo Stanguennec":-2, "Thomas Lelièvre":-2, "Vincent Lepagnol":-2},
+  "NLSU":{"Barnabé Earl-Anstee":4, "Jules Quinton":4, "Hugo Donatien":4, "Reiyu Rakotomamonjy":3, "Gaspard Calligaro":2, "Paul Marques":2, "Raphaël Melin":2, "Yoann Cocquebert":1, "Arthur Negre":-1, "Jules Lamare":-1, "Raphaël Chareix":-1, "Amaury Davy":-1, "Eric Becker-Chagneux":-2, "Olivier Gibert":-2, "Rémy Dauvois":-2, "Raphaël Caudron":-2, "Roger Michael":-2, "Arthur Oudomphong":-2},
+  "Wall City":{"Lucas Johnson":4, "Jannis Wenderholm":4, "Krzysztof Zając":4, "Joel Clutton":2, "Steffen Linnemannstöns":2, "Wieland Freimark":2, "Jan Schmidt":1, "Vladislav Basov":1, "Frederick Pollmeier":-1, "Stefan Kuhn":-1, "Yannick Marburg":-1, "Edward Garvey":-1, "Timon Eggenberg":-2, "Ted Sither":-2},
+  "Bad Skid":{"Leo Grimmig":4, "Simon Hiller":4, "Lennart Vollmer":4, "Jonathan Schall":3, "Johannes Schlechter":3, "Kevin Schanz":2, "Felix Meyer":2, "Benjamin Schlechter":-1, "Marc Pritsch":-2, "Steffen Döscher":-2, "Maximilian Olbert":-2, "Benjamin Schenk":-2, "Jannik Volk":-2},
+  "Clapham Ultimate":{"Steven Chang":4, "Charlie Butt":3, "Ross Nugent":2, "Neil McCulloch":1, "Rana Sarin":-1, "James Mead":-1, "Oscar Modiano":-1, "Felix Martin":-2, "Josh Awcock":-2},
+  "Chevron Action Flash":{"Tom Hodgett":4, "Hari Tidswell":4, "Issa Dualeh":4, "Seb Hart":4, "Alex Hately":4, "Steve Kolthammer":4, "Andrew Turner":3, "Ben Wilson":2, "Declan Cartwright":1, "Ben Burak":-1, "Ben Tennant":-1, "Andrew Sweetnam":-2, "Ethan Morrell":-2, "Sam Criddle":-2, "Cameron Weir":-2, "Marcus Kalsi Stølen":-2, "Thomas Oliver":-2, "Tom Bennett":-2, "Edward Graham":-2, "Will Jackson":-2},
+  "Gentle Open":{"Roel Dekoninck":4, "Kasper Kindekens":4, "Jelle Vandermoere":4, "Maarten Vanlerberghe":4, "Benjamin Vereecken":4, "Broes Cottyn":3, "Wolf Oosterlinck":2, "Bono Vandamme":1, "Mathias Middernacht":1, "Leon Pannemans":1, "Stern Ongenaet":-1, "Han Pisano":-1, "Lorenz Jordi":-1, "Benjamin Zwarts":-1, "Dante Simoens":-1, "Emiel De Rieck":-2, "Staf Decraene":-2, "Aäron Vlieghe":-2, "Adrian Collantes":-2, "Arthur Fieuws":-2},
+  "Mooncatchers":{"Cedric Feller":4, "Nicolas Hoquez":4, "John Beeckmans":3, "Gaetan Vanden Broeck":3, "Matthieu Muller":1, "Corentin Schiettecatte":1, "Gregoire Peterkenne":1, "Louis Dawans":1, "Benjamin Jonkers":-1, "Jérôme Deridder":-1, "Andrew Delhaisse":-1, "Arthur Feller":-1, "Diego Nothomb":-2},
+  "Cotarica Runners":{"Andrea Bulgarelli":1, "Gianluca Santarini":-1},
+  "Cotarica Grandes":{"Luca Contini":4, "Alessandro Pari":3, "Alberto Pompizii":2, "Giacomo Festa":1, "Arturo Benzi":-1, "Alberto Tonelli":-1, "Lorenzo Turci":-2},
+  "BFD La Fotta Offence":{"Kaïs Mathè":3}
+};
