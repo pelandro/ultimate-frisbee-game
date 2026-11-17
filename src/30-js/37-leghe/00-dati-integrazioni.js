@@ -32,10 +32,11 @@ for(const lk in LN_PL_PLUS){
   const seen=new Set();for(const c in LN_PL[lk])for(const r of LN_PL[lk][c])seen.add(usNameKey(r[1]+' '+r[0]));
   for(const c in LN_PL_PLUS[lk])for(const r of LN_PL_PLUS[lk][c]){const k=usNameKey(r[1]+' '+r[0]);if(seen.has(k))continue;seen.add(k);(LN_PL[lk][c]=LN_PL[lk][c]||[]).push(r);}
 }
-// forza dei club corretta a mano rispetto ai dati generati (LN_CL), con la fonte. Freezzz Beezzz one: all'EUCF 2026 (Breslavia) 2 vittorie (15-9 Freespeed, 15-8 Quijotes) e 4 sconfitte
-// di misura con Clapham (14-15), Cotarica Grandes (13-15), GRUT (12-15) e Mooncatchers (8-15); il rating ricavato dai punteggi di tutte le 55 partite Open (minimi quadrati sulla differenza mete)
-// e portato sulla scala del gioco con i club noti (correlazione 0,85) li dava a circa 83 contro i 74 dei dati; con solo 6 partite si va a meta' strada, circa 78.
-const LN_POW_FIX={'Freezzz Beezzz one':78};
+// forza dei club corretta a mano rispetto ai dati generati (LN_CL), per i club fuori dal foglio Overall (quelli del foglio usano OVR_SHIFT, 30-carriera/00-ovr-2026.js). Metodo: piazzamento
+// medio pesato all'EUCF Open (2026 1,0 · 2025 0,85 · 2024 0,7; 2026 per esteso con l'ordine dei soli europei al WUCC; semifinalisti 3,5; anni senza dato 10,5; fonti: portali EUF e albo
+// d'oro EUCS), forza = media tra quella di prima e 93,5 - 1,15 x piazzamento, piu' 1 punto di prestigio per chi ha giocato l'EUCF. Chi non c'era non supera chi del suo paese c'era:
+// Jetset Open (4º belga) un punto sotto Freezzz Beezzz.
+const LN_POW_FIX={'Freezzz Beezzz one':78.6,'Heidees':76.4,'Jetset Open':77.6};
 // livello (bonus) dei giocatori corretto a mano, con la fonte: Freezzz Beezzz one. I bonus dei dati generati seguivano poco le statistiche (correlazione 0,54 con mete+assist a partita del
 // WUCC 2026, contro 0,76-0,87 degli altri club Open) e Victor Weller (2,0 punti a partita, terzo della squadra) era fuori dalla rosa; con le 10 partite Open del WUCC 2026 (Limerick, portali
 // WFDF) il bonus e' la media tra il vecchio e la retta ricavata dagli altri club (bonus = -3,14 + 2,41 x punti a partita), solo la retta per chi non aveva dati; a meta' interi.

@@ -24,20 +24,42 @@ const OVR_ADD={
 const OVR_DUAL_US=new Set(['Washington DC Truck Stop|Sofiene Bontemps','Washington DC Truck Stop|Louis Betrancourt','Toronto GOAT|Gael Ancelin','Chicago Machine|Daan De Marree'].map(s=>{const i=s.indexOf('|');return s.slice(0,i)+'|'+ovrKey(s.slice(i+1));}));
 // FORZA DEI CLUB DEL FOGLIO: la forza reale delle loro rose (3 handler + 4 cutter migliori, come in partita), che sostituisce quella dichiarata dalla classifica o dal rating.
 // Si ricalcola con «node tools/test-ovr.js --calcola» dopo ogni cambio ai dati o alle modifiche volute; la prova (tools/test-ovr.js) controlla che coincida.
+// SCARTO DI CLUB: punti sommati all'Overall di tutte le righe del foglio di un club (non ai forzati di OVR_FORCE e agli aggiunti di OVR_ADD, che hanno il valore chiesto). Serve a
+// mettere la forza dei club sulla stessa scala dei risultati veri (EUCF 2024-2026, WUCC 2026, Serie A 2024-2026) e del prestigio di giocare l'EUCF: chi c'era e' stimato dai
+// piazzamenti delle ultime stagioni, chi non c'era non supera chi del suo paese c'era. Vedi docs/OVERALL-2026.md. Dopo ogni cambio: «node tools/test-ovr.js --calcola» e si incolla OVR_POW.
+const OVR_SHIFT={
+  "Tchac":-1,
+  "Clapham Ultimate":1,
+  "Mooncatchers":1,
+  "Chevron Action Flash":3,
+  "NLSU":1,
+  "Cotarica Grandes":-1,
+  "Bad Skid":-5,
+  "Cotarica Runners":-4,
+  "One Tribe":-4,
+  "DiscoBolo":-4,
+  "CUS Padova Barbastreji":-4,
+  "360 Milano":-2,
+  "BFD Redbulls":-2,
+  "One Tribe Next Gen":-1,
+  "UFO (A)":-2,
+  "RAMS BLUE":-1,
+  "Donkey Divers (A)":-1
+};
 const OVR_POW={
   "BFD La Fotta Offence":89.9,
   "BFD La Fotta Defense":88.9,
-  "DiscoBolo":86.1,
-  "Cotarica Runners":87.4,
-  "One Tribe":86.6,
-  "Cotarica Grandes":86.3,
-  "CUS Padova Barbastreji":85,
-  "360 Milano":81.2,
-  "BFD Redbulls":80.5,
-  "UFO (A)":79.4,
-  "One Tribe Next Gen":79.4,
-  "RAMS BLUE":78.2,
-  "Donkey Divers (A)":78,
+  "DiscoBolo":82.1,
+  "Cotarica Runners":83.4,
+  "One Tribe":82.6,
+  "Cotarica Grandes":85.4,
+  "CUS Padova Barbastreji":82,
+  "360 Milano":79.2,
+  "BFD Redbulls":78.6,
+  "UFO (A)":77.5,
+  "One Tribe Next Gen":78.4,
+  "RAMS BLUE":77.1,
+  "Donkey Divers (A)":77.1,
   "METACARPI":76.1,
   "AUT BeeFree":76.1,
   "BFD Zero51":74.6,
@@ -54,14 +76,14 @@ const OVR_POW={
   "Portland Rhino Slam!":90.2,
   "Seattle Sockeye":86.2,
   "San Francisco Revolver":91.6,
-  "Mooncatchers":91.7,
+  "Mooncatchers":92.7,
   "Gentle Open":85.9,
-  "Tchac":90.1,
-  "NLSU":82.1,
-  "Bad Skid":82.8,
+  "Tchac":89.2,
+  "NLSU":83.1,
+  "Bad Skid":77.8,
   "Wall City":91.3,
-  "Clapham Ultimate":90.4,
-  "Chevron Action Flash":81.9
+  "Clapham Ultimate":91.4,
+  "Chevron Action Flash":84.8
 };
 // CORREZIONI SINGOLE ai club che NON sono nel foglio (stesso formato delle righe di OVR_2026): chi ha statistiche enormi nella sua serie ma nessun riscontro individuale
 // (nazionali, premi, tornei internazionali) non supera la forza della sua squadra di piu' di 8 punti. Nel foglio chi e' stimato senza prove supera la media dei primi 7 della
@@ -95,7 +117,8 @@ function ovrPart(club){
 function ovrEntries(club){
   if(ovrCache[club])return ovrCache[club];
   const out=ovrOutSet(club),fo={};for(const n in (OVR_FORCE[club]||{}))fo[ovrKey(n)]=OVR_FORCE[club][n];
-  const rows=(OVR_2026[club]||[]).concat(OVR_ADD[club]||[]).filter(r=>!out.has(ovrKey(r[1]+' '+r[0]))).map(r=>{const k=ovrKey(r[1]+' '+r[0]);return {sur:r[0],nm:r[1],k,ov:fo[k]||r[2],age:r[3],rl:r[4],ex:r[5].includes('e'),est:r[5].includes('a'),ld:r[5].includes('d'),conf:r[6]};});
+  const sh=OVR_SHIFT[club]||0,nS=(OVR_2026[club]||[]).length;   // lo scarto di club vale solo per le righe del foglio: i forzati e gli aggiunti a mano hanno il valore chiesto
+  const rows=(OVR_2026[club]||[]).concat(OVR_ADD[club]||[]).map((r,i)=>[r,i<nS?sh:0]).filter(([r])=>!out.has(ovrKey(r[1]+' '+r[0]))).map(([r,d])=>{const k=ovrKey(r[1]+' '+r[0]);return {sur:r[0],nm:r[1],k,ov:fo[k]||Math.max(25,Math.min(99,r[2]+d)),age:r[3],rl:r[4],ex:r[5].includes('e'),est:r[5].includes('a'),ld:r[5].includes('d'),conf:r[6]};});
   return ovrCache[club]=rows;
 }
 // rose italiane: le righe di REAL_ALL di un club con l'Overall (ov), il ruolo (rl) e l'eta' del foglio; chi il gioco non aveva si aggiunge (assist e mete a 0)
