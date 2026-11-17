@@ -35,8 +35,8 @@ for(const lk in LN_PL_PLUS){
 // forza dei club corretta a mano rispetto ai dati generati (LN_CL), per i club fuori dal foglio Overall (quelli del foglio usano OVR_SHIFT, 30-carriera/00-ovr-2026.js). Metodo: piazzamento
 // medio pesato all'EUCF Open (2026 1,0 · 2025 0,85 · 2024 0,7; 2026 per esteso con l'ordine dei soli europei al WUCC; semifinalisti 3,5; anni senza dato 10,5; fonti: portali EUF e albo
 // d'oro EUCS), forza = media tra quella di prima e 93,5 - 1,15 x piazzamento, piu' 1 punto di prestigio per chi ha giocato l'EUCF. Chi non c'era non supera chi del suo paese c'era:
-// Jetset Open (4º belga) un punto sotto Freezzz Beezzz.
-const LN_POW_FIX={'Freezzz Beezzz one':78.6,'Heidees':76.4,'Jetset Open':77.6};
+// Jetset Open (4º belga) sotto Freezzz Beezzz. Freezzz Beezzz alzati a 82 su richiesta: all'EUCF 14-15 con Clapham e 13-15 con Cotarica, 9ª dei club europei al WUCC, sopra Chevron e NLSU.
+const LN_POW_FIX={'Freezzz Beezzz one':82,'Heidees':76.4,'Jetset Open':77.6};
 // livello (bonus) dei giocatori corretto a mano, con la fonte: Freezzz Beezzz one. I bonus dei dati generati seguivano poco le statistiche (correlazione 0,54 con mete+assist a partita del
 // WUCC 2026, contro 0,76-0,87 degli altri club Open) e Victor Weller (2,0 punti a partita, terzo della squadra) era fuori dalla rosa; con le 10 partite Open del WUCC 2026 (Limerick, portali
 // WFDF) il bonus e' la media tra il vecchio e la retta ricavata dagli altri club (bonus = -3,14 + 2,41 x punti a partita), solo la retta per chi non aveva dati; a meta' interi.
