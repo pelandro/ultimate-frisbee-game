@@ -2,18 +2,7 @@
    Si parte aprendo un pacchetto da 10 giocatori casuali (piu' sono forti, piu' sono rari), si sceglie la rosa e si gioca un torneo a eliminazione diretta
    di 64 squadre (6 turni). Le avversarie crescono di forza a ogni turno. Dopo ogni vittoria si apre un nuovo pacchetto (sempre migliore). */
 const UT_KEY='ultimate-ut',UTR_KEY='ultimate-ut-real',UT_POWERS=[50,58,64,72,84,98],UT_ROUNDS=['Trentaduesimi','Sedicesimi','Ottavi','Quarti','Semifinale','Finale'],UT_TO=['ai trentaduesimi di finale','ai sedicesimi di finale','agli ottavi di finale','ai quarti di finale','in semifinale','in finale'];   // UT_TO: «passi …», «eliminati …»
-const UT_OFF={D:{lan:-8,buc:-9,spa:-9,vis:1,dif:13,sal:6,sca:5,tuf:8,vel:6,res:5,pre:-3,agi:6},H:{lan:8,buc:8,spa:8,vis:5,dif:-7,sal:-7,sca:-7,tuf:-7,vel:-7,res:-7,pre:-2,agi:-5},C:{lan:-9,buc:-9,spa:-9,vis:-3,dif:7,sal:7,sca:7,tuf:7,vel:7,res:7,pre:6,agi:7}};
 const UT_LETTERS='ABCDEFGHILMNOPRSTVZ';
-// statistiche di un giocatore con media (ovr) data: il ruolo da' il profilo (handler = lanci, cutter = fisico), che a livelli alti si appiattisce
-function utStats(role,ovr,rng){
-  const sc=ovr>=60?Math.max(0.2,1-(ovr-60)/45):1,off=UT_OFF[role],noise={};
-  for(const k of KEYS)noise[k]=(rng()-0.5)*8;
-  const mk=b=>{const st={};for(const k of KEYS)st[k]=clamp(Math.round(b+off[k]*sc+noise[k]),25,99);return st;};
-  let lo=0,hi=150;
-  const rr=role==='H'?'H':'C';   // il valore della carta e' l'Overall nel ruolo (come in carriera), non la media di tutte le statistiche
-  for(let i=0;i<26;i++){const mid=(lo+hi)/2,st=mk(mid);if(ovrX({s:st,r:rr})<ovr)lo=mid;else hi=mid;}
-  return mk((lo+hi)/2);
-}
 function utPlayer(role,ovr,rng){
   const nm=NAME_POOL[Math.floor(rng()*NAME_POOL.length)]+' '+UT_LETTERS[Math.floor(rng()*UT_LETTERS.length)]+'.',st=utStats(role,ovr,rng);
   const r=role==='H'?'H':'C';   // carte specializzate: Handler, Cutter e Defender (un cutter costruito per difendere); circa una su quattro ha un tratto

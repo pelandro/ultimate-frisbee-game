@@ -184,7 +184,8 @@ function usRoster(club,seedStr,opt){
   for(const r of STARS)if(US_STAR_CLUB[usStarKey(r)]===club){const f=usFFof(club,r[0],r[1]);specs.push(f?{k:'sf',row:r,ab:usAbP(f),fl:usFl(Math.max(r[4],usEuCtx(r[0],r[1])),usAward(r[0],r[1])),role:usFFrole(f)}:{k:'s',row:r});}
   // giocatori veri: dove ci sono i dati Fantasy contano quelli (livello assoluto e ruolo), altrimenti il bonus di US_CORE rispetto al club
   const real=[];
-  (US_CORE[club]||[]).filter(r=>!usOut(r[0],r[1])).forEach(r=>{const f=usFFof(club,r[0],r[1]),ro=f&&usFFrole(f);const ag=usAgeOf(r[0],r[1],r[2]);real.push({k:'r',row:[r[0],r[1],ag[0],ro||r[3],r[4]],ex:ag[1],ab:f?usAbP(f):null,fl:f?usFl(usEuCtx(r[0],r[1]),usAward(r[0],r[1])):0,base:-1+(r[4]|0)});});
+  const gone=ovrOutSet(club);
+  (US_CORE[club]||[]).filter(r=>!usOut(r[0],r[1])&&!gone.has(ovrKey(r[1]+' '+r[0]))).forEach(r=>{const f=usFFof(club,r[0],r[1]),ro=f&&usFFrole(f);const ag=usAgeOf(r[0],r[1],r[2]);real.push({k:'r',row:[r[0],r[1],ag[0],ro||r[3],r[4]],ex:ag[1],ab:f?usAbP(f):null,fl:f?usFl(usEuCtx(r[0],r[1]),usAward(r[0],r[1])):0,base:-1+(r[4]|0)});});
   usFFextra(club).forEach(x=>{const ag=usAgeOf(x.sur,x.nm,22+hashStr(x.f[0])%12);real.push({k:'r',row:[x.sur,x.nm,ag[0],usFFrole(x.f)||'C',0],ex:ag[1],ab:usAbP(x.f),fl:usFl(usEuCtx(x.sur,x.nm),usAward(x.sur,x.nm)),base:0});});
   // una rosa ha al massimo 20 giocatori: le stelle restano sempre, poi i veri migliori
   const key=s=>s.ab!=null?Math.max(s.ab,s.fl||0):P+s.base;
@@ -211,6 +212,7 @@ function usRoster(club,seedStr,opt){
     });
     const d=T-rosterPower(out);if(Math.abs(d)<0.35)break;off=clamp(off+d,-34,16);
   }
+  out=ovrFix(club,out,seedStr,'US',opt.low);   // rosa del foglio di revisione 2026 (38-ovr/01-applica.js)
   const cnt={};for(const o of out)cnt[o.n]=(cnt[o.n]||0)+1;
   for(const o of out)if(cnt[o.n]>1)o.n=o.sur+' '+(o.label||'?')[0]+'.';   // due compagni con lo stesso cognome: si aggiunge l'iniziale
   return out;

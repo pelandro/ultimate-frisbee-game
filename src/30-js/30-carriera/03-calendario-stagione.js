@@ -3,7 +3,7 @@ const REAL={};
   const norm=n=>n.toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
   for(const sr of ['A','B','C']){
     const ix={};for(const n of SERIES[sr])ix[norm(n.replace(/ \([ABC]\)$/,''))]=n;
-    for(const t in REAL_ALL[sr]){const gn=ix[norm(t)];if(gn)REAL[gn]=REAL_ALL[sr][t].map(r=>({sur:r[0],nm:r[1],a:r[2],g:r[3],age:r[4],f:!!r[5]}));}
+    for(const t in REAL_ALL[sr]){const gn=ix[norm(t)];if(gn)REAL[gn]=ovrMergeIT(gn,REAL_ALL[sr][t].map(r=>({sur:r[0],nm:r[1],a:r[2],g:r[3],age:r[4],f:!!r[5]})));}   // Overall, ruolo ed eta' della revisione 2026 (00-ovr-2026.js)
   }
 })();
 // in A e in B il livello della rosa viene portato alla forza della squadra (che segue la classifica finale 2026); in C dipende solo da assist e mete
