@@ -78,20 +78,27 @@ function startPlay(team,force){   // force: avvia uno schema preciso (l'attacco 
   const h=G.holder;
   if(!book||!h||h.t!==team){G.pb[team]=null;return;}
   const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ,uh=(h.x-own)*d;   // dove parte il portatore: la formazione si muove con lui
-  const pb={id:bk,phase:0,stage:'go',stageT:0,shift:clamp(uh,-2,30)-0.6,hu:uh,hy:h.y,follow:{},role:{},rp:{},wp:{},post:{},active:true,ready:false};   // se si riparte lontano dalla linea di meta si parte subito in corsa
-  const others=T[team].filter(p=>p!==h),roles=PB_ROLES.slice(1),setPos={};
-  for(const r of roles){const sp=book.phases[0].set[r];setPos[r]=sp?pbPos(pb,team,sp[0],sp[1],sp[2]):{x:h.x,y:h.y};}
+  // PARTENZA DAL CENTRO: tutti vanno prima nella formazione dello schema ('set') e i tagli partono solo con il disco in mano all'handler centrale (H1).
+  // Se chi ha il disco e' lontano dal centro (dopo il pull o un turnover) un altro handler va al centro e riceve il primo passaggio (pb.prep)
+  const pb={id:bk,phase:0,stage:'set',stageT:0,shift:clamp(uh,-2,30)-0.6,hu:uh,hy:h.y,follow:{},role:{},rp:{},wp:{},post:{},active:true,ready:false,prep:false};
+  const others=T[team].filter(p=>p!==h),setPos={},S0=book.phases[0].set||{};
+  const cspot={x:h.x,y:MID},cen=sch!=='ez'&&Math.abs(h.y-MID)>PB_CENTER?others.filter(p=>p.role==='H').sort((a,b)=>hyp(a.x-cspot.x,a.y-cspot.y)-hyp(b.x-cspot.x,b.y-cspot.y))[0]:null;
+  let hr='H1';
+  if(cen){const sy=r=>S0[r]?S0[r][1]:(r==='H2'?MID-10:MID+10);hr=Math.abs(sy('H2')-h.y)<=Math.abs(sy('H3')-h.y)?'H2':'H3';pb.prep=true;pb.cspot=cspot;pb.role[cen.id]='H1';pb.rp.H1=cen;}   // chi ha il disco fa da handler di lato, dal suo lato
+  pb.role[h.id]=hr;pb.rp[hr]=h;
+  const roles=PB_ROLES.filter(r=>!pb.rp[r]),rest=others.filter(p=>p!==cen);
+  for(const r of roles){const sp=S0[r];setPos[r]=sp?pbPos(pb,team,sp[0],sp[1],sp[2]):{x:h.x,y:h.y};}
   const pairs=[];
-  for(const p of others)for(const r of roles)pairs.push([hyp(p.x-setPos[r].x,p.y-setPos[r].y)+((p.role==='H')===(r[0]==='H')?0:25),p,r]);   // handler agli handler, cutter ai cutter
+  for(const p of rest)for(const r of roles)pairs.push([hyp(p.x-setPos[r].x,p.y-setPos[r].y)+((p.role==='H')===(r[0]==='H')?0:25),p,r]);   // handler agli handler, cutter ai cutter
   pairs.sort((a,b)=>a[0]-b[0]);const up=new Set(),ur=new Set();
   for(const [c,p,r] of pairs){if(up.has(p)||ur.has(r))continue;up.add(p);ur.add(r);pb.role[p.id]=r;pb.rp[r]=p;}
-  pb.role[h.id]='H1';pb.rp.H1=h;
   for(const p of T[team])pb.follow[p.id]=Math.random()<adhOf(p);
   G.pb[team]=pb;
 }
 function pbTarget(team,p){
   const pb=G.pb&&G.pb[team];if(!pb||!pb.active||!pb.follow[p.id])return null;
   const r=pb.role[p.id],ph=PLAYBOOK[pb.id].phases[pb.phase];if(!r)return null;
+  if(pb.prep&&r==='H1')return {x:pb.cspot.x,y:pb.cspot.y,am:1,vm:1};   // l'handler centrale va al centro a prendere il primo passaggio
   if(pb.phase===0&&pb.stage==='set'){const sp=ph.set[r];if(!sp)return {hold:true};const t=pbPos(pb,team,sp[0],sp[1],sp[2]);return {x:t.x,y:t.y,am:1,vm:0.9};}
   const way=ph.go[r];if(!way){if(!pb.post[p.id]){const sp=pb.phase===0&&ph.set&&ph.set[r];pb.post[p.id]=sp?pbPos(pb,team,sp[0],sp[1],sp[2]):{x:p.x,y:p.y};}return {free:true,post:pb.post[p.id]};}   // handler dietro: vanno al loro posto e li' cercano di liberarsi
   if(pb.wp[p.id]===undefined){const t0=pbPos(pb,team,way[0][0],way[0][1],way[0][2]);pb.wp[p.id]=(way.length>1&&hyp(p.x-t0.x,p.y-t0.y)>12)?1:0;}   // se parte lontano dal punto della finta, va direttamente al taglio
@@ -106,31 +113,39 @@ function updatePlay(dt){
     pb.stageT+=dt;
     const book=PLAYBOOK[pb.id],ph=book.phases[pb.phase];
     if(pb.stage==='set'){
-      if(G.walk||G.pull)continue;
+      if(G.walk||G.pull||pb.prep)continue;   // finche' il disco non e' all'handler centrale nessuno taglia
       let ok=true;
       for(const p of T[team]){if(!pb.follow[p.id]||p===G.holder)continue;const sp=ph.set[pb.role[p.id]];if(sp){const t=pbPos(pb,team,sp[0],sp[1],sp[2]);if(hyp(p.x-t.x,p.y-t.y)>3.5)ok=false;}}
       if(ok||pb.stageT>1.2){pb.stage='go';pb.stageT=0;}
     }else if(ph.ready){
       const rp=pb.rp[ph.ready];
       if(!rp||!pb.follow[rp.id])pb.ready=true;
-      else{const way=ph.go[ph.ready],w1=way[way.length-1],f=pbPos(pb,team,w1[0],w1[1],w1[2]);pb.ready=hyp(rp.x-f.x,rp.y-f.y)<10||pb.stageT>3.2;}
+      else{const way=ph.go[ph.ready],w1=way[way.length-1],f=pbPos(pb,team,w1[0],w1[1],w1[2]);pb.ready=hyp(rp.x-f.x,rp.y-f.y)<(ph.readyR||10)||pb.stageT>(ph.readyT||3.2);/* readyR/readyT: per i tagli che devono arrivare quasi in fondo */}
     }else pb.ready=pb.stageT>0.8;
     if(ph.auto&&pb.stage==='go'&&pb.ready&&book.phases[pb.phase+1]){pb.phase++;pb.stageT=0;pb.ready=false;pb.wp={};}   // fase senza passaggio: quando il taglio e' pronto parte la successiva
   }
 }
 // il portatore aspetta che lo schema sia pronto, ma non oltre lo stall 3: da li' lo schema si abbandona e si gioca libero (PB_STALL)
-const PB_STALL=3;
+const PB_STALL=3,PB_CENTER=6,PB_PREP_STALL=6;   // PB_CENTER: oltre questi metri dal centro chi ha il disco passa prima all'handler centrale; PB_PREP_STALL: fino a quando lo aspetta
 const PB_FREE=3.5,PB_FREE_D=2.7;   // distanza minima di un difensore dal ricevitore previsto perche' sia «libero»: 3,5 m con Visione bassa, 0,8 m con Visione alta (da 80)
 const pbStall=pb=>PLAYBOOK[pb.id].stall||PB_STALL;   // gli schemi con piu' tagli di fila (1 in 3-4) aspettano un po' di piu'
-const pbWait=h=>{const pb=G.pb&&G.pb[h.t];return !!(pb&&pb.active&&pb.follow[h.id]&&G.stallT<pbStall(pb)&&(pb.stage==='set'||!pb.ready));};
+const pbWait=h=>{const pb=G.pb&&G.pb[h.t];if(!pb||!pb.active||!pb.follow[h.id])return false;
+  if(pb.prep){const c=pb.rp.H1;return !!c&&G.stallT<PB_PREP_STALL&&hyp(c.x-pb.cspot.x,c.y-pb.cspot.y)>2.5;}   // aspetta che l'handler centrale sia al suo posto
+  return G.stallT<pbStall(pb)&&(pb.stage==='set'||!pb.ready);};
 function pbAllowed(th){   // a chi puo' lanciare chi segue lo schema
-  const pb=G.pb&&G.pb[th.t];if(!pb||!pb.active||!pb.follow[th.id]||pb.stage==='set'||G.stallT>=pbStall(pb))return null;
+  const pb=G.pb&&G.pb[th.t];if(!pb||!pb.active||!pb.follow[th.id])return null;
+  if(pb.prep)return pb.rp.H1&&pb.follow[pb.rp.H1.id]&&G.stallT<PB_PREP_STALL?[pb.rp.H1]:null;   // primo passaggio: all'handler centrale
+  if(pb.stage==='set'||G.stallT>=pbStall(pb))return null;
   const ph=PLAYBOOK[pb.id].phases[pb.phase];if(!ph.pass||!ph.pass.length)return null;
   const al=ph.pass.map(r=>pb.rp[r]).filter(q=>q&&pb.follow[q.id]);
   return al.length?al:null;
 }
 function playOnCatch(team,p){   // (il primo passaggio dopo un pull preso dall'IA non ha ancora uno schema: lo avvia catchBy)
   const pb=G.pb&&G.pb[team];if(!pb||!pb.active)return;
+  if(pb.prep){   // il primo passaggio e' arrivato al centro: da qui la formazione si completa e partono i tagli
+    if(pb.role[p.id]!=='H1'){pb.active=false;return;}
+    const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ,u=(p.x-own)*d;pb.prep=false;pb.stageT=0;pb.shift=clamp(u,-2,30)-0.6;pb.hu=u;pb.hy=p.y;return;
+  }
   const book=PLAYBOOK[pb.id],ph=book.phases[pb.phase],nxt=book.phases[pb.phase+1];
   const alt=ph.alt&&ph.alt[pb.role[p.id]];
   if(alt){pb.id=alt[0];pb.phase=alt[1];pb.stage='go';pb.stageT=0;pb.ready=false;pb.wp={};}   // il disco e' andato al ricevitore dell'altra variante: si continua con quella
@@ -210,9 +225,9 @@ function restPlayers(){
 }
 // % di possessi che finiscono in meta per ogni attacco contro ogni difesa (misurata con migliaia di partite simulate: serve all'IA per scegliere gli schemi).
 // Ogni schema ha un controgioco: la Zona ferma Verticale ed Esagono ma subisce Orizzontale e T1; l'Esagono rende meno ma e' il piu' sicuro contro la zona stretta
-// misurata al primo possesso (nessun adattamento) con i controgiochi SCH_FIT, le aperture del playbook, i tagli coordinati e gli intercetti: 600 possessi per casella, livello Difficile (mete / (mete + turnover)).
+// misurata al primo possesso (nessun adattamento) con la partenza dal centro, i controgiochi SCH_FIT, i tagli coordinati e gli intercetti: 400 possessi per casella, livello Difficile (mete / (mete + turnover)).
 // Il T1 resta il piu' efficace, soprattutto contro la zona: l'IA dei livelli alti lo sa e gli risponde con la difesa a uomo, dove il margine e' piccolo
-const SCH_EFF={vert:{man_out:29,man_in:30,zone:17,man_poach:27},horz:{man_out:27,man_in:25,zone:43,man_poach:26},hex:{man_out:19,man_in:26,zone:12,man_poach:25},t1:{man_out:45,man_in:47,zone:41,man_poach:47},side:{man_out:28,man_in:31,zone:19,man_poach:23},weave:{man_out:34,man_in:36,zone:33,man_poach:28}};
+const SCH_EFF={vert:{man_out:25,man_in:28,zone:13,man_poach:22},horz:{man_out:21,man_in:19,zone:24,man_poach:22},hex:{man_out:17,man_in:20,zone:10,man_poach:23},t1:{man_out:39,man_in:31,zone:46,man_poach:50},side:{man_out:24,man_in:26,zone:14,man_poach:18},weave:{man_out:20,man_in:27,zone:39,man_poach:18}};
 // CONTROGIOCHI: quanto la difesa e' favorita contro ogni attacco (da -1: l'attacco la batte, a +1: la difesa lo legge subito). Marcatura piu' o meno stretta, anticipo e intercetti seguono questo numero:
 // e' cio' che rende importante la scelta dello schema. Come dicono guida e tutorial: la zona ferma Verticale, Esagono e Stack laterale e subisce Orizzontale, Weave e T1; l'uomo che forza dentro soffre l'Orizzontale; gli aiuti (poach) leggono Verticale e Weave ma subiscono l'Esagono.
 const SCH_FIT={vert:{man_out:-0.2,man_in:-0.35,zone:0.65,man_poach:0.3},horz:{man_out:0.1,man_in:0.35,zone:-0.5,man_poach:0.2},hex:{man_out:0.1,man_in:0,zone:0.55,man_poach:-0.4},t1:{man_out:0.25,man_in:0.25,zone:-0.3,man_poach:0},side:{man_out:-0.35,man_in:-0.2,zone:0.4,man_poach:0.1},weave:{man_out:-0.1,man_in:-0.1,zone:-0.45,man_poach:0.55}};

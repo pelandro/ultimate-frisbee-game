@@ -29,7 +29,7 @@ const DIFF_AI=[{noise:1,think:1,wander:1,sprint:0,hb:1,mark:1,pat:0,smart:0.35,p
   {noise:0.85,think:1.05,wander:0.8,sprint:0.08,hb:1.15,mark:0.75,pat:1.3,smart:1.2,poach:1.1,react:0.85,adapt:0.7,sw:0.9},
   {noise:0.75,think:1,wander:0.65,sprint:0.12,hb:1.22,mark:0.6,pat:1.3,smart:1.5,poach:1.3,react:0.72,adapt:0.9,sw:1}];   // Estrema: ancora piu' attenta; non aspetta di piu' (pat, think) per non esitare
 // bonus di statistiche dei 7 avversari per livello (Facile, Medio, Difficile, Estrema): a pari rosa il distacco non e' solo di comportamento. Non vale per Real player
-const DIFF_PLUS=[0,1,3,5];
+const DIFF_PLUS=[0,2,4,6];   // +1 per livello da Medio in su rispetto a prima (0,1,3,5): il gioco era troppo facile
 /* ---- IDENTITA' TATTICA delle squadre: nasce dal nome (fissa) e dalle qualita' dei 7 in campo.
    deep: -1 gioco corto ... +1 gioco lungo; pat: -1 ritmo alto ... +1 possesso paziente; press: probabilita' di marcare in anticipo; poach: quanto aiutano lontano dal disco ---- */
 const ID0={deep:0,pat:0,press:0.3,poach:0.5,tags:[]};
