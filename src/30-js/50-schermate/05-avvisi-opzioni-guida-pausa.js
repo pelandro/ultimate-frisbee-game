@@ -126,7 +126,9 @@ function toResume(){
 $('toGo').addEventListener('click',toResume);
 for(const [b,sc] of [['mkBack','home'],['clBack','home'],['hMarket','market'],['hClub','club']])$(b).addEventListener('click',()=>showScreen(sc));
 const bSub=$('bSub');
-$('subBox').addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;tapSwap(+b.dataset.id);renderLineupBox();});
+$('subBox').addEventListener('click',e=>{
+  if(e.target.closest('button[data-all]')){swapAll();renderLineupBox();return;}
+  const b=e.target.closest('button[data-id]');if(!b)return;tapSwap(+b.dataset.id);renderLineupBox();});
 bSub.addEventListener('click',()=>{
   if(G.mode!=='ready')return;
   forcedSubs=false;$('subTitle').textContent='Cambi';$('subSub').textContent=G.lines?(G.lineK==='o'?'Linea d’attacco':'Linea di difesa')+': i cambi che fai valgono anche per le prossime mete di questa linea.':'';
