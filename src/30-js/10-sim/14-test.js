@@ -548,6 +548,15 @@ function selfTestPlan(opt){
     return [row('1 in 3-4: variante B scelta circa 7 volte su 10',pc(pB),pB>=0.55&&pB<=0.85),
       row('1 in 3-4 con Visione 90: sequenze complete (B: C4 che torna, poi lungo a C3; A: C2 sotto, poi C4)','B '+fullB+', A '+fullA+' su '+N,fullB>=N*0.15&&fullA>=N*0.08,'i passaggi seguono lo schema disegnato')];
   }]);
+  S.steps.push(['Ripresa dalla linea di meta',()=>{
+    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    newGame();G.inMatch=true;placeTeams(0);G.mode='play';
+    const tryAt=(x,pk)=>{G.walk=null;const q=T[1][2];q.x=x;q.y=12;turnover(1,x,12,pk?q:null,'',1);return G.walk;};
+    const w1=tryAt(EZ*0.5,true),w2=tryAt(FIELD_L-EZ*0.5,true),w3=tryAt(FIELD_L/2,true),w4=tryAt(EZ*0.5,false);
+    const ok1=!!(w1&&w1.line&&Math.abs(w1.line.x-(EZ+0.6))<0.01),ok2=!!(w2&&w2.line&&Math.abs(w2.line.x-(FIELD_L-EZ-0.6))<0.01),ok3=!w3||!w3.line,ok4=!!(w4&&w4.line);
+    G.walk=null;
+    return [row('Turnover dentro una meta (anche con chi raccoglie al volo, come dopo un handblock): si riparte dalla linea di meta',[ok1,ok2,ok3,ok4].map(v=>v?'sì':'no').join(', '),ok1&&ok2&&ok3&&ok4,'nelle due mete sì, a centrocampo no')];
+  }]);
   S.steps.push(['Salto da fermo o in corsa nella scena laterale',()=>{
     const f={tx:30,ty:18},p=(x,y,vx,vy)=>({x,y,vx,vy});
     const still=!jumpRun(p(30.5,18.3,0.5,0),f),runFar=jumpRun(p(31,18,6,0),f),stand=!jumpRun(p(31,18,0,0),f);
