@@ -51,7 +51,7 @@ catch(e){
   });
   await step('tutorial completo dal menu: capitoli, lezioni, progressi salvati, Esc e ingresso dalla Guida',async()=>{
     await page.click('#tTut');await vis('#tut');
-    if(await page.locator('#tuBody .tuc').count()!==8)throw new Error('il tutorial deve avere 8 capitoli');
+    if(await page.locator('#tuBody .tuc').count()!==6)throw new Error('il tutorial deve avere 6 capitoli');
     await page.click('#tuBody .tuc >> nth=0');await vis('#tuBody .tul >> nth=0');
     await page.click('#tuBody .tul >> nth=0');
     if(!(await page.locator('#tuBody .tubody').count()))throw new Error('la lezione non si apre');
@@ -63,7 +63,7 @@ catch(e){
     await page.click('#tHelp');await vis('#guide');await page.click('#gdTut');await vis('#tut');
     if(await page.locator('#guide:not(.hidden)').count())throw new Error('aprendo il tutorial la Guida deve chiudersi');
     await page.click('#tuBody .tuc >> nth=0');await page.click('#tuBody [data-tu^="h"]');   // dal capitolo si torna all'indice
-    if(await page.locator('#tuBody .tuc').count()!==8)throw new Error('«Tutti i capitoli» deve riportare all\'indice');
+    if(await page.locator('#tuBody .tuc').count()!==6)throw new Error('«Tutti i capitoli» deve riportare all\'indice');
     await page.click('#tuX');await vis('#title');
   });
   await step('schermo: l\'interfaccia si adatta (telefono invariato, iPad e computer piu\' grandi) e si puo\' regolare',async()=>{
