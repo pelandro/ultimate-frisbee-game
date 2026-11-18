@@ -72,12 +72,8 @@ const matchLevel=n=>n===SV.team?myLinesLevel():teamLevel(n);
 const teamPower=n=>n===SV.team?squadPower():(SV.rost&&SV.rost[n]?rosterPower(SV.rost[n])+carDiff().plus:null);
 // forza mostrata nella scelta della squadra: la stessa rosa con cui si parte davvero (userRoster: 9 giocatori, come per le avversarie)
 const previewPower=n=>REAL[n]?rosterPower(realRoster(REAL[n],'preview|'+n,realOpt(n,9))):0;
-// stemma della squadra: scudetto con due colori e iniziali, generato dal nome
-function crest(name,px){
-  const h=hashStr('crest|'+name),h1=h%360,h2=(h1+130+(h>>8)%90)%360,ini=name.replace(/[^A-Za-zÀ-ÿ0-9 ]/g,'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  const dir=['135deg','180deg','90deg','45deg'][(h>>4)%4];
-  return `<span class="crest" style="width:${px}px;height:${Math.round(px*1.12)}px;font-size:${Math.round(px*0.4)}px;background:linear-gradient(${dir},hsl(${h1} 68% 46%) 0 50%,hsl(${h2} 72% 56%) 50% 100%)">${ini}</span>`;
-}
+// Identita' unica in tutti gli elenchi, nelle presentazioni e sul campo.
+function crest(name,px){return clubCrest(name,px);}
 // i ritratti dei giocatori (avatar) stanno in 10b-avatar-dati.js (foglio dei disegni) e 10c-avatar-retro.js (ricerca per nome e volti disegnati nello stesso stile)
 let teamTab='C';
 function renderTeamList(){for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamTab);$('tTeams').innerHTML=SERIES[teamTab].slice().sort(favFirst).map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${favMark(n)}${n}</span></span><b class="tp">${Math.round(previewPower(n))}</b></button>`).join('');}

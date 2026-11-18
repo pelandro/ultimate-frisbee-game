@@ -149,7 +149,7 @@ tip:`Un giovane con potenziale alto che oggi è scarso diventa il titolare di do
 `I giovani crescono in fretta, dopo i 30 il fisico cala. Le <b>specializzazioni</b> orientano la crescita; a inizio stagione fino a 3 giocatori si pongono un <b>obiettivo</b>: chi lo manca due volte di fila chiede di partire.`],
 tip:`Fai Recupero il giorno prima di una partita importante. Punta su 2-3 giovani con potenziale alto.`},
 {id:'car-club',t:'Società: strutture e staff',w:'Colonna › Società',b:[
-`La Società ha quattro parti: <b>Conti</b>, <b>Strutture</b>, <b>Staff</b> e <b>Bacheca</b> (albo d’oro, traguardi, record).`,
+`Stemmi e sigle identificano la squadra nei menu e sul campo. La Società ha quattro parti: <b>Conti</b>, <b>Strutture</b>, <b>Staff</b> e <b>Bacheca</b> (albo d’oro, traguardi, record).`,
 [`<b>Strutture</b> (livello massimo 5, con una manutenzione a ogni partita): <b>Campo di allenamento</b> (allenamenti), <b>Fisioterapia</b> (recupero), <b>Vivaio</b> (giovani), <b>Tribune</b> (più posti, utili se lo stadio si riempie), <b>Rete di osservatori</b> e <b>Sede del club</b>.`,
 `Le strutture si consumano: d’estate possono perdere un livello. Se ne tieni una almeno al livello 3 per metà stagione ricevi un premio.`,
 `<b>Staff</b>: Allenatore, Preparatore atletico, Analista tattico e Mentore dei giovani, ognuno con un livello da 1 a 3. «Scegli chi assumere» mostra tre candidati; lo stipendio è a ogni partita.`]],
