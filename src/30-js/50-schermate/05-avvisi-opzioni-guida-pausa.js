@@ -183,10 +183,12 @@ function armed(btn,label,idle,fn){
   if(!btn.dataset.arm){btn.dataset.arm='1';btn.textContent=label;setTimeout(()=>{delete btn.dataset.arm;btn.textContent=idle;},3000);return;}
   delete btn.dataset.arm;btn.textContent=idle;fn();
 }
-$('hNew').addEventListener('click',()=>armed($('hNew'),'Conferma: cancella la carriera','Nuova carriera',()=>{
-  $('opts').classList.add('hidden');
-  const slot=SV.slot||1;try{localStorage.removeItem(SAVE_KEY);localStorage.removeItem(slotKey(slot));}catch(e){}
-  const help=SV.help;SV={help,slot};showScreen('league');   // la nuova carriera resta nello stesso slot
+$('hNew').addEventListener('click',()=>askConfirm({
+  title:'Sostituire la carriera?',html:'<p>La sostituzione avviene quando inizi e salvi la nuova carriera.</p>',
+  ok:'Scegli la nuova squadra',danger:true,onOk:()=>{
+    $('opts').classList.add('hidden');
+    careerNew(SV.slot||1);
+  }
 }));
 bExit.addEventListener('click',()=>openPause());
 

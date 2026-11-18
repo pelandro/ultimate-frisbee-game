@@ -12,7 +12,7 @@ function lnStartCareer(name,opt){
   Object.assign(SV,opt.carry||{});
   careerInit();
   news(`Inizia la carriera con ${name} in ${SERIES_NAME[SV.sr]}. In panchina: ${coachName()}.`);
-  persist();
+  if(!opt.deferSave)persist();
 }
 // reputazione di partenza: i club piu' forti del paese partono con piu' reputazione (da 21 a 60)
 const lnRepStart=()=>{const all=LN_NAMES.filter(n=>LN_BY[n].lk===SV.lk).sort((a,b)=>LN_BY[b].p-LN_BY[a].p),i=all.indexOf(SV.team);return Math.round(20+(1-i/Math.max(1,all.length-1))*40);};

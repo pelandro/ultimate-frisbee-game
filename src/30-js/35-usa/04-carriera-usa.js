@@ -13,7 +13,7 @@ function usStartCareer(name,opt){
   Object.assign(SV,opt.carry||{});   // se arrivi dall'Italia: allenatore, storico e traguardi restano tuoi
   careerInit();
   news(`Inizia la carriera con ${name} nella ${usConfName(SV.us.cf)} dei Men’s Club USA. In panchina: ${coachName()}.`);
-  persist();
+  if(!opt.deferSave)persist();
 }
 const usRepStart=()=>Math.round(20+(US_NAMES.length-US_TEAM[SV.team].rank)/(US_NAMES.length-1)*40);   // i club piu' prestigiosi partono con piu' reputazione (da 21 a 60)
 // ---- obiettivi della dirigenza: secondo il livello del club tra i 48 (la scala US_RUNG e' in 30-carriera/27-obiettivi-sponsor.js) ----

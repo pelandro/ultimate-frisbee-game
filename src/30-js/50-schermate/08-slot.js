@@ -13,24 +13,49 @@ function renderSlots(){
 }
 function switchSlot(k){
   if(!(k>=1&&k<=SLOTS_N)||(SV.slot||1)===k)return;
-  if(SV&&SV.team)persist();   // la carriera attuale resta nel suo slot
-  let d=null;try{d=JSON.parse(localStorage.getItem(slotKey(k))||'null');}catch(e){}
-  $('opts').classList.add('hidden');
-  if(d&&d.team){SV={};if(loadSave(d)){SV.slot=k;persist();showScreen('home');return;}}
-  slotUndo=SV&&SV.team?(SV.slot||1):null;const help=SV.help;SV={help,slot:k};try{localStorage.removeItem(SAVE_KEY);}catch(e){}showScreen('league');   // slot vuoto: si sceglie la squadra (indietro: torna la carriera di prima)
+  const d=slotData(k);
+  if(!d){careerNew(k);return;}
+  if(!archiveActiveCareer())return;
+  const previous=SV, squad=squadData(), lineup=lineupIds();
+  try{
+    if(loadSave(d)){
+      SV.slot=k;
+      if(persist()){$('opts').classList.add('hidden');showScreen('home');return;}
+    }
+  }catch(e){}   // uno slot illeggibile non sostituisce la carriera aperta
+  restoreCareerState(previous,squad,lineup);
+  slotMessage('Impossibile aprire lo slot '+k+'. La carriera attuale è ancora aperta.');
 }
 $('opSlots').addEventListener('click',e=>{const b=e.target.closest('[data-slot]');if(!b||b.disabled)return;switchSlot(+b.dataset.slot);});
-/* ---- SCHERMATA «SALVATAGGI» (dal menu iniziale; prima si chiamava «Carriere») ----
-   Prima per cambiare slot o iniziare una carriera nuova bisognava entrare nella carriera attuale, aprire le Opzioni e scegliere da li'.
-   Ora il menu iniziale ha il tasto «Salvataggi»: tre schede, una per slot, con Continua e Nuova carriera. Se inizi una carriera nuova e poi torni
-   indietro senza scegliere la squadra, la carriera di prima torna com'era (slotUndo). */
-let slotUndo=null;
+let careerDraft=null;
+function slotMessage(message){
+  const inOptions=!$('opts').classList.contains('hidden');
+  $(inOptions?'opMsg':'csMsg').textContent=message;
+}
+function archiveActiveCareer(){
+  if(!SV.team)return true;
+  try{
+    if(persist()){
+      const active=localStorage.getItem(SAVE_KEY);
+      localStorage.setItem(slotKey(SV.slot||1),active);
+      return true;
+    }
+  }catch(e){}
+  slotMessage('Impossibile conservare la carriera attuale. Libera spazio o esporta il salvataggio, poi riprova.');
+  return false;
+}
+function restoreCareerState(previous,squad,lineup){
+  SV=previous;
+  setSquad(squad);
+  setLineup(lineup);
+}
 function slotData(k){
   if(SV&&SV.team&&(SV.slot||1)===k)return SV;
   try{const d=JSON.parse(localStorage.getItem(slotKey(k))||'null');if(d&&d.team)return d;}catch(e){}
   return null;
 }
 function renderCareers(){
+  $('csMsg').textContent='';
   const cur=(SV&&SV.team)?(SV.slot||1):0;
   $('csBox').innerHTML=[1,2,3].map(k=>{
     const d=slotData(k);
@@ -45,22 +70,31 @@ function careerGo(k){
   switchSlot(k);
 }
 function careerNew(k){
-  const prev=SV&&SV.team?(SV.slot||1):null;
-  if(prev)persist();   // la carriera attuale resta nel suo slot
-  slotUndo=prev&&prev!==k?prev:null;
-  try{localStorage.removeItem(slotKey(k));localStorage.removeItem(SAVE_KEY);}catch(e){}
-  const help=SV&&SV.help;SV={help,slot:k};showScreen('league');
+  if(SV.team&&(SV.slot||1)!==k&&!archiveActiveCareer())return;
+  $('opts').classList.add('hidden');
+  careerDraft={slot:k,back:SV.team?'slots':'title'};
+  showScreen('league');
 }
-// indietro dalla scelta della squadra: se avevi lasciato un'altra carriera per iniziarne una nuova, torna quella
+function commitCareerDraft(team,coach,relief){
+  const previous=SV,squad=squadData(),lineup=lineupIds();
+  SV={help:previous.help,slot:careerDraft?.slot||previous.slot||1};
+  try{
+    startCareer(team,{coach,relief,deferSave:true});
+    if(persist()){careerDraft=null;return true;}
+  }catch(e){}
+  restoreCareerState(previous,squad,lineup);
+  return false;
+}
 function teamBack(){
-  if(!hasCareer()&&slotUndo){const k=slotUndo;slotUndo=null;let d=null;try{d=JSON.parse(localStorage.getItem(slotKey(k))||'null');}catch(e){}if(d&&d.team){SV={};if(loadSave(d)){SV.slot=k;persist();}}}
-  showScreen(hasCareer()?'slots':'title');
+  const back=careerDraft?.back||(hasCareer()?'slots':'title');
+  careerDraft=null;
+  showScreen(back);
 }
 $('csBox').addEventListener('click',e=>{
   const g=e.target.closest('[data-cgo]');if(g){careerGo(+g.dataset.cgo);return;}
   const n=e.target.closest('[data-cnew]');if(!n)return;
   const k=+n.dataset.cnew;
-  if(slotData(k))armed(n,'Conferma: cancella lo slot '+k,'Nuova carriera',()=>careerNew(k));   // uno slot pieno si cancella solo con la conferma
+  if(slotData(k))askConfirm({title:'Sostituire la carriera nello slot '+k+'?',html:'<p>La sostituzione avviene quando inizi e salvi la nuova carriera.</p>',ok:'Scegli la nuova squadra',danger:true,onOk:()=>careerNew(k)});
   else careerNew(k);
 });
 $('csBack').addEventListener('click',()=>showScreen('title'));

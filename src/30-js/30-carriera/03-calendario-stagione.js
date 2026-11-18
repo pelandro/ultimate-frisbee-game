@@ -49,7 +49,7 @@ function startCareer(name,opt){   // opt: {coach, relief} (24-allenatore.js)
   Object.assign(SV,opt.carry||{});   // se arrivi dal campionato USA: allenatore, storico e traguardi restano tuoi (35-usa/05-lega-incrociata.js)
   careerInit();
   if(opt.relief)reliefStart();else news(`Inizia la carriera con ${name} in ${SERIES_NAME[SV.sr]}. In panchina: ${coachName()}.`);
-  persist();
+  if(!opt.deferSave)persist();
 }
 function loadSave(d0){
   let d=d0||null;
@@ -83,7 +83,19 @@ function persist(){
   if(QM.on)return;   // partita veloce: la carriera non si tocca
   SV.v=SAVE_V;SV.squad=squadData();delete SV.players;SV.lineup=lineupIds();SV.savedAt=Date.now();
   if(typeof renderShell==='function'&&!QM.on&&csCur)renderShell();   // crediti e posta nella barra in alto sempre aggiornati
-  try{const prev=localStorage.getItem(SAVE_KEY);if(prev&&prev.length<3e6&&+((prev.match(/"slot":(\d)/)||[0,'1'])[1])===(SV.slot||1))localStorage.setItem(SAVE_KEY+'-bak',prev);localStorage.setItem(SAVE_KEY,JSON.stringify(SV));if(SV.team)localStorage.setItem(slotKey(SV.slot||1),JSON.stringify(SV));}catch(e){}   // la versione precedente resta come copia di sicurezza (solo se e' della stessa carriera, cioe' dello stesso slot)
+  // Il salvataggio attivo è il dato canonico. La copia nello slot viene usata quando si cambia carriera.
+  let data,prev;
+  try{
+    data=JSON.stringify(SV);
+    prev=localStorage.getItem(SAVE_KEY);
+    localStorage.setItem(SAVE_KEY,data);
+  }catch(e){return false;}
+  try{
+    if(SV.team)localStorage.setItem(slotKey(SV.slot||1),data);
+    if(prev&&prev.length<3e6&&(JSON.parse(prev).slot||1)===(SV.slot||1))
+      localStorage.setItem(SAVE_KEY+'-bak',prev);
+  }catch(e){}   // la copia accessoria non invalida la scrittura del salvataggio attivo
+  return true;
 }
 const ranking=(tab,names)=>names.length&&tab[names[0]]&&tab[names[0]].h?usRanking(tab,names):names.slice().sort((a,b)=>tab[b].pts-tab[a].pts||(tab[b].pf-tab[b].pa)-(tab[a].pf-tab[a].pa)||tab[b].pf-tab[a].pf);   // tabelle USA (con gli scontri diretti, h): 35-usa/03-stagione-usa.js
 const myRank=()=>ranking(SV.tab,SV.mem[SV.sr]).indexOf(SV.team)+1;

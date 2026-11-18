@@ -604,6 +604,14 @@ catch(e){
     if(!/Salvataggi/.test(await page.locator('#tSlots').innerText()))throw new Error('il tasto degli slot deve chiamarsi «Salvataggi»');
     await page.click('#tSlots');await vis('#slots');
     const full=await page.locator('#csBox [data-cgo]').count();if(full<1)throw new Error('la carriera esistente non compare tra gli slot');
+    const occupied=page.locator('#csBox .csl:has([data-cgo])').first();
+    const oldSlot=await occupied.innerText();
+    await occupied.locator('[data-cnew]').click();
+    await vis('#cfm');await page.click('#cfmOk');await vis('#league');
+    await page.click('#lgBack');await vis('#slots');
+    if(await occupied.innerText()!==oldSlot)throw new Error('annullare la sostituzione ha cambiato lo slot');
+    await page.reload();await page.click('#tSlots');await vis('#slots');
+    if(await occupied.innerText()!==oldSlot)throw new Error('lo slot precedente non sopravvive alla ricarica');
     const empty=await page.locator('#csBox .csl:not(:has([data-cgo])) [data-cnew]').first();
     const k=+(await empty.getAttribute('data-cnew'));await empty.click();await vis('#league');await page.click('#lgBack');await vis('#slots');   // ripensamento: la carriera di prima resta
     if(await page.locator('#csBox [data-cgo]').count()!==full)throw new Error('tornando indietro la carriera di prima e\' sparita');
