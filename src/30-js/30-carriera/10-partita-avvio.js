@@ -82,23 +82,21 @@ const QM={on:false,bak:null,a:null,b:null,s:1};   // s: la squadra che inizia in
 const hasCareer=()=>!!(SV&&SV.team);
 function renderTitle(){$('tSchoolS').textContent=SCH.tut?'Tutorial, pratica e sfide':((SCH.lv|0)?`Tutorial: lezione ${(SCH.lv|0)+1} di ${TUT_STEPS.length}`:'Nuovo? Inizia dal tutorial');$('tCareerS').textContent=hasCareer()?`Continua: ${SV.team}, ${SERIES_NAME[SV.sr]}${SV.susp?' · partita sospesa':''}`:'Scegli la squadra e inizia';const n=[1,2,3].filter(k=>slotInfo(k)).length;$('tSlotsS').textContent=n?`${n} di 3 slot · nuova`:'3 slot liberi';}
 const qPowCache={};
-function qRoster(n,min){if(isWomenClub(n))return lnRoster(n,'qm|'+n);return REAL[n]?realRoster(REAL[n],'qm|'+n,realOpt(n,min)):makeRoster(TEAM[n].power,'qm|'+n);}
+function qRoster(n,min){if(US_TEAM[n]||LN_BY[n])return foreignRoster(n,'qm|'+n);return REAL[n]?realRoster(REAL[n],'qm|'+n,realOpt(n,min)):makeRoster(TEAM[n].power,'qm|'+n);}
 function qPower(n){if(qPowCache[n]==null)qPowCache[n]=rosterPower(qRoster(n,7));return qPowCache[n];}
-// squadre femminili (campionato Women, 37-leghe/07-women.js): linguette WA e WB; giocano solo tra loro
-const qList=k=>k==='WA'||k==='WB'?LN_CL.IW.filter(r=>r[1]===k[1]).map(r=>r[0]):SERIES[k];
-const qTab=n=>isWomenClub(n)?'W'+LN_BY[n].t:TEAM[n].series;
-const qSerName=n=>isWomenClub(n)?'Women Serie '+LN_BY[n].t:'Serie '+TEAM[n].series;
+// le squadre di tutti i campionati (50-schermate/30-catalogo-squadre.js): linguette per campionato e per categoria
+const qSerName=n=>clubLeagueTxt(n);
 function qGender(side){   // se le due squadre non sono dello stesso campionato (maschile o femminile), l'altra si adegua: la piu' vicina in forza dell'altro mondo
   const o=side==='a'?'b':'a',w=isWomenClub(QM[side]);if(isWomenClub(QM[o])===w&&QM[o]!==QM[side])return;
-  const pool=(w?qList('WA').concat(qList('WB')):[].concat(SERIES.A,SERIES.B,SERIES.C)).filter(n=>n!==QM[side]);
+  const pool=qDivAll(w?'w':'m').filter(n=>n!==QM[side]);
   QM[o]=pool.slice().sort((x,y)=>Math.abs(qPower(x)-qPower(QM[side]))-Math.abs(qPower(y)-qPower(QM[side])))[0];
 }
 // divisione della partita veloce (QM.div: 'm' maschile, 'w' femminile): si sceglie in alto, il selettore mostra solo le squadre di quella divisione
-const qDivAll=d=>d==='w'?qList('WA').concat(qList('WB')):[].concat(SERIES.A,SERIES.B,SERIES.C);
+const qDivAll=d=>qLgs(d).flatMap(l=>l.clubs());
 function qDivSet(d){
   QM.div=d;const all=qDivAll(d);
   if(!all.includes(QM.a))QM.a=hasCareer()&&all.includes(SV.team)?SV.team:(d==='w'?all[1]:'Grem');
-  if(!all.includes(QM.b)||QM.b===QM.a)QM.b=d==='w'?all.filter(n=>n!==QM.a).sort((x,y)=>Math.abs(qPower(x)-qPower(QM.a))-Math.abs(qPower(y)-qPower(QM.a)))[0]:(all.find(n=>n!==QM.a&&TEAM[n].series!==TEAM[QM.a].series)||all.find(n=>n!==QM.a));
+  if(!all.includes(QM.b)||QM.b===QM.a)QM.b=d==='w'?all.filter(n=>n!==QM.a).sort((x,y)=>Math.abs(qPower(x)-qPower(QM.a))-Math.abs(qPower(y)-qPower(QM.a)))[0]:(all.find(n=>n!==QM.a&&qLgOf(n)===qLgOf(QM.a)&&qGrp(n)!==qGrp(QM.a))||all.find(n=>n!==QM.a));
 }
 // MODALITA' SUPERPOTERI (QM.hero, dal menu iniziale): la partita veloce con tre eroi per squadra (10-sim/27-superpoteri.js, 20-ui/20-superpoteri.js).
 // I tuoi tre eroi si scelgono qui (QM.hk, ricordati in ultimate-eroi); il computer ne prende tre a caso
@@ -126,12 +124,16 @@ function renderQuick(){
   $('qD').value=QM.d|0;$('qS').value=String(QM.s);$('qL').value=String(lenOk(QM.len|0));updateQuick();
 }
 // selettore delle squadre: le categorie sono linguette e l'elenco della categoria e' gia' aperto
-function openPick(side){QM.side=side;QM.tab=qTab(QM[side]);renderPick();$('qPick').classList.remove('hidden');}
+function openPick(side){QM.side=side;QM.lg=qLgOf(QM[side]).id;QM.tab=qGrp(QM[side]);renderPick();$('qPick').classList.remove('hidden');}
 function renderPick(){
   const me=QM[QM.side],other=QM[QM.side==='a'?'b':'a'];
   $('qpT').textContent=QM.side==='a'?'Tua squadra (blu)':'Avversaria (rossa)';
-  $('qpTabs').innerHTML=(QM.div==='w'?[['WA','Serie A'],['WB','Serie B']]:[['A','Serie A'],['B','Serie B'],['C','Serie C']]).map(([k,t])=>`<button type="button" data-k="${k}" class="${k===QM.tab?'on':''}">${t}</button>`).join('');
-  $('qpG').innerHTML=qList(QM.tab).map(n=>`<button type="button" data-n="${n.replace(/"/g,'&quot;')}" class="${n===me?'sel':''}${n===other?' off':''}">${crest(n,22)}<span>${n}</span><b>${Math.round(qPower(n))}</b></button>`).join('');
+  const ls=qLgs(QM.div),l=ls.find(x=>x.id===QM.lg)||ls[0],gs=qGrps(l);QM.lg=l.id;if(!gs.includes(QM.tab))QM.tab=gs[0];
+  $('qpLg').classList.toggle('hidden',ls.length<2);   // linguette dei campionati della divisione, poi quelle delle categorie del campionato
+  $('qpLg').innerHTML=ls.map(x=>`<button type="button" data-l="${x.id}" class="${x.id===l.id?'on':''}">${esc(qLgTab(x))}</button>`).join('');
+  $('qpTabs').classList.toggle('hidden',gs.length<2);
+  $('qpTabs').innerHTML=gs.map(k=>`<button type="button" data-k="${esc(k)}" class="${k===QM.tab?'on':''}">${esc(k)}</button>`).join('');
+  $('qpG').innerHTML=l.clubs().filter(n=>qGrp(n)===QM.tab).map(n=>`<button type="button" data-n="${n.replace(/"/g,'&quot;')}" class="${n===me?'sel':''}${n===other?' off':''}">${crest(n,22)}<span>${n}</span><b>${Math.round(qPower(n))}</b></button>`).join('');
 }
 function updateQuick(){
   const a=QM.a,b=QM.b;

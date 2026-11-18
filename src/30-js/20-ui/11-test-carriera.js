@@ -165,6 +165,14 @@ function careerSelfTest(seasons,seed){
       rows.push(row('Margine di crescita dei giocatori veri: grande per i giovani, piccolo per gli adulti (prima 20-25 a ogni età)',
         `mediana: fino a 20 anni ${md(g.y).toFixed(1)}, 24-29 ${md(g.m).toFixed(1)}, dai 30 ${md(g.o).toFixed(1)}`,
         md(g.y)>=7&&md(g.y)<=15&&md(g.m)<=7&&md(g.o)<=4.5&&md(g.y)>md(g.m)&&md(g.m)>md(g.o)));
+      {const T=[0.14,0.58,0.86,0.97,1],c=[0,0,0,0,0];let n=0,hi=0,nh=0,lo=0,nl=0;   // precocita' (32-precocita.js): stesse proporzioni delle fasce, ma i giovani che spiccano ne hanno di piu'
+       for(const nm of [].concat(SERIES.A,SERIES.B,SERIES.C))for(const o of realRoster(REAL[nm]||[],'tp|'+nm,realOpt(nm,7))){
+         const p=o.gen?undefined:realPrec(o.full,o.age);if(p===undefined)continue;
+         c[T.findIndex(t=>precMix(p,mulberry32(hashStr('tp|'+nm+'|tal|'+o.full))())<t)]++;n++;
+         if(o.age<=19){const d=top(o)-ovrX(o);if(p>=0.8){hi+=d;nh++;}else if(p<=0.2){lo+=d;nl++;}}}
+       rows.push(row('Giovani veri: la fascia del potenziale segue soprattutto la precocità rispetto ai coetanei, nelle stesse proporzioni di prima',
+         `fasce ${c.map(x=>Math.round(x/Math.max(1,n)*100)).join('/')}% · margine fino a 19 anni: i più precoci ${(hi/Math.max(1,nh)).toFixed(1)}, i meno precoci ${(lo/Math.max(1,nl)).toFixed(1)}`,
+         n>200&&Math.abs(c[0]/n-0.14)<0.04&&Math.abs(c[1]/n-0.44)<0.05&&c[4]/n<0.06&&nh>0&&nl>0&&hi/nh>lo/nl+5));}
       let dn=0,up=0,lost=0;const N=1500;
       for(let i=0;i<N;i++){const o=genPlayer(50,17,'sorp|'+i,potB(70));const s0=KEYS.reduce((a,k)=>a+o.s[k],0),t0=o.tl+o.tf+o.tv;for(let y=0;y<6;y++){o.pvx=0;const b=KEYS.reduce((a,k)=>a+o.s[k],0);o.age++;potSurprise(o);if(KEYS.reduce((a,k)=>a+o.s[k],0)<b)lost++;}const t1=o.tl+o.tf+o.tv;if(t1<t0)dn++;else if(t1>t0)up++;}
       {const mk=(ov,age)=>{const o=genPlayer(ov,age,'wg|'+ov+'|'+age,potB(ov+2));return o;},lo=mk(50,26),hi=mk(85,26),f0=SV.fac?SV.fac.oss:0;

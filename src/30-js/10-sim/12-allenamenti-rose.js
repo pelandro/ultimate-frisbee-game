@@ -117,8 +117,10 @@ const REAL_MIN=14,REAL_MAX=55;
 // margine di crescita di un giocatore vero: base per eta' e fascia (r tra 0 e 1, fissa per giocatore): 14% delusione, 44% nella media, 28% buono, 11% talento, 3% fenomeno.
 // Le fasce pesano meno con l'eta': a 30 anni un «fenomeno» ha comunque poco margine. REAL_TK copre lo scarto tra il livello e le statistiche piu' alte del ruolo
 const REAL_TK=0;
+// sotto i 20 anni un anno in meno vale un punto di margine in piu' (19 anni 9, 17 anni 11, fino a 13 a 15 anni): prima era 9 per tutti, e un
+// quindicenne aveva lo stesso margine di un diciannovenne
 function realGap(age,r){
-  const base=age<=19?9:(age<=21?7:(age<=23?5:(age<=26?3:(age<=29?1.5:(age<=32?0:-1))))),sc=age<=23?1:(age<=29?0.7:0.4);
+  const base=age<=19?Math.min(13,9+19-age):(age<=21?7:(age<=23?5:(age<=26?3:(age<=29?1.5:(age<=32?0:-1))))),sc=age<=23?1:(age<=29?0.7:0.4);
   const B=[[0.14,-5,-1],[0.58,-1,3],[0.86,3,7],[0.97,7,12],[1,12,18]];
   let lo=0;for(const [t,a,b] of B){if(r<t)return base+sc*(a+(b-a)*(r-lo)/(t-lo));lo=t;}
   return base;
@@ -156,7 +158,9 @@ function realRoster(rows,seedStr,opt){
     const age=o.age||(ages.length?ages[ages.length>>1]:flavorAge(opt.flavor,rng));   // eta' vera; se manca (un solo caso nei fogli) quella mediana della squadra
     // talento (il massimo raggiungibile): il livello vero piu' un margine che dipende dall'eta' e da una fascia fissata per giocatore (realGap).
     // Prima era il livello piu' 24-36 punti, mai sotto 72: anche un trentenne medio poteva arrivare a 90 e ogni rosa cresceva senza freni
-    const gp=realGap(age,mulberry32(hashStr(seedStr+'|tal|'+full))());
+    // fino a 23 anni la fascia la decide soprattutto la precocita' rispetto ai coetanei (30-carriera/32-precocita.js); fuori dal gioco completo resta a caso
+    const h=mulberry32(hashStr(seedStr+'|tal|'+full))(),pc=!o.gen&&typeof realPrec==='function'?realPrec(full,age):undefined;
+    const gp=realGap(age,pc===undefined?h:precMix(pc,h));
     let disp=sn(o);
     if(cnt[disp]>1){disp=sn(o)+' '+first(o)[0]+'.';if(used[disp])disp=sn(o)+' '+first(o);}
     used[disp]=1;
@@ -299,5 +303,5 @@ function applyForm(dbl){   // dbl: id dei tuoi giocatori in entrambe le linee (s
 function restoreForm(){poserReset();heroReset();for(const p of SQ.concat(T[1]))if(p.b){p.s=p.b;p.b=null;}}
 function newGame(){poserReset();heroReset();G.heroOn=false;G.hz=null;G.dec=null;G.hk=null;G.injured=[];G.vn=null;   // G.vn: campo e pubblico della partita (17-stadi-pubblico.js), si ricalcola per ogni partita
   for(const p of SQ.concat(T[1])){p.st=p.t===0&&p.cond!==undefined?Math.round(62+0.38*p.cond):100;   // chi arriva stanco dalla settimana parte con meno energia
-  p.spr=false;p.run=0;p.miss=0;p.hot=false;p.cold=false;p.m=newCounters();}G.score=[0,0];G.stallK=1;G.pointNo=1;G.nextRec=1;G.startRec=1;G.halfDone=false;G.dir=[1,-1];G.seen={att:{},def:{}};G.rep=[{k:'',n:0},{k:'',n:0}];G.obs={u:0,d:0,n:0};G.resetH=null;G.duo={};G.forfeit=false;G.target=MATCH_TARGET;G.tmo=[0,0];G.wx=0;setWind(0,0);resetStats();}
+  p.spr=false;p.run=0;p.miss=0;p.hot=false;p.cold=false;p.m=newCounters();}G.score=[0,0];G.stallK=1;G.pointNo=1;G.nextRec=1;G.startRec=1;G.halfDone=false;G.dir=[1,-1];G.seen={att:{},def:{}};G.rep=[{k:'',n:0},{k:'',n:0}];G.adw={k:'',n:0};G.obs={u:0,d:0,n:0};G.resetH=null;G.duo={};G.forfeit=false;G.target=MATCH_TARGET;G.tmo=[0,0];G.wx=0;setWind(0,0);resetStats();}
 

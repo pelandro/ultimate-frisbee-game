@@ -206,8 +206,8 @@ TUT.push({id:'mod',t:'Le altre modalità',sub:'Partita veloce, Torneo, Allenamen
 intro:'Modalità da giocare senza impegno o con una collezione da costruire.',
 les:[
 {id:'mod-veloce',t:'Partita veloce, Torneo e Allenamento',b:[
-[`<b>Partita veloce</b>: scegli due squadre, durata e difficoltà. Non viene registrato nulla.`,
-`<b>Torneo</b>: eliminazione diretta a 4, 8 o 16 squadre vere. Le partite le giochi o le simuli.`,
+[`<b>Partita veloce</b>: scegli due squadre di qualsiasi campionato, durata e difficoltà. Non viene registrato nulla.`,
+`<b>Torneo</b>: eliminazione diretta a 4, 8 o 16 squadre vere, anche di campionati diversi. Le partite le giochi o le simuli.`,
 `<b>Allenamento</b>: tutorial pratico, allenamento libero e sfide con medaglie.`]],
 tip:`La Partita veloce in Estrema è il banco di prova migliore quando ti sembra tutto troppo facile.`},
 {id:'mod-ut',t:'Ultimate Team e Real player',b:[
