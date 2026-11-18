@@ -153,7 +153,7 @@ function syncAimPoint(){
   if(drag.sl){if(D<CH_D1-1.5)drag.p20=0;if(D<SPARO_D-1.5)drag.p30=0;}   // trascinando si puo' anche tornare indietro: il tick risuona se si ripassa la soglia
   if(D>=SPARO_D&&!drag.p30){drag.p30=drag.p20=1;HOOKS.vibe(14);HOOKS.sfx('tick',2);}   // da qui e' uno sparo
   else if(D>=CH_D1&&!drag.p20){drag.p20=1;HOOKS.vibe(7);HOOKS.sfx('tick',1);}            // da qui la carica rallenta
-  if(drag.dirOk){const wx=clamp(h.x+Math.cos(drag.ang)*D,0.5,FIELD_L-0.5),wy=clamp(h.y+Math.sin(drag.ang)*D,0.5,FIELD_W-0.5);drag.x=sxw(wx);drag.y=syw(wy);}
+  if(drag.dirOk){const wx=clamp(h.x+Math.cos(drag.ang)*D,0.5,FIELD_L-0.5),wy=clamp(h.y+Math.sin(drag.ang)*D,0.5,FIELD_W-0.5);drag.x=sxw(wx);drag.y=syw(wy);drag.wx=wx;drag.wy=wy;}   // wx, wy: il punto mirato sul campo (la camera lo segue: updateCamera)
   else{drag.x=sxw(h.x);drag.y=syw(h.y);}
 }
 // anello attorno al pulsante: si riempie con la distanza, da bianco a verde; i trattini segnano 20 m (da li' cresce piu' piano) e 30 m (da li' e' uno sparo)
