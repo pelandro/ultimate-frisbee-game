@@ -21,6 +21,8 @@ function syncWindowBackground(){
 }
 const windowCloseIds={rpv:'rpX',qPick:'qpX',pause:'paGo',tut:'tuX',subs:'bSubGo',intro:'inGo',menu:'bGo'};
 window.addEventListener('keydown',e=>{
+  // La tastiera del campo può avere appena aperto la pausa con questo stesso Esc.
+  if(e.defaultPrevented)return;
   const top=activeWindow();
   if(!top)return;
   if(e.code==='Escape'&&windowCloseIds[top.id]){
