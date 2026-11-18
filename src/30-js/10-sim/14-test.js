@@ -579,7 +579,7 @@ function selfTestPlan(opt){
       row('Il bonus vale per la squadra in partita (massimo 99) e non cambia la carta',`Scatto 95 → ${q.s.sca}, Lancio ${q.s.lan}, carta ${p.s.sca}`,ok3),
       row('Salvataggi rovinati e traguardi: valori validi, accessori sempre migliori',(safe?'ok':'no')+', '+miles.join(' '),safe&&mUp)];
   }]);
-  S.steps.push(['Superpoteri: gli otto eroi',()=>{   // 27-superpoteri.js
+  S.steps.push(['Superpoteri: i nove eroi e le combo',()=>{   // 27-superpoteri.js
     const ra=ros(62,'ha'),rb=ros(62,'hb');
     setSquad(ra);applyRoster(rb);newGame();
     const rk=heroRand();heroInit(rk,rk);heroAssign(T[0],rk);
@@ -615,6 +615,18 @@ function selfTestPlan(opt){
     heroAssign(T[0],['vento']);   // con otto eroi e sette in campo, il vento qui va assegnato a parte
     const Vt=heroOf(0,'vento'),a0=T[0][0],b0=T[1][0],ma=throwMax(a0),mb=throwMax(b0);heroUse(0,'vento');const ma1=throwMax(a0),mb1=throwMax(b0),hw=[heroWind(0),heroWind(1)];
     heroEnd(Vt);const wind=ma1===ma+VENTO_R&&mb1===mb-VENTO_R&&hw[0]===1&&hw[1]===-1&&throwMax(a0)===ma&&heroWind(0)===0;
+    // signore del tempo: in difesa lo stall avversario corre; in attacco il rallentatore per te, e per l'IA stall piu' lento e lanci piu' precisi
+    heroAssign(T[0],['tempo','giraffa','polpo','ghiaccio']);for(const k of HERO_K)G.hz[0][k]=0;G.auto=false;G.mode='play';G.pull=null;G.flight=null;G.diveWin=null;
+    const Tp=heroOf(0,'tempo');G.poss=1;G.holder=T[1][0];heroUse(0,'tempo');const sk1=heroStallK(1);
+    G.poss=0;G.holder=T[0].find(x=>x!==Tp);G.tmK=1;for(let i=0;i<60;i++)heroTimeTick(1/60);const slow=G.tmK;
+    G.auto=true;const sk0=heroStallK(0),aim=heroAimK(0);G.auto=false;
+    const tempoOk=sk1===TEMPO_STALL&&slow<0.65&&sk0===TEMPO_OWN&&aim===TEMPO_AIM;
+    // combo: la barra si riempie con i passaggi completati, poi l'aggancio della giraffa mentre il signore del tempo e' trasformato fa partire «Volo lento»
+    G.cb=[0,0];G.cmb=[null,null];G.cbl=null;comboTick(0);const noBar=!comboReady(0,'giraffa');G.st.cmp[0]+=29;comboTick(0.01);const full=G.cb[0]>=1;
+    const Gi=heroOf(0,'giraffa'),okR=comboReady(0,'giraffa');heroUse(0,'giraffa',true);
+    const cmbOk=noBar&&full&&okR&&comboOn(0,'giraffa+tempo')&&G.cb[0]===0&&heroReach(Gi)>1.5&&!comboReady(0,'polpo');
+    for(let i=0;i<COMBO_DUR*10+2;i++)comboTick(0.1);const cmbEnd=!G.cmb[0];
+    for(const x of T[0])if(x.hx>0)heroEnd(x);G.tmK=1;
     // IA: tra due compagni liberi allo stesso modo sceglie quello trasformato
     placeTeams(0);G.pb=null;G.flight=null;G.poss=0;G.open=false;G.mode='play';
     const th=T[0][0],m1=T[0][1],m2=T[0][2];th.x=50;th.y=MID;m1.x=m2.x=50+dirOf(0)*14;m1.y=MID-8;m2.y=MID+8;G.holder=th;
@@ -641,6 +653,8 @@ function selfTestPlan(opt){
       row('Stregone di ghiaccio: l\'onda rallenta chi ha vicino, non chi e\' lontano, e il gelo passa',`velocità ${vn0.toFixed(1)} → ${vn1.toFixed(1)} m/s (lontano ${vf1.toFixed(1)}), poi ${vn2.toFixed(1)}`,ice),
       row('Mietitore: gli avversari perdono energia in fretta (e gli scatti costano di più), i tuoi no',`−${Math.round(drop)} in 2 s, scatti ×${dk}`,reap),
       row('Signore del vento: i tuoi lanci arrivano piu\' lontano, quelli avversari piu\' corti, poi torna tutto come prima',`gittata ${Math.round(ma)} → ${Math.round(ma1)} m, avversari ${Math.round(mb)} → ${Math.round(mb1)} m`,wind),
+      row('Signore del tempo: stall avversario piu\' veloce in difesa, rallentatore in attacco (per l\'IA stall lento e lanci precisi)',`stall ×${sk1}, rallentatore ${Math.round(slow*100)}%, IA ×${sk0} e mira ×${aim}`,tempoOk),
+      row('Combo: la barra si riempie giocando, l\'aggancio fa partire «Volo lento» e la barra si svuota',`${full?'barra piena':'barra vuota'}, ${comboOn(0,'giraffa+tempo')||!cmbEnd?'combo partita':'combo no'}${cmbEnd?', poi finita':''}`,cmbOk&&cmbEnd),
       row('L\'IA cerca i compagni trasformati: tra due ricevitori uguali sceglie quasi sempre l\'eroe',`${Math.round(sh0*100)}% → ${Math.round(sh1*100)}%`,sh1>=0.85&&sh1>sh0+0.25),
       row('Livelli degli eroi (Ultimate Team): durata piu\' lunga e ricarica piu\' corta',`giraffa al livello 5: ${(HERO.giraffa.dur*1.4).toFixed(1)} s`,lvOk),
       row('Squadra online con gli eroi: solo i titolari li portano e chi la scarica li ritrova',`${hs.join(', ')} → ${uh.join(', ')}`,upOk),

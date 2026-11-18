@@ -575,7 +575,7 @@ catch(e){
     const h=await page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut-eroi')||'null');return o?{n:o.col.length,hc:o.hc,hk:o.col.filter(c=>c.hk).map(c=>c.hk)}:null;});
     if(!h||h.n!==10||Object.keys(h.hc).length!==3||h.hk.length!==3||new Set(h.hk).size!==3)throw new Error('attesi 10 giocatori e 3 eroi diversi in campo: '+JSON.stringify(h));
     await page.click('#urHero');await vis('#utHero');
-    if(await page.locator('#uhList .qhe').count()!==8||await page.locator('#uhList .qhe:disabled').count()!==5)throw new Error('gli eroi sono 8, cinque ancora da trovare');
+    if(await page.locator('#uhList .qhe').count()!==9||await page.locator('#uhList .qhe:disabled').count()!==6)throw new Error('gli eroi sono 9, sei ancora da trovare');
     await page.click('#uhSt .uhp.has >> nth=0');if(await page.locator('#uhSt .uhp.has').count()!==2)throw new Error('toccando un titolare con l\'eroe glielo tolgo');
     await page.click('#uhAuto');if(await page.locator('#uhSt .uhp.has').count()!==3)throw new Error('«Assegna da solo» rimette tre eroi');
     await page.click('#uhBack');await vis('#utReal');await page.click('#urShop');await vis('#utShop');

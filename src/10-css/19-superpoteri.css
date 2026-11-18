@@ -35,3 +35,9 @@
 .uhp b{grid-row:1/3;font-size:18px;color:var(--gold)}.uhp span{font-weight:800;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.uhp em{font-style:normal;font-size:10px;opacity:.75;grid-column:2}
 .uhp i{grid-row:1/3;grid-column:3;width:30px;height:24px}.uhp i svg{width:100%;height:100%;image-rendering:pixelated}
 .uhp.has{border-color:var(--gold);background:#1d2550}
+/* combo: l'anello che si stringe attorno al pulsante (verde quando e' il momento), e la barra che si riempie giocando */
+.hbc{position:absolute;inset:0;border-radius:50%;border:calc(3px*var(--bz,1)) solid var(--gold);transform:scale(var(--cs,1.9));opacity:0;pointer-events:none}
+.hb.cmb .hbc{opacity:1}.hb.cmb.cok .hbc{border-color:#3ddc97;box-shadow:0 0 calc(8px*var(--bz,1)) #3ddc97}
+.hcb{width:calc(54px*var(--bz,1));height:calc(8px*var(--bz,1));background:#141a36;border:2px solid #000;box-shadow:0 2px 0 rgba(0,0,0,.45)}
+.hcb i{display:block;height:100%;width:0;background:#8a4dff}.hcb.full i{background:#3ddc97;animation:hcbf .6s steps(2) infinite}.hcb.hidden{display:none}
+@keyframes hcbf{50%{background:#ffd23f}}

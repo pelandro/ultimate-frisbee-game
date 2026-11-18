@@ -18,6 +18,13 @@
    - Signore del vento: finche' e' trasformato il vento gira a favore della sua squadra. I suoi compagni lanciano piu' lontano (VENTO_R m in piu' di gittata),
      piu' dritto (dispersione ×VENTO_OK) e senza la deriva del vento della partita; gli avversari lanciano piu' corto e sbandano (×VENTO_KO). heroWind(t) in
      throwMax, throwComf e planThrow; se tutti e due i signori del vento sono trasformati, si annullano.
+   - Signore del tempo: se la sua squadra difende, lo stall avversario corre TEMPO_STALL volte piu' in fretta e i cerchi di handblock e tuffo (della tua
+     difesa) vanno piu' piano; se attacca, per te tutto va al rallentatore (TEMPO_SLOW: heroTimeTick in update, G.tmK); quando attacca il computer (o le mete
+     simulate) il rallentatore non gli servirebbe: il suo stall va piu' piano (TEMPO_OWN) e i suoi lanci sono piu' precisi (TEMPO_AIM in planThrow).
+   COMBO: ogni squadra ha una barra (G.cb, da 0 a 1) che si riempie con passaggi completati, blocchi e mete (comboTick). Piena, se un eroe e' trasformato
+   e un altro con cui ha una combo (HERO_COMBO) e' pronto, il pulsante del secondo mostra un anello che si stringe: toccato al momento giusto
+   (l'interfaccia passa combo=true a heroUse) parte la combo per COMBO_DUR secondi (G.cmb[squadra]) e la barra si svuota. L'IA ci riesce con una
+   probabilita' che sale con la difficolta'.
    LIVELLI (Ultimate Team · Superpoteri: i doppioni delle carte eroe): p.hlv da 1 a HERO_LV_MAX. Ogni livello in piu' allunga la trasformazione di
    HERO_LV_D e accorcia la ricarica di HERO_LV_C (heroDur, heroCd); altrove p.hlv non c'e' e vale 1. p.hxd e G.hzm tengono durata e ciclo dell'ultimo uso
    (servono all'interfaccia per gli anelli dei pulsanti).
@@ -32,9 +39,39 @@ const HERO={
   clone:{n:'Clone',dur:8,cd:24,txt:'Si sdoppia: tu sai qual è il vero, gli avversari no. La copia serve solo a distrarre'},
   ghiaccio:{n:'Stregone di ghiaccio',dur:6,cd:24,txt:'Un’onda di freddo rallenta gli avversari che ha intorno'},
   mietitore:{n:'Mietitore',dur:8,cd:24,txt:'Gli avversari si stancano molto più in fretta'},
-  vento:{n:'Signore del vento',dur:8,cd:24,txt:'Il vento è a favore: i tuoi lanci vanno più lontano e più dritti, quelli avversari sbandano'}
+  vento:{n:'Signore del vento',dur:8,cd:24,txt:'Il vento è a favore: i tuoi lanci vanno più lontano e più dritti, quelli avversari sbandano'},
+  tempo:{n:'Signore del tempo',dur:7,cd:24,txt:'In difesa lo stall avversario corre e i cerchi rallentano; in attacco tutto va al rallentatore'}
 };
-const HERO_K=['lupo','giraffa','polpo','tele','clone','ghiaccio','mietitore','vento'];
+const HERO_K=['lupo','giraffa','polpo','tele','clone','ghiaccio','mietitore','vento','tempo'];
+const TEMPO_STALL=1.5,TEMPO_SLOW=0.6,TEMPO_RING=0.5,TEMPO_OWN=0.6,TEMPO_AIM=0.8;   // signore del tempo: stall avversario, rallentatore in attacco e sui cerchi, stall e precisione dell'IA
+// COMBO: chiave = i due eroi in ordine alfabetico. Ogni eroe ne avra' tre (per ora quelle del signore del tempo)
+const HERO_COMBO={'giraffa+tempo':{n:'Volo lento',txt:'la giraffa arriva ancora più in alto e più lontano'},'ghiaccio+tempo':{n:'Era glaciale',txt:'un’onda di freddo più larga che congela il doppio, e lo stall di chi è congelato corre ancora di più'},'polpo+tempo':{n:'Riflessi',txt:'il polpo allunga ancora di più le braccia e i cerchi di handblock e tuffo vanno ancora più piano'}};
+const COMBO_DUR=6,CB_CMP=0.035,CB_BLK=0.12,CB_PT=0.1,CB_PER=1.3,CB_WIN=0.2;   // durata, riempimento della barra (passaggio, blocco, meta), periodo dell'anello e parte finale buona
+const comboKey=(a,b)=>[a,b].sort().join('+');
+const comboOn=(t,k)=>!!(G.heroOn&&G.cmb&&G.cmb[t]&&G.cmb[t].k===k);
+function comboFor(t,k){if(!G.heroOn||!G.hz)return null;for(const o of HERO_K){if(o===k)continue;const ck=comboKey(k,o);if(HERO_COMBO[ck]&&heroOn(heroOf(t,o),o))return ck;}return null;}
+const comboReady=(t,k)=>!!(G.cb&&G.cb[t]>=1&&!(G.cmb&&G.cmb[t])&&heroReady(t,k)&&comboFor(t,k));
+// signore del tempo: chi ce l'ha trasformato e che cosa fa adesso
+const tempoOn=t=>(t===0||t===1)&&heroOn(heroOf(t,'tempo'),'tempo');
+const tempoAI=t=>t===1||!!G.auto;   // per l'IA il rallentatore non ha senso: riceve l'effetto equivalente
+// moltiplicatore dello stall della squadra P che attacca (in update)
+function heroStallK(P){
+  if(!G.heroOn||!G.hz)return 1;let k=1;
+  if(tempoOn(1-P)){k*=TEMPO_STALL;if(comboOn(1-P,'ghiaccio+tempo')&&G.holder&&G.holder.frz>0)k*=1.5;}
+  if(tempoOn(P)&&tempoAI(P))k*=TEMPO_OWN;
+  return k;
+}
+const heroAimK=t=>G.heroOn&&tempoOn(t)&&tempoAI(t)&&G.poss===t?TEMPO_AIM:1;   // in planThrow
+// rallentatore della tua partita (G.tmK, sul tempo di gioco): in attacco con il tuo signore del tempo, o in difesa mentre c'e' un cerchio da prendere
+function heroTimeTick(dtr){
+  let g=1;
+  if(G.heroOn&&G.hz&&!G.auto&&tempoOn(0)&&G.mode==='play'){
+    if(G.poss===0&&!G.pull)g=TEMPO_SLOW;
+    else if(G.poss===1&&(G.diveWin||hbWindow()))g=comboOn(0,'polpo+tempo')?TEMPO_RING*0.7:TEMPO_RING;
+  }
+  G.tmK=G.tmK===undefined?g:G.tmK+(g-G.tmK)*(1-Math.exp(-dtr*8));
+  return G.tmK;
+}
 const VENTO_R=10,VENTO_OK=0.8,VENTO_KO=1.35;   // signore del vento: metri di gittata in piu' (o in meno per gli avversari), dispersione dei lanci
 // +1 se la squadra t ha il vento a favore, -1 se ce l'ha contro, 0 altrimenti
 function heroWind(t){if(!G.heroOn||!G.hz||(t!==0&&t!==1))return 0;return (heroOn(heroOf(t,'vento'),'vento')?1:0)-(heroOn(heroOf(1-t,'vento'),'vento')?1:0);}
@@ -52,22 +89,23 @@ const HERO_LUPO={vel:18,sca:18,agi:15,sal:12,res:15,tuf:10,dif:6};
 const HERO_START=8;   // secondi di gioco prima del primo potere: nessuno si trasforma al pull
 const heroOn=(p,k)=>!!(G.heroOn&&p&&p.hx>0&&(!k||p.hero===k));
 const heroDuel=p=>heroOn(p,'giraffa')?400:0;                  // in duelScore: la giraffa vince (contro un'altra giraffa decide il resto)
-const heroReach=p=>heroOn(p,'giraffa')?0.9:0;                 // in reachOf: il collo lungo arriva prima sul disco
-const heroZ=p=>heroOn(p,'giraffa')?1.2:(heroOn(p,'polpo')?0.8:0);   // in reachZ: fin dove arriva con la mano
-const heroLane=p=>heroOn(p,'polpo')?2.4:1;                     // in laneR: quanto si allunga di lato per intercettare
+const heroReach=p=>heroOn(p,'giraffa')?(comboOn(p.t,'giraffa+tempo')?1.8:0.9):0;                 // in reachOf: il collo lungo arriva prima sul disco
+const heroZ=p=>heroOn(p,'giraffa')?(comboOn(p.t,'giraffa+tempo')?2:1.2):(heroOn(p,'polpo')?(comboOn(p.t,'polpo+tempo')?1.2:0.8):0);   // in reachZ: fin dove arriva con la mano
+const heroLane=p=>heroOn(p,'polpo')?(comboOn(p.t,'polpo+tempo')?3.4:2.4):1;                     // in laneR: quanto si allunga di lato per intercettare
 // sceglie gli eroi (keys) tra una lista di giocatori: il telecinetico a un handler, il lupo al piu' veloce, la giraffa a chi salta di piu', il polpo al miglior
 // difensore, il clone a un cutter rapido (la copia deve sembrare un taglio vero)
 function heroAssign(list,keys){
   keys=keys||HERO_K;
   const free=list.filter(Boolean).slice();for(const p of free){p.hero=null;p.hx=0;}
   const pick=(k,f)=>{if(!free.length||!keys.includes(k))return;free.sort((a,b)=>f(b)-f(a));const p=free.shift();p.hero=k;if(p.trait==='poser')p.trait=null;};   // il Poser cambia p.s come il lupo: un eroe non lo ha
-  pick('tele',p=>p.s.lan+p.s.vis+(p.role==='H'||p.r==='H'?20:0));pick('lupo',p=>p.s.vel+p.s.sca+p.s.agi);pick('giraffa',p=>p.s.sal*2+p.s.pre);pick('polpo',p=>p.s.dif*2+p.s.agi);pick('clone',p=>p.s.vel+p.s.agi+(p.role==='C'||p.r==='C'?20:0));pick('ghiaccio',p=>p.s.vis+p.s.dif);pick('mietitore',p=>p.s.res*2+p.s.dif);pick('vento',p=>p.s.spa*2+p.s.lan);   // il telecinetico e' un handler
+  pick('tele',p=>p.s.lan+p.s.vis+(p.role==='H'||p.r==='H'?20:0));pick('lupo',p=>p.s.vel+p.s.sca+p.s.agi);pick('giraffa',p=>p.s.sal*2+p.s.pre);pick('polpo',p=>p.s.dif*2+p.s.agi);pick('clone',p=>p.s.vel+p.s.agi+(p.role==='C'||p.r==='C'?20:0));pick('ghiaccio',p=>p.s.vis+p.s.dif);pick('mietitore',p=>p.s.res*2+p.s.dif);pick('vento',p=>p.s.spa*2+p.s.lan);pick('tempo',p=>p.s.vis*2+p.s.lan);   // il telecinetico e' un handler
 }
 const heroOf=(t,k)=>T[t].find(p=>p.hero===k)||null;
-function heroInit(k0,k1){G.hzm=[{},{}];G.hz=[{},{}];G.dec=[null,null];G.hk=[k0||HERO_K,k1||HERO_K];for(const t of [0,1])for(const k of HERO_K)G.hz[t][k]=HERO_START;}
+function heroInit(k0,k1){G.hzm=[{},{}];G.hz=[{},{}];G.cb=[0,0];G.cmb=[null,null];G.cbl=null;G.tmK=1;G.dec=[null,null];G.hk=[k0||HERO_K,k1||HERO_K];for(const t of [0,1])for(const k of HERO_K)G.hz[t][k]=HERO_START;}
 const heroReady=(t,k)=>!!(G.heroOn&&G.hz&&G.mode==='play'&&!G.pull&&G.hz[t][k]<=0&&heroOf(t,k));
-function heroUse(t,k){
+function heroUse(t,k,combo){
   if(!heroReady(t,k))return false;
+  const ck=combo&&comboReady(t,k)?comboFor(t,k):null;
   const p=heroOf(t,k),H=HERO[k];
   const lv=heroLvOf(p),du=heroDur(k,lv);p.hx=p.hxd=du;G.hz[t][k]=du+heroCd(k,lv);if(G.hzm)G.hzm[t][k]=G.hz[t][k];
   if(k==='clone')cloneMake(p);
@@ -75,6 +113,9 @@ function heroUse(t,k){
   if(k==='lupo'&&!p.hrb){p.hrb=p.s;p.s=Object.assign({},p.s);for(const s in HERO_LUPO)p.s[s]=Math.min(99,p.s[s]+HERO_LUPO[s]);}
   (G.st.hero||(G.st.hero=[0,0]))[t]++;
   HOOKS.hero(p,k,true);
+  if(ck){G.cb[t]=0;G.cmb[t]={k:ck,t:COMBO_DUR};(G.st.combo||(G.st.combo=[0,0]))[t]++;
+    if(ck==='ghiaccio+tempo'){const w=heroOf(t,'ghiaccio')||p;for(const q of T[1-t])if(hyp(q.x-w.x,q.y-w.y)<=ICE_R*1.5)q.frz=ICE_T*2;}   // era glaciale: un'onda piu' larga che congela il doppio
+    HOOKS.combo(t,ck,p);}
   return true;
 }
 function heroEnd(p){
@@ -88,6 +129,7 @@ function heroTick(dt){
   for(const t of [0,1])for(const k of HERO_K)G.hz[t][k]=Math.max(0,G.hz[t][k]-dt);
   for(const p of T[0].concat(T[1]))if(p.hx>0){p.hx-=dt;if(p.hx<=0)heroEnd(p);}
   for(const p of T[0].concat(T[1]))if(p.frz>0)p.frz=Math.max(0,p.frz-dt);
+  comboTick(dt);
   for(const t of [0,1])if(heroOn(heroOf(t,'mietitore'),'mietitore'))for(const q of T[1-t])q.st=Math.max(0,q.st-REAP_DRAIN*dt);   // il mietitore toglie energia a tutti gli avversari in campo
   if(G.dec)for(const t of [0,1]){const c=G.dec[t];if(!c)continue;if(!T[t].includes(c.o)||!(c.o.hx>0)){G.dec[t]=null;continue;}cloneTick(c,dt);}
   heroAI(dt);
@@ -110,19 +152,21 @@ function heroSteer(f,pt,dt){
   return true;
 }
 // IA: la giraffa quando un disco sta per arrivarle vicino, il polpo in difesa, il lupo quando c'e' un possesso da giocare. Piu' alta la difficolta', piu' svelta
+// l'IA tenta la combo quando puo': ci riesce piu' spesso alle difficolta' alte
+const heroUseAI=(t,k,lv)=>heroUse(t,k,comboReady(t,k)&&Math.random()<0.3+0.2*lv);
 function heroAI(dt){
   for(const t of [0,1]){
     if(t===0&&!G.auto)continue;   // i tuoi eroi li usi tu (nelle mete simulate li usa il computer)
     const lv=t===1?((G.lvl&&G.lvl[1])|0):1,k1=(0.6+0.25*lv)*dt,f=G.flight;
     const g=heroOf(t,'giraffa');
-    if(g&&heroReady(t,'giraffa')&&f&&!G.pull&&hyp(g.x-f.tx,g.y-f.ty)<6)heroUse(t,'giraffa');
-    if(heroReady(t,'polpo')&&G.holder&&G.holder.t!==t&&Math.random()<0.35*k1)heroUse(t,'polpo');
-    if(heroReady(t,'lupo')&&(G.holder||f)&&Math.random()<0.3*k1)heroUse(t,'lupo');
-    if(heroReady(t,'tele')&&G.holder&&G.holder.t===t&&G.stallT>2&&Math.random()<0.5*k1)heroUse(t,'tele');   // prima di lanciare: il disco partira' gia' guidato
-    const w=heroOf(t,'ghiaccio');if(w&&heroReady(t,'ghiaccio')&&T[1-t].filter(q=>hyp(q.x-w.x,q.y-w.y)<=ICE_R).length>=3&&Math.random()<0.8*k1)heroUse(t,'ghiaccio');   // l'onda quando ha almeno tre avversari intorno
-    if(heroReady(t,'vento')&&G.holder&&(G.holder.t!==t||G.stallT>1.5)&&Math.random()<0.4*k1)heroUse(t,'vento');   // prima di un lancio suo, o mentre lancia l'avversario
-    if(heroReady(t,'mietitore')&&(G.holder||f)&&Math.random()<0.3*k1)heroUse(t,'mietitore');
-    const c=heroOf(t,'clone');if(c&&heroReady(t,'clone')&&G.holder&&G.holder!==c&&Math.random()<0.35*k1)heroUse(t,'clone');   // in attacco libera il clone, in difesa copre un altro uomo
+    if(g&&heroReady(t,'giraffa')&&f&&!G.pull&&hyp(g.x-f.tx,g.y-f.ty)<6)heroUseAI(t,'giraffa',lv);
+    if(heroReady(t,'polpo')&&G.holder&&G.holder.t!==t&&Math.random()<0.35*k1)heroUseAI(t,'polpo',lv);
+    if(heroReady(t,'lupo')&&(G.holder||f)&&Math.random()<0.3*k1)heroUseAI(t,'lupo',lv);
+    if(heroReady(t,'tele')&&G.holder&&G.holder.t===t&&G.stallT>2&&Math.random()<0.5*k1)heroUseAI(t,'tele',lv);   // prima di lanciare: il disco partira' gia' guidato
+    const w=heroOf(t,'ghiaccio');if(w&&heroReady(t,'ghiaccio')&&T[1-t].filter(q=>hyp(q.x-w.x,q.y-w.y)<=ICE_R).length>=3&&Math.random()<0.8*k1)heroUseAI(t,'ghiaccio',lv);   // l'onda quando ha almeno tre avversari intorno
+    if(heroReady(t,'vento')&&G.holder&&(G.holder.t!==t||G.stallT>1.5)&&Math.random()<0.4*k1)heroUseAI(t,'vento',lv);   // prima di un lancio suo, o mentre lancia l'avversario
+    if(heroReady(t,'mietitore')&&(G.holder||f)&&Math.random()<0.3*k1)heroUseAI(t,'mietitore',lv);
+    const c=heroOf(t,'clone');if(c&&heroReady(t,'clone')&&G.holder&&G.holder!==c&&Math.random()<0.35*k1)heroUseAI(t,'clone',lv);   // in attacco libera il clone, in difesa copre un altro uomo
   }
 }
 /* ---- CLONE ----
@@ -181,4 +225,15 @@ const heroCutOn=p=>!!(G.heroOn&&p.t===G.poss&&heroOn(p));
 function heroCut(p,H,d){   // taglio lungo del lupo o della giraffa trasformati (6 volte su 10)
   if(!heroCutOn(p)||!(p.hero==='lupo'||p.hero==='giraffa')||Math.random()>0.6)return null;
   return {x:clamp(H.x+d*rnd(22,36),1,FIELD_L-1),y:clamp(p.y+rnd(-8,8),3,FIELD_W-3),deep:true};
+}
+// barra delle combo: si riempie con i passaggi completati, i blocchi (intercetti e handblock) e le mete della squadra; la combo in corso si consuma
+function comboTick(dt){
+  if(!G.cb)return;const st=G.st||{},cmp=st.cmp||[0,0],blk=st.blk||[0,0],sc=G.score||[0,0];
+  if(!G.cbl)G.cbl={c:cmp.slice(),b:blk.slice(),s:sc.slice()};
+  for(const t of [0,1]){
+    const d=(cmp[t]-G.cbl.c[t])*CB_CMP+(blk[t]-G.cbl.b[t])*CB_BLK+(sc[t]-G.cbl.s[t])*CB_PT;
+    if(d>0&&!G.cmb[t])G.cb[t]=Math.min(1,G.cb[t]+d);
+    if(G.cmb[t]){G.cmb[t].t-=dt;if(G.cmb[t].t<=0)G.cmb[t]=null;}
+  }
+  G.cbl={c:cmp.slice(),b:blk.slice(),s:sc.slice()};
 }

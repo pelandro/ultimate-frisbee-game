@@ -71,7 +71,7 @@
               "r": { ".validate": "newData.val() === 'H' || newData.val() === 'C'" },
               "a": { ".validate": "newData.isNumber() && newData.val() >= 16 && newData.val() <= 60" },
               "x": { ".validate": "newData.isString() && newData.val().length <= 12" },
-              "h": { ".validate": "newData.isString() && newData.val().matches(/^(lupo|giraffa|polpo|tele|clone|ghiaccio|mietitore|vento)[1-5]$/)" },
+              "h": { ".validate": "newData.isString() && newData.val().matches(/^(lupo|giraffa|polpo|tele|clone|ghiaccio|mietitore|vento|tempo)[1-5]$/)" },
               "s": {
                 ".validate": "newData.hasChildren(['lan','buc','spa','dif','sal','sca','tuf','vel','vis','res','pre','agi'])",
                 "$k": { ".validate": "$k.matches(/^(lan|buc|spa|dif|sal|sca|tuf|vel|vis|res|pre|agi)$/) && newData.isNumber() && newData.val() >= 25 && newData.val() <= 99" }
