@@ -263,6 +263,7 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   }
   // braccio vicino (davanti al busto)
   h=hand(1);Lm(shx,sy+1,h[0],h[1],shirt,skin,0.45);
+  if(ex.sc&&ex.sc!==1){const k=ex.sc;for(let i=0;i<ops.length;i+=5){const a=ri(x+(ops[i]-x)*k),b=ri(y+(ops[i+1]-y)*k),a2=ri(x+(ops[i]+ops[i+2]-x)*k),b2=ri(y+(ops[i+1]+ops[i+3]-y)*k);ops[i]=a;ops[i+1]=b;ops[i+2]=Math.max(1,a2-a);ops[i+3]=Math.max(1,b2-b);}h=[ri(x+(h[0]-x)*k),ri(y+(h[1]-y)*k)];}   // eroi dei superpoteri piu' grandi: i rettangoli si allargano attorno ai piedi, i pixel restano netti
   ctx.fillStyle=PAL.out;for(let i=0;i<ops.length;i+=5)ctx.fillRect(ops[i]-1,ops[i+1]-1,ops[i+2]+2,ops[i+3]+2);
   for(let i=0;i<ops.length;i+=5){ctx.fillStyle=ops[i+4];ctx.fillRect(ops[i],ops[i+1],ops[i+2],ops[i+3]);}
   return h;
@@ -365,7 +366,7 @@ function drawPlayers(dt){
       const view=sp>1.2&&Math.abs(p.vy)>Math.abs(p.vx)*1.3?(p.vy<0?1:2):0;
       const kind=pose==='aim'?aimKind:(lastFl&&lastFl.thrower===p?lastFl.kind:'backhand');   // il pull e' un rovescio
       const ca=p.cfx?G.tick-(p.cfx.until-0.42):-1;
-      const hp=puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,hero:heroOn(p)?p.hero:null});
+      const hp=puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,hero:heroOn(p)?p.hero:null,sc:heroScale(p)});
       p._hx=hp[0];p._hy=hp[1];p._ht=G.tick;   // il disco in mano segue la mano (drawDisc)
     }
     // energia: barretta sotto i tuoi quando calano; goccia di sudore sugli avversari sfiniti (li' c'e' un duello da cercare)
@@ -379,7 +380,7 @@ function drawPlayers(dt){
     if(nameKey(p))names.push(p);
   }
   // i giocatori simbolo (stelle internazionali e chi ha vinto premi) hanno il nome dorato
-  for(const p of names)ptext(p.name,sxw(p.x),syw(p.y)-h-10-(p.dv?4:0),{f:'t',c:(p.star||(p.aw&&p.aw.length)||(p.ro&&p.ro.star))?PAL.gold:(p.t===0?'#ffffff':'#ffd9d9')});
+  for(const p of names)ptext(p.name,sxw(p.x),syw(p.y)-Math.round(h*heroScale(p))-10-(p.dv?4:0)-heroTop(p),{f:'t',c:(p.star||(p.aw&&p.aw.length)||(p.ro&&p.ro.star))?PAL.gold:(p.t===0?'#ffffff':'#ffd9d9')});
   // ETICHETTA DELLA SITUAZIONE sopra chi ha il disco, in un riquadro nero come il «2nd & 10» di Retro Bowl: stall da 6, ultimo lancio, universe point (il match point lo annuncia la fascia a inizio punto)
   const hh=G.holder;
   if(hh&&!G.flight&&G.mode==='play'){
