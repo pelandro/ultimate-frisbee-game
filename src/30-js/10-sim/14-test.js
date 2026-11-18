@@ -11,7 +11,7 @@ function testMatch(ra,rb,o){   // una partita IA contro IA: ritorna punteggio, s
   G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=o.fix||null;
   newGame();if(o.len)G.target=o.len;if(o.wind)setWind(o.wind[0],o.wind[1]);G.auto=true;G.lvl=[o.lvl|0,o.lvl|0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;
   applyForm();
-  if(o.hero!==undefined){G.heroOn=true;heroInit();if(o.hero!==1)heroAssign(T[0]);if(o.hero!==0)heroAssign(T[1]);}   // superpoteri: 'both', 0 o 1 (chi ha gli eroi)
+  if(o.hero!==undefined){G.heroOn=true;heroInit(heroRand(),heroRand());if(o.hero!==1)heroAssign(T[0],G.hk[0]);if(o.hero!==0)heroAssign(T[1],G.hk[1]);}   // superpoteri: 'both', 0 o 1 (chi ha gli eroi)
   G.startRec=o.rec|0;G.nextRec=G.startRec;startPoint(G.startRec);
   const dt=1/60,r={time:0,nan:0,stuck:false,hold:0,pts:0,ptT:[],rev:0,revT:0,halfAt:-1,lane:0,laneT:0};let pt=0,last=0,rec=-1,fr=0;
   while(G.mode!=='over'&&r.time<3600){
@@ -579,11 +579,13 @@ function selfTestPlan(opt){
       row('Il bonus vale per la squadra in partita (massimo 99) e non cambia la carta',`Scatto 95 → ${q.s.sca}, Lancio ${q.s.lan}, carta ${p.s.sca}`,ok3),
       row('Salvataggi rovinati e traguardi: valori validi, accessori sempre migliori',(safe?'ok':'no')+', '+miles.join(' '),safe&&mUp)];
   }]);
-  S.steps.push(['Superpoteri: lupo mannaro, giraffa, polpo e telecinetico',()=>{   // 27-superpoteri.js
+  S.steps.push(['Superpoteri: lupo mannaro, giraffa, polpo, telecinetico e clone',()=>{   // 27-superpoteri.js
     const ra=ros(62,'ha'),rb=ros(62,'hb');
-    setSquad(ra);applyRoster(rb);newGame();G.heroOn=true;heroInit();heroAssign(T[0]);heroAssign(T[1]);
+    setSquad(ra);applyRoster(rb);newGame();
+    const rk=heroRand();heroInit(rk,rk);heroAssign(T[0],rk);
+    const three=rk.length===HERO_N&&new Set(rk).size===HERO_N&&T[0].filter(x=>x.hero).length===HERO_N&&rk.every(k=>heroOf(0,k));
+    G.heroOn=true;heroInit();heroAssign(T[0]);heroAssign(T[1]);   // per provare i poteri: tutti e cinque in campo
     const L=heroOf(0,'lupo'),g=heroOf(0,'giraffa'),o=heroOf(0,'polpo'),q=T[1].find(x=>x.hero!=='giraffa');
-    const three=[0,1].every(t=>HERO_K.every(k=>heroOf(t,k)))&&new Set(HERO_K.map(k=>heroOf(0,k))).size===HERO_K.length;
     G.mode='play';G.pull=null;for(const t of [0,1])for(const k of HERO_K)G.hz[t][k]=0;
     const base=L.s,v0=L.s.vel,used=heroUse(0,'lupo'),vU=L.s.vel,up=used&&L.s.vel>=Math.min(99,v0+10)&&L.hrb===base,again=!heroUse(0,'lupo');
     for(let i=0;i<Math.ceil(HERO.lupo.dur*10)+2;i++)heroTick(0.1);const back=L.s===base&&!(L.hx>0)&&G.hz[0].lupo>0;
@@ -594,13 +596,21 @@ function selfTestPlan(opt){
     let turns=0;for(let i=0;i<10;i++)if(heroSteer(fl,{x:P0.x,y:P0.y+30},0.05))turns++;
     const P1=flightAt(fl,fs0),d1=hyp(fl.tx-P1.x,fl.ty-P1.y),ang=Math.atan2(fl.ty-P1.y,fl.tx-P1.x);
     const tk=turns===10&&hyp(P1.x-P0.x,P1.y-P0.y)<1e-6&&Math.abs(d1-d0)<1e-6&&Math.abs(ang-HERO_TK_ROT*0.5)<1e-3;
+    // clone: la copia non e' in T, chi marca il vero a volte la segue, chi lancia la conta tra i difensori; corre lontano dal vero e sparisce con lui
+    const C=heroOf(0,'clone');G.poss=0;G.holder=T[0].find(x=>x!==C&&x.hero!=='tele');G.flight=null;heroUse(0,'clone');const dc=G.dec[0];
+    const cOk=!!(dc&&dc.fake&&dc.o===C&&!T[0].includes(dc)&&heroSeen(0).length===T[0].length+1&&heroSeen(0).includes(dc));
+    const mq=T[1][0],mk0=mq.mark;mq.mark=C;let fooled=0;for(let i=0;i<300;i++){dc.fool.clear();if(heroMarkOf(mq)===dc)fooled++;}
+    const H0=G.holder;G.holder=C;dc.fool.clear();const sees=heroMarkOf(mq)===C;G.holder=H0;mq.mark=mk0;
+    for(let i=0;i<25;i++)heroTick(0.1);const sep=G.dec[0]?hyp(G.dec[0].x-C.x,G.dec[0].y-C.y):0;
+    heroEnd(C);const gone=!G.dec[0];
     placeTeams(0);const reset=!T[0].concat(T[1]).some(x=>x.hx>0||x.hrb);
     const both=run(ra,rb,n,{hero:'both'}),okB=both.every(m=>!m.stuck&&!m.nan&&Math.max(m.score[0],m.score[1])===MATCH_TARGET),useB=both.every(m=>m.st.hero&&m.st.hero[0]>0&&m.st.hero[1]>0);
     // quanto contano gli eroi (misurato a parte, 50 partite per lato a squadre pari): chi li ha vince circa 7 volte su 10. Qui non si misura: servirebbero troppe partite
-    return [row('Quattro eroi per squadra, ognuno col suo pulsante e il suo timer',three?'sì':'no',three),
+    return [row('Tre eroi per squadra, ognuno col suo pulsante e il suo timer',three?rk.join(', '):'no',three),
       row('Lupo mannaro: statistiche fisiche piu\' alte, poi tornano com\'erano e il timer riparte',`Velocità ${v0} → ${vU}, poi ${back?'di nuovo '+L.s.vel:'non torna'}${again?'':' (doppio uso!)'}`,up&&back&&again),
       row('Giraffa: vince i duelli in aria; Polpo: braccia piu\' lunghe per intercettare',`duello ${Math.round(s0.sa-s0.sd)} → ${Math.round(s1.sa-s1.sd)}, raggio ×${pr.toFixed(1)}`,gir&&pol),
       row('Telecinetico: il disco cambia direzione, ma non la distanza che gli resta (e gira poco alla volta)',`${d0.toFixed(1)} m → ${d1.toFixed(1)} m, girato di ${Math.round(ang*180/Math.PI)}°`,tk),
+      row('Clone: la copia non prende dischi, inganna il marcatore e chi lancia, si allontana dal vero e sparisce con lui',`segue la copia ${Math.round(fooled/3)}% · dal vero ${sep.toFixed(1)} m`,cOk&&fooled>60&&fooled<250&&sees&&sep>4&&gone),
       row('A ogni punto le trasformazioni finiscono',reset?'sì':'no',reset),
       row('Partite con gli eroi: finiscono regolarmente e le due IA usano i poteri',`${both.filter(m=>m.st.hero).length} su ${n}`,okB&&useB)];
   }]);

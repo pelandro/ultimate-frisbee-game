@@ -1,7 +1,7 @@
 /* ---- MODALITA' SUPERPOTERI (interfaccia): trasformazione in campo, un pulsante per eroe con il suo timer, effetto della trasformazione, dito che guida il disco ----
    Il motore e' in 10-sim/27-superpoteri.js. Il disegno dell'omino trasformato passa da puppet (02-pixel-art.js): pelle e capelli dell'animale (heroLook) e,
    al posto della testa, HERO_DRAW[eroe] (testa, collo, coda o tentacoli), con gli stessi pixel e lo stesso contorno degli omini. */
-const HERO_LOOK={lupo:{skin:'#6e5f50',hair:'#3f342b',style:4,band:null,beard:0},giraffa:{skin:'#e9b44c',hair:'#9a5a1e',style:4,band:null,beard:0},polpo:{skin:'#b25fe0',hair:'#7a35a8',style:4,band:null,beard:0},tele:{}};
+const HERO_LOOK={lupo:{skin:'#6e5f50',hair:'#3f342b',style:4,band:null,beard:0},giraffa:{skin:'#e9b44c',hair:'#9a5a1e',style:4,band:null,beard:0},polpo:{skin:'#b25fe0',hair:'#7a35a8',style:4,band:null,beard:0},tele:{},clone:{}};
 function heroLook(p){
   if(!heroOn(p))return lookOf(p);
   if(!p._hl||p._hlk!==p.hero){p._hl=Object.assign({},lookOf(p),HERO_LOOK[p.hero]);p._hlk=p.hero;}
@@ -57,30 +57,34 @@ const HERO_DRAW={
 // trasformazione: nuvola di fumo e scintille, poi la scritta col nome dell'animale
 HOOKS.hero=(p,k,on)=>{
   for(let i=0;i<(on?18:8);i++){const a=Math.random()*Math.PI*2,v=0.8+Math.random()*1.6;addFx({t:i%3?'dust':'spark',x:p.x+Math.cos(a)*0.4,y:p.y+Math.sin(a)*0.3,vx:Math.cos(a)*v,vy:Math.sin(a)*v*0.6,z:0.4+Math.random()*1.4,vz:on?1.4:0.6,life:0.6,max:0.6,r:0.2});}
+  const c=on&&k==='clone'&&G.dec&&G.dec[p.t];   // il clone: la copia salta fuori in una seconda nuvola
+  if(c)for(let i=0;i<14;i++){const a=Math.random()*Math.PI*2,v=0.6+Math.random()*1.4;addFx({t:i%2?'dust':'spark',x:c.x+Math.cos(a)*0.4,y:c.y+Math.sin(a)*0.3,vx:Math.cos(a)*v,vy:Math.sin(a)*v*0.6,z:0.4+Math.random()*1.4,vz:1.2,life:0.6,max:0.6,r:0.2});}
   if(on){HOOKS.sfx&&HOOKS.sfx('ui');if(p.t===0||G.auto)HOOKS.toast&&HOOKS.toast(HERO[k].n+'!');}
 };
-// ---- i quattro pulsanti (solo i tuoi eroi): icona, anello del timer, grigio se l'eroe non e' in campo ----
+// ---- i pulsanti dei tuoi eroi (G.hk[0], al massimo tre): icona, anello del timer, grigio se l'eroe non e' in campo ----
 const HERO_ICON={   // 10x8: o contorno, c pelle dell'animale, e occhio giallo, k nero, w bianco, b muso
   lupo:   ['.o......o.','oco....oco','occcccccco','occeccecco','occcccccco','.occkkcco.','..occwwo..','...oooo...'],
   giraffa:['..k.k.....','..o.o.....','.occco....','.oceccooo.','.occcccbbo','..oooccooo','...occo...','...occo...'],
   polpo:  ['...oooo...','..occcco..','.occcccco.','occwkcwkco','.occcccco.','.oc.oc.co.','oc..oc..co','o...o....o'],
-  tele:   ['..oooooo..','.oppdppdo.','oppdppppdo','opdppdpppo','.oppppdpo.','..osssso..','..okskso..','...oooo...']
+  tele:   ['..oooooo..','.oppdppdo.','oppdppppdo','opdppdpppo','.oppppdpo.','..osssso..','..okskso..','...oooo...'],
+  clone:  ['.ss...gg..','.ss...gg..','uuuu.gggg.','uuuu.gggg.','.uu...gg..','.kk...hh..','.kk...hh..','k..k.h..h.']   // il vero e, accanto, la copia trasparente
 };
 function heroIconSvg(k){
-  const C={o:'#0b0d12',c:HERO_LOOK[k].skin,e:k==='lupo'?'#ff3b2f':'#ffd23f',k:'#0b0d12',w:'#ffffff',b:'#c98a3a',p:'#f29ac0',d:'#c8608f',s:'#f0c9a4'};
+  const C={u:'#2f7bff',g:'#a8ecff',h:'#62bcd8',o:'#0b0d12',c:HERO_LOOK[k].skin,e:k==='lupo'?'#ff3b2f':'#ffd23f',k:'#0b0d12',w:'#ffffff',b:'#c98a3a',p:'#f29ac0',d:'#c8608f',s:'#f0c9a4'};
   let s='<svg viewBox="0 0 10 8" shape-rendering="crispEdges" aria-hidden="true">';
   HERO_ICON[k].forEach((row,y)=>{for(let x=0;x<row.length;x++){const c=C[row[x]];if(c)s+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${c}"/>`;}});
   return s+'</svg>';
 }
 (function(){
   const box=$('heroB');if(!box)return;
-  box.innerHTML=HERO_K.map(k=>`<button type="button" class="hb" data-k="${k}" aria-label="${HERO[k].n}">${heroIconSvg(k)}<i class="hbr"></i><em></em></button>`).join('');
   box.addEventListener('pointerdown',e=>{const b=e.target.closest('.hb');if(!b)return;e.preventDefault();e.stopPropagation();heroUse(0,b.dataset.k);});
 })();
 function heroHud(){
   const box=$('heroB');if(!box)return;
   const show=!!(G.heroOn&&G.hz&&(G.mode==='play'||G.mode==='ready'||G.mode==='banner'));
   box.classList.toggle('hidden',!show);if(!show)return;
+  const ks=(G.hk&&G.hk[0])||HERO_K,id=ks.join();
+  if(box.dataset.ks!==id){box.dataset.ks=id;box.innerHTML=ks.map(k=>`<button type="button" class="hb" data-k="${k}" aria-label="${HERO[k].n}">${heroIconSvg(k)}<i class="hbr"></i><em></em></button>`).join('');}   // un pulsante per ogni eroe scelto
   for(const b of box.children){
     const k=b.dataset.k,p=heroOf(0,k),H=HERO[k],left=G.hz[0][k],act=!!(p&&p.hx>0);
     const fr=act?p.hx/H.dur:(left<=0?1:1-left/(H.dur+H.cd));
@@ -105,3 +109,12 @@ function heroTkFx(){
   if(G.tkp&&f.team===0){const x=sxw(G.tkp.x),y=syw(G.tkp.y),pu=Math.sin((G.tick||0)*10)>0?1:0;pring(x,y,7+pu,3,PAL.out,3);pring(x,y,7+pu,3,'#f29ac0',1);}
 }
 const heroTop=p=>heroOn(p,'giraffa')?18:(heroOn(p,'tele')?8:(heroOn(p,'lupo')?4:0));   // il nome sta sopra il collo della giraffa, il cervello o le orecchie
+// CLONE: la copia della tua squadra si disegna su una tela a parte (cosi' i pixel sovrapposti non si scuriscono), con un velo azzurro, poi trasparente sul campo
+const GH_W=96,GH_H=112,GH_C=document.createElement('canvas');GH_C.width=GH_W;GH_C.height=GH_H;const GH_X=GH_C.getContext('2d');
+function heroGhost(x,y,draw){
+  const o=ctx;let r;GH_X.clearRect(0,0,GH_W,GH_H);ctx=GH_X;
+  try{r=draw(GH_W/2,GH_H-14);}finally{ctx=o;}
+  GH_X.globalCompositeOperation='source-atop';GH_X.fillStyle='rgba(160,230,255,.5)';GH_X.fillRect(0,0,GH_W,GH_H);GH_X.globalCompositeOperation='source-over';
+  ctx.save();ctx.globalAlpha=0.5+0.12*Math.sin((G.tick||0)*9);ctx.drawImage(GH_C,ri(x)-GH_W/2,ri(y)-(GH_H-14));ctx.restore();
+  return r;
+}

@@ -322,12 +322,13 @@ function nameKey(p){
   return !!(p.cfx&&G.tick<p.cfx.until+0.6);   // chi ha appena preso al volo
 }
 function drawPlayers(dt){
-  const all=T[0].concat(T[1]).sort((a,b)=>a.y-b.y),h=PH();
+  const all=T[0].concat(T[1],G.dec?G.dec.filter(Boolean):[]).sort((a,b)=>a.y-b.y),h=PH();   // G.dec: le copie del clone (superpoteri)
   if(G.flight&&G.flight!==lastFl){lastFl=G.flight;G.flight.thrower.armT=0.3;}
   if(G.pull&&G.pull!==lastPull){lastPull=G.pull;if(G.pull.thrower)G.pull.thrower.armT=0.4;}
   const names=[];
   for(const p of all){
     const x=sxw(p.x),y=syw(p.y);if(x<-30||x>VW+30)continue;
+    const ghost=p.fake&&p.t===0;   // la copia del tuo clone la vedi trasparente (heroGhost); quella dell'avversario e' identica al vero
     const sp=hyp(p.vx,p.vy);p.ph=(p.ph||0)+sp*dt*1.9;if(Math.abs(p.vx)>0.6)p.fc=p.vx>0?1:-1;
     p.armT=Math.max(0,(p.armT||0)-dt);
     if(G.mode==='play'&&sp>6.2&&Math.random()<dt*7)addFx({t:'dust',x:p.x-(p.fc||1)*0.4,y:p.y,vx:0,vy:0,z:0.1,vz:0.5,life:0.4,max:0.4,r:0.16});
@@ -346,7 +347,7 @@ function drawPlayers(dt){
       p.fc=face;
     }
     const dvp=diveProg(p),air=p.dv?diveAir(p):0;
-    pell(x+(p.dv?p.dv.dir*5*dvp:0)+1,y,5+ri(5*dvp),1,'rgba(10,30,10,.28)');   // ombra
+    pell(x+(p.dv?p.dv.dir*5*dvp:0)+1,y,5+ri(5*dvp),1,ghost?'rgba(10,30,10,.12)':'rgba(10,30,10,.28)');   // ombra
     if(p.hot||p.cold){const c=p.hot?(Math.sin(G.tick*14+p.i)>0?'#ff5a3c':'#ffb03a'):'#7fd8ff';pring(x,y-9,10,12,c,1,2);}
     if(p===G.holder||p===G.puller){const pu=Math.sin(G.tick*6)>0?1:0;pring(x,y,9+pu,3,PAL.out,3);pring(x,y,9+pu,3,PAL.gold,1);}
     else if(p===G.marker&&G.holder)pring(x,y,9,3,G.dmode[p.t]===1?'#ff8a5c':'#ffffff',1,2);   // arancione: marca in anticipo (piu' pressione sul lancio)
@@ -357,11 +358,11 @@ function drawPlayers(dt){
       const view=sp>1.2&&Math.abs(p.vy)>Math.abs(p.vx)*1.3?(p.vy<0?1:2):0;
       const kind=pose==='aim'?aimKind:(lastFl&&lastFl.thrower===p?lastFl.kind:'backhand');   // il pull e' un rovescio
       const ca=p.cfx?G.tick-(p.cfx.until-0.42):-1;
-      const hp=puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,hero:heroOn(p)?p.hero:null,sc:heroScale(p)});
+      const hp=ghost?heroGhost(x,y,(gx,gy)=>puppet(gx,gy,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,pose,p.ph,Math.min(1,sp/6),0,{brk:!!p._brk,view,kind,ca:-1,hero:p.hero,sc:heroScale(p)})):puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,hero:heroOn(p)?p.hero:null,sc:heroScale(p)});
       p._hx=hp[0];p._hy=hp[1];p._ht=G.tick;   // il disco in mano segue la mano (drawDisc)
     }
     // energia: barretta sotto i tuoi quando calano; goccia di sudore sugli avversari sfiniti (li' c'e' un duello da cercare)
-    if(G.mode==='play'&&G.inMatch&&!p.dv){
+    if(G.mode==='play'&&G.inMatch&&!p.dv&&!ghost){
       if(p.t===0&&p.st<62){px(x-5,y+3,11,3,PAL.out);px(x-4,y+4,Math.max(1,Math.round(9*p.st/100)),1,p.st<30?PAL.red:(p.st<46?'#ff9a3a':PAL.gold));}
       else if(p.t===1&&p.st<38&&Math.sin(G.tick*5+p.i)>0){px(x+4,y-h+1,1,1,PAL.sky);px(x+4,y-h+2,2,2,PAL.sky);}
     }

@@ -7,7 +7,7 @@ function aiProb(th,q){
 // refine (solo quando sta per lanciare): tra i 3 migliori per punteggio vince chi ha la probabilita' di completare piu' alta (traiettoria libera, difensore
 // lontano dal punto d'arrivo). Non aggiunge attese: decide nello stesso istante, con un conto in piu'
 function aiPick(th,refine){
-  const P=th.t,d=dirOf(P),defs=T[1-P];
+  const P=th.t,d=dirOf(P),defs=heroSeen(1-P);   // heroSeen: con la copia del clone avversario, che chi lancia non riconosce
   let mates=T[P].filter(q=>q!==th);
   {const al=pbAllowed(th);if(al){const fr=PB_FREE-PB_FREE_D*clamp((visOf(th)-0.5)/0.3,0,1),free=q=>defs.every(df=>hyp(df.x-q.x,df.y-q.y)>=fr),m2=mates.filter(q=>al.includes(q)&&free(q));if(m2.length)mates=m2;}}   // schema a sequenza: il lancio va a chi e' previsto, se e' libero (chi ha Visione alta si accontenta di meno spazio, e lancia come da schema anche con un difensore addosso); se lo schema e' chiuso si gioca libero
   let best=null,bs=-1e9;const lv=AIK(P),idn=idOf(P),dmD=G.dmode[1-P],cands=[];
