@@ -1,0 +1,866 @@
+[
+  {
+    "name": "BFD La Fotta Offence",
+    "country": "Italia",
+    "source": "https://live.ultimatefederation.eu/2026-eucf",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12627/69df376b_bfd-la-fotta.webp",
+    "note": "Corretti i due anelli concentrici interrotti del BFD. Rimossi il precedente effetto girandola, testo e bordo esterno.",
+    "evidence": "club"
+  },
+  {
+    "name": "BFD La Fotta Defense",
+    "country": "Italia",
+    "source": "https://live.ultimatefederation.eu/2026-eucf",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12627/69df376b_bfd-la-fotta.webp",
+    "note": "Corretti i due anelli concentrici interrotti del BFD. Rimossi il precedente effetto girandola, testo e bordo esterno.",
+    "evidence": "club"
+  },
+  {
+    "name": "DiscoBolo",
+    "country": "Italia",
+    "source": "https://pontevecchiobologna.it/sport_pv/ultimate-frisbee/",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12816/69fc82a3_discobolo.webp",
+    "note": "Triangolo e traiettoria del disco; eliminata la scritta estesa.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Cotarica Runners",
+    "country": "Italia",
+    "source": "https://www.lsdf.it/club",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12629/69fc82a0_cotarica-grandes.webp",
+    "note": "Cerchio aperto del Cotarica; uso per Runners da confermare.",
+    "evidence": "club"
+  },
+  {
+    "name": "One Tribe",
+    "country": "Italia",
+    "source": "https://onetribeultimate.it/",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12634/69fc82b1_one-tribe.webp",
+    "note": "Monogramma geometrico bicolore; mantenuta la forma distintiva.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Cotarica Grandes",
+    "country": "Italia",
+    "source": "https://live.ultimatefederation.eu/2026-eucf",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12629/69fc82a0_cotarica-grandes.webp",
+    "note": "Il cerchio è il simbolo stesso, quindi viene mantenuto.",
+    "evidence": "logo"
+  },
+  {
+    "name": "CUS Padova Barbastreji",
+    "country": "Italia",
+    "source": "https://www.cuspadova.it/ultimate-frisbee",
+    "reference_image": "https://static.wixstatic.com/media/2d2523_e352ddadf9e0460fb31875088e93c5b1~mv2.png/v1/fill/w_124,h_130,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/logo.png",
+    "note": "Solo bucranio: rimossi cerchio, nome e diciture.",
+    "evidence": "logo"
+  },
+  {
+    "name": "360 Milano",
+    "country": "Italia",
+    "source": "https://www.360sportandnature.com/corsi-e-attivit-c3-a0/ultimate-frisbee/",
+    "reference_image": "https://image.jimcdn.com/app/cms/image/transf/none/path/se71e1479ee5ae092/image/if1c7979d68c6526c/version/1723795970/image.jpg",
+    "note": "Sigla numerica; blu e arancio osservati sulle divise. Logo specifico non verificato.",
+    "evidence": "foto"
+  },
+  {
+    "name": "BFD Redbulls",
+    "country": "Italia",
+    "source": "https://linktr.ee/bolognaflyingdisc",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12627/69df376b_bfd-la-fotta.webp",
+    "note": "Corretti i due anelli concentrici interrotti del BFD. Rimossi il precedente effetto girandola, testo e bordo esterno.",
+    "evidence": "club"
+  },
+  {
+    "name": "UFO (A)",
+    "country": "Italia",
+    "source": "https://www.ildolomiti.it/sport/2020/gli-ufo-volano-lultimate-frisbee-oltrefersina-conquista-il-primo-trofeo-indoor-della-sua-storia",
+    "reference_image": "https://cdn.ildolomiti.it/s3fs-public/styles/opengraph/public/articoli/vittoriatorneoBG.jpg?itok=5cRVBELs",
+    "note": "Sigla originale; riferimento fotografico storico, palette da ricontrollare sul kit attuale.",
+    "evidence": "foto"
+  },
+  {
+    "name": "One Tribe Next Gen",
+    "country": "Italia",
+    "source": "https://onetribeultimate.it/",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12634/69fc82b1_one-tribe.webp",
+    "note": "Stesso simbolo di One Tribe; Next Gen distinto dalla sigla.",
+    "evidence": "club"
+  },
+  {
+    "name": "RAMS BLUE",
+    "country": "Italia",
+    "source": "https://www.sassuoloonline.it/2026/06/09/ultimate-frisbee-per-pgs-smile-formigine-storica-salvezza-nel-primo-campionato-nazionale-serie-a/",
+    "reference_image": "https://www.sassuolo2000.it/img/2026/06/PGS-Smile-frisbee.jpg",
+    "note": "Monogramma originale; blu e bianco osservati nelle foto della squadra.",
+    "evidence": "foto"
+  },
+  {
+    "name": "Donkey Divers (A)",
+    "country": "Italia",
+    "source": "https://ultimatemilano.com/",
+    "reference_image": "https://ultimatemilano.com/brand/donkey-divers.png",
+    "note": "Testa d'asino geometrica; rimossa la scritta su quattro righe.",
+    "evidence": "logo"
+  },
+  {
+    "name": "METACARPI",
+    "country": "Italia",
+    "source": "https://temponews.it/2026/11/09/i-metacarpi-alla-conquista-della-promozione-nella-massima-serie-italiana/",
+    "reference_image": "https://temponews.it/wp-content/uploads/2026/11/WhatsApp-Image-2026-11-09-at-10.15.34-1-696x657.jpeg",
+    "note": "Logo specifico non leggibile con sicurezza; sigla su palette navy/bianco della foto.",
+    "evidence": "foto"
+  },
+  {
+    "name": "AUT BeeFree",
+    "country": "Italia",
+    "source": "https://ultimatetorino.com/associazione/loghi/",
+    "reference_image": "https://ultimatetorino.com/wp-content/uploads/2023/10/cropped-AUT-neg-2.png",
+    "note": "Arco e lettere AUT della società; stemma esclusivo BeeFree da confermare.",
+    "evidence": "club"
+  },
+  {
+    "name": "BFD Zero51",
+    "country": "Italia",
+    "source": "https://linktr.ee/bolognaflyingdisc",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12627/69df376b_bfd-la-fotta.webp",
+    "note": "Corretti i due anelli concentrici interrotti del BFD. Rimossi il precedente effetto girandola, testo e bordo esterno.",
+    "evidence": "club"
+  },
+  {
+    "name": "Mooncatchers",
+    "country": "Belgio",
+    "source": "https://www.belgianultimate.be/where-to-play/",
+    "reference_image": "http://www.belgianultimate.be/wp-content/uploads/2015/12/Mooncatchers.png",
+    "note": "Conservate le due punte del simbolo, senza nome o sfondo.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Jetset Open",
+    "country": "Belgio",
+    "source": "https://jetsetultimate.be/",
+    "reference_image": "https://images.squarespace-cdn.com/content/v1/692ca628546f1e254661e17e/2aa665f1-8565-4a1e-bbbc-f9503303f734/JS_Wings_BLK%405x.png",
+    "note": "Ali e JS dal sito corrente; palette monocromatica del marchio.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Armada Open",
+    "country": "Belgio",
+    "source": "https://fbfdv.be/nos-clubs",
+    "reference_image": null,
+    "note": "Account del club individuati; stemma e colori attuali non confermati. Non adottato il vecchio logo InVincibles.",
+    "evidence": "provvisoria"
+  },
+  {
+    "name": "Eulchtimate Open 1",
+    "country": "Belgio",
+    "source": "https://www.belgianultimate.be/where-to-play/",
+    "reference_image": "https://www.belgianultimate.be/wp-content/uploads/2019/02/14680760_1679179632397676_6344283003969573212_n-300x300.jpg",
+    "note": "Torre del marchio federale; eliminato il lettering piccolo.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Freezzz Beezzz one",
+    "country": "Belgio",
+    "source": "https://live.ultimatefederation.eu/2026-eucf",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/13318/6ac5eb8d_freezzz-beezzz.webp",
+    "note": "Usato il monogramma giallo/nero recente; esiste anche un vecchio logo rosso a celle.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Gentle Open",
+    "country": "Belgio",
+    "source": "https://www.belgianultimate.be/where-to-play/",
+    "reference_image": "http://www.belgianultimate.be/wp-content/uploads/2015/12/Gentle.jpg",
+    "note": "Cerchi e tre traiettorie verdi: geometria già molto adatta all'arcade.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Gentle Open Too",
+    "country": "Belgio",
+    "source": "https://www.belgianultimate.be/where-to-play/",
+    "reference_image": "http://www.belgianultimate.be/wp-content/uploads/2015/12/Gentle.jpg",
+    "note": "Stesso marchio del club; seconda formazione distinta dalla sigla.",
+    "evidence": "club"
+  },
+  {
+    "name": "Blackbirds Open 1",
+    "country": "Belgio",
+    "source": "https://www.belgianultimate.be/clubs-wallonia/",
+    "reference_image": "https://www.belgianultimate.be/wp-content/uploads/2025/04/blackbirds_logo.png",
+    "note": "Solo uccello ad ali aperte; rimossa la scritta.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Tchac",
+    "country": "Francia",
+    "source": "https://tchac-ultimate.net/",
+    "reference_image": "https://tchac-ultimate.net/asset/LogoTchac.png",
+    "note": "Faro, raggio rosa e onda; rimossi luogo, data e cornice.",
+    "evidence": "logo"
+  },
+  {
+    "name": "NLSU",
+    "country": "Francia",
+    "source": "https://live.ultimatefederation.eu/2026-eucf",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12640/69fc82b0_nlsu-iznogood.webp",
+    "note": "Monogramma NLSU con torre; proposta IZN da Iznogood, senza rinominare la squadra nel gioco.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Stade Bordelais",
+    "country": "Francia",
+    "source": "https://stade-bordelais.com/sport/ultimate/",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/13320/6a632799_bordeaux.webp",
+    "note": "Disco/vinile della sezione Ultimate (33 Tours), non lo stemma del rugby.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Freezgo",
+    "country": "Francia",
+    "source": "https://www.helloasso.com/associations/association-sportive-asptt-blois/boutiques/boutique-freezgo-2025-2026-1",
+    "reference_image": "https://cdn.helloasso.com/img/photos/items/shops/croppedimage-1c6aa14bc53749e5aad85d43acada9df.png",
+    "note": "Lettering originale compatto; navy, oro e bianco dalla boutique 2026/27.",
+    "evidence": "foto"
+  },
+  {
+    "name": "Monkey",
+    "country": "Francia",
+    "source": "https://www.ultimate-grenoble.com/",
+    "reference_image": "https://www.ultimate-grenoble.com/wp-content/uploads/2023/06/Logo.png",
+    "note": "Scimmia rossa e richiamo alle montagne di Grenoble; scritte eliminate.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Magic Disc",
+    "country": "Francia",
+    "source": "https://www.magicdiscangers.com/",
+    "reference_image": "https://static.wixstatic.com/media/fc5e60_0d6a740310ee4ba498b2abd17892f610~mv2.png/v1/fill/w_350,h_249,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Logo-MAGIC-DISC-ANGERS-ULTIMATE-2018-A4_.png",
+    "note": "Disco inclinato e stelle; rimossa la sagoma dello scudo.",
+    "evidence": "logo"
+  },
+  {
+    "name": "PUC Ultimate",
+    "country": "Francia",
+    "source": "https://puc-ultimate.fr/fr",
+    "reference_image": "https://puc-ultimate.fr/assets/images/logo_puc_ultimate.png",
+    "note": "Spirale del disco e sigla PUC; nessuna cornice aggiunta.",
+    "evidence": "logo"
+  },
+  {
+    "name": "F5",
+    "country": "Francia",
+    "source": "https://lfdidf.fr/index.php/team/fly-further-for-fun-and-fair-f5/",
+    "reference_image": "https://lfdidf.fr/wp-content/uploads/2021/10/f5-128x128.png",
+    "note": "F5 è già il centro del marchio; eliminata la corona di parole.",
+    "evidence": "logo"
+  },
+  {
+    "name": "RFO",
+    "country": "Francia",
+    "source": "https://www.rfo-fd.fr/accueil",
+    "reference_image": null,
+    "note": "Club Ré Flying Oysters identificato; immagine del marchio non recuperata. Palette temporanea.",
+    "evidence": "provvisoria"
+  },
+  {
+    "name": "Tsunami",
+    "country": "Francia",
+    "source": "https://commons.wikimedia.org/wiki/File:Logo_tsunami.png",
+    "reference_image": "https://upload.wikimedia.org/wikipedia/commons/5/55/Logo_tsunami.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail_unscaled&_=20200211152540",
+    "note": "Onda rossa e giocatore nero dal logo storico. Fonte Régis Brouard, CC BY-SA 4.0; versione corrente da confermare.",
+    "evidence": "logo"
+  },
+  {
+    "name": "BTR",
+    "country": "Francia",
+    "source": "https://www.toulouseultimate.org/index.php/le-club/",
+    "reference_image": "https://www.toulouseultimate.org/wp-content/uploads/2021/09/cropped-Logo_TUC_Ultimate_96dpi.png",
+    "note": "Croce occitana con terminali a disco dal TUC Ultimate; eliminati anelli e testo.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Sun",
+    "country": "Francia",
+    "source": "https://sun-creteil.fr/",
+    "reference_image": "https://sun-creteil.fr/wp-content/uploads/2020/05/cropped-logosun-270x270.jpg",
+    "note": "S centrale e pochi raggi; eliminati iscrizioni e raggi minuti.",
+    "evidence": "logo"
+  },
+  {
+    "name": "M.U.C.",
+    "country": "Germania",
+    "source": "https://ultimate-muenchen.de/teams/m-u-c/",
+    "reference_image": "https://ultimate-muenchen.de/wp-content/uploads/2015/02/MUC-300x235.jpg",
+    "note": "Due leoni azzurri e disco; dettagli araldici ridotti.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Bad Skid",
+    "country": "Germania",
+    "source": "https://live.ultimatefederation.eu/2026-springtour",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12626/69fc82b1_bad-skid.webp",
+    "note": "Monogramma BS verde, ridisegnato con moduli larghi.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Wall City",
+    "country": "Germania",
+    "source": "https://wallcity.de/",
+    "reference_image": "https://wallcity.de/static/assets/WallCity_Logo_Wide.png",
+    "note": "Corona gialla del marchio; nome reso dalla sigla nella UI.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Heidees",
+    "country": "Germania",
+    "source": "https://heidees.de/",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12632/69fc82b1_heidees.webp",
+    "note": "Volto di Heidi e corona; eliminata la corona d'alloro.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Late Game",
+    "country": "Germania",
+    "source": "https://rotersternleipzig.de/sektion-frisbee-frisbee-open-dm-beim-rsl-dieses-wochenende/",
+    "reference_image": "https://rotersternleipzig.de/wp-content/uploads/2026/08/Late-Game-Maenner-Mannschaft-Frisbee.png",
+    "note": "Sigla originale; navy e lilla osservati nel completo della squadra.",
+    "evidence": "foto"
+  },
+  {
+    "name": "BORA",
+    "country": "Germania",
+    "source": "https://live.ultimatefederation.eu/2026-springtour",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12672/69fc82a9_bora.webp",
+    "note": "Conservata la disposizione BO/RA del marchio.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Frizzly Bears",
+    "country": "Germania",
+    "source": "https://www.frisbeesportverband.de/frizzly-bears-aachen-sind-deutsche-meister-im-indoor-mixed-ultimate/",
+    "reference_image": "https://www.frisbeesportverband.de/wp-content/uploads/2026/02/signal-2026-02-09-153343_002-900x500.png",
+    "note": "Rosso/nero/bianco delle divise; logo isolato non verificato. Sigla originale.",
+    "evidence": "foto"
+  },
+  {
+    "name": "Hardfisch",
+    "country": "Germania",
+    "source": "https://live.ultimatefederation.eu/2026-springtour",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12674/69fc82b4_hardfisch.webp",
+    "note": "Scheletro di pesce ridotto a testa, spina e sei costole.",
+    "evidence": "logo"
+  },
+  {
+    "name": "7Schwaben",
+    "country": "Germania",
+    "source": "https://ultimate-stuttgart.de/",
+    "reference_image": "https://ultimate-stuttgart.de/wp-content/uploads/2024/07/IMG_6490-scaled-e1721070158510.jpeg",
+    "note": "7 mantenuto nella sigla; foto in bianco/nero, altri colori da confermare.",
+    "evidence": "foto"
+  },
+  {
+    "name": "Werfwölfe",
+    "country": "Germania",
+    "source": "https://scores.frisbeesportverband.de/?list=allteams&season=dmo26&view=teams",
+    "reference_image": null,
+    "note": "Identità sportiva verificata; logo e colori non recuperati con sicurezza.",
+    "evidence": "provvisoria"
+  },
+  {
+    "name": "Disckick",
+    "country": "Germania",
+    "source": "https://tib1848ev.de/documents/690/TIB_Magazin-2024-04_04.pdf",
+    "reference_image": null,
+    "note": "Sigla originale; riferimento delle maglie bianche con scritta Disckick Berlin.",
+    "evidence": "foto"
+  },
+  {
+    "name": "Ars Ludendi",
+    "country": "Germania",
+    "source": "https://www.arsludendi.org/vereinsgeschichte/",
+    "reference_image": "https://www.arsludendi.org/wp-content/uploads/2018/04/cropped-Vereinslogo_512px-2.png",
+    "note": "Monumento verticale e orbita del disco; rimosso il rombo esterno.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Hard2fisch",
+    "country": "Germania",
+    "source": "https://scores.frisbeesportverband.de/?list=allteams&season=dmo26&view=teams",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12674/69fc82b4_hardfisch.webp",
+    "note": "Proposta condivisa con Hardfisch; identità della seconda formazione da confermare.",
+    "evidence": "club"
+  },
+  {
+    "name": "Frühsport 02",
+    "country": "Germania",
+    "source": "https://www.asvkoeln.com/sportarten/ultimate-frisbee",
+    "reference_image": "https://www.asvkoeln.com/media/pages/sportarten/ultimate-frisbee/6f7f70577d-1637141481/20-asv-website2-frisbee-c-ts-tsc5561-ultimate-web.jpg",
+    "note": "Rosa osservato sul disco del club; palette del team maschile da confermare. Nome fonte: Frühsport 2,0.",
+    "evidence": "foto"
+  },
+  {
+    "name": "bff",
+    "country": "Germania",
+    "source": "https://www.ptsv-jahn-freiburg.de/ultimate-frisbee",
+    "reference_image": null,
+    "note": "Affiliazione Freiburg verificata; non attribuito automaticamente il logo del team Mixed Disconnection.",
+    "evidence": "provvisoria"
+  },
+  {
+    "name": "Sturm und Drang I",
+    "country": "Germania",
+    "source": "https://ultimate-frisbee.eintracht.de/",
+    "reference_image": "https://media.eintracht.de/image/upload/ar_16:7,c_fill,dpr_1.0,f_auto,g_auto,q_60,w_auto/ultimate-frisbee_2020_titelbild-scheibe-def5.jpg",
+    "note": "Aquila dell'Eintracht dal disco della sezione Ultimate, senza anello.",
+    "evidence": "club"
+  },
+  {
+    "name": "Clapham Ultimate",
+    "country": "Regno Unito",
+    "source": "https://live.ultimatefederation.eu/2026-uk-nationals",
+    "reference_image": "",
+    "note": "Rana classica di profilo dal riferimento allegato dall’utente; posa e grandi forme conservate. Sostituita la precedente rana frontale.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Chevron Action Flash",
+    "country": "Regno Unito",
+    "source": "https://live.ultimatefederation.eu/2026-uk-nationals",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12832/69fc82b2_chevron-action-flash.webp",
+    "note": "Sagoma del personaggio in movimento e un arco di colore; eliminati testo e bordo.",
+    "evidence": "logo"
+  },
+  {
+    "name": "SMASH'D",
+    "country": "Regno Unito",
+    "source": "https://live.ultimatefederation.eu/2026-uk-nationals",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12644/69fc82b2_smashd.webp",
+    "note": "Testa del gorilla con segno obliquo; mantenuta la palette del marchio.",
+    "evidence": "logo"
+  },
+  {
+    "name": "SMOG Open",
+    "country": "Regno Unito",
+    "source": "https://live.ultimatefederation.eu/2026-uk-nationals",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12645/69fc82b2_smog.webp",
+    "note": "Lettering compatto con tre stelle; versione del club osservata negli streaming.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Bristol Open",
+    "country": "Regno Unito",
+    "source": "https://live.ultimatefederation.eu/2026-uk-nationals",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12831/69fc82b3_bristol.webp",
+    "note": "Mongolfiera e una stella; eliminati nome e cerchio.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Alba",
+    "country": "Regno Unito",
+    "source": "https://scottishultimate.com/teams/",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/13317/6a6325e9_alba.webp",
+    "note": "Testa di cervo geometrica; ridotte le triangolazioni più sottili.",
+    "evidence": "logo"
+  },
+  {
+    "name": "SOLENT Open",
+    "country": "Regno Unito",
+    "source": "https://www.solent.club/",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12646/69fc82aa_solent-open.webp",
+    "note": "Ago bicolore della bussola; rimossi nome e tacche minute.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Manchester Ultimate",
+    "country": "Regno Unito",
+    "source": "https://force-ultimate.com/teams-gallery",
+    "reference_image": "https://force-ultimate.com/img/teams/manchester-2015.jpg",
+    "note": "Sigla MCR; rosso/nero da foto storiche. Logo attuale assente anche nella pagina streaming.",
+    "evidence": "foto"
+  },
+  {
+    "name": "New York PoNY",
+    "country": "USA · Est",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/11/PoNYLogo.jpg",
+    "note": "Testa di leone arancio con criniera; nessun disco o scudo di fondo.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Boston DiG",
+    "country": "USA · Est",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/11/DiGLogo.jpg",
+    "note": "Ridotto il mosaico multicolore a poche figure intrecciate, evitando il rumore a piccola scala.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Portland Red Tide",
+    "country": "USA · Est",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2025/11/download9-1.jpg",
+    "note": "Creste di onda e disco rosso; eliminati testo e dettagli decorativi.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Amherst Sprout",
+    "country": "USA · Est",
+    "source": "https://ultiworld.com/team/81369/amherst-sprout/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2019/07/amherst-sprout-logo.jpg",
+    "note": "Tre alberi e radici; eliminata la scritta centrale.",
+    "evidence": "logo"
+  },
+  {
+    "name": "New York Blueprint",
+    "country": "USA · Est",
+    "source": "https://ultiworld.com/team/148147/new-york-blueprint/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2023/09/new-york-blueprint-logo.png",
+    "note": "Ciambella blu del marchio documentato; i kit successivi usano anche lettering rosso.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Montréal Mephisto",
+    "country": "USA · Est",
+    "source": "https://ultiworld.com/team/121076/montreal-mephisto/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2022/08/montreal-mephisto-logo.png",
+    "note": "Maschera con corna e occhi a M; nome eliminato.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Washington DC Truck Stop",
+    "country": "USA · Est",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/11/TruckStopLogo.jpg",
+    "note": "Motivo frontale con tre barre e stelle; rimosso il piccolo bordo accessorio.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Philadelphia Pacmen",
+    "country": "USA · Est",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2025/11/philadelphia-pacmen-logo-300x300-1.jpg",
+    "note": "Disco aperto e pallino: simbolo già immediato in pixel.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Virginia Vault",
+    "country": "USA · Est",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2023/01/Virginia-Vault-e1674683594594.png",
+    "note": "Sagoma di pesce mantenuta; testo interno reso VLT per la lettura in piccolo.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Oak Grove Boys",
+    "country": "USA · Est",
+    "source": "https://ultiworld.com/team/163395/arlington-oak-grove-boys/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2024/06/MOakgrove-Boys.png",
+    "note": "Albero ramificato senza contenitore circolare.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Pittsburgh Temper",
+    "country": "USA · Est",
+    "source": "https://ultiworld.com/team/21655/pittsburgh-temper/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2014/07/temper-logo-2.jpg",
+    "note": "Fiamma compatta monocromatica con taglio interno.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Garden State Ultimate",
+    "country": "USA · Est",
+    "source": "https://ultiworld.com/team/33556/new-jersey-garden-state-ultimate/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2015/06/garden-state.jpeg",
+    "note": "Quercia centrale; rimossi scudo, rami esterni e lettere gotiche.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Raleigh Ring of Fire",
+    "country": "USA · Est",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/11/RingOfFireLogo-e1762298142111.png",
+    "note": "Anello di fiamme; ritratto interno troppo fine, sostituito da apertura pulita.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Atlanta Chain Lightning",
+    "country": "USA · Est",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/11/ChainLightning_Logo.jpg",
+    "note": "Solo fulmine, senza cerchio posteriore.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Raleigh-Durham United",
+    "country": "USA · Est",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2023/01/Raleigh-Durham-United.png",
+    "note": "Toro del nucleo centrale; rimossi scudo, corone e nastri.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Florida Untied",
+    "country": "USA · Est",
+    "source": "https://ultiworld.com/team/180778/florida-untied/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2025/06/MUntied.png",
+    "note": "Marchio principalmente scritto; sigla UNT in blu, mantenendo Untied distinto da United.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Charlotte baNC",
+    "country": "USA · Est",
+    "source": "https://ultiworld.com/team/165268/charlotte-banc/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2024/07/MbaNC.png",
+    "note": "Facciata del tempio/banca; rimossi alloro, corona e anelli.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Chattanooga Tanasi",
+    "country": "USA · Est",
+    "source": "https://ultiworld.com/team/105329/tennessee-tanasi/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2021/07/tennessee-tanasi-logo.jpeg",
+    "note": "Numero 1 del marchio Old Time; scritte e filigrane eliminate.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Chicago Machine",
+    "country": "USA · Est",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/11/MachineLogo.png",
+    "note": "Quattro stelle rosse e bande azzurre; scudo eliminato.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Toronto GOAT",
+    "country": "USA · Est",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/11/GOATLogo.jpg",
+    "note": "Testa della capra con corna; cerchio posteriore rimosso.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Chicago Haymaker",
+    "country": "USA · Est",
+    "source": "https://ultiworld.com/team/136085/chicago-haymaker/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2023/03/chicago-haymaker-logo.jpeg",
+    "note": "Nave nello stemma civico; eliminati figure laterali e cartigli minuti.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Indianapolis I-69",
+    "country": "USA · Est",
+    "source": "https://www.ultirzr.app/team/i-69?year=2025",
+    "reference_image": "https://play.usaultimate.org//assets/TeamLogos/i69_Logo.png",
+    "note": "Segnale stradale distintivo: qui la sagoma esterna ha significato e resta.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Flying Dutchmen",
+    "country": "USA · Est",
+    "source": "https://www.dutchmen.org/",
+    "reference_image": null,
+    "note": "Sito del club trovato; logo e palette non confermati. Monogramma originale.",
+    "evidence": "provvisoria"
+  },
+  {
+    "name": "Trident",
+    "country": "USA · Est",
+    "source": "https://ultiworld.com/team/163398/chicago-trident/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2024/06/MTrident.png",
+    "note": "Tridente centrale; rimosso lo scudo.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Minneapolis Sub Zero",
+    "country": "USA · Ovest",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/11/SubZeroLogo.jpg",
+    "note": "Due facce di pupazzo di neve con cilindri, semplificate.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Madison Mad Men",
+    "country": "USA · Ovest",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2023/01/madmen.jpg",
+    "note": "Monogramma MM nero; eliminato il triangolo/scudo rosso.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Minneapolis Mallard",
+    "country": "USA · Ovest",
+    "source": "https://ultiworld.com/team/145082/minneapolis-mallard/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2023/07/MMallard.png",
+    "note": "Anatra e canna palustre; eliminato cerchio e puntini.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Lounar",
+    "country": "USA · Ovest",
+    "source": "https://ultiworld.com/team/147608/st-louis-stl-lounar/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2023/09/st.-louis-lounar-logo.jpg",
+    "note": "Luna e arco di St. Louis; entrambe le palette osservate sono giallo/viola.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Kansas City Smokestack",
+    "country": "USA · Ovest",
+    "source": "https://ultiworld.com/team/165325/kansas-city-smokestack/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2024/07/MSmokestack.png",
+    "note": "Ciminiera, fumo e una stella; eliminata la cornice tonda.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Knights of Ni",
+    "country": "USA · Ovest",
+    "source": "https://www.ultirzr.app/team/knights-of-ni?year=2025",
+    "reference_image": "https://play.usaultimate.org//assets/TeamLogos/Knights_of_Ni_Logo.jpg",
+    "note": "Corna ramificate e NI dalla registrazione federale; eliminati scudo, corona e quarti interni.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Denver Johnny Bravo",
+    "country": "USA · Ovest",
+    "source": "https://www.ultirzr.app/team/johnny-bravo-3?year=2026",
+    "reference_image": "https://play.usaultimate.org//assets/TeamLogos/blue_silver_rocket.png",
+    "note": "Razzo blu/argento dalla registrazione 2026; il portale USAU mostra anche una variante storica rossa.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Austin Doublewide",
+    "country": "USA · Ovest",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/11/DoublewideLogo.png",
+    "note": "DW e stella dal lettering del club; eliminato svolazzo sottile.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Fungi",
+    "country": "USA · Ovest",
+    "source": "https://ultiworld.com/team/106408/golden-fungi/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2021/08/golden-fungi-logo.png",
+    "note": "Solo fungo giallo/viola, senza disco esterno.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Alamode",
+    "country": "USA · Ovest",
+    "source": "https://ultiworld.com/team/163393/san-antonio-alamode/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2024/06/MAlamode.png",
+    "note": "Coppa/gelato con ciliegia; architettura interna ridotta.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Boulder ISO Atmo",
+    "country": "USA · Ovest",
+    "source": "https://www.ultirzr.app/team/10628",
+    "reference_image": "https://play.usaultimate.org//assets/TeamLogos/ISOatmologo.png",
+    "note": "C del Colorado dal logo documentato; texture fotografica eliminata. Fonte storica.",
+    "evidence": "logo"
+  },
+  {
+    "name": "ZOO",
+    "country": "USA · Ovest",
+    "source": "https://www.ultirzr.app/team/555354221",
+    "reference_image": "https://play.usaultimate.org//assets/TeamLogos/Zoo_logo_but_BETTER.png",
+    "note": "Giraffa e gorilla dal marchio del club di Dallas; rimossi skyline e sfondo arancio.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Portland Rhino Slam!",
+    "country": "USA · Ovest",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/11/RhinoSlamLogo.png",
+    "note": "Rinoceronte del monogramma, reso come testa compatta.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Seattle Sockeye",
+    "country": "USA · Ovest",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/05/Sockeye-logo-Seattle-Sockeye.png",
+    "note": "Salmone curvo; eliminati anello e lettering.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Vancouver Furious George",
+    "country": "USA · Ovest",
+    "source": "https://ultiworld.com/team/21623/vancouver-furious-george/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2012/10/2012ClubLogos_FuriousGeorge.png",
+    "note": "Faccia rossa del gorilla; eliminato l'ovale esterno.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Eugene Dark Star",
+    "country": "USA · Ovest",
+    "source": "https://ultiworld.com/team/121299/eugene-dark-star/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2022/08/darkstar-logo.png",
+    "note": "Stella centrale e punte alternate; eliminato il bordo circolare.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Salt Lake City Shrimp",
+    "country": "USA · Ovest",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2024/11/Shrimp.png",
+    "note": "Gambero rosa; eliminati cerchio e banner Salt Lake.",
+    "evidence": "logo"
+  },
+  {
+    "name": "SOUF",
+    "country": "USA · Ovest",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=1211119",
+    "reference_image": null,
+    "note": "Profilo federale senza logo specifico; scheda kit trovata ma non accessibile. Palette temporanea.",
+    "evidence": "provvisoria"
+  },
+  {
+    "name": "San Francisco Revolver",
+    "country": "USA · Ovest",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/07/Revolver-1.jpg",
+    "note": "REV e orbita del marchio; eliminate le terre del globo non leggibili in piccolo.",
+    "evidence": "logo"
+  },
+  {
+    "name": "SoCal Condors",
+    "country": "USA · Ovest",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2020/11/CondorsLogo.png",
+    "note": "Condor ad ali aperte; sole ridotto ad accento e non a fondo circolare.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Bay Area Wavestorms",
+    "country": "USA · Ovest",
+    "source": "https://ultiworld.com/team/199737/santa-cruz-wavestorms/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2026/07/santa-cruz-wavestorms-logo-1.png",
+    "note": "Bande blu/azzurre dal marchio; onda è una reinterpretazione proposta, non un simbolo originale certificato.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Arizona Nighthawk",
+    "country": "USA · Ovest",
+    "source": "https://usaultimate.org/club/teams/",
+    "reference_image": "https://usaultimate.org/wp-content/uploads/2025/11/Nighthawk_Logo.png",
+    "note": "Volto del rapace e raggi viola; ridotto il numero di frammenti.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Zodiac",
+    "country": "USA · Ovest",
+    "source": "https://www.ultirzr.app/team/355165521",
+    "reference_image": "https://play.usaultimate.org//assets/EventPicturesThumbnail/logo.png",
+    "note": "Club di San Francisco, distinto dagli omonimi. La registrazione mostra il segnaposto USA Ultimate, non un logo specifico. Sigla e palette temporanee.",
+    "evidence": "provvisoria"
+  },
+  {
+    "name": "Hazard",
+    "country": "USA · Ovest",
+    "source": "https://www.ultirzr.app/team/32817",
+    "reference_image": "https://play.usaultimate.org//assets/TeamLogos/Hazard_Square_Logo.jpg",
+    "note": "Lettere HAZ e doppia banda gialla del marchio.",
+    "evidence": "logo"
+  }
+]

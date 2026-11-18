@@ -14,6 +14,9 @@ const ok=()=>console.log('\nVERIFICA SUPERATA'+(quick?' (rapida: manca la prova 
 console.log('\n### '+groups[0][0]);
 let r=spawnSync(process.execPath,groups[0][1],{cwd,stdio:'inherit'});
 if(r.status!==0)fail(groups[0][0]);
+console.log('\n### Stemmi e sigle');
+r=spawnSync(process.execPath,['tools/test-stemmi.js'],{cwd,stdio:'inherit'});
+if(r.status!==0)fail('Stemmi e sigle');
 const rest=groups.slice(1);
 if(serial||rest.length<2){
   for(const [name,args] of rest){console.log('\n### '+name);r=spawnSync(process.execPath,args,{cwd,stdio:'inherit'});if(r.status!==0)fail(name);}

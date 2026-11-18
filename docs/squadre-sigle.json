@@ -1,0 +1,1899 @@
+[
+  {
+    "name": "BFD La Fotta Offence",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "LFO",
+    "mark": "la-fotta"
+  },
+  {
+    "name": "BFD La Fotta Defense",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "LFD",
+    "mark": "la-fotta"
+  },
+  {
+    "name": "DiscoBolo",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "DBL",
+    "mark": "italia-dbl"
+  },
+  {
+    "name": "Cotarica Runners",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "RUN",
+    "mark": "italia-ctr"
+  },
+  {
+    "name": "One Tribe",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "ONT",
+    "mark": "italia-ont"
+  },
+  {
+    "name": "Cotarica Grandes",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "GRA",
+    "mark": "italia-ctg"
+  },
+  {
+    "name": "CUS Padova Barbastreji",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "BAR",
+    "mark": "italia-cus"
+  },
+  {
+    "name": "360 Milano",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "360",
+    "mark": "italia-360"
+  },
+  {
+    "name": "BFD Redbulls",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "RDB",
+    "mark": "italia-rdb"
+  },
+  {
+    "name": "UFO (A)",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "UFO",
+    "mark": "italia-ufo"
+  },
+  {
+    "name": "One Tribe Next Gen",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "NXG",
+    "mark": "italia-ong"
+  },
+  {
+    "name": "RAMS BLUE",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "BLU",
+    "mark": "italia-rmb"
+  },
+  {
+    "name": "Donkey Divers (A)",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "DDK",
+    "mark": "italia-ddk"
+  },
+  {
+    "name": "METACARPI",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "MTC",
+    "mark": "italia-mtc"
+  },
+  {
+    "name": "AUT BeeFree",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "BFR",
+    "mark": "italia-bfr"
+  },
+  {
+    "name": "BFD Zero51",
+    "country": "IT",
+    "tier": "A",
+    "abbr": "Z51",
+    "mark": "italia-z51"
+  },
+  {
+    "name": "Canieporci",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "CNP",
+    "mark": null
+  },
+  {
+    "name": "Frisbaobab",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "FBB",
+    "mark": null
+  },
+  {
+    "name": "KISS - Ultimate Cremona",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "KISS",
+    "mark": null
+  },
+  {
+    "name": "Frasba dal Lac",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "FDL",
+    "mark": null
+  },
+  {
+    "name": "DISCOVER-CUS VERONA (B)",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "DSV",
+    "mark": null
+  },
+  {
+    "name": "VOLADORA",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "VOL",
+    "mark": null
+  },
+  {
+    "name": "Cotarica J",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "CTJ",
+    "mark": "italia-ctg"
+  },
+  {
+    "name": "DiscoBolo Rookies",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "ROK",
+    "mark": "italia-dbl"
+  },
+  {
+    "name": "CUS BERGAMO",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "BGM",
+    "mark": null
+  },
+  {
+    "name": "Disc&Disc",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "DND",
+    "mark": null
+  },
+  {
+    "name": "BFD NextGen",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "NGN",
+    "mark": "italia-z51"
+  },
+  {
+    "name": "One Tribe U20",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "OT20",
+    "mark": "italia-ont"
+  },
+  {
+    "name": "CUS Padova Barbados",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "BBD",
+    "mark": "italia-cus"
+  },
+  {
+    "name": "BID ROMA",
+    "country": "IT",
+    "tier": "B",
+    "abbr": "BID",
+    "mark": null
+  },
+  {
+    "name": "Ultimate Frisbee Fano",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "FAN",
+    "mark": null
+  },
+  {
+    "name": "CUS Padova Barbafighto",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "BFT",
+    "mark": "italia-cus"
+  },
+  {
+    "name": "One Tribe U17",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "OT17",
+    "mark": "italia-ont"
+  },
+  {
+    "name": "Grem",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "GRM",
+    "mark": null
+  },
+  {
+    "name": "ExtraFut",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "EXT",
+    "mark": null
+  },
+  {
+    "name": "NoMad Goose",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "NMG",
+    "mark": null
+  },
+  {
+    "name": "DiscoBolo NewGen",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "DBN",
+    "mark": "italia-dbl"
+  },
+  {
+    "name": "Discover CUS Verona (C)",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "DVC",
+    "mark": null
+  },
+  {
+    "name": "Brigata Treseizero",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "B36",
+    "mark": null
+  },
+  {
+    "name": "Donkey Divers (C)",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "DDC",
+    "mark": "italia-ddk"
+  },
+  {
+    "name": "UFO (C)",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "UFC",
+    "mark": null
+  },
+  {
+    "name": "AUT Hive",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "HIV",
+    "mark": null
+  },
+  {
+    "name": "De’Cavaliers",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "DCV",
+    "mark": null
+  },
+  {
+    "name": "RAMS WHITE",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "WHT",
+    "mark": null
+  },
+  {
+    "name": "One Tribe Wise",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "WIS",
+    "mark": "italia-ont"
+  },
+  {
+    "name": "SBILF CUS Udine",
+    "country": "IT",
+    "tier": "C",
+    "abbr": "SBI",
+    "mark": null
+  },
+  {
+    "name": "Mooncatchers",
+    "country": "BE",
+    "tier": "N1",
+    "abbr": "MC",
+    "mark": "belgio-mc"
+  },
+  {
+    "name": "Jetset Open",
+    "country": "BE",
+    "tier": "N1",
+    "abbr": "JS",
+    "mark": "belgio-js"
+  },
+  {
+    "name": "Armada Open",
+    "country": "BE",
+    "tier": "N1",
+    "abbr": "ARM",
+    "mark": "belgio-arm"
+  },
+  {
+    "name": "Eulchtimate Open 1",
+    "country": "BE",
+    "tier": "N1",
+    "abbr": "EUL",
+    "mark": "belgio-eul"
+  },
+  {
+    "name": "Freezzz Beezzz one",
+    "country": "BE",
+    "tier": "N1",
+    "abbr": "FZB",
+    "mark": "belgio-fzb"
+  },
+  {
+    "name": "Gentle Open",
+    "country": "BE",
+    "tier": "N1",
+    "abbr": "GNT",
+    "mark": "belgio-gnt"
+  },
+  {
+    "name": "Gentle Open Too",
+    "country": "BE",
+    "tier": "N1",
+    "abbr": "GN2",
+    "mark": "belgio-gn2"
+  },
+  {
+    "name": "Blackbirds Open 1",
+    "country": "BE",
+    "tier": "N1",
+    "abbr": "BB1",
+    "mark": "belgio-bb1"
+  },
+  {
+    "name": "Jetset Open 2",
+    "country": "BE",
+    "tier": "N2",
+    "abbr": "JS2",
+    "mark": "belgio-js"
+  },
+  {
+    "name": "Diabolic Heaven Open 1",
+    "country": "BE",
+    "tier": "N2",
+    "abbr": "DH1",
+    "mark": null
+  },
+  {
+    "name": "Flying Rabbits Katch-up",
+    "country": "BE",
+    "tier": "N2",
+    "abbr": "KAT",
+    "mark": null
+  },
+  {
+    "name": "Antwerp Ultimate Open",
+    "country": "BE",
+    "tier": "N2",
+    "abbr": "ANT",
+    "mark": null
+  },
+  {
+    "name": "Helgtre Open",
+    "country": "BE",
+    "tier": "N2",
+    "abbr": "HEL",
+    "mark": null
+  },
+  {
+    "name": "Les Hiboux Glorieux",
+    "country": "BE",
+    "tier": "N2",
+    "abbr": "HIB",
+    "mark": null
+  },
+  {
+    "name": "Freezzz Beezzz HIVE",
+    "country": "BE",
+    "tier": "N2",
+    "abbr": "FBH",
+    "mark": "belgio-fzb"
+  },
+  {
+    "name": "Gentle Rockets",
+    "country": "BE",
+    "tier": "N3",
+    "abbr": "RKT",
+    "mark": "belgio-gnt"
+  },
+  {
+    "name": "XL Open 1",
+    "country": "BE",
+    "tier": "N3",
+    "abbr": "XL1",
+    "mark": null
+  },
+  {
+    "name": "Disco Duro",
+    "country": "BE",
+    "tier": "N3",
+    "abbr": "DDU",
+    "mark": null
+  },
+  {
+    "name": "KUFC",
+    "country": "BE",
+    "tier": "N3",
+    "abbr": "KUFC",
+    "mark": null
+  },
+  {
+    "name": "Éclipse Solaire",
+    "country": "BE",
+    "tier": "N3",
+    "abbr": "SOL",
+    "mark": null
+  },
+  {
+    "name": "Oufti-Ké-Rêve",
+    "country": "BE",
+    "tier": "N3",
+    "abbr": "OKR",
+    "mark": null
+  },
+  {
+    "name": "VOS Open",
+    "country": "BE",
+    "tier": "N3",
+    "abbr": "VOS",
+    "mark": null
+  },
+  {
+    "name": "Flywin open 1",
+    "country": "BE",
+    "tier": "N3",
+    "abbr": "FW1",
+    "mark": null
+  },
+  {
+    "name": "Blackbirds Open 2",
+    "country": "BE",
+    "tier": "N4",
+    "abbr": "BB2",
+    "mark": "belgio-bb1"
+  },
+  {
+    "name": "Stoemps Burrata",
+    "country": "BE",
+    "tier": "N4",
+    "abbr": "BUR",
+    "mark": null
+  },
+  {
+    "name": "Zero Gravity",
+    "country": "BE",
+    "tier": "N4",
+    "abbr": "ZGR",
+    "mark": null
+  },
+  {
+    "name": "Flywin open 2",
+    "country": "BE",
+    "tier": "N4",
+    "abbr": "FW2",
+    "mark": null
+  },
+  {
+    "name": "Ultimate Delux O",
+    "country": "BE",
+    "tier": "N4",
+    "abbr": "DLX",
+    "mark": null
+  },
+  {
+    "name": "Les Chouettes Glorieuses",
+    "country": "BE",
+    "tier": "N4",
+    "abbr": "CHO",
+    "mark": null
+  },
+  {
+    "name": "Red Nuts",
+    "country": "BE",
+    "tier": "N4",
+    "abbr": "RNT",
+    "mark": null
+  },
+  {
+    "name": "Freespect",
+    "country": "BE",
+    "tier": "N4",
+    "abbr": "FSP",
+    "mark": null
+  },
+  {
+    "name": "Mighty DUCs",
+    "country": "BE",
+    "tier": "N5",
+    "abbr": "DUC",
+    "mark": null
+  },
+  {
+    "name": "XL Open 2",
+    "country": "BE",
+    "tier": "N5",
+    "abbr": "XL2",
+    "mark": null
+  },
+  {
+    "name": "White Foxes Open",
+    "country": "BE",
+    "tier": "N5",
+    "abbr": "WFX",
+    "mark": null
+  },
+  {
+    "name": "Helgtre Knallers",
+    "country": "BE",
+    "tier": "N5",
+    "abbr": "KNA",
+    "mark": null
+  },
+  {
+    "name": "Jetset Propellers",
+    "country": "BE",
+    "tier": "N5",
+    "abbr": "PRO",
+    "mark": "belgio-js"
+  },
+  {
+    "name": "Diabolic Heaven Open 2",
+    "country": "BE",
+    "tier": "N5",
+    "abbr": "DH2",
+    "mark": null
+  },
+  {
+    "name": "Lievegem Frisbee Team",
+    "country": "BE",
+    "tier": "N5",
+    "abbr": "LFT",
+    "mark": null
+  },
+  {
+    "name": "Eulchtimate Open 2",
+    "country": "BE",
+    "tier": "N5",
+    "abbr": "EU2",
+    "mark": "belgio-eul"
+  },
+  {
+    "name": "Area 51",
+    "country": "BE",
+    "tier": "N6",
+    "abbr": "A51",
+    "mark": null
+  },
+  {
+    "name": "Frisco Duro",
+    "country": "BE",
+    "tier": "N6",
+    "abbr": "FDU",
+    "mark": null
+  },
+  {
+    "name": "PUF",
+    "country": "BE",
+    "tier": "N6",
+    "abbr": "PUF",
+    "mark": null
+  },
+  {
+    "name": "Stoemps Antipasti",
+    "country": "BE",
+    "tier": "N6",
+    "abbr": "ANTP",
+    "mark": null
+  },
+  {
+    "name": "Éclipse Lunaire",
+    "country": "BE",
+    "tier": "N6",
+    "abbr": "LUN",
+    "mark": null
+  },
+  {
+    "name": "Cerfs de Bure",
+    "country": "BE",
+    "tier": "N6",
+    "abbr": "CDB",
+    "mark": null
+  },
+  {
+    "name": "Jetset Zeppelins",
+    "country": "BE",
+    "tier": "N6",
+    "abbr": "ZEP",
+    "mark": "belgio-js"
+  },
+  {
+    "name": "Tchac",
+    "country": "FR",
+    "tier": "N1",
+    "abbr": "TCH",
+    "mark": "francia-tch"
+  },
+  {
+    "name": "NLSU",
+    "country": "FR",
+    "tier": "N1",
+    "abbr": "IZN",
+    "mark": "francia-izn"
+  },
+  {
+    "name": "Stade Bordelais",
+    "country": "FR",
+    "tier": "N1",
+    "abbr": "BOR",
+    "mark": "francia-bor"
+  },
+  {
+    "name": "Freezgo",
+    "country": "FR",
+    "tier": "N1",
+    "abbr": "FRZ",
+    "mark": "francia-frz"
+  },
+  {
+    "name": "Monkey",
+    "country": "FR",
+    "tier": "N1",
+    "abbr": "MNK",
+    "mark": "francia-mnk"
+  },
+  {
+    "name": "Magic Disc",
+    "country": "FR",
+    "tier": "N1",
+    "abbr": "MDA",
+    "mark": "francia-mda"
+  },
+  {
+    "name": "PUC Ultimate",
+    "country": "FR",
+    "tier": "N1",
+    "abbr": "PUC",
+    "mark": "francia-puc"
+  },
+  {
+    "name": "F5",
+    "country": "FR",
+    "tier": "N1",
+    "abbr": "F5",
+    "mark": "francia-f5"
+  },
+  {
+    "name": "RFO",
+    "country": "FR",
+    "tier": "N1",
+    "abbr": "RFO",
+    "mark": "francia-rfo"
+  },
+  {
+    "name": "Tsunami",
+    "country": "FR",
+    "tier": "N1",
+    "abbr": "TSU",
+    "mark": "francia-tsu"
+  },
+  {
+    "name": "BTR",
+    "country": "FR",
+    "tier": "N1",
+    "abbr": "BTR",
+    "mark": "francia-btr"
+  },
+  {
+    "name": "Sun",
+    "country": "FR",
+    "tier": "N1",
+    "abbr": "SUN",
+    "mark": "francia-sun"
+  },
+  {
+    "name": "Roazhon Ultimate",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "ROA",
+    "mark": null
+  },
+  {
+    "name": "Ouf",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "OUF",
+    "mark": null
+  },
+  {
+    "name": "Frisbeurs",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "FRB",
+    "mark": null
+  },
+  {
+    "name": "Révolution'Air",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "RVA",
+    "mark": null
+  },
+  {
+    "name": "Zérogêne",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "ZGN",
+    "mark": null
+  },
+  {
+    "name": "Phoenix",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "PHX",
+    "mark": null
+  },
+  {
+    "name": "Power Rouengers",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "PWR",
+    "mark": null
+  },
+  {
+    "name": "Magic Disc 2",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "MDA2",
+    "mark": "francia-mda"
+  },
+  {
+    "name": "Discjonctés",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "DJC",
+    "mark": null
+  },
+  {
+    "name": "Sesquidistus",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "SES",
+    "mark": null
+  },
+  {
+    "name": "Friz'Bisontins",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "FBZ",
+    "mark": null
+  },
+  {
+    "name": "A.S.U.L. Ultimate",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "ASUL",
+    "mark": null
+  },
+  {
+    "name": "Les Marsiens",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "MAR",
+    "mark": null
+  },
+  {
+    "name": "Clapas",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "CLA",
+    "mark": null
+  },
+  {
+    "name": "Les Gones",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "GON",
+    "mark": null
+  },
+  {
+    "name": "Chamber'",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "CHB",
+    "mark": null
+  },
+  {
+    "name": "Friselis",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "FRS",
+    "mark": null
+  },
+  {
+    "name": "Tchac 2",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "TCH2",
+    "mark": "francia-tch"
+  },
+  {
+    "name": "Jets",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "JET",
+    "mark": null
+  },
+  {
+    "name": "Manchots",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "MAN",
+    "mark": null
+  },
+  {
+    "name": "Disc'Gestifs",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "DGT",
+    "mark": null
+  },
+  {
+    "name": "Freezgo 2",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "FRZ2",
+    "mark": null
+  },
+  {
+    "name": "Fus'Yon",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "FSY",
+    "mark": null
+  },
+  {
+    "name": "Friz'Toi",
+    "country": "FR",
+    "tier": "N2",
+    "abbr": "FRT",
+    "mark": null
+  },
+  {
+    "name": "Fly Disc'R",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "FDR",
+    "mark": null
+  },
+  {
+    "name": "OUF 2",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "OUF2",
+    "mark": null
+  },
+  {
+    "name": "Raging Bananas",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "RBN",
+    "mark": null
+  },
+  {
+    "name": "Salamanders",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "SAL",
+    "mark": null
+  },
+  {
+    "name": "NLSU 2",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "IZN2",
+    "mark": "francia-izn"
+  },
+  {
+    "name": "PUC Ultimate 2",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "PUC2",
+    "mark": "francia-puc"
+  },
+  {
+    "name": "Diskuizh",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "DKZ",
+    "mark": null
+  },
+  {
+    "name": "Flying Bulots",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "FBU",
+    "mark": null
+  },
+  {
+    "name": "Roazhon Ultimate 2",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "ROA2",
+    "mark": null
+  },
+  {
+    "name": "Aigles",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "AIG",
+    "mark": null
+  },
+  {
+    "name": "Ambarès Ultimate",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "AMB",
+    "mark": null
+  },
+  {
+    "name": "Les Ours",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "OUR",
+    "mark": null
+  },
+  {
+    "name": "Monkey 2",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "MNK2",
+    "mark": "francia-mnk"
+  },
+  {
+    "name": "Dahultimate",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "DAH",
+    "mark": null
+  },
+  {
+    "name": "Crazy Bees",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "CRB",
+    "mark": null
+  },
+  {
+    "name": "Owl Curv",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "OWL",
+    "mark": null
+  },
+  {
+    "name": "BlackBeast",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "BBT",
+    "mark": null
+  },
+  {
+    "name": "Ultimate Vibration",
+    "country": "FR",
+    "tier": "N3",
+    "abbr": "VIB",
+    "mark": null
+  },
+  {
+    "name": "M.U.C.",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "MUC",
+    "mark": "germania-muc"
+  },
+  {
+    "name": "Bad Skid",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "BSK",
+    "mark": "germania-bsk"
+  },
+  {
+    "name": "Wall City",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "WLC",
+    "mark": "germania-wlc"
+  },
+  {
+    "name": "Heidees",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "HEI",
+    "mark": "germania-hei"
+  },
+  {
+    "name": "Late Game",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "LGM",
+    "mark": "germania-lgm"
+  },
+  {
+    "name": "BORA",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "BORA",
+    "mark": "germania-bora"
+  },
+  {
+    "name": "Frizzly Bears",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "FRB",
+    "mark": "germania-frb"
+  },
+  {
+    "name": "Hardfisch",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "HRF",
+    "mark": "germania-hrf"
+  },
+  {
+    "name": "7Schwaben",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "7SW",
+    "mark": "germania-7sw"
+  },
+  {
+    "name": "Werfwölfe",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "WFW",
+    "mark": "germania-wfw"
+  },
+  {
+    "name": "Disckick",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "DCK",
+    "mark": "germania-dck"
+  },
+  {
+    "name": "Ars Ludendi",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "ARS",
+    "mark": "germania-ars"
+  },
+  {
+    "name": "Hard2fisch",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "H2F",
+    "mark": "germania-h2f"
+  },
+  {
+    "name": "Frühsport 02",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "F02",
+    "mark": "germania-f02"
+  },
+  {
+    "name": "bff",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "BFF",
+    "mark": "germania-bff"
+  },
+  {
+    "name": "Sturm und Drang I",
+    "country": "DE",
+    "tier": "D1",
+    "abbr": "SUD",
+    "mark": "germania-sud"
+  },
+  {
+    "name": "Bremen Ultimate",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "BRE",
+    "mark": null
+  },
+  {
+    "name": "Funatics",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "FUN",
+    "mark": null
+  },
+  {
+    "name": "Bonnsai",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "BON",
+    "mark": null
+  },
+  {
+    "name": "NU Open",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "NU",
+    "mark": null
+  },
+  {
+    "name": "Goldfingers",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "GLD",
+    "mark": null
+  },
+  {
+    "name": "Windhosen Wilhelmshaven",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "WIN",
+    "mark": null
+  },
+  {
+    "name": "Hucks Ultimate Club Berlin",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "HUC",
+    "mark": null
+  },
+  {
+    "name": "EazyEastKoast",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "EEK",
+    "mark": null
+  },
+  {
+    "name": "Gummibärchen",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "GUM",
+    "mark": null
+  },
+  {
+    "name": "Wurstkultur",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "WUR",
+    "mark": null
+  },
+  {
+    "name": "Lahntalknaben",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "LAH",
+    "mark": null
+  },
+  {
+    "name": "Paradisco",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "PAR",
+    "mark": null
+  },
+  {
+    "name": "Unwucht Erlangen",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "UNW",
+    "mark": null
+  },
+  {
+    "name": "Air Support",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "AIR",
+    "mark": null
+  },
+  {
+    "name": "THW",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "THW",
+    "mark": null
+  },
+  {
+    "name": "Feldrenner",
+    "country": "DE",
+    "tier": "D2",
+    "abbr": "FEL",
+    "mark": null
+  },
+  {
+    "name": "Bad Raps",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "RAP",
+    "mark": null
+  },
+  {
+    "name": "ULMtimates",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "ULM",
+    "mark": null
+  },
+  {
+    "name": "Heidees II",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "HEI2",
+    "mark": "germania-hei"
+  },
+  {
+    "name": "Sturm und Drang II",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "SUD2",
+    "mark": "germania-sud"
+  },
+  {
+    "name": "Gummibärchen 2",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "GUM2",
+    "mark": null
+  },
+  {
+    "name": "Ars Ludendi Discendi",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "DIS",
+    "mark": "germania-ars"
+  },
+  {
+    "name": "2MUCL",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "MUC2",
+    "mark": "germania-muc"
+  },
+  {
+    "name": "FT Würzburg Ultimate",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "WURZ",
+    "mark": null
+  },
+  {
+    "name": "GinPANsen",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "GIN",
+    "mark": null
+  },
+  {
+    "name": "MINT - MENT",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "MINT",
+    "mark": null
+  },
+  {
+    "name": "NXT Nürnberg",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "NXT",
+    "mark": null
+  },
+  {
+    "name": "Ratisbona Eagles",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "EAG",
+    "mark": null
+  },
+  {
+    "name": "Schwabinger Frisbee Buam & UaS",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "SFB",
+    "mark": null
+  },
+  {
+    "name": "Family Ultimate",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "FAM",
+    "mark": null
+  },
+  {
+    "name": "DJ Dahlem",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "DJD",
+    "mark": null
+  },
+  {
+    "name": "Ultimate Lions Essen",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "LIO",
+    "mark": null
+  },
+  {
+    "name": "Late Game II",
+    "country": "DE",
+    "tier": "D3",
+    "abbr": "LGM2",
+    "mark": null
+  },
+  {
+    "name": "Clapham Ultimate",
+    "country": "UK",
+    "tier": "N1",
+    "abbr": "CLP",
+    "mark": "regno-unito-clp"
+  },
+  {
+    "name": "Chevron Action Flash",
+    "country": "UK",
+    "tier": "N1",
+    "abbr": "CHEV",
+    "mark": "regno-unito-chev"
+  },
+  {
+    "name": "SMASH'D",
+    "country": "UK",
+    "tier": "N1",
+    "abbr": "SMD",
+    "mark": "regno-unito-smd"
+  },
+  {
+    "name": "SMOG Open",
+    "country": "UK",
+    "tier": "N1",
+    "abbr": "SMOG",
+    "mark": "regno-unito-smog"
+  },
+  {
+    "name": "Bristol Open",
+    "country": "UK",
+    "tier": "N1",
+    "abbr": "BRO",
+    "mark": "regno-unito-bro"
+  },
+  {
+    "name": "Alba",
+    "country": "UK",
+    "tier": "N1",
+    "abbr": "ALBA",
+    "mark": "regno-unito-alba"
+  },
+  {
+    "name": "SOLENT Open",
+    "country": "UK",
+    "tier": "N1",
+    "abbr": "SOL",
+    "mark": "regno-unito-sol"
+  },
+  {
+    "name": "Manchester Ultimate",
+    "country": "UK",
+    "tier": "N1",
+    "abbr": "MCR",
+    "mark": "regno-unito-mcr"
+  },
+  {
+    "name": "Ka-Pow!",
+    "country": "UK",
+    "tier": "N2",
+    "abbr": "KAP",
+    "mark": null
+  },
+  {
+    "name": "CUlt",
+    "country": "UK",
+    "tier": "N2",
+    "abbr": "CULT",
+    "mark": null
+  },
+  {
+    "name": "SOLENT Blue",
+    "country": "UK",
+    "tier": "N2",
+    "abbr": "SLB",
+    "mark": "regno-unito-sol"
+  },
+  {
+    "name": "New York PoNY",
+    "country": "US",
+    "tier": "U",
+    "abbr": "PONY",
+    "mark": "usa-est-pony"
+  },
+  {
+    "name": "Boston DiG",
+    "country": "US",
+    "tier": "U",
+    "abbr": "DIG",
+    "mark": "usa-est-dig"
+  },
+  {
+    "name": "Portland Red Tide",
+    "country": "US",
+    "tier": "U",
+    "abbr": "RTD",
+    "mark": "usa-est-rtd"
+  },
+  {
+    "name": "Amherst Sprout",
+    "country": "US",
+    "tier": "U",
+    "abbr": "SPT",
+    "mark": "usa-est-spt"
+  },
+  {
+    "name": "New York Blueprint",
+    "country": "US",
+    "tier": "U",
+    "abbr": "BLP",
+    "mark": "usa-est-blp"
+  },
+  {
+    "name": "Montréal Mephisto",
+    "country": "US",
+    "tier": "U",
+    "abbr": "MEP",
+    "mark": "usa-est-mep"
+  },
+  {
+    "name": "Washington DC Truck Stop",
+    "country": "US",
+    "tier": "U",
+    "abbr": "TRK",
+    "mark": "usa-est-trk"
+  },
+  {
+    "name": "Philadelphia Pacmen",
+    "country": "US",
+    "tier": "U",
+    "abbr": "PAC",
+    "mark": "usa-est-pac"
+  },
+  {
+    "name": "Virginia Vault",
+    "country": "US",
+    "tier": "U",
+    "abbr": "VLT",
+    "mark": "usa-est-vlt"
+  },
+  {
+    "name": "Oak Grove Boys",
+    "country": "US",
+    "tier": "U",
+    "abbr": "OGB",
+    "mark": "usa-est-ogb"
+  },
+  {
+    "name": "Pittsburgh Temper",
+    "country": "US",
+    "tier": "U",
+    "abbr": "TMP",
+    "mark": "usa-est-tmp"
+  },
+  {
+    "name": "Garden State Ultimate",
+    "country": "US",
+    "tier": "U",
+    "abbr": "GSU",
+    "mark": "usa-est-gsu"
+  },
+  {
+    "name": "Raleigh Ring of Fire",
+    "country": "US",
+    "tier": "U",
+    "abbr": "ROF",
+    "mark": "usa-est-rof"
+  },
+  {
+    "name": "Atlanta Chain Lightning",
+    "country": "US",
+    "tier": "U",
+    "abbr": "CHN",
+    "mark": "usa-est-chn"
+  },
+  {
+    "name": "Raleigh-Durham United",
+    "country": "US",
+    "tier": "U",
+    "abbr": "RDU",
+    "mark": "usa-est-rdu"
+  },
+  {
+    "name": "Florida Untied",
+    "country": "US",
+    "tier": "U",
+    "abbr": "UNT",
+    "mark": "usa-est-unt"
+  },
+  {
+    "name": "Charlotte baNC",
+    "country": "US",
+    "tier": "U",
+    "abbr": "BNC",
+    "mark": "usa-est-bnc"
+  },
+  {
+    "name": "Chattanooga Tanasi",
+    "country": "US",
+    "tier": "U",
+    "abbr": "TAN",
+    "mark": "usa-est-tan"
+  },
+  {
+    "name": "Chicago Machine",
+    "country": "US",
+    "tier": "U",
+    "abbr": "MCH",
+    "mark": "usa-est-mch"
+  },
+  {
+    "name": "Toronto GOAT",
+    "country": "US",
+    "tier": "U",
+    "abbr": "GOAT",
+    "mark": "usa-est-goat"
+  },
+  {
+    "name": "Chicago Haymaker",
+    "country": "US",
+    "tier": "U",
+    "abbr": "HAY",
+    "mark": "usa-est-hay"
+  },
+  {
+    "name": "Indianapolis I-69",
+    "country": "US",
+    "tier": "U",
+    "abbr": "I69",
+    "mark": "usa-est-i69"
+  },
+  {
+    "name": "Flying Dutchmen",
+    "country": "US",
+    "tier": "U",
+    "abbr": "FDM",
+    "mark": "usa-est-fdm"
+  },
+  {
+    "name": "Trident",
+    "country": "US",
+    "tier": "U",
+    "abbr": "TRI",
+    "mark": "usa-est-tri"
+  },
+  {
+    "name": "Minneapolis Sub Zero",
+    "country": "US",
+    "tier": "U",
+    "abbr": "SZO",
+    "mark": "usa-ovest-szo"
+  },
+  {
+    "name": "Madison Mad Men",
+    "country": "US",
+    "tier": "U",
+    "abbr": "MAD",
+    "mark": "usa-ovest-mad"
+  },
+  {
+    "name": "Minneapolis Mallard",
+    "country": "US",
+    "tier": "U",
+    "abbr": "MLD",
+    "mark": "usa-ovest-mld"
+  },
+  {
+    "name": "Lounar",
+    "country": "US",
+    "tier": "U",
+    "abbr": "LOU",
+    "mark": "usa-ovest-lou"
+  },
+  {
+    "name": "Kansas City Smokestack",
+    "country": "US",
+    "tier": "U",
+    "abbr": "STK",
+    "mark": "usa-ovest-kcs"
+  },
+  {
+    "name": "Knights of Ni",
+    "country": "US",
+    "tier": "U",
+    "abbr": "KNI",
+    "mark": "usa-ovest-kni"
+  },
+  {
+    "name": "Denver Johnny Bravo",
+    "country": "US",
+    "tier": "U",
+    "abbr": "JBR",
+    "mark": "usa-ovest-jbr"
+  },
+  {
+    "name": "Austin Doublewide",
+    "country": "US",
+    "tier": "U",
+    "abbr": "DW",
+    "mark": "usa-ovest-dw"
+  },
+  {
+    "name": "Fungi",
+    "country": "US",
+    "tier": "U",
+    "abbr": "FNG",
+    "mark": "usa-ovest-fng"
+  },
+  {
+    "name": "Alamode",
+    "country": "US",
+    "tier": "U",
+    "abbr": "ALA",
+    "mark": "usa-ovest-ala"
+  },
+  {
+    "name": "Boulder ISO Atmo",
+    "country": "US",
+    "tier": "U",
+    "abbr": "ISO",
+    "mark": "usa-ovest-iso"
+  },
+  {
+    "name": "ZOO",
+    "country": "US",
+    "tier": "U",
+    "abbr": "ZOO",
+    "mark": "usa-ovest-zoo"
+  },
+  {
+    "name": "Portland Rhino Slam!",
+    "country": "US",
+    "tier": "U",
+    "abbr": "RHI",
+    "mark": "usa-ovest-rhi"
+  },
+  {
+    "name": "Seattle Sockeye",
+    "country": "US",
+    "tier": "U",
+    "abbr": "SKY",
+    "mark": "usa-ovest-sky"
+  },
+  {
+    "name": "Vancouver Furious George",
+    "country": "US",
+    "tier": "U",
+    "abbr": "FUR",
+    "mark": "usa-ovest-fur"
+  },
+  {
+    "name": "Eugene Dark Star",
+    "country": "US",
+    "tier": "U",
+    "abbr": "DST",
+    "mark": "usa-ovest-dst"
+  },
+  {
+    "name": "Salt Lake City Shrimp",
+    "country": "US",
+    "tier": "U",
+    "abbr": "SHR",
+    "mark": "usa-ovest-slp"
+  },
+  {
+    "name": "SOUF",
+    "country": "US",
+    "tier": "U",
+    "abbr": "SOUF",
+    "mark": "usa-ovest-souf"
+  },
+  {
+    "name": "San Francisco Revolver",
+    "country": "US",
+    "tier": "U",
+    "abbr": "REV",
+    "mark": "usa-ovest-rev"
+  },
+  {
+    "name": "SoCal Condors",
+    "country": "US",
+    "tier": "U",
+    "abbr": "CON",
+    "mark": "usa-ovest-con"
+  },
+  {
+    "name": "Bay Area Wavestorms",
+    "country": "US",
+    "tier": "U",
+    "abbr": "WAV",
+    "mark": "usa-ovest-wav"
+  },
+  {
+    "name": "Arizona Nighthawk",
+    "country": "US",
+    "tier": "U",
+    "abbr": "NHK",
+    "mark": "usa-ovest-nhk"
+  },
+  {
+    "name": "Zodiac",
+    "country": "US",
+    "tier": "U",
+    "abbr": "ZOD",
+    "mark": "usa-ovest-zod"
+  },
+  {
+    "name": "Hazard",
+    "country": "US",
+    "tier": "U",
+    "abbr": "HAZ",
+    "mark": "usa-ovest-haz"
+  },
+  {
+    "name": "BFD Shout",
+    "country": "IW",
+    "tier": "A",
+    "abbr": "SHO",
+    "mark": "italia-z51"
+  },
+  {
+    "name": "Tequila Boom Boom",
+    "country": "IW",
+    "tier": "A",
+    "abbr": "TBB",
+    "mark": null
+  },
+  {
+    "name": "BFD Cheetahs",
+    "country": "IW",
+    "tier": "A",
+    "abbr": "CHE",
+    "mark": "italia-z51"
+  },
+  {
+    "name": "Tequila Junior",
+    "country": "IW",
+    "tier": "A",
+    "abbr": "TEJ",
+    "mark": null
+  },
+  {
+    "name": "CUS Padova Tane Malefiche",
+    "country": "IW",
+    "tier": "A",
+    "abbr": "TAM",
+    "mark": "italia-cus"
+  },
+  {
+    "name": "Donkey Ladies",
+    "country": "IW",
+    "tier": "A",
+    "abbr": "DKL",
+    "mark": "italia-ddk"
+  },
+  {
+    "name": "DiscoBolo Women",
+    "country": "IW",
+    "tier": "A",
+    "abbr": "DBW",
+    "mark": "italia-dbl"
+  },
+  {
+    "name": "METACARPE",
+    "country": "IW",
+    "tier": "A",
+    "abbr": "MTE",
+    "mark": "italia-mtc"
+  },
+  {
+    "name": "Timanfaya",
+    "country": "IW",
+    "tier": "A",
+    "abbr": "TIM",
+    "mark": null
+  },
+  {
+    "name": "One Tribe Women",
+    "country": "IW",
+    "tier": "A",
+    "abbr": "OTW",
+    "mark": "italia-ont"
+  },
+  {
+    "name": "36MAdonnine",
+    "country": "IW",
+    "tier": "B",
+    "abbr": "36M",
+    "mark": null
+  },
+  {
+    "name": "AUT FireFlies",
+    "country": "IW",
+    "tier": "B",
+    "abbr": "FFL",
+    "mark": "italia-bfr"
+  },
+  {
+    "name": "Tequila U17",
+    "country": "IW",
+    "tier": "B",
+    "abbr": "T17",
+    "mark": null
+  },
+  {
+    "name": "Voladora Women",
+    "country": "IW",
+    "tier": "B",
+    "abbr": "VLW",
+    "mark": null
+  },
+  {
+    "name": "HUB",
+    "country": "IW",
+    "tier": "B",
+    "abbr": "HUB",
+    "mark": null
+  },
+  {
+    "name": "DiscoBolo Rookies Women",
+    "country": "IW",
+    "tier": "B",
+    "abbr": "RKW",
+    "mark": "italia-dbl"
+  },
+  {
+    "name": "BFD Borealis",
+    "country": "IW",
+    "tier": "B",
+    "abbr": "BOR",
+    "mark": "italia-z51"
+  }
+]
