@@ -105,13 +105,12 @@ let ovrAllKeys=null;
 const ovrAssigned=name=>{if(!ovrAllKeys){ovrAllKeys=new Set();for(const c in OVR_2026)for(const r of OVR_2026[c])ovrAllKeys.add(ovrKey(r[1]+' '+r[0]));for(const c in OVR_ADD)for(const r of OVR_ADD[c])ovrAllKeys.add(ovrKey(r[1]+' '+r[0]));}return ovrAllKeys.has(ovrKey(name));};
 const ovrOutSet=club=>new Set((OVR_OUT[club]||[]).map(ovrKey));
 let ovrCache={},ovrPartCache={};
-// le correzioni singole di un club fuori dal foglio (OVR_PART); [] se non ce ne sono
-// I referti e le schede più recenti valgono anche quando il foglio Overall contiene un'età precedente.
+// Le schede internazionali aggiornano anche le voci già presenti nel foglio Overall.
 function ovrAgeData(club,k,r){
-  const verified=ROSTER_AGE_IT_2026[club]?.[k]||ROSTER_AGE_INT_2026[k];
-  const baseAge=r[3],baseEx=r[5].includes('e');
-  return {age:verified||baseAge,ex:!!verified||baseEx,est:!verified&&r[5].includes('a'),baseAge,baseEx};
+  const verified=Object.hasOwn(TEAM,club)?0:ROSTER_AGE_INT_2026[k];
+  return {age:verified||r[3],ex:!!verified||r[5].includes('e'),est:!verified&&r[5].includes('a')};
 }
+// Le correzioni singole di un club fuori dal foglio (OVR_PART).
 function ovrPart(club){
   if(ovrPartCache[club])return ovrPartCache[club];
   return ovrPartCache[club]=(OVR_PART[club]||[]).map(r=>{
@@ -140,8 +139,8 @@ function ovrMergeIT(club,rows){
     const k=ovrKey(r.nm+' '+r.sur);if(out.has(k))continue;
     const e=by[k];if(e&&used.has(k))continue;   // riga doppia dei dati originali: il foglio ha gia' un solo giocatore
     if(!e){res.push(r);continue;}
-    used.add(k);res.push(Object.assign({},r,{ov:e.ov,rl:e.rl||'',age:e.baseEx&&e.baseAge?e.baseAge:r.age,ae:e.baseEx&&e.baseAge?false:r.ae,ld:e.ld}));
+    used.add(k);res.push(Object.assign({},r,{ov:e.ov,rl:e.rl||'',age:e.ex&&e.age?e.age:r.age,ld:e.ld}));
   }
-  if(!P.length)for(const e of E)if(!used.has(e.k))res.push({sur:e.sur,nm:e.nm,a:0,g:0,age:e.baseAge||0,f:false,ov:e.ov,rl:e.rl||'',ae:!e.baseEx,ld:e.ld});
+  if(!P.length)for(const e of E)if(!used.has(e.k))res.push({sur:e.sur,nm:e.nm,a:0,g:0,age:e.age||0,f:false,ov:e.ov,rl:e.rl||'',ae:!e.ex,ld:e.ld});
   return res;
 }

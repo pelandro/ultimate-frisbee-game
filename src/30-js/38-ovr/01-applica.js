@@ -30,7 +30,7 @@ function ovrFix(club,out,seedStr,kind){
     if(o){ovrSet(o,e,rng);continue;}
     const role=e.rl||'C';
     const a0=us?usAgeOf(e.sur,e.nm,e.age||22+hashStr(e.k)%12):lnAgeOf(e.sur+' '+e.nm,0,0);
-    const ag=e.ex&&e.age?[e.age,true]:(a0[1]||!e.age||us?a0:[e.age,false]);
+    const ag=e.ex&&e.age?[e.age,true]:(a0[1]||ROSTER_AGE_EST_2026[e.k]||!e.age||us?a0:[e.age,false]);
     const c=usCard(e.sur,e.nm,ag[0],role,e.ov,rng,ag[1]?{}:{ae:1});
     if(e.ld&&role==='H'){statsLineaDifesa(c.s,e.ov);const top=Math.max(...KEYS.map(k=>c.s[k]));c.tl=c.tf=c.tv=clamp(top+(ag[0]<=24?8:(ag[0]<=29?4:2)),60,99);}
     c.nat=club;res.push(c);have.set(e.k,c);

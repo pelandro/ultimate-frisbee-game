@@ -156,9 +156,6 @@ function realRoster(rows,seedStr,opt){
     const tot=o.a+o.g,d=tot?(o.a-o.g)/tot:0,lvl=44+(tot-REAL_MIN)/(REAL_MAX-REAL_MIN)*22+(opt.off||0);
     const role=d>0.15?'H':(d<-0.15?'C':(rng()<0.5?'H':'C'));
     const age=o.age||(ages.length?ages[ages.length>>1]:flavorAge(opt.flavor,rng));   // eta' vera; se manca (un solo caso nei fogli) quella mediana della squadra
-    // Il referto aggiorna l'età anagrafica. Il calcolo degli attributi iniziali resta sulla base con cui è stata bilanciata la rosa.
-    const verifiedAge=!o.gen&&opt.ageByName?opt.ageByName[ovrKey(o.nm+' '+o.sur)]:0;
-    const rosterAge=verifiedAge||age,ageEstimated=!verifiedAge&&!o.gen&&(o.ae||!o.age);
     // talento (il massimo raggiungibile): il livello vero piu' un margine che dipende dall'eta' e da una fascia fissata per giocatore (realGap).
     // Prima era il livello piu' 24-36 punti, mai sotto 72: anche un trentenne medio poteva arrivare a 90 e ogni rosa cresceva senza freni
     // fino a 23 anni la fascia la decide soprattutto la precocita' rispetto ai coetanei (30-carriera/32-precocita.js); fuori dal gioco completo resta a caso
@@ -175,8 +172,8 @@ function realRoster(rows,seedStr,opt){
       if(o.ld&&rl==='H')statsLineaDifesa(st0,o.ov);
       const rr=rl==='H'?'H':'C',dd=rl==='H'?0.4:-0.4,tgf=x=>clamp(Math.round(o.ov+gp+x+(R(0,12)-6)/3),45,99);   // come per gli altri: ogni gruppo di statistiche parte dal suo livello (un handler ha i lanci piu' alti del fisico)
       const mx=ks=>Math.max(...ks.map(k=>st0[k])),tl=Math.max(tgf(9*dd),mx(['lan','buc','spa'])),tv=Math.max(tgf(3*dd),st0.vis),tf=Math.max(tgf(-7*dd),mx(KEYS.filter(k=>!['lan','buc','spa','vis'].includes(k))));   // mai sotto le statistiche che ha gia'
-      const od={n:disp,label:o.gen?first(o):(o.nm+' '+o.sur),full,sur:o.sur,r:rr,age:rosterAge,tl,tf,tv,s:st0,a:o.a,g:o.g,gen:false,f:o.f,tot,trait:traitFor(full,st0,rr),dev:devOf(full)};
-      if(rl==='D')od.pos='D';if(ageEstimated)od.ae=1;
+      const od={n:disp,label:o.gen?first(o):(o.nm+' '+o.sur),full,sur:o.sur,r:rr,age,tl,tf,tv,s:st0,a:o.a,g:o.g,gen:false,f:o.f,tot,trait:traitFor(full,st0,rr),dev:devOf(full)};
+      if(rl==='D')od.pos='D';if(o.ae)od.ae=1;
       return od;
     }
     const tg=x=>{const u=R(0,12);return clamp(Math.round(lvl+REAL_TK+gp+x+(u-6)/3),45,99);};   // R(0,12) resta: le statistiche usano lo stesso generatore e non devono cambiare
@@ -187,7 +184,7 @@ function realRoster(rows,seedStr,opt){
       const off=g==='L'?9*d:(g==='V'?3*d:-7*d);
       s[k]=clamp(Math.round(lvl+off+R(-4,4)),28,capVal(full,k,g==='L'?tl:(g==='V'?tv:tf)));
     });
-    return {n:disp,label:o.gen?first(o):(o.nm+' '+o.sur),full,sur:o.sur,r:role,age:rosterAge,tl,tf,tv,s,a:o.a,g:o.g,gen:o.gen,f:o.f,tot,trait:traitFor(full,s,role),dev:devOf(full),ae:ageEstimated?1:undefined};
+    return {n:disp,label:o.gen?first(o):(o.nm+' '+o.sur),full,sur:o.sur,r:role,age,tl,tf,tv,s,a:o.a,g:o.g,gen:o.gen,f:o.f,tot,trait:traitFor(full,s,role),dev:devOf(full)};
   });
 }
 // nome mostrato in partita = cognome. Vale anche per i salvataggi vecchi, che hanno ancora il solo nome: si ricalcola dal cognome (con l'iniziale se due compagni lo condividono)
