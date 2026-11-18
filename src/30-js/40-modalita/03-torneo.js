@@ -1,15 +1,17 @@
 /* ===================== TORNEO PERSONALIZZATO: eliminazione diretta a 4, 8 o 16 squadre vere, scelte da te ===================== */
 const TN_KEY='ultimate-torneo';
-let TOUR=null;try{TOUR=JSON.parse(localStorage.getItem(TN_KEY)||'null');if(TOUR&&(!Array.isArray(TOUR.rounds)||!TEAM[TOUR.team]||TOUR.rounds.some(r=>r.some(n=>!TEAM[n]))))TOUR=null;}catch(e){TOUR=null;}
+const tnOk=n=>!!(TEAM[n]||US_TEAM[n]||LN_BY[n]);   // un club che esiste ancora (italiano, USA o di una lega europea)
+let TOUR=null;try{TOUR=JSON.parse(localStorage.getItem(TN_KEY)||'null');if(TOUR&&(!Array.isArray(TOUR.rounds)||!tnOk(TOUR.team)||TOUR.rounds.some(r=>r.some(n=>!tnOk(n)))))TOUR=null;}catch(e){TOUR=null;}
 const tnSave=()=>{try{if(TOUR)localStorage.setItem(TN_KEY,JSON.stringify(TOUR));else localStorage.removeItem(TN_KEY);}catch(e){}};
-const TN_SET={team:'',size:8,pool:'mix',d:0,len:7};
+const TN_SET={team:'',size:8,pool:'lg',d:0,len:7};   // pool: 'lg' il campionato della tua squadra, 'grp' la sua serie, 'all' tutti i campionati della divisione
 const tnRoundName=n=>n>=16?'Ottavi di finale':(n>=8?'Quarti di finale':(n>=4?'Semifinale':'Finale'));
 const tnCur=()=>TOUR.rounds[TOUR.rounds.length-1];
 function tnOpp(){const t=tnCur(),i=t.indexOf(TOUR.team);return i<0?null:t[i^1];}
 function tnCreate(){
-  const me=TN_SET.team,all=[].concat(SERIES.A,SERIES.B,SERIES.C),shuffle=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
-  let pool=shuffle((TN_SET.pool==='mix'?all:SERIES[TN_SET.pool]).filter(n=>n!==me));
-  if(pool.length<TN_SET.size-1)pool=pool.concat(shuffle(all.filter(n=>n!==me&&!pool.includes(n))));   // serie troppo piccola per il tabellone: si completa con le altre
+  const me=TN_SET.team,shuffle=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
+  const lg=qLgOf(me).clubs(),all=qDivAll(qDivOf(me));   // le squadre femminili giocano solo tra loro, come in carriera
+  let pool=shuffle((TN_SET.pool==='all'?all:(TN_SET.pool==='grp'?lg.filter(n=>qGrp(n)===qGrp(me)):lg)).filter(n=>n!==me));
+  for(const more of [lg,all])if(pool.length<TN_SET.size-1)pool=pool.concat(shuffle(more.filter(n=>n!==me&&!pool.includes(n))));   // serie o campionato troppo piccolo per il tabellone: si completa prima con il resto del campionato, poi con gli altri
   TOUR={team:me,size:TN_SET.size,d:TN_SET.d,len:lenOk(TN_SET.len|0),rounds:[shuffle([me].concat(pool.slice(0,TN_SET.size-1)))],res:[],st:'play',champ:''};tnSave();
 }
 function tnSimRound(t,su,so){   // risultati di un turno: la tua partita e' quella giocata, le altre sono simulate
@@ -44,13 +46,12 @@ function startTourn(sim){
   startPoint(G.nextRec);cam.snap=true;
 }
 function renderTourn(){
-  const all=[].concat(SERIES.A,SERIES.B,SERIES.C);
   if(!TOUR){
-    if(!TN_SET.team||!all.includes(TN_SET.team))TN_SET.team=hasCareer()&&all.includes(SV.team)?SV.team:'Grem';
-    const opts=['A','B','C'].map(sr=>`<optgroup label="${SERIES_NAME[sr]}">${SERIES[sr].map(n=>`<option value="${esc(n)}"${n===TN_SET.team?' selected':''}>${esc(n)} (${Math.round(qPower(n))})</option>`).join('')}</optgroup>`).join('');
+    if(!TN_SET.team||!qClubOk(TN_SET.team))TN_SET.team=hasCareer()&&qClubOk(SV.team)?SV.team:'Grem';
+    const opts=LEAGUES.flatMap(l=>qGrps(l).map(g=>[l,g])).map(([l,g])=>`<optgroup label="${esc(qLgTab(l)+' · '+g)}">${l.clubs().filter(n=>qGrp(n)===g).map(n=>`<option value="${esc(n)}"${n===TN_SET.team?' selected':''}>${esc(n)} (${Math.round(qPower(n))})</option>`).join('')}</optgroup>`).join('');
     const sel=(id,l,o,v)=>`<div><label for="${id}">${l}</label><select class="qs" id="${id}">${o.map(x=>`<option value="${x[0]}"${String(x[0])===String(v)?' selected':''}>${x[1]}</option>`).join('')}</select></div>`;
-    $('tnBox').innerHTML=`<p class="note" style="margin:0 0 10px">Crea un torneo a eliminazione diretta con le squadre vere: scegli la tua, quante partecipano e da quali serie arrivano le avversarie. Le tue partite le giochi (o le simuli), le altre vengono simulate. Il torneo resta salvato finché non ne crei un altro.</p>
-      <div class="tnset"><div><label for="tnTeam">La tua squadra</label><select class="qs" id="tnTeam">${opts}</select></div>${sel('tnSize','Squadre',[[4,'4 · semifinali e finale'],[8,'8 · dai quarti'],[16,'16 · dagli ottavi']],TN_SET.size)}${sel('tnPool','Avversarie',[['mix','Da tutte le serie'],['A','Serie A'],['B','Serie B'],['C','Serie C']],TN_SET.pool)}${sel('tnD','Difficoltà',[[0,'Facile'],[1,'Medio'],[2,'Difficile'],[3,'Estrema']],TN_SET.d)}${sel('tnLen','Durata',LEN_OPTS.map(o=>[o.n,o.name+' · '+o.n+' punti']),TN_SET.len)}</div>
+    $('tnBox').innerHTML=`<p class="note" style="margin:0 0 10px">Crea un torneo a eliminazione diretta con le squadre vere: scegli la tua (di qualsiasi campionato), quante partecipano e da dove arrivano le avversarie: le squadre femminili giocano solo tra loro. Le tue partite le giochi (o le simuli), le altre vengono simulate. Il torneo resta salvato finché non ne crei un altro.</p>
+      <div class="tnset"><div><label for="tnTeam">La tua squadra</label><select class="qs" id="tnTeam">${opts}</select></div>${sel('tnSize','Squadre',[[4,'4 · semifinali e finale'],[8,'8 · dai quarti'],[16,'16 · dagli ottavi']],TN_SET.size)}${sel('tnPool','Avversarie',[['lg','Dal suo campionato'],['grp','Dalla sua serie'],['all','Da tutti i campionati']],TN_SET.pool)}${sel('tnD','Difficoltà',[[0,'Facile'],[1,'Medio'],[2,'Difficile'],[3,'Estrema']],TN_SET.d)}${sel('tnLen','Durata',LEN_OPTS.map(o=>[o.n,o.name+' · '+o.n+' punti']),TN_SET.len)}</div>
       <div class="schrow" style="margin-top:12px"><button type="button" class="go" id="tnGo">Crea il torneo</button></div>`;
     return;
   }
