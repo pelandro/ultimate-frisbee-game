@@ -12,7 +12,7 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
 (async()=>{
   let h=build();const i=h.lastIndexOf('})();');
   // solo per la prova: espone le funzioni del gioco (che vive in un ambito unico, senza moduli)
-  h=h.slice(0,i)+';window.__OVR=()=>({OVR_2026,OVR_OUT,OVR_FORCE,OVR_ADD,OVR_PART,ovrPart,OVR_DUAL_US,OVR_POW:typeof OVR_POW!=="undefined"?OVR_POW:{},ovrEntries,ovrKey,foreignRoster,allClubs,rosterPower,rosterLevel,ovr,SQ_MIN,SQ_MAX,usRoster,lnRoster,realRoster,REAL,realOpt,US_TEAM,LN_BY,LN_CL,LN_PL,lnBasePower,qRoster});'+h.slice(i);
+  h=h.slice(0,i)+';window.__OVR=()=>({OVR_2026,OVR_OUT,OVR_FORCE,OVR_ADD,OVR_PART,ovrPart,OVR_DUAL_US,OVR_POW:typeof OVR_POW!=="undefined"?OVR_POW:{},ovrEntries,ovrKey,foreignRoster,allClubs,rosterPower,powerOfVals,rosterLevel,ovr,SQ_MIN,SQ_MAX,usRoster,lnRoster,realRoster,REAL,realOpt,US_TEAM,LN_BY,LN_CL,LN_PL,lnBasePower,qRoster});'+h.slice(i);
   fs.writeFileSync(OUT,h);
   const browser=await chromium.launch(),page=await browser.newPage(),errs=[];
   page.on('pageerror',e=>errs.push('errore JavaScript: '+e.message));
@@ -56,6 +56,13 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
     const find=(c,n)=>club(c).find(o=>X.ovrKey(o.full)===X.ovrKey(n));
     const p=find('Cotarica Grandes','Pietro Puppi');if(!p||X.ovr(p)!==87)bad.push('Puppi deve essere 87');
     for(const n of ['Carlo Mazzo','Marco Ragusa']){const q=find('CUS Padova Barbastreji',n);if(!q||X.ovr(q)!==86||q.r!=='H')bad.push(n+' deve essere un handler da 86');}
+    const sample=[...Array(7).fill(90),...Array(7).fill(70),...Array(7).fill(50)];
+    if(Math.abs(X.powerOfVals(sample)-81)>1e-9||Math.abs(X.powerOfVals(sample.slice(0,7))-86.8)>1e-9)
+      bad.push('formula 60/35/5 o penalità dei posti vuoti');
+    for(const [club,name,expected] of [['AUT FireFlies','Gianna Arcangeli',82],['Tequila Junior','Agata Benzi',88]]){
+      const o=find(club,name);
+      if(!o||X.ovr(o)!==expected)bad.push('riferimento individuale Women: '+name);
+    }
     const womenNames=new Set(),womenPowers={A:[],B:[]};
     for(const [c,tier,,level] of X.LN_CL.IW){
       const rows=X.LN_PL.IW[c],ro=club(c),own=X.lnRoster(c,'prova-ovr-mia'),quick=X.qRoster(c);
