@@ -4,7 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
-- Giocatrici ancora più femminili: il volto è più stretto e scende a V fino a un mento piccolo (niente più mascella squadrata), con occhi e labbra più marcati. Nuove acconciature: capelli lunghi, caschetto, frangia, frangia a tendina, chignon, coda alta, treccia sulla spalla, taglio corto e capelli ricci voluminosi, con i capelli che incorniciano il viso.
+- Giocatrici ancora più femminili: il volto è più stretto e scende a V fino a un mento piccolo (niente più mascella squadrata), con occhi e labbra più marcati. Acconciature sobrie che incorniciano il viso: capelli lunghi, caschetto, frangia, frangia a tendina, coda, chignon e taglio corto.
 - Sam Hill non fa più parte della rosa dei Philadelphia Pacmen.
 - Ritratti delle giocatrici più femminili: volto più sottile, occhi con ciglia, sopracciglia sottili, labbra rosa, guance appena rosate e acconciature diverse (caschetto, frangia, chignon, coda), con orecchini ogni tanto. Stesso stile pixel art degli altri ritratti.
 - Avviso «Difesa adattata». Se l’avversario ti fa due break di fila mentre attacchi con lo stesso schema, nei secondi prima del suo pull compare in basso un fumetto nero con il segnale di pericolo: «Ti hanno letto il Verticale: prova a cambiare schema» (con il nome dello schema che usi). Non ferma il gioco, non copre i pulsanti e sparisce quando parte il pull o se cambi schema. Vale in tutte le modalità tranne Ultimate Team.
