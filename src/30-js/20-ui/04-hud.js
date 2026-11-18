@@ -16,6 +16,7 @@ const inDefense=()=>G.mode==='play'&&!G.pull&&!!((G.holder&&G.holder.t===1)||(G.
 function updateHUD(dt){
   const play=G.mode==='play'||G.mode==='banner'||G.mode==='ready';
   hud.classList.toggle('hidden',!play||G.schemeOpen);
+  heroHud();   // superpoteri: i tre pulsanti con il timer (20-superpoteri.js)
   skipBtn.classList.toggle('hidden',!(G.mode==='cine'||RP.on));if(RP.on||G.mode==='cine'){const st=RP.on?'Salta il replay':'Salta';if(skipBtn.textContent!==st)skipBtn.textContent=st;}
   if(!play)return;
   scoreSet(elScore0,G.drill?drHud(0):G.score[0]);scoreSet(elScore1,G.drill?drHud(1):G.score[1]);
