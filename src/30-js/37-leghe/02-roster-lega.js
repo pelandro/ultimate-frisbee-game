@@ -56,8 +56,9 @@ function lnHiOf(k){   // limite d'eta' dalle convocazioni giovanili nei dati eur
 // sotto il limite dei tornei giovanili: tra limite-3 e limite-1 (almeno 16; hh = hash del nome), cosi' chi ha giocato lo stesso torneo non ha tutti la stessa eta'
 const ageCap=(h,hh)=>Math.max(16,h-1-Math.floor(hh/625)%3);
 function lnAgeOf(full,age,hi){
-  if(age>0)return [age,true];
   const k=usNameKey(full);
+  if(ROSTER_AGE_INT_2026[k])return [ROSTER_AGE_INT_2026[k],true];
+  if(age>0)return [age,true];
   if(US_AGE[k])return [US_AGE[k],true];
   if(!lnUsAge){lnUsAge={};for(const c in US_CORE)for(const r of US_CORE[c])lnUsAge[usNameKey(r[1]+' '+r[0])]=r[2];}
   const hh=hashStr('ln|'+full),est=lnUsAge[k]||20+hh%5+Math.floor(hh/5)%5+Math.floor(hh/25)%5+Math.floor(hh/125)%4,h=Math.min(hi>0?hi:99,US_AGE_HI[k]||99,lnHiOf(k)||99);   // 20-35 anni, con la media intorno ai 27

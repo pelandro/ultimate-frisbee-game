@@ -13,7 +13,7 @@ function realPrec(full,age){
     const all=[];
     for(const sr of ['A','B','C'])for(const n of SERIES[sr]){
       if(!REAL[n])continue;
-      const r=realRoster(REAL[n],'prec|'+n,realOpt(n,7)),lv=rosterLevel(r);
+      const r=realRoster(REAL[n],'prec|'+n,{...realOpt(n,7),ageByName:null}),lv=rosterLevel(r);
       for(const o of r)if(!o.gen&&o.age<=PREC_AGE)all.push({k:o.full+'|'+o.age,age:o.age,z:ovrX(o)-lv});
     }
     const m={};

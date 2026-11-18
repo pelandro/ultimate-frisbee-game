@@ -7,7 +7,7 @@ const REAL={};
   }
 })();
 // in A e in B il livello della rosa viene portato alla forza della squadra (che segue la classifica finale 2026); in C dipende solo da assist e mete
-const realOpt=(n,min)=>({min,flavor:flavorOf(n),target:TEAM[n]&&TEAM[n].series!=='C'?TEAM[n].power:undefined});
+const realOpt=(n,min)=>({min,flavor:flavorOf(n),ageByName:ROSTER_AGE_IT_2026[n],target:TEAM[n]&&TEAM[n].series!=='C'?TEAM[n].power:undefined});
 const flavorOf=n=>/U17/.test(n)?'u17':(/U20/.test(n)?'u20':(/NewGen|NextGen|Next Gen|Rookies/.test(n)?'newgen':(/Wise/.test(n)?'wise':'')));
 const aiRoster=n=>REAL[n]?realRoster(REAL[n],SV.seed+'|'+n,realOpt(n,7)):makeRoster(TEAM[n].power,SV.seed+'|'+n);
 const userRoster=()=>realRoster(REAL[SV.team]||[],SV.seed+'|user',realOpt(SV.team,9));   // la tua rosa: quella vera, come per le avversarie
