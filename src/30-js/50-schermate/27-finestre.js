@@ -5,7 +5,7 @@ const WIN_SKIP={tip:1,pp:1,rot:1};
 const winBack=new Map();
 const windows=[...document.querySelectorAll('.overlay')].filter(el=>!WIN_SKIP[el.id]);
 function activeWindow(){
-  return windows.filter(el=>!el.classList.contains('hidden')).reduce((top,el)=>{
+  return windows.filter(el=>!el.classList.contains('hidden')&&getComputedStyle(el).display!=='none').reduce((top,el)=>{
     if(!top)return el;
     return (Number(getComputedStyle(el).zIndex)||0)>=(Number(getComputedStyle(top).zIndex)||0)?el:top;
   },null);
@@ -19,7 +19,7 @@ function syncWindowBackground(){
   for(const el of document.querySelectorAll('.screen,#cshell'))el.inert=!!top&&!el.contains(top);
   for(const el of windows)el.inert=!!top&&el!==top&&!el.contains(top);
 }
-const windowCloseIds={rpv:'rpX',qPick:'qpX',pause:'paGo',tut:'tuX',subs:'bSubGo'};
+const windowCloseIds={rpv:'rpX',qPick:'qpX',pause:'paGo',tut:'tuX',subs:'bSubGo',intro:'inGo',menu:'bGo'};
 window.addEventListener('keydown',e=>{
   const top=activeWindow();
   if(!top)return;

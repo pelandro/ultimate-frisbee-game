@@ -20,7 +20,7 @@ const LN_DEF={
       {id:'N1',name:'N1',k:1.5,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},{id:'N2',name:'N2',k:1.3,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},
       {id:'N3',name:'N3',k:1.15,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},{id:'N4',name:'N4',k:1,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},
       {id:'N5',name:'N5',k:0.9,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},{id:'N6',name:'N6',k:0.8,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]}]},
-  FR:{id:'FR',cc:'Francia',de:'della Francia',name:'Francia · Championnat',sub:'Championnat de France outdoor · N1, N2, N3 · 54 squadre',eu:2,mv:[3,6],
+  FR:{id:'FR',cc:'Francia',de:'della Francia',name:'Francia · Championnat',sub:'Championnat de France outdoor · N1, N2, N3 · 54 squadre, 36 selezionabili all’avvio',eu:2,mv:[3,6],
     txt:'Championnat de France Open outdoor: la N1 ha 12 squadre in due poule da 6 e un Top 8; la N2 tre gironi da 8; la N3 solo le prime tre di ogni girone. Le prime due della N1 vanno all’EUCF.',
     tiers:[
       {id:'N1',name:'N1',k:1.5,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'},{f:5,t:6,m:'c4'}]},

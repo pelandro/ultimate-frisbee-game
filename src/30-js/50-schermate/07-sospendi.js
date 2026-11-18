@@ -25,6 +25,7 @@ function capturePointCheckpoint(){
     pointCheckpoint=suspSnap();
 }
 function suspensionState(){
+  if(!G.inMatch||QM.on||G.drill||G.recorded)return null;
   if((G.mode==='play'||G.mode==='cine')&&pointCheckpoint?.pno===G.pointNo)
     return pointCheckpoint;
   return suspSnap();

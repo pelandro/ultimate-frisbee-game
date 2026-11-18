@@ -29,7 +29,15 @@ catch(e){
   const vis_=async(pg,sel)=>{if(!(await pg.locator(sel).isVisible()))throw new Error('non visibile: '+sel);};
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
   const menu=async id=>{for(let i=0;i<3;i++){if(!(await page.locator('#cmenu').isVisible()))await page.click('#hMenu');try{await page.click(id,{timeout:3000});return;}catch(e){}}await page.click(id);};   // i fumetti e gli imprevisti che si aprono da soli chiudono il menu: si riapre   // Opzioni, Guida, Tutorial e «Menu principale» stanno nel menu della barra in alto
-  const step=async(name,fn)=>{try{await fn();done.push(name);}catch(e){errs.push(name+': '+(process.env.TB_FULL?e.message.split('\n').slice(0,8).join(' | '):e.message.split('\n')[0]));try{if(await page.locator('#tut:not(.hidden)').count())await page.click('#tuX',{timeout:2000});}catch(_){}}};
+  const step=async(name,fn)=>{
+    try{await fn();done.push(name);}
+    catch(e){
+      const visible=await page.locator('.screen:not(.hidden),.overlay:not(.hidden)').evaluateAll(elements=>
+        elements.filter(el=>getComputedStyle(el).display!=='none').map(el=>el.id)).catch(()=>[]);
+      errs.push(name+': '+(process.env.TB_FULL?e.message.split('\n').slice(0,8).join(' | '):e.message.split('\n')[0])+' · schermate aperte: '+visible.join(', '));
+      try{if(await page.locator('#tut:not(.hidden)').count())await page.click('#tuX',{timeout:2000});}catch(_){}
+    }
+  };
   const playOut=async()=>{   // gioca la partita in corso simulando una meta alla volta, gestendo schemi, cambi obbligati e half time
     for(let i=0;i<160;i++){
       if(await page.locator('#over').isVisible())return;
@@ -658,6 +666,28 @@ catch(e){
     if(await p.evaluate(()=>document.documentElement.classList.contains('rotp')))throw new Error('la rotazione non si spegne dalle Impostazioni');
     await p.click('#sRot').catch(()=>{});await ctx.close();
     if(er.length)throw new Error('errore in verticale: '+er[0]);
+  });
+  await step('Pages: il gioco riparte offline in una nuova scheda',async()=>{
+    const http=require('node:http'),{html,worker}=require('./build').pagesBuild();
+    const assets=require('./icona').webFiles();
+    const server=http.createServer((req,res)=>{
+      const name=new URL(req.url,'http://localhost').pathname.split('/').at(-1);
+      if(!name){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(html);}
+      else if(name==='offline-worker.js'){res.setHeader('Content-Type','text/javascript');res.end(worker);}
+      else if(Object.hasOwn(assets,name))res.end(assets[name]);
+      else{res.statusCode=404;res.end();}
+    });
+    await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});
+    const ctx=await browser.newContext({viewport:{width:844,height:390}});
+    const url='http://127.0.0.1:'+server.address().port+'/ultimate-frisbee/';
+    try{
+      const online=await ctx.newPage();await online.goto(url);
+      await online.waitForFunction(async()=>!!(await navigator.serviceWorker.getRegistration())?.active);
+      await online.close();
+      await ctx.setOffline(true);
+      const cold=await ctx.newPage();await cold.goto(url);await vis_(cold,'#title');
+      await cold.click('#tQuick');await vis_(cold,'#quick');
+    }finally{await ctx.close();await new Promise(resolve=>server.close(resolve));}
   });
   await browser.close();
   for(const d of done)console.log('  [OK] '+d);
