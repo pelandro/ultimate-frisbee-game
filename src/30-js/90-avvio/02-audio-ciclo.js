@@ -260,10 +260,16 @@ function frame(now){
     capturePointCheckpoint();
     if(G.paused){}else if(G.mode==='cine')updateCine(dt);else if(!zoomWait)update(dt);
     if(G.mode==='banner'&&Math.max(...G.score)>=G.target)recordFinishedMatch();
-    rpRecord();rpCheck();rpApply(dt);   // replay: memoria degli ultimi secondi e riproduzione dopo le mete spettacolari
-    updateCamera(dt);
-    updateHUD(dt);
-    render(dt);
+    rpRecord();rpCheck();
+    const replayFrame=rpApply(dt);
+    if(replayFrame){
+      updateHUD(dt);
+      rpSet(replayFrame);
+      try{updateCamera(dt);render(dt);}
+      finally{rpSet(RP.on.save);}
+    }else{
+      updateCamera(dt);updateHUD(dt);render(dt);
+    }
     updTest();
   }
   requestAnimationFrame(frame);

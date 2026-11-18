@@ -45,14 +45,14 @@ function rpApply(dt){
   r.t+=dt*RP_SPEED;
   const t0=r.fr[0].t,tt=t0+r.t;let i=0;while(i<r.fr.length-1&&r.fr[i+1].t<=tt)i++;
   const a=r.fr[i],b=r.fr[i+1];
-  if(!b){rpSet(a);return;}
+  if(!b)return a;
   const f=clamp((tt-a.t)/Math.max(.001,b.t-a.t),0,1);
   const interpolate=(x,y)=>x.map((v,j)=>v+(y[j]-v)*f);
-  rpSet({p:a.p.map((q,j)=>b.p[j]?interpolate(q,b.p[j]):q),d:interpolate(a.d,b.d),h:a.h,f:a.f,w:a.w});
+  return {p:a.p.map((q,j)=>b.p[j]?interpolate(q,b.p[j]):q),d:interpolate(a.d,b.d),h:a.h,f:a.f,w:a.w};
 }
 function rpEnd(skip){
   const r=RP.on;if(!r)return;
-  RP.on=null;rpSet(r.save);
+  RP.on=null;
   if(skip&&G.banner)G.banner.t=Math.min(G.banner.t,2.4);
 }
 function drawReplay(){

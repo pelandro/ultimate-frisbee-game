@@ -9,7 +9,7 @@ function shellShow(id){
   $('cshell').classList.toggle('hidden',!csCur);
   $('cmenu').classList.add('hidden');$('hMenu').setAttribute('aria-expanded','false');
   if(!csCur)return;
-  for(const b of $('rail').children)b.classList.toggle('on',b.dataset.s===id);
+  for(const b of $('rail').children){const active=b.dataset.s===id;b.classList.toggle('on',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}
   if(SV&&SV.team)renderShell();
 }
 // intestazione sempre aggiornata: stemma e nome del club, stagione e posizione, crediti, posta, volto dell'allenatore

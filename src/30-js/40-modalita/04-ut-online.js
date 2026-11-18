@@ -56,17 +56,30 @@ function uoRow(id,v){
 }
 const uoRows=j=>Object.keys(j||{}).map(id=>uoRow(id,j[id])).filter(Boolean);
 // carica la tua squadra e i tuoi punti (se un risultato non e' ancora partito, parte adesso)
+let uoWrites=Promise.resolve();
+function uoWrite(task){
+  const pending=uoWrites.then(task);
+  uoWrites=pending.catch(()=>{});
+  return pending;
+}
 async function uoSync(){
   if(!UOP||UT.sel.length!==7)return null;
   const pk=utoPack(UT.col.map(p=>eqApply(p,UT.eq)),UT.sel);   // online la squadra va con l'equipaggiamento che indossi: e' quella che gli altri affrontano
-  if(UOP.fresh){await uoDb('PUT','ut/players/'+UOP.id,uoNode(pk.pw));UOP.fresh=false;UOP.dirty=false;}
-  else{
-    const patch={n:UOP.name,pw:pk.pw,u:Date.now()};
-    if(UOP.dirty){patch.p=UOP.p;patch.w=UOP.w;patch.l=UOP.l;patch.g=UOP.g;}
-    await uoDb('PATCH','ut/players/'+UOP.id,patch);UOP.dirty=false;
-  }
-  await uoDb('PUT','ut/teams/'+UOP.id,{m:pk.m});
-  uoSaveP();return pk;
+  return uoWrite(async()=>{
+    const p=UOP,g=p.g;
+    if(p.fresh){
+      await uoDb('PUT','ut/players/'+p.id,uoNode(pk.pw));
+      p.fresh=false;
+    }else{
+      const patch={n:p.name,pw:pk.pw,u:Date.now()};
+      if(p.dirty){patch.p=p.p;patch.w=p.w;patch.l=p.l;patch.g=g;}
+      await uoDb('PATCH','ut/players/'+p.id,patch);
+    }
+    if(p.g===g)p.dirty=false;
+    uoSaveP();
+    await uoDb('PUT','ut/teams/'+p.id,{m:pk.m});
+    return pk;
+  });
 }
 async function uoFindOpp(){
   const seen=new Map(),add=j=>{for(const r of uoRows(j))seen.set(r.id,r);};
@@ -81,7 +94,15 @@ async function uoFindOpp(){
 async function uoPush(){
   if(!UOP||!UOP.dirty||UOP.fresh||UO.flush||uoOffline()||!uoOk())return;
   UO.flush=true;UO.tried=Date.now();
-  try{await uoDb('PATCH','ut/players/'+UOP.id,{p:UOP.p,w:UOP.w,l:UOP.l,g:UOP.g,u:Date.now()});UOP.dirty=false;uoSaveP();}catch(e){}
+  try{
+    await uoWrite(async()=>{
+      const p=UOP,g=p.g;
+      if(!p.dirty)return;
+      await uoDb('PATCH','ut/players/'+p.id,{p:p.p,w:p.w,l:p.l,g,u:Date.now()});
+      if(p.g===g)p.dirty=false;
+      uoSaveP();
+    });
+  }catch(e){}
   finally{UO.flush=false;if(!UOP.dirty&&!$('utReal').classList.contains('hidden'))renderUtReal();}
 }
 // ---- partita ----
@@ -184,7 +205,7 @@ function renderUtReal(){
   renderMiles();
   $('urGoal').textContent=UT.col.length?`Vittoria ${UTO_COIN_W} gettoni (fino a +${UTO_UPSET[0][1]} se l’avversario ha più punti), sconfitta ${UTO_COIN_L}.`:'';
   $('urBoard').disabled=off||net;
-  $('urMsg').textContent=net&&!UO.msg?'Nessuna connessione: Real player ha bisogno di internet. Il resto del gioco funziona anche offline.':UO.msg;
+  $('urMsg').textContent=net&&!UO.msg?'Nessuna connessione: Real player ha bisogno di internet. Il resto del gioco funziona anche offline.':UO.msg||(UOP?.dirty?'Risultato in attesa di sincronizzazione.':'');
   if(UOP&&UOP.dirty&&!UO.busy&&Date.now()-UO.tried>15000)uoPush();   // ogni tanto, non in continuazione se la rete non risponde
 }
 $('umBack').addEventListener('click',()=>showScreen('title'));

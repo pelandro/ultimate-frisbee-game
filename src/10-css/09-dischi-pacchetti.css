@@ -20,3 +20,4 @@
 @media (max-height:340px){.shopi .disc{width:84px}.shopi{padding:6px}}
 
 @media (prefers-reduced-motion:reduce){#pkBody .ucard{animation:none!important;opacity:1;transform:none}}
+#pkBody.reveal-all .ucard,#pkBody.reveal-all .eqc{animation:none!important;opacity:1;transform:none}

@@ -100,11 +100,18 @@ const utPos=p=>POS_NAME[posOf(p)];
 const utCard=(p,i)=>{const [rn,rc]=utRar(p.ovr);return `<div class="ucard ${rc}" style="animation-delay:${(Math.min(i,8)*0.08).toFixed(2)}s"><b>${p.ovr}</b><span>${p.n}</span><i>${utPos(p)} · ${rn}</i>${p.cl?`<i>${p.cl}</i>`:''}${p.trait&&TRAITS[p.trait]?`<i style="color:#e0b3ff">${TRAITS[p.trait][0]}</i>`:''}</div>`;};
 function renderPack(){
   const open=UT.stage==='open';
+  $('pkReveal').classList.toggle('hidden',!open);
+  $('pkBody').classList.remove('reveal-all');
   $('pkTitle').textContent=open?(UT.cur[0]&&UT.cur[0].eq?'Ecco i tuoi accessori':'Ecco i tuoi giocatori'):utPackName(UT.packs[0]);
   const v=UT.packs[0],eq=utPkRole(v)===EQ_PK;
   $('pkBody').innerHTML=open?`<div class="ucards">${UT.cur.map((p,i)=>p.eq?eqCard(p,i):utCard(p,i)).join('')}</div>${UT.eqMsg?`<p class="qp" style="text-align:center">${UT.eqMsg}</p>`:''}`:`<div class="dpk">${utDisc(utPkQ(v),utPackSize(v),eq?'E':(utPkRole(v)===1?'H':(utPkRole(v)===2?'C':'')))}<b>${eq?'accessori':'giocatori'}</b><small>${utPackTip(v)}</small></div>`;
   $('pkGo').textContent=open?(UT.packs.length?`Prossimo pacchetto (${UT.packs.length})`:'Continua'):'Apri';
 }
+$('pkReveal').addEventListener('click',()=>{
+  $('pkBody').classList.add('reveal-all');
+  $('pkGo').focus();
+  $('pkReveal').classList.add('hidden');
+});
 $('pkGo').addEventListener('click',()=>{
   if(UT.stage==='closed'){
     const v=UT.packs.shift();UT.eqMsg='';
