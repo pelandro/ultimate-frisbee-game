@@ -7,10 +7,10 @@ Le età sono riferite al 18 novembre 2026. Il gioco usa solo nomi, età e dati s
 ## Metodo
 
 - **Squadre.** Il confronto usa 110 risultati utilizzabili dei CIU 2026 e 2025, con peso 1 per il 2026 e 0,5 per il 2025. Gli scarti sono normalizzati sul totale delle mete e limitati per ridurre l'effetto delle partite a senso unico. I piazzamenti CIU 2023–2024 e la storia europea forniscono contesto di più lungo periodo. WUCC ed EUCF ancorano Shout e Tequila Boom Boom alla scala internazionale del gioco. L'ordine premia la continuità europea di Shout e il distacco tiene conto degli scontri diretti equilibrati del CIU. Shout è 11º al WUCC 2026, 1º all'EUCF 2025 e 2º all'EUCF 2026. Tequila Boom Boom è 16º al WUCC 2026, 4º all'EUCF 2025 e 8º all'EUCF 2026.
-- **Giocatrici.** Il rendimento domestico è valutato per partita, correggendo per avversaria e riducendo gli scarti dei campioni brevi. Per le due italiane ai WUCC 2026 si usano tutte le 20 partite, con un peso maggiore per i contributi contro le squadre meglio piazzate. Il controllo europeo comprende 35 tabellini EUCF 2023–2026 e i riepiloghi EUCS. WUCC 2022, WUC 2024, EUC 2023 e WU24 2025 aggiungono riscontri di altre stagioni. Il peso di un torneo scende con l'età della fonte e con la categoria. WJUC ed EYUC aggiungono al massimo 2,5 punti dalla componente giovanile aggregata con WU24, anche quando una giocatrice domina il torneo.
+- **Giocatrici.** Il rendimento domestico è valutato per partita, correggendo per avversaria e riducendo gli scarti dei campioni brevi. Le sei schede di gara CIU 2025 accessibili (A F1, F3, P_4, X_6 e B X_17, X_20) aggiungono un riscontro individuale di peso ridotto. Per le due italiane ai WUCC 2026 si usano tutte le 20 partite, con un peso maggiore per i contributi contro le squadre meglio piazzate. Il controllo europeo comprende 35 tabellini EUCF 2023–2026 e i riepiloghi EUCS. WUCC 2022, WUC 2024, EUC 2023 e WU24 2025 aggiungono riscontri di altre stagioni. Il peso di un torneo scende con l'età della fonte e con la categoria. WJUC ed EYUC aggiungono al massimo 2,5 punti dalla componente giovanile aggregata con WU24, anche quando una giocatrice domina il torneo.
 - **Premi e difesa.** I premi e i profili specialistici pubblici aiutano a fissare i valori con più riscontri. Sinéad Dunne (91) è la migliore difensora europea 2025 di Ultiworld. Martina Kmecová (91) ha vinto lo stesso premio nel 2023, con Susanna Casarini (92) seconda. I profili D richiedono evidenza difensiva. H, C e B possono essere stimati dal profilo di gioco e dalla ripartizione tra assist e mete.
 - **Bilanciamento.** Le valutazioni con fonti più deboli restano vicine al livello della rosa. I riferimenti individuali corroborati hanno soglie che tengono anche durante la taratura del club. Il motore applica la formula comune `rosterPower`/ `powerOfVals`, con il 60% ai primi 7 Overall, il 35% dall'8º al 14º e il 5% dal 15º al 21º. Un posto vuoto vale l'Overall più basso della rosa meno 8, con minimo 25. Il livello dei sette iniziali resta il riferimento interno del club per formazione ed economia.
-- **Copertura.** Per il CIU 2025 la fonte accessibile offre soprattutto risultati di squadra. I tab dei risultati grezzi del CIU 2024 restituiscono errori di collegamento. Per il WJUC 2026 sono stati utilizzati il resoconto e i contributi pubblicati da Flying Disc Italia. I referti disponibili raramente misurano blocchi, turnover individuali e minuti. Gli Overall di chi ha pochi riscontri pubblici sono stime di gioco.
+- **Copertura.** Per il CIU 2025 il calendario offre risultati di squadra e la copertura individuale è limitata a sei referti recuperati a parte. I tab dei risultati grezzi del CIU 2024 restituiscono errori di collegamento. Per il WJUC 2026 sono stati utilizzati il resoconto e i contributi pubblicati da Flying Disc Italia. I referti disponibili raramente misurano blocchi, turnover individuali e minuti. Gli Overall di chi ha pochi riscontri pubblici sono stime di gioco.
 
 ## Casi individuali
 
@@ -37,11 +37,11 @@ Valori a un decimale calcolati con le rose del gioco. A schermo si vedono arroto
 | BFD Cheetahs | A | 22 | 76,6 |
 | CUS Padova Tane Malefiche | A | 19 | 75,1 |
 | Tequila Junior | A | 12 | 74,5 |
-| DiscoBolo | A | 16 | 71,9 |
-| Donkey Ladies | A | 18 | 70,8 |
+| DiscoBolo | A | 16 | 71,8 |
+| Donkey Ladies | A | 18 | 70,7 |
 | METACARPE | A | 15 | 67,8 |
 | Timanfaya | A | 18 | 67,7 |
-| One Tribe | A | 14 | 66,6 |
+| One Tribe | A | 14 | 66,7 |
 | 36MAdonnine | B | 14 | 62,7 |
 | Voladora | B | 17 | 61,9 |
 | AUT FireFlies | B | 18 | 61,9 |
