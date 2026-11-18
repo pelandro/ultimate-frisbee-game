@@ -53,6 +53,7 @@ function updateHUD(dt){
   if(G.mode==='play'&&G.holder&&!G.flight){if(G.walk)hint=G.walk.line?'Si riparte dalla linea di meta':'Si raccoglie il disco';}
   if(DR.on)hint='';
   elHint.classList.toggle('hidden',!hint);if(hint)elHint.textContent=hint;
+  adwTick();
   drillTick();
 }
 
