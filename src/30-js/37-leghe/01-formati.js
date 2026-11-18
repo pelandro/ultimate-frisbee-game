@@ -8,6 +8,8 @@
      x8 = 8 squadre, solo turno incrociato e finali di piazzamento (UKU Nationals: 3 partite di girone + 2)
      p  = coppie di piazzamento dopo il girone unico (1ª-2ª, 3ª-4ª... una partita ciascuna: N2 francese, 7 + 1 partite come nei dati)
      rr = minigirone tra le squadre del livello (4 squadre, 3 partite: posti 5-8 della 2. Liga)
+     k4 = come il playoff del campionato italiano maschile: 4 squadre, semifinali (1ª-4ª, 2ª-3ª) e finale, chi perde e' eliminato (niente finale per il 3° posto); con f>1 e' lo
+          spareggio promozione (la prima sale direttamente, dal 2° al 5° posto si gioca il playoff)
    f..t = quali posizioni dei gironi entrano nella fase (da f a t). Le squadre che non hanno un avversario (gironi da 3 o 7) passano il turno senza giocare.
    Salgono e scendono n squadre tra un livello e il successivo (mv): sono stime dove il regolamento non e' pubblico (Francia: 3 tra N1 e N2 e 6 tra N2 e N3, come nei
    numeri dei gironi; Germania: 2 e 3; Belgio: 2 per livello; Regno Unito: 1). Le prime squadre di ciascun paese vanno all'EUCF (eu). Livelli con play:false sono
@@ -38,11 +40,11 @@ const LN_DEF={
       {id:'N1',name:'Nationals',k:1.4,comps:1,pools:2,fin:[{f:1,t:4,m:'x8'}]},
       {id:'N2',name:'Open Tour',k:1,comps:1,pools:1,fin:[],play:false}]},
   // campionato femminile (w): le sue squadre giocano solo tra loro, anche nella partita veloce (allClubs, 37-leghe/07-women.js); niente EUCF
-  IW:{id:'IW',cc:'Italia Women',de:'italiano femminile',name:'Italia · Women',w:true,eu:0,sub:'Campionato italiano femminile · Serie A e Serie B · 17 squadre',mv:[1],
-    txt:'Il campionato italiano Women: la Serie A ha 10 squadre in due gironi da 5, poi quarti, semifinali e finali; la Serie B ha 7 squadre in un girone unico e le prime quattro si giocano la promozione. Sale e scende una squadra.',
+  IW:{id:'IW',cc:'Italia Women',de:'italiano femminile',name:'Italia · Women',w:true,eu:0,sub:'Campionato italiano femminile · Serie A e Serie B · 17 squadre',mv:[2],
+    txt:'Il campionato italiano Women, con lo stesso formato di quello maschile: girone unico, in Serie A playoff scudetto tra le prime 4 (semifinali e finale), in Serie B la prima sale direttamente e dal 2° al 5° posto c’è lo spareggio per la seconda promozione. Salgono due squadre e ne scendono due.',
     tiers:[
-      {id:'A',name:'Serie A',k:1.3,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},
-      {id:'B',name:'Serie B',k:1,comps:1,pools:1,fin:[{f:1,t:4,m:'c4'}]}]}
+      {id:'A',name:'Serie A',k:1.3,comps:1,pools:1,fin:[{f:1,t:4,m:'k4'}]},
+      {id:'B',name:'Serie B',k:1,comps:1,pools:1,fin:[{f:2,t:5,m:'k4'}]}]}
 };
 const LN_IDS=Object.keys(LN_DEF);
 const LN_BY={};   // club -> {lk, t (livello), g (girone dei dati), p (forza iniziale)}

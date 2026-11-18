@@ -9,6 +9,8 @@ const roleR=x=>x.role||x.r||'C';
 const posOf=x=>x.pos||(rate(x.s,'D')>=rate(x.s,roleR(x))+2?'D':roleR(x));       // ruolo in cui rende di piu': H, C oppure D (difensore)
 const ovrX=x=>Math.max(rate(x.s,roleR(x)),rate(x.s,'D'));                // overall (con decimali) nel ruolo migliore
 const ovr=p=>Math.round(ovrX(p));
+// Overall vero di un giocatore della tua squadra in partita: senza la forma del giorno (±3 a ogni statistica) e senza la penalita' di chi sta in entrambe le linee, che vivono in p.s fino a fine partita (p.b = statistiche prima della forma)
+const ovrB=p=>p.b?ovr({s:p.b,role:p.role,r:p.r}):ovr(p);
 const POS_NAME={H:'Handler',C:'Cutter',D:'Defender'};
 /* ---- TRATTI: pochi, con effetti reali ma moderati. Circa un giocatore su quattro ne ha uno, legato a cio' che sa fare meglio ---- */
 const TRAITS={deep:['Deep Threat','Sui lanci lunghi parte prima e arriva più in alto'],break:['Break Specialist','Il marcatore lo disturba la metà quando lancia sul lato chiuso'],

@@ -4,6 +4,9 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Campionato Women con lo stesso formato di quello maschile: girone unico, playoff scudetto tra le prime 4 in Serie A (semifinali e finale, chi perde è eliminato), in Serie B la prima sale direttamente e dal 2° al 5° posto c’è lo spareggio per la seconda promozione. Salgono due squadre e ne scendono due (prima una sola). Chi arriva in fondo gioca almeno 11 partite.
+- Cambi: il numero accanto a ogni giocatore è il suo Overall vero, quello della rosa, senza gli scarti della forma del giorno (prima, in partita, poteva sembrare più alto o più basso).
+- Posta: il numero sulla campanella conta solo gli avvisi non letti. Una decisione già letta ma ancora aperta (per esempio un ritiro annunciato) non tiene più acceso il numero: resta in «Da decidere» e in «Questa settimana».
 - Superpoteri: il computer gioca con gli eroi. Chi lancia per il computer cerca i compagni trasformati, anche fuori dallo schema quando sono liberi, e i tuoi compagni trasformati tagliano prima e più spesso; il lupo e la giraffa vanno in profondità. Con il vento a favore o il telecinetico attivo si rischia di più il lancio lungo.
 - Superpoteri: la trasformazione si vede molto meglio. L’eroe sparisce in una bomba di fumo, con un botto, scintille del suo colore e un piccolo scossone dello schermo, ed esce dalla nuvola già trasformato; quando il potere finisce torna normale in uno sbuffo più piccolo.
 - Superpoteri: nuovo eroe, il Signore del vento, con il mantello e i capelli che sventolano. Finché resta trasformato il vento è tutto a favore della sua squadra: i compagni lanciano più lontano e più dritto, gli avversari più corto e sbandano. Ora gli eroi tra cui scegliere i tuoi tre sono otto.
