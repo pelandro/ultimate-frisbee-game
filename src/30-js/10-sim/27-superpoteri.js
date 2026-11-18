@@ -160,3 +160,19 @@ function heroMarkOf(q){
 }
 // i difensori della squadra t come li vede chi attacca: con la copia del clone, che non sa riconoscere
 const heroSeen=t=>{const c=G.dec&&G.dec[t];return c?T[t].concat([c]):T[t];};
+/* ---- IA CON GLI EROI ----
+   Chi gioca col computer (l'avversario, e i tuoi compagni quando tagliano o nelle mete simulate) cerca i compagni trasformati: sono i ricevitori preferiti
+   (heroPass in aiPick, anche fuori dallo schema se sono liberi) e, in attacco, tagliano prima e piu' spesso; lupo e giraffa vanno in profondita' (heroCut). */
+const HERO_PASS=3.5;
+function heroPass(th,q,dist,fwd){
+  if(!G.heroOn||!G.hz)return 0;
+  let b=0;
+  if(heroOn(q)){b+=HERO_PASS;if(q.hero==='giraffa'&&dist>=20)b+=3;else if(q.hero==='lupo')b+=clamp(fwd*0.12,0,3);}   // la giraffa vince i dischi lunghi, il lupo scappa in profondita'
+  if(dist>=20&&(heroWind(th.t)>0||heroOn(heroOf(th.t,'tele'),'tele')))b+=1.5;   // vento a favore o disco guidato dal telecinetico: il lancio lungo conviene
+  return b;
+}
+const heroCutOn=p=>!!(G.heroOn&&p.t===G.poss&&heroOn(p));
+function heroCut(p,H,d){   // taglio lungo del lupo o della giraffa trasformati (6 volte su 10)
+  if(!heroCutOn(p)||!(p.hero==='lupo'||p.hero==='giraffa')||Math.random()>0.6)return null;
+  return {x:clamp(H.x+d*rnd(22,36),1,FIELD_L-1),y:clamp(p.y+rnd(-8,8),3,FIELD_W-3),deep:true};
+}

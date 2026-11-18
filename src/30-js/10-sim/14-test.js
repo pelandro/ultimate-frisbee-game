@@ -615,6 +615,13 @@ function selfTestPlan(opt){
     heroAssign(T[0],['vento']);   // con otto eroi e sette in campo, il vento qui va assegnato a parte
     const Vt=heroOf(0,'vento'),a0=T[0][0],b0=T[1][0],ma=throwMax(a0),mb=throwMax(b0);heroUse(0,'vento');const ma1=throwMax(a0),mb1=throwMax(b0),hw=[heroWind(0),heroWind(1)];
     heroEnd(Vt);const wind=ma1===ma+VENTO_R&&mb1===mb-VENTO_R&&hw[0]===1&&hw[1]===-1&&throwMax(a0)===ma&&heroWind(0)===0;
+    // IA: tra due compagni liberi allo stesso modo sceglie quello trasformato
+    placeTeams(0);G.pb=null;G.flight=null;G.poss=0;G.open=false;G.mode='play';
+    const th=T[0][0],m1=T[0][1],m2=T[0][2];th.x=50;th.y=MID;m1.x=m2.x=50+dirOf(0)*14;m1.y=MID-8;m2.y=MID+8;G.holder=th;
+    T[0].slice(3).forEach((x,i)=>{x.x=50-dirOf(0)*25;x.y=4+i*4;});T[1].forEach((x,i)=>{x.x=50-dirOf(0)*40;x.y=3+i*5;x.mark=null;});
+    for(const x of T[0].concat(T[1])){x.vx=x.vy=0;x.hero=null;x.hx=0;}
+    const share=()=>{let a=0,b=0;for(let i=0;i<300;i++){const q=aiPick(th,false).best;if(q===m2)a++;else if(q===m1)b++;}return a/Math.max(1,a+b);};
+    const sh0=share();m2.hero='polpo';m2.hx=5;const sh1=share();m2.hx=0;m2.hero=null;
     placeTeams(0);const reset=!T[0].concat(T[1]).some(x=>x.hx>0||x.hrb||x.frz>0);
     const both=run(ra,rb,n,{hero:'both'}),okB=both.every(m=>!m.stuck&&!m.nan&&Math.max(m.score[0],m.score[1])===MATCH_TARGET),useB=both.every(m=>m.st.hero&&m.st.hero[0]>0&&m.st.hero[1]>0);
     // quanto contano gli eroi (misurato a parte, 50 partite per lato a squadre pari): chi li ha vince circa 7 volte su 10. Qui non si misura: servirebbero troppe partite
@@ -626,6 +633,7 @@ function selfTestPlan(opt){
       row('Stregone di ghiaccio: l\'onda rallenta chi ha vicino, non chi e\' lontano, e il gelo passa',`velocità ${vn0.toFixed(1)} → ${vn1.toFixed(1)} m/s (lontano ${vf1.toFixed(1)}), poi ${vn2.toFixed(1)}`,ice),
       row('Mietitore: gli avversari perdono energia in fretta (e gli scatti costano di più), i tuoi no',`−${Math.round(drop)} in 2 s, scatti ×${dk}`,reap),
       row('Signore del vento: i tuoi lanci arrivano piu\' lontano, quelli avversari piu\' corti, poi torna tutto come prima',`gittata ${Math.round(ma)} → ${Math.round(ma1)} m, avversari ${Math.round(mb)} → ${Math.round(mb1)} m`,wind),
+      row('L\'IA cerca i compagni trasformati: tra due ricevitori uguali sceglie quasi sempre l\'eroe',`${Math.round(sh0*100)}% → ${Math.round(sh1*100)}%`,sh1>=0.85&&sh1>sh0+0.25),
       row('A ogni punto le trasformazioni finiscono',reset?'sì':'no',reset),
       row('Partite con gli eroi: finiscono regolarmente e le due IA usano i poteri',`${both.filter(m=>m.st.hero).length} su ${n}`,okB&&useB)];
   }]);

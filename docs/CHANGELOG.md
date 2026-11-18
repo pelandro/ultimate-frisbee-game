@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Superpoteri: il computer gioca con gli eroi. Chi lancia per il computer cerca i compagni trasformati, anche fuori dallo schema quando sono liberi, e i tuoi compagni trasformati tagliano prima e più spesso; il lupo e la giraffa vanno in profondità. Con il vento a favore o il telecinetico attivo si rischia di più il lancio lungo.
 - Superpoteri: la trasformazione si vede molto meglio. L’eroe sparisce in una bomba di fumo, con un botto, scintille del suo colore e un piccolo scossone dello schermo, ed esce dalla nuvola già trasformato; quando il potere finisce torna normale in uno sbuffo più piccolo.
 - Superpoteri: nuovo eroe, il Signore del vento, con il mantello e i capelli che sventolano. Finché resta trasformato il vento è tutto a favore della sua squadra: i compagni lanciano più lontano e più dritto, gli avversari più corto e sbandano. Ora gli eroi tra cui scegliere i tuoi tre sono otto.
 - Superpoteri: due nuovi eroi. Lo Stregone di ghiaccio, appena si trasforma, lancia un’onda di freddo che congela per qualche secondo gli avversari che ha intorno: corrono più piano, con il ghiaccio ai piedi. Il Mietitore, incappucciato e con la falce, fa stancare gli avversari molto più in fretta finché resta trasformato. Ora gli eroi tra cui scegliere i tuoi tre sono sette.
