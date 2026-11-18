@@ -28,7 +28,8 @@ function utDisc(q,n,role){
   if(q>=5){for(const [x,y] of [[60,19],[60,77]])s+=utStar(x,y,5,c[3]);s+=utStar(98,30,3,'#fff')+utStar(22,66,3,'#fff');}   // scintille: platino e oltre
   if(q===3)s+=utStar(100,32,3,'#fff');
   s+=`<text x="60" y="${role?47:53}" text-anchor="middle" font-size="26" font-weight="900" fill="#fff" stroke="#000" stroke-width="5" paint-order="stroke" font-family="inherit">${n}</text>`;
-  if(role==='E')s+=`<circle cx="60" cy="64" r="10" fill="#ff6fb5" stroke="#000" stroke-width="2.5"/><path d="M55 57h4v5h3l4 2v3H55z" fill="#000"/><rect x="56" y="58" width="2" height="4" fill="#fff"/><rect x="55" y="68" width="11" height="1.6" fill="#000"/>`;   // pacchetto equipaggiamento: uno scarpino nel distintivo
+  if(role==='S')s+=`<circle cx="60" cy="64" r="10" fill="#ffd23f" stroke="#000" stroke-width="2.5"/><path d="M62 56l-7 9h5l-2 7 7-9h-5z" fill="#000"/>`;   // pacchetto eroi dei Superpoteri: un fulmine
+  else if(role==='E')s+=`<circle cx="60" cy="64" r="10" fill="#ff6fb5" stroke="#000" stroke-width="2.5"/><path d="M55 57h4v5h3l4 2v3H55z" fill="#000"/><rect x="56" y="58" width="2" height="4" fill="#fff"/><rect x="55" y="68" width="11" height="1.6" fill="#000"/>`;   // pacchetto equipaggiamento: uno scarpino nel distintivo
   else if(role)s+=`<circle cx="60" cy="64" r="8" fill="${role==='H'?'#ff8a3d':'#3ddc97'}" stroke="#000" stroke-width="2.5"/><text x="60" y="68" text-anchor="middle" font-size="11" font-weight="900" fill="#000" font-family="inherit">${role}</text>`;
   return s+'</svg>';
 }
@@ -39,18 +40,20 @@ const UT_SHOP=[
   {k:'std',n:'Pacchetto',cards:5,code:1,q:1,role:'',cost:[90,UTO_PACK],d:'5 carte: handler, cutter e defender. Più sono forti, più sono rare.'},
   {k:'han',n:'Pacchetto Handler',cards:3,code:131,q:1,role:'H',cost:[65,90],d:'3 carte, tutte Handler: per costruire il tuo gioco al disco.'},
   {k:'cut',n:'Pacchetto Cutter',cards:3,code:231,q:1,role:'C',cost:[65,90],d:'3 carte, tutte Cutter: per tagliare e correre in campo.'},
-  {k:'eq',n:'Pacchetto equipaggiamento',cards:2,code:321,q:1,role:'E',cost:[120,160],d:'2 accessori diversi che potenziano tutta la squadra. I doppioni diventano gettoni.'}   // equipaggiamento: 10-sim/25-ut-equipaggiamento.js
+  {k:'eq',n:'Pacchetto equipaggiamento',cards:2,code:321,q:1,role:'E',cost:[120,160],d:'2 accessori diversi che potenziano tutta la squadra. I doppioni diventano gettoni.'},   // equipaggiamento: 10-sim/25-ut-equipaggiamento.js
+  {k:'eroi',n:'Pacchetto eroi',cards:2,code:421,q:1,role:'S',cost:[0,150],hm:true,d:'2 carte eroe: un eroe nuovo o un livello in più per uno che hai già.'}   // solo nei Superpoteri (hm): 40-modalita/08-ut-superpoteri.js
 ];
+const utShopList=()=>UT_SHOP.filter(it=>!it.hm||UT.hm);
 let shMsg='';
 function renderShop(){
   const rp=UT.rp?1:0,pend=UT.packs.length;
   $('shInfo').innerHTML=`Gettoni: <b>${UT.coins}</b>${pend?` · Da aprire: <b>${pend}</b>`:''}`;
-  $('shList').innerHTML=UT_SHOP.map(it=>`<div class="shopi"><div class="dpk">${utDisc(it.q,it.cards,it.role)}<b>${it.n}</b><small>${it.d}</small></div><button type="button" class="go" data-k="${it.k}"${UT.coins<it.cost[rp]?' disabled':''}>Compra · ${it.cost[rp]} gettoni</button></div>`).join('');
+  $('shList').innerHTML=utShopList().map(it=>`<div class="shopi"><div class="dpk">${utDisc(it.q,it.cards,it.role)}<b>${it.n}</b><small>${it.d}</small></div><button type="button" class="go" data-k="${it.k}"${UT.coins<it.cost[rp]?' disabled':''}>Compra · ${it.cost[rp]} gettoni</button></div>`).join('');
   $('shMsg').textContent=shMsg;$('shOpen').classList.toggle('hidden',!pend);
 }
 $('shList').addEventListener('click',e=>{
   const b=e.target.closest('[data-k]');if(!b||b.disabled)return;
-  const it=UT_SHOP.find(x=>x.k===b.dataset.k),c=it&&it.cost[UT.rp?1:0];if(!it||UT.coins<c)return;
+  const it=utShopList().find(x=>x.k===b.dataset.k),c=it&&it.cost[UT.rp?1:0];if(!it||UT.coins<c)return;
   UT.coins-=c;UT.packs.push(it.code);utSave();shMsg=`${it.n} comprato: lo trovi tra i pacchetti da aprire.`;renderShop();
 });
 $('shBack').addEventListener('click',()=>{shMsg='';showScreen(UT.rp?'utReal':'ut');});

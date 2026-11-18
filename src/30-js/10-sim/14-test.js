@@ -579,7 +579,7 @@ function selfTestPlan(opt){
       row('Il bonus vale per la squadra in partita (massimo 99) e non cambia la carta',`Scatto 95 → ${q.s.sca}, Lancio ${q.s.lan}, carta ${p.s.sca}`,ok3),
       row('Salvataggi rovinati e traguardi: valori validi, accessori sempre migliori',(safe?'ok':'no')+', '+miles.join(' '),safe&&mUp)];
   }]);
-  S.steps.push(['Superpoteri: gli otto eroi',()=>{   // 27-superpoteri.js
+  S.steps.push(['Superpoteri: i nove eroi e le combo',()=>{   // 27-superpoteri.js
     const ra=ros(62,'ha'),rb=ros(62,'hb');
     setSquad(ra);applyRoster(rb);newGame();
     const rk=heroRand();heroInit(rk,rk);heroAssign(T[0],rk);
@@ -615,6 +615,28 @@ function selfTestPlan(opt){
     heroAssign(T[0],['vento']);   // con otto eroi e sette in campo, il vento qui va assegnato a parte
     const Vt=heroOf(0,'vento'),a0=T[0][0],b0=T[1][0],ma=throwMax(a0),mb=throwMax(b0);heroUse(0,'vento');const ma1=throwMax(a0),mb1=throwMax(b0),hw=[heroWind(0),heroWind(1)];
     heroEnd(Vt);const wind=ma1===ma+VENTO_R&&mb1===mb-VENTO_R&&hw[0]===1&&hw[1]===-1&&throwMax(a0)===ma&&heroWind(0)===0;
+    // signore del tempo: in difesa lo stall avversario corre; in attacco il rallentatore per te, e per l'IA stall piu' lento e lanci piu' precisi
+    heroAssign(T[0],['tempo','giraffa','polpo','ghiaccio']);for(const k of HERO_K)G.hz[0][k]=0;G.auto=false;G.mode='play';G.pull=null;G.flight=null;G.diveWin=null;
+    const Tp=heroOf(0,'tempo');G.poss=1;G.holder=T[1][0];heroUse(0,'tempo');const sk1=heroStallK(1);
+    G.poss=0;G.holder=T[0].find(x=>x!==Tp);G.tmK=1;for(let i=0;i<60;i++)heroTimeTick(1/60);const slow=G.tmK;
+    G.auto=true;const sk0=heroStallK(0),aim=heroAimK(0);G.auto=false;
+    const tempoOk=sk1===TEMPO_STALL&&slow<0.65&&sk0===TEMPO_OWN&&aim===TEMPO_AIM;
+    // combo: la barra si riempie con i passaggi completati, poi l'aggancio della giraffa mentre il signore del tempo e' trasformato fa partire «Volo lento»
+    G.cb=[0,0];G.cmb=[null,null];G.cbl=null;comboTick(0);const noBar=!comboReady(0,'giraffa');G.st.cmp[0]+=29;comboTick(0.01);const full=G.cb[0]>=1;
+    const Gi=heroOf(0,'giraffa'),okR=comboReady(0,'giraffa');heroUse(0,'giraffa',true);
+    const cmbOk=noBar&&full&&okR&&comboOn(0,'giraffa+tempo')&&G.cb[0]===0&&heroReach(Gi)>1.5&&!comboReady(0,'polpo');
+    for(let i=0;i<COMBO_DUR*10+2;i++)comboTick(0.1);const cmbEnd=!G.cmb[0];
+    for(const x of T[0])if(x.hx>0)heroEnd(x);G.tmK=1;
+    // le altre combo: ognuna cambia quello che deve (qui la combo si accende a mano, con gli eroi trasformati)
+    heroAssign(T[0],['lupo','polpo','vento','giraffa','tele','mietitore','ghiaccio']);for(const x of T[0])if(x.hero){x.hx=x.hxd=5;}
+    const cm=k=>{G.cmb=[{k,t:5,b0:0},null];},Lw=heroOf(0,'lupo'),Gf=heroOf(0,'giraffa'),cr=[];
+    cm('lupo+polpo');G.poss=1;G.holder=T[1][0];cr.push(heroStallK(1)>=1.5,heroAimK(1)===1.25);
+    cm('lupo+vento');cr.push(Math.abs(heroSlow(Lw)-COMBO_RUN)<1e-9,heroDropK(Lw)===COMBO_DROP);
+    cm('giraffa+vento');cr.push(heroRange(0)===2*VENTO_R);
+    cm('giraffa+tele');cr.push(heroDropK(Gf)===COMBO_DROP,heroReach(Gf)>1.5);
+    cm('tele+vento');{const fl={sx:10,sy:20,tx:40,ty:20,cx:0,cy:0,t:1,T:2,e:1,team:0},P0=flightAt(fl,flightS(fl,0.5)),d0=hyp(fl.tx-P0.x,fl.ty-P0.y);for(let i=0;i<20;i++)heroSteer(fl,{x:fl.tx+30,y:fl.ty},0.1);const P1=flightAt(fl,flightS(fl,0.5)),d1=hyp(fl.tx-P1.x,fl.ty-P1.y);cr.push(d1>d0+5&&d1<=d0+COMBO_EXT+1e-6);}
+    cm('ghiaccio+mietitore');for(const k of HERO_K){G.hz[0][k]=99;G.hz[1][k]=99;}const qa=T[1][0],qb=T[1][1];qa.frz=3;qb.frz=0;qa.st=qb.st=100;G.poss=0;G.holder=null;heroTick(0.5);cr.push(Math.abs((100-qa.st)-2*(100-qb.st))<1e-6&&qb.st<100);
+    const combosOk=cr.every(Boolean);G.cmb=[null,null];for(const x of T[0].concat(T[1])){x.hx=0;x.frz=0;}
     // IA: tra due compagni liberi allo stesso modo sceglie quello trasformato
     placeTeams(0);G.pb=null;G.flight=null;G.poss=0;G.open=false;G.mode='play';
     const th=T[0][0],m1=T[0][1],m2=T[0][2];th.x=50;th.y=MID;m1.x=m2.x=50+dirOf(0)*14;m1.y=MID-8;m2.y=MID+8;G.holder=th;
@@ -622,6 +644,14 @@ function selfTestPlan(opt){
     for(const x of T[0].concat(T[1])){x.vx=x.vy=0;x.hero=null;x.hx=0;}
     const share=()=>{let a=0,b=0;for(let i=0;i<300;i++){const q=aiPick(th,false).best;if(q===m2)a++;else if(q===m1)b++;}return a/Math.max(1,a+b);};
     const sh0=share();m2.hero='polpo';m2.hx=5;const sh1=share();m2.hx=0;m2.hero=null;
+    // livelli di Ultimate Team: al livello 5 la trasformazione dura il 40% in piu' e la ricarica il 32% in meno
+    const Gl=heroOf(0,'giraffa')||T[0][1];Gl.hero='giraffa';Gl.hx=0;Gl.hlv=5;G.hz[0].giraffa=0;G.mode='play';G.pull=null;heroUse(0,'giraffa');
+    const lvOk=Math.abs(Gl.hx-HERO.giraffa.dur*1.4)<1e-6&&Math.abs(G.hz[0].giraffa-(HERO.giraffa.dur*1.4+HERO.giraffa.cd*0.68))<1e-6;heroEnd(Gl);Gl.hlv=0;
+    // squadra caricata online: solo i titolari portano il loro eroe (chiave + livello), e chi la scarica lo ritrova; un eroe che non esiste si ignora
+    const col=makeRoster(60,'uh|test').slice(0,14);col[0].hk='lupo';col[1].hk='tele';col[9].hk='clone';
+    const pk=utoPack(col,[0,1,2,3,4,5,6],{lupo:3,tele:1,clone:2}),hs=pk.m.map(e=>e.h).filter(Boolean);pk.m[2].h='drago9';
+    const un=utoUnpack(pk.m,'uh'),uh=un.filter(o=>o.hero).map(o=>o.hero+o.hlv);
+    const upOk=hs.join()==='lupo3,tele1'&&uh.join()==='lupo3,tele1'&&!utoPack(col,[0,1,2,3,4,5,6]).m.some(e=>e.h);
     placeTeams(0);const reset=!T[0].concat(T[1]).some(x=>x.hx>0||x.hrb||x.frz>0);
     const both=run(ra,rb,n,{hero:'both'}),okB=both.every(m=>!m.stuck&&!m.nan&&Math.max(m.score[0],m.score[1])===MATCH_TARGET),useB=both.every(m=>m.st.hero&&m.st.hero[0]>0&&m.st.hero[1]>0);
     // quanto contano gli eroi (misurato a parte, 50 partite per lato a squadre pari): chi li ha vince circa 7 volte su 10. Qui non si misura: servirebbero troppe partite
@@ -633,7 +663,12 @@ function selfTestPlan(opt){
       row('Stregone di ghiaccio: l\'onda rallenta chi ha vicino, non chi e\' lontano, e il gelo passa',`velocità ${vn0.toFixed(1)} → ${vn1.toFixed(1)} m/s (lontano ${vf1.toFixed(1)}), poi ${vn2.toFixed(1)}`,ice),
       row('Mietitore: gli avversari perdono energia in fretta (e gli scatti costano di più), i tuoi no',`−${Math.round(drop)} in 2 s, scatti ×${dk}`,reap),
       row('Signore del vento: i tuoi lanci arrivano piu\' lontano, quelli avversari piu\' corti, poi torna tutto come prima',`gittata ${Math.round(ma)} → ${Math.round(ma1)} m, avversari ${Math.round(mb)} → ${Math.round(mb1)} m`,wind),
+      row('Signore del tempo: stall avversario piu\' veloce in difesa, rallentatore in attacco (per l\'IA stall lento e lanci precisi)',`stall ×${sk1}, rallentatore ${Math.round(slow*100)}%, IA ×${sk0} e mira ×${aim}`,tempoOk),
+      row('Combo: la barra si riempie giocando, l\'aggancio fa partire «Volo lento» e la barra si svuota',`${full?'barra piena':'barra vuota'}, ${comboOn(0,'giraffa+tempo')||!cmbEnd?'combo partita':'combo no'}${cmbEnd?', poi finita':''}`,cmbOk&&cmbEnd),
+      row('Le altre combo: Branco, Corsa nel vento, Corrente ascensionale, Ascensore, Uragano, Gelo mortale',cr.map(x=>x?'sì':'no').join(' '),combosOk),
       row('L\'IA cerca i compagni trasformati: tra due ricevitori uguali sceglie quasi sempre l\'eroe',`${Math.round(sh0*100)}% → ${Math.round(sh1*100)}%`,sh1>=0.85&&sh1>sh0+0.25),
+      row('Livelli degli eroi (Ultimate Team): durata piu\' lunga e ricarica piu\' corta',`giraffa al livello 5: ${(HERO.giraffa.dur*1.4).toFixed(1)} s`,lvOk),
+      row('Squadra online con gli eroi: solo i titolari li portano e chi la scarica li ritrova',`${hs.join(', ')} → ${uh.join(', ')}`,upOk),
       row('A ogni punto le trasformazioni finiscono',reset?'sì':'no',reset),
       row('Partite con gli eroi: finiscono regolarmente e le due IA usano i poteri',`${both.filter(m=>m.st.hero).length} su ${n}`,okB&&useB)];
   }]);
