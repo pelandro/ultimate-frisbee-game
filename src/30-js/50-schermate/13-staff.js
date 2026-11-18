@@ -10,7 +10,7 @@ function staffCardHTML(k){
   const lv=staffLv(k),s=stPerson(k),r=STAFF[k];
   if(!lv||!s)return `<div class="scard empty"><div class="sp"><span class="spav vac"></span><span class="spt"><b class="sr">${r.n}</b><small>Posto vacante</small></span></div><small class="sd">${r.d}</small><div class="sb"><button type="button" class="sec" data-hire="${k}">Scegli chi assumere</button></div></div>`;
   const c=staffCost(k),top=Math.min(STAFF_MAX,s.pot),on=clInfo.has('s'+k),tr=STAFF_TR[s.tr];
-  return `<div class="scard"><div class="sp"><span class="spav">${avatar({look:s.lk,t:0},48)}</span><span class="spt"><b class="sr">${esc(s.n)}</b><small>${r.n} · ${s.a} anni</small></span><button type="button" class="inf${on?' on':''}" data-inf="s${k}" aria-label="Spiegazione">i</button></div>
+  return `<div class="scard"><div class="sp"><span class="spav">${avatar({look:s.lk,full:s.n,gen:true,t:0},48)}</span><span class="spt"><b class="sr">${esc(s.n)}</b><small>${r.n} · ${s.a} anni</small></span><button type="button" class="inf${on?' on':''}" data-inf="s${k}" aria-label="Spiegazione">i</button></div>
     <div class="sl">${stTicks(lv,top)}<small>${lv<top?`può arrivare a ${top}`:'al suo massimo'}</small>${moodFace(staffMoodKey())}</div>
     ${habHTML(tr)}
     ${on?`<p class="infp">${r.d}.${tr?` <b>${tr.n}</b>: ${tr.d.toLowerCase()}.`:''} Stipendio ${STAFF_WAGE[lv]} a partita. Ogni due stagioni nel ruolo cresce da solo, fino al suo massimo.</p>`:''}
@@ -29,7 +29,7 @@ function renderHire(){
   $('hireSub').textContent=(old&&staffLv(k)>=1?`Chi assumi prende il posto di ${old.n}. `:'')+STAFF[k].d+'.';
   $('hireList').innerHTML=staffCands(k).map((c,i)=>{
     const cost=STAFF_HIRE[c.lv],tr=STAFF_TR[c.tr];
-    return `<div class="hcn"><span class="spav">${avatar({look:c.lk,t:0},48)}</span><b class="sr">${esc(c.n)}</b><small>${c.a} anni</small>${stTicks(c.lv,c.pot)}<small>Livello ${c.lv}${c.pot>c.lv?`, può arrivare a ${c.pot}`:' (al massimo)'}</small>${habHTML(tr)}<button type="button" class="go sm" data-hirei="${i}"${SV.cash<cost?' disabled':''}>Assumi · ${cost}</button></div>`;
+    return `<div class="hcn"><span class="spav">${avatar({look:c.lk,full:c.n,gen:true,t:0},48)}</span><b class="sr">${esc(c.n)}</b><small>${c.a} anni</small>${stTicks(c.lv,c.pot)}<small>Livello ${c.lv}${c.pot>c.lv?`, può arrivare a ${c.pot}`:' (al massimo)'}</small>${habHTML(tr)}<button type="button" class="go sm" data-hirei="${i}"${SV.cash<cost?' disabled':''}>Assumi · ${cost}</button></div>`;
   }).join('');
   $('hireMsg').textContent=hireMsg||`Hai ${SV.cash} crediti.`;
   $('hireRenew').textContent=`Altri candidati · ${STAFF_RENEW}`;$('hireRenew').disabled=SV.cash<STAFF_RENEW;
