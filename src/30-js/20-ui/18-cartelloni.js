@@ -105,9 +105,8 @@ function boardSeq(){   // la sequenza dei cartelloni del campo di oggi: si ripet
 // ---------- disegno ----------
 const twCache=new Map();
 const tw=t=>{let w=twCache.get(t);if(w===undefined){w=ptw(t,'t');twCache.set(t,w);}return w;};
-function miniCrest(x,y,name){   // scudetto 5x6 nei due colori dello stemma del club (crestPx e' troppo grande per un cartellone)
-  const h=hashStr('crest|'+name),h1=h%360,h2=(h1+130+(h>>8)%90)%360,c1=`hsl(${h1},68%,46%)`,c2=`hsl(${h2},72%,56%)`;
-  for(let r=0;r<6;r++){const w=r<4?5:(r===4?3:1),x0=x+((5-w)>>1);px(x0,y+r,Math.ceil(w/2),1,c1);px(x0+Math.ceil(w/2),y+r,w-Math.ceil(w/2),1,c2);}
+function miniCrest(x,y,name){   // stessa griglia del campo, adattata allo spazio del cartellone
+  crestPx(x+2.5,y+3,5,name,1);
 }
 // il contenuto di un cartellone: icona (o stemma) e il testo piu' lungo che ci sta; se non ci sta niente, solo l'icona
 function boardFace(it,a,w,y){
