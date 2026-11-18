@@ -14,9 +14,10 @@
 .hb.off{opacity:.35}
 @keyframes hbrdy{50%{box-shadow:0 0 0 calc(3px*var(--bz,1)) rgba(255,210,63,.55),0 2px 0 rgba(0,0,0,.45)}}
 /* elenco degli eroi nella schermata della partita (modalita' Superpoteri) */
-.qhero{margin:10px auto 0;max-width:820px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:10px 12px;background:#141a36;border:3px solid #000;box-shadow:4px 4px 0 #000}
-.qhero>b{flex:0 0 100%;color:var(--gold);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
-.qhe{flex:1 1 220px;display:flex;gap:8px;align-items:center;min-width:0}
+.qhero{margin:10px auto 0;max-width:820px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 14px;align-items:stretch;padding:10px 12px;background:#141a36;border:3px solid #000;box-shadow:4px 4px 0 #000}
+.qhero>b{grid-column:1/-1;color:var(--gold);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.qhe{display:flex;gap:8px;align-items:center;min-width:0;font:inherit;color:inherit;text-align:left;cursor:pointer;background:#0d1228;border:2px solid #2a3360;padding:6px 8px;opacity:.6}
+.qhe.on{opacity:1;border-color:var(--gold);background:#1d2550;box-shadow:2px 2px 0 #000}
 .qhe i{flex:0 0 auto;width:40px;height:32px}.qhe i svg{width:100%;height:100%;image-rendering:pixelated}
 .qhe span{display:flex;flex-direction:column;min-width:0}.qhe strong{font-size:13px}.qhe small{font-size:11px;opacity:.85}
-.qhn{flex:0 0 100%;font-size:11px;opacity:.8}
+.qhn{grid-column:1/-1;font-size:11px;opacity:.8}

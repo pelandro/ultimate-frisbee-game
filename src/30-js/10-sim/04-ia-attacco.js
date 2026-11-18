@@ -186,13 +186,14 @@ function updateAttackers(dt){
       const a=anchor(sch,p.slot,H,d,side);
       p.wT-=dt;if(p.wT<=0){p.wx=rnd(6,FIELD_L-6);p.wy=rnd(3,FIELD_W-3);p.wT=rnd(0.9,2.2);}
       const st0=spreadFrom(p,lerp(a.x,p.wx,w),lerp(a.y,p.wy,w),atk,SPREAD_R,SPREAD_K),sg0=awayFrom(H,st0.x,st0.y,MIN_ATT),sg1=isoT?awayFrom(isoT,sg0.x,sg0.y,10):sg0,dz=laneDodge(p,Hh,atk),sg=dz||settleTgt(p,sg1.x,sg1.y,dt),close=hyp(p.x-H.x,p.y-H.y)<MIN_ATT;mvA(p,sg.x,sg.y,dt,close||dz?1.7:0.85,close?1.2:1);
+      const hc=heroCutOn(p);if(hc)p.cutT-=dt*1.5;   // superpoteri: il compagno trasformato riparte prima e non aspetta il suo turno
       if(p.cutT<=0&&Hh&&!G.flight&&!isoT){
         let tightD=99;for(const q of T[1-P])tightD=Math.min(tightD,hyp(q.x-p.x,q.y-p.y));
         const tight=tightD<2.2&&G.holdT>0.8;   // marcato stretto: deve liberarsi, non aspettare
         if(v>=0.5&&G.holdT<0.5){p.cutT=0.15;}                // aspetta che il lanciatore sia pronto
         else{
-          const tg=pickCut(p,H,d,sch,w);
-          if(!tight&&(active>=cutCap(v)||(Math.random()<clamp(0.12+v*1.1,0,1)&&!spaceClear(p,tg.x,tg.y,atk))))p.cutT=rnd(0.3,0.7); // aspetta che i compagni liberino lo spazio: tetto ai tagli contemporanei a ogni livello di Visione
+          const tg=heroCut(p,H,d)||pickCut(p,H,d,sch,w);
+          if(!tight&&!hc&&(active>=cutCap(v)||(Math.random()<clamp(0.12+v*1.1,0,1)&&!spaceClear(p,tg.x,tg.y,atk))))p.cutT=rnd(0.3,0.7); // aspetta che i compagni liberino lo spazio: tetto ai tagli contemporanei a ogni livello di Visione
           else{p.cs='cut';const tg2=spreadFrom(p,tg.x,tg.y,atk,SPREAD_R,SPREAD_K),tc=awayFrom(H,tg2.x,tg2.y,MIN_ATT);p.tx=tc.x;p.ty=tc.y;p.cutT=tg.deep?3.8:2.4;active++;
             if(!isoT&&w<0.5){const n0=G.st.pair[P];pairCut(p,!!tg.deep,H,d,atk);if(G.st.pair[P]>n0)active++;}}   // taglio in coppia
         }

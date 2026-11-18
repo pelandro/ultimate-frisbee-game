@@ -7,9 +7,9 @@ function aiProb(th,q){
 // refine (solo quando sta per lanciare): tra i 3 migliori per punteggio vince chi ha la probabilita' di completare piu' alta (traiettoria libera, difensore
 // lontano dal punto d'arrivo). Non aggiunge attese: decide nello stesso istante, con un conto in piu'
 function aiPick(th,refine){
-  const P=th.t,d=dirOf(P),defs=T[1-P];
+  const P=th.t,d=dirOf(P),defs=heroSeen(1-P);   // heroSeen: con la copia del clone avversario, che chi lancia non riconosce
   let mates=T[P].filter(q=>q!==th);
-  {const al=pbAllowed(th);if(al){const fr=PB_FREE-PB_FREE_D*clamp((visOf(th)-0.5)/0.3,0,1),free=q=>defs.every(df=>hyp(df.x-q.x,df.y-q.y)>=fr),m2=mates.filter(q=>al.includes(q)&&free(q));if(m2.length)mates=m2;}}   // schema a sequenza: il lancio va a chi e' previsto, se e' libero (chi ha Visione alta si accontenta di meno spazio, e lancia come da schema anche con un difensore addosso); se lo schema e' chiuso si gioca libero
+  {const al=pbAllowed(th);if(al){const fr=PB_FREE-PB_FREE_D*clamp((visOf(th)-0.5)/0.3,0,1),free=q=>defs.every(df=>hyp(df.x-q.x,df.y-q.y)>=fr),m2=mates.filter(q=>(al.includes(q)||heroOn(q))&&free(q));if(m2.length)mates=m2;}}   // schema a sequenza: il lancio va a chi e' previsto, se e' libero (chi ha Visione alta si accontenta di meno spazio, e lancia come da schema anche con un difensore addosso); se lo schema e' chiuso si gioca libero
   let best=null,bs=-1e9;const lv=AIK(P),idn=idOf(P),dmD=G.dmode[1-P],cands=[];
   // LETTURA DELLA PARTITA: chi e' avanti di 2 o sta per chiudere non regala il disco (meno lanci lunghi e contesi); chi e' sotto di 3 rischia di piu'
   const gap=G.score[P]-G.score[1-P],late=G.score[P]>=G.target-2,risk=lv.smart*((gap>=2?1:(gap<=-3?-0.8:0))+(late&&gap>=0?0.5:0));
@@ -22,7 +22,8 @@ function aiPick(th,refine){
     // SPAZIO DAVANTI AL RICEVITORE: conta anche quanto sara' libero il punto in cui il disco arrivera' (lui corre, i difensori pure), non solo dov'e' adesso
     if(lv.smart>=0.6){const tt=flightTime(dist,dist>=SPARO_D,dist>=SPARO_D),lx=q.x+q.vx*tt*0.8,ly=q.y+q.vy*tt*0.8;let o2=99;for(const df of defs)o2=Math.min(o2,hyp(df.x+df.vx*tt*0.6-lx,df.y+df.vy*tt*0.6-ly));open=lerp(open,Math.min(o2,12),0.45*lv.smart);}
     let sc=Math.min(open,9)+Math.min(lane,6)*0.8+fwd*0.11*(1+0.4*idn.deep)-dist*0.06-c*4+rnd(0,Math.max(1,3.8+(0.6-th.s.vis/100)*9))*lv.noise;
-    {const cr=throwComf(th),mr=throwMax(th);if(dist>cr)sc-=(dist-cr)*0.15;if(dist>mr)sc-=40;}   // oltre la gittata comoda cala il punteggio; oltre il massimo il disco non arriva
+    {const cr=throwComf(th),mr=throwMax(th);if(dist>cr)sc-=(dist-cr)*0.15;if(dist>mr)sc-=40;}
+    sc+=heroPass(th,q,dist,fwd);   // superpoteri: si cercano i compagni trasformati (27-superpoteri.js)   // oltre la gittata comoda cala il punteggio; oltre il massimo il disco non arriva
     if(dist>=SPARO_D)sc+=(th.s.spa-55)*0.05-1.5+(open>=5?1.5:0)+idn.deep*1.6;   // sparo: conviene se sei bravo e il compagno e' libero (di piu' per le squadre che giocano lungo)
     if(risk){if(dist>=SPARO_D)sc-=risk*1.3;if(open<4.5)sc-=risk*0.9;}
     if(W&&dist>=22)sc+=clamp((dx*W.x+dy*W.y)/dist,-6.5,6.5)*0.22*lv.smart;   // VENTO: lungo con il vento alle spalle, corto e basso controvento

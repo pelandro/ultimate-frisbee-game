@@ -1,8 +1,8 @@
 /* ---- movimento ---- */
 const fatigue=p=>0.82+0.18*clamp(p.st/70,0,1);   // stanco = piu' lento
 const edgeOf=p=>G.edge&&G.edge.t>0&&p.t===G.edge.team?1+G.edge.k:1;   // vantaggio del pull per qualche secondo (PULL_EDGE)
-const vmaxOf=p=>(5.2+p.s.vel*0.045)*fatigue(p)*edgeOf(p);     // velocità: scatti lunghi
-const accOf=p=>(3.5+p.s.sca*0.085)*fatigue(p)*(hasT(p,'explosive')?1.08:1);
+const vmaxOf=p=>(5.2+p.s.vel*0.045)*fatigue(p)*edgeOf(p)*heroSlow(p);   // heroSlow: l'onda di freddo dello stregone (27-superpoteri.js)     // velocità: scatti lunghi
+const accOf=p=>(3.5+p.s.sca*0.085)*fatigue(p)*(hasT(p,'explosive')?1.08:1)*heroSlow(p);
 const SPRINT_COST=1.8,REST_FIELD=5,REST_BENCH=12;   // con i cambi di direzione netti gli scatti sono piu' frequenti: ognuno costa un po' meno
 // scatto sui lanci lunghi (sparo): il corridore (ricevitore in attacco, difensore piu' vicino in difesa) scatta tenendo premuto, ma si stanca in fretta
 const SPRINT_VM=1.15,SPRINT_AM=1.25,SPRINT_DRAIN=7,AI_SPRINT_COST=0.5;   // AI_SPRINT_COST: chi e' guidato dall'IA consuma la meta' dell'energia nello scatto
@@ -31,7 +31,7 @@ function moveTo(p,tx,ty,dt,am=1,vm=1){
     const sp=hyp(p.vx,p.vy);if(sp>vmax){p.vx*=vmax/sp;p.vy*=vmax/sp;}
   }
   const spd=hyp(p.vx,p.vy);
-  if(!p.spr&&spd>0.78*vmax){p.spr=true;p.m.res++;p.st=Math.max(0,p.st-sprintCost(p));}   // inizia uno scatto
+  if(!p.spr&&spd>0.78*vmax){p.spr=true;p.m.res++;p.st=Math.max(0,p.st-sprintCost(p)*heroDrain(p));}   // inizia uno scatto (heroDrain: contro il mietitore costa di piu')
   else if(p.spr&&spd<0.5*vmax)p.spr=false;
   p.x=clamp(p.x+p.vx*dt,0,FIELD_L);p.y=clamp(p.y+p.vy*dt,0,FIELD_W);
 }

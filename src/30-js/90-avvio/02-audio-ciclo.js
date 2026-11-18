@@ -57,6 +57,7 @@ function buildAudio(c,dest){
       else blip(sfxBus,'sawtooth',150,100,t,0.16,0.14);
     },
     ui(t){blip(sfxBus,'triangle',720,720,t,0.035,0.07);},
+    poof(t,on){noise(sfxBus,t,on?0.45:0.25,'lowpass',on?900:1300,0.7,on?0.55:0.3,0.004);blip(sfxBus,'sine',on?160:220,on?50:90,t,on?0.3:0.16,on?0.32:0.16);if(on)sweep(sfxBus,t+0.04,0.3,2400,600,1,0.12);},   // bomba di fumo dei superpoteri
     whistle(t){blip(sfxBus,'sine',2700,2600,t,0.35,0.12);},
     goal(t){[523,659,784,1047].forEach((f,i)=>{blip(sfxBus,'triangle',f,f,t+i*0.09,0.34,0.17);blip(sfxBus,'square',f/2,f/2,t+i*0.09,0.2,0.04);});}
   };
