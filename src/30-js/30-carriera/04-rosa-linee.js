@@ -12,7 +12,7 @@ function genPlayer(level,age,seedStr,potB){
   const role=rng()<0.45?'H':'C',d=role==='H'?0.5:-0.5,pb0=potB===undefined?level+R(5,24):potB,pb=pb0>90?90+(pb0-90)*0.45:pb0;
   const tg=x=>clamp(Math.round(pb+x+R(-4,4)),45,99),tl=tg(4*d),tf=tg(-4*d),tv=tg(0),st={};
   KEYS.forEach(k=>{const g=(k==='lan'||k==='buc'||k==='spa')?'L':(k==='vis'?'V':'F'),off=g==='L'?9*d:(g==='V'?3*d:-7*d);st[k]=clamp(Math.round(level+off+R(-5,5)),25,capVal(full,k,g==='L'?tl:(g==='V'?tv:tf)));});
-  return {n:nm,label:nm+' '+sur,full,sur,r:role,age,tl,tf,tv,s:st,gen:true,f:FEM_N.has(nm),trait:traitFor(full,st,role),dev:devOf(full),sk:0,cond:100,car:null};
+  return {n:nm,label:nm+' '+sur,full,sur,r:role,age,tl,tf,tv,s:st,gen:true,f:FEM_N.has(nm)||lnWomenNow(),trait:traitFor(full,st,role),dev:devOf(full),sk:0,cond:100,car:null};
 }
 // la rosa come dati (cio' che si salva): una scheda per giocatore
 const squadData=()=>SQ.map(p=>({n:p.name,label:p.label,full:p.full,sur:p.sur||'',r:p.role,age:p.age,tl:p.tl,tf:p.tf,tv:p.tv,s:Object.assign({},p.b||p.s),gen:p.gen,f:!!p.f,trait:p.trait,dev:p.dev,sk:p.sk,cond:Math.round(p.cond),inj:p.inj|0,tr:!!p.tr,car:p.car||null,star:p.star||undefined,nat:p.nat||undefined,pos:p.pos||undefined,ae:p.ae||undefined,aw:p.aw&&p.aw.length?p.aw:undefined,ra:p.ra,ret:p.ret||undefined,retHold:p.retHold||undefined,injC:p.injC||undefined,injBig:p.injBig||undefined,idle:p.idle||undefined,mood:p.mood||undefined,prom:p.prom||undefined,rw:p.rw||undefined,spec:p.spec||undefined,goal:p.goal||undefined,sad:p.sad||undefined,ex:p.ext||undefined,nk:p.nick||undefined,lm:p.lm||undefined,ti:p.ti||undefined,tk:p.tk||undefined,pri:p.pri||undefined,hi:p.hist&&p.hist.length?p.hist:undefined}));

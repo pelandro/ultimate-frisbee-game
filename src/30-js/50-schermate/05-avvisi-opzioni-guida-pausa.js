@@ -168,7 +168,7 @@ $('qPick').addEventListener('click',e=>{if(e.target===$('qPick'))$('qPick').clas
 $('qpTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.tab=b.dataset.k;renderPick();});
 $('qpG').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b||b.classList.contains('off'))return;
-  QM[QM.side]=b.dataset.n;$('qPick').classList.add('hidden');updateQuick();
+  QM[QM.side]=b.dataset.n;qGender(QM.side);$('qPick').classList.add('hidden');updateQuick();   // donne solo contro donne
 });
 $('qSwap').addEventListener('click',()=>{const a=QM.a;QM.a=QM.b;QM.b=a;updateQuick();});
 $('qPlay').addEventListener('click',startQuick);
