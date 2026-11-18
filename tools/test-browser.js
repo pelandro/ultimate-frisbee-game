@@ -29,7 +29,15 @@ catch(e){
   const vis_=async(pg,sel)=>{if(!(await pg.locator(sel).isVisible()))throw new Error('non visibile: '+sel);};
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
   const menu=async id=>{for(let i=0;i<3;i++){if(!(await page.locator('#cmenu').isVisible()))await page.click('#hMenu');try{await page.click(id,{timeout:3000});return;}catch(e){}}await page.click(id);};   // i fumetti e gli imprevisti che si aprono da soli chiudono il menu: si riapre   // Opzioni, Guida, Tutorial e «Menu principale» stanno nel menu della barra in alto
-  const step=async(name,fn)=>{try{await fn();done.push(name);}catch(e){errs.push(name+': '+(process.env.TB_FULL?e.message.split('\n').slice(0,8).join(' | '):e.message.split('\n')[0]));try{if(await page.locator('#tut:not(.hidden)').count())await page.click('#tuX',{timeout:2000});}catch(_){}}};
+  const step=async(name,fn)=>{
+    try{await fn();done.push(name);}
+    catch(e){
+      const visible=await page.locator('.screen:not(.hidden),.overlay:not(.hidden)').evaluateAll(elements=>
+        elements.filter(el=>getComputedStyle(el).display!=='none').map(el=>el.id)).catch(()=>[]);
+      errs.push(name+': '+(process.env.TB_FULL?e.message.split('\n').slice(0,8).join(' | '):e.message.split('\n')[0])+' · schermate aperte: '+visible.join(', '));
+      try{if(await page.locator('#tut:not(.hidden)').count())await page.click('#tuX',{timeout:2000});}catch(_){}
+    }
+  };
   const playOut=async()=>{   // gioca la partita in corso simulando una meta alla volta, gestendo schemi, cambi obbligati e half time
     for(let i=0;i<160;i++){
       if(await page.locator('#over').isVisible())return;
@@ -113,7 +121,10 @@ catch(e){
     await page.click('#lgList [data-div="w"]');await vis('#team');
     const tn=await page.locator('#tTeams .tteam').allInnerTexts();if(!tn.length||!tn.some(t=>/Tequila Boom Boom/.test(t))||tn.some(t=>/La Fotta/.test(t)))throw new Error('squadre femminili sbagliate: '+tn.slice(0,3).join(' | '));
     await page.click('#tTeams .tteam >> nth=0');await vis('#rpv');if(!/giocatrici/.test(await page.locator('#rpS').innerText()))throw new Error('nella rosa femminile si parla di giocatrici');
-    await page.click('#rpX');await page.click('#teamBack');await vis('#league');
+    await page.keyboard.press('Tab');
+    if(!await page.evaluate(()=>!!document.activeElement.closest('#rpv')))throw new Error('il focus è uscito dalla rosa');
+    await page.keyboard.press('Escape');await page.locator('#rpv').waitFor({state:'hidden'});
+    await page.click('#teamBack');await vis('#league');
     if(!/divisione/i.test(await page.locator('#lgH').innerText()))throw new Error('dal femminile «Indietro» torna alla scelta della divisione');
     await page.click('#lgList [data-div="m"]');if(!(await page.locator('#lgList [data-lg="IT"]').count()))throw new Error('manca il campionato italiano maschile');
     await page.click('#lgBack');await page.click('#lgBack');await vis('#title');
@@ -243,6 +254,11 @@ catch(e){
     await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="rec"]');await page.click('#hHome');
     await page.click('#hEvent');await vis('#event');await page.click('#evTabs [data-sr="A"]');await page.click('#evTabs [data-sr="B"]');await vis('#eBody table.rt');
     const trs=await page.locator('#eBody table.rt tr').count();if(trs<8)throw new Error('classifica di un\'altra serie troppo corta: '+trs);
+    await page.click('#eBody [data-evpage="calendar"]');
+    if(!/Prossima|Da giocare/.test(await page.locator('#eBody').innerText()))throw new Error('calendario senza prossime partite');
+    await page.click('#eBody [data-evpage="stats"]');await vis('#eBody [data-evpage="stats"][aria-current="page"]');
+    await page.click('#eBody [data-evpage="final"]');await vis('#eBody [data-evpage="final"][aria-current="page"]');
+    await page.click('#eBody [data-evpage="table"]');await vis('#eBody table.rt');
     await page.click('#hHome');
     await menu('#hOpt');await vis('#opts');await page.click('#opX');
     await page.click('#hBell');await vis('#alerts');   // lo chiude il gestore qui sopra alla prossima azione
@@ -629,6 +645,22 @@ catch(e){
     if(!/Salvataggi/.test(await page.locator('#tSlots').innerText()))throw new Error('il tasto degli slot deve chiamarsi «Salvataggi»');
     await page.click('#tSlots');await vis('#slots');
     const full=await page.locator('#csBox [data-cgo]').count();if(full<1)throw new Error('la carriera esistente non compare tra gli slot');
+    const occupied=page.locator('#csBox .csl:has([data-cgo])').first();
+    const oldSlot=await occupied.innerText();
+    await occupied.locator('[data-cnew]').click();
+    await vis('#cfm');await page.click('#cfmOk');await vis('#league');
+    await page.click('#lgBack');await vis('#slots');
+    if(await occupied.innerText()!==oldSlot)throw new Error('annullare la sostituzione ha cambiato lo slot');
+    await page.reload();await page.click('#tSlots');await vis('#slots');
+    if(await occupied.innerText()!==oldSlot)throw new Error('lo slot precedente non sopravvive alla ricarica');
+    await occupied.locator('[data-cgo]').click();await vis('#home');
+    await menu('#hOpt');await vis('#opts');
+    const beforeImport=await page.evaluate(()=>localStorage.getItem('ultimate-prototipo-v2'));
+    const invalid=JSON.parse(beforeImport);invalid.sched=[];
+    await page.locator('#clFile').setInputFiles({name:'carriera-invalida.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(invalid))});
+    await page.waitForFunction(()=>document.getElementById('opMsg').textContent.includes('Carriera non leggibile'));
+    if(await page.evaluate(()=>localStorage.getItem('ultimate-prototipo-v2'))!==beforeImport)throw new Error('l’importazione invalida ha cambiato il salvataggio');
+    await page.click('#opX');await menu('#hBack');await page.click('#tSlots');await vis('#slots');
     const empty=await page.locator('#csBox .csl:not(:has([data-cgo])) [data-cnew]').first();
     const k=+(await empty.getAttribute('data-cnew'));await empty.click();await vis('#league');await page.click('#lgBack');await vis('#slots');   // ripensamento: la carriera di prima resta
     if(await page.locator('#csBox [data-cgo]').count()!==full)throw new Error('tornando indietro la carriera di prima e\' sparita');
@@ -659,6 +691,28 @@ catch(e){
     if(await p.evaluate(()=>document.documentElement.classList.contains('rotp')))throw new Error('la rotazione non si spegne dalle Impostazioni');
     await p.click('#sRot').catch(()=>{});await ctx.close();
     if(er.length)throw new Error('errore in verticale: '+er[0]);
+  });
+  await step('Pages: il gioco riparte offline in una nuova scheda',async()=>{
+    const http=require('node:http'),{html,worker}=require('./build').pagesBuild();
+    const assets=require('./icona').webFiles();
+    const server=http.createServer((req,res)=>{
+      const name=new URL(req.url,'http://localhost').pathname.split('/').at(-1);
+      if(!name){res.setHeader('Content-Type','text/html; charset=utf-8');res.end(html);}
+      else if(name==='offline-worker.js'){res.setHeader('Content-Type','text/javascript');res.end(worker);}
+      else if(Object.hasOwn(assets,name))res.end(assets[name]);
+      else{res.statusCode=404;res.end();}
+    });
+    await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});
+    const ctx=await browser.newContext({viewport:{width:844,height:390}});
+    const url='http://127.0.0.1:'+server.address().port+'/ultimate-frisbee/';
+    try{
+      const online=await ctx.newPage();await online.goto(url);
+      await online.waitForFunction(async()=>!!(await navigator.serviceWorker.getRegistration())?.active);
+      await online.close();
+      await ctx.setOffline(true);
+      const cold=await ctx.newPage();await cold.goto(url);await vis_(cold,'#title');
+      await cold.click('#tQuick');await vis_(cold,'#quick');
+    }finally{await ctx.close();await new Promise(resolve=>server.close(resolve));}
   });
   await browser.close();
   for(const d of done)console.log('  [OK] '+d);

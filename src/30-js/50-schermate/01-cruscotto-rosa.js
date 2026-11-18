@@ -16,7 +16,8 @@ function renderHome(){
     const ord=ranking(SV.tab,names),me=ord.indexOf(SV.team),a=clamp(me-1,0,Math.max(0,ord.length-3));
     tab=ord.slice(a,a+3).map((n,i)=>`<div class="${n===SV.team?'me':''}"><span>${a+i+1}. ${esc(n)}</span><b>${SV.tab[n].pts}</b></div>`).join('');
   }else tab=euHomeTab();
-  $('hTab').innerHTML=tab;
+  const provisional=SV.event==='camp'&&!SV.round&&!SV.done;
+  $('hTab').innerHTML=(provisional?'<small class="note">Classifica provvisoria</small>':'')+tab;
   // i crediti stanno nella barra in alto: qui erano un doppione
   $('hBars').innerHTML=statBar('Tifosi',fansOf(),'#ff9a3a','%')+`<div class="dbar"><span>Morale</span><span class="cbar"><i style="width:${Math.round(SV.mor)}%;background:#4fe58f"></i></span><b>${moodFace(teamMoodKey())}</b></div>`+statBar('Affiatamento',SV.chem,'#5ac8ff');
   renderTodo();   // «Questa settimana»: cosa serve adesso, ognuna porta alla schermata giusta (24-guscio-carriera.js)
@@ -81,7 +82,7 @@ const openDet=new Set();
 let rView=(()=>{try{return localStorage.getItem('ultimate-vista-rosa')==='t'?'t':'c';}catch(e){return 'c';}})(),cardOpen=null,nickEdit=null,rOrd=[];   // vista: carte (c) o tabella (t)
 // filtri e ordinamenti della Rosa: con 20 e piu' giocatori servono per trovare subito chi cerchi
 let rFilt='all',rSort='ovr';
-const R_FILT={all:['Tutti',()=>true],H:['Handler',p=>posOf(p)==='H'],C:['Cutter',p=>posOf(p)==='C'],D:['Defender',p=>posOf(p)==='D'],out:['Fuori linea',p=>!SV.lineO.includes(p.full)&&!SV.lineD.includes(p.full)],ko:['Da gestire',p=>!!p.inj||p.cond<50||p.mood>0||p.ret===1]};
+const R_FILT={all:['Tutti',()=>true],lineO:['Linea d’attacco',p=>SV.lineO.includes(p.full)],lineD:['Linea di difesa',p=>SV.lineD.includes(p.full)],H:['Handler',p=>posOf(p)==='H'],C:['Cutter',p=>posOf(p)==='C'],D:['Defender',p=>posOf(p)==='D'],out:['Fuori linea',p=>!SV.lineO.includes(p.full)&&!SV.lineD.includes(p.full)],ko:['Da gestire',p=>!!p.inj||p.cond<50||p.mood>0||p.ret===1]};
 const R_SORT={ovr:['Overall',(a,b)=>ovrX(b)-ovrX(a)],pot:['Potenziale',(a,b)=>{const x=potRange(a),y=potRange(b);return (y[0]+y[1])-(x[0]+x[1]);}],age:['Età',(a,b)=>a.age-b.age],cond:['Condizione',(a,b)=>a.cond-b.cond],wage:['Stipendio',(a,b)=>wageOf(b)-wageOf(a)],ssn:['Rendimento',(a,b)=>seasonScore(b.car)-seasonScore(a.car)]};
 let rosterMsg='',sellArm=null;
 function lineToggle(p,k){
@@ -206,12 +207,36 @@ function standingsHTML(sr){
 }
 let evSr='';
 $('eBody').addEventListener('click',e=>{const b=e.target.closest('#evTabs [data-sr]');if(!b)return;evSr=b.dataset.sr;renderEvent();});
+let eventPage='table';
+const EVENT_PAGES=[['table','Classifica'],['calendar','Calendario'],['stats','Statistiche'],['final','Fase finale']];
+function eventPages(active=eventPage){
+  return `<nav class="seg evpages" aria-label="Viste della lega">${EVENT_PAGES.map(([id,label])=>`<button type="button" class="sg${active===id?' on':''}" data-evpage="${id}"${active===id?' aria-current="page"':''}>${label}</button>`).join('')}</nav>`;
+}
+function eventCalendar(){
+  const mine=SV.res||[],next=nextMatch();
+  const rows=mine.map((r,i)=>`<li class="${r.su>r.so?'w':'l'}"><span>${i+1}. ${esc(r.opp)}</span><strong>${r.su} – ${r.so}</strong></li>`);
+  if(next)rows.push(`<li class="n"><span>${esc(next.label)} · ${esc(next.name)}</span><strong>Prossima</strong></li>`);
+  if(!isUS()&&!isLN()&&!SV.done&&SV.event==='camp'&&!SV.po?.on){
+    const names=SV.mem[SV.sr],mine=names.indexOf(SV.team);
+    SV.sched.slice(SV.round+1).forEach((round,i)=>{
+      const pair=round.find(m=>m.includes(mine));
+      if(pair)rows.push(`<li><span>Giornata ${SV.round+i+2} · ${esc(names[pair.find(n=>n!==mine)])}</span><span>Da giocare</span></li>`);
+    });
+  }
+  return rows.length?`<ul class="elist">${rows.join('')}</ul>`:'<p class="note">Il calendario comparirà quando inizierà il campionato.</p>';
+}
+$('eBody').addEventListener('click',e=>{
+  const button=e.target.closest('[data-evpage]');
+  if(!button)return;
+  eventPage=button.dataset.evpage;renderEvent();
+  $('eBody').querySelector(`[data-evpage="${eventPage}"]`)?.focus();
+});
 function renderEvent(){
   if(isUS())return renderEventUS();   // Classifica del campionato USA: 15-usa-schermate.js
   if(isLN())return renderEventLN();   // Classifica delle leghe europee: 19-leghe-schermate.js
   const cs=SV.done?`${SERIES_NAME[SV.sr]}, stagione conclusa`:(SV.po&&SV.po.on?`${SERIES_NAME[SV.sr]}, ${PO_NAME[SV.po.kind].toLowerCase()}`:`${SERIES_NAME[SV.sr]}, giornata ${SV.round+1} di ${totalRounds()}`);
   $('eCards').innerHTML=
-    `<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>Campionato</strong><small>Serie A, B e C: tutte contro tutte, poi playoff scudetto tra le prime 4 della A; in B e C sale la prima più la vincente dello spareggio tra 2ª e 5ª. Scendono le ultime 2. ${cs}.</small></button>`+
+    `<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>Campionato</strong><small>Serie A, B e C: tutte contro tutte, poi playoff scudetto tra le prime 4 della A; in B e C sale la prima più la vincente degli spareggi tra le squadre dalla 2ª alla 5ª. Scendono le ultime 2. ${cs}.</small></button>`+
     (SV.euUnlocked
       ?`<button type="button" class="ecard${SV.event==='eu'?' on':''}" data-e="eu"><strong>Campionato europeo (EUCF)</strong><small>16 club in 4 gironi da 4, poi prequarti, quarti, semifinali e finale. ${euCardSub()}</small></button>`
       :`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo</strong><small>Bloccato: serve chiudere la stagione tra le prime 3 della Serie A, e vale per la stagione dopo.</small></button>`);
@@ -220,20 +245,23 @@ function renderEvent(){
     if(!SV.lg||!SV.lg[evSr])evSr=SV.sr;
     let endH='';
     if(SV.done)endH=endSeasonHTML({});
-    body+=endH;   // a stagione conclusa il riepilogo, i premi e il tasto per ripartire stanno in cima: prima erano in fondo a una pagina lunga
+    body+=endH;
+    body+=eventPages();
+    if(eventPage==='calendar'){$('eBody').innerHTML=body+eventCalendar();return;}
+    if(eventPage==='stats'){$('eBody').innerHTML=body+(leadersHTML()||'<p class="note">Le statistiche compariranno dopo le prime partite.</p>');return;}
+    if(eventPage==='final'){
+      const po=SV.po?.on?poBracketHTML(SV.po):SV.next?.po?poBracketHTML(null,SV.next.po):'';
+      $('eBody').innerHTML=body+(po||'<p class="note">Il tabellone sarà disponibile dopo la stagione regolare.</p>');
+      return;
+    }   // a stagione conclusa il riepilogo, i premi e il tasto per ripartire stanno in cima: prima erano in fondo a una pagina lunga
     body+=`<div class="seg" id="evTabs">${['A','B','C'].map(s=>`<button type="button" class="sg${evSr===s?' on':''}" data-sr="${s}">${SERIES_NAME[s]}${s===SV.sr?' (tua)':''}</button>`).join('')}</div>`;
     body+=`<p class="estat">${SERIES_NAME[evSr]}, stagione ${SV.season}${evSr!=='A'?', in verde chi sale':''}${evSr!=='C'?`${evSr!=='A'?' e in rosso':', in rosso'} chi scende`:''}${evSr!==SV.sr&&SV.lg[evSr]?` · giornata ${SV.lg[evSr].round} di ${SV.lg[evSr].sched.length}`:''}</p>`;
     if(SV.po&&SV.po.on&&evSr===SV.sr)body+=`<h3 class="eh">${PO_NAME[SV.po.kind]}</h3>${poBracketHTML(SV.po)}`;
     else if(SV.done&&SV.next&&SV.next.po&&evSr===SV.sr)body+=`<h3 class="eh">${PO_NAME[SV.next.po.kind]}</h3>${poBracketHTML(null,SV.next.po)}`;
     body+=standingsHTML(evSr);
     if(evSr!==SV.sr&&SV.lg[evSr]&&SV.lg[evSr].last.length)body+=`<h3 class="eh">Ultima giornata in ${SERIES_NAME[evSr]}</h3><ul class="elist">${SV.lg[evSr].last.map(m=>`<li class="${m[2]>m[3]?'w':'l'}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('')}</ul>`;
-    if(evSr===SV.sr)body+=leadersHTML();
     if(evSr===SV.sr&&SV.riv)body+=`<p class="note" style="margin:8px 0 0">${derbyTxt()}.</p>`;
     if(SV.story&&SV.story.length)body+=`<h3 class="eh">Dal campionato</h3><ul class="elist">${SV.story.slice(0,6).map(x=>`<li><span>${esc(x.txt)}</span><span>S${x.s}·G${x.r}</span></li>`).join('')}</ul>`;
-    const done=SV.res.slice(-6).map((r,i)=>{const g=SV.res.length-Math.min(6,SV.res.length)+i+1;return `<li class="${r.su>r.so?'w':'l'}"><span>Giornata ${g} contro ${r.opp}</span><span>${r.su} – ${r.so}</span></li>`;});
-    const nm=nextMatch();
-    if(nm)done.push(`<li class="n"><span>${nm.label} contro ${nm.name}</span><span>Prossima</span></li>`);
-    body+=`<ul class="elist" style="margin-top:10px">${done.join('')}</ul>`;
   }else{
     body+=euView();   // EUCF: gironi e tabellone (18-eucf-schermate.js)
   }

@@ -6,7 +6,7 @@
 const RP={buf:[],on:null,pt:-1,n:0};
 const RP_KEEP=3,RP_SPAN=1.6,RP_SPEED=0.75,RP_DUR=RP_SPAN/RP_SPEED;
 function rpRecord(){
-  if(!G.inMatch||G.drill)return;
+  if(!G.inMatch||G.drill||G.paused||G.auto||reduceMotion)return;
   if(G.pointNo!==RP.pt){RP.pt=G.pointNo;RP.buf.length=0;}   // nuova meta: si ricomincia
   if(G.mode!=='play')return;
   const all=T[0].concat(T[1]),d=G.disc;
@@ -27,7 +27,7 @@ function rpCheck(){
   if(G.mode!=='banner'||!G.banner||G.banner.rpChk)return;
   G.banner.rpChk=true;
   const lab=rpLabel(),last=RP.buf[RP.buf.length-1];
-  if(!lab||!G.opt.cine||!last||G.tick-last.t>0.5)return;   // niente replay dopo una meta simulata o saltata (nessun fotogramma recente)
+  if(reduceMotion||!lab||!G.opt.cine||!last||G.tick-last.t>0.5)return;   // niente replay dopo una meta simulata o saltata (nessun fotogramma recente)
   const fr=RP.buf.filter(f=>f.t>=last.t-RP_SPAN);if(fr.length<10)return;
   const all=T[0].concat(T[1]);
   RP.on={fr,t:0,lab,save:{p:all.map(p=>[p.x,p.y,p.vx,p.vy]),d:[G.disc.x,G.disc.y,G.disc.z],h:G.holder,f:G.flight,w:G.walk}};
@@ -44,11 +44,15 @@ function rpApply(dt){
   if(G.mode!=='banner'||!G.banner||G.banner.t<=2.4){rpEnd();return;}
   r.t+=dt*RP_SPEED;
   const t0=r.fr[0].t,tt=t0+r.t;let i=0;while(i<r.fr.length-1&&r.fr[i+1].t<=tt)i++;
-  rpSet(r.fr[i]);
+  const a=r.fr[i],b=r.fr[i+1];
+  if(!b)return a;
+  const f=clamp((tt-a.t)/Math.max(.001,b.t-a.t),0,1);
+  const interpolate=(x,y)=>x.map((v,j)=>v+(y[j]-v)*f);
+  return {p:a.p.map((q,j)=>b.p[j]?interpolate(q,b.p[j]):q),d:interpolate(a.d,b.d),h:a.h,f:a.f,w:a.w};
 }
 function rpEnd(skip){
   const r=RP.on;if(!r)return;
-  RP.on=null;rpSet(r.save);
+  RP.on=null;
   if(skip&&G.banner)G.banner.t=Math.min(G.banner.t,2.4);
 }
 function drawReplay(){

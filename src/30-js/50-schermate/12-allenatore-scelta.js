@@ -32,6 +32,7 @@ function openCoach(o){
 }
 function renderCoach(){
   if(!coS){showScreen(hasCareer()?'home':'team');return;}
+  $('coMsg').textContent='';
   const nw=coS.mode==='new';
   $('coWhy').textContent=nw?(coS.relief?`${coS.team} ti ha scelto come nuovo allenatore. Come ti chiami?`:`Stai per allenare ${coS.team}. Come ti chiami e che faccia hai?`):'Cambia nome o volto quando vuoi: compari nella schermata Partita, nelle notizie e nella Hall of Fame.';
   $('coN').value=coS.n;$('coS').value=coS.s;$('coGo').textContent=nw?'Inizia la carriera':'Salva';
@@ -50,8 +51,13 @@ $('coRnd').addEventListener('click',()=>{if(!coS)return;const r=coachRandom();co
 $('coBack').addEventListener('click',()=>{const nw=coS&&coS.mode==='new';coS=null;showScreen(nw?'team':'home');});
 $('coGo').addEventListener('click',()=>{
   if(!coS)return;
-  const c=coachNorm({n:$('coN').value,s:$('coS').value,lk:coS.lk}),s=coS;coS=null;
-  if(s.mode==='new'){startCareer(s.team,{coach:c,relief:s.relief});showScreen('home');return;}
+  const c=coachNorm({n:$('coN').value,s:$('coS').value,lk:coS.lk}),s=coS;
+  if(s.mode==='new'&&!commitCareerDraft(s.team,c,s.relief)){
+    $('coMsg').textContent='Impossibile salvare la nuova carriera. Puoi riprovare o tornare indietro.';
+    return;
+  }
+  coS=null;
+  if(s.mode==='new'){showScreen('home');return;}
   SV.coach=c;persist();showScreen('home');
 });
 $('hCoach').addEventListener('click',()=>{if(SV.coach)openCoach({mode:'edit'});});

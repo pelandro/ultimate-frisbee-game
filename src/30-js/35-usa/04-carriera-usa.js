@@ -8,12 +8,12 @@ function usStartCareer(name,opt){
   SV.coach=coachNorm(opt.coach);SV.start='cuore';
   usInit(name);
   SV.rost={};for(const n of US_NAMES)if(n!==name)SV.rost[n]=usRoster(n,SV.seed);
-  setSquad(usRoster(name,SV.seed+'|user'));   // la tua rosa: quella del club, come per le avversarie
+  setSquad(usRoster(name,'preview|'+SV.team));   // la tua rosa: quella del club, come per le avversarie
   beginSeason();
   Object.assign(SV,opt.carry||{});   // se arrivi dall'Italia: allenatore, storico e traguardi restano tuoi
   careerInit();
   news(`Inizia la carriera con ${name} nella ${usConfName(SV.us.cf)} dei Men’s Club USA. In panchina: ${coachName()}.`);
-  persist();
+  if(!opt.deferSave)persist();
 }
 const usRepStart=()=>Math.round(20+(US_NAMES.length-US_TEAM[SV.team].rank)/(US_NAMES.length-1)*40);   // i club piu' prestigiosi partono con piu' reputazione (da 21 a 60)
 // ---- obiettivi della dirigenza: secondo il livello del club tra i 48 (la scala US_RUNG e' in 30-carriera/27-obiettivi-sponsor.js) ----

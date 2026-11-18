@@ -165,8 +165,8 @@ $('qL').addEventListener('change',updateQuick);$('qD').addEventListener('change'
 $('qA').addEventListener('click',()=>openPick('a'));$('qB').addEventListener('click',()=>openPick('b'));
 $('qpX').addEventListener('click',()=>$('qPick').classList.add('hidden'));
 $('qPick').addEventListener('click',e=>{if(e.target===$('qPick'))$('qPick').classList.add('hidden');});
-$('qpTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.tab=b.dataset.k;renderPick();});
-$('qpLg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.lg=b.dataset.l;QM.tab='';renderPick();});
+$('qpTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.tab=b.dataset.k;$('qpSearch').value='';renderPick();});
+$('qpLg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.lg=b.dataset.l;QM.tab='';$('qpSearch').value='';renderPick();});
 $('qpG').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b||b.classList.contains('off'))return;
   QM[QM.side]=b.dataset.n;qGender(QM.side);$('qPick').classList.add('hidden');updateQuick();   // donne solo contro donne
@@ -182,10 +182,12 @@ function armed(btn,label,idle,fn){
   if(!btn.dataset.arm){btn.dataset.arm='1';btn.textContent=label;setTimeout(()=>{delete btn.dataset.arm;btn.textContent=idle;},3000);return;}
   delete btn.dataset.arm;btn.textContent=idle;fn();
 }
-$('hNew').addEventListener('click',()=>armed($('hNew'),'Conferma: cancella la carriera','Nuova carriera',()=>{
-  $('opts').classList.add('hidden');
-  const slot=SV.slot||1;try{localStorage.removeItem(SAVE_KEY);localStorage.removeItem(slotKey(slot));}catch(e){}
-  const help=SV.help;SV={help,slot};showScreen('league');   // la nuova carriera resta nello stesso slot
+$('hNew').addEventListener('click',()=>askConfirm({
+  title:'Sostituire la carriera?',html:'<p>La sostituzione avviene quando inizi e salvi la nuova carriera.</p>',
+  ok:'Scegli la nuova squadra',danger:true,onOk:()=>{
+    $('opts').classList.add('hidden');
+    careerNew(SV.slot||1);
+  }
 }));
 bExit.addEventListener('click',()=>openPause());
 

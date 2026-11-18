@@ -126,6 +126,13 @@ function renderEventLN(){
   if(lnTabPh!==L.ph){lnTabPh=L.ph;lnTabSel=L.ph==='grp'?'grp':'fin';}
   let body='';
   if(SV.done&&SV.next)body+=endSeasonHTML({});
+  body+=eventPages();
+  if(eventPage!=='table'){
+    const detail=eventPage==='calendar'?eventCalendar():eventPage==='stats'
+      ?(leadersHTML()||'<p class="note">Le statistiche compariranno dopo le prime partite.</p>'):lnFinView();
+    $('eBody').innerHTML=body+detail;
+    return;
+  }
   body+=`<div class="seg" id="lnTabs">${[['grp','Girone'],['fin','Fase finale'],['tiers','Livelli']].map(([k,l])=>`<button type="button" class="sg${lnTabSel===k?' on':''}" data-lt="${k}">${l}</button>`).join('')}</div>`;
   body+=lnTabSel==='fin'?lnFinView():(lnTabSel==='tiers'?lnTiersView():lnPoolView());
   $('eBody').innerHTML=body;

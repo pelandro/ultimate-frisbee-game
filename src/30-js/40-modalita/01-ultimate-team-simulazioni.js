@@ -24,6 +24,7 @@ function utMakePack(v){
   return roles.map((r,i)=>utCardFor(r,utTierOvr(tiers[i],Math.random),Math.random,taken)).sort((a,b)=>a.ovr-b.ovr);
 }
 const utPackName=v=>utPkRole(v)===HERO_PK?utHeroPackName(v):utPkRole(v)===EQ_PK?(utPkQ(v)>=6?'Super pacchetto equipaggiamento':(utPkQ(v)>=2?'Pacchetto equipaggiamento '+UT_PQN[utPkQ(v)].split(' ')[1]:'Pacchetto equipaggiamento')):utPkRole(v)?(utPkRole(v)===1?'Pacchetto Handler':'Pacchetto Cutter'):utPkQ(v)===0&&!UT.col.length?'Pacchetto iniziale':(UT.rp&&utPkQ(v)===6?'Super pacchetto':UT_PQN[utPkQ(v)]);
+const utPackContents=v=>utPkRole(v)===EQ_PK?'accessori':utPkRole(v)===HERO_PK?'eroi':'giocatori';
 const utPackTip=v=>{const q=utPkQ(v);if(utPkRole(v)===HERO_PK)return utHeroPackTip(v);if(utPkRole(v)===EQ_PK)return q>=6?'almeno un Epico garantito':(q>=3?'almeno un Raro garantito':'accessori per tutta la squadra');if(utPkRole(v))return utPkRole(v)===1?'solo carte Handler':'solo carte Cutter';return q>=6?'almeno un Epico garantito':(q>=2?'almeno un Raro garantito':((UT.pity|0)+1>=UT_PITY?'questo contiene di sicuro un Epico':'più sono forti, più sono rari'));};
 // squadra avversaria del turno: 7 titolari con media esatta = forza del turno, 7 di panchina piu' deboli
 function utOppRoster(power,seed){
@@ -71,7 +72,7 @@ function renderUT(){
   $('uRounds').innerHTML=UT_ROUNDS.map((n,i)=>{const c=(UT.st==='won'||i<UT.round)?'done':(i===UT.round?(UT.st==='out'?'lost':'cur'):'');return `<span class="uchip ${c}"><small>${n}</small><b>${UT_POWERS[i]}</b></span>`;}).join('');
   $('uPack').classList.toggle('hidden',!pend);
   $('uPackT').textContent=UT.packs[0]===0&&!has?'Apri il pacchetto iniziale':`Apri: ${utPackName(UT.packs[0])}${pend>1?' (+'+(pend-1)+')':''}`;
-  $('uPackS').textContent=pend?`${utPackSize(UT.packs[0])} giocatori · ${utPackTip(UT.packs[0])}`:'';
+  $('uPackS').textContent=pend?`${utPackSize(UT.packs[0])} ${utPackContents(UT.packs[0])} · ${utPackTip(UT.packs[0])}`:'';
   const r=Math.min(UT.round,5),o=UT.opp[r];
   $('uPlayRow').classList.toggle('hidden',UT.st!=='play'||!!pend||!has);
   $('uPlay').disabled=!playing;$('uSim').disabled=!playing;
@@ -82,7 +83,7 @@ function renderUT(){
   $('uEquip').classList.toggle('hidden',!has);$('uEquipS').textContent=eqSubTxt();
   $('uNew').classList.toggle('hidden',UT.st==='play');
   $('uDiff').innerHTML=UT_DIFF.map((d,i)=>`<button type="button" class="sg${i===UT.d?' on':''}" data-d="${i}">${d.name}</button>`).join('');$('uDiffN').textContent=UT_DIFF[UT.d].txt+' Le avversarie hanno la forza del turno'+(DIFF_PLUS[UT.d|0]?', con +'+DIFF_PLUS[UT.d|0]+' a tutte le statistiche.':'.');
-  $('uMsg').textContent=UT.res||'';
+  $('uMsg').textContent=UT.res||(UT.st==='play'?(pend?'Apri i pacchetti in attesa per giocare il turno.':UT.sel.length!==7?'Schiera 7 titolari per giocare il turno.':''):'');
 }
 $('tUT').addEventListener('click',()=>showScreen('utMode'));   // prima si sceglie: Computer (questa pagina) o Real player (04-ut-online.js)
 $('uBack').addEventListener('click',()=>showScreen('utMode'));
@@ -97,14 +98,21 @@ $('uObj').addEventListener('click',e=>{const b=e.target.closest('[data-obj]');if
 $('uNew').addEventListener('click',()=>{UT.tid++;UT.round=0;UT.st='play';UT.res='';UT.packs.push(0);utOpps();utSave();renderUT();});
 // ---- apertura del pacchetto ----
 const utPos=p=>POS_NAME[posOf(p)];
-const utCard=(p,i)=>{const [rn,rc]=utRar(p.ovr);return `<div class="ucard ${rc}" style="animation-delay:${(i*0.3).toFixed(2)}s"><b>${p.ovr}</b><span>${p.n}</span><i>${utPos(p)} · ${rn}</i>${p.cl?`<i>${p.cl}</i>`:''}${p.trait&&TRAITS[p.trait]?`<i style="color:#e0b3ff">${TRAITS[p.trait][0]}</i>`:''}</div>`;};
+const utCard=(p,i)=>{const [rn,rc]=utRar(p.ovr);return `<div class="ucard ${rc}" style="animation-delay:${(Math.min(i,8)*0.08).toFixed(2)}s"><b>${p.ovr}</b><span>${p.n}</span><i>${utPos(p)} · ${rn}</i>${p.cl?`<i>${p.cl}</i>`:''}${p.trait&&TRAITS[p.trait]?`<i style="color:#e0b3ff">${TRAITS[p.trait][0]}</i>`:''}</div>`;};
 function renderPack(){
   const open=UT.stage==='open';
+  $('pkReveal').classList.toggle('hidden',!open);
+  $('pkBody').classList.remove('reveal-all');
   $('pkTitle').textContent=open?(UT.cur[0]&&UT.cur[0].eq?'Ecco i tuoi accessori':(UT.cur[0]&&UT.cur[0].hk?'Ecco i tuoi eroi':'Ecco i tuoi giocatori')):utPackName(UT.packs[0]);
   const v=UT.packs[0],eq=utPkRole(v)===EQ_PK,hp=utPkRole(v)===HERO_PK;
   $('pkBody').innerHTML=open?`<div class="ucards">${UT.cur.map((p,i)=>p.eq?eqCard(p,i):(p.hk?heroUCard(p,i):utCard(p,i))).join('')}</div>${UT.eqMsg?`<p class="qp" style="text-align:center">${UT.eqMsg}</p>`:''}`:`<div class="dpk">${utDisc(utPkQ(v),utPackSize(v),hp?'S':(eq?'E':(utPkRole(v)===1?'H':(utPkRole(v)===2?'C':''))))}<b>${hp?'eroi':(eq?'accessori':'giocatori')}</b><small>${utPackTip(v)}</small></div>`;
   $('pkGo').textContent=open?(UT.packs.length?`Prossimo pacchetto (${UT.packs.length})`:'Continua'):'Apri';
 }
+$('pkReveal').addEventListener('click',()=>{
+  $('pkBody').classList.add('reveal-all');
+  $('pkGo').focus();
+  $('pkReveal').classList.add('hidden');
+});
 $('pkGo').addEventListener('click',()=>{
   if(UT.stage==='closed'){
     const v=UT.packs.shift();UT.eqMsg='';
@@ -118,13 +126,15 @@ $('pkGo').addEventListener('click',()=>{
 });
 // ---- la tua squadra: scegli i 7 titolari ----
 function renderTeamUT(){
+  const focused=document.activeElement?.closest?.('#tmList [data-i]')?.dataset.i;
   const idx=UT.col.map((p,i)=>i).sort((a,b)=>UT.col[b].ovr-UT.col[a].ovr);
   for(const b of $('tmMode').children){b.classList.toggle('on',b.dataset.m===UT.mode);if(b.dataset.m==='up')b.textContent=utUpLock()?'Potenzia (da 1100 punti)':'Potenzia';}
   const tip=UT.mode==='sel'?'tocca un giocatore per metterlo o toglierlo dai titolari':(UT.mode==='up'?'tocca una carta e scegli il potenziamento: ogni carta ne ha al massimo 4 (2 per linea), il prezzo è accanto al nome':'tocca una riserva per scartarla e recuperare gettoni (i titolari non si scartano)');
   $('tmInfo').innerHTML=`Titolari: <b>${UT.sel.length}/7</b> · Forza: <b>${utPower()}</b> · Gettoni: <b>${UT.coins}</b> — ${tmMsg||tip}`;
   const hdr=`<div class="urow hd"><span></span><span>Giocatore</span><span></span>${SHOW.map(k=>`<span class="sv">${k.toUpperCase()}</span>`).join('')}</div>`;
   $('tmList').innerHTML=hdr+idx.map(i=>{const p=UT.col[i],rc=utRar(p.ovr)[1],ex=UT.mode==='up'?((p.up|0)>=UT_UP_MAX?'max':utUpCost(p)+'g'):(UT.mode==='del'&&!UT.sel.includes(i)?'+'+UT_SELL[rc]+'g':'');
-    return `<div class="urow ${rc}${UT.sel.includes(i)?' sel':''}${UT.mode==='up'&&UT.upSel===i?' sel2':''}" data-i="${i}"><b class="uo">${p.ovr}</b><span class="un"${p.cl?` title="${p.label||p.n} · ${p.cl}"`:''}>${p.n}${p.isNew?'<span class="nw">NEW</span>':''}${p.up?`<span class="upb">${p.ul?Object.keys(UT_LINES).filter(l=>p.ul[l]).map(l=>UT_LINES[l].n[0]+(p.ul[l]>1?p.ul[l]:'')).join(' '):'+'+p.up}</span>`:''}${ex?`<span class="upb" style="color:var(--gold)">${ex}</span>`:''}</span><em title="${p.trait&&TRAITS[p.trait]?TRAITS[p.trait][0]:''}">${posOf(p)}${p.trait?'*':''}</em>${SHOW.map(k=>`<span class="sv">${p.s[k]}</span>`).join('')}</div>`;}).join('');
+    return `<button type="button" class="urow ${rc}${UT.sel.includes(i)?' sel':''}${UT.mode==='up'&&UT.upSel===i?' sel2':''}" data-i="${i}"${UT.mode==='sel'?' aria-pressed="'+UT.sel.includes(i)+'"':''}><b class="uo">${p.ovr}</b><span class="un"${p.cl?` title="${p.label||p.n} · ${p.cl}"`:''}>${p.n}${p.isNew?'<span class="nw">NEW</span>':''}${p.up?`<span class="upb">${p.ul?Object.keys(UT_LINES).filter(l=>p.ul[l]).map(l=>UT_LINES[l].n[0]+(p.ul[l]>1?p.ul[l]:'')).join(' '):'+'+p.up}</span>`:''}${ex?`<span class="upb" style="color:var(--gold)">${ex}</span>`:''}</span><em title="${p.trait&&TRAITS[p.trait]?TRAITS[p.trait][0]:''}">${posOf(p)}${p.trait?'*':''}</em>${SHOW.map(k=>`<span class="sv">${p.s[k]}</span>`).join('')}</button>`;}).join('');
+  if(focused!==undefined) $('tmList').querySelector(`[data-i="${focused}"]`)?.focus({preventScroll:true});
   renderUp();
   UT.col.forEach(p=>{p.isNew=false;});utSave();
 }

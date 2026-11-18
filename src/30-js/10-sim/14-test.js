@@ -14,13 +14,13 @@ function testMatch(ra,rb,o){   // una partita IA contro IA: ritorna punteggio, s
   if(o.hero!==undefined){G.heroOn=true;heroInit(heroRand(),heroRand());if(o.hero!==1)heroAssign(T[0],G.hk[0]);if(o.hero!==0)heroAssign(T[1],G.hk[1]);}   // superpoteri: 'both', 0 o 1 (chi ha gli eroi)
   G.startRec=o.rec|0;G.nextRec=G.startRec;startPoint(G.startRec);
   const dt=1/60,r={time:0,nan:0,stuck:false,hold:0,pts:0,ptT:[],rev:0,revT:0,halfAt:-1,lane:0,laneT:0};let pt=0,last=0,rec=-1,fr=0;
-  while(G.mode!=='over'&&r.time<3600){
+  const step=()=>{
     update(dt);r.time+=dt;pt+=dt;fr++;
     if(G.mode==='half'){r.halfAt=Math.max(G.score[0],G.score[1]);startSecondHalf();}
     if(rec<0&&G.mode==='ready')rec=G.poss;
     const tot=G.score[0]+G.score[1];
     if(tot!==last){const sc=G.banner?G.banner.team:(G.score[0]>G.score[1]?0:1);if(sc===rec)r.hold++;r.pts++;r.ptT.push(pt);pt=0;last=tot;rec=-1;}
-    if(pt>240){r.stuck=true;break;}
+    if(pt>240){r.stuck=true;return false;}
     if(fr%6===0){   // ripensamenti: chi non ha il disco, mentre il portatore aspetta, inverte la corsa (angolo oltre 120 gradi rispetto a 0,4 secondi prima)
       if(G.mode==='play'&&G.holder&&!G.flight&&!G.pull&&G.holdT>1){   // solo a formazione assestata (dopo 1 s dalla presa): e' quando chi ha il disco sta decidendo o mirando
         const Hh=G.holder;   // linee di passaggio intasate: un compagno che non taglia sta a meno di 2 m dalla linea tra il portatore e chi taglia (taglio a liberare)
@@ -37,6 +37,13 @@ function testMatch(ra,rb,o){   // una partita IA contro IA: ritorna punteggio, s
       }else for(const p of T[0].concat(T[1]))p._hq=null;
     }
     if(fr%30===0)for(const p of T[0].concat(T[1]))if(!isFinite(p.x)||!isFinite(p.y)){r.nan++;p.x=50;p.y=18;}
+  }
+  const fps=o.fps||60;let remainder=0;
+  while(G.mode!=='over'&&!r.stuck&&r.time<3600){
+    remainder=advanceSimulation(remainder,1/fps,()=>{
+      step();
+      return G.mode!=='over'&&!r.stuck&&r.time<3600;
+    });
   }
   r.score=G.score.slice();r.st=JSON.parse(JSON.stringify(G.st));
   r.xp=SQ.filter(p=>p.m.pts>0).reduce((a,p)=>a+xpTotal(p.m)*XP_ROLE[posOf(p)],0)/7*lenK();
