@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 5111)
+Total output lines: 123
+
 # Revisione delle rose e degli Overall Women 2026
 
 La Serie A e la Serie B partono con **291 giocatrici reali in 17 club**. Sono state confrontate le distinte dei **66 referti CIU 2026** (38 in A, 28 in B) con le statistiche stagionali. Le presenze, il numero di maglia e i tabellini permettono di includere anche giocatrici senza mete né assist. I tesseramenti senza riscontri di gara sono stati verificati con le rose internazionali quando disponibili. Ava Mueller è un caso di conferma esterna con lo stesso club. In carriera ogni giocatrice parte con un solo club, scelto in base alla partecipazione prevalente in Italia. Alessandra Pivetta, Teresa Brugnoli e Asia Martinini restano nelle rispettive rose di Serie A.
@@ -14,9 +17,9 @@ Le età sono riferite al 18 novembre 2026. Il gioco usa solo nomi, età e dati s
 
 ## Seconda verifica del bilanciamento
 
-Sono stati confrontati 1.191 record individuali tra riepiloghi stagionali e 46 tabellini CIU 2026 (28 Serie A e 18 Serie B), con corrispondenza nei valori controllati. Il ricalcolo assegna il peso per avversaria dal referto identificato per divisione e codice di gara. Quando la partita individuale non è verificabile, usa il contributo del riepilogo con peso neutro e conserva il numero di gare registrate. Le statistiche verificate di Fury al WUCC 2026 completano il riscontro su Irene Scazzieri. Lo Spring Tour 2024 misto offre un riscontro aggiuntivo, di peso inferiore agli eventi outdoor maggiori. [CUS Padova Rangərs, Spring Tour 2024](https://eucs-schedule.ultimatefederation.eu/?team=309&view=teamcard) · [Archivio WUCC 2026](https://results.wfdf.sport/wucc-2026/teams/final-placements)
+Sono stati confrontati 1.191 record individuali tra riepiloghi stagionali e 46 tabellini CIU 2026 (28 Serie A e 18 Serie B), con corrispondenza nei valori controllati. Il ricalcolo assegna il peso per avversaria dal referto identificato per divisione e codice di gara. Quando la partita individuale non è verificabile, usa il contributo del riepilogo con peso neutro e conserva il numero di gare registrate. Le statistiche verificate di Fury al WUCC 2026 completano il riscontro su Irene Scazzieri. I tornei Mixed aggiungono un riscontro complementare: WUCC e WUC senior hanno più peso, EUCS e Spring/Elite Tour hanno peso intermedio, mentre i campionati italiani Mixed e gli eventi junior sono usati soprattutto per confermare continuità e potenziale. [CUS Padova Rangərs, Spring Tour 2024](https://eucs-schedule.ultimatefederation.eu/?team=309&view=teamcard) · [Archivio WUCC 2026](https://results.wfdf.sport/wucc-2026/teams/final-placements)
 
-La revisione modifica 24 Overall. Il caso più evidente in Serie B è Gianna Arcangeli, da 79 a 82, con una potenza di squadra intorno a 62. Agata Benzi resta 88 con Tequila Junior e Arianna Pagliarani resta 89 con Boom Boom. I piazzamenti delle squadre da soli, inclusi quelli beach, sono usati come contesto. Per un ritocco individuale serve un riscontro individuale trasferibile al 7 contro 7.
+La revisione precedente, confluita nella pull request #111, modifica 24 Overall. Il caso più evidente in Serie B è Gianna Arcangeli, da 79 a 82, con una potenza di squadra intorno a 62. Agata Benzi resta 88 con Tequila Junior e Arianna Pagliarani resta 89 con Boom Boom. I piazzamenti delle squadre da soli, inclusi quelli beach, sono usati come contesto. Per un ritocco individuale serve un riscontro individuale trasferibile al 7 contro 7.
 
 ## Casi individuali
 
@@ -32,6 +35,44 @@ La revisione modifica 24 Overall. Il caso più evidente in Serie B è Gianna Arc
 | Arianna Ascari | BFD Shout | 87 | 23 ai WJUC 2024, 30 a EYUC 2025, 15 ai WUCC e 15 all'EUCF 2026 |
 | Gianna Arcangeli | AUT FireFlies | 82 | 18 assist + mete con l'Italia Women all'EUC 2023, 9 in 6 gare allo Spring Tour 2024 e 38 assist + 7 mete al CIU 2026 |
 
+## Revisione dei contributi mixed
+
+La prima revisione usava lo Spring Tour 2024 come riscontro misto occasionale; il controllo esteso aggiunge anche WUCC Mixed 2026, EUCS Mixed 2025–2026 e i tabellini del CIU Mixed 2025 e 2026, Serie A e B. Ho ricontrollato i contributi atleta per atleta, cercando le giocatrici del roster Women nei tabellini dei loro club mixed e delle nazionali. I risultati mixed restano un indicatore secondario: il formato, i compagni di linea e il numero di punti giocati sono diversi dal Women. Ho dato più peso alla ripetizione su più eventi, alle competizioni internazionali senior e alla convocazione nazionale; un singolo torneo o un alto totale grezzo non basta. La gerarchia usata è: WUCC/WUC senior, poi EUCF/EUCS e tour internazionali, quindi CIU Mixed; i risultati junior confermano il potenziale ma hanno un tetto basso. Non ho cambiato la formula del gioco: gli Overall individuali sono corretti caso per caso, poi la potenza del club è ricalcolata con la formula condivisa 60/35/5 e il riempimento delle rose corte.
+
+Al WUCC Mixed 2026 i Rangərs hanno chiuso il girone iniziale 2–3 e il torneo con record 5–5. Chiara Varotto ha registrato 11 contributi in 4 partite (2,75 a gara); Sara Bounous 4 in 4; Rebecca Rampazzo 2 in 3. Le schede EUCS confermano Varotto con 17 contributi in 6 partite al Summer Tour 2025, 8 in 6 allo Spring Tour 2026 e 10 in 5 all’Elite Invite Leuven 2026. Marta Degli Stefani ha fatto 12 in 6 allo Spring Tour e 8 nel CIU Mixed 2026; Angelica Naclerio ha totalizzato 11 contributi nella stessa stagione mixed italiana. Il CIU Mixed 2025 conferma la continuità: Varotto 15 in 6 gare di Serie A, Margherita Salvemini 16 in 6 e, in Serie B, Annadora Zaniolo 21 e Marta Rota 24 in 8 partite. Il confronto fra stagioni mostra anche Marta Rota a 20 nel CIU Mixed 2026, Montebugnoli a 20 nel 2025 e 15 nel 2026, Denise Nanni a 13 nel 2025 e 17 nel 2026, Sara Cappello a 15 in entrambe le stagioni, Chiara Alberga a 12 e 13, Isabella Lazzarini a 9 e 13. Sono dati di assist + mete, non una misura completa della prestazione.
+
+Le convocazioni rafforzano il quadro delle Tane: Varotto è nella lista della Nazionale Mixed 2027; Degli Stefani in quella Women; nel roster Women U20 al WJUC 2026 compaiono Rampazzo e Naclerio. Bounous, Ruffilli e Varotto erano inoltre nella Nazionale Mixed al WUC 2024. Questi risultati aiutano a distinguere le atlete di alto impatto dalle compagne con pochi dati, senza trasferire automaticamente nel gioco un overall da Open/Mixed.
+
+Questa verifica corregge altri **26 Overall** rispetto ai valori già pubblicati nella pull request #111. I ritocchi maggiori vanno alle atlete con riscontri ripetuti tra club, nazionali e tornei senior; quelli domestici e misti hanno correzioni più contenute.
+
+| Giocatrice | Overall precedente → nuovo | Evidenza aggiunta e ragione del ritocco |
+|---|---:|---|
+| Chiara Varotto | 81 → 85 | 11 in 4 al WUCC Mixed; 17 in 6 nel Summer Tour 2025; 8 in 6 allo Spring Tour 2026 e 10 in 5 all’Elite Invite; convocata Mixed senior. Più sta…111 tokens truncated…nto contenuto per la minore attualità dei dati. |
+| Rebecca Rampazzo | 79 → 81 | 2 in 3 al WUCC Mixed, 5 in 6 allo Spring Tour 2026 e roster Italia U20 al WJUC 2026/EYUC 2025. |
+| Margherita Salvemini | 75 → 79 | 16 contributi in 6 gare al CIU Mixed 2025 e 11 in 5 all’Elite Invite 2026: continuità tra stagione italiana e torneo europeo. |
+| Rebecca Benetazzo | 71 → 74 | 7 in 6 al Summer Tour 2025; ritocco prudente, senza risultati senior internazionali individuali altrettanto forti. |
+| Angelica Naclerio | 70 → 74 | Convocata Italia U20 al WJUC 2026, 4 contributi in 4 gare al CIU Mixed 2025, 11 nel 2026 e 1 al WUCC Mixed. Il bonus junior resta limitato; il grosso del ritocco viene dai dati senior. |
+| Silvia Pollis | 74 → 75 | 5 in 6 sia al Summer Tour 2025 sia allo Spring Tour 2026; il WUCC con poche statistiche non sostiene un aumento più ampio. |
+| Caterina Andreaggi | 72 → 73 | Presenza nel roster WUCC Mixed, 1 contributo al CIU Mixed 2025 e 2 in 5 all’Elite Invite 2026; piccolo adeguamento. |
+| Margherita Fumagalli | 68 → 70 | 7 contributi in 8 gare al CIU Mixed 2025, 2 in 5 all’Elite Invite e presenza al WUCC Mixed; aumento ancora prudente per dati Women limitati. |
+| Denise Nanni | 68 → 72 | 13 contributi in 6 gare nel CIU Mixed 2025 e 17 in 6 nel 2026: conferma ripetuta di un valore individuale molto più alto del rating iniziale. |
+| Marta Rota | 77 → 80 | 24 contributi in 8 gare nel CIU Mixed 2025 e 20 in 6 nel 2026: rendimento alto ripetuto dopo il passaggio dalla Serie B alla A. |
+| Martina Montebugnoli | 73 → 76 | 20 contributi in 8 gare nel CIU Mixed B 2025 e 15 in 6 nella Serie A 2026. |
+| Sara Cappello | 74 → 76 | 15 contributi in 8 gare nel CIU Mixed B 2025 e 15 in 6 nella Serie A 2026. |
+| Sara Belletti | 67 → 69 | 14 contributi CIU Mixed 2026 in 6 gare; riconosciuto il rendimento offensivo anche con club più debole. |
+| Isabella Lazzarini | 71 → 73 | 9 contributi in 8 gare nel CIU Mixed B 2025 e 13 in 6 nella Serie A 2026, a 16 anni. |
+| Chiara Alberga | 68 → 71 | 12 contributi in 8 gare nel CIU Mixed B 2025 e 13 in 6 nella Serie A 2026, a 16 anni. |
+| Chiara Dellai | 62 → 64 | 6 contributi in 6 gare nel CIU Mixed 2025 e 12 in 6 nel 2026; il dato evidenzia una sottostima, ma resta un aggiustamento prudente. |
+| Chiara Massaria | 66 → 68 | 3 contributi in 7 gare nel CIU Mixed B 2025 e 11 in 6 nella Serie A 2026. |
+| Chiara Calzà | 65 → 67 | 11 contributi CIU Mixed 2026 in 6 gare; riconosciuto l’impatto offensivo in un contesto mixed di Serie A. |
+| Giulia Cavaletti | 66 → 68 | 8 contributi in 8 gare nel CIU Mixed B 2025 e 10 in 6 nella Serie A 2026, a 16 anni. |
+| Annadora Zaniolo | 73 → 76 | 2 contributi allo Spring Tour 2024 e 21 in 8 gare nel CIU Mixed B 2025 (18 assist); forte produzione non catturata dai soli tabellini Women. |
+| Lis Sofía Hurtado Avila | 66 → 67 | 10 contributi in 8 gare con CUS Padova Pekapeka nel CIU Mixed B 2025; aumento piccolo per la stagione non recente e dati senior limitati. |
+| Matilde Bellon | 65 → 66 | 7 contributi in 8 gare con CUS Padova Pekapeka nel CIU Mixed B 2025; correzione minima. |
+| Marta Tomaini | 64 → 65 | 6 contributi in 8 gare nel CIU Mixed B 2025 e 5 nel 2026; piccolo aggiustamento.
+
+Non ho modificato le atlete con pochi o nessun riscontro mixed verificabile, né ho aumentato tutte le giocatrici di un club per il solo piazzamento della squadra. Gli overall restano individuali: una giocatrice di alto livello non viene abbassata solo perché il roster Women è meno profondo.
+
 ## Potenza a inizio carriera
 
 Valori a un decimale calcolati con le rose del gioco. A schermo si vedono arrotondati a un intero.
@@ -39,22 +80,22 @@ Valori a un decimale calcolati con le rose del gioco. A schermo si vedono arroto
 | Squadra | Serie | Atlete | Potenza |
 |---|:---:|---:|---:|
 | BFD Shout | A | 26 | 90,0 |
-| Tequila Boom Boom | A | 18 | 86,9 |
+| Tequila Boom Boom | A | 18 | 86,8 |
+| CUS Padova Tane Malefiche | A | 19 | 77,3 |
 | BFD Cheetahs | A | 22 | 76,6 |
-| CUS Padova Tane Malefiche | A | 19 | 75,1 |
 | Tequila Junior | A | 12 | 74,5 |
-| DiscoBolo | A | 16 | 71,8 |
-| Donkey Ladies | A | 18 | 70,7 |
+| DiscoBolo | A | 16 | 71,9 |
+| Donkey Ladies | A | 18 | 71,2 |
+| Timanfaya | A | 18 | 67,9 |
 | METACARPE | A | 15 | 67,8 |
-| Timanfaya | A | 18 | 67,7 |
-| One Tribe | A | 14 | 66,7 |
-| 36MAdonnine | B | 14 | 62,6 |
-| Voladora | B | 17 | 61,9 |
+| One Tribe | A | 14 | 67,0 |
+| 36MAdonnine | B | 14 | 63,3 |
+| Voladora | B | 17 | 62,3 |
 | AUT FireFlies | B | 18 | 61,9 |
-| HUB | B | 14 | 58,1 |
+| HUB | B | 14 | 58,4 |
 | Tequila U17 | B | 15 | 57,8 |
-| DiscoBolo Rookies | B | 15 | 55,2 |
 | BFD Borealis | B | 20 | 55,3 |
+| DiscoBolo Rookies | B | 15 | 55,2 |
 
 ## Riscontro federale della Serie B
 
@@ -76,7 +117,7 @@ La classifica federale della B 2024 colloca Voladora, Timanfaya, BFD Borealis, A
 
 - Referti, classifiche e statistiche del 2026. [Serie A](https://docs.google.com/spreadsheets/d/16wQ6Gu7BKbuCXGsJEkpEWByM-CF9HUbF8byw41gnmU8/edit) · [Serie B](https://docs.google.com/spreadsheets/d/1sQeGl9zt4QtGg2s7ze2OMz7SrDJjvMW-YiPJJnhRadY/edit) · [Resoconto delle finali](https://flyingdisc.it/news/ultimate/2026/5426/)
 - Serie e stagioni precedenti. [CIU A 2025](https://docs.google.com/spreadsheets/d/1leuiQUx6PnY8MnQ04NYEeZUGK2rM8ZY6ELPZ2O1D5Lc/edit) · [CIU B 2025](https://docs.google.com/spreadsheets/d/1lcg6fYqgpkzGzXV4QuJjuTR8YTBJ--WFVDBdyYDznNU/edit) · [CIU A 2024](https://docs.google.com/spreadsheets/d/1ORnuPIAyYhO7hlezk5tSPs7tLlTEm_jka-4MWJ2Tw3U/edit) · [Finali 2023](https://flyingdisc.it/news/ultimate/2023/2100/) · [Albo d'oro](https://flyingdisc.it/ultimate/albo-campionati/)
-- Mondiali club e senior. [WUCC 2022 Shout](https://results.wfdf.sport/wucc/?team=49&view=teamcard) · [WUCC 2026 Shout](https://results.wfdf.sport/wucc-2026/team/womens/bfd-shout-1084/games) · [WUCC 2026 Tequila](https://results.wfdf.sport/wucc-2026/team/womens/tequila-boom-boom-1083/games) · [WUC Mixed 2024 Italia](https://results.wfdf.sport/wuc/?team=30&view=teamcard) · [EUC Women 2023 Italia](https://euc-schedule.ultimatefederation.eu/?team=4&view=teamcard)
-- Club europei. [Albo EUCF](https://eucs.ultimatefederation.eu/womenwinners) · [EUCF 2023](https://eucs-schedule.ultimatefederation.eu/?team=208&view=teamcard) · [EUCF 2024](https://eucs-schedule.ultimatefederation.eu/?team=639&view=teamcard) · [EUCF 2025 Shout](https://eucs-schedule.ultimatefederation.eu/?team=917&view=teamcard) · [EUCF 2025 Tequila](https://eucs-schedule.ultimatefederation.eu/?team=892&view=teamcard) · [EUCF 2026 Shout](https://eucs-schedule.ultimatefederation.eu/?team=1213&view=teamcard) · [EUCF 2026 Tequila](https://eucs-schedule.ultimatefederation.eu/?team=1189&view=teamcard) · [Elite Invite Leuven 2026](https://eucs-schedule.ultimatefederation.eu/?team=1069&view=teamcard) · [Spring Tour Grenoble 2024](https://eucs-schedule.ultimatefederation.eu/?team=243&view=teamcard)
-- Nazionali giovanili. [WJUC 2024](https://results.wfdf.sport/wjuc-2024/?team=24&view=teamcard) · [EYUC U20 2025](https://eyuc-schedule.ultimatefederation.eu/?team=115&view=teamcard) · [WU24 2025](https://results.wfdf.sport/wu24/?team=26&view=teamcard) · [WJUC 2026](https://flyingdisc.it/news/ultimate/2026/5593/) · [EYUC U17 2026](https://eyuc-schedule.ultimatefederation.eu/?team=127&view=teamcard)
+- Mondiali club e senior. [WUCC Mixed 2026 Rangərs](https://results.wfdf.sport/wucc-2026/team/mixed/cus-padova-rangrs-1086/stats) · [WUCC Mixed 2026 classifica](https://results.wfdf.sport/wucc-2026/standings/mixed/initial) · [WUCC 2022 Shout](https://results.wfdf.sport/wucc/?team=49&view=teamcard) · [WUCC 2026 Shout](https://results.wfdf.sport/wucc-2026/team/womens/bfd-shout-1084/games) · [WUCC 2026 Tequila](https://results.wfdf.sport/wucc-2026/team/womens/tequila-boom-boom-1083/games) · [WUC Mixed 2024 Italia](https://results.wfdf.sport/wuc/?team=30&view=teamcard) · [EUC Women 2023 Italia](https://euc-schedule.ultimatefederation.eu/?team=4&view=teamcard)
+- Club europei e mixed. [Rangərs Spring Tour 2024](https://eucs-schedule.ultimatefederation.eu/?team=309&view=teamcard) · [Rangərs Summer Tour 2025](https://eucs-schedule.ultimatefederation.eu/?team=781&view=teamcard) · [Rangərs Spring Tour 2026](https://eucs-schedule.ultimatefederation.eu/?team=1052&view=teamcard) · [Rangərs Elite Invite Leuven 2026](https://eucs-schedule.ultimatefederation.eu/?team=1078&view=teamcard) · [CIU Mixed A 2025](https://docs.google.com/spreadsheets/d/13Tl6vMa9D59EGHtyX3rdeeKGsJKnle3tU8x4T0gH2_k/edit) · [CIU Mixed B 2025](https://docs.google.com/spreadsheets/d/1HraJV-ojBPVxGA9aa-2kqpVlSvIyG8PgKz2U4IH8xpE/edit) · [CIU Mixed A 2026](https://docs.google.com/spreadsheets/d/1k_xJctOAUqizJW00395YIvDwC5gDZKek2R26UpJ_HUQ/edit) · [Albo EUCF](https://eucs.ultimatefederation.eu/womenwinners) · [EUCF 2023](https://eucs-schedule.ultimatefederation.eu/?team=208&view=teamcard) · [EUCF 2024](https://eucs-schedule.ultimatefederation.eu/?team=639&view=teamcard) · [EUCF 2025 Shout](https://eucs-schedule.ultimatefederation.eu/?team=917&view=teamcard) · [EUCF 2025 Tequila](https://eucs-schedule.ultimatefederation.eu/?team=892&view=teamcard) · [EUCF 2026 Shout](https://eucs-schedule.ultimatefederation.eu/?team=1213&view=teamcard) · [EUCF 2026 Tequila](https://eucs-schedule.ultimatefederation.eu/?team=1189&view=teamcard) · [Elite Invite Leuven 2026](https://eucs-schedule.ultimatefederation.eu/?team=1069&view=teamcard) · [Spring Tour Grenoble 2024](https://eucs-schedule.ultimatefederation.eu/?team=243&view=teamcard)
+- Nazionali maggiori e giovanili. [Convocazioni Italia 2027](https://flyingdisc.it/news/2026/6002/) · [WUC Mixed 2024 Italia](https://ultiworld.com/livewire/italy-2024-wuc-rosters/) · [Roster Italia Women U20 WJUC 2026](https://flyingdisc.it/news/ultimate/2026/5593/) · [WJUC 2024](https://results.wfdf.sport/wjuc-2024/?team=24&view=teamcard) · [EYUC U20 2025](https://eyuc-schedule.ultimatefederation.eu/?team=115&view=teamcard) · [WU24 2025](https://results.wfdf.sport/wu24/?team=26&view=teamcard) · [WJUC 2026](https://flyingdisc.it/news/ultimate/2026/5593/) · [EYUC U17 2026](https://eyuc-schedule.ultimatefederation.eu/?team=127&view=teamcard)
 - Premi e valutazioni degli osservatori. [Ultiworld 2019](https://ultiworld.com/2019/11/26/2019-european-womens-awards-presented-tokay/) · [Ultiworld 2023](https://ultiworld.com/2024/04/01/european-players-of-the-year/) · [Ultiworld 2025](https://ultiworld.com/2025/11/07/european-players-of-the-year-2025-womens-div/) · [Top 25 Europa 2026](https://ultiworld.com/2026/08/14/the-top-25-womens-players-in-europe-2026/)
