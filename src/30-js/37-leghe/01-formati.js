@@ -36,7 +36,13 @@ const LN_DEF={
     txt:'I Nationals (8 club: due gironi da 4 e tabellone) e, sotto, l’Open Tour: i vincitori delle tappe si giocano un posto ai Nationals. Le prime due dei Nationals vanno all’EUCF.',
     tiers:[
       {id:'N1',name:'Nationals',k:1.4,comps:1,pools:2,fin:[{f:1,t:4,m:'x8'}]},
-      {id:'N2',name:'Open Tour',k:1,comps:1,pools:1,fin:[],play:false}]}
+      {id:'N2',name:'Open Tour',k:1,comps:1,pools:1,fin:[],play:false}]},
+  // campionato femminile (w): le sue squadre giocano solo tra loro, anche nella partita veloce (allClubs, 37-leghe/07-women.js); niente EUCF
+  IW:{id:'IW',cc:'Italia Women',de:'italiano femminile',name:'Italia · Women',w:true,eu:0,sub:'Campionato italiano femminile · Serie A e Serie B · 17 squadre',mv:[1],
+    txt:'Il campionato italiano Women: la Serie A ha 10 squadre in due gironi da 5, poi quarti, semifinali e finali; la Serie B ha 7 squadre in un girone unico e le prime quattro si giocano la promozione. Sale e scende una squadra.',
+    tiers:[
+      {id:'A',name:'Serie A',k:1.3,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},
+      {id:'B',name:'Serie B',k:1,comps:1,pools:1,fin:[{f:1,t:4,m:'c4'}]}]}
 };
 const LN_IDS=Object.keys(LN_DEF);
 const LN_BY={};   // club -> {lk, t (livello), g (girone dei dati), p (forza iniziale)}

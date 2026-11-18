@@ -213,7 +213,8 @@ tip:`La Partita veloce in Estrema è il banco di prova migliore quando ti sembra
 {id:'mod-ut',t:'Ultimate Team e Real player',b:[
 `Apri <b>pacchetti</b> di carte con <b>giocatori veri</b> (Handler, Cutter e Defender), scegli i 7 titolari e gioca il torneo a eliminazione. Ogni partita dà <b>gettoni</b> per comprare pacchetti nel <b>Negozio</b> e potenziare le carte (al massimo 4 per carta).`,
 [`<b>Pacchetti premio</b>: passando i turni ricevi pacchetti sempre più rari; chi vince il torneo ottiene il Super pacchetto.`,
-`<b>Doppioni</b>: si scartano per recuperare gettoni.`],
+`<b>Doppioni</b>: si scartano per recuperare gettoni.`,
+`<b>Equipaggiamento</b>: accessori Comuni, Rari o Epici (scarpini, guantini, coach…) che alzano una statistica di tutta la squadra. Li indossi sul manichino, dove scegli anche colori e motivo della divisa.`],
 `Con <b>Real player</b> (al posto di «Computer») sfidi le squadre di altri giocatori, guidate dal computer. Scegli un nome (poi non si cambia) e parti da 1000 punti: battere uno più forte vale di più.`,
 [`Il riquadro <b>Traguardi</b> mostra i pacchetti premio (da 1100 punti in su).`,
 `Servono internet e la partita va finita: abbandonare conta come sconfitta.`]],

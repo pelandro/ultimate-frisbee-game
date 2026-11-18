@@ -146,7 +146,11 @@ function athlete(x,gy,hipH,col,face,pose,rot,tt,hu,alpha,ghost,who){
   }
   arm(A[1],PXM.SK);   // davanti: braccio vicino
   // colori
-  const skin=pxRgb(lk.skin),hair=pxRgb(lk.hair),cs=pxRgb(col),sorts=pxRgb(un.shorts);
+  const skin=pxRgb(lk.skin),hair=pxRgb(lk.hair),cs=pxRgb(un.shirt||col),sorts=pxRgb(un.shorts);   // la maglia e' quella della divisa in campo (in Ultimate Team la scegli tu)
+  const pat=!ghost&&un.pat?un.pat:'',csB=pat?pxRgb(un.shirtB):null;
+  const patAt=(i,j)=>{   // motivo della maglia: dal pixel alle coordinate del busto (t lungo il busto, f verso il petto)
+    const X=(i+0.5-c0)/(face*hs),Y=(j+0.5-c0)/hs,dx=cr*X+sr*Y-hip[0],dy=-sr*X+cr*Y-hip[1],t=(dx*ux+dy*uy)/Lt,f=(dx*nx+dy*ny)/bw;
+    return t>-0.25&&t<1.15&&Math.abs(f)<0.22&&eqPatHit(pat,(f+0.2)/0.4,(1.1-t)/1.3);};
   const base=[null,skin,pxTone(skin,-0.2),hair,cs,sorts,pxTone(sorts,-0.15),pxRgb(un.socks),pxRgb(un.shoe),[238,242,248],pxTone(hair,-0.4),pxTone(skin,-0.22),[20,18,30],pxTone(skin,-0.5),[255,255,255],skin];
   const auto=new Set([PXM.SK,PXM.SKF,PXM.HR,PXM.SH,PXM.PT,PXM.PTF,PXM.SO,PXM.SHO]);
   const B=PX_BUF.c;if(B.width!==n){B.width=n;B.height=n;}
@@ -159,7 +163,7 @@ function athlete(x,gy,hipH,col,face,pose,rot,tt,hu,alpha,ghost,who){
       const dn=at(i,j+1),bk=at(i-fr,j);
       if(PXM_LN.has(k)&&((dn&&dn!==k&&PXM_LN.has(dn)&&!(k===PXM.SO||dn===PXM.SO))||(bk&&bk!==k&&PXM_LN.has(bk)&&!(k===PXM.SO||bk===PXM.SO))))c=OUTRGB;
       else if(auto.has(k)){
-        const b=base[k],up=at(i,j-1),fw=at(i+fr,j),lit=(up!==k||fw!==k)&&dn===k,thick=at(i+fr,j)===k&&at(i+2*fr,j)===k&&at(i+3*fr,j)===k,dark=dn!==k||bk!==k||(thick&&(at(i-2*fr,j)!==k||at(i-3*fr,j)!==k));   // nelle parti larghe l'ombra dietro e' di 3 pixel
+        const b=pat&&k===PXM.SH&&patAt(i,j)?csB:base[k],up=at(i,j-1),fw=at(i+fr,j),lit=(up!==k||fw!==k)&&dn===k,thick=at(i+fr,j)===k&&at(i+2*fr,j)===k&&at(i+3*fr,j)===k,dark=dn!==k||bk!==k||(thick&&(at(i-2*fr,j)!==k||at(i-3*fr,j)!==k));   // nelle parti larghe l'ombra dietro e' di 3 pixel
         c=lit?pxTone(b,0.22):(dark?pxTone(b,-0.3):b);
       }else c=base[k];
     }else if(at(i-1,j)||at(i+1,j)||at(i,j-1)||at(i,j+1))c=OUTRGB;

@@ -562,6 +562,22 @@ function selfTestPlan(opt){
     const still=!jumpRun(p(30.5,18.3,0.5,0),f),runFar=jumpRun(p(31,18,6,0),f),stand=!jumpRun(p(31,18,0,0),f);
     return [row('Chi era vicino al disco salta da fermo, chi arrivava da lontano entra di corsa',(still&&stand?'fermo':'no')+', '+(runFar?'in corsa':'no'),still&&stand&&runFar,'oltre '+JUMP_STILL+' m '+JUMP_LOOK+' s prima della presa')];
   }]);
+  S.steps.push(['Equipaggiamento di Ultimate Team',()=>{   // 10-sim/25-ut-equipaggiamento.js
+    const rng=mulberry32(77),cnt=q=>{const c=[0,0,0];let bad=0;for(let i=0;i<600;i++){const p=eqDraw(q,q>=5?3:2,rng);if(new Set(p.map(o=>o.k)).size!==p.length)bad++;
+      if(q>=3&&Math.max(...p.map(o=>o.r))<1)bad++;if(q>=6&&Math.max(...p.map(o=>o.r))<2)bad++;for(const o of p)c[o.r]++;}const t=c[0]+c[1]+c[2];return {epi:c[2]/t,rar:(c[1]+c[2])/t,bad};};
+    const qs=[1,2,3,4,5,6].map(cnt),up=qs.every((x,i)=>!i||(x.epi>=qs[i-1].epi&&x.rar>=qs[i-1].rar)),bad=qs.reduce((a,x)=>a+x.bad,0);
+    const e=eqInit(null),c1=eqGain(e,[{k:'boot',r:0},{k:'coach',r:2}]),c2=eqGain(e,[{k:'boot',r:2},{k:'boot',r:2},{k:'coach',r:0}]);
+    const keep=e.on.boot===2&&e.on.coach===2&&c1===0&&c2===EQ_DUP[2];
+    const p={n:'x',r:'C',s:{}};for(const k of KEYS)p.s[k]=95;const q=eqApply(p,e),b=eqBonus(e);
+    const ok3=q.s.sca===99&&q.s.vis===99&&q.s.lan===95&&p.s.sca===95&&b.sca===EQ_PLUS[2];
+    const old=eqInit({own:{boot:9,drink:1},on:{boot:1,drink:2},kit:{s:'#ff0000',p:'#101827'}});   // valori impossibili da un salvataggio rovinato
+    const safe=old.own.boot===1&&old.on.boot===undefined&&old.on.drink===undefined&&old.kit.s===EQ_KIT0.s&&old.kit.p==='#101827';
+    const miles=[1,2,3,4,5].map(utoMileEq),mUp=miles.every((v,i)=>!i||(v%10>=miles[i-1]%10&&Math.floor(v/10)%10>=Math.floor(miles[i-1]/10)%10))&&miles.every(v=>Math.floor(v/100)===EQ_PK);
+    return [row('Pacchetti: rarità sempre migliori con la qualità, accessori diversi e garanzie rispettate',`Epici ${qs.map(x=>Math.round(x.epi*100)+'%').join(' ')} · errori ${bad}`,up&&!bad),
+      row('Doppioni in gettoni, il migliore si indossa da solo',`scarpini ${EQ_RAR[e.on.boot][0]}, coach ${EQ_RAR[e.on.coach][0]}, gettoni ${c1}+${c2}`,keep),
+      row('Il bonus vale per la squadra in partita (massimo 99) e non cambia la carta',`Scatto 95 → ${q.s.sca}, Lancio ${q.s.lan}, carta ${p.s.sca}`,ok3),
+      row('Salvataggi rovinati e traguardi: valori validi, accessori sempre migliori',(safe?'ok':'no')+', '+miles.join(' '),safe&&mUp)];
+  }]);
   return S;
 }
 function selfTestRun(S,i){   // esegue il passo i col suo generatore casuale; i suoni, gli stacchi e le scritte restano spenti

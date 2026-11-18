@@ -17,7 +17,7 @@ function lnSelfTest(seasons,seed){
     // ---- dati ----
     const all=LN_NAMES.concat(Object.keys(TEAM),US_NAMES,EU_CLUBS.map(x=>x[0]));
     chk('dati',new Set(all).size===all.length,'nomi di club ripetuti tra le leghe');
-    const want={BE:46,FR:54,DE:49,UK:11};
+    const want={BE:46,FR:54,DE:49,UK:11,IW:17};
     for(const lk of LN_IDS){
       chk('dati',LN_CL[lk].length===want[lk],lk+': '+LN_CL[lk].length+' club');
       chk('dati',LN_CL[lk].every(r=>r[3]>=30&&r[3]<=95&&LN_TIER[lnKey(lk,r[1])]),'forza o livello fuori misura in '+lk);
@@ -118,6 +118,13 @@ function lnSelfTest(seasons,seed){
         }
       }
     }
+    // ---- campionato Women (07-women.js): un mondo a parte, solo giocatrici ----
+    {const S0=SV;SV={};chk('women',!allClubs().some(isWomenClub),'club femminili tra quelli maschili (mercato, offerte, carte)');
+     startCareer('Tequila Boom Boom',{});chk('women',allClubs().length===LN_CL.IW.length&&allClubs().every(isWomenClub)&&!foreignClubs().length,'nella carriera Women ci sono club maschili');
+     chk('women',SQ.every(p=>p.f)&&Object.values(SV.rost).every(r=>r.every(o=>o.f)),'giocatori maschi nel campionato Women');
+     buildMarket();chk('women',SV.market.every(m=>m.o.f),'mercato del campionato Women con giocatori maschi');
+     const lv=LN_CL.IW.map(r=>rosterLevel(lnRoster(r[0],'t')));chk('women',lv.every((v,i)=>!i||v<=lv[i-1]+0.6),'la forza non segue serie e classifica: '+lv.map(Math.round).join(' '));
+     SV=S0;}
     // ---- Italia e USA restano come erano ----
     startCareer(SERIES.C[2],{});
     chk('italia',!isLN()&&!isUS()&&SV.sr==='C'&&SV.sched.length===15&&Object.keys(SV.mem).join()==='A,B,C'&&!SV.ln,'carriera italiana invariata');
@@ -134,7 +141,8 @@ function lnSelfTest(seasons,seed){
     G.inMatch=false;
   }
   const r=(name,k,okTxt)=>rows.push(row(name,bad[k]?bad[k].slice(0,2).join('; '):okTxt,!bad[k]));
-  r('Dati: 46 club belgi, 54 francesi, 49 tedeschi, 11 britannici, nomi distinti da Italia, USA ed EUCF, forza e livelli validi','dati','sì');
+  r('Dati: 46 club belgi, 54 francesi, 49 tedeschi, 11 britannici, 17 Women, nomi distinti da Italia, USA ed EUCF, forza e livelli validi','dati','sì');
+  r('Campionato Women: solo giocatrici e club femminili (mercato compreso), forza secondo serie e classifica, nessun club femminile nel mondo maschile','women','sì');
   r('Rose di tutti i club: 14-28 giocatori (20 dove non c’è il foglio di revisione 2026), Overall e età nei limiti, forza uguale a quella dei dati (stelle escluse)','rose','sì');
   r('Età esatte dove note e giocatori veri presenti','eta',`sì (${nExact} esatte)`);
   r('Forza dei giocatori coerente con quella del club (media della rosa e fondo della rosa) in ogni livello','profondita','sì');

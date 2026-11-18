@@ -37,6 +37,9 @@ const UTO_MILE=100,UTO_MILE_PK=[[2,5],[3,6],[4,7],[5,8],[6,9]];
 const utoMiles=p=>Math.max(0,Math.floor((p-UTO_START)/UTO_MILE));
 const utoMilePts=i=>UTO_START+i*UTO_MILE;                                  // punti del traguardo numero i (1 = il primo)
 const utoMilePack=i=>{const m=UTO_MILE_PK[clamp(i,1,UTO_MILE_PK.length)-1];return m[0]+m[1]*10;};
+// e un pacchetto equipaggiamento, anche lui sempre migliore (qualita', accessori): dal quinto traguardo il super, con un Epico garantito
+const UTO_MILE_EQ=[[2,2],[3,2],[4,2],[5,3],[6,3]];
+const utoMileEq=i=>{const m=UTO_MILE_EQ[clamp(i,1,UTO_MILE_EQ.length)-1];return m[0]+m[1]*10+300;};
 // la tua squadra come si carica online: 7 titolari e fino a 7 riserve (le migliori), statistiche per nome
 function utoPack(col,sel){
   const st=sel.map(i=>col[i]).filter(Boolean);

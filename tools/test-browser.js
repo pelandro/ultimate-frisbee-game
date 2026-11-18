@@ -106,8 +106,25 @@ catch(e){
     if(n<12)throw new Error('il test USA ha dato pochi risultati');
     if(/Continua/.test(await page.locator('#tCareerS').innerText()))throw new Error('il test USA ha lasciato una carriera salvata');
   });
+  await step('divisione femminile: carriera e partita veloce solo tra squadre femminili, testi al femminile',async()=>{
+    await page.click('#tCareer');await vis('#league');
+    if(await page.locator('#lgList [data-div]').count()!==2)throw new Error('prima del campionato si sceglie la divisione (maschile o femminile)');
+    if(await page.locator('#lgList [data-lg="IW"]').count())throw new Error('il campionato femminile non deve stare tra i campionati maschili');
+    await page.click('#lgList [data-div="w"]');await vis('#team');
+    const tn=await page.locator('#tTeams .tteam').allInnerTexts();if(!tn.length||!tn.some(t=>/Tequila Boom Boom/.test(t))||tn.some(t=>/La Fotta/.test(t)))throw new Error('squadre femminili sbagliate: '+tn.slice(0,3).join(' | '));
+    await page.click('#tTeams .tteam >> nth=0');await vis('#rpv');if(!/giocatrici/.test(await page.locator('#rpS').innerText()))throw new Error('nella rosa femminile si parla di giocatrici');
+    await page.click('#rpX');await page.click('#teamBack');await vis('#league');
+    if(!/divisione/i.test(await page.locator('#lgH').innerText()))throw new Error('dal femminile «Indietro» torna alla scelta della divisione');
+    await page.click('#lgList [data-div="m"]');if(!(await page.locator('#lgList [data-lg="IT"]').count()))throw new Error('manca il campionato italiano maschile');
+    await page.click('#lgBack');await page.click('#lgBack');await vis('#title');
+    await page.click('#tQuick');await vis('#quick');await page.click('#qDiv [data-v="w"]');
+    if(!/Women/.test(await page.locator('#qAP').innerText())||!/Women/.test(await page.locator('#qBP').innerText()))throw new Error('partita veloce femminile con una squadra maschile');
+    await page.click('#qA');const tb=await page.locator('#qpTabs button').count();await page.click('#qpX');if(tb!==2)throw new Error('nel femminile le linguette sono Serie A e Serie B');
+    await page.click('#qDiv [data-v="m"]');if(/Women/.test(await page.locator('#qAP').innerText())||/giocatrici/.test(await page.locator('#qDP').innerText()))throw new Error('tornando al maschile resta qualcosa del femminile');
+    await page.click('#qBack');await vis('#title');
+  });
   await step('carriera USA dall\'interfaccia: Italia/USA, Conference, club, allenatore, Classifica a tre viste, partita simulata',async()=>{
-    await page.click('#tCareer');await vis('#league');if(await page.locator('#lgList .lgcard').count()<2)throw new Error('servono le schede dei campionati');await page.click('#lgList [data-lg="US"]');await vis('#team');
+    await page.click('#tCareer');await vis('#league');await page.click('#lgList [data-div="m"]');if(await page.locator('#lgList .lgcard').count()<2)throw new Error('servono le schede dei campionati');await page.click('#lgList [data-lg="US"]');await vis('#team');
     if(await page.locator('#tSr button').count()!==8)throw new Error('servono le 8 Conference');
     await page.click('#tSr button[data-k="NE"]');
     if(await page.locator('.tteam').count()!==6)throw new Error('ogni Conference ha 6 club');
@@ -135,7 +152,7 @@ catch(e){
     if(/Continua/.test(await page.locator('#tCareerS').innerText()))throw new Error('il test delle leghe europee ha lasciato una carriera salvata');
   });
   await step('carriera in Belgio dall\'interfaccia: paese, livello, club, roster, allenatore, Classifica a tre viste, partita simulata',async()=>{
-    await page.click('#tCareer');await vis('#league');if(await page.locator('#lgList .lgcard').count()<6)throw new Error('servono le schede dei sei campionati');await page.click('#lgList [data-lg="BE"]');await vis('#team');
+    await page.click('#tCareer');await vis('#league');await page.click('#lgList [data-div="m"]');if(await page.locator('#lgList .lgcard').count()<6)throw new Error('servono le schede dei sei campionati');await page.click('#lgList [data-lg="BE"]');await vis('#team');
     if(await page.locator('#tSr button').count()!==6)throw new Error('servono i 6 livelli belgi');
     await page.click('#tSr button[data-k="N1"]');
     if(await page.locator('.tteam').count()!==8)throw new Error('la N1 belga ha 8 club');
@@ -151,7 +168,7 @@ catch(e){
     await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   });
   await step('nuova carriera e cruscotto',async()=>{
-    await page.click('#tCareer');await vis('#league');await page.click('#lgList [data-lg="IT"]');await vis('#team');await page.click('#tSr button[data-k="C"]');await page.click('.tteam >> nth=0');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');
+    await page.click('#tCareer');await vis('#league');await page.click('#lgList [data-div="m"]');await page.click('#lgList [data-lg="IT"]');await vis('#team');await page.click('#tSr button[data-k="C"]');await page.click('.tteam >> nth=0');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');
     // schermata dell'allenatore: personaggio casuale, volto e nomi scelti a mano, anteprima che segue
     await page.click('#coRnd');if(!(await page.inputValue('#coN'))||!(await page.inputValue('#coS')))throw new Error('«Personaggio casuale» deve riempire nome e cognome');
     if(await page.locator('#coFaces button').count()!==12)throw new Error('i volti devono essere dodici');
@@ -363,7 +380,7 @@ catch(e){
     const team1=(await page.locator('#tCareerS').innerText().catch(()=>''));
     await vis('#home');const name1=await page.locator('#hEvt').first().innerText();
     await menu('#hOpt');await vis('#opts');if(await page.locator('#opSlots [data-slot]').count()!==3)throw new Error('gli slot devono essere tre');
-    await page.click('#opSlots [data-slot="2"]');await await vis('#league');await page.click('#lgList [data-lg="IT"]');await vis('#team');await page.click('#tSr button[data-k="B"]');await page.click('.tteam >> nth=3');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
+    await page.click('#opSlots [data-slot="2"]');await await vis('#league');await page.click('#lgList [data-div="m"]');await page.click('#lgList [data-lg="IT"]');await vis('#team');await page.click('#tSr button[data-k="B"]');await page.click('.tteam >> nth=3');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     const name2=await page.locator('#hEvt').first().innerText();if(name2===name1)throw new Error('lo slot 2 ha la stessa squadra dello slot 1');
     await menu('#hOpt');await page.click('#opSlots [data-slot="1"]');await page.waitForTimeout(300);await vis('#home');
     const back=await page.locator('#hEvt').first().innerText();if(back!==name1)throw new Error('tornando allo slot 1 la carriera non e\' quella di prima: '+back);
@@ -493,8 +510,8 @@ catch(e){
     await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');await vis('#ut');
     if(await page.locator('#uBuy').count())throw new Error('«Compra un pacchetto» e\' sostituito dal Negozio');
     await page.click('#uShop');await vis('#utShop');
-    if(await page.locator('#shList [data-k]').count()!==3)throw new Error('il Negozio deve avere tre pacchetti');
-    if(await page.locator('#shList svg.disc').count()!==3)throw new Error('i pacchetti del Negozio sono dischi');
+    if(await page.locator('#shList [data-k]').count()!==4)throw new Error('il Negozio deve avere quattro pacchetti (con l\'equipaggiamento)');
+    if(await page.locator('#shList svg.disc').count()!==4)throw new Error('i pacchetti del Negozio sono dischi');
     await page.click('#shList [data-k="han"]');await page.click('#shList [data-k="cut"]');
     const u1=await ut();if(u1.c!==500-65-65||u1.pk.length!==u0.pk.length+2)throw new Error('Handler e Cutter: costo o pacchetti sbagliati '+JSON.stringify(u1));
     await page.click('#shOpen');await vis('#utPack');
@@ -530,10 +547,12 @@ catch(e){
     await page.reload();await page.waitForTimeout(500);
     await page.click('#tUT');await vis('#utMode');await page.click('#umReal');await vis('#utReal');
     if(await page.locator('#urNameBox').isVisible())throw new Error('con il nome gia\' scelto il riquadro del nome non deve comparire');
-    real=(await cols())[1];if(real.ms!==2||real.pk.join()!=='52,63')throw new Error('traguardi: attesi i pacchetti 52 e 63, trovati '+real.pk.join()+' (ms '+real.ms+')');
+    real=(await cols())[1];if(real.ms!==2||real.pk.join()!=='52,63,322,323')throw new Error('traguardi: attesi i pacchetti 52 e 63 e gli accessori 322 e 323, trovati '+real.pk.join()+' (ms '+real.ms+')');
     if(!/1300 punti/.test(await page.locator('#urMiles .urmr.next').innerText()))throw new Error('il prossimo traguardo dovrebbe essere a 1300 punti: '+await page.locator('#urMiles').innerText());
     if(await page.locator('#urMiles .urmr.done').count()!==2||await page.locator('#urMiles .urmr').count()!==5)throw new Error('i traguardi devono essere 5, con i primi due ottenuti');
-    await page.click('#urPack');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(2200);await page.click('#pkGo');await page.click('#pkGo');await page.waitForTimeout(2600);await page.click('#pkGo');await vis('#utReal');
+    await page.click('#urPack');await vis('#utPack');
+    for(let i=0;i<4;i++){await page.click('#pkGo');await page.waitForTimeout(i<3?2200:2600);await page.click('#pkGo');}   // due pacchetti di giocatori e due di accessori
+    await vis('#utReal');
     real=(await cols())[1];if(real.n!==21||real.pk.length)throw new Error('dopo i due pacchetti premio attesi 21 giocatori, trovati '+real.n);
     await page.click('#urTeam');await vis('#utTeam');await page.click('#tmMode [data-m="up"]');await page.click('#tmList .urow[data-i] >> nth=0');await vis('#tmUp');
     await page.click('#tmBack');await page.click('#urBack');await vis('#utMode');
@@ -553,6 +572,27 @@ catch(e){
     if(!/potenziato \(Difesa\)/.test(await page.locator('#tmInfo').innerText()))throw new Error('il potenziamento non e\' stato applicato: '+await page.locator('#tmInfo').innerText());
     await page.click('#tmBack');await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
   });
+  await step('Ultimate Team: equipaggiamento (Negozio, manichino, divisa)',async()=>{
+    const eq=()=>page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut'));return {c:o.coins|0,eq:o.eq||{},pk:o.packs.slice()};});
+    await page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut'));o.coins=500;o.eq={own:{},on:{}};localStorage.setItem('ultimate-ut',JSON.stringify(o));});
+    await page.reload();await page.waitForTimeout(500);
+    await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');await vis('#ut');
+    await page.click('#uShop');await vis('#utShop');await page.click('#shList [data-k="eq"]');
+    let u=await eq();if(u.c!==380||u.pk[u.pk.length-1]!==321)throw new Error('pacchetto equipaggiamento: costo o codice sbagliati '+JSON.stringify(u));
+    await page.click('#shOpen');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(1500);
+    if(await page.locator('#pkBody .ucard.eqc').count()!==2)throw new Error('il pacchetto equipaggiamento ha 2 accessori');
+    while(await page.locator('#utPack').isVisible()){await page.click('#pkGo');await page.waitForTimeout(1500);}
+    await vis('#ut');u=await eq();
+    if(Object.keys(u.eq.on||{}).length!==2)throw new Error('i due accessori nuovi devono essere indossati: '+JSON.stringify(u.eq));
+    await page.click('#uEquip');await vis('#utEquip');
+    if(await page.locator('#eqL .eqs, #eqR .eqs').count()!==6)throw new Error('i posti dell\'equipaggiamento devono essere sei');
+    if(!(await page.locator('#eqFig svg').isVisible()))throw new Error('manca il manichino');
+    const k=Object.keys(u.eq.on)[0];await page.click(`.eqs[data-k="${k}"]`);await page.click('#eqOff');
+    await page.click('#eqKit .eqsw[data-z="s"][data-c="#ffd23f"]');
+    u=await eq();if(u.eq.on[k]!==undefined||u.eq.kit.s!=='#ffd23f')throw new Error('togliere un accessorio o cambiare la maglia non funziona: '+JSON.stringify(u.eq));
+    if(!/Bonus a tutta la squadra/.test(await page.locator('#eqInfo').innerText()))throw new Error('manca il riepilogo dei bonus');
+    await page.click('#eqBack');await vis('#ut');await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
+  });
   await step('allenamento: il tutorial parte e si esce dalla pausa',async()=>{
     await page.click('#tSchool');await vis('#school');if(await page.locator('.tles [data-step]').count()!==7)throw new Error('mancano le sette lezioni del tutorial');
     await page.click('#scBox .schrow [data-go="tut"]');await page.waitForTimeout(700);await vis('#coach');
@@ -567,7 +607,7 @@ catch(e){
     const empty=await page.locator('#csBox .csl:not(:has([data-cgo])) [data-cnew]').first();
     const k=+(await empty.getAttribute('data-cnew'));await empty.click();await vis('#league');await page.click('#lgBack');await vis('#slots');   // ripensamento: la carriera di prima resta
     if(await page.locator('#csBox [data-cgo]').count()!==full)throw new Error('tornando indietro la carriera di prima e\' sparita');
-    await page.click('#csBox [data-cnew="'+k+'"]');await vis('#league');await page.click('#lgList [data-lg="IT"]');await vis('#team');
+    await page.click('#csBox [data-cnew="'+k+'"]');await vis('#league');await page.click('#lgList [data-div="m"]');await page.click('#lgList [data-lg="IT"]');await vis('#team');
     // seconda carriera: partenza da subentrato (squadra in crisi a una giornata dalla fine), con «Un'altra squadra»
     await page.click('#tMode button[data-k="sub"]');await page.click('#tSr button[data-k="B"]');await vis('#tReAcc');await page.click('#tReAlt');await vis('#tReAcc');
     await page.click('#tReAcc');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
