@@ -13,6 +13,17 @@ let fail=0,tot=0;const t0=Date.now();
 // contratti del motore che due modifiche indipendenti possono rompere senza conflitti Git
 for(const r in api.ROLE_W){const w=api.ROLE_W[r],sum=Object.values(w).reduce((x,y)=>x+y,0),bad=Object.keys(w).filter(k=>!api.KEYS.includes(k));tot++;
   const ok=Math.abs(sum-1)<1e-6&&!bad.length;if(!ok)fail++;console.log(`  [${ok?'OK':'NO'}] Pesi dell'Overall per il ruolo ${r}: somma ${sum.toFixed(2)}${bad.length?' · statistiche sconosciute: '+bad.join(','):''}`);}
+const fpsScenario=new Function('fps',html.slice(a,b)+`
+  Math.random=mulberry32(5312);
+  G.opt.cine=false;
+  const m=testMatch(makeRoster(63,'fps-a'),makeRoster(63,'fps-b'),{fps});
+  return JSON.stringify({score:m.score,st:m.st,time:m.time,stuck:m.stuck});`);
+const realRandom=Math.random;
+try{
+  const normal=fpsScenario(60),ok=fpsScenario(30)===normal&&fpsScenario(120)===normal;
+  tot++;if(!ok)fail++;
+  console.log(`  [${ok?'OK':'NO'}] Motore a 30, 60 e 120 FPS: risultato, tempo e statistiche`);
+}finally{Math.random=realRandom;}
 const S=api.selfTestPlan({n,seed});
 console.log(`Test del motore: ${n} partite per gruppo, seme ${seed}`);
 for(let i=0;i<S.steps.length;i++){

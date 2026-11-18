@@ -21,19 +21,19 @@ const LN_DEF={
       {id:'N3',name:'N3',k:1.15,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},{id:'N4',name:'N4',k:1,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},
       {id:'N5',name:'N5',k:0.9,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},{id:'N6',name:'N6',k:0.8,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]}]},
   FR:{id:'FR',cc:'Francia',de:'della Francia',name:'Francia · Championnat',sub:'Championnat de France outdoor · N1, N2, N3 · 54 squadre, 36 selezionabili all’avvio',eu:2,mv:[3,6],
-    txt:'Championnat de France Open outdoor: la N1 ha 12 squadre in due poule da 6 e un Top 8; la N2 tre gironi da 8; la N3 solo le prime tre di ogni girone. Le prime due della N1 vanno all’EUCF.',
+    txt:'Championnat de France Open outdoor: la N1 ha 12 squadre in due poule da 6 e un Top 8; la N2 tre gironi da 8; la N3 solo le prime tre di ogni girone. Nella carriera, le prime due della N1 si qualificano all’EUCF.',
     tiers:[
       {id:'N1',name:'N1',k:1.5,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'},{f:5,t:6,m:'c4'}]},
       {id:'N2',name:'N2',k:1.2,comps:3,pools:1,fin:[{f:1,t:8,m:'p'}]},
       {id:'N3',name:'N3',k:1,comps:6,pools:1,fin:[],play:false}]},
   DE:{id:'DE',cc:'Germania',de:'della Germania',name:'Germania · DFV',sub:'DFV Outdoor · 1., 2. e 3. Liga · 49 squadre',eu:1,mv:[2,3],
-    txt:'La 1. Liga ha 16 squadre in due gironi da 8, con fasi finali per tutte le posizioni; sotto ci sono la 2. Liga (Nord e Süd) e la 3. Liga. La prima della 1. Liga va all’EUCF.',
+    txt:'La 1. Liga ha 16 squadre in due gironi da 8, con fasi finali per tutte le posizioni; sotto ci sono la 2. Liga (Nord e Süd) e la 3. Liga. Nella carriera, la prima della 1. Liga si qualifica all’EUCF.',
     tiers:[
       {id:'D1',name:'1. Liga',k:1.5,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'},{f:5,t:8,m:'c8'}]},
       {id:'D2',name:'2. Liga',k:1.15,comps:2,pools:2,fin:[{f:1,t:2,m:'c4'},{f:3,t:4,m:'rr'}]},
       {id:'D3',name:'3. Liga',k:1,comps:3,pools:1,fin:[{f:1,t:4,m:'c4'}]}]},
-  UK:{id:'UK',cc:'Regno Unito',de:'del Regno Unito',name:'Regno Unito · UKU',sub:'UKU Nationals e Open Tour · 11 squadre',eu:2,mv:[1],
-    txt:'I Nationals (8 club: due gironi da 4 e tabellone) e, sotto, l’Open Tour: i vincitori delle tappe si giocano un posto ai Nationals. Le prime due dei Nationals vanno all’EUCF.',
+  UK:{id:'UK',cc:'Regno Unito',de:'del Regno Unito',name:'Regno Unito · UKU',sub:'UKU Nationals e Open Tour · 11 squadre, 8 selezionabili all’avvio',eu:2,mv:[1],
+    txt:'I Nationals (8 club: due gironi da 4 e tabellone) e, sotto, l’Open Tour: nella carriera un club sale dall’Open Tour a fine stagione. Le prime due dei Nationals si qualificano all’EUCF nel gioco.',
     tiers:[
       {id:'N1',name:'Nationals',k:1.4,comps:1,pools:2,fin:[{f:1,t:4,m:'x8'}]},
       {id:'N2',name:'Open Tour',k:1,comps:1,pools:1,fin:[],play:false}]},

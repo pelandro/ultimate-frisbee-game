@@ -244,6 +244,7 @@ function syncCall(){
   if(drag&&G.mode==='play'&&h&&h.t===0&&!G.flight&&G.freeze<=0){const w=toWorld(drag.x,drag.y);updateCall(h,w.x,w.y,G.high);}
   else if(G.call)endCall();
 }
+let simRemainder=0,menuDrawElapsed=0;
 function frame(now){
   const dt=Math.min(0.05,Math.max(0,(now-last)/1000));last=now;
   AUD.sync(G.inMatch&&G.mode!=='over'?'match':'home');
@@ -258,7 +259,12 @@ function frame(now){
     const zoomWait=G.mode==='play'&&!!G.holder&&!G.pull&&!G.flight&&(cam.zP<1||Math.abs(zoomTarget()-cam.zTo)>0.001);
     G.zoomHold=zoomWait;
     capturePointCheckpoint();
-    if(G.paused){}else if(G.mode==='cine')updateCine(dt);else if(!zoomWait)update(dt);
+    if(G.paused||zoomWait||G.schemeOpen)simRemainder=0;
+    else if(G.mode==='cine'){simRemainder=0;updateCine(dt);}
+    else simRemainder=advanceSimulation(simRemainder,dt,step=>{
+      update(step);
+      return !G.paused&&!G.schemeOpen&&G.mode!=='cine';
+    });
     if(G.mode==='banner'&&Math.max(...G.score)>=G.target)recordFinishedMatch();
     rpRecord();rpCheck();
     const replayFrame=rpApply(dt);
@@ -268,10 +274,14 @@ function frame(now){
       try{updateCamera(dt);render(dt);}
       finally{rpSet(RP.on.save);}
     }else{
-      updateCamera(dt);updateHUD(dt);render(dt);
+      updateCamera(dt);updateHUD(dt);
+      menuDrawElapsed+=dt;
+      if(G.inMatch||G.mode!=='home'||menuDrawElapsed>=1/30){
+        render(Math.min(menuDrawElapsed,.05));menuDrawElapsed=0;
+      }
     }
     updTest();
-  }
+  }else simRemainder=0;
   requestAnimationFrame(frame);
 }
 window.addEventListener('resize',resize);
