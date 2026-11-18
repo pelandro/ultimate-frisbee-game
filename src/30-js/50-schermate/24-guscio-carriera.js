@@ -39,6 +39,7 @@ function todoItems(){
   const lineBad=SV.lineO.length<7||SV.lineD.length<7||SQ.some(p=>p.inj&&(SV.lineO.includes(p.full)||SV.lineD.includes(p.full)));
   const pd=pendingAlerts(),nw=(SV.alerts||[]).filter(a=>!a.seen).length;
   if(SV.cash<0)L.push(['bad','Conti in rosso: niente acquisti','club']);
+  if(SV.sp?.off)L.push(['warn','Scegli lo sponsor per la nuova stagione','sponsor']);
   if(pd)L.push(['bad',`${pd} ${pd>1?'decisioni da prendere':'decisione da prendere'}`,'alerts']);
   if(lineBad)L.push(['bad','Sistema le linee: ce n’è una incompleta o con un infortunato','roster']);
   if(hurt.length)L.push(['warn',`Infortunati: ${hurt.length} (${hurt.slice(0,2).map(p=>pname(p)).join(', ')}${hurt.length>2?'…':''})`,'roster']);
@@ -53,7 +54,7 @@ function renderTodo(){
   const L=todoItems(),m=nextMatch();
   $('hTodo').innerHTML=L.length?L.map(([c,t,g])=>`<li><button type="button" class="tdi ${c}" data-go="${g}"><i></i><span>${esc(t)}</span></button></li>`).join(''):`<li class="tdok">${m?'Tutto in ordine: puoi giocare.':'Niente da sistemare per ora.'}</li>`;
 }
-$('hTodo').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;const g=b.dataset.go;if(g==='alerts')openAlerts();else showScreen(g);});
+$('hTodo').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;const g=b.dataset.go;if(g==='alerts')openAlerts();else if(g==='sponsor'){SV.evt=SV.evt||{id:'spons',a:{}};openEvt();}else showScreen(g);});
 
 // ---- informazioni a scomparsa: le spiegazioni lunghe stanno dietro un pulsante «i» (chiuse all'apertura della pagina), cosi' si vede subito cio' che serve ----
 // infoB(k) = il pulsante, infoX(k,html) = il riquadro che si apre sotto; lo stato (aperto/chiuso) resta anche quando la schermata si ridisegna

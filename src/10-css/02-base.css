@@ -412,3 +412,5 @@ select.qs option,select.qs optgroup{background:#12301d;color:#fff}
 #qpSearch,#tnSearch{min-height:30px;width:100%;min-width:0;box-sizing:border-box}
 .qpanel,.gpanel{overscroll-behavior:contain}
 .qpanel .qph,#rpv .mh{position:sticky;top:0;z-index:1;background:var(--panel)}
+
+#tmList button.urow{width:100%;font:inherit;text-align:left;color:inherit}

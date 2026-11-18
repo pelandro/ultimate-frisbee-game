@@ -7,11 +7,18 @@ const TN_SET={team:'',size:8,pool:'lg',d:0,len:7};   // pool: 'lg' il campionato
 const tnRoundName=n=>n>=16?'Ottavi di finale':(n>=8?'Quarti di finale':(n>=4?'Semifinale':'Finale'));
 const tnCur=()=>TOUR.rounds[TOUR.rounds.length-1];
 function tnOpp(){const t=tnCur(),i=t.indexOf(TOUR.team);return i<0?null:t[i^1];}
+function tnPools(team,kind){
+  const league=qLgOf(team).clubs().filter(n=>n!==team);
+  const division=qDivAll(qDivOf(team)).filter(n=>n!==team);
+  const series=league.filter(n=>qGrp(n)===qGrp(team));
+  if(kind==='all')return [[division,'della divisione']];
+  const others=[division.filter(n=>!league.includes(n)),'di altri campionati'];
+  if(kind==='lg')return [[league,'del campionato'],others];
+  return [[series,'della serie'],[league.filter(n=>!series.includes(n)),'di altre serie'],others];
+}
 function tnCreate(){
   const me=TN_SET.team,shuffle=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
-  const lg=qLgOf(me).clubs(),all=qDivAll(qDivOf(me));   // le squadre femminili giocano solo tra loro, come in carriera
-  let pool=shuffle((TN_SET.pool==='all'?all:(TN_SET.pool==='grp'?lg.filter(n=>qGrp(n)===qGrp(me)):lg)).filter(n=>n!==me));
-  for(const more of [lg,all])if(pool.length<TN_SET.size-1)pool=pool.concat(shuffle(more.filter(n=>n!==me&&!pool.includes(n))));   // serie o campionato troppo piccolo per il tabellone: si completa prima con il resto del campionato, poi con gli altri
+  const pool=tnPools(me,TN_SET.pool).flatMap(([clubs])=>shuffle(clubs));
   TOUR={team:me,size:TN_SET.size,d:TN_SET.d,len:lenOk(TN_SET.len|0),rounds:[shuffle([me].concat(pool.slice(0,TN_SET.size-1)))],res:[],st:'play',champ:''};tnSave();
 }
 function tnSimRound(t,su,so){   // risultati di un turno: la tua partita e' quella giocata, le altre sono simulate
@@ -52,7 +59,9 @@ function renderTourn(){
     const sel=(id,l,o,v)=>`<div><label for="${id}">${l}</label><select class="qs" id="${id}">${o.map(x=>`<option value="${x[0]}"${String(x[0])===String(v)?' selected':''}>${x[1]}</option>`).join('')}</select></div>`;
     $('tnBox').innerHTML=`<p class="note" style="margin:0 0 10px">Crea un torneo a eliminazione diretta con le squadre vere: scegli la tua (di qualsiasi campionato), quante partecipano e da dove arrivano le avversarie: le squadre femminili giocano solo tra loro. Le tue partite le giochi (o le simuli), le altre vengono simulate. Il torneo resta salvato finché non ne crei un altro.</p>
       <div class="tnset"><div><label for="tnSearch">Cerca squadra</label><input type="search" id="tnSearch" class="qs" autocomplete="off"> <label for="tnTeam">La tua squadra</label><select class="qs" id="tnTeam">${opts}</select></div>${sel('tnSize','Squadre',[[4,'4 · semifinali e finale'],[8,'8 · dai quarti'],[16,'16 · dagli ottavi']],TN_SET.size)}${sel('tnPool','Avversarie',[['lg','Dal suo campionato'],['grp','Dalla sua serie'],['all','Da tutti i campionati']],TN_SET.pool)}${sel('tnD','Difficoltà',[[0,'Facile'],[1,'Medio'],[2,'Difficile'],[3,'Estrema']],TN_SET.d)}${sel('tnLen','Durata',LEN_OPTS.map(o=>[o.n,o.name+' · '+o.n+' punti']),TN_SET.len)}</div>
+      <p class="note" role="status" id="tnPoolNote"></p>
       <div class="schrow" style="margin-top:12px"><button type="button" class="go" id="tnGo">Crea il torneo</button></div>`;
+    tnPoolPreview();
     return;
   }
   const cols=TOUR.rounds.map((t,ri)=>{
@@ -68,6 +77,21 @@ function renderTourn(){
     :`<p class="estat">${TOUR.st==='won'?'Hai vinto il torneo con '+esc(TOUR.team)+'!':'Eliminati. Vince '+esc(TOUR.champ)+'.'}</p>`;
   $('tnBox').innerHTML=head+`<div class="tncols">${cols}</div><div class="hlinks" style="margin-top:8px"><button class="hlink" id="tnNew" type="button">Nuovo torneo</button><span class="note" style="margin:0">Difficoltà: ${['Facile','Medio','Difficile','Estrema'][TOUR.d|0]} · si vince a ${lenOk(TOUR.len|0)} punti</span></div>`;
 }
+function tnPoolPreview(){
+  const team=$('tnTeam').value;
+  if(!team){$('tnPoolNote').textContent='Nessuna squadra trovata.';return;}
+  let remaining=+$('tnSize').value-1;
+  const parts=[];
+  for(const [pool,label] of tnPools(team,$('tnPool').value)){
+    const count=Math.min(remaining,pool.length);
+    if(count)parts.push(count+' '+label);
+    remaining-=count;
+  }
+  $('tnPoolNote').textContent='Avversarie: '+parts.join(' · ');
+}
+$('tnBox').addEventListener('change',e=>{
+  if(['tnTeam','tnPool','tnSize'].includes(e.target.id))tnPoolPreview();
+});
 $('tnBox').addEventListener('input',e=>{
   if(e.target.id!=='tnSearch')return;
   const query=clubSearchText(e.target.value),select=$('tnTeam'),previous=select.value;
@@ -78,6 +102,7 @@ $('tnBox').addEventListener('input',e=>{
   const match=[...select.options].find(o=>!o.hidden&&o.value===previous)||[...select.options].find(o=>!o.hidden);
   select.value=match?.value||'';
   $('tnGo').disabled=!match;
+  tnPoolPreview();
 });
 $('tnBox').addEventListener('click',e=>{
   if(e.target.closest('#tnGo')){TN_SET.team=$('tnTeam').value;TN_SET.size=+$('tnSize').value;TN_SET.pool=$('tnPool').value;TN_SET.d=+$('tnD').value;TN_SET.len=+$('tnLen').value;tnCreate();renderTourn();}

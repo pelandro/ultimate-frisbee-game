@@ -86,12 +86,14 @@ $('clExp').addEventListener('click',()=>{$('opMsg').textContent=exportSave();});
 $('clImp').addEventListener('click',()=>{$('clFile').value='';$('clFile').click();});
 $('clBak').addEventListener('click',()=>armed($('clBak'),'Conferma: torna al salvataggio precedente','Ripristina la copia precedente',()=>{
   let r=null;try{r=localStorage.getItem(slotKey(SV.slot||1)+'-bak');const legacy=localStorage.getItem(SAVE_KEY+'-bak');if(!r&&legacy&&(JSON.parse(legacy).slot||1)===(SV.slot||1))r=legacy;}catch(e2){}
-  $('opMsg').textContent=r?(importSave(r)||'Copia precedente ripristinata.'):'Nessuna copia precedente disponibile.';renderOpts();renderHome();
+  const error=r?importSave(r):'Nessuna copia precedente disponibile.';
+  $('opMsg').textContent=error||'Copia precedente ripristinata.';
+  if(!error){renderOpts();renderHome();}
 }));
 $('clFile').addEventListener('change',e=>{
   const f=e.target.files&&e.target.files[0];if(!f)return;
   const rd=new FileReader();
-  rd.onload=()=>{const err=importSave(String(rd.result||''));$('opMsg').textContent=err||`Carriera importata: ${SV.team}, ${SERIES_NAME[SV.sr]}, stagione ${SV.season}.`;renderOpts();renderHome();};
+  rd.onload=()=>{const err=importSave(String(rd.result||''));$('opMsg').textContent=err||`Carriera importata: ${SV.team}, ${SERIES_NAME[SV.sr]}, stagione ${SV.season}.`;if(!err){renderOpts();renderHome();}};
   rd.onerror=()=>{$('opMsg').textContent='Lettura del file non riuscita.';};
   rd.readAsText(f);
 });

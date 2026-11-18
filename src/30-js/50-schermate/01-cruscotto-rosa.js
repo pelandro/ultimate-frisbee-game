@@ -16,7 +16,8 @@ function renderHome(){
     const ord=ranking(SV.tab,names),me=ord.indexOf(SV.team),a=clamp(me-1,0,Math.max(0,ord.length-3));
     tab=ord.slice(a,a+3).map((n,i)=>`<div class="${n===SV.team?'me':''}"><span>${a+i+1}. ${esc(n)}</span><b>${SV.tab[n].pts}</b></div>`).join('');
   }else tab=euHomeTab();
-  $('hTab').innerHTML=tab;
+  const provisional=SV.event==='camp'&&!SV.round&&!SV.done;
+  $('hTab').innerHTML=(provisional?'<small class="note">Classifica provvisoria</small>':'')+tab;
   // i crediti stanno nella barra in alto: qui erano un doppione
   $('hBars').innerHTML=statBar('Tifosi',fansOf(),'#ff9a3a','%')+`<div class="dbar"><span>Morale</span><span class="cbar"><i style="width:${Math.round(SV.mor)}%;background:#4fe58f"></i></span><b>${moodFace(teamMoodKey())}</b></div>`+statBar('Affiatamento',SV.chem,'#5ac8ff');
   renderTodo();   // «Questa settimana»: cosa serve adesso, ognuna porta alla schermata giusta (24-guscio-carriera.js)
@@ -81,7 +82,7 @@ const openDet=new Set();
 let rView=(()=>{try{return localStorage.getItem('ultimate-vista-rosa')==='t'?'t':'c';}catch(e){return 'c';}})(),cardOpen=null,nickEdit=null,rOrd=[];   // vista: carte (c) o tabella (t)
 // filtri e ordinamenti della Rosa: con 20 e piu' giocatori servono per trovare subito chi cerchi
 let rFilt='all',rSort='ovr';
-const R_FILT={all:['Tutti',()=>true],H:['Handler',p=>posOf(p)==='H'],C:['Cutter',p=>posOf(p)==='C'],D:['Defender',p=>posOf(p)==='D'],out:['Fuori linea',p=>!SV.lineO.includes(p.full)&&!SV.lineD.includes(p.full)],ko:['Da gestire',p=>!!p.inj||p.cond<50||p.mood>0||p.ret===1]};
+const R_FILT={all:['Tutti',()=>true],lineO:['Linea d’attacco',p=>SV.lineO.includes(p.full)],lineD:['Linea di difesa',p=>SV.lineD.includes(p.full)],H:['Handler',p=>posOf(p)==='H'],C:['Cutter',p=>posOf(p)==='C'],D:['Defender',p=>posOf(p)==='D'],out:['Fuori linea',p=>!SV.lineO.includes(p.full)&&!SV.lineD.includes(p.full)],ko:['Da gestire',p=>!!p.inj||p.cond<50||p.mood>0||p.ret===1]};
 const R_SORT={ovr:['Overall',(a,b)=>ovrX(b)-ovrX(a)],pot:['Potenziale',(a,b)=>{const x=potRange(a),y=potRange(b);return (y[0]+y[1])-(x[0]+x[1]);}],age:['Età',(a,b)=>a.age-b.age],cond:['Condizione',(a,b)=>a.cond-b.cond],wage:['Stipendio',(a,b)=>wageOf(b)-wageOf(a)],ssn:['Rendimento',(a,b)=>seasonScore(b.car)-seasonScore(a.car)]};
 let rosterMsg='',sellArm=null;
 function lineToggle(p,k){

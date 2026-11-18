@@ -56,6 +56,7 @@ function utEnter(){
   showScreen('ut');
 }
 function utAuto(){   // i 3 migliori handler e i 4 migliori cutter
+  const focused=document.activeElement?.closest?.('#tmList [data-i]')?.dataset.i;
   const idx=UT.col.map((p,i)=>i).sort((a,b)=>UT.col[b].ovr-UT.col[a].ovr),H=idx.filter(i=>UT.col[i].r==='H'),C=idx.filter(i=>UT.col[i].r==='C');
   let sel=H.slice(0,3).concat(C.slice(0,4));
   if(sel.length<7)sel=sel.concat(idx.filter(i=>!sel.includes(i)).slice(0,7-sel.length));
@@ -81,7 +82,7 @@ function renderUT(){
   $('uEquip').classList.toggle('hidden',!has);$('uEquipS').textContent=eqSubTxt();
   $('uNew').classList.toggle('hidden',UT.st==='play');
   $('uDiff').innerHTML=UT_DIFF.map((d,i)=>`<button type="button" class="sg${i===UT.d?' on':''}" data-d="${i}">${d.name}</button>`).join('');$('uDiffN').textContent=UT_DIFF[UT.d].txt+' Le avversarie hanno la forza del turno'+(DIFF_PLUS[UT.d|0]?', con +'+DIFF_PLUS[UT.d|0]+' a tutte le statistiche.':'.');
-  $('uMsg').textContent=UT.res||'';
+  $('uMsg').textContent=UT.res||(UT.st==='play'?(pend?'Apri i pacchetti in attesa per giocare il turno.':UT.sel.length!==7?'Schiera 7 titolari per giocare il turno.':''):'');
 }
 $('tUT').addEventListener('click',()=>showScreen('utMode'));   // prima si sceglie: Computer (questa pagina) o Real player (04-ut-online.js)
 $('uBack').addEventListener('click',()=>showScreen('utMode'));
@@ -122,7 +123,8 @@ function renderTeamUT(){
   $('tmInfo').innerHTML=`Titolari: <b>${UT.sel.length}/7</b> · Forza: <b>${utPower()}</b> · Gettoni: <b>${UT.coins}</b> — ${tmMsg||tip}`;
   const hdr=`<div class="urow hd"><span></span><span>Giocatore</span><span></span>${SHOW.map(k=>`<span class="sv">${k.toUpperCase()}</span>`).join('')}</div>`;
   $('tmList').innerHTML=hdr+idx.map(i=>{const p=UT.col[i],rc=utRar(p.ovr)[1],ex=UT.mode==='up'?((p.up|0)>=UT_UP_MAX?'max':utUpCost(p)+'g'):(UT.mode==='del'&&!UT.sel.includes(i)?'+'+UT_SELL[rc]+'g':'');
-    return `<div class="urow ${rc}${UT.sel.includes(i)?' sel':''}${UT.mode==='up'&&UT.upSel===i?' sel2':''}" data-i="${i}"><b class="uo">${p.ovr}</b><span class="un"${p.cl?` title="${p.label||p.n} · ${p.cl}"`:''}>${p.n}${p.isNew?'<span class="nw">NEW</span>':''}${p.up?`<span class="upb">${p.ul?Object.keys(UT_LINES).filter(l=>p.ul[l]).map(l=>UT_LINES[l].n[0]+(p.ul[l]>1?p.ul[l]:'')).join(' '):'+'+p.up}</span>`:''}${ex?`<span class="upb" style="color:var(--gold)">${ex}</span>`:''}</span><em title="${p.trait&&TRAITS[p.trait]?TRAITS[p.trait][0]:''}">${posOf(p)}${p.trait?'*':''}</em>${SHOW.map(k=>`<span class="sv">${p.s[k]}</span>`).join('')}</div>`;}).join('');
+    return `<button type="button" class="urow ${rc}${UT.sel.includes(i)?' sel':''}${UT.mode==='up'&&UT.upSel===i?' sel2':''}" data-i="${i}"${UT.mode==='sel'?' aria-pressed="'+UT.sel.includes(i)+'"':''}><b class="uo">${p.ovr}</b><span class="un"${p.cl?` title="${p.label||p.n} · ${p.cl}"`:''}>${p.n}${p.isNew?'<span class="nw">NEW</span>':''}${p.up?`<span class="upb">${p.ul?Object.keys(UT_LINES).filter(l=>p.ul[l]).map(l=>UT_LINES[l].n[0]+(p.ul[l]>1?p.ul[l]:'')).join(' '):'+'+p.up}</span>`:''}${ex?`<span class="upb" style="color:var(--gold)">${ex}</span>`:''}</span><em title="${p.trait&&TRAITS[p.trait]?TRAITS[p.trait][0]:''}">${posOf(p)}${p.trait?'*':''}</em>${SHOW.map(k=>`<span class="sv">${p.s[k]}</span>`).join('')}</button>`;}).join('');
+  if(focused!==undefined) $('tmList').querySelector(`[data-i="${focused}"]`)?.focus({preventScroll:true});
   renderUp();
   UT.col.forEach(p=>{p.isNew=false;});utSave();
 }
