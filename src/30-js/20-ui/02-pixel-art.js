@@ -56,7 +56,11 @@ function drawFx(){
   for(const p of parts){
     const k=p.life/p.max,x=sxw(p.x),y=syw(p.y);
     if(p.t==='dust'){const s=k>0.5?2:1;px(x,y-p.z*S*0.5,s,s,k>0.4?'#e8dcb8':'#c9d9ae');}
-    else if(p.t==='spark'){px(x,y-p.z*S*0.5,k>0.5?2:1,k>0.5?2:1,k>0.5?'#fff3b0':'#ffd23f');}
+    else if(p.t==='spark'){px(x,y-p.z*S*0.5,k>0.5?2:1,k>0.5?2:1,k>0.5?(p.c||'#fff3b0'):(p.c2||'#ffd23f'));}   // c, c2: scintille colorate (superpoteri)
+    else if(p.t==='smoke'){   // bomba di fumo dei superpoteri: sbuffi che si gonfiano in fretta, poi si sfaldano
+      const a=1-k,g=1-(1-Math.min(1,a*6))**2,sh=k<0.35?k/0.35:1,r=Math.max(1,p.r*(0.55+0.45*g)*S*sh),yy=y-p.z*S*0.5;
+      pell(x,yy+r*0.15,r,r*0.75,p.c2||'#9aa4b3');pell(x-r*0.12,yy-r*0.1,r*0.8,r*0.6,p.c||'#d9dee6');if(r>3)pell(x-r*0.35,yy-r*0.3,r*0.35,r*0.28,'#f4f6f9');
+    }
     else if(p.t==='blade'){const yy=y-p.z*S*0.5;px(x,yy-1,1,3,PAL.out);px(x,yy,1,2,k>0.5?PAL.dim:PAL.grass2);}   // zolla d'erba alzata dal disco
     else if(p.t==='pop'){   // presa: un anello quadrato che si apre in 4 scatti attorno alle mani
       const st=Math.min(3,((1-k)*4)|0),r=3+st*2,yy=ri(y-p.z*S*0.5),c=st<2?(p.c||'#ffffff'):'#d9ecc8';
@@ -322,12 +326,13 @@ function nameKey(p){
   return !!(p.cfx&&G.tick<p.cfx.until+0.6);   // chi ha appena preso al volo
 }
 function drawPlayers(dt){
-  const all=T[0].concat(T[1]).sort((a,b)=>a.y-b.y),h=PH();
+  const all=T[0].concat(T[1],G.dec?G.dec.filter(Boolean):[]).sort((a,b)=>a.y-b.y),h=PH();   // G.dec: le copie del clone (superpoteri)
   if(G.flight&&G.flight!==lastFl){lastFl=G.flight;G.flight.thrower.armT=0.3;}
   if(G.pull&&G.pull!==lastPull){lastPull=G.pull;if(G.pull.thrower)G.pull.thrower.armT=0.4;}
   const names=[];
   for(const p of all){
     const x=sxw(p.x),y=syw(p.y);if(x<-30||x>VW+30)continue;
+    const ghost=p.fake&&p.t===0;   // la copia del tuo clone la vedi trasparente (heroGhost); quella dell'avversario e' identica al vero
     const sp=hyp(p.vx,p.vy);p.ph=(p.ph||0)+sp*dt*1.9;if(Math.abs(p.vx)>0.6)p.fc=p.vx>0?1:-1;
     p.armT=Math.max(0,(p.armT||0)-dt);
     if(G.mode==='play'&&sp>6.2&&Math.random()<dt*7)addFx({t:'dust',x:p.x-(p.fc||1)*0.4,y:p.y,vx:0,vy:0,z:0.1,vz:0.5,life:0.4,max:0.4,r:0.16});
@@ -346,7 +351,7 @@ function drawPlayers(dt){
       p.fc=face;
     }
     const dvp=diveProg(p),air=p.dv?diveAir(p):0;
-    pell(x+(p.dv?p.dv.dir*5*dvp:0)+1,y,5+ri(5*dvp),1,'rgba(10,30,10,.28)');   // ombra
+    pell(x+(p.dv?p.dv.dir*5*dvp:0)+1,y,5+ri(5*dvp),1,ghost?'rgba(10,30,10,.12)':'rgba(10,30,10,.28)');   // ombra
     if(p.hot||p.cold){const c=p.hot?(Math.sin(G.tick*14+p.i)>0?'#ff5a3c':'#ffb03a'):'#7fd8ff';pring(x,y-9,10,12,c,1,2);}
     if(p===G.holder||p===G.puller){const pu=Math.sin(G.tick*6)>0?1:0;pring(x,y,9+pu,3,PAL.out,3);pring(x,y,9+pu,3,PAL.gold,1);}
     else if(p===G.marker&&G.holder)pring(x,y,9,3,G.dmode[p.t]===1?'#ff8a5c':'#ffffff',1,2);   // arancione: marca in anticipo (piu' pressione sul lancio)
@@ -357,11 +362,12 @@ function drawPlayers(dt){
       const view=sp>1.2&&Math.abs(p.vy)>Math.abs(p.vx)*1.3?(p.vy<0?1:2):0;
       const kind=pose==='aim'?aimKind:(lastFl&&lastFl.thrower===p?lastFl.kind:'backhand');   // il pull e' un rovescio
       const ca=p.cfx?G.tick-(p.cfx.until-0.42):-1;
-      const hp=puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,hero:heroOn(p)?p.hero:null,sc:heroScale(p)});
+      const hp=ghost?heroGhost(x,y,(gx,gy)=>puppet(gx,gy,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,pose,p.ph,Math.min(1,sp/6),0,{brk:!!p._brk,view,kind,ca:-1,hero:p.hero,sc:heroScale(p)})):puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,hero:heroVis(p)?p.hero:null,sc:heroScale(p)});
       p._hx=hp[0];p._hy=hp[1];p._ht=G.tick;   // il disco in mano segue la mano (drawDisc)
     }
+    heroFrost(p,x,y);   // il ghiaccio ai piedi di chi e' congelato (20-superpoteri.js)
     // energia: barretta sotto i tuoi quando calano; goccia di sudore sugli avversari sfiniti (li' c'e' un duello da cercare)
-    if(G.mode==='play'&&G.inMatch&&!p.dv){
+    if(G.mode==='play'&&G.inMatch&&!p.dv&&!ghost){
       if(p.t===0&&p.st<62){px(x-5,y+3,11,3,PAL.out);px(x-4,y+4,Math.max(1,Math.round(9*p.st/100)),1,p.st<30?PAL.red:(p.st<46?'#ff9a3a':PAL.gold));}
       else if(p.t===1&&p.st<38&&Math.sin(G.tick*5+p.i)>0){px(x+4,y-h+1,1,1,PAL.sky);px(x+4,y-h+2,2,2,PAL.sky);}
     }

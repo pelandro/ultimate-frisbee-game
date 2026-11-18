@@ -2,7 +2,7 @@
    Giocatori veri della stagione 2026, da due tabelle ricevute: i roster dei Nationals 2026 (16 club, circa 25 giocatori ciascuno, con mete, assist, difese) e
    i giocatori identificati nelle fonti pubbliche per gli altri club. Non sono roster ufficiali completi: 8 club hanno pochi nomi o nessuno. Dove manca, la rosa
    e' completata con giocatori generati (gen:true, nomi americani), tarati sulla forza del club. Una rosa ha al massimo 20 giocatori (i primi per rendimento).
-   Eta' e ruolo dei giocatori di US_CORE sono stime (compaiono con «circa»; il ruolo e' handler se hanno piu' assist che mete); il quinto numero e' il bonus di
+   Eta' e ruolo dei giocatori di US_CORE sono stime (l'età è segnata come tale nei dati; il ruolo e' handler se hanno piu' assist che mete); il quinto numero e' il bonus di
    livello rispetto al club (da -4 a +6) in base al rendimento ai Nationals 2026 (mete + assist + 1,5 difese). Per i 16 club dei Nationals prevalgono pero' i dati
    di Fantasy Ultimate (00-fantasy.js): livello assoluto (usFFabs, da punti a partita, costo e, per le stelle, fama di mercato) e ruolo (usFFrole, dai punteggi per ruolo) valgono anche per le stelle del
    mercato, e chi e' nei dati ma non in US_CORE entra in rosa se rende abbastanza (usFFextra). Per le stelle di un club senza dati vale l'Overall del mercato.
@@ -136,9 +136,11 @@ const usEuCtx=(sur,nm)=>{const e=lnCtxOvr(usNameKey(nm+' '+sur));return e>0?e+2:
 const usAbP=f=>usFFabs(f,0,0),usFl=(m,aw)=>Math.max(m?m-3:0,aw|0);
 const usFFabs=(f,m,aw)=>{const a=62+30*usFFval(f);return clamp(Math.max(a,m?m-3:0,aw|0),40,98);};
 // eta' nel 2026: esatta se e' nelle schede UFA, altrimenti il limite delle convocazioni giovanili quando la stima lo supera, altrimenti la stima. Ritorna [eta', esatta?]
-function usAgeOf(sur,nm,def){
+function usAgeOf(sur,nm,def,exact=false){
   const k=usNameKey(nm+' '+sur),h0=lnHiOf(k),h=Math.min(US_AGE_HI[k]||99,h0||99);   // anche i limiti delle convocazioni giovanili europee (37-leghe/)
   if(US_AGE[k])return [US_AGE[k],true];
+  if(exact)return [def,true];
+  if(ROSTER_AGE_EST_2026[k])return [ROSTER_AGE_EST_2026[k],false];
   return h<99&&def>h?[ageCap(h,hashStr('hi|'+k)),false]:[def,false];
 }
 // ruolo dai punteggi per ruolo: si cambia solo se uno e' nettamente avanti e il campione non e' minuscolo
@@ -205,7 +207,7 @@ function usRoster(club,seedStr,opt){
   for(let it=0;it<7;it++){
     out=specs.map((s,j)=>{
       const [sur,nm,age,role]=s.row,rng=mulberry32(hashStr(seedStr+'|'+club+'|'+sur+nm));
-      if(s.k==='s'||s.k==='sf'){const row=s.k==='sf'?s.row.slice():s.row;if(s.k==='sf'){row[3]=s.role||row[3];row[4]=Math.round(lv(s,off));}const o=starPlayer(row,rng);if(US_AGE[usNameKey(o.label)])o.ae=undefined;o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
+      if(s.k==='s'||s.k==='sf'){const row=s.k==='sf'?s.row.slice():s.row;if(s.k==='sf'){row[3]=s.role||row[3];row[4]=Math.round(lv(s,off));}const o=starPlayer(row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
       return usCard(sur,nm,age,role,lv(s,off),rng,s.k==='g'?{gen:true}:(s.ex?{}:{ae:1}));
     });
     const d=T-rosterLevel(out);if(Math.abs(d)<0.35)break;off=clamp(off+d,-34,16);

@@ -105,10 +105,18 @@ let ovrAllKeys=null;
 const ovrAssigned=name=>{if(!ovrAllKeys){ovrAllKeys=new Set();for(const c in OVR_2026)for(const r of OVR_2026[c])ovrAllKeys.add(ovrKey(r[1]+' '+r[0]));for(const c in OVR_ADD)for(const r of OVR_ADD[c])ovrAllKeys.add(ovrKey(r[1]+' '+r[0]));}return ovrAllKeys.has(ovrKey(name));};
 const ovrOutSet=club=>new Set((OVR_OUT[club]||[]).map(ovrKey));
 let ovrCache={},ovrPartCache={};
-// le correzioni singole di un club fuori dal foglio (OVR_PART); [] se non ce ne sono
+// Le schede internazionali aggiornano anche le voci già presenti nel foglio Overall.
+function ovrAgeData(club,k,r){
+  const verified=Object.hasOwn(TEAM,club)?0:ROSTER_AGE_INT_2026[k];
+  return {age:verified||r[3],ex:!!verified||r[5].includes('e'),est:!verified&&r[5].includes('a')};
+}
+// Le correzioni singole di un club fuori dal foglio (OVR_PART).
 function ovrPart(club){
   if(ovrPartCache[club])return ovrPartCache[club];
-  return ovrPartCache[club]=(OVR_PART[club]||[]).map(r=>({sur:r[0],nm:r[1],k:ovrKey(r[1]+' '+r[0]),ov:r[2],age:r[3],rl:r[4],ex:r[5].includes('e'),est:r[5].includes('a'),ld:r[5].includes('d'),conf:r[6],part:true}));
+  return ovrPartCache[club]=(OVR_PART[club]||[]).map(r=>{
+    const k=ovrKey(r[1]+' '+r[0]);
+    return {sur:r[0],nm:r[1],k,ov:r[2],...ovrAgeData(club,k,r),rl:r[4],ld:r[5].includes('d'),conf:r[6],part:true};
+  });
 }
 // le righe di un club dopo le modifiche volute: tolti i giocatori usciti, Overall forzati, aggiunti i nuovi; [] se il club non e' nel foglio
 function ovrEntries(club){
@@ -118,7 +126,7 @@ function ovrEntries(club){
   // premi, eventi di alto livello: affidabilita' alta) tiene il valore del foglio, qualunque sia il suo club. I forzati (OVR_FORCE) e gli aggiunti a mano (OVR_ADD) hanno il valore chiesto.
   const sh=OVR_SHIFT[club]||0,ad=OVR_ADJ[club]||{},nS=(OVR_2026[club]||[]).length;
   const dl=r=>r[6]==='a'?0:(r[6]==='b'?sh:0)+(ad[r[1]+' '+r[0]]||0);
-  const rows=(OVR_2026[club]||[]).concat(OVR_ADD[club]||[]).map((r,i)=>[r,i<nS?dl(r):0]).filter(([r])=>!out.has(ovrKey(r[1]+' '+r[0]))).map(([r,d])=>{const k=ovrKey(r[1]+' '+r[0]);return {sur:r[0],nm:r[1],k,ov:fo[k]||Math.max(25,Math.min(Math.max(r[2],d>0?OVR_CAP_EST:0),r[2]+d)),age:r[3],rl:r[4],ex:r[5].includes('e'),est:r[5].includes('a'),ld:r[5].includes('d'),conf:r[6]};});
+  const rows=(OVR_2026[club]||[]).concat(OVR_ADD[club]||[]).map((r,i)=>[r,i<nS?dl(r):0]).filter(([r])=>!out.has(ovrKey(r[1]+' '+r[0]))).map(([r,d])=>{const k=ovrKey(r[1]+' '+r[0]);return {sur:r[0],nm:r[1],k,ov:fo[k]||Math.max(25,Math.min(Math.max(r[2],d>0?OVR_CAP_EST:0),r[2]+d)),...ovrAgeData(club,k,r),rl:r[4],ld:r[5].includes('d'),conf:r[6]};});
   return ovrCache[club]=rows;
 }
 // rose italiane: le righe di REAL_ALL di un club con l'Overall (ov), il ruolo (rl) e l'eta' del foglio; chi il gioco non aveva si aggiunge (assist e mete a 0)

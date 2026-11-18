@@ -174,6 +174,7 @@ function updateFx(dt){
   for(let i=parts.length-1;i>=0;i--){
     const p=parts[i];p.life-=dt;if(p.life<=0){parts.splice(i,1);continue;}
     if(p.t==='ring')continue;
+    if(p.t==='smoke'){const k=Math.exp(-dt*3);p.vx*=k;p.vy*=k;p.vz*=k;}   // il fumo frena e resta a mezz'aria
     p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;p.vz-=(p.t==='spark'?10:-0.4)*dt;
     if(p.z<0){p.z=0;p.vz*=-0.3;}
   }

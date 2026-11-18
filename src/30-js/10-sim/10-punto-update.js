@@ -96,7 +96,7 @@ function update(dt){
   updateAttackers(dt);updateDefenders(dt);separate();
   if(G.flight){   // lo scatto sui lanci lunghi consuma energia: meno con la Resistenza alta
     for(const q of (G.sprint&&G.hold?[G.sprint.p]:[]).concat(G.aiSprint||[]))
-      if(q.fl&&q.st>0&&hyp(q.x-q.fl.x,q.y-q.fl.y)>0.6)q.st=Math.max(0,q.st-SPRINT_DRAIN*(1.5-q.s.res/100)*(hasT(q,'iron')?0.7:1)*(G.aiSprint&&G.aiSprint.includes(q)?AI_SPRINT_COST:1)*dt);   // l'IA scatta piu' spesso e si stanca meno
+      if(q.fl&&q.st>0&&hyp(q.x-q.fl.x,q.y-q.fl.y)>0.6)q.st=Math.max(0,q.st-SPRINT_DRAIN*heroDrain(q)*(1.5-q.s.res/100)*(hasT(q,'iron')?0.7:1)*(G.aiSprint&&G.aiSprint.includes(q)?AI_SPRINT_COST:1)*dt);   // l'IA scatta piu' spesso e si stanca meno
   }
   updateDisc(dt);
   if(G.mode!=='play')return;

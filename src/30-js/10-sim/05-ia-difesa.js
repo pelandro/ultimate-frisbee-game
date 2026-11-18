@@ -103,7 +103,7 @@ function updateDefenders(dt){
       const z0=spreadFrom(q,sx+q.nx,sy+q.ny,dT,SPREAD_DR,SPREAD_DK),zt=Hd?awayFrom(Hd,z0.x,z0.y,MIN_DEF):z0;
       moveTo(q,zt.x,zt.y,dt,Hd&&hyp(q.x-Hd.x,q.y-Hd.y)<MIN_DEF?1.7:1);
     }else{
-      const a=q.mark;if(!a)continue;
+      const a=heroMarkOf(q);if(!a)continue;   // superpoteri: chi marca il clone a volte segue la sua copia (27-superpoteri.js)
       const react=clamp(0.42-q.s.dif*0.0034+0.06+(0.6-q.s.vis/100)*0.4,0.08,0.55)*(hasT(q,'lock')?0.7:1)*(1+ADAPT_LEAD*ak)*(1+FIT_LEAD*ft);   // piu' anticipo sul taglio
       let px=a.x+a.vx*react+d*0.9+q.nx,py=a.y+a.vy*react+q.ny;
       if(front&&Hd){const ax=Hd.x-a.x,ay=Hd.y-a.y,al=hyp(ax,ay);if(al>6){px=a.x+a.vx*react+ax/al*1.25+q.nx;py=a.y+a.vy*react+ay/al*1.25+q.ny;}}   // anticipo: tra l'uomo e il disco
