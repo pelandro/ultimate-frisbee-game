@@ -108,6 +108,7 @@ $('hCont').addEventListener('click',()=>{if(G.mode!=='half'||forcedSubs)return;$
 HOOKS.over=showOver;
 
 /* ---- camera ---- */
+const AIM_EDGE=8;   // metri: quanto campo resta sempre visibile oltre il punto mirato (con 5 il punto finiva quasi sul bordo e non si vedeva chi corre li')
 // zoom: pull = tutto il campo, difesa = zoom forte, attacco = normale
 const zoomTarget=()=>G.mode==='ready'?Math.min(1,VW/(FIELD_L+6)/baseS):((G.mode==='play'||G.mode==='cine')?(G.poss===1?DEF_ZOOM:ATT_ZOOM):1);
 function updateCamera(dt){
@@ -136,9 +137,13 @@ function updateCamera(dt){
   if(cam.snap||cam.fr===undefined)cam.fr=fracT;else cam.fr+=(fracT-cam.fr)*(1-Math.exp(-dt*2.2));
   const frac=cam.fr;
   let tg=fx-frac*vw;const lo=-5,hi=FIELD_L+5-vw;
+  // MIRA LUNGA: mentre miri, se il punto mirato arriva a AIM_EDGE metri dal bordo dello schermo la visuale lo segue (sempre AIM_EDGE metri oltre)
+  const am=drag&&drag.dirOk&&drag.wx!==undefined&&G.mode==='play'&&!G.flight&&!G.pull&&G.holder&&G.holder.t===0?drag:null;
+  if(am){const e=Math.min(AIM_EDGE,vw/3);if(am.wx>tg+vw-e)tg=am.wx-vw+e;else if(am.wx<tg+e)tg=am.wx-e;}
   tg=(hi<lo||vw>=FIELD_L+2)?(FIELD_L-vw)/2:clamp(tg,lo,hi);
   // se lo zoom non lascia vedere tutta l'altezza del campo la camera segue il disco anche in verticale (3 m di margine oltre la linea laterale)
-  const M=3,cy=vh>=FIELD_W+2*M?FIELD_W/2:clamp(fy,vh/2-M,FIELD_W-vh/2+M);
+  const M=3;let cy=vh>=FIELD_W+2*M?FIELD_W/2:clamp(fy,vh/2-M,FIELD_W-vh/2+M);
+  if(am&&vh<FIELD_W+2*M){const e=Math.min(AIM_EDGE/2,vh/3);cy=clamp(clamp(cy,am.wy-vh/2+e,am.wy+vh/2-e),vh/2-M,FIELD_W-vh/2+M);}   // e in verticale, se lo zoom non mostra tutta la larghezza del campo
   if(cam.snap){cam.x=tg;cam.y=cy;cam.snap=false;}else{cam.x+=(tg-cam.x)*(1-Math.exp(-dt*(zooming?2.2:5)));cam.y+=(cy-cam.y)*(1-Math.exp(-dt*(zooming?2.2:4)));}
   OY=(VH+BAR)/2-cam.y*S;CX=Math.round(cam.x*S);OYi=Math.round(OY);
 }

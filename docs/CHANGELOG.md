@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- In tutte le modalità, mentre miri un lancio lungo la visuale segue il punto mirato quando arriva a circa 8 metri dal bordo dello schermo: prima la visuale si fermava e il punto d’arrivo restava fuori.
 - La modalità Superpoteri si trova ora dentro Ultimate Team: entrando ci sono «Computer», «Real player» e «Superpoteri». Dal menu iniziale il pulsante è stato tolto; il tasto Indietro della schermata dei Superpoteri riporta a Ultimate Team.
 - Superpoteri: il computer gioca con gli eroi. Chi lancia per il computer cerca i compagni trasformati, anche fuori dallo schema quando sono liberi, e i tuoi compagni trasformati tagliano prima e più spesso; il lupo e la giraffa vanno in profondità. Con il vento a favore o il telecinetico attivo si rischia di più il lancio lungo.
 - Superpoteri: la trasformazione si vede molto meglio. L’eroe sparisce in una bomba di fumo, con un botto, scintille del suo colore e un piccolo scossone dello schermo, ed esce dalla nuvola già trasformato; quando il potere finisce torna normale in uno sbuffo più piccolo.
