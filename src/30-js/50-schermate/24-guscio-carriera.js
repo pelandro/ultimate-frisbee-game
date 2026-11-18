@@ -21,8 +21,8 @@ function renderShell(){
   $('hInfo').textContent=isUS()?usInfo():isLN()?lnInfo():`${SERIES_NAME[SV.sr]} · Stagione ${SV.season}`+(SV.event==='camp'?(SV.done?' · conclusa':(SV.round>0?` · ${myRank()}° posto`:'')):' · Campionato europeo');
   const cash=$('hCash'),v=String(Math.round(SV.cash));
   if(cash.textContent!==v){cash.textContent=v;cash.parentNode.classList.remove('bump');void cash.parentNode.offsetWidth;cash.parentNode.classList.add('bump');}   // il numero «saltella» quando cambia
-  const nw=(SV.alerts||[]).filter(a=>!a.seen).length,pd=pendingAlerts();
-  $('hBellB').textContent=nw||pd;$('hBellB').classList.toggle('hidden',!(nw||pd));
+  const nw=(SV.alerts||[]).filter(a=>!a.seen).length;   // solo i non letti: una decisione già letta ma ancora aperta non tiene acceso il numero (resta in «Da decidere» e in «Questa settimana»)
+  $('hBellB').textContent=nw;$('hBellB').classList.toggle('hidden',!nw);
 }
 // ---- menu ----
 $('hMenu').addEventListener('click',e=>{e.stopPropagation();const o=$('cmenu').classList.toggle('hidden');$('hMenu').setAttribute('aria-expanded',String(!o));});
