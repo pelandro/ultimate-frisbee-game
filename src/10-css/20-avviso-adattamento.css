@@ -1,0 +1,10 @@
+/* avviso «Difesa adattata» prima del pull (21-avviso-adattamento.js): fumetto nero, scritta rossa, non si tocca e non copre i pulsanti */
+#adw{position:absolute;left:50%;bottom:calc(var(--sab,0px) + 64px);transform:translate(-50%,6px);z-index:30;pointer-events:none;opacity:0;visibility:hidden;
+  transition:opacity .35s,transform .35s,visibility 0s .35s;display:flex;align-items:center;gap:8px;width:max-content;max-width:min(560px,70vw);
+  background:#000;border:2px solid #ff3b3b;padding:5px 12px 6px 8px;box-shadow:0 0 0 2px #000,4px 4px 0 rgba(0,0,0,.45);
+  font-family:var(--font);font-size:16px;line-height:1.15;color:#ff4d4d}
+#adw.on{opacity:1;visibility:visible;transform:translate(-50%,0);transition:opacity .35s,transform .35s,visibility 0s}
+#adw:after{content:'';position:absolute;left:50%;top:100%;margin-left:-6px;border:6px solid transparent;border-top-color:#ff3b3b}
+#adw svg{width:22px;height:22px;flex:none}
+#adw b{display:block;font-family:var(--pfont);font-weight:400;font-size:8px;letter-spacing:0;color:#ffcc33;text-transform:uppercase;margin-bottom:2px}
+@media (prefers-reduced-motion:reduce){#adw,#adw.on{transition:none}}
