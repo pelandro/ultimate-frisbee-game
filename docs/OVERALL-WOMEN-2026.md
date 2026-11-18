@@ -113,6 +113,10 @@ La classifica federale della B 2024 colloca Voladora, Timanfaya, BFD Borealis, A
 | DiscoBolo Rookies | 15 | 17–27 | Benedetta Mengoli · 62 |
 | BFD Borealis | 20 | 17–30 | Sara Vorabbi · 62 |
 
+## Correzione mirata: profondità di BFD Shout
+
+La revisione incrociata delle annate EUCS/EUCF e delle nazionali ha evidenziato alcune giocatrici di BFD Shout il cui valore iniziale sottostimava la produzione ripetuta e il livello degli avversari. Gli overall sono stati aggiornati senza modificare il peso degli eventi nella formula di squadra: Noemi Blu Margot Nicetto 69→76 (10 punti all’EUCF 2025 e 10 all’Elite Invite Leuven 2026); Letizia Capello 67→72 (8 punti alla Spring Tour 2025 e presenze con punti nelle edizioni successive); Matilde Simonazzi 66→70 (oro EYUC U20 2025 e contributi nelle competizioni europee di club 2026); Margherita Nicotra 66→72 (convocazione WU24 2025, 6 punti e produzione alla Spring Tour 2025); Juliette Bertrand 65→69 (presenze e punti all’EUCF 2025 e all’Elite Invite 2026); Irene Giordani 64→67 (WU24 2025 e presenza nelle competizioni europee); Angelica Sarti 63→68 (punti nelle Spring Tour 2025 e 2026 e presenze nei tornei elite). I valori restano differenziati per volume e continuità: i roster internazionali da soli non equivalgono a una prestazione da titolare.
+
 ## Fonti
 
 - Referti, classifiche e statistiche del 2026. [Serie A](https://docs.google.com/spreadsheets/d/16wQ6Gu7BKbuCXGsJEkpEWByM-CF9HUbF8byw41gnmU8/edit) · [Serie B](https://docs.google.com/spreadsheets/d/1sQeGl9zt4QtGg2s7ze2OMz7SrDJjvMW-YiPJJnhRadY/edit) · [Resoconto delle finali](https://flyingdisc.it/news/ultimate/2026/5426/)
