@@ -579,7 +579,7 @@ function selfTestPlan(opt){
       row('Il bonus vale per la squadra in partita (massimo 99) e non cambia la carta',`Scatto 95 → ${q.s.sca}, Lancio ${q.s.lan}, carta ${p.s.sca}`,ok3),
       row('Salvataggi rovinati e traguardi: valori validi, accessori sempre migliori',(safe?'ok':'no')+', '+miles.join(' '),safe&&mUp)];
   }]);
-  S.steps.push(['Superpoteri: lupo mannaro, giraffa, polpo, telecinetico e clone',()=>{   // 27-superpoteri.js
+  S.steps.push(['Superpoteri: i sette eroi',()=>{   // 27-superpoteri.js
     const ra=ros(62,'ha'),rb=ros(62,'hb');
     setSquad(ra);applyRoster(rb);newGame();
     const rk=heroRand();heroInit(rk,rk);heroAssign(T[0],rk);
@@ -603,7 +603,15 @@ function selfTestPlan(opt){
     const H0=G.holder;G.holder=C;dc.fool.clear();const sees=heroMarkOf(mq)===C;G.holder=H0;mq.mark=mk0;
     for(let i=0;i<25;i++)heroTick(0.1);const sep=G.dec[0]?hyp(G.dec[0].x-C.x,G.dec[0].y-C.y):0;
     heroEnd(C);const gone=!G.dec[0];
-    placeTeams(0);const reset=!T[0].concat(T[1]).some(x=>x.hx>0||x.hrb);
+    // stregone: l'onda congela chi e' vicino (non chi e' lontano), poi il gelo passa; mietitore: gli avversari perdono energia, i tuoi no
+    for(const k of HERO_K)G.hz[1][k]=99;for(const x of T[1])if(x.hx>0)heroEnd(x);   // qui il computer non usa i suoi poteri (e chiude quelli in corso)
+    const Wz=heroOf(0,'ghiaccio'),qs=T[1].filter(x=>x.hero!=='lupo'),qn=qs[0],qf=qs[1];qn.x=clamp(Wz.x+3,1,FIELD_L-1);qn.y=Wz.y;qf.x=Wz.x>FIELD_L/2?Wz.x-35:Wz.x+35;qf.y=Wz.y;
+    const vn0=vmaxOf(qn),vf0=vmaxOf(qf);heroUse(0,'ghiaccio');const vn1=vmaxOf(qn),vf1=vmaxOf(qf);
+    for(let i=0;i<ICE_T*10+2;i++)heroTick(0.1);const vn2=vmaxOf(qn),ice=vn1<vn0*0.6&&vf1===vf0&&vn2===vn0&&!(qn.frz>0);
+    const Rp=heroOf(0,'mietitore');for(const x of T[0].concat(T[1]))x.st=100;heroUse(0,'mietitore');const dk=heroDrain(T[1][0]),dm=heroDrain(T[0][0]);
+    for(let i=0;i<20;i++)heroTick(0.1);const drop=100-Math.max(...T[1].map(x=>x.st)),mine=Math.min(...T[0].map(x=>x.st));
+    const reap=drop>=9&&mine===100&&dk===REAP_K&&dm===1&&Rp.hx>0;
+    placeTeams(0);const reset=!T[0].concat(T[1]).some(x=>x.hx>0||x.hrb||x.frz>0);
     const both=run(ra,rb,n,{hero:'both'}),okB=both.every(m=>!m.stuck&&!m.nan&&Math.max(m.score[0],m.score[1])===MATCH_TARGET),useB=both.every(m=>m.st.hero&&m.st.hero[0]>0&&m.st.hero[1]>0);
     // quanto contano gli eroi (misurato a parte, 50 partite per lato a squadre pari): chi li ha vince circa 7 volte su 10. Qui non si misura: servirebbero troppe partite
     return [row('Tre eroi per squadra, ognuno col suo pulsante e il suo timer',three?rk.join(', '):'no',three),
@@ -611,6 +619,8 @@ function selfTestPlan(opt){
       row('Giraffa: vince i duelli in aria; Polpo: braccia piu\' lunghe per intercettare',`duello ${Math.round(s0.sa-s0.sd)} → ${Math.round(s1.sa-s1.sd)}, raggio ×${pr.toFixed(1)}`,gir&&pol),
       row('Telecinetico: il disco cambia direzione, ma non la distanza che gli resta (e gira poco alla volta)',`${d0.toFixed(1)} m → ${d1.toFixed(1)} m, girato di ${Math.round(ang*180/Math.PI)}°`,tk),
       row('Clone: la copia non prende dischi, inganna il marcatore e chi lancia, si allontana dal vero e sparisce con lui',`segue la copia ${Math.round(fooled/3)}% · dal vero ${sep.toFixed(1)} m`,cOk&&fooled>60&&fooled<250&&sees&&sep>4&&gone),
+      row('Stregone di ghiaccio: l\'onda rallenta chi ha vicino, non chi e\' lontano, e il gelo passa',`velocità ${vn0.toFixed(1)} → ${vn1.toFixed(1)} m/s (lontano ${vf1.toFixed(1)}), poi ${vn2.toFixed(1)}`,ice),
+      row('Mietitore: gli avversari perdono energia in fretta (e gli scatti costano di più), i tuoi no',`−${Math.round(drop)} in 2 s, scatti ×${dk}`,reap),
       row('A ogni punto le trasformazioni finiscono',reset?'sì':'no',reset),
       row('Partite con gli eroi: finiscono regolarmente e le due IA usano i poteri',`${both.filter(m=>m.st.hero).length} su ${n}`,okB&&useB)];
   }]);

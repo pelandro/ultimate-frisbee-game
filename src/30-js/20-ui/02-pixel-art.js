@@ -56,7 +56,7 @@ function drawFx(){
   for(const p of parts){
     const k=p.life/p.max,x=sxw(p.x),y=syw(p.y);
     if(p.t==='dust'){const s=k>0.5?2:1;px(x,y-p.z*S*0.5,s,s,k>0.4?'#e8dcb8':'#c9d9ae');}
-    else if(p.t==='spark'){px(x,y-p.z*S*0.5,k>0.5?2:1,k>0.5?2:1,k>0.5?'#fff3b0':'#ffd23f');}
+    else if(p.t==='spark'){px(x,y-p.z*S*0.5,k>0.5?2:1,k>0.5?2:1,k>0.5?(p.c||'#fff3b0'):(p.c2||'#ffd23f'));}   // c, c2: scintille colorate (superpoteri)
     else if(p.t==='blade'){const yy=y-p.z*S*0.5;px(x,yy-1,1,3,PAL.out);px(x,yy,1,2,k>0.5?PAL.dim:PAL.grass2);}   // zolla d'erba alzata dal disco
     else if(p.t==='pop'){   // presa: un anello quadrato che si apre in 4 scatti attorno alle mani
       const st=Math.min(3,((1-k)*4)|0),r=3+st*2,yy=ri(y-p.z*S*0.5),c=st<2?(p.c||'#ffffff'):'#d9ecc8';
@@ -361,6 +361,7 @@ function drawPlayers(dt){
       const hp=ghost?heroGhost(x,y,(gx,gy)=>puppet(gx,gy,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,pose,p.ph,Math.min(1,sp/6),0,{brk:!!p._brk,view,kind,ca:-1,hero:p.hero,sc:heroScale(p)})):puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,hero:heroOn(p)?p.hero:null,sc:heroScale(p)});
       p._hx=hp[0];p._hy=hp[1];p._ht=G.tick;   // il disco in mano segue la mano (drawDisc)
     }
+    heroFrost(p,x,y);   // il ghiaccio ai piedi di chi e' congelato (20-superpoteri.js)
     // energia: barretta sotto i tuoi quando calano; goccia di sudore sugli avversari sfiniti (li' c'e' un duello da cercare)
     if(G.mode==='play'&&G.inMatch&&!p.dv&&!ghost){
       if(p.t===0&&p.st<62){px(x-5,y+3,11,3,PAL.out);px(x-4,y+4,Math.max(1,Math.round(9*p.st/100)),1,p.st<30?PAL.red:(p.st<46?'#ff9a3a':PAL.gold));}

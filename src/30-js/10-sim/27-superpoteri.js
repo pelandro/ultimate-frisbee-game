@@ -11,6 +11,10 @@
    - Clone: si sdoppia (G.dec[squadra], cloneMake): il vero riceve e lancia, la copia corre da sola e serve solo a distrarre. Chi non e' della sua squadra
      non sa qual e' il vero: il marcatore del clone a volte segue la copia (heroMarkOf in updateDefenders) e, in difesa, il lanciatore avversario conta la
      copia come un difensore (heroSeen in aiPick). La copia non e' in T: non prende dischi, non intercetta, non entra nelle statistiche.
+   - Stregone di ghiaccio: quando si trasforma lancia un'onda di freddo: gli avversari entro ICE_R metri restano congelati per ICE_T secondi (p.frz), sempre meno,
+     e corrono e accelerano piu' piano (heroSlow in vmaxOf e accOf).
+   - Mietitore: finche' e' trasformato gli avversari in campo perdono energia di continuo (REAP_DRAIN al secondo) e i loro scatti costano REAP_K volte tanto
+     (heroDrain in moveTo e nello scatto sui lanci lunghi). L'energia persa resta: si recupera solo come al solito, tra un punto e l'altro.
    In campo ogni squadra ha al massimo HERO_N eroi (G.hk[squadra] = quali): i tuoi li scegli prima della partita (QM.hk), quelli del computer sono a caso.
    p.hero = eroe del giocatore (sui giocatori della tua rosa e sui posti in campo dell'avversaria), p.hx = secondi di trasformazione che restano.
    Vale solo con G.heroOn (startQuick con QM.hero); l'IA usa i poteri della sua squadra (e della tua nelle mete simulate) con heroAI. */
@@ -19,9 +23,15 @@ const HERO={
   giraffa:{n:'Giraffa',dur:9,cd:24,txt:'Vince tutti i duelli in aria e prende i dischi più alti'},
   polpo:{n:'Polpo',dur:8,cd:22,txt:'Braccia lunghissime: intercetta molto più facilmente'},
   tele:{n:'Telecinetico',dur:7,cd:22,txt:'Guida il disco in volo col dito: cambia la direzione, non la distanza'},
-  clone:{n:'Clone',dur:8,cd:24,txt:'Si sdoppia: tu sai qual è il vero, gli avversari no. La copia serve solo a distrarre'}
+  clone:{n:'Clone',dur:8,cd:24,txt:'Si sdoppia: tu sai qual è il vero, gli avversari no. La copia serve solo a distrarre'},
+  ghiaccio:{n:'Stregone di ghiaccio',dur:6,cd:24,txt:'Un’onda di freddo rallenta gli avversari che ha intorno'},
+  mietitore:{n:'Mietitore',dur:8,cd:24,txt:'Gli avversari si stancano molto più in fretta'}
 };
-const HERO_K=['lupo','giraffa','polpo','tele','clone'];
+const HERO_K=['lupo','giraffa','polpo','tele','clone','ghiaccio','mietitore'];
+const ICE_R=12,ICE_T=4,ICE_K=0.55;   // onda di freddo: raggio (m), durata del gelo (s), quanto rallenta subito (55%, poi sempre meno)
+const REAP_DRAIN=5,REAP_K=2.5;       // mietitore: energia persa al secondo da ogni avversario in campo, e quanto costano di piu' i loro scatti
+const heroSlow=p=>p.frz>0?1-ICE_K*Math.min(1,p.frz/ICE_T):1;   // in vmaxOf e accOf
+const heroDrain=p=>G.heroOn&&G.hz&&heroOn(heroOf(1-p.t,'mietitore'),'mietitore')?REAP_K:1;   // negli scatti di chi ha contro un mietitore trasformato
 const HERO_N=3;   // eroi in campo per squadra: di piu' sono troppi pulsanti e troppi timer da seguire
 const heroRand=()=>HERO_K.slice().sort(()=>Math.random()-0.5).slice(0,HERO_N);
 const HERO_TK_ROT=2.4;   // radianti al secondo: quanto in fretta il telecinetico puo' girare il disco
@@ -38,7 +48,7 @@ function heroAssign(list,keys){
   keys=keys||HERO_K;
   const free=list.filter(Boolean).slice();for(const p of free){p.hero=null;p.hx=0;}
   const pick=(k,f)=>{if(!free.length||!keys.includes(k))return;free.sort((a,b)=>f(b)-f(a));const p=free.shift();p.hero=k;if(p.trait==='poser')p.trait=null;};   // il Poser cambia p.s come il lupo: un eroe non lo ha
-  pick('tele',p=>p.s.lan+p.s.vis+(p.role==='H'||p.r==='H'?20:0));pick('lupo',p=>p.s.vel+p.s.sca+p.s.agi);pick('giraffa',p=>p.s.sal*2+p.s.pre);pick('polpo',p=>p.s.dif*2+p.s.agi);pick('clone',p=>p.s.vel+p.s.agi+(p.role==='C'||p.r==='C'?20:0));   // il telecinetico e' un handler
+  pick('tele',p=>p.s.lan+p.s.vis+(p.role==='H'||p.r==='H'?20:0));pick('lupo',p=>p.s.vel+p.s.sca+p.s.agi);pick('giraffa',p=>p.s.sal*2+p.s.pre);pick('polpo',p=>p.s.dif*2+p.s.agi);pick('clone',p=>p.s.vel+p.s.agi+(p.role==='C'||p.r==='C'?20:0));pick('ghiaccio',p=>p.s.vis+p.s.dif);pick('mietitore',p=>p.s.res*2+p.s.dif);   // il telecinetico e' un handler
 }
 const heroOf=(t,k)=>T[t].find(p=>p.hero===k)||null;
 function heroInit(k0,k1){G.hz=[{},{}];G.dec=[null,null];G.hk=[k0||HERO_K,k1||HERO_K];for(const t of [0,1])for(const k of HERO_K)G.hz[t][k]=HERO_START;}
@@ -48,6 +58,7 @@ function heroUse(t,k){
   const p=heroOf(t,k),H=HERO[k];
   p.hx=H.dur;G.hz[t][k]=H.dur+H.cd;
   if(k==='clone')cloneMake(p);
+  if(k==='ghiaccio')for(const q of T[1-t])if(hyp(q.x-p.x,q.y-p.y)<=ICE_R)q.frz=ICE_T;   // l'onda di freddo: chi e' dentro il raggio si congela
   if(k==='lupo'&&!p.hrb){p.hrb=p.s;p.s=Object.assign({},p.s);for(const s in HERO_LUPO)p.s[s]=Math.min(99,p.s[s]+HERO_LUPO[s]);}
   (G.st.hero||(G.st.hero=[0,0]))[t]++;
   HOOKS.hero(p,k,true);
@@ -58,11 +69,13 @@ function heroEnd(p){
   const c=G.dec&&G.dec[p.t];if(c&&c.o===p){G.dec[p.t]=null;HOOKS.hero(c,'clone',false);}   // la copia sparisce in una nuvola
   const was=p.hx>0;p.hx=0;if(was)HOOKS.hero(p,p.hero,false);
 }
-function heroReset(){for(const p of T[0].concat(T[1]))if(p.hx>0||p.hrb)heroEnd(p);}
+function heroReset(){for(const p of T[0].concat(T[1])){if(p.hx>0||p.hrb)heroEnd(p);p.frz=0;}}
 function heroTick(dt){
   if(!G.heroOn||!G.hz)return;
   for(const t of [0,1])for(const k of HERO_K)G.hz[t][k]=Math.max(0,G.hz[t][k]-dt);
   for(const p of T[0].concat(T[1]))if(p.hx>0){p.hx-=dt;if(p.hx<=0)heroEnd(p);}
+  for(const p of T[0].concat(T[1]))if(p.frz>0)p.frz=Math.max(0,p.frz-dt);
+  for(const t of [0,1])if(heroOn(heroOf(t,'mietitore'),'mietitore'))for(const q of T[1-t])q.st=Math.max(0,q.st-REAP_DRAIN*dt);   // il mietitore toglie energia a tutti gli avversari in campo
   if(G.dec)for(const t of [0,1]){const c=G.dec[t];if(!c)continue;if(!T[t].includes(c.o)||!(c.o.hx>0)){G.dec[t]=null;continue;}cloneTick(c,dt);}
   heroAI(dt);
   const f=G.flight;
@@ -93,6 +106,8 @@ function heroAI(dt){
     if(heroReady(t,'polpo')&&G.holder&&G.holder.t!==t&&Math.random()<0.35*k1)heroUse(t,'polpo');
     if(heroReady(t,'lupo')&&(G.holder||f)&&Math.random()<0.3*k1)heroUse(t,'lupo');
     if(heroReady(t,'tele')&&G.holder&&G.holder.t===t&&G.stallT>2&&Math.random()<0.5*k1)heroUse(t,'tele');   // prima di lanciare: il disco partira' gia' guidato
+    const w=heroOf(t,'ghiaccio');if(w&&heroReady(t,'ghiaccio')&&T[1-t].filter(q=>hyp(q.x-w.x,q.y-w.y)<=ICE_R).length>=3&&Math.random()<0.8*k1)heroUse(t,'ghiaccio');   // l'onda quando ha almeno tre avversari intorno
+    if(heroReady(t,'mietitore')&&(G.holder||f)&&Math.random()<0.3*k1)heroUse(t,'mietitore');
     const c=heroOf(t,'clone');if(c&&heroReady(t,'clone')&&G.holder&&G.holder!==c&&Math.random()<0.35*k1)heroUse(t,'clone');   // in attacco libera il clone, in difesa copre un altro uomo
   }
 }
