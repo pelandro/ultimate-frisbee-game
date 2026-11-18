@@ -627,6 +627,16 @@ function selfTestPlan(opt){
     const cmbOk=noBar&&full&&okR&&comboOn(0,'giraffa+tempo')&&G.cb[0]===0&&heroReach(Gi)>1.5&&!comboReady(0,'polpo');
     for(let i=0;i<COMBO_DUR*10+2;i++)comboTick(0.1);const cmbEnd=!G.cmb[0];
     for(const x of T[0])if(x.hx>0)heroEnd(x);G.tmK=1;
+    // le altre combo: ognuna cambia quello che deve (qui la combo si accende a mano, con gli eroi trasformati)
+    heroAssign(T[0],['lupo','polpo','vento','giraffa','tele','mietitore','ghiaccio']);for(const x of T[0])if(x.hero){x.hx=x.hxd=5;}
+    const cm=k=>{G.cmb=[{k,t:5,b0:0},null];},Lw=heroOf(0,'lupo'),Gf=heroOf(0,'giraffa'),cr=[];
+    cm('lupo+polpo');G.poss=1;G.holder=T[1][0];cr.push(heroStallK(1)>=1.5,heroAimK(1)===1.25);
+    cm('lupo+vento');cr.push(Math.abs(heroSlow(Lw)-COMBO_RUN)<1e-9,heroDropK(Lw)===COMBO_DROP);
+    cm('giraffa+vento');cr.push(heroRange(0)===2*VENTO_R);
+    cm('giraffa+tele');cr.push(heroDropK(Gf)===COMBO_DROP,heroReach(Gf)>1.5);
+    cm('tele+vento');{const fl={sx:10,sy:20,tx:40,ty:20,cx:0,cy:0,t:1,T:2,e:1,team:0},P0=flightAt(fl,flightS(fl,0.5)),d0=hyp(fl.tx-P0.x,fl.ty-P0.y);for(let i=0;i<20;i++)heroSteer(fl,{x:fl.tx+30,y:fl.ty},0.1);const P1=flightAt(fl,flightS(fl,0.5)),d1=hyp(fl.tx-P1.x,fl.ty-P1.y);cr.push(d1>d0+5&&d1<=d0+COMBO_EXT+1e-6);}
+    cm('ghiaccio+mietitore');for(const k of HERO_K){G.hz[0][k]=99;G.hz[1][k]=99;}const qa=T[1][0],qb=T[1][1];qa.frz=3;qb.frz=0;qa.st=qb.st=100;G.poss=0;G.holder=null;heroTick(0.5);cr.push(Math.abs((100-qa.st)-2*(100-qb.st))<1e-6&&qb.st<100);
+    const combosOk=cr.every(Boolean);G.cmb=[null,null];for(const x of T[0].concat(T[1])){x.hx=0;x.frz=0;}
     // IA: tra due compagni liberi allo stesso modo sceglie quello trasformato
     placeTeams(0);G.pb=null;G.flight=null;G.poss=0;G.open=false;G.mode='play';
     const th=T[0][0],m1=T[0][1],m2=T[0][2];th.x=50;th.y=MID;m1.x=m2.x=50+dirOf(0)*14;m1.y=MID-8;m2.y=MID+8;G.holder=th;
@@ -655,6 +665,7 @@ function selfTestPlan(opt){
       row('Signore del vento: i tuoi lanci arrivano piu\' lontano, quelli avversari piu\' corti, poi torna tutto come prima',`gittata ${Math.round(ma)} → ${Math.round(ma1)} m, avversari ${Math.round(mb)} → ${Math.round(mb1)} m`,wind),
       row('Signore del tempo: stall avversario piu\' veloce in difesa, rallentatore in attacco (per l\'IA stall lento e lanci precisi)',`stall ×${sk1}, rallentatore ${Math.round(slow*100)}%, IA ×${sk0} e mira ×${aim}`,tempoOk),
       row('Combo: la barra si riempie giocando, l\'aggancio fa partire «Volo lento» e la barra si svuota',`${full?'barra piena':'barra vuota'}, ${comboOn(0,'giraffa+tempo')||!cmbEnd?'combo partita':'combo no'}${cmbEnd?', poi finita':''}`,cmbOk&&cmbEnd),
+      row('Le altre combo: Branco, Corsa nel vento, Corrente ascensionale, Ascensore, Uragano, Gelo mortale',cr.map(x=>x?'sì':'no').join(' '),combosOk),
       row('L\'IA cerca i compagni trasformati: tra due ricevitori uguali sceglie quasi sempre l\'eroe',`${Math.round(sh0*100)}% → ${Math.round(sh1*100)}%`,sh1>=0.85&&sh1>sh0+0.25),
       row('Livelli degli eroi (Ultimate Team): durata piu\' lunga e ricarica piu\' corta',`giraffa al livello 5: ${(HERO.giraffa.dur*1.4).toFixed(1)} s`,lvOk),
       row('Squadra online con gli eroi: solo i titolari li portano e chi la scarica li ritrova',`${hs.join(', ')} → ${uh.join(', ')}`,upOk),

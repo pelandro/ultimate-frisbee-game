@@ -45,7 +45,23 @@ const HERO={
 const HERO_K=['lupo','giraffa','polpo','tele','clone','ghiaccio','mietitore','vento','tempo'];
 const TEMPO_STALL=1.5,TEMPO_SLOW=0.6,TEMPO_RING=0.5,TEMPO_OWN=0.6,TEMPO_AIM=0.8;   // signore del tempo: stall avversario, rallentatore in attacco e sui cerchi, stall e precisione dell'IA
 // COMBO: chiave = i due eroi in ordine alfabetico. Ogni eroe ne avra' tre (per ora quelle del signore del tempo)
-const HERO_COMBO={'giraffa+tempo':{n:'Volo lento',txt:'la giraffa arriva ancora più in alto e più lontano'},'ghiaccio+tempo':{n:'Era glaciale',txt:'un’onda di freddo più larga che congela il doppio, e lo stall di chi è congelato corre ancora di più'},'polpo+tempo':{n:'Riflessi',txt:'il polpo allunga ancora di più le braccia e i cerchi di handblock e tuffo vanno ancora più piano'}};
+// tre per eroe (il mietitore ne ha due: con nove eroi 9 x 3 e' dispari); proposta approvata nel documento «Combo degli eroi»
+const HERO_COMBO={
+  'giraffa+tempo':{n:'Volo lento',txt:'la giraffa arriva ancora più in alto e più lontano'},
+  'ghiaccio+tempo':{n:'Era glaciale',txt:'un’onda di freddo più larga che congela il doppio, e lo stall di chi è congelato corre ancora di più'},
+  'polpo+tempo':{n:'Riflessi',txt:'il polpo allunga ancora di più le braccia e i cerchi di handblock e tuffo vanno ancora più piano'},
+  'giraffa+tele':{n:'Ascensore',txt:'la giraffa arriva più in alto e le sue prese sono quasi sicure, anche contese'},
+  'giraffa+vento':{n:'Corrente ascensionale',txt:'i lanci della squadra vanno altri 10 metri più lontano e la giraffa arriva più in alto'},
+  'polpo+tele':{n:'Rubata guidata',txt:'il disco che il polpo intercetta riparte subito verso un compagno libero'},
+  'lupo+polpo':{n:'Branco',txt:'in difesa lo stall avversario corre e i loro lanci sono meno precisi'},
+  'clone+lupo':{n:'Branco di lupi',txt:'anche la copia diventa un lupo, corre come lui e inganna di più'},
+  'lupo+vento':{n:'Corsa nel vento',txt:'il lupo corre ancora più veloce e le sue prese sono quasi sicure'},
+  'tele+vento':{n:'Uragano',txt:'il disco guidato può andare fino a 15 metri più lontano'},
+  'ghiaccio+mietitore':{n:'Gelo mortale',txt:'chi è congelato perde energia il doppio più in fretta'},
+  'clone+ghiaccio':{n:'Specchio di ghiaccio',txt:'la copia è di ghiaccio: chi le sta addosso resta congelato'},
+  'clone+mietitore':{n:'Ombra',txt:'la copia è un’ombra: chi le sta addosso perde energia'}
+};
+const COMBO_DROP=0.15,COMBO_RUN=1.12,COMBO_EXT=15;   // prese quasi sicure (frazione degli errori), velocita' del lupo, metri in piu' del disco guidato
 const COMBO_DUR=6,CB_CMP=0.035,CB_BLK=0.12,CB_PT=0.1,CB_PER=1.3,CB_WIN=0.2;   // durata, riempimento della barra (passaggio, blocco, meta), periodo dell'anello e parte finale buona
 const comboKey=(a,b)=>[a,b].sort().join('+');
 const comboOn=(t,k)=>!!(G.heroOn&&G.cmb&&G.cmb[t]&&G.cmb[t].k===k);
@@ -59,9 +75,10 @@ function heroStallK(P){
   if(!G.heroOn||!G.hz)return 1;let k=1;
   if(tempoOn(1-P)){k*=TEMPO_STALL;if(comboOn(1-P,'ghiaccio+tempo')&&G.holder&&G.holder.frz>0)k*=1.5;}
   if(tempoOn(P)&&tempoAI(P))k*=TEMPO_OWN;
+  if(comboOn(1-P,'lupo+polpo'))k*=1.5;   // «Branco»: la marcatura e' asfissiante
   return k;
 }
-const heroAimK=t=>G.heroOn&&tempoOn(t)&&tempoAI(t)&&G.poss===t?TEMPO_AIM:1;   // in planThrow
+const heroAimK=t=>!G.heroOn?1:(tempoOn(t)&&tempoAI(t)&&G.poss===t?TEMPO_AIM:1)*(comboOn(1-t,'lupo+polpo')?1.25:1);   // in planThrow; «Branco» rende piu' imprecisi i lanci avversari
 // rallentatore della tua partita (G.tmK, sul tempo di gioco): in attacco con il tuo signore del tempo, o in difesa mentre c'e' un cerchio da prendere
 function heroTimeTick(dtr){
   let g=1;
@@ -77,7 +94,7 @@ const VENTO_R=10,VENTO_OK=0.8,VENTO_KO=1.35;   // signore del vento: metri di gi
 function heroWind(t){if(!G.heroOn||!G.hz||(t!==0&&t!==1))return 0;return (heroOn(heroOf(t,'vento'),'vento')?1:0)-(heroOn(heroOf(1-t,'vento'),'vento')?1:0);}
 const ICE_R=12,ICE_T=4,ICE_K=0.55;   // onda di freddo: raggio (m), durata del gelo (s), quanto rallenta subito (55%, poi sempre meno)
 const REAP_DRAIN=5,REAP_K=2.5;       // mietitore: energia persa al secondo da ogni avversario in campo, e quanto costano di piu' i loro scatti
-const heroSlow=p=>p.frz>0?1-ICE_K*Math.min(1,p.frz/ICE_T):1;   // in vmaxOf e accOf
+const heroSlow=p=>(p.frz>0?1-ICE_K*Math.min(1,p.frz/ICE_T):1)*(heroOn(p,'lupo')&&comboOn(p.t,'lupo+vento')?COMBO_RUN:1);   // in vmaxOf e accOf: il gelo dello stregone, e il lupo della «Corsa nel vento»
 const heroDrain=p=>G.heroOn&&G.hz&&heroOn(heroOf(1-p.t,'mietitore'),'mietitore')?REAP_K:1;   // negli scatti di chi ha contro un mietitore trasformato
 const HERO_N=3;
 const HERO_LV_MAX=5,HERO_LV_D=0.1,HERO_LV_C=0.08;   // livello 5: trasformazione +40%, ricarica -32%
@@ -89,8 +106,13 @@ const HERO_LUPO={vel:18,sca:18,agi:15,sal:12,res:15,tuf:10,dif:6};
 const HERO_START=8;   // secondi di gioco prima del primo potere: nessuno si trasforma al pull
 const heroOn=(p,k)=>!!(G.heroOn&&p&&p.hx>0&&(!k||p.hero===k));
 const heroDuel=p=>heroOn(p,'giraffa')?400:0;                  // in duelScore: la giraffa vince (contro un'altra giraffa decide il resto)
-const heroReach=p=>heroOn(p,'giraffa')?(comboOn(p.t,'giraffa+tempo')?1.8:0.9):0;                 // in reachOf: il collo lungo arriva prima sul disco
-const heroZ=p=>heroOn(p,'giraffa')?(comboOn(p.t,'giraffa+tempo')?2:1.2):(heroOn(p,'polpo')?(comboOn(p.t,'polpo+tempo')?1.2:0.8):0);   // in reachZ: fin dove arriva con la mano
+const heroGirK=t=>comboOn(t,'giraffa+tempo')||comboOn(t,'giraffa+tele')||comboOn(t,'giraffa+vento');   // combo che allungano la giraffa
+const heroReach=p=>heroOn(p,'giraffa')?(heroGirK(p.t)?1.8:0.9):0;
+// errori di presa (dropProb): la giraffa dell'«Ascensore» e il lupo della «Corsa nel vento» non sbagliano quasi mai
+const heroDropK=p=>!G.heroOn||!G.cmb?1:((heroOn(p,'giraffa')&&comboOn(p.t,'giraffa+tele'))||(heroOn(p,'lupo')&&comboOn(p.t,'lupo+vento'))?COMBO_DROP:1);
+// gittata in piu' della squadra t (throwMax, throwComf): il signore del vento, e la «Corrente ascensionale»
+const heroRange=t=>VENTO_R*heroWind(t)+(comboOn(t,'giraffa+vento')?VENTO_R:0);                 // in reachOf: il collo lungo arriva prima sul disco
+const heroZ=p=>heroOn(p,'giraffa')?(heroGirK(p.t)?2:1.2):(heroOn(p,'polpo')?(comboOn(p.t,'polpo+tempo')?1.2:0.8):0);   // in reachZ: fin dove arriva con la mano
 const heroLane=p=>heroOn(p,'polpo')?(comboOn(p.t,'polpo+tempo')?3.4:2.4):1;                     // in laneR: quanto si allunga di lato per intercettare
 // sceglie gli eroi (keys) tra una lista di giocatori: il telecinetico a un handler, il lupo al piu' veloce, la giraffa a chi salta di piu', il polpo al miglior
 // difensore, il clone a un cutter rapido (la copia deve sembrare un taglio vero)
@@ -113,7 +135,7 @@ function heroUse(t,k,combo){
   if(k==='lupo'&&!p.hrb){p.hrb=p.s;p.s=Object.assign({},p.s);for(const s in HERO_LUPO)p.s[s]=Math.min(99,p.s[s]+HERO_LUPO[s]);}
   (G.st.hero||(G.st.hero=[0,0]))[t]++;
   HOOKS.hero(p,k,true);
-  if(ck){G.cb[t]=0;G.cmb[t]={k:ck,t:COMBO_DUR};(G.st.combo||(G.st.combo=[0,0]))[t]++;
+  if(ck){G.cb[t]=0;G.cmb[t]={k:ck,t:COMBO_DUR,b0:G.st.blk?G.st.blk[t]:0};(G.st.combo||(G.st.combo=[0,0]))[t]++;
     if(ck==='ghiaccio+tempo'){const w=heroOf(t,'ghiaccio')||p;for(const q of T[1-t])if(hyp(q.x-w.x,q.y-w.y)<=ICE_R*1.5)q.frz=ICE_T*2;}   // era glaciale: un'onda piu' larga che congela il doppio
     HOOKS.combo(t,ck,p);}
   return true;
@@ -130,8 +152,12 @@ function heroTick(dt){
   for(const p of T[0].concat(T[1]))if(p.hx>0){p.hx-=dt;if(p.hx<=0)heroEnd(p);}
   for(const p of T[0].concat(T[1]))if(p.frz>0)p.frz=Math.max(0,p.frz-dt);
   comboTick(dt);
-  for(const t of [0,1])if(heroOn(heroOf(t,'mietitore'),'mietitore'))for(const q of T[1-t])q.st=Math.max(0,q.st-REAP_DRAIN*dt);   // il mietitore toglie energia a tutti gli avversari in campo
-  if(G.dec)for(const t of [0,1]){const c=G.dec[t];if(!c)continue;if(!T[t].includes(c.o)||!(c.o.hx>0)){G.dec[t]=null;continue;}cloneTick(c,dt);}
+  for(const t of [0,1])if(heroOn(heroOf(t,'mietitore'),'mietitore')){const gm=comboOn(t,'ghiaccio+mietitore');for(const q of T[1-t])q.st=Math.max(0,q.st-REAP_DRAIN*(gm&&q.frz>0?2:1)*dt);}   // il mietitore toglie energia a tutti gli avversari in campo (il doppio a chi e' congelato nel «Gelo mortale»)
+  if(G.dec)for(const t of [0,1]){const c=G.dec[t];if(!c)continue;if(!T[t].includes(c.o)||!(c.o.hx>0)){G.dec[t]=null;continue;}cloneTick(c,dt);
+    if(comboOn(t,'clone+lupo')&&!c.wolf){c.wolf=true;c.hero='lupo';c.s=Object.assign({},c.o.s);for(const s in HERO_LUPO)c.s[s]=Math.min(99,c.s[s]+HERO_LUPO[s]);c.fool.clear();}   // «Branco di lupi»: anche la copia e' un lupo
+    const ice=comboOn(t,'clone+ghiaccio'),sh=comboOn(t,'clone+mietitore');c.ice=ice;c.shade=sh;
+    if(ice||sh)for(const q of T[1-t])if(hyp(q.x-c.x,q.y-c.y)<2){if(ice)q.frz=Math.max(q.frz||0,1.5);if(sh)q.st=Math.max(0,q.st-8*dt);}}   // «Specchio di ghiaccio» e «Ombra»: chi sta addosso alla copia
+  heroRubata();
   heroAI(dt);
   const f=G.flight;
   if(f&&!G.pull&&heroOn(heroOf(f.team,'tele'),'tele')){
@@ -142,10 +168,11 @@ function heroTick(dt){
 // guida il disco verso pt: la strada che manca resta la stessa, cambia solo la direzione (al massimo HERO_TK_ROT rad/s)
 function heroSteer(f,pt,dt){
   const s=flightS(f,Math.min(1,f.t/f.T));if(s>0.94)return false;
-  const P=flightAt(f,s),d=hyp(f.tx-P.x,f.ty-P.y);if(d<0.6)return false;
+  const P=flightAt(f,s);let d=hyp(f.tx-P.x,f.ty-P.y);if(d<0.6)return false;
+  if(comboOn(f.team,'tele+vento')){const want=hyp(pt.x-P.x,pt.y-P.y),ext=Math.min(Math.max(0,want-d),COMBO_EXT-(f.ext||0),12*dt);if(ext>0){d+=ext;f.ext=(f.ext||0)+ext;}}   // «Uragano»: il disco puo' anche allungarsi, fino a COMBO_EXT metri
   const a=Math.atan2(f.ty-P.y,f.tx-P.x),w=Math.atan2(pt.y-P.y,pt.x-P.x);
   let da=w-a;while(da>Math.PI)da-=2*Math.PI;while(da<-Math.PI)da+=2*Math.PI;
-  da=clamp(da,-HERO_TK_ROT*dt,HERO_TK_ROT*dt);if(Math.abs(da)<1e-4)return false;
+  da=clamp(da,-HERO_TK_ROT*dt,HERO_TK_ROT*dt);if(Math.abs(da)<1e-4&&!f.ext)return false;
   const b=a+da,old={x:f.tx,y:f.ty};
   f.st={s,x:P.x,y:P.y};f.tx=P.x+Math.cos(b)*d;f.ty=P.y+Math.sin(b)*d;f.tk=(f.tk|0)+1;
   for(const p of T[0].concat(T[1]))if(p.fl&&p.fl.x===old.x&&p.fl.y===old.y){p.fl.x=f.tx;p.fl.y=f.ty;}   // chi correva verso il punto d'arrivo segue il nuovo
@@ -205,7 +232,7 @@ function cloneTick(c,dt){
 function heroMarkOf(q){
   const a=q.mark;if(!a||!G.dec)return a;
   const c=G.dec[a.t];if(!c||c.o!==a||a===G.holder)return a;
-  if(!c.fool.has(q))c.fool.set(q,Math.random()<clamp(CLONE_FOOL-(q.s.vis-60)*0.008,0.35,0.8));
+  if(!c.fool.has(q))c.fool.set(q,Math.random()<clamp(CLONE_FOOL+(c.wolf?0.2:0)-(q.s.vis-60)*0.008,0.35,0.9));   // la copia lupo inganna di piu'
   return c.fool.get(q)?c:a;
 }
 // i difensori della squadra t come li vede chi attacca: con la copia del clone, che non sa riconoscere
@@ -236,4 +263,11 @@ function comboTick(dt){
     if(G.cmb[t]){G.cmb[t].t-=dt;if(G.cmb[t].t<=0)G.cmb[t]=null;}
   }
   G.cbl={c:cmp.slice(),b:blk.slice(),s:sc.slice()};
+}
+// «Rubata guidata»: il disco appena intercettato dal polpo riparte subito verso un compagno libero (una volta per combo)
+function heroRubata(){
+  const h=G.holder;if(!h||G.flight||G.pull||G.mode!=='play'||!heroOn(h,'polpo')||!comboOn(h.t,'polpo+tele'))return;
+  const c=G.cmb[h.t];if(c.rg||G.holdT>0.25||(G.freeze||0)>0)return;
+  if(G.st.blk[h.t]===c.b0)return;   // solo dopo un blocco fatto durante la combo
+  c.rg=true;aiThrow(h);
 }

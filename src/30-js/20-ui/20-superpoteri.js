@@ -6,10 +6,10 @@ const HERO_LOOK={lupo:{skin:'#6e5f50',hair:'#3f342b',style:4,band:null,beard:0},
 // la figura cambia solo dopo HERO_HIDE secondi, quando la bomba di fumo e' gia' abbastanza densa da coprire l'omino
 const HERO_HIDE=0.12,heroVis=p=>heroOn(p)&&(p.hxd||HERO[p.hero].dur)-p.hx>=HERO_HIDE;
 function heroLook(p){   // aspetto dell'eroe trasformato; chi e' congelato dallo stregone ha la pelle azzurra
-  const h=heroVis(p)?p.hero:'',fr=p.frz>0;
-  if(!h&&!fr)return lookOf(p);
-  const key=h+(fr?'*':'');
-  if(!p._hl||p._hlk!==key){p._hl=Object.assign({},lookOf(p),h?HERO_LOOK[h]:{},fr?{skin:'#bfe6ff'}:{});p._hlk=key;}
+  const h=heroVis(p)?p.hero:'',fr=p.frz>0||!!p.ice,sh=!!p.shade;   // p.ice, p.shade: la copia del clone nelle combo «Specchio di ghiaccio» e «Ombra»
+  if(!h&&!fr&&!sh)return lookOf(p);
+  const key=h+(fr?'*':'')+(sh?'~':'');
+  if(!p._hl||p._hlk!==key){p._hl=Object.assign({},lookOf(p),h?HERO_LOOK[h]:{},fr?{skin:'#bfe6ff'}:{},sh?{skin:'#4a3d5c',hair:'#1e1629'}:{});p._hlk=key;}
   return p._hl;
 }
 const HERO_DRAW={
