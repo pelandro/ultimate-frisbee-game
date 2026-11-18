@@ -12,7 +12,7 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
 (async()=>{
   let h=build();const i=h.lastIndexOf('})();');
   // solo per la prova: espone le funzioni del gioco (che vive in un ambito unico, senza moduli)
-  h=h.slice(0,i)+';window.__OVR=()=>({OVR_2026,OVR_OUT,OVR_FORCE,OVR_ADD,OVR_PART,ovrPart,OVR_DUAL_US,OVR_POW:typeof OVR_POW!=="undefined"?OVR_POW:{},ovrEntries,ovrKey,foreignRoster,allClubs,rosterPower,rosterLevel,ovr,SQ_MAX,usRoster,lnRoster,realRoster,REAL,realOpt,US_TEAM,LN_BY});'+h.slice(i);
+  h=h.slice(0,i)+';window.__OVR=()=>({OVR_2026,OVR_OUT,OVR_FORCE,OVR_ADD,OVR_PART,ovrPart,OVR_DUAL_US,OVR_POW:typeof OVR_POW!=="undefined"?OVR_POW:{},ovrEntries,ovrKey,foreignRoster,allClubs,rosterPower,rosterLevel,ovr,SQ_MIN,SQ_MAX,usRoster,lnRoster,realRoster,REAL,realOpt,US_TEAM,LN_BY,LN_CL,LN_PL,lnBasePower,qRoster});'+h.slice(i);
   fs.writeFileSync(OUT,h);
   const browser=await chromium.launch(),page=await browser.newPage(),errs=[];
   page.on('pageerror',e=>errs.push('errore JavaScript: '+e.message));
@@ -56,7 +56,23 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
     const find=(c,n)=>club(c).find(o=>X.ovrKey(o.full)===X.ovrKey(n));
     const p=find('Cotarica Grandes','Pietro Puppi');if(!p||X.ovr(p)!==87)bad.push('Puppi deve essere 87');
     for(const n of ['Carlo Mazzo','Marco Ragusa']){const q=find('CUS Padova Barbastreji',n);if(!q||X.ovr(q)!==86||q.r!=='H')bad.push(n+' deve essere un handler da 86');}
-    return {bad,pow,tot,cut,mine,declared:X.OVR_POW};
+    const womenNames=new Set(),womenPowers={A:[],B:[]};
+    for(const [c,tier,,level] of X.LN_CL.IW){
+      const rows=X.LN_PL.IW[c],ro=club(c),own=X.lnRoster(c,'prova-ovr-mia'),quick=X.qRoster(c);
+      if(rows.length<X.SQ_MIN||rows.length>X.SQ_MAX||[ro,own,quick].some(r=>r.length!==rows.length))bad.push('dimensione della rosa Women: '+c);
+      rows.forEach(([sur,nm,age,,role,ov],j)=>{
+        const name=nm+' '+sur,k=X.ovrKey(name);
+        if(womenNames.has(k))bad.push('giocatrice in più rose: '+name);
+        womenNames.add(k);
+        if([ro[j],own[j],quick[j]].some(o=>!o||o.label!==name||!o.f||o.gen||X.ovr(o)!==ov||
+          o.r!==(role==='H'?'H':'C')||(role==='D'&&o.pos!=='D')||
+          (age&&(o.age!==Math.abs(age)||!!o.ae!==(age<0)))))bad.push('scheda Women inesatta: '+name+' ('+c+')');
+      });
+      const p=X.rosterPower(ro);womenPowers[tier].push(p);
+      if(Math.abs(p-X.lnBasePower(c))>0.2||Math.abs(X.rosterLevel(ro)-level)>0.3)bad.push('potenza o livello Women incoerenti: '+c);
+    }
+    if(Math.min(...womenPowers.A)<=Math.max(...womenPowers.B))bad.push('gerarchia della Serie A Women rispetto alla B');
+    return {bad,pow,tot,cut,mine,women:womenNames.size,declared:X.OVR_POW};
   });
   await browser.close();try{fs.unlinkSync(OUT);}catch(e){}
   if(calcola){console.log('const OVR_POW='+JSON.stringify(res.pow).replace(/","/g,'","')+';');return;}
@@ -64,4 +80,5 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
   const all=errs.concat(res.bad);
   if(all.length){console.error('Prova degli Overall: '+all.length+' problemi');for(const e of all.slice(0,40))console.error('  [NO] '+e);process.exit(1);}
   console.log(`Prova degli Overall: ok (${res.tot} giocatori del foglio esatti in ${Object.keys(res.pow).length} club, anche nella rosa che parte tua (${res.mine})${res.cut?', '+res.cut+' oltre il limite di rosa':''})`);
+  console.log(`Women: ${res.women} giocatrici senza doppioni, Overall, età e potenze verificati.`);
 })().catch(e=>{console.error('Prova degli Overall interrotta: '+e.message);process.exit(1);});
