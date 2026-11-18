@@ -10,7 +10,7 @@ function catchInfo(f,o,def){
   const kind=f.high&&edge>0.55?'salto':(edge>0.78?'mano':(nd<1.9?'contesa':(sp>4.5?'corsa':'semplice')));
   return {edge,sp,nd,diff,kind};
 }
-const dropProb=(p,diff)=>clamp((0.003+diff*(1.3-1.15*p.s.pre/100))*(hasT(p,'hands')?0.55:1),0,0.6);
+const dropProb=(p,diff)=>clamp((0.003+diff*(1.3-1.15*p.s.pre/100))*(hasT(p,'hands')?0.55:1)*heroDropK(p),0,0.6);   // heroDropK: combo dei superpoteri (27-superpoteri.js)
 const CATCH_MSG={salto:'Presa in salto!',mano:'Presa a una mano!',contesa:'Presa contesa!',corsa:'Presa in corsa!',semplice:'Presa!'};
 function tryCatch(f,o,def,L){
   const ci=catchInfo(f,o,def),p=o.p;

@@ -40,11 +40,14 @@ const utoMilePack=i=>{const m=UTO_MILE_PK[clamp(i,1,UTO_MILE_PK.length)-1];retur
 // e un pacchetto equipaggiamento, anche lui sempre migliore (qualita', accessori): dal quinto traguardo il super, con un Epico garantito
 const UTO_MILE_EQ=[[2,2],[3,2],[4,2],[5,3],[6,3]];
 const utoMileEq=i=>{const m=UTO_MILE_EQ[clamp(i,1,UTO_MILE_EQ.length)-1];return m[0]+m[1]*10+300;};
-// la tua squadra come si carica online: 7 titolari e fino a 7 riserve (le migliori), statistiche per nome
-function utoPack(col,sel){
-  const st=sel.map(i=>col[i]).filter(Boolean);
+// la tua squadra come si carica online: 7 titolari e fino a 7 riserve (le migliori), statistiche per nome.
+// hl (solo Superpoteri): livelli delle tue carte eroe {chiave: livello}; i titolari con un eroe (p.hk) lo portano in h = chiave + livello, al massimo HERO_N
+function utoPack(col,sel,hl){
+  const st=sel.map(i=>col[i]).filter(Boolean);let nh=0;
   const bench=col.map((p,i)=>i).filter(i=>!sel.includes(i)).sort((a,b)=>ovrX(col[b])-ovrX(col[a])).slice(0,7).map(i=>col[i]);
-  const m=st.concat(bench).map(p=>{const s={};for(const k of KEYS)s[k]=clamp(Math.round(p.s[k]),25,99);const o={n:utoName(p.n,20)||'Giocatore',r:p.r==='H'?'H':'C',a:clamp(p.age|0,16,60),s};if(p.trait&&TRAITS[p.trait])o.x=p.trait;return o;});
+  const m=st.concat(bench).map(p=>{const s={};for(const k of KEYS)s[k]=clamp(Math.round(p.s[k]),25,99);const o={n:utoName(p.n,20)||'Giocatore',r:p.r==='H'?'H':'C',a:clamp(p.age|0,16,60),s};if(p.trait&&TRAITS[p.trait])o.x=p.trait;
+    if(hl&&p.hk&&HERO[p.hk]&&hl[p.hk]&&st.includes(p)&&nh<HERO_N){o.h=p.hk+clamp(hl[p.hk]|0,1,HERO_LV_MAX);nh++;}
+    return o;});
   return {m,pw:st.length?Math.round(st.reduce((a,p)=>a+ovrX(p),0)/st.length):0};
 }
 // squadra scaricata -> rosa per applyRoster (14 giocatori: i 7 titolari dichiarati e la panchina). null se non e' una squadra valida
@@ -55,7 +58,10 @@ function utoUnpack(m,seed){
     const s={};let ok=true;for(const k of KEYS){const v=Number(e.s[k]);if(!isFinite(v)){ok=false;break;}s[k]=clamp(Math.round(v),25,99);}
     if(!ok)continue;
     const r=e.r==='H'?'H':'C',n=utoName(e.n,20)||'Giocatore';
-    out.push({n,full:n,label:n,gen:true,r,age:clamp(e.a|0,16,60),tl:99,tf:99,tv:99,s,ovr:Math.round(ovrX({s,r})),trait:TRAITS[e.x]?e.x:null,up:0});
+    const o={n,full:n,label:n,gen:true,r,age:clamp(e.a|0,16,60),tl:99,tf:99,tv:99,s,ovr:Math.round(ovrX({s,r})),trait:TRAITS[e.x]?e.x:null,up:0};
+    const hm=typeof e.h==='string'&&/^([a-z]+)([1-9])$/.exec(e.h);   // eroe dei Superpoteri: uno per chiave, al massimo HERO_N
+    if(hm&&HERO[hm[1]]&&out.filter(x=>x.hero).length<HERO_N&&!out.some(x=>x.hero===hm[1])){o.hero=hm[1];o.hlv=clamp(+hm[2],1,HERO_LV_MAX);}
+    out.push(o);
   }
   if(out.length<7)return null;
   if(out.length<14){   // panchina incompleta: riserve piu' deboli di circa 12 punti, sempre le stesse per quel seme

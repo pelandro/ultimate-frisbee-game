@@ -578,6 +578,31 @@ catch(e){
     await page.click('#uBack');await page.click('#umBack');await vis('#title');
     await page.evaluate(()=>{localStorage.removeItem('ultimate-ut-online');localStorage.removeItem('ultimate-ut-real');});await page.reload();await page.waitForTimeout(500);
   });
+  await step('Ultimate Team: Superpoteri con una squadra sua, eroi dai pacchetti e assegnati ai titolari',async()=>{
+    const real0=await page.evaluate(()=>localStorage.getItem('ultimate-ut-real'));
+    await page.click('#tUT');await vis('#utMode');await page.click('#umHero');await vis('#utReal');
+    if((await page.locator('#urH').textContent()).trim()!=='Superpoteri')throw new Error('la schermata deve chiamarsi Superpoteri');
+    if(await page.locator('#urTeam').isVisible()||await page.locator('#urHero').isVisible())throw new Error('i Superpoteri devono partire senza giocatori e senza eroi');
+    await page.click('#urPack');await vis('#utPack');
+    await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await page.waitForTimeout(300);   // giocatori, poi il pacchetto eroi
+    await page.click('#pkGo');await page.waitForTimeout(1800);
+    if(await page.locator('#pkBody .hcard').count()!==3)throw new Error('il pacchetto eroi iniziale ha 3 carte eroe');
+    await page.click('#pkGo');await vis('#utReal');
+    const h=await page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut-eroi')||'null');return o?{n:o.col.length,hc:o.hc,hk:o.col.filter(c=>c.hk).map(c=>c.hk)}:null;});
+    if(!h||h.n!==10||Object.keys(h.hc).length!==3||h.hk.length!==3||new Set(h.hk).size!==3)throw new Error('attesi 10 giocatori e 3 eroi diversi in campo: '+JSON.stringify(h));
+    await page.click('#urHero');await vis('#utHero');
+    if(await page.locator('#uhList .qhe').count()!==9||await page.locator('#uhList .qhe:disabled').count()!==6)throw new Error('gli eroi sono 9, sei ancora da trovare');
+    await page.click('#uhSt .uhp.has >> nth=0');if(await page.locator('#uhSt .uhp.has').count()!==2)throw new Error('toccando un titolare con l\'eroe glielo tolgo');
+    await page.click('#uhAuto');if(await page.locator('#uhSt .uhp.has').count()!==3)throw new Error('«Assegna da solo» rimette tre eroi');
+    await page.click('#uhBack');await vis('#utReal');await page.click('#urShop');await vis('#utShop');
+    if(!(await page.locator('#shList [data-k="eroi"]').count()))throw new Error('nel Negozio dei Superpoteri c\'e\' il pacchetto eroi');
+    await page.click('#shBack');await page.click('#urBack');await vis('#utMode');
+    if(await page.evaluate(()=>localStorage.getItem('ultimate-ut-real'))!==real0)throw new Error('i Superpoteri hanno toccato la squadra di Real player');
+    await page.click('#umCpu');await vis('#ut');
+    await page.click('#uShop');await vis('#utShop');if(await page.locator('#shList [data-k="eroi"]').count())throw new Error('il pacchetto eroi sta solo nei Superpoteri');
+    await page.click('#shBack');await page.click('#uBack');await page.click('#umBack');await vis('#title');
+    await page.evaluate(()=>{localStorage.removeItem('ultimate-ut-eroi');localStorage.removeItem('ultimate-ut-eroi-online');});await page.reload();await page.waitForTimeout(500);
+  });
   await step('Ultimate Team: potenziamenti specializzati',async()=>{
     await page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut')||'null');if(o){o.coins=900;localStorage.setItem('ultimate-ut',JSON.stringify(o));}});
     await page.reload();await page.waitForTimeout(500);
