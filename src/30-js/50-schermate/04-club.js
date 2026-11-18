@@ -58,10 +58,13 @@ function importSave(txt){
   const c=d&&d.app==='ultimate-frisbee'?d.career:d;
   if(!c||typeof c!=='object'||!c.team||!c.mem||!c.sched||!c.tab)return 'Il file non contiene una carriera.';
   if((c.v|0)>SAVE_V)return 'Salvataggio creato con una versione più recente del gioco.';
-  const bak=JSON.stringify(SV);let ok=false;
-  try{ok=loadSave(JSON.parse(JSON.stringify(c)));}catch(e){ok=false;}
-  if(!ok){SV={};try{loadSave(JSON.parse(bak));}catch(e){}return 'Salvataggio non leggibile: la carriera attuale non è stata toccata.';}
-  persist();
+  const previous=SV,squad=squadData(),lineup=lineupIds();
+  if(!loadSave(c))return 'Carriera non leggibile: verifica calendario, rosa e versione del file.';
+  SV.slot=previous.slot||1;
+  if(!persist()){
+    restoreCareerState(previous,squad,lineup);
+    return 'Scrittura non riuscita. La carriera precedente è ancora aperta.';
+  }
   if(d&&d.extra&&typeof d.extra==='object'){   // anche Ultimate Team, torneo e allenamento, se il file li contiene
     for(const k of [UT_KEY,TN_KEY,TUT_KEY])if(d.extra[k]){try{localStorage.setItem(k,JSON.stringify(d.extra[k]));}catch(e){}}
     utLoad();try{TOUR=JSON.parse(localStorage.getItem(TN_KEY)||'null');const o=JSON.parse(localStorage.getItem(TUT_KEY)||'null');if(o)SCH={tut:!!o.tut,lv:o.lv|0,best:o.best||{}};}catch(e){}
@@ -82,7 +85,7 @@ $('clBox').addEventListener('click',e=>{
 $('clExp').addEventListener('click',()=>{$('opMsg').textContent=exportSave();});
 $('clImp').addEventListener('click',()=>{$('clFile').value='';$('clFile').click();});
 $('clBak').addEventListener('click',()=>armed($('clBak'),'Conferma: torna al salvataggio precedente','Ripristina la copia precedente',()=>{
-  let r=null;try{r=localStorage.getItem(SAVE_KEY+'-bak');}catch(e2){}
+  let r=null;try{r=localStorage.getItem(slotKey(SV.slot||1)+'-bak');const legacy=localStorage.getItem(SAVE_KEY+'-bak');if(!r&&legacy&&(JSON.parse(legacy).slot||1)===(SV.slot||1))r=legacy;}catch(e2){}
   $('opMsg').textContent=r?(importSave(r)||'Copia precedente ripristinata.'):'Nessuna copia precedente disponibile.';renderOpts();renderHome();
 }));
 $('clFile').addEventListener('change',e=>{

@@ -54,7 +54,17 @@ function rotReady(html){
 function build(){return rotReady(files().map(f=>fs.readFileSync(path.join(SRC,f),'utf8').replace(/\r\n/g,'\n')).join('').replace(/@@BUILD@@/g,process.env.UF_BUILD||'locale').replace('@@ICONA@@','data:image/png;base64,'+require('./icona').png(64).toString('base64')));}
 module.exports={build,files,SRC,OUT,ROOT};
 if(require.main===module){
-  const html=build();fs.mkdirSync(path.dirname(OUT),{recursive:true});fs.writeFileSync(OUT,html);
+  let html=build();
+  if(process.env.UF_PAGES==='1'){
+    const registration="<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('./offline-worker.js').catch(()=>{});</script>";
+    html=html.replace('</body>',registration+'</body>');
+  }
+  fs.mkdirSync(path.dirname(OUT),{recursive:true});fs.writeFileSync(OUT,html);
   for(const [n,b] of Object.entries(require('./icona').webFiles()))fs.writeFileSync(path.join(path.dirname(OUT),n),b);   // icone e manifest per la pagina web (il gioco offline funziona anche senza)
+  if(process.env.UF_PAGES==='1'){
+    const version=require('crypto').createHash('sha256').update(html).digest('hex').slice(0,16);
+    const worker=fs.readFileSync(path.join(__dirname,'offline-worker.js'),'utf8').replace('@@CACHE_VERSION@@',version);
+    fs.writeFileSync(path.join(path.dirname(OUT),'offline-worker.js'),worker);
+  }
   console.log(`Gioco costruito: ${path.relative(ROOT,OUT)} (${files().length} moduli, ${(html.length/1024).toFixed(0)} KB)`);
 }

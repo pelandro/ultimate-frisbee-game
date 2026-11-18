@@ -70,7 +70,7 @@ function renderUT(){
   $('uRounds').innerHTML=UT_ROUNDS.map((n,i)=>{const c=(UT.st==='won'||i<UT.round)?'done':(i===UT.round?(UT.st==='out'?'lost':'cur'):'');return `<span class="uchip ${c}"><small>${n}</small><b>${UT_POWERS[i]}</b></span>`;}).join('');
   $('uPack').classList.toggle('hidden',!pend);
   $('uPackT').textContent=UT.packs[0]===0&&!has?'Apri il pacchetto iniziale':`Apri: ${utPackName(UT.packs[0])}${pend>1?' (+'+(pend-1)+')':''}`;
-  $('uPackS').textContent=pend?`${utPackSize(UT.packs[0])} giocatori · ${utPackTip(UT.packs[0])}`:'';
+  $('uPackS').textContent=pend?`${utPackSize(UT.packs[0])} ${utPkRole(UT.packs[0])===EQ_PK?'accessori':'giocatori'} · ${utPackTip(UT.packs[0])}`:'';
   const r=Math.min(UT.round,5),o=UT.opp[r];
   $('uPlayRow').classList.toggle('hidden',UT.st!=='play'||!!pend||!has);
   $('uPlay').disabled=!playing;$('uSim').disabled=!playing;
@@ -96,7 +96,7 @@ $('uObj').addEventListener('click',e=>{const b=e.target.closest('[data-obj]');if
 $('uNew').addEventListener('click',()=>{UT.tid++;UT.round=0;UT.st='play';UT.res='';UT.packs.push(0);utOpps();utSave();renderUT();});
 // ---- apertura del pacchetto ----
 const utPos=p=>POS_NAME[posOf(p)];
-const utCard=(p,i)=>{const [rn,rc]=utRar(p.ovr);return `<div class="ucard ${rc}" style="animation-delay:${(i*0.3).toFixed(2)}s"><b>${p.ovr}</b><span>${p.n}</span><i>${utPos(p)} · ${rn}</i>${p.cl?`<i>${p.cl}</i>`:''}${p.trait&&TRAITS[p.trait]?`<i style="color:#e0b3ff">${TRAITS[p.trait][0]}</i>`:''}</div>`;};
+const utCard=(p,i)=>{const [rn,rc]=utRar(p.ovr);return `<div class="ucard ${rc}" style="animation-delay:${(Math.min(i,8)*0.08).toFixed(2)}s"><b>${p.ovr}</b><span>${p.n}</span><i>${utPos(p)} · ${rn}</i>${p.cl?`<i>${p.cl}</i>`:''}${p.trait&&TRAITS[p.trait]?`<i style="color:#e0b3ff">${TRAITS[p.trait][0]}</i>`:''}</div>`;};
 function renderPack(){
   const open=UT.stage==='open';
   $('pkTitle').textContent=open?(UT.cur[0]&&UT.cur[0].eq?'Ecco i tuoi accessori':'Ecco i tuoi giocatori'):utPackName(UT.packs[0]);

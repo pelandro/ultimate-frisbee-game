@@ -62,7 +62,7 @@ function kbAction(c){
   return false;
 }
 window.addEventListener('keydown',e=>{
-  if(e.ctrlKey||e.metaKey||e.altKey)return;
+  if(e.ctrlKey||e.metaKey||e.altKey||activeWindow())return;
   if(e.code==='Escape'&&VIN.live&&kbOn()){e.preventDefault();vinCancel();return;}
   if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat){if(G.paused&&!$('pause').classList.contains('hidden')){e.preventDefault();closePause();return;}if(G.inMatch&&(G.mode==='play'||G.mode==='ready')&&!G.schemeOpen){e.preventDefault();openPause();return;}}
   if(kbOn()&&(['KeyE','KeyQ','KeyC','KeyF','Tab'].includes(e.code)||(e.code==='Enter'&&inDefense()))){e.preventDefault();if(!e.repeat)kbAction(e.code);return;}

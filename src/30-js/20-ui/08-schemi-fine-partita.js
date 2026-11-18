@@ -61,11 +61,29 @@ function forfeitMatch(){
   G.score=[Math.min(G.score[0],G.target-1),G.target];G.mode='over';G.forfeit=true;
   showOver();return true;
 }
-function showOver(){
-  const w=G.score[0]>G.score[1],on=G.oppName||'Rossi';
-  let msg='',grow=[],mny='';
+function recordFinishedMatch(){
+  if(!G.inMatch||G.recorded)return;
+  const win=G.score[0]>G.score[1];
   const hurt=QM.on?[]:SQ.filter(p=>p.injNew);
-  if(G.inMatch&&!G.recorded){G.recorded=true;restoreForm();if(!QM.on){grow=matchGrowth(0,carGrowK());recordMatchStats();msg=recordResult(w,G.score[0],G.score[1]);mny=moneyHTML(SV.lastMoney);pressPending=null;if(!G.forfeit)pressNext=pressCtxOf(w,G.score[0],G.score[1],G.oppName);}else if(UT.on)msg=UO.on?uoRecord(w):utRecord(w);else if(TN.on)msg=tnRecord(w,G.score[0],G.score[1]);else msg='Partita veloce: non cambia la carriera.';}
+  let msg='',grow=[],mny='';
+  G.recorded=true;
+  restoreForm();
+  if(!QM.on){
+    grow=matchGrowth(0,carGrowK());
+    recordMatchStats();
+    msg=recordResult(win,G.score[0],G.score[1]);
+    mny=moneyHTML(SV.lastMoney);
+    pressPending=null;
+    if(!G.forfeit)pressNext=pressCtxOf(win,G.score[0],G.score[1],G.oppName);
+  }else if(UT.on)msg=UO.on?uoRecord(win):utRecord(win);
+  else if(TN.on)msg=tnRecord(win,G.score[0],G.score[1]);
+  else msg='Partita veloce: non cambia la carriera.';
+  G.finish={msg,grow,mny,hurt};
+}
+function showOver(){
+  recordFinishedMatch();
+  const w=G.score[0]>G.score[1],on=G.oppName||'Rossi';
+  const {msg='',grow=[],mny='',hurt=[]}=G.finish||{};
   // crescita in partita, raggruppata per giocatore
   let gh='';
   if(!QM.on){

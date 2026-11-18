@@ -18,3 +18,5 @@
 .shopi{flex:1 1 200px;max-width:260px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 8px;background:#141a36;border:3px solid var(--rc,#fff);box-shadow:4px 4px 0 #000}
 .shopi .disc{width:120px}
 @media (max-height:340px){.shopi .disc{width:84px}.shopi{padding:6px}}
+
+@media (prefers-reduced-motion:reduce){#pkBody .ucard{animation:none!important;opacity:1;transform:none}}

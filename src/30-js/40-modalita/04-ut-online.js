@@ -99,20 +99,27 @@ function uoLaunch(o,ros){
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
 }
+let uoSearchVersion=0;
+function uoCancelSearch(){uoSearchVersion++;UO.busy=false;UO.msg='';}
 async function uoStart(){
   if(UO.busy)return;
   if(!UOP){UO.msg='Scegli prima il tuo nome.';renderUtReal();return;}
   if(UT.sel.length!==7){UO.msg='Servono 7 titolari: completa la tua squadra.';renderUtReal();return;}
+  const version=++uoSearchVersion;
+  const current=()=>version===uoSearchVersion&&!$('utReal').classList.contains('hidden');
   UO.busy=true;UO.msg='Cerco un avversario con i tuoi punti…';renderUtReal();
   try{
     await uoSync();
+    if(!current())return;
     const o=await uoFindOpp();
+    if(!current())return;
     if(!o){UO.msg='Non ci sono ancora altri giocatori: invita un amico a creare la sua squadra.';return;}
     const tm=await uoDb('GET','ut/teams/'+o.id),ros=tm&&utoUnpack(tm.m,o.id);
+    if(!current())return;
     if(!ros){UO.msg='La squadra di '+o.n+' non è valida: riprova e ti abbino a un’altra.';UOP.last=o.id;uoSaveP();return;}
     UOP.last=o.id;UO.msg='';uoLaunch(o,ros);
-  }catch(e){UO.msg=uoErr(e);}
-  finally{UO.busy=false;renderUtReal();}
+  }catch(e){if(current())UO.msg=uoErr(e);}
+  finally{if(version===uoSearchVersion){UO.busy=false;if(current())renderUtReal();}}
 }
 // fine partita (chiamata da showOver, anche per l'abbandono): punti Elo contro i punti che l'avversario aveva quando e' stato scelto
 function uoRecord(win){
@@ -169,7 +176,7 @@ function renderUtReal(){
   $('urPlayS').textContent=net?'Serve internet':(!has?'Prima completa la tua squadra (7 titolari)':'Contro un giocatore con punti simili ai tuoi');
   $('urPack').classList.toggle('hidden',!pend);
   $('urPackT').textContent=pend?(utPkQ(UT.packs[0])===0&&!UT.col.length?'Apri il pacchetto iniziale':`Apri: ${utPackName(UT.packs[0])}${pend>1?' (+'+(pend-1)+')':''}`):'';
-  $('urPackS').textContent=pend?`${utPackSize(UT.packs[0])} giocatori · ${utPackTip(UT.packs[0])}`:'';
+  $('urPackS').textContent=pend?`${utPackSize(UT.packs[0])} ${utPkRole(UT.packs[0])===EQ_PK?'accessori':'giocatori'} · ${utPackTip(UT.packs[0])}`:'';
   $('urTeam').classList.toggle('hidden',!UT.col.length);
   $('urTeamS').textContent=`${UT.col.length} giocatori · titolari ${UT.sel.length}/7`;
   $('urEquip').classList.toggle('hidden',!UT.col.length);$('urEquipS').textContent=eqSubTxt();

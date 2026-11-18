@@ -21,5 +21,5 @@ $('cfm').addEventListener('click',e=>{if(e.target===$('cfm'))closeConfirm(false)
 const ESC_CLOSE=[['cfm',()=>closeConfirm(false)],['alerts',()=>$('alX').click()],['opts',()=>$('opX').click()],['guide',()=>$('gdX').click()]];
 window.addEventListener('keydown',e=>{
   if(e.code!=='Escape')return;
-  for(const [id,fn] of ESC_CLOSE){const el=$(id);if(el&&!el.classList.contains('hidden')){e.preventDefault();e.stopImmediatePropagation();fn();return;}}
+  for(const [id,fn] of ESC_CLOSE){const el=$(id);if(el&&activeWindow()===el){e.preventDefault();e.stopImmediatePropagation();fn();return;}}
 },true);

@@ -1,4 +1,5 @@
-function startMatch(resume){   // resume: ripresa di una partita sospesa (niente presentazione)
+function startMatch(resume){
+  pointCheckpoint=null;   // resume: ripresa di una partita sospesa (niente presentazione)
   const m=nextMatch();if(!m)return;
   applyRoster(m.roster||makeRoster(m.power,SV.seed+'|'+m.name));
   const plus=carDiff().plus;oppBoost(plus);oppLinesSet();   // dal Medio in su: avversarie piu' forti (DIFF_PLUS); due linee anche per loro
@@ -19,12 +20,20 @@ function startMatch(resume){   // resume: ripresa di una partita sospesa (niente
 function quitMatch(){if(!QM.on&&SV&&SV.susp){SV.susp=null;persist();}   // abbandonata: niente da riprendere
   $('half').classList.add('hidden');$('pause').classList.add('hidden');G.paused=false;restoreForm();if(QM.on){exitQuick(quickNext());return;}G.schemeOpen=false;G.inMatch=false;$('menu').classList.add('hidden');$('over').classList.add('hidden');showScreen('home');}
 const SCREENS=['title','slots','quick','home','league','team','coachsel','roster','event','train','market','club','school','tourn','settings','posedit','ut','utPack','utShop','utTeam','utMode','utReal','utBoard','utEquip'];
-function hideScreens(){for(const sc of SCREENS)$(sc).classList.add('hidden');$('cshell').classList.add('hidden');}
+let screenTipTimer;
+function clearScreenTip(){
+  clearTimeout(screenTipTimer);
+  $('tip').classList.add('hidden');
+  tipAfter=null;
+}
+function hideScreens(){clearScreenTip();for(const sc of SCREENS)$(sc).classList.add('hidden');$('cshell').classList.add('hidden');}
 function showScreen(id){
+  clearScreenTip();
+  if(id!=='utReal'&&!$('utReal').classList.contains('hidden')&&UO.busy)uoCancelSearch();
   for(const sc of SCREENS)$(sc).classList.toggle('hidden',sc!==id);
   shellShow(id);   // barra in alto e navigazione laterale della carriera (50-schermate/24-guscio-carriera.js)
   G.mode='home';$(id).scrollTop=0;   // si entra in una schermata dall'alto (il browser ricorda lo scorrimento di quelle nascoste)
-  if(['home','roster','market','club','train','event'].includes(id))setTimeout(()=>{if(!$(id).classList.contains('hidden'))tipOnce(id);},350);   // fumetto di primo accesso
+  if(['home','roster','market','club','train','event'].includes(id))screenTipTimer=setTimeout(()=>{if(!$(id).classList.contains('hidden'))tipOnce(id);},350);   // fumetto di primo accesso
   femPass();   // testi al femminile nel campionato Women (20-ui/19-femminile.js)
   if(id==='title')renderTitle();else if(id==='slots')renderCareers();else if(id==='quick')renderQuick();else if(id==='home')renderHome();else if(id==='league')renderLeagues();else if(id==='team')renderTeams();else if(id==='coachsel')renderCoach();else if(id==='roster'){rosterMsg='';sellArm=null;cardOpen=null;nickEdit=null;renderRoster();}else if(id==='event')renderEvent();else if(id==='settings')setSView('menu');else if(id==='posedit')layoutButtons();else if(id==='ut')renderUT();else if(id==='utMode'){}else if(id==='utReal')renderUtReal();else if(id==='utBoard')renderUtBoard();else if(id==='utPack')renderPack();else if(id==='utShop')renderShop();else if(id==='utTeam')renderTeamUT();else if(id==='utEquip')renderEquip();else if(id==='school')renderSchool();else if(id==='tourn')renderTourn();else if(id==='market'){mkMsg='';mkOpen.clear();if(SV.mkSeen!==SV.mkN){SV.mkSeen=SV.mkN;persist();}renderMarket();}else if(id==='club'){clMsg='';clInfo.clear();renderClub();}else{trainSel.clear();trainRes=null;renderTrain();}   // le «i» del Club si richiudono a ogni ingresso
 }
@@ -96,7 +105,12 @@ const qDivAll=d=>qLgs(d).flatMap(l=>l.clubs());
 function qDivSet(d){
   QM.div=d;const all=qDivAll(d);
   if(!all.includes(QM.a))QM.a=hasCareer()&&all.includes(SV.team)?SV.team:(d==='w'?all[1]:'Grem');
-  if(!all.includes(QM.b)||QM.b===QM.a)QM.b=d==='w'?all.filter(n=>n!==QM.a).sort((x,y)=>Math.abs(qPower(x)-qPower(QM.a))-Math.abs(qPower(y)-qPower(QM.a)))[0]:(all.find(n=>n!==QM.a&&qLgOf(n)===qLgOf(QM.a)&&qGrp(n)!==qGrp(QM.a))||all.find(n=>n!==QM.a));
+  if(!all.includes(QM.b)||QM.b===QM.a){
+    const power=qPower(QM.a),league=qLgOf(QM.a);
+    const opponents=all.filter(n=>n!==QM.a);
+    const local=opponents.filter(n=>qLgOf(n)===league);
+    QM.b=(local.length?local:opponents).sort((a,b)=>Math.abs(qPower(a)-power)-Math.abs(qPower(b)-power))[0];
+  }
 }
 // MODALITA' SUPERPOTERI (QM.hero, dal menu iniziale): la partita veloce con tre eroi per squadra (10-sim/27-superpoteri.js, 20-ui/20-superpoteri.js).
 // I tuoi tre eroi si scelgono qui (QM.hk, ricordati in ultimate-eroi); il computer ne prende tre a caso
@@ -124,7 +138,7 @@ function renderQuick(){
   $('qD').value=QM.d|0;$('qS').value=String(QM.s);$('qL').value=String(lenOk(QM.len|0));updateQuick();
 }
 // selettore delle squadre: le categorie sono linguette e l'elenco della categoria e' gia' aperto
-function openPick(side){QM.side=side;QM.lg=qLgOf(QM[side]).id;QM.tab=qGrp(QM[side]);renderPick();$('qPick').classList.remove('hidden');}
+function openPick(side){$('qpSearch').value='';QM.side=side;QM.lg=qLgOf(QM[side]).id;QM.tab=qGrp(QM[side]);renderPick();$('qPick').classList.remove('hidden');}
 function renderPick(){
   const me=QM[QM.side],other=QM[QM.side==='a'?'b':'a'];
   $('qpT').textContent=QM.side==='a'?'Tua squadra (blu)':'Avversaria (rossa)';
@@ -133,8 +147,16 @@ function renderPick(){
   $('qpLg').innerHTML=ls.map(x=>`<button type="button" data-l="${x.id}" class="${x.id===l.id?'on':''}">${esc(qLgTab(x))}</button>`).join('');
   $('qpTabs').classList.toggle('hidden',gs.length<2);
   $('qpTabs').innerHTML=gs.map(k=>`<button type="button" data-k="${esc(k)}" class="${k===QM.tab?'on':''}">${esc(k)}</button>`).join('');
-  $('qpG').innerHTML=l.clubs().filter(n=>qGrp(n)===QM.tab).map(n=>`<button type="button" data-n="${n.replace(/"/g,'&quot;')}" class="${n===me?'sel':''}${n===other?' off':''}">${crest(n,22)}<span>${n}</span><b>${Math.round(qPower(n))}</b></button>`).join('');
+  renderPickTeams(l,me,other);
 }
+function renderPickTeams(league,me,other){
+  const query=clubSearchText($('qpSearch').value);
+  const matches=query?qDivAll(QM.div).filter(n=>clubSearchText(n).includes(query)):league.clubs().filter(n=>qGrp(n)===QM.tab);
+  $('qpG').innerHTML=matches.length?matches.map(n=>`<button type="button" data-n="${esc(n)}" class="${n===me?'sel':''}${n===other?' off':''}"${n===other?' disabled':''}>${crest(n,22)}<span>${esc(n)}</span><b>${Math.round(qPower(n))}</b></button>`).join(''):'<p role="status">Nessuna squadra trovata.</p>';
+}
+$('qpSearch').addEventListener('input',()=>{
+  renderPickTeams(lgOf(QM.lg),QM[QM.side],QM[QM.side==='a'?'b':'a']);
+});
 function updateQuick(){
   const a=QM.a,b=QM.b;
   const row=n=>`${qSerName(n)} · forza ${Math.round(qPower(n))}`;

@@ -257,7 +257,9 @@ function frame(now){
     // con il disco in mano e lo zoom che sta cambiando l'azione aspetta: riparte quando lo zoom ha finito
     const zoomWait=G.mode==='play'&&!!G.holder&&!G.pull&&!G.flight&&(cam.zP<1||Math.abs(zoomTarget()-cam.zTo)>0.001);
     G.zoomHold=zoomWait;
+    capturePointCheckpoint();
     if(G.paused){}else if(G.mode==='cine')updateCine(dt);else if(!zoomWait)update(dt);
+    if(G.mode==='banner'&&Math.max(...G.score)>=G.target)recordFinishedMatch();
     rpRecord();rpCheck();rpApply(dt);   // replay: memoria degli ultimi secondi e riproduzione dopo le mete spettacolari
     updateCamera(dt);
     updateHUD(dt);

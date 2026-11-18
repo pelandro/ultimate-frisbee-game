@@ -51,7 +51,7 @@ function renderTourn(){
     const opts=LEAGUES.flatMap(l=>qGrps(l).map(g=>[l,g])).map(([l,g])=>`<optgroup label="${esc(qLgTab(l)+' · '+g)}">${l.clubs().filter(n=>qGrp(n)===g).map(n=>`<option value="${esc(n)}"${n===TN_SET.team?' selected':''}>${esc(n)} (${Math.round(qPower(n))})</option>`).join('')}</optgroup>`).join('');
     const sel=(id,l,o,v)=>`<div><label for="${id}">${l}</label><select class="qs" id="${id}">${o.map(x=>`<option value="${x[0]}"${String(x[0])===String(v)?' selected':''}>${x[1]}</option>`).join('')}</select></div>`;
     $('tnBox').innerHTML=`<p class="note" style="margin:0 0 10px">Crea un torneo a eliminazione diretta con le squadre vere: scegli la tua (di qualsiasi campionato), quante partecipano e da dove arrivano le avversarie: le squadre femminili giocano solo tra loro. Le tue partite le giochi (o le simuli), le altre vengono simulate. Il torneo resta salvato finché non ne crei un altro.</p>
-      <div class="tnset"><div><label for="tnTeam">La tua squadra</label><select class="qs" id="tnTeam">${opts}</select></div>${sel('tnSize','Squadre',[[4,'4 · semifinali e finale'],[8,'8 · dai quarti'],[16,'16 · dagli ottavi']],TN_SET.size)}${sel('tnPool','Avversarie',[['lg','Dal suo campionato'],['grp','Dalla sua serie'],['all','Da tutti i campionati']],TN_SET.pool)}${sel('tnD','Difficoltà',[[0,'Facile'],[1,'Medio'],[2,'Difficile'],[3,'Estrema']],TN_SET.d)}${sel('tnLen','Durata',LEN_OPTS.map(o=>[o.n,o.name+' · '+o.n+' punti']),TN_SET.len)}</div>
+      <div class="tnset"><div><label for="tnSearch">Cerca squadra</label><input type="search" id="tnSearch" class="qs" autocomplete="off"> <label for="tnTeam">La tua squadra</label><select class="qs" id="tnTeam">${opts}</select></div>${sel('tnSize','Squadre',[[4,'4 · semifinali e finale'],[8,'8 · dai quarti'],[16,'16 · dagli ottavi']],TN_SET.size)}${sel('tnPool','Avversarie',[['lg','Dal suo campionato'],['grp','Dalla sua serie'],['all','Da tutti i campionati']],TN_SET.pool)}${sel('tnD','Difficoltà',[[0,'Facile'],[1,'Medio'],[2,'Difficile'],[3,'Estrema']],TN_SET.d)}${sel('tnLen','Durata',LEN_OPTS.map(o=>[o.n,o.name+' · '+o.n+' punti']),TN_SET.len)}</div>
       <div class="schrow" style="margin-top:12px"><button type="button" class="go" id="tnGo">Crea il torneo</button></div>`;
     return;
   }
@@ -68,6 +68,17 @@ function renderTourn(){
     :`<p class="estat">${TOUR.st==='won'?'Hai vinto il torneo con '+esc(TOUR.team)+'!':'Eliminati. Vince '+esc(TOUR.champ)+'.'}</p>`;
   $('tnBox').innerHTML=head+`<div class="tncols">${cols}</div><div class="hlinks" style="margin-top:8px"><button class="hlink" id="tnNew" type="button">Nuovo torneo</button><span class="note" style="margin:0">Difficoltà: ${['Facile','Medio','Difficile','Estrema'][TOUR.d|0]} · si vince a ${lenOk(TOUR.len|0)} punti</span></div>`;
 }
+$('tnBox').addEventListener('input',e=>{
+  if(e.target.id!=='tnSearch')return;
+  const query=clubSearchText(e.target.value),select=$('tnTeam'),previous=select.value;
+  for(const group of select.children){
+    for(const option of group.children)option.hidden=!clubSearchText(option.value).includes(query);
+    group.hidden=[...group.children].every(o=>o.hidden);
+  }
+  const match=[...select.options].find(o=>!o.hidden&&o.value===previous)||[...select.options].find(o=>!o.hidden);
+  select.value=match?.value||'';
+  $('tnGo').disabled=!match;
+});
 $('tnBox').addEventListener('click',e=>{
   if(e.target.closest('#tnGo')){TN_SET.team=$('tnTeam').value;TN_SET.size=+$('tnSize').value;TN_SET.pool=$('tnPool').value;TN_SET.d=+$('tnD').value;TN_SET.len=+$('tnLen').value;tnCreate();renderTourn();}
   else if(e.target.closest('#tnPlay'))startTourn(false);

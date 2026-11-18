@@ -133,8 +133,8 @@ jobs:
         if: steps.vai.outputs.vai == 'si'
         run: |
           export UF_BUILD="$(TZ=Europe/Rome date +'%d/%m/%Y %H:%M') · ${GITHUB_SHA::7}"
-          npm run build
-          mkdir -p _site && cp dist/ultimate-frisbee.html _site/index.html && cp dist/*.png dist/manifest.webmanifest _site/   # icona dell'app e manifest (scorciatoia sulla Home)
+          UF_PAGES=1 npm run build
+          mkdir -p _site && cp dist/ultimate-frisbee.html _site/index.html && cp dist/*.png dist/manifest.webmanifest dist/offline-worker.js _site/   # icona dell'app e manifest (scorciatoia sulla Home)
       - uses: actions/upload-pages-artifact@v3
         if: steps.vai.outputs.vai == 'si'
         with:

@@ -166,8 +166,8 @@ $('qL').addEventListener('change',updateQuick);$('qD').addEventListener('change'
 $('qA').addEventListener('click',()=>openPick('a'));$('qB').addEventListener('click',()=>openPick('b'));
 $('qpX').addEventListener('click',()=>$('qPick').classList.add('hidden'));
 $('qPick').addEventListener('click',e=>{if(e.target===$('qPick'))$('qPick').classList.add('hidden');});
-$('qpTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.tab=b.dataset.k;renderPick();});
-$('qpLg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.lg=b.dataset.l;QM.tab='';renderPick();});
+$('qpTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.tab=b.dataset.k;$('qpSearch').value='';renderPick();});
+$('qpLg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.lg=b.dataset.l;QM.tab='';$('qpSearch').value='';renderPick();});
 $('qpG').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b||b.classList.contains('off'))return;
   QM[QM.side]=b.dataset.n;qGender(QM.side);$('qPick').classList.add('hidden');updateQuick();   // donne solo contro donne

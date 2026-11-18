@@ -15,7 +15,7 @@
    Nel gioco i gironi hanno piu' giri dove servono, perche' chi arriva in fondo giochi almeno 11 partite (06-partite-minime.js). */
 const LN_DEF={
   BE:{id:'BE',cc:'Belgio',de:'del Belgio',name:'Belgio · BUOC',sub:'Belgian Ultimate Outdoor Championship · 6 livelli, 46 squadre',eu:3,mv:[2,2,2,2,2],
-    txt:'Campionato Open outdoor (BUOC): 6 livelli (N1-N6) da 8 squadre in due gironi da 4, poi tabellone con finali di piazzamento. Salgono e scendono due squadre per livello. Le prime tre della N1 vanno all’EUCF.',
+    txt:'Campionato Open outdoor (BUOC): 46 squadre su 6 livelli (N1-N6), con due gironi per livello, poi tabellone con finali di piazzamento. Salgono e scendono due squadre per livello. Nella carriera le prime tre della N1 si qualificano all’EUCF.',
     tiers:[
       {id:'N1',name:'N1',k:1.5,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},{id:'N2',name:'N2',k:1.3,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},
       {id:'N3',name:'N3',k:1.15,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},{id:'N4',name:'N4',k:1,comps:1,pools:2,fin:[{f:1,t:4,m:'c8'}]},

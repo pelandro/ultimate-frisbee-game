@@ -113,7 +113,10 @@ catch(e){
     await page.click('#lgList [data-div="w"]');await vis('#team');
     const tn=await page.locator('#tTeams .tteam').allInnerTexts();if(!tn.length||!tn.some(t=>/Tequila Boom Boom/.test(t))||tn.some(t=>/La Fotta/.test(t)))throw new Error('squadre femminili sbagliate: '+tn.slice(0,3).join(' | '));
     await page.click('#tTeams .tteam >> nth=0');await vis('#rpv');if(!/giocatrici/.test(await page.locator('#rpS').innerText()))throw new Error('nella rosa femminile si parla di giocatrici');
-    await page.click('#rpX');await page.click('#teamBack');await vis('#league');
+    await page.keyboard.press('Tab');
+    if(!await page.evaluate(()=>!!document.activeElement.closest('#rpv')))throw new Error('il focus è uscito dalla rosa');
+    await page.keyboard.press('Escape');await page.locator('#rpv').waitFor({state:'hidden'});
+    await page.click('#teamBack');await vis('#league');
     if(!/divisione/i.test(await page.locator('#lgH').innerText()))throw new Error('dal femminile «Indietro» torna alla scelta della divisione');
     await page.click('#lgList [data-div="m"]');if(!(await page.locator('#lgList [data-lg="IT"]').count()))throw new Error('manca il campionato italiano maschile');
     await page.click('#lgBack');await page.click('#lgBack');await vis('#title');
@@ -612,6 +615,14 @@ catch(e){
     if(await occupied.innerText()!==oldSlot)throw new Error('annullare la sostituzione ha cambiato lo slot');
     await page.reload();await page.click('#tSlots');await vis('#slots');
     if(await occupied.innerText()!==oldSlot)throw new Error('lo slot precedente non sopravvive alla ricarica');
+    await occupied.locator('[data-cgo]').click();await vis('#home');
+    await menu('#hOpt');await vis('#opts');
+    const beforeImport=await page.evaluate(()=>localStorage.getItem('ultimate-prototipo-v2'));
+    const invalid=JSON.parse(beforeImport);invalid.sched=[];
+    await page.locator('#clFile').setInputFiles({name:'carriera-invalida.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(invalid))});
+    await page.waitForFunction(()=>document.getElementById('opMsg').textContent.includes('Carriera non leggibile'));
+    if(await page.evaluate(()=>localStorage.getItem('ultimate-prototipo-v2'))!==beforeImport)throw new Error('l’importazione invalida ha cambiato il salvataggio');
+    await page.click('#opX');await menu('#hBack');await page.click('#tSlots');await vis('#slots');
     const empty=await page.locator('#csBox .csl:not(:has([data-cgo])) [data-cnew]').first();
     const k=+(await empty.getAttribute('data-cnew'));await empty.click();await vis('#league');await page.click('#lgBack');await vis('#slots');   // ripensamento: la carriera di prima resta
     if(await page.locator('#csBox [data-cgo]').count()!==full)throw new Error('tornando indietro la carriera di prima e\' sparita');
