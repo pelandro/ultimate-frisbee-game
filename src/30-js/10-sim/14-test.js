@@ -622,6 +622,14 @@ function selfTestPlan(opt){
     for(const x of T[0].concat(T[1])){x.vx=x.vy=0;x.hero=null;x.hx=0;}
     const share=()=>{let a=0,b=0;for(let i=0;i<300;i++){const q=aiPick(th,false).best;if(q===m2)a++;else if(q===m1)b++;}return a/Math.max(1,a+b);};
     const sh0=share();m2.hero='polpo';m2.hx=5;const sh1=share();m2.hx=0;m2.hero=null;
+    // livelli di Ultimate Team: al livello 5 la trasformazione dura il 40% in piu' e la ricarica il 32% in meno
+    const Gl=heroOf(0,'giraffa')||T[0][1];Gl.hero='giraffa';Gl.hx=0;Gl.hlv=5;G.hz[0].giraffa=0;G.mode='play';G.pull=null;heroUse(0,'giraffa');
+    const lvOk=Math.abs(Gl.hx-HERO.giraffa.dur*1.4)<1e-6&&Math.abs(G.hz[0].giraffa-(HERO.giraffa.dur*1.4+HERO.giraffa.cd*0.68))<1e-6;heroEnd(Gl);Gl.hlv=0;
+    // squadra caricata online: solo i titolari portano il loro eroe (chiave + livello), e chi la scarica lo ritrova; un eroe che non esiste si ignora
+    const col=makeRoster(60,'uh|test').slice(0,14);col[0].hk='lupo';col[1].hk='tele';col[9].hk='clone';
+    const pk=utoPack(col,[0,1,2,3,4,5,6],{lupo:3,tele:1,clone:2}),hs=pk.m.map(e=>e.h).filter(Boolean);pk.m[2].h='drago9';
+    const un=utoUnpack(pk.m,'uh'),uh=un.filter(o=>o.hero).map(o=>o.hero+o.hlv);
+    const upOk=hs.join()==='lupo3,tele1'&&uh.join()==='lupo3,tele1'&&!utoPack(col,[0,1,2,3,4,5,6]).m.some(e=>e.h);
     placeTeams(0);const reset=!T[0].concat(T[1]).some(x=>x.hx>0||x.hrb||x.frz>0);
     const both=run(ra,rb,n,{hero:'both'}),okB=both.every(m=>!m.stuck&&!m.nan&&Math.max(m.score[0],m.score[1])===MATCH_TARGET),useB=both.every(m=>m.st.hero&&m.st.hero[0]>0&&m.st.hero[1]>0);
     // quanto contano gli eroi (misurato a parte, 50 partite per lato a squadre pari): chi li ha vince circa 7 volte su 10. Qui non si misura: servirebbero troppe partite
@@ -634,6 +642,8 @@ function selfTestPlan(opt){
       row('Mietitore: gli avversari perdono energia in fretta (e gli scatti costano di più), i tuoi no',`−${Math.round(drop)} in 2 s, scatti ×${dk}`,reap),
       row('Signore del vento: i tuoi lanci arrivano piu\' lontano, quelli avversari piu\' corti, poi torna tutto come prima',`gittata ${Math.round(ma)} → ${Math.round(ma1)} m, avversari ${Math.round(mb)} → ${Math.round(mb1)} m`,wind),
       row('L\'IA cerca i compagni trasformati: tra due ricevitori uguali sceglie quasi sempre l\'eroe',`${Math.round(sh0*100)}% → ${Math.round(sh1*100)}%`,sh1>=0.85&&sh1>sh0+0.25),
+      row('Livelli degli eroi (Ultimate Team): durata piu\' lunga e ricarica piu\' corta',`giraffa al livello 5: ${(HERO.giraffa.dur*1.4).toFixed(1)} s`,lvOk),
+      row('Squadra online con gli eroi: solo i titolari li portano e chi la scarica li ritrova',`${hs.join(', ')} → ${uh.join(', ')}`,upOk),
       row('A ogni punto le trasformazioni finiscono',reset?'sì':'no',reset),
       row('Partite con gli eroi: finiscono regolarmente e le due IA usano i poteri',`${both.filter(m=>m.st.hero).length} su ${n}`,okB&&useB)];
   }]);

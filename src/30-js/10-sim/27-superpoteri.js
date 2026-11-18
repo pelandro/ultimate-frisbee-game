@@ -18,9 +18,12 @@
    - Signore del vento: finche' e' trasformato il vento gira a favore della sua squadra. I suoi compagni lanciano piu' lontano (VENTO_R m in piu' di gittata),
      piu' dritto (dispersione ×VENTO_OK) e senza la deriva del vento della partita; gli avversari lanciano piu' corto e sbandano (×VENTO_KO). heroWind(t) in
      throwMax, throwComf e planThrow; se tutti e due i signori del vento sono trasformati, si annullano.
+   LIVELLI (Ultimate Team · Superpoteri: i doppioni delle carte eroe): p.hlv da 1 a HERO_LV_MAX. Ogni livello in piu' allunga la trasformazione di
+   HERO_LV_D e accorcia la ricarica di HERO_LV_C (heroDur, heroCd); altrove p.hlv non c'e' e vale 1. p.hxd e G.hzm tengono durata e ciclo dell'ultimo uso
+   (servono all'interfaccia per gli anelli dei pulsanti).
    In campo ogni squadra ha al massimo HERO_N eroi (G.hk[squadra] = quali): i tuoi li scegli prima della partita (QM.hk), quelli del computer sono a caso.
    p.hero = eroe del giocatore (sui giocatori della tua rosa e sui posti in campo dell'avversaria), p.hx = secondi di trasformazione che restano.
-   Vale solo con G.heroOn (startQuick con QM.hero); l'IA usa i poteri della sua squadra (e della tua nelle mete simulate) con heroAI. */
+   Vale solo con G.heroOn (Ultimate Team · Superpoteri: utHeroMatch in 40-modalita/08-ut-superpoteri.js); l'IA usa i poteri della sua squadra (e della tua nelle mete simulate) con heroAI. */
 const HERO={
   lupo:{n:'Lupo mannaro',dur:8,cd:22,txt:'Velocità, scatto, salto e resistenza molto più alti'},
   giraffa:{n:'Giraffa',dur:9,cd:24,txt:'Vince tutti i duelli in aria e prende i dischi più alti'},
@@ -39,7 +42,10 @@ const ICE_R=12,ICE_T=4,ICE_K=0.55;   // onda di freddo: raggio (m), durata del g
 const REAP_DRAIN=5,REAP_K=2.5;       // mietitore: energia persa al secondo da ogni avversario in campo, e quanto costano di piu' i loro scatti
 const heroSlow=p=>p.frz>0?1-ICE_K*Math.min(1,p.frz/ICE_T):1;   // in vmaxOf e accOf
 const heroDrain=p=>G.heroOn&&G.hz&&heroOn(heroOf(1-p.t,'mietitore'),'mietitore')?REAP_K:1;   // negli scatti di chi ha contro un mietitore trasformato
-const HERO_N=3;   // eroi in campo per squadra: di piu' sono troppi pulsanti e troppi timer da seguire
+const HERO_N=3;
+const HERO_LV_MAX=5,HERO_LV_D=0.1,HERO_LV_C=0.08;   // livello 5: trasformazione +40%, ricarica -32%
+const heroLvOf=p=>clamp((p&&p.hlv)|0||1,1,HERO_LV_MAX);
+const heroDur=(k,lv)=>HERO[k].dur*(1+HERO_LV_D*((lv||1)-1)),heroCd=(k,lv)=>HERO[k].cd*(1-HERO_LV_C*((lv||1)-1));   // eroi in campo per squadra: di piu' sono troppi pulsanti e troppi timer da seguire
 const heroRand=()=>HERO_K.slice().sort(()=>Math.random()-0.5).slice(0,HERO_N);
 const HERO_TK_ROT=2.4;   // radianti al secondo: quanto in fretta il telecinetico puo' girare il disco
 const HERO_LUPO={vel:18,sca:18,agi:15,sal:12,res:15,tuf:10,dif:6};
@@ -58,12 +64,12 @@ function heroAssign(list,keys){
   pick('tele',p=>p.s.lan+p.s.vis+(p.role==='H'||p.r==='H'?20:0));pick('lupo',p=>p.s.vel+p.s.sca+p.s.agi);pick('giraffa',p=>p.s.sal*2+p.s.pre);pick('polpo',p=>p.s.dif*2+p.s.agi);pick('clone',p=>p.s.vel+p.s.agi+(p.role==='C'||p.r==='C'?20:0));pick('ghiaccio',p=>p.s.vis+p.s.dif);pick('mietitore',p=>p.s.res*2+p.s.dif);pick('vento',p=>p.s.spa*2+p.s.lan);   // il telecinetico e' un handler
 }
 const heroOf=(t,k)=>T[t].find(p=>p.hero===k)||null;
-function heroInit(k0,k1){G.hz=[{},{}];G.dec=[null,null];G.hk=[k0||HERO_K,k1||HERO_K];for(const t of [0,1])for(const k of HERO_K)G.hz[t][k]=HERO_START;}
+function heroInit(k0,k1){G.hzm=[{},{}];G.hz=[{},{}];G.dec=[null,null];G.hk=[k0||HERO_K,k1||HERO_K];for(const t of [0,1])for(const k of HERO_K)G.hz[t][k]=HERO_START;}
 const heroReady=(t,k)=>!!(G.heroOn&&G.hz&&G.mode==='play'&&!G.pull&&G.hz[t][k]<=0&&heroOf(t,k));
 function heroUse(t,k){
   if(!heroReady(t,k))return false;
   const p=heroOf(t,k),H=HERO[k];
-  p.hx=H.dur;G.hz[t][k]=H.dur+H.cd;
+  const lv=heroLvOf(p),du=heroDur(k,lv);p.hx=p.hxd=du;G.hz[t][k]=du+heroCd(k,lv);if(G.hzm)G.hzm[t][k]=G.hz[t][k];
   if(k==='clone')cloneMake(p);
   if(k==='ghiaccio')for(const q of T[1-t])if(hyp(q.x-p.x,q.y-p.y)<=ICE_R)q.frz=ICE_T;   // l'onda di freddo: chi e' dentro il raggio si congela
   if(k==='lupo'&&!p.hrb){p.hrb=p.s;p.s=Object.assign({},p.s);for(const s in HERO_LUPO)p.s[s]=Math.min(99,p.s[s]+HERO_LUPO[s]);}

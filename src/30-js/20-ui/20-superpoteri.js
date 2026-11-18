@@ -4,7 +4,7 @@
 const HERO_LOOK={lupo:{skin:'#6e5f50',hair:'#3f342b',style:4,band:null,beard:0},giraffa:{skin:'#e9b44c',hair:'#9a5a1e',style:4,band:null,beard:0},polpo:{skin:'#b25fe0',hair:'#7a35a8',style:4,band:null,beard:0},tele:{},clone:{},
   ghiaccio:{skin:'#a9dcff',hair:'#f4f8ff',style:4,band:null,beard:0},mietitore:{skin:'#e9e4d2',hair:'#1e1629',style:4,band:null,beard:0},vento:{hair:'#eef8ff',band:null}};
 // la figura cambia solo dopo HERO_HIDE secondi, quando la bomba di fumo e' gia' abbastanza densa da coprire l'omino
-const HERO_HIDE=0.12,heroVis=p=>heroOn(p)&&HERO[p.hero].dur-p.hx>=HERO_HIDE;
+const HERO_HIDE=0.12,heroVis=p=>heroOn(p)&&(p.hxd||HERO[p.hero].dur)-p.hx>=HERO_HIDE;
 function heroLook(p){   // aspetto dell'eroe trasformato; chi e' congelato dallo stregone ha la pelle azzurra
   const h=heroVis(p)?p.hero:'',fr=p.frz>0;
   if(!h&&!fr)return lookOf(p);
@@ -141,7 +141,7 @@ function heroHud(){
   if(box.dataset.ks!==id){box.dataset.ks=id;box.innerHTML=ks.map(k=>`<button type="button" class="hb" data-k="${k}" aria-label="${HERO[k].n}">${heroIconSvg(k)}<i class="hbr"></i><em></em></button>`).join('');}   // un pulsante per ogni eroe scelto
   for(const b of box.children){
     const k=b.dataset.k,p=heroOf(0,k),H=HERO[k],left=G.hz[0][k],act=!!(p&&p.hx>0);
-    const fr=act?p.hx/H.dur:(left<=0?1:1-left/(H.dur+H.cd));
+    const fr=act?p.hx/(p.hxd||H.dur):(left<=0?1:1-left/((G.hzm&&G.hzm[0][k])||(H.dur+H.cd)));   // con i livelli di Ultimate Team durata e ricarica cambiano
     b.style.setProperty('--p',(fr*100).toFixed(1)+'%');
     b.classList.toggle('rdy',heroReady(0,k));b.classList.toggle('act',act);b.classList.toggle('off',!p);
     const t=act?Math.ceil(p.hx)+'':(left>0?Math.ceil(left)+'':'');const em=b.lastChild;if(em.textContent!==t)em.textContent=t;
