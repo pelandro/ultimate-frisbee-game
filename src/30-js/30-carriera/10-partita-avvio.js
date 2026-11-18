@@ -72,12 +72,8 @@ const matchLevel=n=>n===SV.team?myLinesLevel():teamLevel(n);
 const teamPower=n=>n===SV.team?squadPower():(SV.rost&&SV.rost[n]?rosterPower(SV.rost[n])+carDiff().plus:null);
 // forza mostrata nella scelta della squadra: la stessa rosa con cui si parte davvero (userRoster: 9 giocatori, come per le avversarie)
 const previewPower=n=>REAL[n]?rosterPower(realRoster(REAL[n],'preview|'+n,realOpt(n,9))):0;
-// stemma della squadra: scudetto con due colori e iniziali, generato dal nome
-function crest(name,px){
-  const h=hashStr('crest|'+name),h1=h%360,h2=(h1+130+(h>>8)%90)%360,ini=name.replace(/[^A-Za-zÀ-ÿ0-9 ]/g,'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  const dir=['135deg','180deg','90deg','45deg'][(h>>4)%4];
-  return `<span class="crest" style="width:${px}px;height:${Math.round(px*1.12)}px;font-size:${Math.round(px*0.4)}px;background:linear-gradient(${dir},hsl(${h1} 68% 46%) 0 50%,hsl(${h2} 72% 56%) 50% 100%)">${ini}</span>`;
-}
+// Identita' unica in tutti gli elenchi, nelle presentazioni e sul campo.
+function crest(name,px){return clubCrest(name,px);}
 // ritratto del giocatore in pixel art, stile del campo (contorno scuro, luce da sinistra in alto): griglia 32x32 con occhi, sopracciglia, naso, bocca, orecchie, ombre,
 // capelli a ciocche e divisa con scollo. Capelli, pelle, barba e fascia vengono dall'aspetto del giocatore (look); la divisa dalla squadra. Ogni pixel e' un quadratino netto:
 // la misura e' 32 (elenchi), 64 (carte) o 96 (anteprima dell'allenatore), cosi' i pixel non si deformano.

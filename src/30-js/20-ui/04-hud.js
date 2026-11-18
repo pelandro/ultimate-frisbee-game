@@ -1,12 +1,7 @@
 /* ---- HUD ---- */
 const bDef=$('bDef');bDef.addEventListener('click',()=>{if(inDefense())toggleDmode();});
-// sigla di una squadra per la barra in alto: iniziali delle parole principali (San Francisco Revolver = SFR), o le prime tre lettere di un nome solo
-const ABBR_SKIP=new Set(['of','di','de','del','della','the','and','la','il','le','cus']);
-function teamAbbr(n){
-  n=String(n||'');const w=n.replace(/\([^)]*\)/g,' ').split(/[^A-Za-zÀ-ÿ0-9]+/).filter(x=>x&&!ABBR_SKIP.has(x.toLowerCase()));
-  if(w.length>=2)return w.slice(0,3).map(x=>x[0]).join('').toUpperCase();
-  return (w[0]||n).slice(0,3).toUpperCase();
-}
+// Il nome sportivo prevale sulla societa' e sulla citta'; le categorie minori hanno sigle proprie.
+function teamAbbr(n){return clubAbbr(n);}
 const hud=$('hud'),elScore0=$('s0'),elScore1=$('s1'),elPt=$('pt'),elStall=$('stall'),elHint=$('hint'),bThr=$('thr'),bSprint=$('bSprint'),bThrow=$('bThrow'),bHammer=$('bHammer'),bSch=$('bSch'),skipBtn=$('skip');
 const cache=new Map();
 function setHTML(el,html){if(cache.get(el)!==html){cache.set(el,html);el.innerHTML=html;}}
@@ -27,7 +22,7 @@ function updateHUD(dt){
   scoreSet(elScore0,G.drill?drHud(0):G.score[0]);scoreSet(elScore1,G.drill?drHud(1):G.score[1]);
   $('score').classList.toggle('mini',G.mode==='play');   // durante l'azione restano solo i due numeri; a fine meta tornano i nomi
   elPt.textContent=G.drill?G.matchLabel:'Meta '+G.pointNo+(G.target!==MATCH_TARGET?(/^(8|11)/.test(String(G.target))?' · agli ':' · ai ')+G.target:'')+(G.matchLabel?' · '+G.matchLabel:'');   // «Meta» per prima: se il testo e' lungo si taglia in fondo
-  // sigle in barra (i nomi interi non entrano e coprivano il testo): SFR, RRF...
+  // Sigle in barra; il nome intero resta nel titolo accessibile.
   const nm0=G.drill?drHud(2):(G.myName||'Blu'),nm1=G.drill?drHud(3):(G.oppName||'Rossi');
   myN.textContent=G.drill?nm0:teamAbbr(nm0);oppN.textContent=G.drill?nm1:teamAbbr(nm1);myN.title=nm0;oppN.title=nm1;bExit.classList.toggle('hidden',!G.inMatch);
   const h=G.holder;

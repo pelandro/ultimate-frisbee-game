@@ -91,17 +91,8 @@ function matchLook(){
   Object.assign(UNI[1],uk&&uk.hot?KIT_AWAY:KITS[1][on&&G.oppName?hashStr('kit|'+G.oppName)%KITS[1].length:0]);   // se ti vesti di rosso o arancione l'avversaria gioca in bianco
   Object.assign(PAL,venuePal());grassPat=null;   // prato del club di casa (17-stadi-pubblico.js)
 }
-// STEMMA a pixel (lo stesso scudetto a due colori del cruscotto, dal nome della squadra): a centrocampo e' quello della squadra di casa, in trasparenza
-function crestPx(cx,cy,w,name,alpha){
-  const h=hashStr('crest|'+name),h1=h%360,h2=(h1+130+(h>>8)%90)%360,hh=ri(w*1.15),ini=name.replace(/[^A-Za-zÀ-ÿ0-9 ]/g,'').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase();
-  const c1=`hsla(${h1},68%,46%,${alpha})`,c2=`hsla(${h2},72%,56%,${alpha})`,ln=`rgba(246,248,242,${alpha})`,top=ri(cy-hh/2);
-  for(let r=0;r<hh;r++){
-    const t=r/hh,rw=ri(w*(t<0.6?1:Math.max(0.1,1-(t-0.6)/0.4*0.9))),x=ri(cx-rw/2),half=ri(rw/2);
-    px(x,top+r,half,1,c1);px(x+half,top+r,rw-half,1,c2);
-    if(r===0||r===hh-1||rw<3){px(x,top+r,rw,1,ln);}else{px(x,top+r,1,1,ln);px(x+rw-1,top+r,1,1,ln);}
-  }
-  ptext(ini,cx,top+ri(hh*0.3),{f:w>=40?'P':'p',c:`rgba(255,255,255,${Math.min(1,alpha*2.2)})`,o:false});
-}
+// Stesso stemma dei menu, disegnato sulla griglia del campo senza immagini o filtri.
+function crestPx(cx,cy,w,name,alpha){clubDraw(cx,cy,w,name,alpha);}
 function drawField(){
   matchLook();
   const x0=sxw(0),x1=sxw(FIELD_L),y0=syw(0),y1=syw(FIELD_W),H=y1-y0,gl=sxw(EZ),gr=sxw(FIELD_L-EZ);
