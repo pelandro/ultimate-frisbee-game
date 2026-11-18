@@ -2,7 +2,7 @@
 function clearFl(){for(const p of T[0].concat(T[1])){p.fl=null;p.boost=0;p.flD=0;}}
 // PRESA: quanto e' difficile una ricezione (0 = facile) e con che probabilita' il disco sfugge di mano.
 // Contano il tipo di lancio, il disco al limite della portata (presa a una mano), la corsa, un difensore addosso e la stanchezza: mai il caso da solo.
-const reachOf=(f,p)=>f.high?1.2+p.s.sal*0.014+(hasT(p,'sky')?0.15:0)+(f.sparo&&hasT(p,'deep')?0.2:0):1.5;
+const reachOf=(f,p)=>(f.high?1.2+p.s.sal*0.014+(hasT(p,'sky')?0.15:0)+(f.sparo&&hasT(p,'deep')?0.2:0):1.5)+heroReach(p);   // heroReach: la giraffa dei superpoteri
 function catchInfo(f,o,def){
   const p=o.p,edge=clamp(o.d/reachOf(f,p),0,1),sp=hyp(p.vx,p.vy);
   let nd=9;for(const q of def)nd=Math.min(nd,hyp(q.x-p.x,q.y-p.y));
@@ -126,7 +126,7 @@ function duelScore(f,a,d,reach){
   const qual=clamp(3-(f.err||0)*1.7,-6,3);
   // RINCORSA: sul disco alto chi arriva correndo stacca piu' in alto di chi salta da fermo
   const run=o=>hi?clamp(hyp(o.p.vx,o.p.vy)-3,0,4)*0.9:0;
-  const sa=base(a,true)+(f.intended===a.p?4:0)+(a.p.s.pre-60)*0.22+early+qual+run(a)-f.sp.cd*40+(hi&&hasT(a.p,'sky')?7:0),sd=base(d,false)+run(d)+(hasT(d.p,'lock')?5:0)+(hi&&hasT(d.p,'sky')?7:0);
+  const sa=base(a,true)+(f.intended===a.p?4:0)+(a.p.s.pre-60)*0.22+early+qual+run(a)-f.sp.cd*40+(hi&&hasT(a.p,'sky')?7:0)+heroDuel(a.p),sd=base(d,false)+run(d)+(hasT(d.p,'lock')?5:0)+(hi&&hasT(d.p,'sky')?7:0)+heroDuel(d.p);   // heroDuel: la giraffa vince i duelli in aria
   return {sa,sd};
 }
 // SALTO DA FERMO O IN CORSA: dove stava il giocatore JUMP_LOOK secondi prima della presa (dalla sua velocita'): oltre JUMP_STILL metri dal punto d'arrivo e' arrivato correndo

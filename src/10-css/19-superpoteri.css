@@ -1,0 +1,22 @@
+/* modalita' Superpoteri: pulsante largo nel menu iniziale e i tre pulsanti degli eroi in partita (a sinistra, a meta' altezza) */
+.hgrid .hwide{grid-column:1/-1}
+#heroB{position:absolute;left:calc(var(--sal,0px) + 10px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:calc(10px*var(--bz,1));pointer-events:none;z-index:6}
+#heroB.hidden{display:none}
+.hb{--p:0%;position:relative;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;width:calc(54px*var(--bz,1));height:calc(54px*var(--bz,1));border-radius:50%;border:0;padding:calc(9px*var(--bz,1));
+  background:conic-gradient(var(--gold) var(--p),rgba(255,255,255,.18) 0);box-shadow:0 2px 0 rgba(0,0,0,.45);cursor:pointer}
+.hb::before{content:'';position:absolute;inset:calc(4px*var(--bz,1));border-radius:50%;background:#141a36}
+.hb svg{position:relative;width:100%;height:100%;image-rendering:pixelated;opacity:.55;filter:saturate(.4)}
+.hb em{position:absolute;right:calc(-4px*var(--bz,1));bottom:calc(-4px*var(--bz,1));font-style:normal;font-weight:800;font-size:calc(12px*var(--bz,1));color:#fff;text-shadow:0 1px 0 #000,0 0 3px #000}
+.hb.rdy{background:var(--gold);animation:hbrdy .9s steps(2) infinite}
+.hb.rdy svg{opacity:1;filter:none}
+.hb.act{background:conic-gradient(#3ddc97 var(--p),rgba(255,255,255,.18) 0)}
+.hb.act svg{opacity:1;filter:none}
+.hb.off{opacity:.35}
+@keyframes hbrdy{50%{box-shadow:0 0 0 calc(3px*var(--bz,1)) rgba(255,210,63,.55),0 2px 0 rgba(0,0,0,.45)}}
+/* elenco degli eroi nella schermata della partita (modalita' Superpoteri) */
+.qhero{margin:10px auto 0;max-width:820px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:10px 12px;background:#141a36;border:3px solid #000;box-shadow:4px 4px 0 #000}
+.qhero>b{flex:0 0 100%;color:var(--gold);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.qhe{flex:1 1 220px;display:flex;gap:8px;align-items:center;min-width:0}
+.qhe i{flex:0 0 auto;width:40px;height:32px}.qhe i svg{width:100%;height:100%;image-rendering:pixelated}
+.qhe span{display:flex;flex-direction:column;min-width:0}.qhe strong{font-size:13px}.qhe small{font-size:11px;opacity:.85}
+.qhn{flex:0 0 100%;font-size:11px;opacity:.8}

@@ -53,7 +53,7 @@ function renderTeamsLN(){
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamTier);
   const tr=D.tiers.find(t=>t.id===teamTier);
   $('tNote').textContent=D.txt+' ('+lnFormatTxt(tr)+')';
-  const cl=LN_CL[lk].filter(r=>r[1]===teamTier).map(r=>r[0]).sort((a,b)=>favFirst(a,b)||LN_BY[b].p-LN_BY[a].p);
+  const cl=LN_CL[lk].filter(r=>r[1]===teamTier).map(r=>r[0]).sort((a,b)=>favFirst(a,b)||lnBasePower(b)-lnBasePower(a));
   $('tTeams').innerHTML=cl.map((n,i)=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${favMark(n)}${esc(n)}<small class="tcity">${esc(D.cc)} · ${esc(tr.name)} · n° ${i+1}</small></span></span><b class="tp">${lnPreview(n)}</b></button>`).join('');
 }
 // descrizione breve di un livello: gironi e fasi finali
