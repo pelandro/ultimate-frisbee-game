@@ -57,6 +57,10 @@ function drawFx(){
     const k=p.life/p.max,x=sxw(p.x),y=syw(p.y);
     if(p.t==='dust'){const s=k>0.5?2:1;px(x,y-p.z*S*0.5,s,s,k>0.4?'#e8dcb8':'#c9d9ae');}
     else if(p.t==='spark'){px(x,y-p.z*S*0.5,k>0.5?2:1,k>0.5?2:1,k>0.5?(p.c||'#fff3b0'):(p.c2||'#ffd23f'));}   // c, c2: scintille colorate (superpoteri)
+    else if(p.t==='smoke'){   // bomba di fumo dei superpoteri: sbuffi che si gonfiano in fretta, poi si sfaldano
+      const a=1-k,g=1-(1-Math.min(1,a*6))**2,sh=k<0.35?k/0.35:1,r=Math.max(1,p.r*(0.55+0.45*g)*S*sh),yy=y-p.z*S*0.5;
+      pell(x,yy+r*0.15,r,r*0.75,p.c2||'#9aa4b3');pell(x-r*0.12,yy-r*0.1,r*0.8,r*0.6,p.c||'#d9dee6');if(r>3)pell(x-r*0.35,yy-r*0.3,r*0.35,r*0.28,'#f4f6f9');
+    }
     else if(p.t==='blade'){const yy=y-p.z*S*0.5;px(x,yy-1,1,3,PAL.out);px(x,yy,1,2,k>0.5?PAL.dim:PAL.grass2);}   // zolla d'erba alzata dal disco
     else if(p.t==='pop'){   // presa: un anello quadrato che si apre in 4 scatti attorno alle mani
       const st=Math.min(3,((1-k)*4)|0),r=3+st*2,yy=ri(y-p.z*S*0.5),c=st<2?(p.c||'#ffffff'):'#d9ecc8';
@@ -358,7 +362,7 @@ function drawPlayers(dt){
       const view=sp>1.2&&Math.abs(p.vy)>Math.abs(p.vx)*1.3?(p.vy<0?1:2):0;
       const kind=pose==='aim'?aimKind:(lastFl&&lastFl.thrower===p?lastFl.kind:'backhand');   // il pull e' un rovescio
       const ca=p.cfx?G.tick-(p.cfx.until-0.42):-1;
-      const hp=ghost?heroGhost(x,y,(gx,gy)=>puppet(gx,gy,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,pose,p.ph,Math.min(1,sp/6),0,{brk:!!p._brk,view,kind,ca:-1,hero:p.hero,sc:heroScale(p)})):puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,hero:heroOn(p)?p.hero:null,sc:heroScale(p)});
+      const hp=ghost?heroGhost(x,y,(gx,gy)=>puppet(gx,gy,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,pose,p.ph,Math.min(1,sp/6),0,{brk:!!p._brk,view,kind,ca:-1,hero:p.hero,sc:heroScale(p)})):puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,hero:heroVis(p)?p.hero:null,sc:heroScale(p)});
       p._hx=hp[0];p._hy=hp[1];p._ht=G.tick;   // il disco in mano segue la mano (drawDisc)
     }
     heroFrost(p,x,y);   // il ghiaccio ai piedi di chi e' congelato (20-superpoteri.js)

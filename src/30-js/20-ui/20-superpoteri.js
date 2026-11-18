@@ -3,8 +3,10 @@
    al posto della testa, HERO_DRAW[eroe] (testa, collo, coda o tentacoli), con gli stessi pixel e lo stesso contorno degli omini. */
 const HERO_LOOK={lupo:{skin:'#6e5f50',hair:'#3f342b',style:4,band:null,beard:0},giraffa:{skin:'#e9b44c',hair:'#9a5a1e',style:4,band:null,beard:0},polpo:{skin:'#b25fe0',hair:'#7a35a8',style:4,band:null,beard:0},tele:{},clone:{},
   ghiaccio:{skin:'#a9dcff',hair:'#f4f8ff',style:4,band:null,beard:0},mietitore:{skin:'#e9e4d2',hair:'#1e1629',style:4,band:null,beard:0},vento:{hair:'#eef8ff',band:null}};
+// la figura cambia solo dopo HERO_HIDE secondi, quando la bomba di fumo e' gia' abbastanza densa da coprire l'omino
+const HERO_HIDE=0.12,heroVis=p=>heroOn(p)&&HERO[p.hero].dur-p.hx>=HERO_HIDE;
 function heroLook(p){   // aspetto dell'eroe trasformato; chi e' congelato dallo stregone ha la pelle azzurra
-  const h=heroOn(p)?p.hero:'',fr=p.frz>0;
+  const h=heroVis(p)?p.hero:'',fr=p.frz>0;
   if(!h&&!fr)return lookOf(p);
   const key=h+(fr?'*':'');
   if(!p._hl||p._hlk!==key){p._hl=Object.assign({},lookOf(p),h?HERO_LOOK[h]:{},fr?{skin:'#bfe6ff'}:{});p._hlk=key;}
@@ -91,12 +93,24 @@ const HERO_DRAW={
   }
 };
 // trasformazione: nuvola di fumo e scintille, poi la scritta col nome dell'animale
+// BOMBA DI FUMO: la trasformazione avviene dentro una nuvola grigia che copre l'omino, con scintille del colore dell'eroe e un botto; a fine potere uno sbuffo piu' piccolo
+const HERO_COL={lupo:'#c9a27a',giraffa:'#ffd23f',polpo:'#d79bff',tele:'#f29ac0',clone:'#a8ecff',ghiaccio:'#bff0ff',mietitore:'#c45cff',vento:'#bff3ff'};
+function heroSmoke(x,y,on,k,vx,vy){
+  const n=on?20:8,big=on?1:0.6;vx=(vx||0)*0.7;vy=(vy||0)*0.7;   // il fumo segue un po' chi corre, cosi' lo copre mentre si trasforma
+  for(const z of [1.2,3.4,5.4])addFx({t:'smoke',x,y:y+0.05,vx,vy,z:z*big,vz:0.2,life:on?1.1:0.7,max:on?1.1:0.7,r:2*big});   // il nucleo: dai piedi alla testa
+  for(let i=0;i<n;i++){const a=i/n*Math.PI*2+rnd(-0.2,0.2),v=rnd(1.2,2.6)*big,l=rnd(0.8,1.2)*(on?1:0.7);
+    addFx({t:'smoke',x:x+Math.cos(a)*0.3,y:y+Math.sin(a)*0.2,vx:vx+Math.cos(a)*v,vy:vy+Math.sin(a)*v*0.55,z:rnd(0.3,6)*big,vz:rnd(0.2,0.9),life:l,max:l,r:rnd(0.9,1.5)*big});}
+  const c=HERO_COL[k]||'#ffffff';
+  for(let i=0;i<(on?12:4);i++){const a=Math.random()*Math.PI*2,v=rnd(2,4.5);addFx({t:'spark',c:'#ffffff',c2:c,x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v*0.6,z:rnd(0.5,2),vz:rnd(2,4),life:0.7,max:0.7,r:0.15});}
+  if(on)addFx({t:'pop',x,y,vx:0,vy:0,z:1.2,vz:0,life:0.35,max:0.35,c,r:0.2});
+}
 HOOKS.hero=(p,k,on)=>{
-  for(let i=0;i<(on?18:8);i++){const a=Math.random()*Math.PI*2,v=0.8+Math.random()*1.6;addFx({t:i%3?'dust':'spark',x:p.x+Math.cos(a)*0.4,y:p.y+Math.sin(a)*0.3,vx:Math.cos(a)*v,vy:Math.sin(a)*v*0.6,z:0.4+Math.random()*1.4,vz:on?1.4:0.6,life:0.6,max:0.6,r:0.2});}
+  heroSmoke(p.x,p.y,on,k,p.vx,p.vy);
+  if(on){HOOKS.shake&&HOOKS.shake(3);HOOKS.sfx&&HOOKS.sfx('poof',1);}else HOOKS.sfx&&HOOKS.sfx('poof',0);
   const c=on&&k==='clone'&&G.dec&&G.dec[p.t];   // il clone: la copia salta fuori in una seconda nuvola
   if(on&&k==='ghiaccio'){HW.push({x:p.x,y:p.y,t0:G.tick||0,t:p.t});for(const q of T[1-p.t])if(q.frz>0)for(let i=0;i<5;i++)addFx({t:'spark',c:'#ffffff',c2:'#7fd0ff',x:q.x+rnd(-0.4,0.4),y:q.y+rnd(-0.3,0.3),vx:rnd(-0.5,0.5),vy:rnd(-0.3,0.3),z:rnd(0.3,1.6),vz:0.6,life:0.7,max:0.7,r:0.15});}
-  if(c)for(let i=0;i<14;i++){const a=Math.random()*Math.PI*2,v=0.6+Math.random()*1.4;addFx({t:i%2?'dust':'spark',x:c.x+Math.cos(a)*0.4,y:c.y+Math.sin(a)*0.3,vx:Math.cos(a)*v,vy:Math.sin(a)*v*0.6,z:0.4+Math.random()*1.4,vz:1.2,life:0.6,max:0.6,r:0.2});}
-  if(on){HOOKS.sfx&&HOOKS.sfx('ui');if(p.t===0||G.auto)HOOKS.toast&&HOOKS.toast(HERO[k].n+'!');}
+  if(c)heroSmoke(c.x,c.y,true,k,c.vx,c.vy);
+  if(on&&(p.t===0||G.auto))HOOKS.toast&&HOOKS.toast(HERO[k].n+'!');
 };
 // ---- i pulsanti dei tuoi eroi (G.hk[0], al massimo tre): icona, anello del timer, grigio se l'eroe non e' in campo ----
 const HERO_ICON={   // 10x8: o contorno, c pelle dell'animale, e occhio giallo, k nero, w bianco, b muso
@@ -134,7 +148,7 @@ function heroHud(){
   }
 }
 // gli eroi sono un po' piu' grandi degli altri, il lupo mannaro trasformato molto di piu' (scala dei pixel in puppet)
-const heroScale=p=>!G.heroOn||!p.hero?1:(heroOn(p,'lupo')?1.4:1.15);
+const heroScale=p=>!G.heroOn||!p.hero?1:(heroVis(p)&&p.hero==='lupo'?1.4:1.15);
 // TELECINETICO: mentre e' trasformato e il tuo disco e' in volo, il dito sul campo indica dove guidarlo (G.tkp, letto da heroTick nel motore)
 const tkOk=()=>!!(G.heroOn&&!G.auto&&G.mode==='play'&&G.flight&&G.flight.team===0&&!G.pull&&heroOn(heroOf(0,'tele'),'tele'));
 let tkPid=null;
@@ -168,7 +182,7 @@ function heroTkSteer(){
   if(Math.random()<0.6)addFx({t:'spark',x:G.disc.x,y:G.disc.y,vx:0,vy:0,z:G.disc.z||1,vz:0.3,life:0.35,max:0.35,r:0.12});
   if(G.tkp&&f.team===0){const x=sxw(G.tkp.x),y=syw(G.tkp.y),pu=Math.sin((G.tick||0)*10)>0?1:0;pring(x,y,7+pu,3,PAL.out,3);pring(x,y,7+pu,3,'#f29ac0',1);}
 }
-const heroTop=p=>heroOn(p,'giraffa')?18:(heroOn(p,'tele')?8:(heroOn(p,'lupo')?4:0));   // il nome sta sopra il collo della giraffa, il cervello o le orecchie
+const heroTop=p=>!heroVis(p)?0:(p.hero==='giraffa'?18:(p.hero==='tele'?8:(p.hero==='lupo'?4:0)));   // il nome sta sopra il collo della giraffa, il cervello o le orecchie
 // CLONE: la copia della tua squadra si disegna su una tela a parte (cosi' i pixel sovrapposti non si scuriscono), con un velo azzurro, poi trasparente sul campo
 const GH_W=96,GH_H=112,GH_C=document.createElement('canvas');GH_C.width=GH_W;GH_C.height=GH_H;const GH_X=GH_C.getContext('2d');
 function heroGhost(x,y,draw){
