@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Giocatrici ancora più femminili: il volto è più stretto e scende a V fino a un mento piccolo (niente più mascella squadrata), con occhi e labbra più marcati. Acconciature sobrie che incorniciano il viso: capelli lunghi, caschetto, frangia, frangia a tendina, coda, chignon e taglio corto.
 - Partita veloce, Superpoteri e torneo con le squadre di tutti i campionati: oltre all’Italia ci sono i club USA e quelli di Belgio, Francia, Germania e Regno Unito, con le loro rose vere. Nel selettore scegli prima il campionato, poi la serie (o la Conference). Nel torneo la tua squadra può essere di qualsiasi campionato e le avversarie arrivano dalla sua serie, dal suo campionato o da tutti; le squadre femminili giocano solo tra loro. I campionati che verranno aggiunti compariranno da soli anche qui.
 - Sam Hill non fa più parte della rosa dei Philadelphia Pacmen.
 - Ritratti delle giocatrici più femminili: volto più sottile, occhi con ciglia, sopracciglia sottili, labbra rosa, guance appena rosate e acconciature diverse (caschetto, frangia, chignon, coda), con orecchini ogni tanto. Stesso stile pixel art degli altri ritratti.

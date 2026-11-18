@@ -35,16 +35,16 @@ function avMix(a,b,k){   // miscela due colori '#rrggbb'
 }
 // il volto: le righe (y) e le colonne (x) sono quelle dei ritratti disegnati a mano; il capo e' largo 16 (colonne 8-23)
 const AVR_SP=[null,null,null,null,[11,20],[10,21],[9,22],[8,23],[8,23],[8,23],[8,23],[8,23],[8,23],[8,23],[8,23],[8,23],[8,23],[8,23],[8,23],[9,22],[9,22],[9,22],[10,21],[10,21]];
-// volto femminile: stesso disegno, mascella e mento piu' stretti
-const AVR_SPF=AVR_SP.map((v,y)=>y===17||y===18?[9,22]:(y===19||y===20||y===21?[10,21]:(y>=22?[11,20]:v)));
+// volto femminile: stesso disegno, ma il capo e' piu' stretto (colonne 9-22) e la mascella scende a V fino a un mento piccolo, senza angoli squadrati
+const AVR_SPF=AVR_SP.map((v,y)=>y>=7&&y<=16?[9,22]:(y===17||y===18?[10,21]:(y===19||y===20?[11,20]:(y===21?[12,19]:(y>=22?[13,18]:v)))));
 function avGrid(L){
   const N=32,G=Array.from({length:N},()=>Array(N).fill(AVR_BG));
   const R=(x,y,w,h,c)=>{for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++)if(i>=0&&i<N&&j>=0&&j<N)G[j][i]=c;},P=(x,y,c)=>R(x,y,1,1,c);
   const O=AVR_OL,sk=L.sk,skG=shade(sk,-0.2),skE=shade(sk,0.12),hr=L.hr,hrL=shade(hr,0.3),hrD=shade(hr,-0.25),[sh,shL]=L.sh;
   const stub=avMix(sk,hr,0.45),FM=!!L.fm,SP=FM?AVR_SPF:AVR_SP;
   // capelli dietro la testa (lunghi, coda, ricci)
-  if(L.st==='long'||L.st==='bangs'){R(5,6,22,19,O);R(6,6,20,19,hr);R(6,8,1,15,hrL);R(25,8,1,16,hrD);}
-  if(L.st==='tail'){if(FM){R(24,8,4,13,hr);R(27,10,1,10,hrD);R(24,8,4,1,L.bn||'#d15e55');}else{R(24,9,3,10,hr);R(26,10,1,8,hrD);R(24,9,3,1,L.bn||'#d15e55');}}
+  if(['long','wlong','bangs','curtain'].includes(L.st)){R(5,6,22,19,O);R(6,6,20,19,hr);R(6,8,1,15,hrL);R(25,8,1,16,hrD);}
+  if(L.st==='tail'){if(FM){R(24,8,4,13,hr);R(27,10,1,10,hrD);R(24,8,4,1,L.bn||hrD);}else{R(24,9,3,10,hr);R(26,10,1,8,hrD);R(24,9,3,1,L.bn||'#d15e55');}}
   if(L.st==='curl'){R(7,2,18,9,O);R(8,3,16,8,hr);}
   // busto e collo
   R(11,24,2,1,O);R(19,24,2,1,O);R(13,24,1,1,skG);R(14,24,4,1,sk);R(18,24,1,1,skG);
@@ -59,10 +59,10 @@ function avGrid(L){
     if(y===22){R(a,y,b-a+1,1,sk);continue;}
     P(a,y,O);P(b,y,O);R(a+1,y,b-a-1,1,sk);}
   // ombra a destra e orecchie
-  for(let y=11;y<=(FM?21:22);y++)P(FM?SP[y][1]-2:(y>=19&&y<=20?20:21),y,skG);
-  for(let y=FM?13:12;y<=(FM?15:16);y++){R(7,y,2,1,sk);P(22,y,sk);R(23,y,2,1,skG);}   // orecchie (piu' piccole nel volto femminile)
-  P(8,14,skG);if(!FM)P(8,15,skG);   // incavo dell'orecchio
-  if(L.er&&FM&&['tail','bun','crop'].includes(L.st)){P(7,16,'#e8c35a');P(24,16,'#e8c35a');}   // orecchini
+  for(let y=11;y<=(FM?18:22);y++)P(FM?SP[y][1]-1:(y>=19&&y<=20?20:21),y,skG);
+  if(FM){for(let y=13;y<=15;y++){P(8,y,sk);P(23,y,skG);}P(8,14,skG);   // orecchie piccole
+    if(L.er&&['tail','bun','pixie'].includes(L.st)){P(8,16,'#e8c35a');P(23,16,'#e8c35a');}}   // orecchini
+  else{for(let y=12;y<=16;y++){R(7,y,2,1,sk);P(22,y,sk);R(23,y,2,1,skG);}P(8,14,skG);P(8,15,skG);}   // orecchie e incavo
   // fronte: la luce sul lato sinistro
   R(11,8,4,1,skE);
   // capelli sopra la testa
@@ -80,9 +80,12 @@ function avGrid(L){
     case 'medium':cap(4,19,1);R(6,8,3,9,hr);R(23,8,3,9,hr);R(6,8,1,9,hrL);P(7,16,hrD);P(24,16,hrD);break;
     case 'long':cap(4,19,1);R(6,9,3,16,hr);R(23,9,3,16,hr);R(7,10,1,13,hrL);R(25,10,1,14,hrD);P(15,8,hrD);P(16,8,hrD);break;
     case 'tail':case 'short':cap(4,14,1);break;
-    case 'bob':cap(4,19,1);R(6,8,3,11,hr);R(23,8,3,11,hr);R(7,19,2,1,hr);R(23,19,2,1,hr);R(6,8,1,11,hrL);R(25,10,1,9,hrD);break;
-    case 'bangs':cap(4,-1,1);R(8,8,16,2,hr);R(11,8,4,1,hrL);R(6,9,3,16,hr);R(23,9,3,16,hr);R(7,10,1,13,hrL);R(25,10,1,14,hrD);P(15,9,hrD);P(16,9,hrD);break;
-    case 'bun':cap(4,14,1);R(14,0,4,1,O);P(13,1,O);R(14,1,4,1,hr);P(18,1,O);P(12,2,O);R(13,2,6,1,hr);P(19,2,O);R(12,3,8,1,hr);R(14,1,2,1,hrL);R(13,3,6,1,L.bn||'#d15e55');break;
+    case 'bob':cap(4,19,1);R(7,8,4,12,hr);R(21,8,4,12,hr);R(8,20,4,1,hr);R(20,20,4,1,hr);R(7,9,1,10,hrL);R(24,10,1,10,hrD);P(15,8,hrD);break;   // le ciocche coprono gli angoli della mascella e si arricciano in dentro
+    case 'wlong':cap(4,19,1);R(6,9,5,17,hr);R(21,9,5,17,hr);R(7,10,1,15,hrL);R(25,10,1,15,hrD);P(15,8,hrD);P(16,8,hrD);break;
+    case 'bangs':cap(4,-1,1);R(9,8,14,2,hr);R(11,8,4,1,hrL);R(6,9,5,17,hr);R(21,9,5,17,hr);R(7,10,1,15,hrL);R(25,10,1,15,hrD);P(15,9,hrD);P(16,9,hrD);break;
+    case 'curtain':cap(4,-1,1);R(9,8,5,2,hr);R(9,10,3,1,hr);R(18,8,5,2,hr);R(20,10,3,1,hr);R(11,8,3,1,hrL);R(6,9,5,17,hr);R(21,9,5,17,hr);R(7,10,1,15,hrL);R(25,10,1,15,hrD);break;
+    case 'bun':cap(4,14,1);R(9,10,2,3,hr);R(21,10,2,3,hr);R(14,0,4,1,O);P(13,1,O);R(14,1,4,1,hr);P(18,1,O);P(12,2,O);R(13,2,6,1,hr);P(19,2,O);R(12,3,8,1,hr);R(14,1,2,1,hrL);R(13,3,6,1,L.bn||hrD);break;
+    case 'pixie':cap(3,16,0);R(12,2,8,1,O);R(9,9,2,4,hr);R(21,9,2,3,hr);break;
     case 'curl':{R(8,2,16,1,O);for(let y=3;y<=10;y++){const a=y<5?8:7,b=y<5?23:24;R(a,y,b-a+1,1,hr);}
       R(9,8,14,1,hr);R(9,9,14,1,hr);R(7,10,2,1,hr);R(23,10,2,1,hr);R(7,11,2,2,hr);R(23,11,2,2,hr);
       for(let y=3;y<=9;y++)for(let x=8;x<=24;x++)if((x*3+y*5)%7===0&&G[y][x]===hr)G[y][x]=hrL;
@@ -110,14 +113,14 @@ function avGrid(L){
   else{P(16,14,skG);P(15,15,skE);P(16,15,skG);P(16,16,skG);R(15,17,L.no?4:3,1,skG);}
   // lentiggini
   if(L.fr){for(const [x,y] of [[11,15],[13,16],[19,15],[12,16],[20,16]])P(x,y,skG);}
-  else if(FM){const bl=avMix(sk,'#e0707a',0.4);R(11,16,2,1,bl);R(19,16,2,1,bl);}   // guance rosate
+  else if(FM){const bl=avMix(sk,'#e0707a',0.25);R(11,16,2,1,bl);R(19,16,2,1,bl);}   // guance rosate
   // barba: 1 = ombra della barba, 2 = pizzetto, 3 = piena
   if(L.bd===1){for(let y=17;y<=22;y++){const [a,b]=AVR_SP[y];for(let x=a+1;x<b;x++)if((x+y)%2===0&&!(y<=19&&x>=14&&x<=17)&&G[y][x]===sk)G[y][x]=stub;}}
   if(L.bd===2){R(13,18,6,1,hr);R(14,20,4,3,hr);P(14,22,hrD);P(17,22,hrD);R(15,22,2,1,hrD);}
   if(L.bd>=3){for(let y=16;y<=22;y++){const [a,b]=AVR_SP[y];for(let x=Math.max(a,9);x<=Math.min(b,22);x++){const hole=y<=19&&Math.abs(x-15.5)<3.2&&y>=18;if((y>=19||x<=11||x>=20)&&!hole&&G[y][x]!==O)G[y][x]=(x+y)%4===0?hrL:hr;}}
     R(12,18,8,1,hr);R(8,16,1,1,hr);R(23,16,1,1,hr);R(10,22,12,1,hrD);}
   // bocca (0 = linea, 1 = sorriso con i denti, 2 = piccola); nel volto femminile le labbra sono rosa
-  if(FM){const lD='#b9505f',lL='#d97b86';
+  if(FM){const lD='#b35c68',lL='#cf8a92';
     if(L.mo===1){R(13,19,6,1,lD);R(14,20,4,1,AVR_WH);R(15,21,2,1,lL);}
     else if(L.mo===2){R(14,19,4,1,lD);R(15,20,2,1,lL);P(13,18,skG);P(18,18,skG);}
     else{R(14,19,4,1,lD);R(14,20,4,1,lL);}}
@@ -135,15 +138,16 @@ function avLook(p){
   const st0=lk.style|0,rn=()=>r();
   let st=['short','medium','long','tail','bald'][st0]||'short';
   const fm=!!p.f;
-  if(fm){const q=rn();st=st0===2?(q<0.4?'long':(q<0.7?'bangs':'bob')):(st0===3?(q<0.5?'tail':'bun'):(st0===4?'crop':(q<0.5?'bob':'bangs')));}
+  if(fm){const q=rn();   // acconciature femminili sobrie: la mascella resta incorniciata dai capelli
+    st=st0===3?(q<0.65?'tail':'bun'):(st0===2?(q<0.35?'wlong':(q<0.65?'bob':(q<0.85?'curtain':'bangs'))):(st0===4?'bob':(q<0.4?'bob':(q<0.7?'curtain':(q<0.9?'bangs':'pixie')))));}
   if(st==='short'){const q=rn();st=q<0.5?'short':(q<0.72?'quiff':(q<0.9?'crop':'curl'));}
   const dark=parseInt(lk.skin.slice(3,5),16)<0xb8;   // pelle scura: i ricci sono piu' frequenti
   if(st==='crop'&&dark&&rn()<0.4)st='curl';
   const q=rn(),qm=rn();
   const bd=lk.beard&&!fm?(rn()<0.2?1:(rn()<0.45?2:3)):0;
-  return {fm,er:rn()<0.4?1:0,sk:lk.skin,hr:lk.hair,st,band:lk.band||'',bn:lk.band||'',bd,
+  return {fm,er:rn()<0.15?1:0,sk:lk.skin,hr:lk.hair,st,band:lk.band||'',bn:lk.band||'',bd,
     br:Math.floor(rn()*3),bt:rn()<0.25?1:0,mo:qm<0.5?0:(qm<0.78?1:2),no:rn()<0.25?1:0,eye:rn()<0.14?-1:0,
-    fr:rn()<0.09&&parseInt(lk.skin.slice(1,3),16)>0xc0?1:0,gl:q<0.06?1:0,cap:q>=0.06&&q<0.1&&!['long','bangs','bob','bun'].includes(st)?1:0,
+    fr:rn()<0.09&&parseInt(lk.skin.slice(1,3),16)>0xc0?1:0,gl:q<0.06?1:0,cap:q>=0.06&&q<0.1&&(fm?[]:['short','quiff','crop','curl','medium','tail']).includes(st)?1:0,
     sh:avShirt(avClub(p))};
 }
 const AVC=new Map();   // la chiave tiene conto anche di f: lo stesso nome puo' essere un uomo o una donna
