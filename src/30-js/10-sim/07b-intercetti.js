@@ -7,8 +7,8 @@
 // tarati su 20 partite per schema perche' gli intercetti restino quelli di prima (circa 2 a partita contro la difesa a uomo, 7-9 contro la zona)
 const LANE_P=0.9,LANE_ZONE=2.3,LANE_SEE=5,LANE_END=2.2;   // probabilita' di base, bonus della zona (sa dove passano i lanci), raggio di lettura (m), zone escluse agli estremi (m)
 const discZ=(f,s)=>lerp(1.1,0.3,s)+4*f.H*s*(1-s);   // altezza del disco (m) nel punto s del volo: la stessa che disegna l'interfaccia
-const reachZ=q=>2.15+0.8*q.s.sal/100+(hasT(q,'sky')?0.2:0);   // fin dove arriva con la mano, saltando
-const laneR=(q,zone)=>(0.55+0.45*q.s.agi/100)*(zone?1.8:1);   // quanto si allunga di lato (la zona copre gli spazi tra i ricevitori)
+const reachZ=q=>2.15+0.8*q.s.sal/100+(hasT(q,'sky')?0.2:0)+heroZ(q);   // fin dove arriva con la mano, saltando
+const laneR=(q,zone)=>(0.55+0.45*q.s.agi/100)*(zone?1.8:1)*heroLane(q);   // quanto si allunga di lato (la zona copre gli spazi tra i ricevitori)
 const reactOf=q=>clamp(0.32-q.s.dif*0.0015+(0.6-q.s.vis/100)*0.4,0.1,0.6)*AIK(q.t).react*(1-ADAPT_REACT*adaptOf(1-q.t))*(1-FIT_REACT*schFit(1-q.t));   // secondi prima di reagire a un lancio (meno se ha gia' visto lo schema)
 const sToU=(f,s)=>f.e>=1?1-Math.pow(1-s,1/f.e):Math.pow(s,f.e);   // inverso di flightS: in che momento il disco e' al punto s
 const zoneDef=f=>((f.team===0?G.opp.def:G.sch.def)==='zone');

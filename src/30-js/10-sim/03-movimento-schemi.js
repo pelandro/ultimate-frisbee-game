@@ -191,6 +191,7 @@ function dangerMark(atk,def){
 }
 function placeTeams(rec){
   poserReset();   // nessuna statistica maggiorata (Poser) resta da un punto all'altro
+  heroReset();   // ne' una trasformazione dei superpoteri (27-superpoteri.js)
   G.poss=rec;const d=dirOf(rec),atk=T[rec],def=T[1-rec],pt=1-rec;
   const hx=d>0?EZ:FIELD_L-EZ,px=dirOf(pt)>0?EZ:FIELD_L-EZ;
   G.ref={x:hx,y:MID};
@@ -268,6 +269,7 @@ function useLines(rec){
   if(ids.length===7)setLineup(ids.slice(0,7));
 }
 function startPoint(rec){
+  heroReset();   // prima dei cambi: un lupo mannaro torna com'era prima che un altro giocatore prenda il suo posto (loadOpp scrive in p.s)
   restPlayers();
   useLines(rec);
   for(const p of T[0])p.m.pts++;for(const q of T[1])q.m.pts++;

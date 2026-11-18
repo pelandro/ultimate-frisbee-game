@@ -178,6 +178,12 @@ function qDivSet(d){
   if(!all.includes(QM.a))QM.a=hasCareer()&&all.includes(SV.team)?SV.team:(d==='w'?all[1]:'Grem');
   if(!all.includes(QM.b)||QM.b===QM.a)QM.b=d==='w'?all.filter(n=>n!==QM.a).sort((x,y)=>Math.abs(qPower(x)-qPower(QM.a))-Math.abs(qPower(y)-qPower(QM.a)))[0]:(all.find(n=>n!==QM.a&&TEAM[n].series!==TEAM[QM.a].series)||all.find(n=>n!==QM.a));
 }
+// MODALITA' SUPERPOTERI (QM.hero, dal menu iniziale): la partita veloce con tre eroi per squadra (10-sim/27-superpoteri.js, 20-ui/20-superpoteri.js)
+function quickHeroTxt(){
+  const el=$('qHero');if(!el)return;$('qH').textContent=QM.hero?'Superpoteri':'Partita veloce';el.classList.toggle('hidden',!QM.hero);if(!QM.hero)return;
+  const ro=qRoster(QM.a,9).map(o=>Object.assign({},o)).sort((x,y)=>ovrX(y)-ovrX(x)).slice(0,7);heroAssign(ro);   // copie: l'anteprima non tocca le rose
+  el.innerHTML=`<b>I tuoi eroi</b>`+HERO_K.map(k=>{const p=ro.find(o=>o.hero===k);return `<span class="qhe"><i>${heroIconSvg(k)}</i><span><strong>${HERO[k].n}</strong><small>${p?esc(p.label||p.n):'—'} · ${HERO[k].txt}</small></span></span>`;}).join('')+`<small class="qhn">In partita tocca il pulsante dell’eroe a sinistra quando è pronto: si trasforma per qualche secondo, poi deve ricaricarsi. Anche gli avversari hanno i loro tre eroi.</small>`;
+}
 function renderQuick(){
   if(!QM.div)QM.div=hasCareer()&&lnWomenNow()?'w':'m';
   qDivSet(QM.div);
@@ -203,6 +209,7 @@ function updateQuick(){
   $('qS').options[0].textContent=a;$('qS').options[1].textContent=b;   // i nomi delle due squadre
   $('qDP').textContent=['L’IA avversaria gioca in modo semplice.','L’IA avversaria sceglie e reagisce un po’ meglio.','L’IA avversaria sceglie e reagisce molto meglio.','Ancora più attenta del Difficile, e la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'][QM.d]+' '+['Le statistiche dei giocatori non cambiano.','Avversari con +2 a tutte le statistiche.','Avversari con +4 a tutte le statistiche.','Avversari con +6 a tutte le statistiche.'][QM.d];
   quickVs();   // confronto tra le due squadre (29-confronto-tabellone.js)
+  quickHeroTxt();
 }
 function startQuick(){
   const a=QM.a,b=QM.b;if(!a||!b||a===b)return;
@@ -211,8 +218,9 @@ function startQuick(){
   setSquad(qRoster(a,9));applyRoster(qRoster(b,7));oppBoost(DIFF_PLUS[clamp(QM.d|0,0,3)]);
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;applyForm();
-  G.oppName=b;G.myName=a;G.matchLabel='Partita veloce';
+  G.oppName=b;G.myName=a;G.matchLabel=QM.hero?'Superpoteri':'Partita veloce';
   newGame();G.target=lenOk(QM.len|0);rollWind();G.lvl=[0,clamp(QM.d|0,0,3)];G.oppPlus=DIFF_PLUS[clamp(QM.d|0,0,3)];G.idn=[null,teamIdentity(b,T[1])];G.xtr=(QM.d|0)===3;G.hint=(QM.d|0)===0;G.routes=(QM.d|0)<=1;G.inMatch=true;G.recorded=false;
+  if(QM.hero){G.heroOn=true;heroInit();heroAssign(T[0]);heroAssign(T[1]);}   // superpoteri: tre eroi per squadra tra chi e' in campo (27-superpoteri.js)
   G.nextRec=QM.s===0?0:1;G.startRec=G.nextRec;   // chi riceve il primo pull inizia in attacco; l'altra squadra tira il pull (difesa)
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;

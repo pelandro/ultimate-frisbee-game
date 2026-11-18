@@ -155,7 +155,8 @@ $('hSim').addEventListener('click',simCareerMatch);
 $('hPlay').addEventListener('click',()=>{if(suspOk())resumeMatch();else if(nextMatch())startMatch();else if(SV.event==='eu'&&!SV.done){SV.event='camp';persist();renderHome();}else{SV.event='camp';showScreen('event');}});
 $('hRoster').addEventListener('click',()=>showScreen('roster'));
 $('tCareer').addEventListener('click',()=>showScreen(hasCareer()?'home':'league'));
-$('tQuick').addEventListener('click',()=>showScreen('quick'));
+$('tQuick').addEventListener('click',()=>{QM.hero=false;showScreen('quick');});
+$('tHero').addEventListener('click',()=>{QM.hero=true;showScreen('quick');});   // modalita' Superpoteri: la partita veloce con gli eroi
 $('tSet').addEventListener('click',()=>{setFrom='title';showScreen('settings');setSView('game');});
 $('sBack').addEventListener('click',()=>{const to=setFrom;setFrom='title';showScreen(to);});   // le schede non hanno sottolivelli: «Indietro» torna sempre da dove si e' venuti
 $('hBack').addEventListener('click',()=>showScreen('title'));

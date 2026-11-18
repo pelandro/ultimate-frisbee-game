@@ -11,6 +11,7 @@ function testMatch(ra,rb,o){   // una partita IA contro IA: ritorna punteggio, s
   G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=o.fix||null;
   newGame();if(o.len)G.target=o.len;if(o.wind)setWind(o.wind[0],o.wind[1]);G.auto=true;G.lvl=[o.lvl|0,o.lvl|0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;
   applyForm();
+  if(o.hero!==undefined){G.heroOn=true;heroInit();if(o.hero!==1)heroAssign(T[0]);if(o.hero!==0)heroAssign(T[1]);}   // superpoteri: 'both', 0 o 1 (chi ha gli eroi)
   G.startRec=o.rec|0;G.nextRec=G.startRec;startPoint(G.startRec);
   const dt=1/60,r={time:0,nan:0,stuck:false,hold:0,pts:0,ptT:[],rev:0,revT:0,halfAt:-1,lane:0,laneT:0};let pt=0,last=0,rec=-1,fr=0;
   while(G.mode!=='over'&&r.time<3600){
@@ -577,6 +578,26 @@ function selfTestPlan(opt){
       row('Doppioni in gettoni, il migliore si indossa da solo',`scarpini ${EQ_RAR[e.on.boot][0]}, coach ${EQ_RAR[e.on.coach][0]}, gettoni ${c1}+${c2}`,keep),
       row('Il bonus vale per la squadra in partita (massimo 99) e non cambia la carta',`Scatto 95 → ${q.s.sca}, Lancio ${q.s.lan}, carta ${p.s.sca}`,ok3),
       row('Salvataggi rovinati e traguardi: valori validi, accessori sempre migliori',(safe?'ok':'no')+', '+miles.join(' '),safe&&mUp)];
+  }]);
+  S.steps.push(['Superpoteri: lupo mannaro, giraffa e polpo',()=>{   // 27-superpoteri.js
+    const ra=ros(62,'ha'),rb=ros(62,'hb');
+    setSquad(ra);applyRoster(rb);newGame();G.heroOn=true;heroInit();heroAssign(T[0]);heroAssign(T[1]);
+    const L=heroOf(0,'lupo'),g=heroOf(0,'giraffa'),o=heroOf(0,'polpo'),q=T[1].find(x=>x.hero!=='giraffa');
+    const three=[0,1].every(t=>HERO_K.every(k=>heroOf(t,k)))&&new Set(HERO_K.map(k=>heroOf(0,k))).size===3;
+    G.mode='play';G.pull=null;for(const t of [0,1])for(const k of HERO_K)G.hz[t][k]=0;
+    const base=L.s,v0=L.s.vel,used=heroUse(0,'lupo'),vU=L.s.vel,up=used&&L.s.vel>=Math.min(99,v0+10)&&L.hrb===base,again=!heroUse(0,'lupo');
+    for(let i=0;i<Math.ceil(HERO.lupo.dur*10)+2;i++)heroTick(0.1);const back=L.s===base&&!(L.hx>0)&&G.hz[0].lupo>0;
+    const f={high:true,err:0,sp:{cd:0},intended:g},a={p:g,d:0.8},d={p:q,d:0.2},reach=p=>reachOf(f,p);g._t=0;q._t=0;
+    const s0=duelScore(f,a,d,reach);heroUse(0,'giraffa');const s1=duelScore(f,a,d,reach),gir=s1.sa-s1.sd>80&&s1.sa-s1.sd>s0.sa-s0.sd;
+    const r0=laneR(o,false);heroUse(0,'polpo');const pr=laneR(o,false)/r0,pol=pr>2;
+    placeTeams(0);const reset=!T[0].concat(T[1]).some(x=>x.hx>0||x.hrb);
+    const both=run(ra,rb,n,{hero:'both'}),okB=both.every(m=>!m.stuck&&!m.nan&&Math.max(m.score[0],m.score[1])===MATCH_TARGET),useB=both.every(m=>m.st.hero&&m.st.hero[0]>0&&m.st.hero[1]>0);
+    // quanto contano gli eroi (misurato a parte, 50 partite per lato a squadre pari): chi li ha vince circa 7 volte su 10. Qui non si misura: servirebbero troppe partite
+    return [row('Tre eroi per squadra, ognuno col suo pulsante e il suo timer',three?'sì':'no',three),
+      row('Lupo mannaro: statistiche fisiche piu\' alte, poi tornano com\'erano e il timer riparte',`Velocità ${v0} → ${vU}, poi ${back?'di nuovo '+L.s.vel:'non torna'}${again?'':' (doppio uso!)'}`,up&&back&&again),
+      row('Giraffa: vince i duelli in aria; Polpo: braccia piu\' lunghe per intercettare',`duello ${Math.round(s0.sa-s0.sd)} → ${Math.round(s1.sa-s1.sd)}, raggio ×${pr.toFixed(1)}`,gir&&pol),
+      row('A ogni punto le trasformazioni finiscono',reset?'sì':'no',reset),
+      row('Partite con gli eroi: finiscono regolarmente e le due IA usano i poteri',`${both.filter(m=>m.st.hero).length} su ${n}`,okB&&useB)];
   }]);
   return S;
 }
