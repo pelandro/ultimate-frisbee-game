@@ -1,5 +1,4 @@
-/* modalita' Superpoteri: pulsante largo nel menu iniziale e i tre pulsanti degli eroi in partita (a sinistra, a meta' altezza) */
-.hgrid .hwide{grid-column:1/-1}
+/* modalita' Superpoteri (dal menu di Ultimate Team): i tre pulsanti degli eroi in partita (a sinistra, a meta' altezza) */
 #heroB{position:absolute;left:calc(var(--sal,0px) + 10px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:calc(10px*var(--bz,1));pointer-events:none;z-index:6}
 #heroB.hidden{display:none}
 .hb{--p:0%;position:relative;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;width:calc(54px*var(--bz,1));height:calc(54px*var(--bz,1));border-radius:50%;border:0;padding:calc(9px*var(--bz,1));
