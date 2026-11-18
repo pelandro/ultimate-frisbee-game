@@ -17,7 +17,7 @@ function lnLvl(n){   // posizione del club nella forza dei club del suo paese (t
   return lnLvlMap[n];
 }
 const clubLvl=n=>US_TEAM[n]?1-(US_TEAM[n].rank-1)/(US_NAMES.length-1):(LN_BY[n]?lnLvl(n):(TEAM[n]?1-(TEAM[n].rank-1)/45:0.5));   // 0..1: quanto e' prestigioso il club nella sua lega
-const allClubs=()=>[].concat(SERIES.A,SERIES.B,SERIES.C).filter(n=>REAL[n]).concat(US_NAMES,LN_NAMES.filter(lnPlayable));   // ogni club da cui si puo' partire
+const allClubs=()=>{const w=lnWomenNow();return w?LN_NAMES.filter(n=>isWomenClub(n)&&lnPlayable(n)):[].concat(SERIES.A,SERIES.B,SERIES.C).filter(n=>REAL[n]).concat(US_NAMES,LN_NAMES.filter(n=>lnPlayable(n)&&!isWomenClub(n)));};   // ogni club da cui si puo' partire: le squadre femminili stanno in un mondo a parte (37-leghe/07-women.js)
 const foreignClubs=()=>{const me=lgNow();return allClubs().filter(n=>clubLega(n)!==me&&n!==SV.team);};   // i club di tutte le altre leghe
 const tradeClubs=()=>foreignClubs().concat(Object.keys(SV.rost||{}).filter(n=>n!==SV.team&&SV.rost[n]&&SV.rost[n].length>=8));   // altre leghe e club della tua lega (le loro rose sono quelle di adesso)
 const tradeRoster=(n,seed)=>clubLega(n)===lgNow()&&SV.rost[n]?SV.rost[n].filter(o=>!o.inj&&o.ret!==1):foreignRoster(n,seed);

@@ -59,6 +59,7 @@ const DET=()=>{
       await page.click('#tUT');await page.click('#umCpu');if(await page.locator('#uPack').isVisible()){await page.click('#uPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');}
       await page.click('#uEquip');await look('Ultimate Team · Equipaggiamento');await page.click('#eqBack');await page.click('#uBack');await page.click('#umBack');
       await page.click('#tCareer');await look('scelta del campionato');
+      await page.click('#lgList [data-div="m"]');await look('scelta del campionato maschile');
       await page.click('#lgList [data-lg="IT"]');await look('scelta della squadra');
       await page.click('.tteam >> nth=0');await look('anteprima della rosa');
       await page.click('#rpGo');await look('allenatore');

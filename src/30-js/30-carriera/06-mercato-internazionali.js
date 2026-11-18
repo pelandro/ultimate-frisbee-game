@@ -86,7 +86,7 @@ function buildMarket(){
   }
   // internazionali veri: niente giocatori troppo anziani (oltre i 37 anni) o troppo deboli (sotto 78), mai gli stessi, chi e' gia' in rosa non ricompare; si scelgono tra quelli piu' vicini al livello a cui puoi aspirare (il tuo piu' 5)
   const have=new Set(SQ.map(p=>p.full)),pool=STARS.filter(r=>!have.has(r[0]+' '+r[1])&&!usStarTaken(r)&&!lnStarTaken(r)&&r[4]<=lv+10+(SV.rep>=60?3:0)&&r[4]>=78&&usAgeOf(r[0],r[1],r[2])[0]+Math.max(0,(SV.season|0)-1)<=Math.min(37,starLimit(r))).sort((a,b)=>Math.abs(a[4]-(lv+5))-Math.abs(b[4]-(lv+5))).slice(0,14);
-  for(let i=0;i<nStar&&pool.length;i++){
+  for(let i=0;i<nStar&&pool.length&&!lnWomenNow();i++){   // le stelle internazionali sono giocatori: nel campionato Women non ci sono
     const r=pool.splice(Math.floor(R()*pool.length),1)[0],o=starPlayer(r,mulberry32(hashStr(SV.seed+'|star|'+r[0]+r[1])));
     out.push({o,kind:ovr(o)>=86?'Stella internazionale':'Giocatore internazionale',from:null,nat:r[5],star:true});
   }
