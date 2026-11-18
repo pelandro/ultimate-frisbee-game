@@ -59,7 +59,7 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
     const sample=[...Array(7).fill(90),...Array(7).fill(70),...Array(7).fill(50)];
     if(Math.abs(X.powerOfVals(sample)-81)>1e-9||Math.abs(X.powerOfVals(sample.slice(0,7))-86.8)>1e-9)
       bad.push('formula 60/35/5 o penalità dei posti vuoti');
-    for(const [club,name,expected] of [['AUT FireFlies','Gianna Arcangeli',82],['Tequila Junior','Agata Benzi',88]]){
+    for(const [club,name,expected] of [['AUT FireFlies','Gianna Arcangeli',82],['Tequila Junior','Agata Benzi',86]]){
       const o=find(club,name);
       if(!o||X.ovr(o)!==expected)bad.push('riferimento individuale Women: '+name);
     }

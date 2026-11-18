@@ -22,13 +22,13 @@ La revisione precedente, confluita nella pull request #111, modifica 24 Overall.
 
 | Giocatrice | Club CIU | Overall | Riscontri |
 |---|---|---:|---|
-| Charlotte Schall | BFD Shout | 96 | Giocatrice europea dell'anno Ultiworld nel 2023 e 2025, 1ª nel ranking 2026, 21 assist + mete all'EUCF 2025 |
-| Nicole Lafiata | Tequila Boom Boom | 94 | 41 assist + mete all'EUCF 2025, 27 nel 2026, 33 ai WUCC 2026. Seconda nel premio offensivo europeo 2025 |
+| Charlotte Schall | BFD Shout | 94 | Giocatrice europea dell'anno Ultiworld nel 2023 e 2025, 1ª nel ranking 2026, 21 assist + mete all'EUCF 2025 |
+| Nicole Lafiata | Tequila Boom Boom | 92 | 41 assist + mete all'EUCF 2025, 27 nel 2026, 33 ai WUCC 2026. Seconda nel premio offensivo europeo 2025 |
 | Irene Scazzieri | BFD Shout | 93 | 31 assist + mete ai WUCC 2022, 43 a EUC 2023, 23 a WUC Mixed 2024. 10 mete in 9 referti con Fury al WUCC 2026 |
 | Elena Benghi | BFD Shout | 93 | 18 assist all'EUCF 2025, terza nella votazione per giocatrice europea dell'anno 2025 e 12ª nel ranking 2026 |
 | Francesca Sorrenti | BFD Shout | 92 | 22 assist + mete al WUCC 2022, 34 all'EUC 2023 e 15 all'EUCF 2025. Seconda nel premio offensivo europeo 2023 |
 | Lucrezia Grossi | Tequila Boom Boom | 91 | Breakout europeo 2025, 36 contributi ai WJUC 2024, 22 all'Elite Invite 2026 e 17 all'EUCF 2026 |
-| Agata Benzi | Tequila Junior | 88 | 52 assist + mete al CIU 2026 e rendimento confermato con Boom Boom ai WUCC e nelle due EUCF, oltre all'Italia U20 |
+| Agata Benzi | Tequila Junior | 86 | 52 assist + mete al CIU 2026 e rendimento confermato con Boom Boom ai WUCC e nelle due EUCF, oltre all'Italia U20 |
 | Arianna Ascari | BFD Shout | 87 | 23 ai WJUC 2024, 30 a EYUC 2025, 15 ai WUCC e 15 all'EUCF 2026 |
 | Gianna Arcangeli | AUT FireFlies | 82 | 18 assist + mete con l'Italia Women all'EUC 2023, 9 in 6 gare allo Spring Tour 2024 e 38 assist + 7 mete al CIU 2026 |
 
@@ -73,20 +73,24 @@ Questa verifica corregge altri **26 Overall** rispetto ai valori già pubblicati
 
 Non ho modificato le atlete con pochi o nessun riscontro mixed verificabile, né ho aumentato tutte le giocatrici di un club per il solo piazzamento della squadra. Gli overall restano individuali: una giocatrice di alto livello non viene abbassata solo perché il roster Women è meno profondo.
 
+## Aggiornamento dal foglio «Overall Serie A Femminile 2026»
+
+Il foglio fornito (revisione del 18/11/2026, 10 squadre di Serie A e 178 giocatrici) sostituisce i valori della Serie A: **44 Overall cambiano**, nessuna giocatrice entra o esce e nessuna cambia club. Le variazioni maggiori: Irene Giordani 67 → 80, Lina Ortner 68 → 81, Swann Lacoste Lefevre 79 → 90, Noemi Blu Margot Nicetto 76 → 83, Sara Cappello 76 → 82, Viola Novelli 76 → 81. Calano le prime della classe: Charlotte Schall 96 → 94, Nicole Lafiata 94 → 92, Agata Benzi 88 → 86. L'età di Chiara Varotto, che il foglio indica senza stima, diventa 26 anni esatti. La Serie B non cambia. Il livello di formazione dei club (`LN_CL`) è ricalcolato sulle nuove rose; la potenza a inizio carriera qui sotto è quella nuova.
+
 ## Potenza a inizio carriera
 
 Valori a un decimale calcolati con le rose del gioco. A schermo si vedono arrotondati a un intero.
 
 | Squadra | Serie | Atlete | Potenza |
 |---|:---:|---:|---:|
-| BFD Shout | A | 26 | 90,0 |
-| Tequila Boom Boom | A | 18 | 86,8 |
-| CUS Padova Tane Malefiche | A | 19 | 77,3 |
-| BFD Cheetahs | A | 22 | 76,6 |
-| Tequila Junior | A | 12 | 74,5 |
+| BFD Shout | A | 26 | 89,7 |
+| Tequila Boom Boom | A | 18 | 86,2 |
+| CUS Padova Tane Malefiche | A | 19 | 79,6 |
+| BFD Cheetahs | A | 22 | 76,8 |
+| Tequila Junior | A | 12 | 74,9 |
 | DiscoBolo | A | 16 | 71,9 |
-| Donkey Ladies | A | 18 | 71,2 |
-| Timanfaya | A | 18 | 67,9 |
+| Donkey Ladies | A | 18 | 71,7 |
+| Timanfaya | A | 18 | 68,4 |
 | METACARPE | A | 15 | 67,8 |
 | One Tribe | A | 14 | 67,0 |
 | 36MAdonnine | B | 14 | 63,3 |

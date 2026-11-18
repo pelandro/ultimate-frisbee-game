@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Serie A Women: nuovi Overall dal foglio aggiornato della Serie A femminile (44 giocatrici cambiano valore, tra cui Giordani, Ortner, Lacoste Lefevre e Cappello in salita; Schall, Lafiata e Benzi in lieve calo). Cambia di conseguenza la forza delle squadre: le Tane Malefiche salgono, le prime due restano in testa.
 - Giocatrici ancora più femminili: il volto è più stretto e scende a V fino a un mento piccolo (niente più mascella squadrata), con occhi e labbra più marcati. Acconciature sobrie che incorniciano il viso: capelli lunghi, caschetto, frangia, frangia a tendina, coda, chignon e taglio corto.
 - Partita veloce, Superpoteri e torneo con le squadre di tutti i campionati: oltre all’Italia ci sono i club USA e quelli di Belgio, Francia, Germania e Regno Unito, con le loro rose vere. Nel selettore scegli prima il campionato, poi la serie (o la Conference). Nel torneo la tua squadra può essere di qualsiasi campionato e le avversarie arrivano dalla sua serie, dal suo campionato o da tutti; le squadre femminili giocano solo tra loro. I campionati che verranno aggiunti compariranno da soli anche qui.
 - Sam Hill non fa più parte della rosa dei Philadelphia Pacmen.
