@@ -56,7 +56,6 @@ function utEnter(){
   showScreen('ut');
 }
 function utAuto(){   // i 3 migliori handler e i 4 migliori cutter
-  const focused=document.activeElement?.closest?.('#tmList [data-i]')?.dataset.i;
   const idx=UT.col.map((p,i)=>i).sort((a,b)=>UT.col[b].ovr-UT.col[a].ovr),H=idx.filter(i=>UT.col[i].r==='H'),C=idx.filter(i=>UT.col[i].r==='C');
   let sel=H.slice(0,3).concat(C.slice(0,4));
   if(sel.length<7)sel=sel.concat(idx.filter(i=>!sel.includes(i)).slice(0,7-sel.length));
@@ -124,6 +123,7 @@ $('pkGo').addEventListener('click',()=>{
 });
 // ---- la tua squadra: scegli i 7 titolari ----
 function renderTeamUT(){
+  const focused=document.activeElement?.closest?.('#tmList [data-i]')?.dataset.i;
   const idx=UT.col.map((p,i)=>i).sort((a,b)=>UT.col[b].ovr-UT.col[a].ovr);
   for(const b of $('tmMode').children){b.classList.toggle('on',b.dataset.m===UT.mode);if(b.dataset.m==='up')b.textContent=utUpLock()?'Potenzia (da 1100 punti)':'Potenzia';}
   const tip=UT.mode==='sel'?'tocca un giocatore per metterlo o toglierlo dai titolari':(UT.mode==='up'?'tocca una carta e scegli il potenziamento: ogni carta ne ha al massimo 4 (2 per linea), il prezzo è accanto al nome':'tocca una riserva per scartarla e recuperare gettoni (i titolari non si scartano)');
