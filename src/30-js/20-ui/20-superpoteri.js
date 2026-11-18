@@ -2,7 +2,7 @@
    Il motore e' in 10-sim/27-superpoteri.js. Il disegno dell'omino trasformato passa da puppet (02-pixel-art.js): pelle e capelli dell'animale (heroLook) e,
    al posto della testa, HERO_DRAW[eroe] (testa, collo, coda o tentacoli), con gli stessi pixel e lo stesso contorno degli omini. */
 const HERO_LOOK={lupo:{skin:'#6e5f50',hair:'#3f342b',style:4,band:null,beard:0},giraffa:{skin:'#e9b44c',hair:'#9a5a1e',style:4,band:null,beard:0},polpo:{skin:'#b25fe0',hair:'#7a35a8',style:4,band:null,beard:0},tele:{},clone:{},
-  ghiaccio:{skin:'#a9dcff',hair:'#f4f8ff',style:4,band:null,beard:0},mietitore:{skin:'#e9e4d2',hair:'#1e1629',style:4,band:null,beard:0}};
+  ghiaccio:{skin:'#a9dcff',hair:'#f4f8ff',style:4,band:null,beard:0},mietitore:{skin:'#e9e4d2',hair:'#1e1629',style:4,band:null,beard:0},vento:{hair:'#eef8ff',band:null}};
 function heroLook(p){   // aspetto dell'eroe trasformato; chi e' congelato dallo stregone ha la pelle azzurra
   const h=heroOn(p)?p.hero:'',fr=p.frz>0;
   if(!h&&!fr)return lookOf(p);
@@ -71,6 +71,16 @@ const HERO_DRAW={
     if(view===0){const ex=f>0?fx+2:fx+1;R(ex,T+1,1,2,so);R(ex,T+1,1,1,ey);}else{R(fx,T+1,1,2,so);R(fx+3,T+1,1,2,so);R(fx,T+1,1,1,ey);R(fx+3,T+1,1,1,ey);}
     R(fx+1,T+3,2,1,so);R(fx+1,T+4,1,1,so);
   },
+  // signore del vento: capelli bianchi lunghi e mantello verde acqua che sventolano all'indietro, piccoli vortici d'aria che gli girano intorno
+  vento(R,o){
+    const {hx0,T,f,view,x,sy,lean}=o,c=o.skin,hr='#eef8ff',cp='#2fb5a5',cd='#1f7f74',t=G.tick||0;
+    for(let k=0;k<8;k++){const w=Math.round(Math.sin(t*12-k*0.9)*1.2),cx=x-1+lean-f*(3+k),y0=sy+Math.round(k*0.35)+w;R(cx,y0,1,Math.max(2,7-Math.round(k*0.6)),k%3===2?cd:cp);}   // il mantello
+    R(hx0+1,T,4,1,c);R(hx0,T+1,6,4,c);R(hx0+1,T+5,4,1,c);
+    R(hx0,T-1,6,2,hr);if(view!==2)R(f>0?hx0:hx0+4,T+1,2,2,hr);
+    for(let k=1;k<6;k++){const w=Math.round(Math.sin(t*14-k)*0.8);R((f>0?hx0:hx0+5)-f*k,T+k%2+w,1,2,hr);}   // i capelli al vento
+    if(view===0)R(f>0?hx0+4:hx0+1,T+2,1,1,PAL.out);else if(view===2){R(hx0+1,T+2,1,1,PAL.out);R(hx0+4,T+2,1,1,PAL.out);}
+    for(let i=0;i<3;i++){const a=t*5+i*2.1,px0=Math.round(x+Math.cos(a)*10),py0=Math.round(sy+2+Math.sin(a)*5);R(px0,py0,2,1,'#dff6ff');R(px0+(Math.sin(a)>0?2:-1),py0-1,1,1,'#dff6ff');}   // vortici
+  },
   // telecinetico: un omino con un cervello gigante rosa al posto dei capelli; quando guida il disco, scintille attorno al cervello
   tele(R,o){
     const {hx0,T,f,view}=o,c=o.skin,pk='#f29ac0',pd='#c8608f';
@@ -95,11 +105,12 @@ const HERO_ICON={   // 10x8: o contorno, c pelle dell'animale, e occhio giallo, 
   polpo:  ['...oooo...','..occcco..','.occcccco.','occwkcwkco','.occcccco.','.oc.oc.co.','oc..oc..co','o...o....o'],
   ghiaccio:['....oo....','...oiio...','..oiwiio..','.oiiiiiio.','oooooooooo','..osksko..','..owwwwo..','...owwo...'],
   mietitore:['..oooo.lll','.ovvvvo..l','ovqqqqvo.n','ovxqqxvo.n','ovqqqqvo.n','ovqkkqvo.n','.ovvvvo..n','..oooo...n'],
+  vento:  ['.....ggg..','gggggg..g.','.......gg.','..........','.gggggggg.','.........g','ggggggg.g.','.......g..'],
   tele:   ['..oooooo..','.oppdppdo.','oppdppppdo','opdppdpppo','.oppppdpo.','..osssso..','..okskso..','...oooo...'],
   clone:  ['.ss...gg..','.ss...gg..','uuuu.gggg.','uuuu.gggg.','.uu...gg..','.kk...hh..','.kk...hh..','k..k.h..h.']   // il vero e, accanto, la copia trasparente
 };
 function heroIconSvg(k){
-  const C={i:'#3d7fd6',v:'#2a1d3a',q:'#e9e4d2',x:'#c45cff',l:'#c9d1db',n:'#7a5634',u:'#2f7bff',g:'#a8ecff',h:'#62bcd8',o:'#0b0d12',c:HERO_LOOK[k].skin,e:k==='lupo'?'#ff3b2f':'#ffd23f',k:'#0b0d12',w:'#ffffff',b:'#c98a3a',p:'#f29ac0',d:'#c8608f',s:'#f0c9a4'};
+  const C={g:'#bff3ff',i:'#3d7fd6',v:'#2a1d3a',q:'#e9e4d2',x:'#c45cff',l:'#c9d1db',n:'#7a5634',u:'#2f7bff',g:'#a8ecff',h:'#62bcd8',o:'#0b0d12',c:HERO_LOOK[k].skin,e:k==='lupo'?'#ff3b2f':'#ffd23f',k:'#0b0d12',w:'#ffffff',b:'#c98a3a',p:'#f29ac0',d:'#c8608f',s:'#f0c9a4'};
   let s='<svg viewBox="0 0 10 8" shape-rendering="crispEdges" aria-hidden="true">';
   HERO_ICON[k].forEach((row,y)=>{for(let x=0;x<row.length;x++){const c=C[row[x]];if(c)s+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${c}"/>`;}});
   return s+'</svg>';
@@ -133,7 +144,7 @@ cv.addEventListener('pointermove',e=>{if(e.pointerId!==tkPid)return;if(!tkOk()){
 for(const ev of ['pointerup','pointercancel'])cv.addEventListener(ev,e=>{if(e.pointerId!==tkPid)return;tkPid=null;G.tkp=null;e.stopImmediatePropagation();},true);
 // disco guidato: scia di scintille viola e un cerchio dove punta il dito
 // onde di freddo dello stregone (si allargano fino a ICE_R in mezzo secondo) e scie viola sugli avversari del mietitore
-const HW=[];
+const HW=[],GU=[];
 function heroTkFx(){
   if(!G.heroOn){HW.length=0;return;}
   for(let i=HW.length-1;i>=0;i--){
@@ -141,6 +152,9 @@ function heroTkFx(){
     const r=ICE_R*Math.min(1,a),n=64,c=a<0.7?'#ffffff':'#9fe0ff';
     for(let k=0;k<n;k++){const an=k/n*Math.PI*2;px(sxw(w.x+Math.cos(an)*r)-1,syw(w.y+Math.sin(an)*r)-1,a<1?2:1,a<1?2:1,(k&1)?c:'#7fd0ff');}
   }
+  // signore del vento: folate bianche che attraversano il campo verso la meta che attacca la sua squadra
+  for(const t of [0,1])if(G.mode==='play'&&heroOn(heroOf(t,'vento'),'vento')&&Math.random()<0.5)GU.push({x:dirOf(t)>0?cam.x-4:cam.x+VW/S+4,y:rnd(2,FIELD_W-2),d:dirOf(t),l:rnd(2,5),t0:G.tick||0});
+  for(let i=GU.length-1;i>=0;i--){const g=GU[i],a=(G.tick||0)-g.t0;if(a>2.2||a<0){GU.splice(i,1);continue;}const gx=g.x+g.d*a*26,x0=sxw(gx),x1=sxw(gx-g.d*g.l),y=syw(g.y);px(Math.min(x0,x1),y,Math.max(1,Math.abs(x1-x0)),1,a<1.8?'#eef8ff':'#bfe6c8');}
   for(const t of [0,1])if(G.mode==='play'&&heroOn(heroOf(t,'mietitore'),'mietitore'))for(const q of T[1-t])if(Math.random()<0.18)addFx({t:'spark',c:'#d79bff',c2:'#7a35a8',x:q.x+rnd(-0.3,0.3),y:q.y,vx:0,vy:0,z:rnd(0.6,1.4),vz:0.9,life:0.6,max:0.6,r:0.12});
   heroTkSteer();
 }

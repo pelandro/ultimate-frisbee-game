@@ -579,7 +579,7 @@ function selfTestPlan(opt){
       row('Il bonus vale per la squadra in partita (massimo 99) e non cambia la carta',`Scatto 95 → ${q.s.sca}, Lancio ${q.s.lan}, carta ${p.s.sca}`,ok3),
       row('Salvataggi rovinati e traguardi: valori validi, accessori sempre migliori',(safe?'ok':'no')+', '+miles.join(' '),safe&&mUp)];
   }]);
-  S.steps.push(['Superpoteri: i sette eroi',()=>{   // 27-superpoteri.js
+  S.steps.push(['Superpoteri: gli otto eroi',()=>{   // 27-superpoteri.js
     const ra=ros(62,'ha'),rb=ros(62,'hb');
     setSquad(ra);applyRoster(rb);newGame();
     const rk=heroRand();heroInit(rk,rk);heroAssign(T[0],rk);
@@ -610,7 +610,11 @@ function selfTestPlan(opt){
     for(let i=0;i<ICE_T*10+2;i++)heroTick(0.1);const vn2=vmaxOf(qn),ice=vn1<vn0*0.6&&vf1===vf0&&vn2===vn0&&!(qn.frz>0);
     const Rp=heroOf(0,'mietitore');for(const x of T[0].concat(T[1]))x.st=100;heroUse(0,'mietitore');const dk=heroDrain(T[1][0]),dm=heroDrain(T[0][0]);
     for(let i=0;i<20;i++)heroTick(0.1);const drop=100-Math.max(...T[1].map(x=>x.st)),mine=Math.min(...T[0].map(x=>x.st));
-    const reap=drop>=9&&mine===100&&dk===REAP_K&&dm===1&&Rp.hx>0;
+    const reap=drop>=9&&mine===100&&dk===REAP_K&&dm===1&&Rp.hx>0;heroEnd(Rp);
+    // signore del vento: la sua squadra lancia piu' lontano, l'altra piu' corto; finita la trasformazione torna tutto com'era
+    heroAssign(T[0],['vento']);   // con otto eroi e sette in campo, il vento qui va assegnato a parte
+    const Vt=heroOf(0,'vento'),a0=T[0][0],b0=T[1][0],ma=throwMax(a0),mb=throwMax(b0);heroUse(0,'vento');const ma1=throwMax(a0),mb1=throwMax(b0),hw=[heroWind(0),heroWind(1)];
+    heroEnd(Vt);const wind=ma1===ma+VENTO_R&&mb1===mb-VENTO_R&&hw[0]===1&&hw[1]===-1&&throwMax(a0)===ma&&heroWind(0)===0;
     placeTeams(0);const reset=!T[0].concat(T[1]).some(x=>x.hx>0||x.hrb||x.frz>0);
     const both=run(ra,rb,n,{hero:'both'}),okB=both.every(m=>!m.stuck&&!m.nan&&Math.max(m.score[0],m.score[1])===MATCH_TARGET),useB=both.every(m=>m.st.hero&&m.st.hero[0]>0&&m.st.hero[1]>0);
     // quanto contano gli eroi (misurato a parte, 50 partite per lato a squadre pari): chi li ha vince circa 7 volte su 10. Qui non si misura: servirebbero troppe partite
@@ -621,6 +625,7 @@ function selfTestPlan(opt){
       row('Clone: la copia non prende dischi, inganna il marcatore e chi lancia, si allontana dal vero e sparisce con lui',`segue la copia ${Math.round(fooled/3)}% · dal vero ${sep.toFixed(1)} m`,cOk&&fooled>60&&fooled<250&&sees&&sep>4&&gone),
       row('Stregone di ghiaccio: l\'onda rallenta chi ha vicino, non chi e\' lontano, e il gelo passa',`velocità ${vn0.toFixed(1)} → ${vn1.toFixed(1)} m/s (lontano ${vf1.toFixed(1)}), poi ${vn2.toFixed(1)}`,ice),
       row('Mietitore: gli avversari perdono energia in fretta (e gli scatti costano di più), i tuoi no',`−${Math.round(drop)} in 2 s, scatti ×${dk}`,reap),
+      row('Signore del vento: i tuoi lanci arrivano piu\' lontano, quelli avversari piu\' corti, poi torna tutto come prima',`gittata ${Math.round(ma)} → ${Math.round(ma1)} m, avversari ${Math.round(mb)} → ${Math.round(mb1)} m`,wind),
       row('A ogni punto le trasformazioni finiscono',reset?'sì':'no',reset),
       row('Partite con gli eroi: finiscono regolarmente e le due IA usano i poteri',`${both.filter(m=>m.st.hero).length} su ${n}`,okB&&useB)];
   }]);

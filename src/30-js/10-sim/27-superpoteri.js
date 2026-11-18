@@ -15,6 +15,9 @@
      e corrono e accelerano piu' piano (heroSlow in vmaxOf e accOf).
    - Mietitore: finche' e' trasformato gli avversari in campo perdono energia di continuo (REAP_DRAIN al secondo) e i loro scatti costano REAP_K volte tanto
      (heroDrain in moveTo e nello scatto sui lanci lunghi). L'energia persa resta: si recupera solo come al solito, tra un punto e l'altro.
+   - Signore del vento: finche' e' trasformato il vento gira a favore della sua squadra. I suoi compagni lanciano piu' lontano (VENTO_R m in piu' di gittata),
+     piu' dritto (dispersione ×VENTO_OK) e senza la deriva del vento della partita; gli avversari lanciano piu' corto e sbandano (×VENTO_KO). heroWind(t) in
+     throwMax, throwComf e planThrow; se tutti e due i signori del vento sono trasformati, si annullano.
    In campo ogni squadra ha al massimo HERO_N eroi (G.hk[squadra] = quali): i tuoi li scegli prima della partita (QM.hk), quelli del computer sono a caso.
    p.hero = eroe del giocatore (sui giocatori della tua rosa e sui posti in campo dell'avversaria), p.hx = secondi di trasformazione che restano.
    Vale solo con G.heroOn (startQuick con QM.hero); l'IA usa i poteri della sua squadra (e della tua nelle mete simulate) con heroAI. */
@@ -25,9 +28,13 @@ const HERO={
   tele:{n:'Telecinetico',dur:7,cd:22,txt:'Guida il disco in volo col dito: cambia la direzione, non la distanza'},
   clone:{n:'Clone',dur:8,cd:24,txt:'Si sdoppia: tu sai qual è il vero, gli avversari no. La copia serve solo a distrarre'},
   ghiaccio:{n:'Stregone di ghiaccio',dur:6,cd:24,txt:'Un’onda di freddo rallenta gli avversari che ha intorno'},
-  mietitore:{n:'Mietitore',dur:8,cd:24,txt:'Gli avversari si stancano molto più in fretta'}
+  mietitore:{n:'Mietitore',dur:8,cd:24,txt:'Gli avversari si stancano molto più in fretta'},
+  vento:{n:'Signore del vento',dur:8,cd:24,txt:'Il vento è a favore: i tuoi lanci vanno più lontano e più dritti, quelli avversari sbandano'}
 };
-const HERO_K=['lupo','giraffa','polpo','tele','clone','ghiaccio','mietitore'];
+const HERO_K=['lupo','giraffa','polpo','tele','clone','ghiaccio','mietitore','vento'];
+const VENTO_R=10,VENTO_OK=0.8,VENTO_KO=1.35;   // signore del vento: metri di gittata in piu' (o in meno per gli avversari), dispersione dei lanci
+// +1 se la squadra t ha il vento a favore, -1 se ce l'ha contro, 0 altrimenti
+function heroWind(t){if(!G.heroOn||!G.hz||(t!==0&&t!==1))return 0;return (heroOn(heroOf(t,'vento'),'vento')?1:0)-(heroOn(heroOf(1-t,'vento'),'vento')?1:0);}
 const ICE_R=12,ICE_T=4,ICE_K=0.55;   // onda di freddo: raggio (m), durata del gelo (s), quanto rallenta subito (55%, poi sempre meno)
 const REAP_DRAIN=5,REAP_K=2.5;       // mietitore: energia persa al secondo da ogni avversario in campo, e quanto costano di piu' i loro scatti
 const heroSlow=p=>p.frz>0?1-ICE_K*Math.min(1,p.frz/ICE_T):1;   // in vmaxOf e accOf
@@ -48,7 +55,7 @@ function heroAssign(list,keys){
   keys=keys||HERO_K;
   const free=list.filter(Boolean).slice();for(const p of free){p.hero=null;p.hx=0;}
   const pick=(k,f)=>{if(!free.length||!keys.includes(k))return;free.sort((a,b)=>f(b)-f(a));const p=free.shift();p.hero=k;if(p.trait==='poser')p.trait=null;};   // il Poser cambia p.s come il lupo: un eroe non lo ha
-  pick('tele',p=>p.s.lan+p.s.vis+(p.role==='H'||p.r==='H'?20:0));pick('lupo',p=>p.s.vel+p.s.sca+p.s.agi);pick('giraffa',p=>p.s.sal*2+p.s.pre);pick('polpo',p=>p.s.dif*2+p.s.agi);pick('clone',p=>p.s.vel+p.s.agi+(p.role==='C'||p.r==='C'?20:0));pick('ghiaccio',p=>p.s.vis+p.s.dif);pick('mietitore',p=>p.s.res*2+p.s.dif);   // il telecinetico e' un handler
+  pick('tele',p=>p.s.lan+p.s.vis+(p.role==='H'||p.r==='H'?20:0));pick('lupo',p=>p.s.vel+p.s.sca+p.s.agi);pick('giraffa',p=>p.s.sal*2+p.s.pre);pick('polpo',p=>p.s.dif*2+p.s.agi);pick('clone',p=>p.s.vel+p.s.agi+(p.role==='C'||p.r==='C'?20:0));pick('ghiaccio',p=>p.s.vis+p.s.dif);pick('mietitore',p=>p.s.res*2+p.s.dif);pick('vento',p=>p.s.spa*2+p.s.lan);   // il telecinetico e' un handler
 }
 const heroOf=(t,k)=>T[t].find(p=>p.hero===k)||null;
 function heroInit(k0,k1){G.hz=[{},{}];G.dec=[null,null];G.hk=[k0||HERO_K,k1||HERO_K];for(const t of [0,1])for(const k of HERO_K)G.hz[t][k]=HERO_START;}
@@ -107,6 +114,7 @@ function heroAI(dt){
     if(heroReady(t,'lupo')&&(G.holder||f)&&Math.random()<0.3*k1)heroUse(t,'lupo');
     if(heroReady(t,'tele')&&G.holder&&G.holder.t===t&&G.stallT>2&&Math.random()<0.5*k1)heroUse(t,'tele');   // prima di lanciare: il disco partira' gia' guidato
     const w=heroOf(t,'ghiaccio');if(w&&heroReady(t,'ghiaccio')&&T[1-t].filter(q=>hyp(q.x-w.x,q.y-w.y)<=ICE_R).length>=3&&Math.random()<0.8*k1)heroUse(t,'ghiaccio');   // l'onda quando ha almeno tre avversari intorno
+    if(heroReady(t,'vento')&&G.holder&&(G.holder.t!==t||G.stallT>1.5)&&Math.random()<0.4*k1)heroUse(t,'vento');   // prima di un lancio suo, o mentre lancia l'avversario
     if(heroReady(t,'mietitore')&&(G.holder||f)&&Math.random()<0.3*k1)heroUse(t,'mietitore');
     const c=heroOf(t,'clone');if(c&&heroReady(t,'clone')&&G.holder&&G.holder!==c&&Math.random()<0.35*k1)heroUse(t,'clone');   // in attacco libera il clone, in difesa copre un altro uomo
   }
