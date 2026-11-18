@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 5111)
-Total output lines: 123
-
 # Revisione delle rose e degli Overall Women 2026
 
 La Serie A e la Serie B partono con **291 giocatrici reali in 17 club**. Sono state confrontate le distinte dei **66 referti CIU 2026** (38 in A, 28 in B) con le statistiche stagionali. Le presenze, il numero di maglia e i tabellini permettono di includere anche giocatrici senza mete né assist. I tesseramenti senza riscontri di gara sono stati verificati con le rose internazionali quando disponibili. Ava Mueller è un caso di conferma esterna con lo stesso club. In carriera ogni giocatrice parte con un solo club, scelto in base alla partecipazione prevalente in Italia. Alessandra Pivetta, Teresa Brugnoli e Asia Martinini restano nelle rispettive rose di Serie A.
@@ -47,7 +44,10 @@ Questa verifica corregge altri **26 Overall** rispetto ai valori già pubblicati
 
 | Giocatrice | Overall precedente → nuovo | Evidenza aggiunta e ragione del ritocco |
 |---|---:|---|
-| Chiara Varotto | 81 → 85 | 11 in 4 al WUCC Mixed; 17 in 6 nel Summer Tour 2025; 8 in 6 allo Spring Tour 2026 e 10 in 5 all’Elite Invite; convocata Mixed senior. Più sta…111 tokens truncated…nto contenuto per la minore attualità dei dati. |
+| Chiara Varotto | 81 → 85 | 11 in 4 al WUCC Mixed; 17 in 6 nel Summer Tour 2025; 8 in 6 allo Spring Tour 2026 e 10 in 5 all’Elite Invite; convocata Mixed senior. Più stagioni e livello alto giustificano il ritocco maggiore. |
+| Marta Degli Stefani | 80 → 83 | 12 in 6 allo Spring Tour 2026, riscontri al CIU Mixed e convocazione della Nazionale Women; presenza anche nei tornei internazionali. |
+| Sara Bounous | 81 → 83 | 4 in 4 al WUCC Mixed, 7 in 6 allo Spring Tour 2026 e roster Italia Mixed 2024. |
+| Linda Ruffilli | 82 → 83 | 8 in 3 allo Spring Tour 2024 e convocazione Italia Mixed 2024; aggiustamento contenuto per la minore attualità dei dati. |
 | Rebecca Rampazzo | 79 → 81 | 2 in 3 al WUCC Mixed, 5 in 6 allo Spring Tour 2026 e roster Italia U20 al WJUC 2026/EYUC 2025. |
 | Margherita Salvemini | 75 → 79 | 16 contributi in 6 gare al CIU Mixed 2025 e 11 in 5 all’Elite Invite 2026: continuità tra stagione italiana e torneo europeo. |
 | Rebecca Benetazzo | 71 → 74 | 7 in 6 al Summer Tour 2025; ritocco prudente, senza risultati senior internazionali individuali altrettanto forti. |
