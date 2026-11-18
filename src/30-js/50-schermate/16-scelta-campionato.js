@@ -18,11 +18,27 @@ const favGet=lg=>{const n=favAll()[lg||teamLg];return n&&lgOf(lg).clubs().includ
 function favSet(lg,n){const f=favAll();if(n)f[lg]=n;else delete f[lg];try{localStorage.setItem(FAV_KEY,JSON.stringify(f));}catch(e){}}
 const favMark=n=>n===favGet()?'★ ':'';
 const favFirst=(a,b)=>(b===favGet())-(a===favGet());   // la squadra del cuore sta in cima
-function renderLeagues(){
-  $('lgList').innerHTML=LEAGUES.map(l=>{const f=favGet(l.id);return `<button type="button" class="ecard lgcard" data-lg="${l.id}"><strong>${esc(l.name)}</strong><small>${esc(l.sub)}</small><span class="lgtxt">${esc(l.txt)}</span>${f?`<span class="lgfav">★ Squadra del cuore: ${esc(f)}</span>`:''}</button>`;}).join('');
+// prima si sceglie la divisione (maschile o femminile), poi il campionato: le due divisioni non si mescolano (37-leghe/07-women.js).
+// Con un solo campionato nella divisione (oggi il femminile) si va subito alla scelta della squadra
+let lgDiv='',lgKeep=false;
+const lgW=l=>lnWomen(l.id);
+const LG_NOTE='Dove vuoi allenare? Poi scegli la squadra: prima di sceglierla puoi vederne il roster. Più avanti puoi ricevere offerte anche dagli altri campionati.';
+function renderLeagues(){if(!lgKeep)lgDiv='';lgKeep=false;drawLeagues();}
+function drawLeagues(){
+  if(!lgDiv){
+    $('lgH').textContent='Scegli la divisione';$('lgNote').textContent='Vuoi allenare una squadra maschile o femminile? Le due divisioni sono separate: le squadre femminili giocano solo tra loro.';
+    const n=w=>LEAGUES.filter(l=>lgW(l)===w);
+    $('lgList').innerHTML=[['m','Maschile',n(false)],['w','Femminile',n(true)]].map(([k,t,ls])=>`<button type="button" class="ecard lgcard" data-div="${k}"><strong>${t}</strong><small>${ls.length===1?'1 campionato':ls.length+' campionati'}</small><span class="lgtxt">${esc(ls.map(l=>l.name).join(' · '))}</span></button>`).join('');
+    return;
+  }
+  $('lgH').textContent='Scegli il campionato';$('lgNote').textContent=LG_NOTE;
+  $('lgList').innerHTML=LEAGUES.filter(l=>lgW(l)===(lgDiv==='w')).map(l=>{const f=favGet(l.id);return `<button type="button" class="ecard lgcard" data-lg="${l.id}"><strong>${esc(l.name)}</strong><small>${esc(l.sub)}</small><span class="lgtxt">${esc(l.txt)}</span>${f?`<span class="lgfav">★ Squadra del cuore: ${esc(f)}</span>`:''}</button>`;}).join('');
 }
-$('lgList').addEventListener('click',e=>{const b=e.target.closest('[data-lg]');if(!b)return;teamLg=b.dataset.lg;teamMode='cuore';reliefName=null;showScreen('team');});
-$('lgBack').addEventListener('click',teamBack);
+$('lgList').addEventListener('click',e=>{
+  const d=e.target.closest('[data-div]');
+  if(d){lgDiv=d.dataset.div;const ls=LEAGUES.filter(l=>lgW(l)===(lgDiv==='w'));if(ls.length===1){teamLg=ls[0].id;teamMode='cuore';reliefName=null;showScreen('team');return;}drawLeagues();femPass();return;}
+  const b=e.target.closest('[data-lg]');if(!b)return;teamLg=b.dataset.lg;teamMode='cuore';reliefName=null;showScreen('team');});
+$('lgBack').addEventListener('click',()=>{if(lgDiv){lgDiv='';drawLeagues();femPass();}else teamBack();});
 // ---- roster del club, prima di sceglierlo ----
 let rpTeam='';
 function openRosterPreview(n){
