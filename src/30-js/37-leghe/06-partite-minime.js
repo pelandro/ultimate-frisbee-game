@@ -7,9 +7,10 @@ const LN_MIN=SEASON_MIN;   // 30-carriera/28-allenamenti-fuori-stagione.js
 // quante partite della fase finale gioca di sicuro la vincitrice (i turni, meno uno se nel tabellone puo' esserci un riposo)
 function lnFinR(tr,sizes){
   const sp=tr.fin[0];if(!sp)return 0;
+  if(sp.f>1)return 0;   // chi e' sopra la fase (la prima, promossa direttamente) non la gioca: le partite devono bastare nel girone
   const take=sizes.map(s=>Math.max(0,Math.min(s,sp.t)-sp.f+1));
   if(sp.m==='c8'||sp.m==='x8')return (sp.m==='c8'?3:2)-(take.length<2||take.some(x=>x<4)?1:0);
-  if(sp.m==='c4')return 2-((take.length>1?take.some(x=>x<2):take[0]<4)?1:0);
+  if(sp.m==='c4'||sp.m==='k4')return 2-((take.length>1?take.some(x=>x<2):take[0]<4)?1:0);
   if(sp.m==='p')return 1-(take[0]%2?1:0);
   return Math.max(0,take.reduce((a,b)=>a+b,0)-1);   // rr: minigirone
 }

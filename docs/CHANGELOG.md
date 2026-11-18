@@ -4,6 +4,9 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Campionato Women con lo stesso formato di quello maschile: girone unico, playoff scudetto tra le prime 4 in Serie A (semifinali e finale, chi perde è eliminato), in Serie B la prima sale direttamente e dal 2° al 5° posto c’è lo spareggio per la seconda promozione. Salgono due squadre e ne scendono due (prima una sola). Chi arriva in fondo gioca almeno 11 partite.
+- Cambi: il numero accanto a ogni giocatore è il suo Overall vero, quello della rosa, senza gli scarti della forma del giorno (prima, in partita, poteva sembrare più alto o più basso).
+- Posta: il numero sulla campanella conta solo gli avvisi non letti. Una decisione già letta ma ancora aperta (per esempio un ritiro annunciato) non tiene più acceso il numero: resta in «Da decidere» e in «Questa settimana».
 - In tutte le modalità, mentre miri un lancio lungo la visuale segue il punto mirato quando arriva a circa 8 metri dal bordo dello schermo: prima la visuale si fermava e il punto d’arrivo restava fuori.
 - La modalità Superpoteri si trova ora dentro Ultimate Team: entrando ci sono «Computer», «Real player» e «Superpoteri». Dal menu iniziale il pulsante è stato tolto; il tasto Indietro della schermata dei Superpoteri riporta a Ultimate Team.
 - Superpoteri: il computer gioca con gli eroi. Chi lancia per il computer cerca i compagni trasformati, anche fuori dallo schema quando sono liberi, e i tuoi compagni trasformati tagliano prima e più spesso; il lupo e la giraffa vanno in profondità. Con il vento a favore o il telecinetico attivo si rischia di più il lancio lungo.
