@@ -414,3 +414,6 @@ select.qs option,select.qs optgroup{background:#12301d;color:#fff}
 .qpanel .qph,#rpv .mh{position:sticky;top:0;z-index:1;background:var(--panel)}
 
 #tmList button.urow{width:100%;font:inherit;text-align:left;color:inherit}
+
+.evpages{flex-wrap:wrap;margin:6px 0 10px}
+#possessionHud{font-size:clamp(10px,2.4vh,13px);font-weight:700;color:var(--hud-mute)}

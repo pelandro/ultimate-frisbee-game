@@ -231,7 +231,7 @@ function syncToggles(){   // audio, stacchi, meteo, difesa e suggerimenti si cam
   sw('sRot',rotPref,rotPref?'In verticale il gioco si gira da solo':'In verticale compare «Gira lo schermo»');
   sw('sFs',fs);
   $('paSnd').classList.toggle('off',!on);$('paCine').classList.toggle('off',!c);   // nella pausa l'interruttore mostra anche lo stato con il colore
-  $('paSnd').textContent='Audio: '+(on?'sì':'no');$('paCine').textContent='Salti e tuffi: '+(c?'sì':'no');
+  $('paSnd').textContent='Audio: '+(on?'sì':'no');$('paCine').textContent='Salti, tuffi e replay: '+(c?'sì':'no');
   $('paFs').textContent='Schermo intero: '+(fs?'sì':'no');$('paFs').classList.toggle('off',!fs);
   $('paDef').textContent='Difesa: '+DEF_LBL[G.opt.def].toLowerCase();
   $('sDefS').textContent=DEF_LBL[G.opt.def]+': '+DEF_TXT[G.opt.def];

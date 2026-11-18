@@ -246,6 +246,11 @@ catch(e){
     await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="rec"]');await page.click('#hHome');
     await page.click('#hEvent');await vis('#event');await page.click('#evTabs [data-sr="A"]');await page.click('#evTabs [data-sr="B"]');await vis('#eBody table.rt');
     const trs=await page.locator('#eBody table.rt tr').count();if(trs<8)throw new Error('classifica di un\'altra serie troppo corta: '+trs);
+    await page.click('#eBody [data-evpage="calendar"]');
+    if(!/Prossima|Da giocare/.test(await page.locator('#eBody').innerText()))throw new Error('calendario senza prossime partite');
+    await page.click('#eBody [data-evpage="stats"]');await vis('#eBody [data-evpage="stats"][aria-current="page"]');
+    await page.click('#eBody [data-evpage="final"]');await vis('#eBody [data-evpage="final"][aria-current="page"]');
+    await page.click('#eBody [data-evpage="table"]');await vis('#eBody table.rt');
     await page.click('#hHome');
     await menu('#hOpt');await vis('#opts');await page.click('#opX');
     await page.click('#hBell');await vis('#alerts');   // lo chiude il gestore qui sopra alla prossima azione

@@ -30,6 +30,10 @@ function updateHUD(dt){
   elStall.classList.toggle('hidden',!n||G.mode!=='play');elStall.classList.toggle('hot',n>=7);
   if(n)elStall.textContent='Stall '+n;
   const mine=h&&h.t===0&&!G.flight&&G.mode==='play';
+  const possession=$('possessionHud'),owner=G.flight?.team??h?.t;
+  const phase=G.mode!=='play'||G.drill?'':(G.pull?'Pull':owner===0?'Attacco':owner===1?'Difesa':'Disco libero');
+  possession.classList.toggle('hidden',!phase);
+  if(possession.textContent!==phase)possession.textContent=phase;
   const canThrow=mine&&G.freeze<=0&&!G.zoomHold&&!G.walk;
   const defNow=inDefense(),man=defMan(),hbRdy=defNow&&!!hbWindow()&&!G.hbAtt,dvRdy=defNow&&!!(G.diveWin&&!G.diveWin.done);   // rdy: e' il momento di premere
   // difesa automatica: il tasto del tuffo compare solo nel momento del tuffo a tempo, quello dell'handblock mai
