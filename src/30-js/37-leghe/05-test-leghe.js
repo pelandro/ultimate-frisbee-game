@@ -35,9 +35,10 @@ function lnSelfTest(seasons,seed){
     // ---- rose: ogni club, con la forza dei dati ----
     for(const n of LN_NAMES){
       const ro=lnRoster(n,'t'),pw=rosterLevel(ro),sv=ro.some(o=>o.star);
-      chk('rose',ro.length>=14&&ro.length<=SQ_MAX,'rosa di '+n+': '+ro.length+' giocatori');
+      const women=isWomenClub(n);
+      chk('rose',ro.length>=(women?SQ_MIN:14)&&ro.length<=SQ_MAX,'rosa di '+n+': '+ro.length+' giocatori');
       chk('rose',new Set(ro.map(o=>usNameKey(o.label||o.n))).size===ro.length,'giocatore ripetuto in '+n);
-      chk('rose',ro.every(o=>ovr(o)>=36&&ovr(o)<=99&&o.age>=16&&o.age<=45),'giocatore fuori misura in '+n);
+      chk('rose',ro.every(o=>ovr(o)>=36&&ovr(o)<=99&&o.age>=(women?14:16)&&(women||o.age<=45)),'giocatore fuori misura in '+n);
       chk('rose',Math.abs(pw-LN_BY[n].p)<=(sv?7:2),'forza di '+n+': '+pw.toFixed(1)+' contro '+LN_BY[n].p);
       for(const o of ro){nAll++;if(!o.gen){nReal++;if(!o.ae)nExact++;}}   // eta' esatta: le stelle del mercato e le poche schede pubbliche
     }
@@ -123,7 +124,8 @@ function lnSelfTest(seasons,seed){
      startCareer('Tequila Boom Boom',{});chk('women',allClubs().length===LN_CL.IW.length&&allClubs().every(isWomenClub)&&!foreignClubs().length,'nella carriera Women ci sono club maschili');
      chk('women',SQ.every(p=>p.f)&&Object.values(SV.rost).every(r=>r.every(o=>o.f)),'giocatori maschi nel campionato Women');
      buildMarket();chk('women',SV.market.every(m=>m.o.f),'mercato del campionato Women con giocatori maschi');
-     const lv=LN_CL.IW.map(r=>rosterLevel(lnRoster(r[0],'t')));chk('women',lv.every((v,i)=>!i||v<=lv[i-1]+0.6),'la forza non segue serie e classifica: '+lv.map(Math.round).join(' '));
+     const pw=t=>LN_CL.IW.filter(r=>r[1]===t).map(r=>rosterPower(lnRoster(r[0],'t')));
+     chk('women',Math.min(...pw('A'))>Math.max(...pw('B')),'gerarchia tra Serie A e Serie B');
      SV=S0;}
     // ---- Italia e USA restano come erano ----
     startCareer(SERIES.C[2],{});

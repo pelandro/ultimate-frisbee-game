@@ -69,7 +69,9 @@ function lnAgeOf(full,age,hi){
 const LN_BOOST={'Freezzz Beezzz one':[4,4,3,3,2,2]};
 const lnShape=j=>j<7?4.2-1.45*j:-4.5-0.65*(j-6);
 function lnRoster(club,seedStr,opt){
-  opt=opt||{};const B=LN_BY[club],P=opt.p!==undefined?opt.p:B.p,rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
+  opt=opt||{};const B=LN_BY[club];
+  if(LN_DEF[B.lk].w)return womenRoster(club,seedStr);
+  const P=opt.p!==undefined?opt.p:B.p,rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
   for(const r of STARS)if(LN_STAR_CLUB[usStarKey(r)]===club)specs.push({k:'s',row:r});
   const star=new Set(specs.map(s=>usNameKey(s.row[1]+' '+s.row[0])));   // chi e' gia' una stella non si ripete dalle tabelle
   const gone=ovrOutSet(club),real=(LN_PL[B.lk][club]||[]).filter(r=>{const k=usNameKey(r[1]+' '+r[0]);return !star.has(k)&&!LN_OUT.has(k)&&!gone.has(k);}).map(r=>{const ag=lnAgeOf(r[1]+' '+r[0],r[2],r[3]);const bf=(LN_BONUS_FIX[club]||{})[r[1]+' '+r[0]];return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+(bf!==undefined?bf:r[5]),fx:lnDual(r[0],r[1])};});
@@ -103,7 +105,9 @@ function lnRoster(club,seedStr,opt){
     off=nFix?clamp(off+d,0,4):clamp(off+d,-8,8);   // con i fissi si puo' solo alzare (se i fissi portano la rosa sopra il club, resta sopra)
   }
   out=ovrFix(club,out,seedStr,'LN');   // rosa del foglio di revisione 2026 (38-ovr/01-applica.js)
-  if(LN_DEF[B.lk].w)for(const o of out)o.f=true;   // campionato Women (07-women.js): aspetto e accordi nei testi
+  return lnRosterNames(out);
+}
+function lnRosterNames(out){
   const cnt={};for(const o of out)cnt[o.n]=(cnt[o.n]||0)+1;
   for(const o of out)if(cnt[o.n]>1)o.n=o.sur+' '+(o.label||'?')[0]+'.';   // due compagni con lo stesso cognome: si aggiunge l'iniziale
   return out;

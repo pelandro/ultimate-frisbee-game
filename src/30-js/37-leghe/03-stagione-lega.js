@@ -9,7 +9,11 @@
    SV.lg[i] = gli altri gironi della tua competizione (giocano le loro giornate quando giochi le tue). Le altre competizioni e gli altri livelli si simulano a fine stagione.
    Una fase finale ha una partita per squadra a ogni turno (classifica completa: nessuno e' eliminato), quindi giochi sempre tutti i turni del tuo livello. */
 Object.assign(PO_NAME,{ln:'Fase finale'});
-const lnP=n=>(SV.rost&&SV.rost[n])||n===SV.team?teamPow(n):(LN_BY[n]?LN_BY[n].p-PW_LV:50);   // forza attuale (la rosa se c'e', altrimenti quella dei dati)
+const lnP=n=>(SV.rost&&SV.rost[n])||n===SV.team?teamPow(n):lnBasePower(n);
+function lnBasePower(club){
+  if(isWomenClub(club))return powerOfVals(LN_PL.IW[club].map(r=>r[5]));
+  return LN_BY[club]?LN_BY[club].p-PW_LV:50;
+}
 function lnSnake(clubs,k){   // k gironi con le teste di serie a serpentina secondo la forza
   const s=clubs.slice().sort((a,b)=>lnP(b)-lnP(a)||(a<b?-1:1)),pl=[...Array(k)].map(()=>[]);
   s.forEach((n,i)=>{const r=Math.floor(i/k),c=i%k;pl[r%2?k-1-c:c].push(n);});
