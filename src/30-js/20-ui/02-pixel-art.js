@@ -233,6 +233,8 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   if(un.pat){const sB=un.shirtB,sB2=shade(sB,-0.22);for(let j=0;j<6;j++)for(let i=0;i<6;i++)if(eqPatHit(un.pat,((view===0&&f<0?5-i:i)+0.5)/6,(j+0.5)/6))R(x-3+lean+i,sy+j,1,1,j===5||(view===0?(f>0?i===0:i===5):i===0)?sB2:sB);}   // maglia a motivi (Equipaggiamento di Ultimate Team), con le stesse ombre
   // TESTA: di lato (capelli dietro, occhio davanti), di schiena (solo capelli) o di fronte (due occhi)
   const hx0=x-3+lean+(view===0?f:0),bk=f>0?hx0:hx0+4,bald=lk.style===4;
+  if(ex.hero&&HERO_DRAW[ex.hero])HERO_DRAW[ex.hero](R,{x,gy,by,sy,T,hx0,f,view,lean,fast,skin,skin2,hair,shirt});   // superpoteri (20-ui/20-superpoteri.js): testa, collo, coda o tentacoli dell'animale
+  else{
   R(hx0+1,T,4,1,skin);R(hx0,T+1,6,4,skin);R(hx0+1,T+5,4,1,skin);
   if(view===1){
     if(bald){R(hx0+1,T,4,1,skin2);R(hx0,T+1,6,3,skin2);}
@@ -249,8 +251,10 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     if(lk.beard){const bc=shade(hair,-0.15);R(hx0+1,T+5,4,1,bc);R(view===0?(f>0?hx0+3:hx0):hx0+1,T+4,view===0?3:4,1,bc);}
     if(view===0)R(f>0?hx0+4:hx0+1,T+3,1,1,PAL.out);else{R(hx0+1,T+3,1,1,PAL.out);R(hx0+4,T+3,1,1,PAL.out);}
   }
+  }
   // braccio vicino (davanti al busto)
   h=hand(1);Lm(shx,sy+1,h[0],h[1],shirt,skin,0.45);
+  if(ex.sc&&ex.sc!==1){const k=ex.sc;for(let i=0;i<ops.length;i+=5){const a=ri(x+(ops[i]-x)*k),b=ri(y+(ops[i+1]-y)*k),a2=ri(x+(ops[i]+ops[i+2]-x)*k),b2=ri(y+(ops[i+1]+ops[i+3]-y)*k);ops[i]=a;ops[i+1]=b;ops[i+2]=Math.max(1,a2-a);ops[i+3]=Math.max(1,b2-b);}h=[ri(x+(h[0]-x)*k),ri(y+(h[1]-y)*k)];}   // eroi dei superpoteri piu' grandi: i rettangoli si allargano attorno ai piedi, i pixel restano netti
   ctx.fillStyle=PAL.out;for(let i=0;i<ops.length;i+=5)ctx.fillRect(ops[i]-1,ops[i+1]-1,ops[i+2]+2,ops[i+3]+2);
   for(let i=0;i<ops.length;i+=5){ctx.fillStyle=ops[i+4];ctx.fillRect(ops[i],ops[i+1],ops[i+2],ops[i+3]);}
   return h;
@@ -347,13 +351,13 @@ function drawPlayers(dt){
     if(p===G.holder||p===G.puller){const pu=Math.sin(G.tick*6)>0?1:0;pring(x,y,9+pu,3,PAL.out,3);pring(x,y,9+pu,3,PAL.gold,1);}
     else if(p===G.marker&&G.holder)pring(x,y,9,3,G.dmode[p.t]===1?'#ff8a5c':'#ffffff',1,2);   // arancione: marca in anticipo (piu' pressione sul lancio)
     if(p===G.ctrl&&inDefense()){const pu=Math.sin(G.tick*8)>0?1:0;pring(x,y,10+pu,4,PAL.out,3);pring(x,y,10+pu,4,PAL.sky,1);parrow(x,y-h-16-pu,1,PAL.out,5);parrow(x,y-h-15-pu,1,PAL.sky,4);}   // il difensore che stai guidando
-    if(dvp>0.45)puppetDive(x+p.dv.dir*6*dvp,y,UNI[p.t],lookOf(p),p.dv.dir,2+7*air);
+    if(dvp>0.45)puppetDive(x+p.dv.dir*6*dvp,y,UNI[p.t],heroLook(p),p.dv.dir,2+7*air);
     else{
       // vista: di schiena se corre verso l'alto dello schermo, di fronte se scende verso la camera, altrimenti di lato
       const view=sp>1.2&&Math.abs(p.vy)>Math.abs(p.vx)*1.3?(p.vy<0?1:2):0;
       const kind=pose==='aim'?aimKind:(lastFl&&lastFl.thrower===p?lastFl.kind:'backhand');   // il pull e' un rovescio
       const ca=p.cfx?G.tick-(p.cfx.until-0.42):-1;
-      const hp=puppet(x,y,UNI[p.t],lookOf(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca});
+      const hp=puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,hero:heroOn(p)?p.hero:null,sc:heroScale(p)});
       p._hx=hp[0];p._hy=hp[1];p._ht=G.tick;   // il disco in mano segue la mano (drawDisc)
     }
     // energia: barretta sotto i tuoi quando calano; goccia di sudore sugli avversari sfiniti (li' c'e' un duello da cercare)
@@ -367,7 +371,7 @@ function drawPlayers(dt){
     if(nameKey(p))names.push(p);
   }
   // i giocatori simbolo (stelle internazionali e chi ha vinto premi) hanno il nome dorato
-  for(const p of names)ptext(p.name,sxw(p.x),syw(p.y)-h-10-(p.dv?4:0),{f:'t',c:(p.star||(p.aw&&p.aw.length)||(p.ro&&p.ro.star))?PAL.gold:(p.t===0?'#ffffff':'#ffd9d9')});
+  for(const p of names)ptext(p.name,sxw(p.x),syw(p.y)-Math.round(h*heroScale(p))-10-(p.dv?4:0)-heroTop(p),{f:'t',c:(p.star||(p.aw&&p.aw.length)||(p.ro&&p.ro.star))?PAL.gold:(p.t===0?'#ffffff':'#ffd9d9')});
   // ETICHETTA DELLA SITUAZIONE sopra chi ha il disco, in un riquadro nero come il «2nd & 10» di Retro Bowl: stall da 6, ultimo lancio, universe point (il match point lo annuncia la fascia a inizio punto)
   const hh=G.holder;
   if(hh&&!G.flight&&G.mode==='play'){
