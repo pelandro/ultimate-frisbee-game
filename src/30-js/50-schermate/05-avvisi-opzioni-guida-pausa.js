@@ -156,12 +156,12 @@ $('hPlay').addEventListener('click',()=>{if(suspOk())resumeMatch();else if(nextM
 $('hRoster').addEventListener('click',()=>showScreen('roster'));
 $('tCareer').addEventListener('click',()=>showScreen(hasCareer()?'home':'league'));
 $('tQuick').addEventListener('click',()=>{QM.hero=false;showScreen('quick');});
-$('tHero').addEventListener('click',()=>{QM.hero=true;showScreen('quick');});   // modalita' Superpoteri: la partita veloce con gli eroi
+$('umHero').addEventListener('click',()=>{QM.hero=true;showScreen('quick');});   // modalita' Superpoteri (dal menu di Ultimate Team): la partita veloce con gli eroi
 $('tSet').addEventListener('click',()=>{setFrom='title';showScreen('settings');setSView('game');});
 $('sBack').addEventListener('click',()=>{const to=setFrom;setFrom='title';showScreen(to);});   // le schede non hanno sottolivelli: «Indietro» torna sempre da dove si e' venuti
 $('hBack').addEventListener('click',()=>showScreen('title'));
 $('teamBack').addEventListener('click',()=>{lgKeep=lgDiv==='m';showScreen('league');});   // dal maschile si torna all'elenco dei campionati, dal femminile (un solo campionato) alla scelta della divisione
-$('qBack').addEventListener('click',()=>showScreen('title'));
+$('qBack').addEventListener('click',()=>showScreen(QM.hero?'utMode':'title'));   // dai Superpoteri si torna al menu di Ultimate Team
 $('qL').addEventListener('change',updateQuick);$('qD').addEventListener('change',updateQuick);$('qS').addEventListener('change',updateQuick);
 $('qA').addEventListener('click',()=>openPick('a'));$('qB').addEventListener('click',()=>openPick('b'));
 $('qpX').addEventListener('click',()=>$('qPick').classList.add('hidden'));
