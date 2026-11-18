@@ -2,7 +2,7 @@
    e statistiche ufficiali della lega (ruolo: handler se prevalgono assist e passaggi, cutter se prevalgono le mete, defender se gioca quasi solo in linea di difesa),
    nazionale USA ai Mondiali 2024, protagonisti dei club europei (Mooncatchers, Wall City, Clapham, Bad Skid, GRUT), piu' alcuni nomi storici.
    Non sono tutti fuoriclasse: il livello segue i riconoscimenti ricevuti. [cognome, nome, eta' nel 2026, ruolo, Overall, squadra, tratto, 1 = eta' verificata]
-   Le eta' senza l'1 finale sono stime (nel gioco compaiono con «circa»).
+   Le eta' senza l'1 finale sono stime, salvo riscontro nelle tabelle di verifica.
    La squadra (campo 6) non e' mai una squadra UFA: e' il club dei Nationals USA o europeo dove il giocatore gioca nel gioco (US_STAR_CLUB, LN_STAR_CLUB), altrimenti il suo paese (e' svincolato). ---- */
 const STARS=[
   ['De Marrée','Daan',25,'C',97,'Mooncatchers','sky',1],['Decraene','Tobe',23,'C',93,'Boston DiG','explosive',1],['Babbitt','Jeff',32,'D',92,'Boston DiG','sky'],
@@ -63,9 +63,9 @@ const STARS=[
   ,['Brooks','Tobias',22,'H',90,'Raleigh Ring of Fire','general']
 ];
 function starPlayer(r,rng){   // scheda del giocatore vero: statistiche dal ruolo e dall'Overall, eta' vera piu' le stagioni di carriera gia' passate
-  const [sur,nm,age1,role,ov,from,trait]=r,age0=usAgeOf(sur,nm,age1)[0],st=utStats(role,ov,rng),rr=role==='H'?'H':'C',full=sur+' '+nm,age=age0+Math.max(0,(SV.season|0)-1);
+  const [sur,nm,age1,role,ov,from,trait]=r,[age0,exact]=usAgeOf(sur,nm,age1,!!r[7]),st=utStats(role,ov,rng),rr=role==='H'?'H':'C',full=sur+' '+nm,age=age0+Math.max(0,(SV.season|0)-1);
   const top=Math.max(...KEYS.map(k=>st[k])),cap=clamp(top+(age0<=25?7:(age0<=29?3:1)),60,99);
-  const o={n:nm,label:nm+' '+sur,full,sur,r:rr,age:age0,tl:cap,tf:cap,tv:cap,s:st,gen:false,star:true,f:false,trait,dev:age0<=25?1.3:1,sk:2,cond:100,car:null,nat:from,pos:role==='D'?'D':undefined,ae:r[7]?undefined:1};
+  const o={n:nm,label:nm+' '+sur,full,sur,r:rr,age:age0,tl:cap,tf:cap,tv:cap,s:st,gen:false,star:true,f:false,trait,dev:age0<=25?1.3:1,sk:2,cond:100,car:null,nat:from,pos:role==='D'?'D':undefined,ae:exact?undefined:1};
   for(let y=age0;y<age;y++)agePlayer(o,rng);   // gli anni passano anche per loro
   return o;
 }
