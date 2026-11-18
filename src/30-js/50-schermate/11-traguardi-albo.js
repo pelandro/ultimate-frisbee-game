@@ -19,7 +19,7 @@ function albHTML(){
 function hofCard(x){
   const pos=x.pos&&ROLE_ABB[x.pos]?x.pos:'',md=(x.md||[]).map(m=>`<span class="md2" style="--mc:${m.c}"><i>${m.n}</i>${m.lab}</span>`).join('');
   return `<div class="hcard"><span class="hch"><b>HALL OF FAME</b><b>${pos?ROLE_ABB[pos]:''}</b></span>
-    <span class="pca">${avatar({look:x.lk,name:x.name,gen:!!x.gn,t:x.t|0},46)}</span>
+    <span class="pca">${avatar({look:x.lk,name:x.name,gen:!!x.gn,f:!!x.fe,t:x.t|0},46)}</span>
     <span class="pcn">${esc(x.nk||x.name)}</span>${x.v?starsHTML(starsOf(x.v)):''}
     <span class="hcy">${x.yrs} ${x.yrs>1?'stagioni':'stagione'} · ${x.mp} partite</span>
     <span class="hcs"><span>Mete<i>${x.g}</i></span><span>Assist<i>${x.a}</i></span><span>Difese<i>${x.b}</i></span></span>

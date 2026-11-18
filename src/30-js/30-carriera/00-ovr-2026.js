@@ -10,7 +10,8 @@ const OVR_OUT={
   'UFO (A)':['David Barzasi'],         // gioca nei Mooncatchers
   'Jetset Open':['Emiel De Rieck'],    // per il foglio gioca nei Gentle Open
   'Éclipse Solaire':['Louis Dawans'],  // ... nei Mooncatchers
-  'Magic Disc':['Léo Stanguennec','Enzo Stanguennec']   // ... nel Tchac
+  'Magic Disc':['Léo Stanguennec','Enzo Stanguennec'],   // ... nel Tchac
+  'Philadelphia Pacmen':['Sam Hill']   // non fa piu' parte della rosa
 };
 // Overall voluto a mano, sopra quello del foglio: «nome cognome» per club
 const OVR_FORCE={
@@ -98,7 +99,7 @@ const OVR_PART={
   'Hardfisch':[['Spanuth','Malte',75,0,'','','b']]
 };
 // persone diverse con lo stesso nome di un doppio club (il foglio non le unisce): «club|nome» che puo' stare in un club USA anche se il nome e' in US_OUT
-const OVR_OTHER=new Set(['Philadelphia Pacmen|'+ovrKey('Sam Hill')]);   // il Sam Hill dei Pacmen (82) non e' quello dei Clapham (90)
+const OVR_OTHER=new Set();
 // il giocatore ha un Overall assegnato dal foglio (in un club qualsiasi): vale quello, non i pavimenti dei premi
 let ovrAllKeys=null;
 const ovrAssigned=name=>{if(!ovrAllKeys){ovrAllKeys=new Set();for(const c in OVR_2026)for(const r of OVR_2026[c])ovrAllKeys.add(ovrKey(r[1]+' '+r[0]));for(const c in OVR_ADD)for(const r of OVR_ADD[c])ovrAllKeys.add(ovrKey(r[1]+' '+r[0]));}return ovrAllKeys.has(ovrKey(name));};
