@@ -36,7 +36,7 @@ const THROWS={
 const throwH=(kind,d)=>kind==='backhand'||kind==='forehand'?clamp(d*0.06,0.6,2.4):(kind==='scoober'?clamp(d*0.2,2,3.4):clamp(d*0.17,4.5,9));
 const flightTime=(dist,high,sparo)=>Math.max(0.45,dist/(sparo?23.4:(high?(dist<SCOOB_D?19:17.9):23)));
 // punto del disco lungo il volo (s = 0..1): linea retta piu' la curva laterale
-const flightAt=(f,s)=>({x:lerp(f.sx,f.tx,s)+f.cx*4*s*(1-s),y:lerp(f.sy,f.ty,s)+f.cy*4*s*(1-s)});
+const flightAt=(f,s)=>f.st&&s>=f.st.s?{x:lerp(f.st.x,f.tx,(s-f.st.s)/(1-f.st.s)),y:lerp(f.st.y,f.ty,(s-f.st.s)/(1-f.st.s))}:({x:lerp(f.sx,f.tx,s)+f.cx*4*s*(1-s),y:lerp(f.sy,f.ty,s)+f.cy*4*s*(1-s)});   // f.st: disco guidato dal telecinetico (27-superpoteri.js): dal punto st in poi va dritto verso il nuovo arrivo
 const flightS=(f,u)=>f.e>=1?1-Math.pow(1-u,f.e):Math.pow(u,1/f.e);
 function pathDist(q,f){let b=1e9;for(let i=1;i<10;i++){const P=flightAt(f,i/10);b=Math.min(b,hyp(q.x-P.x,q.y-P.y));}return b;}
 // progetto del lancio: tipo, lato del rilascio, dispersione, tempo. Lo usano il lancio vero, l'anteprima della mira e le scelte dell'IA
