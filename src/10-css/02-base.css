@@ -333,6 +333,8 @@ select.qs option,select.qs optgroup{background:#12301d;color:#fff}
 .qtabs{display:flex;gap:8px;margin:8px 0}
 .qtabs button{flex:1;font:inherit;font-weight:800;font-size:15px;padding:8px 6px;border-radius:10px;border:2px solid rgba(0,0,0,.14);background:rgba(0,0,0,.05);color:inherit;cursor:pointer}
 .qtabs button.on{background:#2f7bff;border-color:#2f7bff;color:#fff}
+.qtabs{flex-wrap:wrap}.qtabs button{min-width:max-content}   /* tante categorie (le 8 Conference USA) vanno a capo invece di stringersi */
+.qtabs.qlg{margin-bottom:0}
 .qpg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:56vh;overflow:auto}
 .qpg button{display:flex;align-items:center;gap:8px;font:inherit;font-weight:700;font-size:14px;line-height:1.15;text-align:left;padding:7px 9px;border-radius:10px;border:2px solid rgba(0,0,0,.12);background:rgba(0,0,0,.04);color:inherit;cursor:pointer;min-width:0}
 .qpg button span:not(.crest){flex:1;min-width:0}.qpg button b{color:#b07a00;font-size:.9em}
