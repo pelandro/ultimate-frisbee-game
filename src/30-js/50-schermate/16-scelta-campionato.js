@@ -5,11 +5,11 @@
    La squadra del cuore (una per campionato) e' una preferenza del dispositivo, non della carriera: chiave «ultimate-cuore» = {IT:nome, US:nome}.
    Compare per prima nell'elenco, con una stella. */
 const LEAGUES=[
-  {id:'IT',name:'Campionato italiano',sub:'Serie A, B e C · 46 squadre',txt:'Le squadre vere dei Campionati Italiani Ultimate Open 2026. Si sale e si scende, con playoff scudetto e Campionato europeo (EUCF); si può anche subentrare a una squadra in crisi.',
+  {id:'IT',name:'Campionato italiano',sub:'Serie A, B e C · 46 squadre',ser:()=>'Serie A · Serie B · Serie C',txt:'Le squadre vere dei Campionati Italiani Ultimate Open 2026. Si sale e si scende, con playoff scudetto e Campionato europeo (EUCF); si può anche subentrare a una squadra in crisi.',
     clubs:()=>[].concat(SERIES.A,SERIES.B,SERIES.C),roster:n=>realRoster(REAL[n]||[],'preview|'+n,realOpt(n,9)),sub2:n=>SERIES_NAME[TEAM[n].series]},
-  {id:'US',name:'USA Men’s Club',sub:'48 club · 8 Conference',txt:'I club veri della divisione Men’s di USA Ultimate: 8 Conference (le regioni vere) da 6, Play-in e Nationals a 16 squadre. Niente promozioni né retrocessioni.',
+  {id:'US',name:'USA Men’s Club',sub:'48 club · 8 Conference',ser:()=>US_CK.length+' Conference',txt:'I club veri della divisione Men’s di USA Ultimate: 8 Conference (le regioni vere) da 6, Play-in e Nationals a 16 squadre. Niente promozioni né retrocessioni.',
     clubs:()=>US_NAMES,roster:n=>usRoster(n,'preview|'+n),sub2:n=>`${US_TEAM[n].city} · ${usConfName(US_TEAM[n].conf)}`}
-].concat(LN_IDS.map(lk=>({id:lk,name:LN_DEF[lk].name,sub:LN_DEF[lk].sub,txt:LN_DEF[lk].txt,
+].concat(LN_IDS.map(lk=>({id:lk,name:LN_DEF[lk].name,sub:LN_DEF[lk].sub,txt:LN_DEF[lk].txt,ser:()=>LN_DEF[lk].tiers.map(t=>t.name).join(' · '),nt:()=>LN_CL[lk].length,
     clubs:()=>lnClubs(lk,true),roster:n=>lnRoster(n,'preview|'+n),sub2:n=>`${LN_DEF[lk].cc} · ${LN_DEF[LN_BY[n].lk].tiers.find(t=>t.id===LN_BY[n].t).name}`})));   // leghe europee (37-leghe/): una scheda per paese
 const lgOf=id=>LEAGUES.find(l=>l.id===(id||teamLg))||LEAGUES[0];
 const FAV_KEY='ultimate-cuore';
@@ -32,7 +32,8 @@ function drawLeagues(){
     return;
   }
   $('lgH').textContent='Scegli il campionato';$('lgNote').textContent=LG_NOTE;
-  $('lgList').innerHTML=LEAGUES.filter(l=>lgW(l)===(lgDiv==='w')).map(l=>{const f=favGet(l.id);return `<button type="button" class="ecard lgcard" data-lg="${l.id}"><strong>${esc(l.name)}</strong><small>${esc(l.sub)}</small><span class="lgtxt">${esc(l.txt)}</span>${f?`<span class="lgfav">★ Squadra del cuore: ${esc(f)}</span>`:''}</button>`;}).join('');
+  // scheda essenziale sui colori della bandiera (23-bandiere-campionati.css): nome, serie e squadre; i dettagli stanno nella guida
+  $('lgList').innerHTML=LEAGUES.filter(l=>lgW(l)===(lgDiv==='w')).map(l=>`<button type="button" class="ecard lgcard lgflag" data-lg="${l.id}"><strong>${esc(l.name)}</strong><span class="lgser">${esc(l.ser())}</span><span class="lgnt">${l.nt?l.nt():l.clubs().length} squadre</span></button>`).join('');
 }
 $('lgList').addEventListener('click',e=>{
   const d=e.target.closest('[data-div]');
