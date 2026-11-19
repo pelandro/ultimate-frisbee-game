@@ -78,7 +78,8 @@ function careerInit(){   // campi nuovi della carriera (anche per i salvataggi p
   if(!SV.obj&&SV.tab)setObjective();
   if(!SV.sp&&SV.obj)spDefault();   // salvataggi di prima: un contratto equilibrato gia' firmato; dalla stagione dopo si sceglie
   if(!SV.red)SV.red={n:0,w:0};if(!SV.fin)SV.fin=[];
-  if(!SV.market||SV.mkStars!==2){buildMarket();SV.mkStars=2;}
+  if(!SV.fa)SV.fa=[];if(!SV.abroad)SV.abroad=[];   // svincolati veri e chi e' arrivato dall'estero (33-mercato-veri.js)
+  if(!SV.market||SV.mkStars!==3){buildMarket();SV.mkStars=3;}   // 3: mercato di giocatori veri
   leagueAnchors();
   for(const p of SQ)retAnchor(p);
   coachInit();staffInit();

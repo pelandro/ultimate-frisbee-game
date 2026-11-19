@@ -153,6 +153,17 @@ function careerSelfTest(seasons,seed){
     rows.push(row('Indirizzi personali assegnati nel test',String(spec),spec>=1));
     rows.push(row('Economia: ogni partita ha un conto che torna (voci, capienza, biglietti in casa, trasferta fuori)',moneyBad.length?moneyBad.slice(0,2).join('; '):`sì: ${ven.H} in casa, ${ven.A} in trasferta, ${ven.N} a campo neutro`,!moneyBad.length&&ven.H>0&&ven.A>0,'in campionato casa e trasferta si alternano'));
     rows.push(row('Economia: saldo medio a partita (prima di premi di fine stagione)',(netTot/Math.max(1,matchesTot)).toFixed(1),matchesTot>0&&netTot/matchesTot>-25&&netTot/matchesTot<60,'ne' + 'ssun conto fuori scala: la squadra del test investe in strutture e staff'));
+    {   // mercato di giocatori veri (33-mercato-veri.js): ognuno viene da una rosa, da chi e' stato lasciato libero o dall'estero; chi compri lascia la sua squadra
+      const snap=JSON.stringify(SV),sq0=squadData();buildMarket();
+      const ok=m=>m.from?(SV.rost[m.from]||[]).some(x=>x.full===m.o.full):(m.fa?(SV.fa||[]).some(x=>x.full===m.o.full):(m.star||m.fc?!(SV.abroad||[]).includes(m.o.full):false));
+      const bad=SV.market.filter(m=>!ok(m)),gen=SV.market.filter(m=>m.o.gen).length,ab=SV.market.filter(m=>m.star||m.fc).length,clubs=SV.market.filter(m=>m.from).length,nM=SV.market.length;
+      let left=null;const i=SV.market.findIndex(m=>m.from&&!m.o.gen);
+      if(i>=0){const m=SV.market[i],full=m.o.full;SV.cash=99999;SV.rep=100;m.mot=null;m.price=1;if(SQ.length>=SQ_MAX)sellPlayer(SQ.length-1);const done=signPlayer(i);left=done&&!(SV.rost[m.from]||[]).some(x=>x.full===full)&&SQ.some(p=>p.full===full);}
+      SV=JSON.parse(snap);setSquad(sq0);fixLines();
+      rows.push(row('Mercato di giocatori veri: tutti da una rosa, dagli svincolati o dall’estero, e chi compri lascia la sua squadra',
+        `${nM} giocatori: ${clubs} dai club, ${ab} dall’estero, ${gen} nati nel gioco, ${bad.length} senza provenienza · acquisto: ${left===null?'-':(left?'lascia il club':'resta nel club')} · svincolati liberi ${(SV.fa||[]).length}`,
+        !bad.length&&clubs>=6&&left===true&&(lnWomenNow()||ab>=1)));
+    }
     {   // potenziali a fasce (29-potenziali.js), margini dei giocatori veri per eta' (realGap) e sorprese di crescita (20-sorprese-crescita.js)
       const R=mulberry32(77),fr=kind=>{const c=[0,0,0,0,0];for(let i=0;i<4000;i++)c[potDraw(kind,60,R,0).band]++;return c.map(x=>x/40);};
       const mk=fr('mkt'),pv=fr('prov');

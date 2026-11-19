@@ -214,7 +214,7 @@ function newSeason(){
   achCheck();    // (Hall of Fame)
   for(const p of SQ){p.hist=p.hist||[];p.hist.push([SV.season-1,ovr(p)]);if(p.hist.length>14)p.hist.shift();}   // storico dei progressi: l'Overall con cui ha chiuso la stagione
   const was=new Map(SQ.map(p=>[p.full,ovr(p)]));
-  agePlayers();
+  agePlayers();faYear();   // anche gli svincolati invecchiano; chi e' libero da troppo smette (33-mercato-veri.js)
   potNews();   // 29-potenziali.js: chi si e' fermato e chi ha scoperto piu' margine
   for(const p of SQ){p.sk=Math.min(3,(p.sk|0)+1+(hasTr('ana','occ')?1:0));p.cond=100;}   // un anno insieme: conosci meglio il potenziale dei tuoi
   summerChanges(was);evolveLeague();const aim=aiMarket();   // mercato tra le squadre del computer (31-mercato-ia.js), prima del tuo

@@ -71,37 +71,43 @@ function starPlayer(r,rng){   // scheda del giocatore vero: statistiche dal ruol
 }
 const MARKET_N=15;   // giocatori sul mercato
 function buildMarket(){
-  // 15 giocatori in tutto, di livello vicino al tuo: giovani (4, fino a 6 col vivaio), 3 in vendita da altre squadre, da 1 a 3 internazionali veri (di piu' con
-  // reputazione), il resto svincolati. Prima i fuoriclasse erano 5-6 su 20 e poi 2-3 su 15, a ogni livello e con potenziali molto alti: ora i campioni sono rari
-  // (le stelle solo se alla portata del tuo livello, i giovani di talento sono pochi, gli svincolati adulti hanno poco margine, chi e' in vendita e' di un club del tuo livello).
-  const lv=squadLevel(),sd=SV.seed+'|mk|'+SV.season+'|'+(SV.mkN=(SV.mkN||0)+1),R=mulberry32(hashStr(sd)),out=[],viv=SV.fac.viv|0,nY=4+Math.min(viv,2),nSale=3,nStar=1+(SV.rep>=40?1:0)+(SV.rep>=70&&R()<0.4?1:0),nFree=MARKET_N-nY-nSale-nStar;
-  // giovani: potenziale a fasce attorno al livello della serie (29-potenziali.js); adulti: livello tra la tua squadra e la tua serie, poco margine
-  const ry=potRef('mkt'),la=potRef('adult');
-  for(let i=0;i<nY;i++){const o=genPlayer(ry-11+R()*7+viv,16+Math.floor(R()*4),sd+'y'+i,potB(potDraw('mkt',ry,R,viv).p));out.push({o,kind:'Giovane promessa',from:null});}
-  for(let i=0;i<nFree;i++){const l0=la-5+R()*9,ag=23+Math.floor(R()*11),o=genPlayer(l0,ag,sd+'f'+i,adultPot(l0,ag,R));out.push({o,kind:'Svincolato',from:null});}   // un adulto ha poco margine
-  const teams=Object.keys(SV.rost).filter(n=>SV.rost[n]&&SV.rost[n].length>14&&teamLevel(n)>=lv-14&&teamLevel(n)<=lv+12);   // club del tuo livello, non i migliori della lega
-  for(let i=0;i<nSale&&teams.length;i++){
-    const n=teams[Math.floor(R()*teams.length)],ro=SV.rost[n].slice().sort((a,b)=>ovrX(b)-ovrX(a)),o=ro[4+Math.floor(R()*Math.max(1,ro.length-4))];
-    if(o&&ovrX(o)<=lv+9&&!out.some(m=>m.o===o)){if(o.sk===undefined)o.sk=0;out.push({o,kind:'In vendita',from:n});}
-  }
-  // internazionali veri: niente giocatori troppo anziani (oltre i 37 anni) o troppo deboli (sotto 78), mai gli stessi, chi e' gia' in rosa non ricompare; si scelgono tra quelli piu' vicini al livello a cui puoi aspirare (il tuo piu' 5)
-  const have=new Set(SQ.map(p=>p.full)),pool=STARS.filter(r=>!have.has(r[0]+' '+r[1])&&!usStarTaken(r)&&!lnStarTaken(r)&&r[4]<=lv+10+(SV.rep>=60?3:0)&&r[4]>=78&&usAgeOf(r[0],r[1],r[2])[0]+Math.max(0,(SV.season|0)-1)<=Math.min(37,starLimit(r))).sort((a,b)=>Math.abs(a[4]-(lv+5))-Math.abs(b[4]-(lv+5))).slice(0,14);
-  for(let i=0;i<nStar&&pool.length&&!lnWomenNow();i++){   // le stelle internazionali sono giocatori: nel campionato Women non ci sono
-    const r=pool.splice(Math.floor(R()*pool.length),1)[0],o=starPlayer(r,mulberry32(hashStr(SV.seed+'|star|'+r[0]+r[1])));
+  // 15 giocatori veri (33-mercato-veri.js), di livello vicino al tuo: giovani promesse dei club del tuo campionato (4, fino a 6 col vivaio), 3 in vendita
+  // da club alla tua portata, circa 3 dall'estero (stelle di STARS e giocatori dei club stranieri: di piu' con la reputazione), fino a 3 svincolati veri,
+  // il resto dalle altre squadre del tuo campionato attorno al livello degli adulti. I campioni restano rari: le stelle solo se alla portata del tuo livello.
+  const lv=squadLevel(),sd=SV.seed+'|mk|'+SV.season+'|'+(SV.mkN=(SV.mkN||0)+1),R=mulberry32(hashStr(sd)),out=[],viv=SV.fac.viv|0,nY=4+Math.min(viv,2),nSale=3,
+    women=lnWomenNow(),nAb=women?0:3+(SV.rep>=70&&R()<0.4?1:0),nStar=women?0:Math.min(nAb,1+(SV.rep>=40?1:0)),nFree=3;
+  const ry=potRef('mkt'),la=potRef('adult'),pool=mkClubPool(),add=(x,kind)=>{if(x.o.sk===undefined)x.o.sk=0;out.push({o:x.o,kind,from:x.n});};
+  // giovani: i ragazzi delle rose attorno al livello dei giovani della tua serie (il loro potenziale e' quello che hanno)
+  for(let i=0;i<nY;i++){const x=mkTakeR(pool,ry-8+R()*5+viv,R,y=>y.o.age<=MK_YOUNG,9);if(x)add(x,'Giovane promessa');}
+  // in vendita: club alla tua portata, giocatori fino a 9 punti sopra il tuo livello
+  for(let i=0;i<nSale;i++){const x=mkTakeR(pool,lv-4+R()*12,R,y=>y.o.age>MK_YOUNG&&y.v<=lv+9,8);if(x)add(x,'In vendita');}
+  // internazionali: le stelle vere (niente giocatori troppo anziani, oltre i 37 anni, o troppo deboli, sotto 78; chi e' gia' in rosa non ricompare;
+  // si scelgono tra le piu' vicine al livello a cui puoi aspirare, il tuo piu' 5), poi giocatori dei club stranieri
+  const have=mkMine(),ab=new Set(SV.abroad||[]),spool=STARS.filter(r=>!have.has(r[0]+' '+r[1])&&!ab.has(r[0]+' '+r[1])&&!usStarTaken(r)&&!lnStarTaken(r)&&r[4]<=lv+10+(SV.rep>=60?3:0)&&r[4]>=78&&usAgeOf(r[0],r[1],r[2])[0]+Math.max(0,(SV.season|0)-1)<=Math.min(37,starLimit(r))).sort((a,b)=>Math.abs(a[4]-(lv+5))-Math.abs(b[4]-(lv+5))).slice(0,14);
+  for(let i=0;i<nStar&&spool.length;i++){
+    const r=spool.splice(Math.floor(R()*spool.length),1)[0],o=starPlayer(r,mulberry32(hashStr(SV.seed+'|star|'+r[0]+r[1])));
     out.push({o,kind:ovr(o)>=86?'Stella internazionale':'Giocatore internazionale',from:null,nat:r[5],star:true});
   }
-  for(let i=0;out.length<MARKET_N;i++){const l0=la-5+R()*9,ag=23+Math.floor(R()*11),o=genPlayer(l0,ag,sd+'x'+i,adultPot(l0,ag,R));out.push({o,kind:'Svincolato',from:null});}   // se una squadra non ha dato il suo giocatore, si completa con uno svincolato
-  for(const m of out){m.price=Math.round(priceOf(m.o)*(m.from?1.3:(m.star?1.15:1)));m.base=m.price;motAssign(m,R);}
+  const seen=new Set(out.map(m=>m.o.full));
+  while(out.filter(m=>m.star||m.fc).length<nAb){const x=mkAbroad(la-3+R()*9,R,seen);if(!x)break;seen.add(x.o.full);out.push({o:x.o,kind:'Giocatore internazionale',from:null,fc:x.club,nat:x.club+' · '+lgName(clubLega(x.club)).replace(/^campionato /,'')});}
+  // svincolati veri: chi le squadre hanno lasciato libero, attorno al livello degli adulti
+  const fa=(SV.fa||[]).filter(o=>!have.has(o.full)).map(o=>({o,n:null,v:ovrX(o)}));
+  for(let i=0;i<nFree;i++){const x=mkTakeR(fa,la-5+R()*9,R,null,6);if(!x)break;if(x.o.sk===undefined)x.o.sk=0;out.push({o:x.o,kind:'Svincolato',from:null,fa:true});}
+  // il resto dalle squadre del tuo campionato, attorno al livello degli adulti (se non basta, da tutte le rose)
+  for(let i=0;out.length<MARKET_N&&i<MARKET_N*3;i++){const x=mkTakeR(pool,la-5+R()*9,R,y=>y.o.age>MK_YOUNG,i<MARKET_N?8:40);if(x)add(x,'In vendita');}
+  for(const m of out){m.price=Math.round(priceOf(m.o)*(m.from?MK_PRICE.club:(m.star||m.fc?MK_PRICE.est:MK_PRICE.fa)));m.base=m.price;motAssign(m,R);}
   SV.market=out;mkReprice();   // motivazioni e prezzi che ne dipendono (18-motivazioni.js)
 }
 function canSign(m){return SV.cash<0?'Crediti insufficienti':SQ.length>=SQ_MAX?'Rosa al completo ('+SQ_MAX+')':(SV.cash<m.price?'Crediti insufficienti':(ovr(m.o)>repCap()?'Non interessato: serve più reputazione':motBlock(m)));}
 function signPlayer(i){
   const m=SV.market[i];if(!m||canSign(m))return false;
   SV.cash-=m.price;SV.market.splice(i,1);
+  if(m.fa&&SV.fa){const k=SV.fa.findIndex(x=>x===m.o||x.full===m.o.full);if(k>=0)SV.fa.splice(k,1);}   // svincolato: non e' piu' libero
+  if(m.star||m.fc)abroadAdd(m.o);   // dall'estero: non gioca piu' nel suo club straniero (33-mercato-veri.js)
   if(m.from&&SV.rost[m.from]){const ro=SV.rost[m.from],k=ro.findIndex(x=>x===m.o||(x.full&&x.full===m.o.full));if(k>=0)ro.splice(k,1);if(ro.length<14){const lv0=rosterPower(ro);ro.push(genPlayer(lv0-8,17+Math.floor(Math.random()*4),SV.seed+'|rep|'+m.from+'|'+SV.season+'|'+ro.length,potB(potDraw('mkt',lv0,Math.random,0).p)));}}
   const o=Object.assign({},m.o,{sk:Math.max(1,m.o.sk|0),cond:100,car:null,s:Object.assign({},m.o.s)});
   const list=squadData();list.push(o);const lO=SV.lineO,lD=SV.lineD;setSquad(list);SV.lineO=lO;SV.lineD=lD;fixLines();
-  SV.chem=Math.max(0,SV.chem-(4-2*fitOf(o)));news('Acquistato '+o.label+' ('+POS_NAME[posOf(o)]+', '+ovr(o)+') per '+m.price+' crediti'+(m.from?' da '+m.from:'')+'.');
+  SV.chem=Math.max(0,SV.chem-(4-2*fitOf(o)));news('Acquistato '+o.label+' ('+POS_NAME[posOf(o)]+', '+ovr(o)+') per '+m.price+' crediti'+(m.from?' da '+m.from:(m.fc?' da '+m.fc:''))+'.');
   return true;
 }
 // chi lascia la squadra (ceduto o ritirato) resta nelle classifiche di sempre del club
