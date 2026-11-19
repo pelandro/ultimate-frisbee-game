@@ -27,8 +27,10 @@ const FAC={
   viv:['Vivaio e osservatori','Trova più giovani e spendi meno per osservarli'],
   stad:['Tribune','Ospita più tifosi e incassa dagli affitti']
 };
-const FAC_PRICES=[40,55,75,100,125];
-const facTotalCost=lv=>FAC_PRICES.slice(0,lv).reduce((sum,cost)=>sum+cost,0);
+// Il valore storico serve agli affitti e ai rimborsi dei vecchi salvataggi.
+const FAC_BASE_VALUES=[40,55,75,100,125];
+const FAC_PRICES=[45,62,88,120,150];
+const facTotalCost=lv=>FAC_BASE_VALUES.slice(0,lv).reduce((sum,cost)=>sum+cost,0);
 const facLv=k=>(SV.fac&&SV.fac[k])|0;
 const facCost=k=>Object.hasOwn(FAC,k)?FAC_PRICES[facLv(k)]??0:0;
 const facRecovery=()=>[0,0,1,1,2,3][facLv('camp')];
