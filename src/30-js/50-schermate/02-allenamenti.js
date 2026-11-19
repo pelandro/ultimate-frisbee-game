@@ -119,7 +119,19 @@ $('rBox').addEventListener('click',e=>{
   const id=+r.dataset.id;if(openDet.has(id))openDet.delete(id);else openDet.add(id);sellArm=null;renderRoster();
 });
 $('rTop').addEventListener('click',e=>{
-  if(e.target.closest('#rAuto')){autoLines();fixLines();rosterMsg='Linee impostate: attacco con i migliori handler e cutter, difesa con i migliori difensori; a parità entra il più fresco e chi è già in attacco va in difesa solo se vale molto di più.';persist();renderRoster();}
+  if(e.target.closest('#rAuto')){
+    const lines=suggestedLines();
+    const changes=Object.entries(lines).map(([key,next])=>{
+      const old=SV[key]||[],names=list=>list.map(name=>esc(byFull(name)?.label||name)).join(', ')||'nessuno';
+      return '<h3>'+(key==='lineO'?'Attacco':'Difesa')+'</h3><p>Entrano: '+names(next.filter(n=>!old.includes(n)))+
+        '</p><p>Escono: '+names(old.filter(n=>!next.includes(n)))+'</p>';
+    }).join('');
+    askConfirm({title:'Applicare le linee consigliate?',html:changes,ok:'Applica linee',onOk:()=>{
+      Object.assign(SV,lines);fixLines();persist();rosterMsg='Linee aggiornate.';renderRoster();
+      $('rAuto')?.focus();
+    }});
+    return;
+  }
   else if(e.target.closest('#rSmart')){SV.autoSub=!SV.autoSub;persist();renderRoster();}
 });
 // riquadro di conferma sotto gli indirizzi: che cosa succede (anteprima) e il tasto che fa partire davvero la seduta

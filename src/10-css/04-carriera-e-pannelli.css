@@ -196,3 +196,8 @@
 .hab em{font-style:normal;font-size:14px;color:#dfe6fb;line-height:1.2}
 .hab.no b{display:none}
 #clTabs{flex-wrap:wrap}#clTabs button{min-width:30%}
+
+.tnbracket summary{cursor:pointer;color:var(--txt,#fff);padding:8px 0}
+.roster-table{overflow-x:auto;max-width:100%}
+.roster-table :is(th,td):first-child:not([colspan]){position:sticky;left:0;z-index:1;background:var(--panel,#1b2341)}
+.roster-table :is(th,td):first-child:not([colspan]){min-width:110px;max-width:210px;white-space:normal}

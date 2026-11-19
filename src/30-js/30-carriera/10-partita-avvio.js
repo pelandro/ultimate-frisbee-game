@@ -132,7 +132,7 @@ function renderPick(){
 }
 function renderPickTeams(league,me,other){
   const query=clubSearchText($('qpSearch').value);
-  const matches=query?qDivAll(QM.div).filter(n=>clubSearchText(n).includes(query)):league.clubs().filter(n=>qGrp(n)===QM.tab);
+  const matches=query?catalogClubs({division:QM.div,search:query}):catalogClubs({league:league.id,group:QM.tab});
   $('qpG').innerHTML=matches.length?matches.map(n=>`<button type="button" data-n="${esc(n)}" class="${n===me?'sel':''}${n===other?' off':''}"${n===other?' disabled':''}>${crest(n,22)}<span>${esc(n)}</span><b>${Math.round(qPower(n))}</b></button>`).join(''):'<p role="status">Nessuna squadra trovata.</p>';
 }
 $('qpSearch').addEventListener('input',()=>{

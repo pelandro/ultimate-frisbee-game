@@ -65,10 +65,11 @@ function careerSaveShape(d){
   if(d.squad!==undefined&&(!Array.isArray(d.squad)||d.squad.length<7||!d.squad.every(player)))return false;
   return !d.rost||(typeof d.rost==='object'&&Object.values(d.rost).every(r=>Array.isArray(r)&&r.length&&r.every(player)));
 }
+let careerStorageVersion;
 function loadSave(d0){
   let data=d0;
   if(!data){
-    try{data=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');}catch(e){return false;}
+    try{careerStorageVersion=localStorage.getItem(SAVE_KEY);data=JSON.parse(careerStorageVersion||'null');}catch(e){return false;}
   }
   if(!careerSaveShape(data))return false;
   const previous=SV,squad=squadData(),lineup=lineupIds();
@@ -81,10 +82,17 @@ function loadSave(d0){
     return false;
   }
 }
-function careerSaveStatus(failed){
+function careerSaveStatus(failed,conflict=false){
   const el=$('careerSaveStatus');
   el.classList.toggle('hidden',!failed);
+  el.textContent=conflict?'Conflitto tra schede':'Salva di nuovo';
+  el.setAttribute('aria-label',conflict?'Carriera aggiornata in un’altra scheda. Esporta questa copia prima di ricaricare.':'Salvataggio non riuscito. Riprova');
+  el.title=el.getAttribute('aria-label');
 }
+window.addEventListener('storage',e=>{
+  if(e.key!==SAVE_KEY&&e.key!==null)return;
+  if(SV.team)careerSaveStatus(true,true);
+});
 $('careerSaveStatus').addEventListener('click',()=>persist());
 
 function hydrateCareer(d){
@@ -122,13 +130,18 @@ function persist(){
   try{
     data=JSON.stringify(SV);
     prev=localStorage.getItem(SAVE_KEY);
+    if(careerStorageVersion!==undefined&&prev!==careerStorageVersion){
+      careerSaveStatus(true,true);return false;
+    }
     localStorage.setItem(SAVE_KEY,data);
+    careerStorageVersion=data;
   }catch(e){careerSaveStatus(true);return false;}
   careerSaveStatus(false);
   try{
-    if(SV.team)localStorage.setItem(slotKey(SV.slot||1),data);
-    if(prev&&prev.length<3e6&&(JSON.parse(prev).slot||1)===(SV.slot||1))
-      localStorage.setItem(slotKey(SV.slot||1)+'-bak',prev);
+    const key=slotKey(SV.slot||1);
+    const oldSlot=prev&&(JSON.parse(prev).slot||1)===(SV.slot||1)?prev:localStorage.getItem(key);
+    if(oldSlot&&oldSlot.length<3e6)localStorage.setItem(key+'-bak',oldSlot);
+    if(SV.team)localStorage.setItem(key,data);
   }catch(e){}   // la copia accessoria non invalida la scrittura del salvataggio attivo
   return true;
 }

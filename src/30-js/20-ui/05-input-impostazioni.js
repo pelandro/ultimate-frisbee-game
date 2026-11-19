@@ -68,7 +68,7 @@ function fingerAdd(id){
   if(st>(G.high|0)){G.high=st;drag.btn='hammer';HOOKS.vibe(10);HOOKS.sfx('ui');}
 }
 // iPhone: il pizzico con due o tre dita non deve ingrandire la pagina (il campo ha gia' touch-action:none)
-for(const ev of ['gesturestart','gesturechange'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
+for(const ev of ['gesturestart','gesturechange'])cv.addEventListener(ev,e=>e.preventDefault(),{passive:false});
 function fingerDrop(id){if(drag&&drag.pids&&id!==aimPid)drag.pids.delete(id);}
 cv.addEventListener('pointermove',e=>{
   if(ddrag&&e.pointerId===ddrag.pid){
