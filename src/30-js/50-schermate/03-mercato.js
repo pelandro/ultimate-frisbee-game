@@ -24,7 +24,7 @@ function renderMarket(){
   if(MK_SORT[mkSort][1])rows.sort((x,y)=>MK_SORT[mkSort][1](x[0],y[0]));
   const can=SV.market.filter(m=>!canSign(m)).length;
   const bar=`<div class="rbar"><label class="rchk"><input type="checkbox" data-mkonly="1"${mkOnly?' checked':''}> Solo chi posso prendere (${can})</label><label class="rsort">Ordina per <select class="qs" data-mksort="1">${Object.keys(MK_SORT).map(k=>`<option value="${k}"${mkSort===k?' selected':''}>${MK_SORT[k][0]}</option>`).join('')}</select></label></div>`;
-  $('mkBox').innerHTML=infoX('mk',MK_INFO)+(mkMsg?`<p class="rmsg">${mkMsg}</p>`:'')+bar+(rows.length?`<div class="mgrid">${rows.map(x=>row(x[0],x[1])).join('')}</div>`:`<p class="note">${mkOnly?'Nessuno che tu possa prendere adesso in questa categoria: servono più crediti, più reputazione o un posto in rosa.':'Nessun giocatore in questa categoria: il mercato si rinnova ogni 5 giornate.'}</p>`);
+  $('mkBox').innerHTML=infoX('mk',MK_INFO)+(mkMsg?`<p class="rmsg">${mkMsg}</p>`:'')+bar+(rows.length?`<div class="mgrid">${rows.map(x=>row(x[0],x[1])).join('')}</div>`:`<p class="note">${mkOnly?'Nessun acquisto disponibile con questi filtri. Prova un’altra categoria o togli «Solo chi posso prendere».':'Nessun giocatore in questa categoria: il mercato si rinnova ogni 5 giornate.'}</p>`);
 }
 $('mkTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;mkTab=b.dataset.k;mkMsg='';renderMarket();});
 $('mkBox').addEventListener('change',e=>{if(e.target.closest('[data-mksort]')){mkSort=e.target.value;renderMarket();}else if(e.target.closest('[data-mkonly]')){mkOnly=e.target.checked;renderMarket();}});
@@ -32,7 +32,7 @@ $('mkBox').addEventListener('click',e=>{
   const rp=e.target.closest('[data-rp]');if(rp){const m=SV.market[+rp.dataset.rp],k=m&&(m.o.full||m.o.n);if(k){if(mkOpen.has(k))mkOpen.delete(k);else mkOpen.add(k);}renderMarket();return;}
   const sc=e.target.closest('[data-sc]'),by=e.target.closest('[data-buy]');
   if(sc){const m=SV.market[+sc.dataset.sc];if(m&&scoutPlayer(m.o)){mkMsg=`Osservato ${m.o.label||m.o.n}: potenziale ${potTxt(m.o)}.`;persist();}renderMarket();}
-  else if(by){const i=+by.dataset.buy,m=SV.market[i];if(m&&!canSign(m))askConfirm(mkBuySummary(m,()=>{const k=SV.market.indexOf(m),nm=m.o.label||m.o.n;if(k>=0&&signPlayer(k)){mkMsg=`${nm} è un nuovo giocatore della squadra. Mettilo in una linea da Squadra.`;persist();}renderMarket();}));}
+  else if(by){const i=+by.dataset.buy,m=SV.market[i];if(m&&!canSign(m))askConfirm(mkBuySummary(m,()=>{const k=SV.market.indexOf(m),nm=m.o.label||m.o.n;if(k>=0&&signPlayer(k)){mkMsg=`${esc(nm)} entra in rosa. Assegna una linea da Squadra.`;persist();}renderMarket();}));}
 });
 // riepilogo prima di comprare: prezzo, crediti che restano, stipendio in piu' a ogni partita, posto in rosa e chi sostituirebbe nel suo ruolo
 function mkBuySummary(m,onOk){

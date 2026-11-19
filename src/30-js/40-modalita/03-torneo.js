@@ -1,8 +1,8 @@
 /* ===================== TORNEO PERSONALIZZATO: eliminazione diretta a 4, 8 o 16 squadre vere, scelte da te ===================== */
 const TN_KEY='ultimate-torneo';
 const tnOk=n=>!!(TEAM[n]||US_TEAM[n]||LN_BY[n]);   // un club che esiste ancora (italiano, USA o di una lega europea)
-let TOUR=null;try{TOUR=JSON.parse(localStorage.getItem(TN_KEY)||'null');if(TOUR&&(!Array.isArray(TOUR.rounds)||!tnOk(TOUR.team)||TOUR.rounds.some(r=>r.some(n=>!tnOk(n)))))TOUR=null;}catch(e){TOUR=null;}
-const tnSave=()=>{try{if(TOUR)localStorage.setItem(TN_KEY,JSON.stringify(TOUR));else localStorage.removeItem(TN_KEY);}catch(e){}};
+let TOUR=null;try{TOUR=JSON.parse(saveStore.getItem(TN_KEY)||'null');if(TOUR&&(!Array.isArray(TOUR.rounds)||!tnOk(TOUR.team)||TOUR.rounds.some(r=>r.some(n=>!tnOk(n)))))TOUR=null;}catch(e){TOUR=null;}
+const tnSave=()=>{try{if(TOUR)saveStore.setItem(TN_KEY,JSON.stringify(TOUR));else saveStore.removeItem(TN_KEY);}catch(e){}};
 const TN_SET={team:'',size:8,pool:'lg',d:0,len:7};   // pool: 'lg' il campionato della tua squadra, 'grp' la sua serie, 'all' tutti i campionati della divisione
 const tnRoundName=n=>n>=16?'Ottavi di finale':(n>=8?'Quarti di finale':(n>=4?'Semifinale':'Finale'));
 const tnCur=()=>TOUR.rounds[TOUR.rounds.length-1];
@@ -58,10 +58,10 @@ function renderTourn(){
     const opts=LEAGUES.flatMap(l=>qGrps(l).map(g=>[l,g])).map(([l,g])=>`<optgroup label="${esc(qLgTab(l)+' · '+g)}">${l.clubs().filter(n=>qGrp(n)===g).map(n=>`<option value="${esc(n)}"${n===TN_SET.team?' selected':''}>${esc(n)} (${Math.round(qPower(n))})</option>`).join('')}</optgroup>`).join('');
     const sel=(id,l,o,v)=>`<div><label for="${id}">${l}</label><select class="qs" id="${id}">${o.map(x=>`<option value="${x[0]}"${String(x[0])===String(v)?' selected':''}>${x[1]}</option>`).join('')}</select></div>`;
     $('tnBox').innerHTML=`<p class="note" style="margin:0 0 10px">Crea un torneo a eliminazione diretta con le squadre vere: scegli la tua (di qualsiasi campionato), quante partecipano e da dove arrivano le avversarie: le squadre femminili giocano solo tra loro. Le tue partite le giochi (o le simuli), le altre vengono simulate. Il torneo resta salvato finché non ne crei un altro.</p>
-      <div class="tnset"><div><label for="tnSearch">Cerca squadra</label><input type="search" id="tnSearch" class="qs" autocomplete="off"> <label for="tnTeam">La tua squadra</label><select class="qs" id="tnTeam">${opts}</select></div>${sel('tnSize','Squadre',[[4,'4 · semifinali e finale'],[8,'8 · dai quarti'],[16,'16 · dagli ottavi']],TN_SET.size)}${sel('tnPool','Avversarie',[['lg','Dal suo campionato'],['grp','Dalla sua serie'],['all','Da tutti i campionati']],TN_SET.pool)}${sel('tnD','Difficoltà',[[0,'Facile'],[1,'Medio'],[2,'Difficile'],[3,'Estrema']],TN_SET.d)}${sel('tnLen','Durata',LEN_OPTS.map(o=>[o.n,o.name+' · '+o.n+' punti']),TN_SET.len)}</div>
+      <div class="tnset"><div><label for="tnSearch">Cerca squadra</label><input type="search" id="tnSearch" class="qs" autocomplete="off"> </div><div><label for="tnDiv">Divisione</label><select id="tnDiv" class="qs"><option value="">Tutte</option><option value="m">Open e Men</option><option value="w">Women</option></select></div><div><label for="tnLg">Campionato</label><select id="tnLg" class="qs"><option value="">Tutti</option>${LEAGUES.map(l=>`<option value="${l.id}">${esc(l.name)}</option>`).join('')}</select></div><div><label for="tnGrp">Serie o livello</label><select id="tnGrp" class="qs"><option value="">Tutte</option></select></div><div><label for="tnTeam">La tua squadra</label><select class="qs" id="tnTeam">${opts}</select></div>${sel('tnSize','Squadre',[[4,'4 · semifinali e finale'],[8,'8 · dai quarti'],[16,'16 · dagli ottavi']],TN_SET.size)}${sel('tnPool','Avversarie',[['lg','Dal suo campionato'],['grp','Dalla sua serie'],['all','Da tutti i campionati']],TN_SET.pool)}${sel('tnD','Difficoltà',[[0,'Facile'],[1,'Medio'],[2,'Difficile'],[3,'Estrema']],TN_SET.d)}${sel('tnLen','Durata',LEN_OPTS.map(o=>[o.n,o.name+' · '+o.n+' punti']),TN_SET.len)}</div>
       <p class="note" role="status" id="tnPoolNote"></p>
       <div class="schrow" style="margin-top:12px"><button type="button" class="go" id="tnGo">Crea il torneo</button></div>`;
-    tnPoolPreview();
+    tnFilterTeams();
     return;
   }
   const cols=TOUR.rounds.map((t,ri)=>{
@@ -75,7 +75,7 @@ function renderTourn(){
   const opp=TOUR.st==='play'?tnOpp():null;
   const head=TOUR.st==='play'?`<div class="hrow" style="max-width:560px;margin-bottom:10px"><button class="hbtn hp" id="tnPlay" type="button"><span><strong>Gioca: ${tnRoundName(tnCur().length)}</strong><small>Contro ${esc(opp)} · forza ${Math.round(qPower(opp))} (tu ${Math.round(qPower(TOUR.team))})</small></span></button><button class="hbtn hsim" id="tnSim" type="button"><span><strong>Simula</strong><small>partita</small></span></button></div>`
     :`<p class="estat">${TOUR.st==='won'?'Hai vinto il torneo con '+esc(TOUR.team)+'!':'Eliminati. Vince '+esc(TOUR.champ)+'.'}</p>`;
-  $('tnBox').innerHTML=head+`<div class="tncols">${cols}</div><div class="hlinks" style="margin-top:8px"><button class="hlink" id="tnNew" type="button">Nuovo torneo</button><span class="note" style="margin:0">Difficoltà: ${['Facile','Medio','Difficile','Estrema'][TOUR.d|0]} · si vince a ${lenOk(TOUR.len|0)} punti</span></div>`;
+  $('tnBox').innerHTML=head+`<details class="tnbracket"${TOUR.st!=='play'||!matchMedia('(max-width: 820px)').matches?' open':''}><summary>Tabellone completo</summary><div class="tncols">${cols}</div></details><div class="hlinks" style="margin-top:8px"><button class="hlink" id="tnNew" type="button">Nuovo torneo</button><span class="note" style="margin:0">Difficoltà: ${['Facile','Medio','Difficile','Estrema'][TOUR.d|0]} · si vince a ${lenOk(TOUR.len|0)} punti</span></div>`;
 }
 function tnPoolPreview(){
   const team=$('tnTeam').value;
@@ -89,26 +89,36 @@ function tnPoolPreview(){
   }
   $('tnPoolNote').textContent='Avversarie: '+parts.join(' · ');
 }
-$('tnBox').addEventListener('change',e=>{
-  if(['tnTeam','tnPool','tnSize'].includes(e.target.id))tnPoolPreview();
-});
-$('tnBox').addEventListener('input',e=>{
-  if(e.target.id!=='tnSearch')return;
-  const query=clubSearchText(e.target.value),select=$('tnTeam'),previous=select.value;
-  for(const group of select.children){
-    for(const option of group.children)option.hidden=!clubSearchText(option.value).includes(query);
-    group.hidden=[...group.children].every(o=>o.hidden);
+function tnFilterTeams(){
+  const division=$('tnDiv').value,league=$('tnLg').value,groupSelect=$('tnGrp');
+  const groups=[...new Set(catalogClubs({division,league}).map(qGrp))];
+  const group=groups.includes(groupSelect.value)?groupSelect.value:'';
+  groupSelect.replaceChildren(new Option('Tutte',''),...groups.map(name=>new Option(name,name)));
+  groupSelect.value=group;
+  const names=new Set(catalogClubs({division,league,group,search:$('tnSearch').value}));
+  const select=$('tnTeam'),previous=select.value;
+  for(const optgroup of select.children){
+    for(const option of optgroup.children)option.hidden=option.disabled=!names.has(option.value);
+    optgroup.hidden=[...optgroup.children].every(o=>o.hidden);
   }
-  const match=[...select.options].find(o=>!o.hidden&&o.value===previous)||[...select.options].find(o=>!o.hidden);
-  select.value=match?.value||'';
-  $('tnGo').disabled=!match;
+  select.value=names.has(previous)?previous:names.values().next().value||'';
+  $('tnGo').disabled=!select.value;
   tnPoolPreview();
+}
+$('tnBox').addEventListener('change',e=>{
+  if(['tnDiv','tnLg','tnGrp'].includes(e.target.id))tnFilterTeams();
+  else if(['tnTeam','tnPool','tnSize'].includes(e.target.id))tnPoolPreview();
 });
+$('tnBox').addEventListener('input',e=>{if(e.target.id==='tnSearch')tnFilterTeams();});
 $('tnBox').addEventListener('click',e=>{
   if(e.target.closest('#tnGo')){TN_SET.team=$('tnTeam').value;TN_SET.size=+$('tnSize').value;TN_SET.pool=$('tnPool').value;TN_SET.d=+$('tnD').value;TN_SET.len=+$('tnLen').value;tnCreate();renderTourn();}
   else if(e.target.closest('#tnPlay'))startTourn(false);
   else if(e.target.closest('#tnSim'))startTourn(true);
-  else if(e.target.closest('#tnNew')){const b=e.target.closest('#tnNew');armed(b,TOUR.st==='play'?'Conferma: abbandona questo torneo':'Conferma','Nuovo torneo',()=>{TOUR=null;tnSave();renderTourn();});}
+  else if(e.target.closest('#tnNew')){
+    askConfirm({title:'Creare un nuovo torneo?',ok:'Nuovo torneo',danger:TOUR.st==='play',
+      html:TOUR.st==='play'?'<p>Perderai il turno in corso ('+tnRoundName(tnCur().length)+') e i risultati del torneo.</p>':'<p>Il tabellone attuale sarà sostituito.</p>',
+      onOk:()=>{TOUR=null;tnSave();renderTourn();}});
+  }
 });
 $('tnBack').addEventListener('click',()=>showScreen('title'));
 $('tTourn').addEventListener('click',()=>showScreen('tourn'));

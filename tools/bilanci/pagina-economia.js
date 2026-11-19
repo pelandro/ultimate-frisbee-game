@@ -13,7 +13,7 @@ for(let s=0;s<P.seasons;s++){
   let sold=0;if(P.trim)while(SQ.length>P.trim){const w=SQ.slice().sort((a,b)=>ovr(a)-ovr(b))[0];const c=SV.cash;if(!sellPlayer(w.id))break;sold+=SV.cash-c;}
   const c0=SV.cash;let g=0,rev=0,net=0,mn=SV.cash,red=0,fired=false;
   while(!SV.done&&g<40){if(P.mode==='max')maxAll();autoTrain();autoLines();fixLines();simCareerMatch();hide();evt();
-    const m=SV.lastMoney;rev+=m.gate+m.spon+m.wb;net+=m.net;mn=Math.min(mn,SV.cash);if(SV.cash<0)red++;if(SV.fired)fired=true;g++;}
+    const m=SV.lastMoney;rev+=m.gate+(m.rent||0)+m.spon+m.wb;net+=m.net;mn=Math.min(mn,SV.cash);if(SV.cash<0)red++;if(SV.fired)fired=true;g++;}
   ss.push({sr:SV.sr,rank:SV.next&&SV.next.rank,c0,c1:SV.cash,min:mn,red,fired,sold,rev:Math.round(rev),net:Math.round(net)});
   newSeason();hide();evt();
 }

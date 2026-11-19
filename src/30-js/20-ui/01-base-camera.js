@@ -111,7 +111,7 @@ HOOKS.over=showOver;
 const AIM_EDGE=8;   // metri: quanto campo resta sempre visibile oltre il punto mirato (con 5 il punto finiva quasi sul bordo e non si vedeva chi corre li')
 // zoom: pull = tutto il campo, difesa = zoom forte, attacco = normale
 const zoomTarget=()=>G.mode==='ready'?Math.min(1,VW/(FIELD_L+6)/baseS):((G.mode==='play'||G.mode==='cine')?(G.poss===1?DEF_ZOOM:ATT_ZOOM):1);
-function updateCamera(dt){
+function updateCamera(dt,replayDisc){
   const defend=G.mode==='play'&&G.poss===1&&!G.pull;
   const zt=zoomTarget();
   if(cam.snap){cam.z=cam.zF=cam.zTo=zt;cam.zP=1;}
@@ -130,6 +130,7 @@ function updateCamera(dt){
   if(G.mode==='ready'){dc=dirOf(pt);fx=(pt===0&&G.puller)?G.puller.x:G.ref.x;fy=MID;}
   else if(pu){dc=dirOf(pt);fx=pu.landed?G.ref.x:lerp(G.disc.x,pu.tx,0.5);fy=pu.landed?G.ref.y:lerp(G.disc.y,pu.ty,0.5);}
   else{const f=G.flight;dc=dirOf(G.poss);fx=f?lerp(G.disc.x,f.tx,0.5):(G.holder?G.holder.x:G.ref.x);fy=f?lerp(G.disc.y,f.ty,0.5):(G.holder?G.holder.y:G.ref.y);}
+  if(replayDisc)[fx,fy]=replayDisc;
   const bl=clamp(cam.dz/0.2,0,1);if(bl>0.001&&G.diveFocus){fx=lerp(fx,G.diveFocus.x,bl);fy=lerp(fy,G.diveFocus.y,bl);}
   // in attacco il portatore sta vicino al bordo posteriore dello schermo: si vede il piu' possibile del campo davanti, per mirare i lanci lunghi.
   // in difesa il disco e' al centro. Il passaggio tra le due inquadrature e' lento.

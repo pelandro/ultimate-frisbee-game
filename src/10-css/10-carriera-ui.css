@@ -32,7 +32,7 @@
 .rb:hover{color:#fff;background:#202c5e}.rb:active{transform:translateY(2px)}
 .rb.on{color:#1a1c2c;background:var(--gold);box-shadow:inset 2px 2px 0 rgba(255,255,255,.5)}
 .rb.on small{color:#4a3a00}
-.rb .bdg{position:absolute;top:1px;right:1px;font-style:normal;font-family:var(--pfont);font-size:7px;font-size-adjust:none;line-height:1;padding:2px 3px;background:var(--bad);color:#fff;border:2px solid #000}
+.rb .bdg{position:absolute;top:1px;right:1px;font-style:normal;font-family:var(--pfont);font-size:7px;font-size-adjust:none;line-height:1;padding:2px 3px;background:var(--bad);color:#171322;border:2px solid #000}
 .rb .bdg.ok{background:var(--good);color:#06240f}
 .rb:focus-visible,#ctop button:focus-visible,.cmi:focus-visible{outline:3px solid #fff;outline-offset:1px}
 /* le schermate lasciano lo spazio al guscio */

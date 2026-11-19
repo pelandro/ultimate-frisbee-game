@@ -7,13 +7,13 @@ const TR_OPTS=CATS.concat([{id:'rec',name:'Recupero',keys:[]}]);
 const TR_SUB={tec:'Lancio, Buco, Sparo, Presa',atl:'Velocità, Scatto, Agilità, Salto, Resistenza',dif:'Difesa, Tuffo',tat:'Visione; di squadra anche affiatamento',rec:'Ridà condizione, nessuna crescita'};
 function trainApply(p,opt,single){
   if(opt.id==='rec'){
-    const before=p.cond;p.cond=clamp(p.cond+REST_GAIN+(single?8:0)+2*facLv('fis')+4*staffLv('fit'),0,100);
+    const before=p.cond;p.cond=clamp(p.cond+REST_GAIN+(single?8:0)+facRecovery()+4*staffLv('fit'),0,100);
     let heal=false;if(single&&p.inj>1){p.inj--;heal=true;}   // il lavoro individuale di recupero accorcia di una partita uno stop lungo
     return {p,c:opt,changes:[],gain:0,rest:Math.round(p.cond-before),heal};
   }
   const it=trInt(),r=trainCategory(p,opt,trainMul(p)*(single?1.5:1)*it.g);   // il lavoro individuale rende il 50% in piu'; il campo di allenamento il 10% per livello; l'intensita' scelta fa il resto
   p.cond=clamp(p.cond-Math.round((single?TRAIN_COST1:TRAIN_COST)*it.c*(r.spec?1.15:1)*trCostK()),0,100);   // le sedute dell'indirizzo personale costano un po' di piu'
-  if(Math.random()<(trainRisk(p)*it.r+(it.r>1?0.004:0))*(1-0.12*facLv('fis'))*(1-0.1*staffLv('fit'))){p.inj=1+Math.floor(Math.random()*2);r.hurt=p.inj;alertAdd('inj',`${pname(p)} si è infortunat${oa(p)} in allenamento: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full,seen:1});}
+  if(Math.random()<(trainRisk(p)*it.r+(it.r>1?0.004:0))*(facInjuryK())*(1-0.1*staffLv('fit'))){p.inj=1+Math.floor(Math.random()*2);r.hurt=p.inj;alertAdd('inj',`${pname(p)} si è infortunat${oa(p)} in allenamento: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full,seen:1});}
   return r;
 }
 // riquadro del programma automatico (le regole sono in 30-carriera/15-programma-allenamenti.js)
@@ -38,7 +38,7 @@ function renderTrain(){
   $('tHint').innerHTML=`<div class="tchs">${chip(!open?'blk':SV.tTeam?'ok':'todo','Squadra',!open?'bloccata':SV.tTeam?'fatta':'da fare')}${chip(!open?'blk':left===0?'ok':'todo','Individuali',`${3-left}/3`)}</div><small>${hint}</small>`;
   if(trainRes){
     const ups=trainRes.filter(r=>r.gain>0),flat=trainRes.filter(r=>!r.gain&&!r.rest&&r.c.keys.length),rest=trainRes.filter(r=>r.rest!==undefined),hurt=trainRes.filter(r=>r.hurt);
-    $('tRes').innerHTML=`<div class="tres">${ups.map(r=>`<div class="up">${r.p.name}: ${r.changes.map(x=>`${LONG[x.k]} ${x.from}→${x.to}`).join(', ')}</div>`).join('')}${rest.length?`<div class="rs">Recupero: ${rest.length===1?rest[0].p.name+' +'+rest[0].rest:rest.length+' giocatori, in media +'+Math.round(rest.reduce((a,r)=>a+r.rest,0)/rest.length)} di condizione${rest.some(r=>r.heal)?', stop per infortunio accorciato di una partita':''}</div>`:''}${flat.length?`<div class="no">${flat.length===1?flat[0].p.name+': nessun progresso':flat.length+' giocatori senza progressi'} in questa seduta</div>`:''}${hurt.map(r=>`<div class="bad">${r.p.name} si è infortunato in allenamento: ${r.hurt} ${r.hurt>1?'partite':'partita'} di stop</div>`).join('')}${trainRes.note?`<div class="rs">${trainRes.note}</div>`:''}</div>`;
+    $('tRes').innerHTML=`<div class="tres">${ups.map(r=>`<div class="up">${r.p.name}: ${r.changes.map(x=>`${LONG[x.k]} ${x.from}→${x.to}`).join(', ')}</div>`).join('')}${rest.length?`<div class="rs">Recupero: ${rest.length===1?rest[0].p.name+' +'+rest[0].rest:rest.length+' giocatori, in media +'+Math.round(rest.reduce((a,r)=>a+r.rest,0)/rest.length)} di condizione${rest.some(r=>r.heal)?', stop per infortunio accorciato di una partita':''}</div>`:''}${flat.length?`<div class="no">${flat.length===1?flat[0].p.name+': nessun progresso':flat.length+' giocatori senza progressi'} in questa seduta</div>`:''}${hurt.map(r=>`<div class="bad">${esc(r.p.name)} si è infortunat${oa(r.p)} in allenamento: ${r.hurt} ${r.hurt>1?'partite':'partita'} di stop</div>`).join('')}${trainRes.note?`<div class="rs">${trainRes.note}</div>`:''}</div>`;
   }else $('tRes').innerHTML='';
 }
 $('tList').addEventListener('click',e=>{
@@ -119,7 +119,19 @@ $('rBox').addEventListener('click',e=>{
   const id=+r.dataset.id;if(openDet.has(id))openDet.delete(id);else openDet.add(id);sellArm=null;renderRoster();
 });
 $('rTop').addEventListener('click',e=>{
-  if(e.target.closest('#rAuto')){autoLines();fixLines();rosterMsg='Linee impostate: attacco con i migliori handler e cutter, difesa con i migliori difensori; a parità entra il più fresco e chi è già in attacco va in difesa solo se vale molto di più.';persist();renderRoster();}
+  if(e.target.closest('#rAuto')){
+    const lines=suggestedLines();
+    const changes=Object.entries(lines).map(([key,next])=>{
+      const old=SV[key]||[],names=list=>list.map(name=>esc(byFull(name)?.label||name)).join(', ')||'nessuno';
+      return '<h3>'+(key==='lineO'?'Attacco':'Difesa')+'</h3><p>Entrano: '+names(next.filter(n=>!old.includes(n)))+
+        '</p><p>Escono: '+names(old.filter(n=>!next.includes(n)))+'</p>';
+    }).join('');
+    askConfirm({title:'Applicare le linee consigliate?',html:changes,ok:'Applica linee',onOk:()=>{
+      Object.assign(SV,lines);fixLines();persist();rosterMsg='Linee aggiornate.';renderRoster();
+      $('rAuto')?.focus();
+    }});
+    return;
+  }
   else if(e.target.closest('#rSmart')){SV.autoSub=!SV.autoSub;persist();renderRoster();}
 });
 // riquadro di conferma sotto gli indirizzi: che cosa succede (anteprima) e il tasto che fa partire davvero la seduta

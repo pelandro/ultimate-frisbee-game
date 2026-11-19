@@ -2,7 +2,7 @@
 /* Prova del gioco in un browser vero (Playwright, Chromium senza finestra): apre il gioco costruito e attraversa i percorsi principali
    come farebbe un giocatore. Fallisce se compare un errore JavaScript o se una schermata non si apre.
    Se Playwright non e' installato la prova viene saltata (in CI invece e' obbligatoria). */
-const fs=require('fs'),path=require('path'),{build,OUT}=require('./build');
+const fs=require('fs'),os=require('os'),path=require('path'),{build}=require('./build');
 let chromium;
 try{({chromium}=require('playwright'));}
 catch(e){
@@ -10,7 +10,10 @@ catch(e){
   console.log('Prova nel browser saltata: Playwright non e\' installato (npm install && npx playwright install chromium)');process.exit(0);
 }
 (async()=>{
-  fs.mkdirSync(path.dirname(OUT),{recursive:true});fs.writeFileSync(OUT,build());
+  const folder=fs.mkdtempSync(path.join(os.tmpdir(),'ultimate-browser-'));
+  process.on('exit',()=>fs.rmSync(folder,{recursive:true,force:true}));
+  const OUT=path.join(folder,'gioco.html');
+  fs.writeFileSync(OUT,build().replace('const hasSave=loadSave();','window.testSaves=saveStore;window.testImport=importSave;const hasSave=loadSave();'));
   const browser=await chromium.launch(),errs=[],done=[];
   const page=await (await browser.newContext({viewport:{width:844,height:390}})).newPage();
   page.setDefaultTimeout(15000);
@@ -130,8 +133,19 @@ catch(e){
     await page.click('#lgBack');await page.click('#lgBack');await vis('#title');
     await page.click('#tQuick');await vis('#quick');await page.click('#qDiv [data-v="w"]');
     if(!/Women/.test(await page.locator('#qAP').innerText())||!/Women/.test(await page.locator('#qBP').innerText()))throw new Error('partita veloce femminile con una squadra maschile');
+    await page.evaluate(()=>{
+      const sample=document.createElement('p');sample.id='women-copy-test';
+      sample.textContent='I titolari · il difensore · giocatori infortunati';
+      sample.setAttribute('aria-label','Ricevitore selezionato');
+      document.getElementById('quick').append(sample);
+    });
+    await page.waitForFunction(()=>document.getElementById('women-copy-test').textContent==='Le titolari · la difensora · giocatrici infortunate');
+    if(await page.locator('#women-copy-test').getAttribute('aria-label')!=='Ricevitrice selezionata')throw new Error('Etichetta accessibile Women non aggiornata');
     await page.click('#qA');const tb=await page.locator('#qpTabs button').count();await page.click('#qpX');if(tb!==2)throw new Error('nel femminile le linguette sono Serie A e Serie B');
     await page.click('#qDiv [data-v="m"]');if(/Women/.test(await page.locator('#qAP').innerText())||/giocatrici/.test(await page.locator('#qDP').innerText()))throw new Error('tornando al maschile resta qualcosa del femminile');
+    await page.waitForFunction(()=>document.getElementById('women-copy-test').textContent==='I titolari · il difensore · giocatori infortunati');
+    if(await page.locator('#women-copy-test').getAttribute('aria-label')!=='Ricevitore selezionato')throw new Error('Etichetta accessibile originale non ripristinata');
+    await page.evaluate(()=>document.getElementById('women-copy-test').remove());
     await page.click('#qBack');await vis('#title');
   });
   await step('carriera USA dall\'interfaccia: Italia/USA, Conference, club, allenatore, Classifica a tre viste, partita simulata',async()=>{
@@ -150,7 +164,7 @@ catch(e){
     for(const k of ['nat','rank','conf'])await page.click('#usTabs [data-ut="'+k+'"]');
     await page.click('#hHome');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
     await menu('#hOpt');await page.click('#opX');
-    await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');localStorage.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])localStorage.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
+    await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');window.testSaves.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])window.testSaves.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
     await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   });
   await step('diagnostica: leghe europee (Belgio, Francia, Germania, Regno Unito: dati, rose, formati, promozioni, coppa europea)',async()=>{
@@ -175,7 +189,7 @@ catch(e){
     if(await page.locator('#eBody .rt tr.up').count()!==4)throw new Error('il girone da 4 deve avere tutte le squadre nella zona del tabellone');
     for(const k of ['fin','tiers','grp'])await page.click('#lnTabs [data-lt="'+k+'"]');
     await page.click('#hHome');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
-    await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');localStorage.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])localStorage.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
+    await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');window.testSaves.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])window.testSaves.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
     await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   });
   await step('nuova carriera e cruscotto',async()=>{
@@ -244,7 +258,7 @@ catch(e){
     if(await page.locator('#tList .prow:not([disabled])').count()>await page.locator('#tList .prow').count()-3)throw new Error('il programma automatico non ha fatto i lavori individuali');
     await page.click('#tTeamBox [data-prog]');await page.click('#hHome');
     await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#hHome');
-    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="man"]');{const t=await page.locator('#clBox').innerText();if(!/Sponsor e obiettivo/i.test(t)||!/a ogni partita/.test(t)||!/Conti delle partite/i.test(t))throw new Error('la scheda Società deve mostrare lo sponsor scelto e i conti delle partite: '+t.replace(/\s+/g,' ').slice(0,900));}await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==6)throw new Error('devono esserci sei strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci quattro figure dello staff');
+    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="man"]');{const t=await page.locator('#clBox').innerText();if(!/Sponsor e obiettivo/i.test(t)||!/a ogni partita/.test(t)||!/Conti delle partite/i.test(t))throw new Error('la scheda Società deve mostrare lo sponsor scelto e i conti delle partite: '+t.replace(/\s+/g,' ').slice(0,900));}await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==3)throw new Error('devono esserci tre strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci quattro figure dello staff');
     // le altre linguette del Club: traguardi (ventidue schede, percentuale), albo d'oro e Hall of Fame
     await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="ach"]');if(await page.locator('#clBox .ach').count()!==22||!/%/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi devono essere ventidue, con la percentuale');
     await page.click('#clSub [data-k="hon"]');if(await page.locator('#clBox .trt').count()<7)throw new Error('manca la bacheca dei trofei');
@@ -265,7 +279,7 @@ catch(e){
   });
   await step('Posta: «Chiudi» non segna come letto, «Segna tutto come letto» sì; Mercato: conferma prima di comprare; Allena: lavoro individuale in due passi',async()=>{
     // una notizia nuova di sicuro: un avviso non urgente scritto nel salvataggio, poi ricarica
-    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(localStorage.getItem(k));d.alerts=d.alerts||[];d.alN=(d.alN|0)+1;d.alerts.unshift({id:d.alN,s:d.season,r:1,k:'grow',txt:'Prova di lettura',full:'',act:'',data:null,seen:0,done:0,sh:1});localStorage.setItem(k,JSON.stringify(d));if(d.slot)localStorage.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.alerts=d.alerts||[];d.alN=(d.alN|0)+1;d.alerts.unshift({id:d.alN,s:d.season,r:1,k:'grow',txt:'Prova di lettura',full:'',act:'',data:null,seen:0,done:0,sh:1});window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
     await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
     // qui i tocchi passano da evaluate: il gestore in cima alla prova chiuderebbe la Posta prima di ogni click
     const unread=async()=>(await page.locator('#alBody .ali.new').count()),tap=id=>page.evaluate(i=>document.getElementById(i).click(),id);
@@ -275,7 +289,7 @@ catch(e){
     await tap('alAll');if(await unread())throw new Error('«Segna tutto come letto» non ha segnato tutto');
     await tap('alX');
     // mercato: con i crediti per comprare, «Acquista» apre il riepilogo; «Annulla» non compra niente
-    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(localStorage.getItem(k));d.cash=5000;localStorage.setItem(k,JSON.stringify(d));if(d.slot)localStorage.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.cash=5000;window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
     await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
     await page.click('#hMarket');await vis('#market');
     const buy=page.locator('#mkBox [data-buy]:not([disabled])').first();
@@ -369,8 +383,8 @@ catch(e){
   });
   await step('Campionato europeo: una sola edizione a stagione, poi si torna al campionato',async()=>{
     // la coppa si sblocca solo dalla Serie A: per provarla si modifica il salvataggio (come se la squadra si fosse qualificata) e si ricarica
-    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(localStorage.getItem(k));d.euUnlocked=true;d.event='eu';d.eu={round:0,state:'on',s:d.season,opps:['Berlino','Parigi','Madrid']};   // formato vecchio: l'edizione riparte come EUCF
-    d.susp=null;localStorage.setItem(k,JSON.stringify(d));if(d.slot)localStorage.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.euUnlocked=true;d.event='eu';d.eu={round:0,state:'on',s:d.season,opps:['Berlino','Parigi','Madrid']};   // formato vecchio: l'edizione riparte come EUCF
+    d.susp=null;window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
     await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
     for(let i=0;i<12&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim');await vis('#simres');await page.click('#srOk');await page.waitForTimeout(150);if(/Torna al campionato/.test(await page.locator('#hPlayT').innerText()))break;}
     const t=await page.locator('#hPlayT').innerText();if(!/Torna al campionato/.test(t))throw new Error('a coppa conclusa il tasto principale dice «'+t+'»');
@@ -400,6 +414,29 @@ catch(e){
     const name2=await page.locator('#hEvt').first().innerText();if(name2===name1)throw new Error('lo slot 2 ha la stessa squadra dello slot 1');
     await menu('#hOpt');await page.click('#opSlots [data-slot="1"]');await page.waitForTimeout(300);await vis('#home');
     const back=await page.locator('#hEvt').first().innerText();if(back!==name1)throw new Error('tornando allo slot 1 la carriera non e\' quella di prima: '+back);
+    await menu('#hOpt');
+    const file=await page.evaluate(()=>window.testSaves.getItem('ultimate-carriera-1'));
+    await page.locator('#clFile').setInputFiles({name:'carriera.json',mimeType:'application/json',buffer:Buffer.from(file)});
+    // FileReader apre l’anteprima dopo la lettura asincrona.
+    await page.locator('#importSlot').waitFor({state:'visible'});
+    await page.selectOption('#importSlot','3');
+    await page.click('#cfmNo');
+    if(await page.evaluate(()=>window.testSaves.getItem('ultimate-carriera-3')))throw new Error('annullare l’importazione ha alterato lo slot di destinazione');
+    const atomic=await page.evaluate(()=>{
+      const key='ultimate-salvataggi-v1',storage=Storage.prototype,set=storage.setItem;
+      const before=localStorage.getItem(key),career=JSON.parse(window.testSaves.getItem('ultimate-prototipo-v2'));
+      const backup={app:'ultimate-frisbee',v:career.v,career,slots:{3:{...career,slot:3}},
+        extra:{'ultimate-ut':{col:[],sel:[],packs:[0]}}};
+      storage.setItem=function(k,v){
+        if(k===key)throw new DOMException('Quota di prova','QuotaExceededError');
+        return set.call(this,k,v);
+      };
+      try{return !!window.testImport(JSON.stringify(backup),1,true,true)&&localStorage.getItem(key)===before;}
+      finally{storage.setItem=set;}
+    });
+    if(!atomic)throw new Error('un errore di quota ha lasciato un import parziale');
+    await page.click('#opX');
+
   });
   await step('il salvataggio resiste alla ricarica della pagina',async()=>{
     await page.reload();await page.waitForTimeout(500);
@@ -511,6 +548,7 @@ catch(e){
   await step('torneo personalizzato',async()=>{
     await page.click('#tTourn');await vis('#tourn');
     if(await page.locator('#tnGo').count()){await page.selectOption('#tnSize','4');await page.click('#tnGo');}
+    const bracket=page.locator('.tnbracket');if(await bracket.getAttribute('open')===null)await bracket.locator('summary').click();
     await vis('.tncols');if(await page.locator('#tnSim').count()){await page.click('#tnSim');await vis('#simres');await page.click('#srOk');}
     await page.click('#tnBack');
   });
@@ -520,8 +558,8 @@ catch(e){
     await vis('#ut');await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
   });
   await step('Ultimate Team: Negozio con pacchetto normale, Handler e Cutter',async()=>{
-    const ut=()=>page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut'));return {n:o.col.length,c:o.coins|0,pk:o.packs.slice(),r:o.col.map(x=>x.r)};});
-    const u0=await ut();await page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut'));o.coins=500;localStorage.setItem('ultimate-ut',JSON.stringify(o));});
+    const ut=()=>page.evaluate(()=>{const o=JSON.parse(window.testSaves.getItem('ultimate-ut'));return {n:o.col.length,c:o.coins|0,pk:o.packs.slice(),r:o.col.map(x=>x.r)};});
+    const u0=await ut();await page.evaluate(()=>{const o=JSON.parse(window.testSaves.getItem('ultimate-ut'));o.coins=500;window.testSaves.setItem('ultimate-ut',JSON.stringify(o));});
     await page.reload();await page.waitForTimeout(500);
     await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');await vis('#ut');
     if(await page.locator('#uBuy').count())throw new Error('«Compra un pacchetto» e\' sostituito dal Negozio');
@@ -545,7 +583,7 @@ catch(e){
     await page.click('#urBack');await vis('#utMode');await page.click('#umBack');await vis('#title');
   });
   await step('Ultimate Team: Real player ha una squadra sua, premi dei traguardi e nome non modificabile',async()=>{
-    const cols=()=>page.evaluate(()=>['ultimate-ut','ultimate-ut-real'].map(k=>{const o=JSON.parse(localStorage.getItem(k)||'null');return o?{n:o.col.length,c:o.coins|0,pk:(o.packs||[]).slice(),ms:o.ms|0}:null;}));
+    const cols=()=>page.evaluate(()=>['ultimate-ut','ultimate-ut-real'].map(k=>{const o=JSON.parse(window.testSaves.getItem(k)||'null');return o?{n:o.col.length,c:o.coins|0,pk:(o.packs||[]).slice(),ms:o.ms|0}:null;}));
     const cpu0=(await cols())[0];if(!cpu0||cpu0.n<10)throw new Error('la squadra contro il computer dovrebbe esistere gia\'');
     await page.click('#tUT');await vis('#utMode');await page.click('#umReal');await vis('#utReal');
     if(await page.locator('#urRename').count())throw new Error('il pulsante «Cambia nome» non deve piu\' esistere');
@@ -576,15 +614,15 @@ catch(e){
     await page.click('#umCpu');await vis('#ut');cpu=(await cols())[0];
     if(cpu.n!==cpu0.n||cpu.c!==cpu0.c||!new RegExp('Rosa: '+cpu0.n+' ').test(await page.locator('#uStats').innerText()))throw new Error('la squadra del torneo e\' cambiata dopo Real player');
     await page.click('#uBack');await page.click('#umBack');await vis('#title');
-    await page.evaluate(()=>{localStorage.removeItem('ultimate-ut-online');localStorage.removeItem('ultimate-ut-real');});await page.reload();await page.waitForTimeout(500);
+    await page.evaluate(()=>{localStorage.removeItem('ultimate-ut-online');window.testSaves.removeItem('ultimate-ut-real');});await page.reload();await page.waitForTimeout(500);
   });
-  await step('Ultimate Team: Superpoteri con la squadra di Real player, solo eroi dai pacchetti, assegnati ai titolari',async()=>{
-    const st=()=>page.evaluate(()=>{const r=JSON.parse(localStorage.getItem('ultimate-ut-real')||'null'),h=JSON.parse(localStorage.getItem('ultimate-ut-eroi')||'null');
+  await step('Ultimate Team: Superpoteri con la squadra di Sfide online, solo eroi dai pacchetti, assegnati ai titolari',async()=>{
+    const st=()=>page.evaluate(()=>{const r=JSON.parse(window.testSaves.getItem('ultimate-ut-real')||'null'),h=JSON.parse(window.testSaves.getItem('ultimate-ut-eroi')||'null');
       return {r:r?{n:r.col.length,hk:r.col.filter(c=>c.hk).length,sel:r.sel.length,c:r.coins|0}:null,h:h?{col:!!h.col,hc:Object.keys(h.hc||{}).length,ha:Object.keys(h.ha||{}),pk:(h.packs||[]).length}:null};});
     await page.click('#tUT');await vis('#utMode');await page.click('#umHero');await vis('#utReal');
     if((await page.locator('#urH').textContent()).trim()!=='Superpoteri')throw new Error('la schermata deve chiamarsi Superpoteri');
     if(await page.locator('#urTeam').isVisible()||await page.locator('#urHero').isVisible())throw new Error('senza la squadra di Real player non ci sono giocatori da mostrare');
-    if(!/Real player/.test(await page.locator('#urPlayS').textContent()))throw new Error('senza squadra deve dire di completarla in Real player');
+    if(!/Sfide online/.test(await page.locator('#urPlayS').textContent()))throw new Error('senza squadra deve dire di completarla in Sfide online');
     await page.click('#urPack');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(1800);
     if(await page.locator('#pkBody .hcard').count()!==3)throw new Error('il primo pacchetto eroi ha 3 carte eroe');
     await page.click('#pkGo');await vis('#utReal');
@@ -606,11 +644,11 @@ catch(e){
     await page.click('#tmBack');await vis('#utReal');
     // portafoglio separato: i gettoni dei Superpoteri comprano eroi e non toccano quelli di Real player
     await page.click('#urBack');await vis('#utMode');await page.click('#umReal');await vis('#utReal');await page.click('#urBack');await vis('#utMode');   // si esce dai Superpoteri: al rientro si rilegge il salvataggio
-    const rc0=await page.evaluate(()=>{const h=JSON.parse(localStorage.getItem('ultimate-ut-eroi'));h.coins=200;localStorage.setItem('ultimate-ut-eroi',JSON.stringify(h));return JSON.parse(localStorage.getItem('ultimate-ut-real')).coins|0;});
+    const rc0=await page.evaluate(()=>{const h=JSON.parse(window.testSaves.getItem('ultimate-ut-eroi'));h.coins=200;window.testSaves.setItem('ultimate-ut-eroi',JSON.stringify(h));return JSON.parse(window.testSaves.getItem('ultimate-ut-real')).coins|0;});
     await page.click('#umHero');await vis('#utReal');await page.click('#urShop');await vis('#utShop');
     if(await page.locator('#shList [data-k]').count()!==1||!(await page.locator('#shList [data-k="eroi"]').count()))throw new Error('nel Negozio dei Superpoteri c\'e\' solo il pacchetto eroi');
     await page.click('#shList [data-k="eroi"]');
-    const w=await page.evaluate(()=>[JSON.parse(localStorage.getItem('ultimate-ut-eroi')).coins,JSON.parse(localStorage.getItem('ultimate-ut-real')).coins|0]);
+    const w=await page.evaluate(()=>[JSON.parse(window.testSaves.getItem('ultimate-ut-eroi')).coins,JSON.parse(window.testSaves.getItem('ultimate-ut-real')).coins|0]);
     if(w[0]!==50||w[1]!==rc0)throw new Error('il pacchetto eroi si paga con i gettoni dei Superpoteri, non con quelli di Real player: '+w.join(' e ')+', prima '+rc0);
     await page.click('#shBack');await page.click('#urBack');await vis('#utMode');
     // passando da Real player e tornando, gli eroi restano dati agli stessi titolari (due, dopo averne tolto uno)
@@ -618,10 +656,10 @@ catch(e){
     await page.click('#urBack');await vis('#utMode');await page.click('#umHero');await vis('#utReal');await page.click('#urHero');await vis('#utHero');
     if(await page.locator('#uhSt .uhp.has').count()!==2)throw new Error('gli eroi assegnati devono restare dove li hai messi');
     await page.click('#uhBack');await page.click('#urBack');await page.click('#umBack');await vis('#title');
-    await page.evaluate(()=>{for(const k of ['ultimate-ut-eroi','ultimate-ut-eroi-online','ultimate-ut-real','ultimate-ut-online'])localStorage.removeItem(k);});await page.reload();await page.waitForTimeout(500);
+    await page.evaluate(()=>{for(const k of ['ultimate-ut-eroi','ultimate-ut-real'])window.testSaves.removeItem(k);for(const k of ['ultimate-ut-eroi-online','ultimate-ut-online'])localStorage.removeItem(k);});await page.reload();await page.waitForTimeout(500);
   });
   await step('Ultimate Team: potenziamenti specializzati',async()=>{
-    await page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut')||'null');if(o){o.coins=900;localStorage.setItem('ultimate-ut',JSON.stringify(o));}});
+    await page.evaluate(()=>{const o=JSON.parse(window.testSaves.getItem('ultimate-ut')||'null');if(o){o.coins=900;window.testSaves.setItem('ultimate-ut',JSON.stringify(o));}});
     await page.reload();await page.waitForTimeout(500);
     await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');await vis('#ut');await page.click('#uTeam');await vis('#utTeam');
     await page.click('#tmMode [data-m="up"]');await page.click('#tmList .urow[data-i] >> nth=0');await vis('#tmUp');
@@ -631,8 +669,8 @@ catch(e){
     await page.click('#tmBack');await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
   });
   await step('Ultimate Team: equipaggiamento (Negozio, manichino, divisa)',async()=>{
-    const eq=()=>page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut'));return {c:o.coins|0,eq:o.eq||{},pk:o.packs.slice()};});
-    await page.evaluate(()=>{const o=JSON.parse(localStorage.getItem('ultimate-ut'));o.coins=500;o.eq={own:{},on:{}};localStorage.setItem('ultimate-ut',JSON.stringify(o));});
+    const eq=()=>page.evaluate(()=>{const o=JSON.parse(window.testSaves.getItem('ultimate-ut'));return {c:o.coins|0,eq:o.eq||{},pk:o.packs.slice()};});
+    await page.evaluate(()=>{const o=JSON.parse(window.testSaves.getItem('ultimate-ut'));o.coins=500;o.eq={own:{},on:{}};window.testSaves.setItem('ultimate-ut',JSON.stringify(o));});
     await page.reload();await page.waitForTimeout(500);
     await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');await vis('#ut');
     await page.click('#uShop');await vis('#utShop');await page.click('#shList [data-k="eq"]');
@@ -672,11 +710,11 @@ catch(e){
     if(await occupied.innerText()!==oldSlot)throw new Error('lo slot precedente non sopravvive alla ricarica');
     await occupied.locator('[data-cgo]').click();await vis('#home');
     await menu('#hOpt');await vis('#opts');
-    const beforeImport=await page.evaluate(()=>localStorage.getItem('ultimate-prototipo-v2'));
+    const beforeImport=await page.evaluate(()=>window.testSaves.getItem('ultimate-prototipo-v2'));
     const invalid=JSON.parse(beforeImport);invalid.sched=[];
     await page.locator('#clFile').setInputFiles({name:'carriera-invalida.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(invalid))});
-    await page.waitForFunction(()=>document.getElementById('opMsg').textContent.includes('Carriera non leggibile'));
-    if(await page.evaluate(()=>localStorage.getItem('ultimate-prototipo-v2'))!==beforeImport)throw new Error('l’importazione invalida ha cambiato il salvataggio');
+    await page.waitForFunction(()=>document.getElementById('opMsg').textContent.includes('File non valido o incompatibile'));
+    if(await page.evaluate(()=>window.testSaves.getItem('ultimate-prototipo-v2'))!==beforeImport)throw new Error('l’importazione invalida ha cambiato il salvataggio');
     await page.click('#opX');await menu('#hBack');await page.click('#tSlots');await vis('#slots');
     const empty=await page.locator('#csBox .csl:not(:has([data-cgo])) [data-cnew]').first();
     const k=+(await empty.getAttribute('data-cnew'));await empty.click();await vis('#league');await page.click('#lgBack');await vis('#slots');   // ripensamento: la carriera di prima resta

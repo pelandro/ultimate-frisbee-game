@@ -4,8 +4,8 @@ const DR={on:false,kind:'',step:0,cnt:0,score:0,tries:0,ch:null,last:'',lastT:0,
 const TN={on:false};
 const TUT_KEY='ultimate-scuola';
 let SCH={tut:false,best:{}};
-try{const o=JSON.parse(localStorage.getItem(TUT_KEY)||'null');if(o&&typeof o==='object')SCH={tut:!!o.tut,lv:o.lv|0,best:o.best||{}};}catch(e){}   // lv: lezioni del tutorial superate (si riprende da li')
-const schSave=()=>{try{localStorage.setItem(TUT_KEY,JSON.stringify(SCH));}catch(e){}};
+try{const o=JSON.parse(saveStore.getItem(TUT_KEY)||'null');if(o&&typeof o==='object')SCH={tut:!!o.tut,lv:o.lv|0,best:o.best||{}};}catch(e){}   // lv: lezioni del tutorial superate (si riprende da li')
+const schSave=()=>{try{saveStore.setItem(TUT_KEY,JSON.stringify(SCH));}catch(e){}};
 // lezioni del tutorial: ognuna prepara il campo e si supera FACENDO la cosa spiegata
 const TUT_STEPS=[
   {id:'thr',def:'off',x0:14,n:3,t:'1 · Il lancio',x:'Tocca lo schermo, trascina il dito ALL’INDIETRO come una fionda e rilascia: il disco parte nella direzione opposta. Più trascini, più va lontano.',g:'Completa 3 passaggi'},
@@ -26,12 +26,12 @@ const CHAL={
 const medalOf=(c,v)=>v>=c.medal[2]?3:(v>=c.medal[1]?2:(v>=c.medal[0]?1:0));
 const MEDAL_N=['Nessuna medaglia','Bronzo','Argento','Oro'];
 function renderSchool(){
-  $('tSchoolS').textContent=SCH.tut?'Tutorial, pratica e sfide':'Nuovo? Inizia dal tutorial';
   let h='<div class="schg">';
   const nL=TUT_STEPS.length,done=SCH.tut?nL:Math.min(nL,SCH.lv|0);
-  h+=`<div class="ccard"><h3>Tutorial guidato</h3><p>Sette lezioni brevi sul campo: ogni lezione si supera facendo ciò che spiega. Puoi ripeterne una sola quando vuoi.</p><div class="tprog2"><span><i style="width:${Math.round(done/nL*100)}%"></i></span><b>${done}/${nL}</b></div><div class="schrow"><button type="button" class="go" data-go="tut" data-step="${done>0&&done<nL?done:0}">${done>=nL?'Ripeti il tutorial':(done?'Riprendi: lezione '+(done+1):'Inizia il tutorial')}</button></div><div class="tles">${TUT_STEPS.map((t,i)=>`<button type="button" class="sec${i<done?' ok':''}" data-go="tut" data-step="${i}" title="${esc(t.g||'')}">${i<done?'✓ ':''}${esc(t.t)}</button>`).join('')}</div>
+  h+=`<div class="ccard"><h3>Lezioni sul campo</h3><p>Impara lancio, taglio e difesa in sette esercizi. Puoi riprendere da dove hai lasciato o scegliere una lezione.</p><div class="tprog2"><span><i style="width:${Math.round(done/nL*100)}%"></i></span><b>${done}/${nL}</b></div><div class="schrow"><button type="button" class="go" data-go="tut" data-step="${done>0&&done<nL?done:0}">${done>=nL?'Ripeti le lezioni':(done?'Riprendi: lezione '+(done+1):'Inizia la prima lezione')}</button></div><div class="tles">${TUT_STEPS.map((t,i)=>`<button type="button" class="sec${i<done?' ok':''}" data-go="tut" data-step="${i}" title="${esc(t.g||'')}">${i<done?'✓ ':''}${esc(t.t)}</button>`).join('')}</div>
     <h3 style="margin-top:10px">Allenamento libero</h3><p>Nessun punteggio e nessun cronometro: si riparte da fermo dopo ogni meta o turnover, con l’energia sempre piena.</p><div class="schrow"><select class="qs" id="scSide"><option value="att">Attacco</option><option value="def">Difesa</option></select><select class="qs" id="scDef"><option value="off">Senza avversari</option><option value="mark">Solo il marcatore</option><option value="on">Difesa completa</option></select><button type="button" class="go" data-go="free">Entra in campo</button></div></div>`;
   h+=`<div class="ccard"><h3>Sfide di abilità</h3>${Object.keys(CHAL).map(k=>{const c=CHAL[k],b=SCH.best[k];return `<div class="chal"><div><b>${c.name}</b><small>${c.txt}</small><span class="md"><span class="medal m${b===undefined?0:medalOf(c,b)}"></span>${b===undefined?'Mai provata':'Record '+b+' · '+MEDAL_N[medalOf(c,b)]} · bronzo ${c.medal[0]}, argento ${c.medal[1]}, oro ${c.medal[2]}</span></div><button type="button" class="go" data-go="${k}">Gioca</button></div>`;}).join('')}</div>`;
+  h+=`<div class="ccard"><h3>Partita guidata</h3><p>Affronta un’avversaria di forza simile. I Primi passi ti indicano cosa provare mentre giochi.</p><button class="sec" type="button" data-guided-quick>Prepara la partita guidata</button></div>`;
   $('scBox').innerHTML=h+'</div>';
   $('scSide').value=DR.free.side;$('scDef').value=DR.free.def;
   $('scDef').disabled=DR.free.side==='def';
@@ -136,6 +136,13 @@ function drillTick(){
 $('scBox').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)startDrill(b.dataset.go,+(b.dataset.step||0));});
 $('scBox').addEventListener('change',e=>{if(e.target.id==='scSide'){DR.free.side=e.target.value;$('scDef').disabled=DR.free.side==='def';}else if(e.target.id==='scDef')DR.free.def=e.target.value;});
 $('scBack').addEventListener('click',()=>showScreen('title'));
+$('scBox').addEventListener('click',e=>{
+  if(!e.target.closest('[data-guided-quick]'))return;
+  ppReset();
+  try{localStorage.setItem('ultimate-suggerimenti','1');}catch(e){}
+  showScreen('quick');
+  $('qPlay').focus();
+});
 $('tSchool').addEventListener('click',()=>showScreen('school'));
 $('deOk').addEventListener('click',()=>{exitQuick('school');});
 $('deAgain').addEventListener('click',()=>{const k=DR.ch;$('drEnd').classList.add('hidden');G.schemeOpen=false;if(k){DR.score=0;DR.tries=0;DR.last='';drillStart();cam.snap=true;}});

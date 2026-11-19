@@ -8,13 +8,18 @@ function renderClub(){
   let h='';
   if(clTab==='man'||clTab==='str'||clTab==='stf'){
     // Gestione divisa in tre pagine (Società, Strutture, Staff): prima erano tutte insieme e la schermata era troppo piena. Le spiegazioni lunghe stanno dietro al tasto «i» di ciascuna voce
-    const inf=(k,txt)=>`<button type="button" class="inf${clInfo.has(k)?' on':''}" data-inf="${k}" aria-label="Spiegazione">i</button>${clInfo.has(k)?`<p class="infp">${txt}</p>`:''}`;
+    const inf=(k,txt)=>`<button type="button" class="inf${clInfo.has(k)?' on':''}" data-inf="${k}" aria-expanded="${clInfo.has(k)}" aria-label="${esc(k==='soc'?'Entrate e uscite della società':k)}">i</button>${clInfo.has(k)?`<p class="infp">${txt}</p>`:''}`;
     const tick=(lv,max)=>`<span class="tk" aria-label="livello ${lv} su ${max}">${Array.from({length:max},(_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</span>`;
     const cSoc=`<div class="ccard"><h3>Società ${inf('soc',`<p><b>Entrate</b>. In casa incassi i biglietti: lo stadio ha <b>${stadCap()}</b> posti e i tifosi, la posta in gioco e la forma decidono quanti ne riempi. In trasferta niente biglietti e <b>${travelCost()}</b> di viaggio; in campo neutro (tornei, finali) i biglietti si dividono a metà. Lo sponsor paga a ogni partita e la lega premia ogni vittoria, di più nelle partite importanti.</p><p><b>Uscite</b>. Gli stipendi costano <b>${wageBill()}</b> a partita, la manutenzione delle strutture <b>${facUpkeep()}</b>.</p><p>La reputazione decide chi accetta di venire; morale e affiatamento spostano un poco la forma dei tuoi in partita.</p>`)}</h3><div class="dcash"><span>Crediti</span><b>${SV.cash}</b></div>${redNoteHTML()}${statBar('Tifosi',fansOf(),'#ff9a3a','%')}${statBar('Reputazione',SV.rep,'#ffd23f')}<div class="dbar"><span>Morale</span><span class="cbar"><i style="width:${Math.round(SV.mor)}%;background:#4fe58f"></i></span><b>${moodFace(teamMoodKey())}</b></div>${statBar('Affiatamento',SV.chem,'#5ac8ff')}</div>`;
     const cObj=sponsorCardHTML(),cLed=ledgerHTML();
     const cBud=budgetHTML();
-    const cStr=`<div class="ccard"><h3>Strutture</h3>${Object.keys(FAC).map(k=>{const lv=facLv(k),c=facCost(k),dd=(SV.facDays&&SV.facDays[k])|0,rn=SV.facRnd|0,pb=budgetPayback(k);return `<div class="fbar"><span class="fn">${FAC[k][0]}${inf('f'+k,`${FAC[k][1]}.${pb?(pb.n?` Il prossimo livello rende circa ${pb.gain.toFixed(1).replace('.',',')} crediti a partita: si ripaga in ${pb.n} partite.`:' Al prossimo livello la manutenzione in più supera l’incasso in più.'):''} Premio estivo (livello ${KEEP_LV}+ per almeno metà stagione): ${FAC_KEEP[k]}.${rn?` Finora ${dd} giornate su ${rn}.`:''}`)}</span>${tick(lv,FAC_MAX)}<button type="button" class="sec" data-fac="${k}"${lv>=FAC_MAX||SV.cash<c?' disabled':''} title="${lv>=FAC_MAX?'Livello massimo':(SV.cash<c?'Servono '+c+' crediti':'Migliora per '+c+' crediti')}">${lv>=FAC_MAX?'Massimo':'Migliora · '+c}</button></div>`;}).join('')}<p class="sub">Manutenzione ${facUpkeep()} a partita. D’estate una struttura avanzata può perdere un livello.</p></div>`;
-    const cStf=staffHTML(inf),cGoal=`<div class="ccard">${goalsHTML()}</div>`;
+    const facilityRows=clTab==='str'?Object.entries(FAC).map(([k,[name,description]])=>{
+      const lv=facLv(k),cost=facCost(k);
+      const seats=k==='stad'?` <strong>${stadCap()} posti.</strong>`:'';
+      return `<div class="fbar"><span class="fn">${name}</span>${tick(lv,FAC_MAX)}<button type="button" class="sec" data-fac="${k}"${!cost||SV.cash<cost?' disabled':''}>${cost?'Migliora · '+cost:'Massimo'}</button></div><p class="sub">${description}.${seats}</p>`;
+    }):[];
+    const cStr=`<div class="ccard"><h3>Strutture</h3>${facilityRows.join('')}<p class="sub">Manutenzione ${facUpkeep()} crediti a partita.</p></div>`;
+    const cStf=clTab==='stf'?staffHTML(inf):'',cGoal=`<div class="ccard">${goalsHTML()}</div>`;
     const cNews=`<div class="ccard" style="grid-column:1/-1"><h3>Notizie</h3>${SV.news.length?`<ul class="nlist">${SV.news.slice(0,8).map(n=>`<li><i>S${n.s}·G${n.r}</i>${esc(n.txt)}</li>`).join('')}</ul>`:'<p>Nessuna notizia.</p>'}</div>`;
     h='<div class="cgrid">'+(clTab==='man'?cSoc+cObj+cLed+cGoal+cNews:(clTab==='str'?cStr+cBud:cStf))+'</div>';
   }else if(clTab==='hon'){
@@ -42,50 +47,148 @@ function renderClub(){
   $('clBox').innerHTML=h;
 }
 $('clTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;clTab=b.dataset.k;renderClub();});
+const backupExtras=()=>[[UT_KEY,'Ultimate Team contro l’IA'],[UTR_KEY,'Collezione sfide online'],
+  [UTH_KEY,'Superpoteri'],[TN_KEY,'Torneo'],[TUT_KEY,'Allenamento']];
 function exportSave(){
-  persist();
-  const extra={};for(const k of [UT_KEY,TN_KEY,TUT_KEY]){try{const v=localStorage.getItem(k);if(v)extra[k]=JSON.parse(v);}catch(e){}}
-  const data=JSON.stringify({app:'ultimate-frisbee',v:SAVE_V,when:new Date().toISOString(),career:SV,extra});   // carriera, Ultimate Team, torneo e progressi dell'allenamento
   try{
+    const extra={},slots={};
+    for(const [key] of backupExtras()){
+      const raw=saveStore.getItem(key);
+      if(raw!==null)extra[key]=JSON.parse(raw);
+    }
+    const career={...SV,squad:squadData(),lineup:lineupIds()};
+    for(let i=1;i<=SLOTS_N;i++){
+      const slot=i===(SV.slot||1)?career:slotData(i);
+      if(slot)slots[i]=slot;
+    }
+    const data=JSON.stringify({app:'ultimate-frisbee',v:SAVE_V,when:new Date().toISOString(),career,slots,extra});
     const a=document.createElement('a'),url=URL.createObjectURL(new Blob([data],{type:'application/json'}));
-    a.href=url;a.download=`ultimate-frisbee-${SV.team.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}-stagione${SV.season}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
-    return 'Salvataggio esportato nei file scaricati.';
+    a.href=url;a.download='ultimate-frisbee-backup.json';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
+    return 'Backup esportato nei file scaricati.';
   }catch(e){return 'Esportazione non riuscita su questo dispositivo.';}
 }
-// importazione: il file viene controllato prima di sostituire la carriera; se qualcosa non va resta quella attuale
-function importSave(txt){
-  let d;try{d=JSON.parse(txt);}catch(e){return 'Il file non è un salvataggio valido.';}
-  const c=d&&d.app==='ultimate-frisbee'?d.career:d;
-  if(!c||typeof c!=='object'||!c.team||!c.mem||!c.sched||!c.tab)return 'Il file non contiene una carriera.';
-  if((c.v|0)>SAVE_V)return 'Salvataggio creato con una versione più recente del gioco.';
+function readSaveBackup(txt){
+  let d;try{d=JSON.parse(txt);}catch(e){return null;}
+  const envelope=d?.app==='ultimate-frisbee';
+  if(envelope&&d.v>SAVE_V)return null;
+  const career=envelope?d.career:d;
+  if(!careerSaveShape(career))return null;
+  const slots=envelope?Object.entries(d.slots||{}):[];
+  if(slots.some(([slot,save])=>!['1','2','3'].includes(slot)||!careerSaveShape(save)))return null;
+  const extra=envelope?backupExtras().filter(([key])=>d.extra&&Object.hasOwn(d.extra,key)):[];
+  if(extra.some(([key])=>{
+    const item=d.extra[key];
+    if(!item||typeof item!=='object'||Array.isArray(item))return true;
+    if(key===TN_KEY)return !tnOk(item.team)||!['play','won','out'].includes(item.st)
+      ||!Array.isArray(item.rounds)||!item.rounds.length
+      ||!item.rounds.every(round=>Array.isArray(round)&&round.length>=2&&round.length%2===0&&round.every(tnOk))
+      ||!Array.isArray(item.res);
+    if(key===TUT_KEY)return (item.lv!==undefined&&!Number.isInteger(item.lv))||!item.best||typeof item.best!=='object';
+    return !Array.isArray(item.col)||!item.col.every(card=>card&&typeof card.s==="object"&&card.s)||![item.sel,item.packs].every(Array.isArray);
+  }))return null;
+  return {career,slots,extra:extra.map(([key,label])=>[key,label,d.extra[key]])};
+}
+function importSave(txt,destination=SV.slot||1,all=false,withExtras=true){
+  const backup=readSaveBackup(txt);
+  if(!backup)return 'File non valido o incompatibile con questa versione. Controlla calendario, rosa e versione.';
   const previous=SV,squad=squadData(),lineup=lineupIds();
-  if(!loadSave(c))return 'Carriera non leggibile: verifica calendario, rosa e versione del file.';
-  SV.slot=previous.slot||1;
-  if(!persist()){
+  const pending={};
+  const write=(key,value)=>{pending[key]=JSON.stringify(value);};
+  try{
+    if(careerStorageVersion!==undefined&&saveStore.getItem(SAVE_KEY)!==careerStorageVersion)
+      return 'La carriera è stata aggiornata in un’altra scheda. Ricarica il gioco prima di importare.';
+    if(all)destination=backup.career.slot||1;
+    const slots=[];
+    if(all)for(const [slot,save] of backup.slots){
+      if(!loadSave(save))throw new Error('Slot incompatibile');
+      if(+slot!==destination)slots.push([+slot,{...SV,slot:+slot}]);
+    }
+    if(!loadSave(backup.career))throw new Error('Carriera incompatibile');
+    SV.slot=destination;
+    if(previous.team&&(previous.slot||1)!==destination&&!slots.some(([slot])=>slot===(previous.slot||1)))
+      write(slotKey(previous.slot||1),{...previous,squad,lineup});
+    for(const [slot,save] of slots){
+      const key=slotKey(slot),old=saveStore.getItem(key);
+      if(old)write(key+'-bak',JSON.parse(old));
+      write(key,save);
+    }
+    if(withExtras)for(const [key,,value] of backup.extra)write(key,value);
+    if(!persist(pending))throw new Error('Scrittura carriera');
+  }catch(e){
     restoreCareerState(previous,squad,lineup);
-    return 'Scrittura non riuscita. La carriera precedente è ancora aperta.';
+    return 'Import non riuscito. Controlla il file, lo spazio disponibile e le altre schede aperte.';
   }
-  if(d&&d.extra&&typeof d.extra==='object'){   // anche Ultimate Team, torneo e allenamento, se il file li contiene
-    for(const k of [UT_KEY,TN_KEY,TUT_KEY])if(d.extra[k]){try{localStorage.setItem(k,JSON.stringify(d.extra[k]));}catch(e){}}
-    utLoad();try{TOUR=JSON.parse(localStorage.getItem(TN_KEY)||'null');const o=JSON.parse(localStorage.getItem(TUT_KEY)||'null');if(o)SCH={tut:!!o.tut,lv:o.lv|0,best:o.best||{}};}catch(e){}
+  if(withExtras&&backup.extra.length){
+    utLoad();
+    try{
+      TOUR=JSON.parse(saveStore.getItem(TN_KEY)||'null');
+      const progress=JSON.parse(saveStore.getItem(TUT_KEY)||'null');
+      if(progress)SCH={tut:!!progress.tut,lv:progress.lv|0,best:progress.best||{}};
+    }catch(e){}
   }
   return '';
 }
+function previewSaveImport(txt,message,onSuccess){
+  const backup=readSaveBackup(txt);
+  if(!backup){message.textContent='File non valido o incompatibile con questa versione.';return;}
+  const c=backup.career;
+  const options=[1,2,3].map(i=>{
+    const slot=slotInfo(i);
+    return '<option value="'+i+'"'+(i===(SV.slot||1)?' selected':'')+'>Slot '+i+' · '+(slot?esc(slot.team):'vuoto')+'</option>';
+  }).join('');
+  const slots=backup.slots.length>1?'<option value="all">Tutti gli slot presenti nel file</option>':'';
+  const contents=backup.slots.map(([i,slot])=>'Slot '+i+' · '+esc(slot.team)+' · stagione '+slot.season).join('<br>');
+  const extras=backup.extra.length?'<p><label><input id="importExtras" type="checkbox"> Ripristina anche '+backup.extra.map(([,label])=>label).join(', ')+'</label></p>':'';
+  askConfirm({title:'Importare il salvataggio?',danger:true,ok:'Importa',html:
+    '<p>'+esc(c.team)+' · stagione '+c.season+'</p>'+(contents?'<p>'+contents+'</p>':'')+
+    '<p><label for="importSlot">Destinazione</label> <select id="importSlot">'+options+slots+'</select></p>'+
+    '<p>Il file sostituisce la carriera negli slot selezionati.</p>'+extras,onOk:()=>{
+      const target=$('importSlot').value;
+      const error=importSave(txt,+target,target==='all',!!$('importExtras')?.checked);
+      message.textContent=error||'Carriera importata: '+SV.team+' · stagione '+SV.season+'.';
+      if(!error)onSuccess();
+    }});
+}
 $('clBox').addEventListener('click',e=>{
+  if(e.target.closest('[data-cl-sponsor]')){
+    if(SV.sp?.off&&!SV.evt){SV.evt={id:'spons',a:{}};openEvt();}
+    return;
+  }
+  if(e.target.closest('[data-cl-roster]')){showScreen('roster');return;}
   const sb=e.target.closest('#clSub [data-k]');if(sb){clTab=sb.dataset.k;renderClub();return;}
   const ib=e.target.closest('[data-inf]');if(ib){const k=ib.dataset.inf;if(clInfo.has(k))clInfo.delete(k);else clInfo.add(k);renderClub();return;}
   const f=e.target.closest('[data-fac]');
-  if(f){const k=f.dataset.fac,c=facCost(k),lv=facLv(k);if(lv>=FAC_MAX||SV.cash<c){renderClub();return;}
-    askConfirm({title:'Migliorare '+FAC[k][0]+'?',html:`<p>${esc(FAC[k][1])}.</p><table class="cfmt"><tr><td>Livello</td><td>${lv} → ${lv+1} su ${FAC_MAX}</td></tr><tr><td>Costo</td><td>${c} crediti</td></tr><tr><td>Crediti dopo</td><td${SV.cash-c<30?' class="bad"':''}>${SV.cash-c} crediti</td></tr></table><p>Ogni livello ha anche una manutenzione a ogni partita.</p>`,ok:'Migliora per '+c,onOk:()=>{if(buyFac(k)){clMsg='';persist();}renderClub();}});
+  if(f){const k=f.dataset.fac,c=facCost(k),lv=facLv(k);if(!c||SV.cash<c){renderClub();return;}
+    const extra=k==='stad'
+      ?`<tr><td>Posti</td><td>${stadCap()} → ${stadCap(lv+1)}</td></tr>`
+      :`<tr><td>Manutenzione a partita</td><td>${facUpkeep()} → ${facUpkeep(k)}</td></tr>`;
+    const estimate=k==='stad'?`<p>${paybackText(budgetPayback(k))}</p>`:'';
+    askConfirm({
+      title:'Migliorare '+FAC[k][0]+'?',
+      html:`<p>${esc(FAC[k][1])}.</p><table class="cfmt"><tr><td>Livello</td><td>${lv} → ${lv+1}</td></tr><tr><td>Costo</td><td>${c} crediti</td></tr><tr><td>Crediti dopo</td><td${SV.cash-c<30?' class="bad"':''}>${SV.cash-c}</td></tr>${extra}</table>${estimate}`,
+      ok:'Migliora per '+c,
+      onOk:()=>{
+        if(buyFac(k)){clMsg='';persist();}
+        renderClub();
+        $('clBox').querySelector('[data-fac="'+k+'"]:not([disabled])')?.focus();
+      }
+    });
     return;}
   const sf=e.target.closest('[data-staff]');
-  if(sf){if(buyStaff(sf.dataset.staff)){clMsg='';persist();}renderClub();return;}
+  if(sf){
+    const k=sf.dataset.staff,lv=staffLv(k),cost=staffCost(k);
+    askConfirm({title:'Migliorare '+STAFF[k].n.toLowerCase()+'?',ok:'Migliora',html:
+      `<p>${STAFF[k].d}.</p><p>Livello ${lv} → ${lv+1} · costo ${cost} crediti · stipendio ${STAFF_WAGE[lv+1]} a partita.</p><p>Saldo dopo l’operazione: ${SV.cash-cost} crediti.</p>`,
+      onOk:()=>{if(buyStaff(k))persist();renderClub();$('clBox').querySelector('[data-staff="'+k+'"]:not([disabled])')?.focus();}});
+    return;
+  }
   const hb=e.target.closest('[data-hire]');if(hb){openHire(hb.dataset.hire);return;}
 });
 $('clExp').addEventListener('click',()=>{$('opMsg').textContent=exportSave();});
 $('clImp').addEventListener('click',()=>{$('clFile').value='';$('clFile').click();});
 $('clBak').addEventListener('click',()=>armed($('clBak'),'Conferma: torna al salvataggio precedente','Ripristina la copia precedente',()=>{
-  let r=null;try{r=localStorage.getItem(slotKey(SV.slot||1)+'-bak');const legacy=localStorage.getItem(SAVE_KEY+'-bak');if(!r&&legacy&&(JSON.parse(legacy).slot||1)===(SV.slot||1))r=legacy;}catch(e2){}
+  let r=null;try{r=saveStore.getItem(slotKey(SV.slot||1)+'-bak');const legacy=saveStore.getItem(SAVE_KEY+'-bak');if(!r&&legacy&&(JSON.parse(legacy).slot||1)===(SV.slot||1))r=legacy;}catch(e2){}
   const error=r?importSave(r):'Nessuna copia precedente disponibile.';
   $('opMsg').textContent=error||'Copia precedente ripristinata.';
   if(!error){renderOpts();renderHome();}
@@ -93,7 +196,7 @@ $('clBak').addEventListener('click',()=>armed($('clBak'),'Conferma: torna al sal
 $('clFile').addEventListener('change',e=>{
   const f=e.target.files&&e.target.files[0];if(!f)return;
   const rd=new FileReader();
-  rd.onload=()=>{const err=importSave(String(rd.result||''));$('opMsg').textContent=err||`Carriera importata: ${SV.team}, ${SERIES_NAME[SV.sr]}, stagione ${SV.season}.`;if(!err){renderOpts();renderHome();}};
+  rd.onload=()=>previewSaveImport(String(rd.result||''),$('opMsg'),()=>{renderOpts();renderHome();});
   rd.onerror=()=>{$('opMsg').textContent='Lettura del file non riuscita.';};
   rd.readAsText(f);
 });

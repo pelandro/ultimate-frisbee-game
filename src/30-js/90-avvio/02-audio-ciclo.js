@@ -262,17 +262,16 @@ function frame(now){
     if(G.paused||zoomWait||G.schemeOpen)simRemainder=0;
     else if(G.mode==='cine'){simRemainder=0;updateCine(dt);}
     else simRemainder=advanceSimulation(simRemainder,dt,step=>{
+      rpRecord(step);
       update(step);
       return !G.paused&&!G.schemeOpen&&G.mode!=='cine';
     });
     if(G.mode==='banner'&&Math.max(...G.score)>=G.target)recordFinishedMatch();
-    rpRecord();rpCheck();
+    rpCheck();
     const replayFrame=rpApply(dt);
     if(replayFrame){
       updateHUD(dt);
-      rpSet(replayFrame);
-      try{updateCamera(dt);render(dt);}
-      finally{rpSet(RP.on.save);}
+      renderReplay(replayFrame,dt);
     }else{
       updateCamera(dt);updateHUD(dt);
       menuDrawElapsed+=dt;

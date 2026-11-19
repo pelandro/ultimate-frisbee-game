@@ -6,11 +6,11 @@ function renderAlerts(){
     const kd=AL_KIND[a.k]||['Avviso','#c2cbe6'],p=a.full?byFull(a.full):null;let act='';
     if(!a.done&&(a.act==='job'||a.act==='trade'))act=crossLgButtons(a);   // offerte dell'altra lega (35-usa/05-lega-incrociata.js)
     else if(!a.done&&p){
-      if(a.act==='stay'&&p.ret===1)act=`<button type="button" class="sec" data-al="${a.id}" data-do="stay">Chiedigli un altro anno (${stayCost(p)} crediti)</button>`;
+      if(a.act==='stay'&&p.ret===1)act=`<button type="button" class="sec" data-al="${a.id}" data-do="stay">Proponi un’altra stagione (${stayCost(p)} crediti)</button>`;
       else if(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)act=`<button type="button" class="go" data-al="${a.id}" data-do="yes">Accetta (+${SV.offer.price})</button><button type="button" class="sec" data-al="${a.id}" data-do="no">Rifiuta</button>`;
-      else if(a.act==='unhappy'&&p.mood===2)act=`<button type="button" class="sec" data-al="${a.id}" data-do="prom">Promettigli spazio</button><button type="button" class="sec" data-al="${a.id}" data-do="sell">Cedilo (+${sellValue(p)})</button>`;
+      else if(a.act==='unhappy'&&p.mood===2)act=`<button type="button" class="sec" data-al="${a.id}" data-do="prom">Prometti spazio in campo</button><button type="button" class="sec" data-al="${a.id}" data-do="sell">Cedi (+${sellValue(p)})</button>`;
     }
-    return `<div class="ali${a.seen?'':' new'}" data-ai="${a.id}"${a.seen?'':' title="Tocca per segnarlo come letto"'}><span class="alk" style="background:${kd[1]}">${kd[0]}</span><div><p>${esc(a.txt)}</p>${a.k==='mkt'&&a.data&&a.data.mv?`<ul class="almv">${a.data.mv.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}${a.res?`<div class="res">${esc(a.res)}</div>`:''}${act?`<div class="schrow">${act}</div>`:''}<small>Stagione ${a.s} · giornata ${a.r}</small></div></div>`;
+    return `<div class="ali${a.seen?'':' new'}" data-ai="${a.id}"><span class="alk" style="background:${kd[1]}">${kd[0]}</span><div><p>${esc(a.txt)}</p>${a.k==='mkt'&&a.data&&a.data.mv?`<ul class="almv">${a.data.mv.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}${a.res?`<div class="res">${esc(a.res)}</div>`:''}${act?`<div class="schrow">${act}</div>`:''}${a.seen?'':`<button type="button" class="sec" data-mark-read="${a.id}">Segna come letto</button>`}<small>Stagione ${a.s} · giornata ${a.r}</small></div></div>`;
   };
   // tre gruppi: da decidere (scelte in sospeso), novita' (non lette), cronologia
   const open=a=>!a.done&&(a.act==='job'||a.act==='trade'||(a.full&&byFull(a.full)&&((a.act==='stay'&&byFull(a.full).ret===1)||(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)||(a.act==='unhappy'&&byFull(a.full).mood===2))));
@@ -33,7 +33,7 @@ $('alX').addEventListener('click',closeAlerts);
 $('alAll').addEventListener('click',()=>{for(const a of SV.alerts)a.seen=1;persist();renderAlerts();renderShell&&renderShell();});
 $('alBody').addEventListener('click',e=>{
   const b=e.target.closest('[data-al]');
-  if(!b){const it=e.target.closest('.ali.new[data-ai]');if(it){const a=SV.alerts.find(x=>x.id===+it.dataset.ai);if(a){a.seen=1;persist();renderAlerts();if(typeof renderShell==='function')renderShell();}}return;}
+  if(!b){const it=e.target.closest('[data-mark-read]');if(it){const a=SV.alerts.find(x=>x.id===+it.dataset.markRead);if(a){a.seen=1;persist();renderAlerts();($('alBody').querySelector('[data-mark-read]')||$('alX')).focus();if(typeof renderShell==='function')renderShell();}}return;}
   const a=SV.alerts.find(x=>x.id===+b.dataset.al),p=a&&a.full?byFull(a.full):null;
   if(a)a.seen=1;   // chi risponde l'ha letto
   if(a&&(a.act==='job'||a.act==='trade')){a.res=crossLgAnswer(a,b.dataset.do);a.done=1;persist();renderAlerts();renderHome();return;}
@@ -76,6 +76,7 @@ $('gdTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b
 $('gdX').addEventListener('click',()=>{$('guide').classList.add('hidden');const f=guideBack;guideBack=null;if(f)f();});
 /* ---- PAUSA: un solo tasto in alto a destra durante la partita. La partita si ferma davvero; da qui si riprende, si sospende, si regolano audio e difesa, si apre la guida o si esce ---- */
 function openPause(){
+  clearMatchInput();
   if(!G.inMatch||!(G.mode==='play'||G.mode==='ready')||G.paused)return;
   G.paused=true;G.schemeOpen=true;drag=null;ddrag=null;aimPid=null;G.cdir=null;
   $('paSub').textContent=G.drill?G.matchLabel:`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${G.oppName||'Rossi'} · meta ${G.pointNo}`;
@@ -148,7 +149,7 @@ HOOKS.injury=list=>{
   forcedSubs=true;G.schemeOpen=true;
   swapSel=list[0].id;
   $('subTitle').textContent='Infortunio';
-  $('subSub').textContent=list.map(p=>p.name).join(', ')+(list.length>1?' si sono infortunati':' si è infortunato')+': scegli chi entra al suo posto.';
+  $('subSub').textContent='Infortuni: '+list.map(p=>p.name).join(', ')+'. Scegli chi entra in campo.';
   renderLineupBox();$('subs').classList.remove('hidden');
 };
 $('hSim').addEventListener('click',simCareerMatch);

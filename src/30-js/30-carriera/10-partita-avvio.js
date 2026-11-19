@@ -11,7 +11,7 @@ function startMatch(resume){
   G.duo=duoMap();   // intesa tra le coppie: vale solo in carriera
   G.vn=careerVenue(m);   // chi gioca in casa, impianto e pubblico (30-stadi.js)
   {const w=careerWind(m);setWind(w[0],w[1]);setWx(careerWeather(m));}   // il meteo annunciato sul cruscotto
-  fixLines();G.lines={o:matchLine('lineO'),d:matchLine('lineD'),auto:!!SV.autoSub};G.injK=1-0.12*facLv('fis');   // linee d'attacco e di difesa, cambi intelligenti, fisioterapia
+  fixLines();G.lines={o:matchLine('lineO'),d:matchLine('lineD'),auto:!!SV.autoSub};G.injK=facInjuryK();   // linee d'attacco e di difesa, cambi intelligenti, fisioterapia
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
   if(first)openSchemes(true);   // la prima volta si aprono gli schemi, con il rimando a tutorial e guida
@@ -89,7 +89,7 @@ function renderTeamList(){for(const b of $('tSr').children)b.classList.toggle('o
 // ---- menu iniziale e partita veloce ----
 const QM={on:false,bak:null,a:null,b:null,s:1};   // s: la squadra che inizia in attacco (0 = tua/blu, 1 = avversaria/rossa)
 const hasCareer=()=>!!(SV&&SV.team);
-function renderTitle(){$('tCareerT').textContent=hasCareer()?'Continua carriera':'Carriera';$('tSchoolS').textContent=SCH.tut?'Tutorial, pratica e sfide':((SCH.lv|0)?`Tutorial: lezione ${(SCH.lv|0)+1} di ${TUT_STEPS.length}`:'Nuovo? Inizia dal tutorial');$('tCareerS').textContent=hasCareer()?`Continua: ${SV.team}, ${SERIES_NAME[SV.sr]}${SV.susp?' · partita sospesa':''}`:'Scegli la squadra e inizia';const n=[1,2,3].filter(k=>slotInfo(k)).length;$('tSlotsS').textContent=n?`${n} di 3 slot · nuova`:'3 slot liberi';}
+function renderTitle(){$('tCareerT').textContent=hasCareer()?'Continua carriera':'Carriera';$('tSchoolS').textContent=SCH.tut?'Lezioni sul campo, pratica e sfide':((SCH.lv|0)?`Riprendi la lezione ${(SCH.lv|0)+1} di ${TUT_STEPS.length}`:'Lezioni sul campo e allenamento libero');$('tCareerS').textContent=hasCareer()?`Continua: ${SV.team}, ${SERIES_NAME[SV.sr]}${SV.susp?' · partita sospesa':''}`:'Scegli la squadra e inizia';const n=[1,2,3].filter(k=>slotInfo(k)).length;$('tSlotsS').textContent=n?`${n} di 3 slot · nuova`:'3 slot liberi';}
 const qPowCache={};
 function qRoster(n,min){if(US_TEAM[n]||LN_BY[n])return foreignRoster(n,'qm|'+n);return REAL[n]?realRoster(REAL[n],'qm|'+n,realOpt(n,min)):makeRoster(TEAM[n].power,'qm|'+n);}
 function qPower(n){if(qPowCache[n]==null)qPowCache[n]=rosterPower(qRoster(n,7));return qPowCache[n];}
@@ -132,7 +132,7 @@ function renderPick(){
 }
 function renderPickTeams(league,me,other){
   const query=clubSearchText($('qpSearch').value);
-  const matches=query?qDivAll(QM.div).filter(n=>clubSearchText(n).includes(query)):league.clubs().filter(n=>qGrp(n)===QM.tab);
+  const matches=query?catalogClubs({division:QM.div,search:query}):catalogClubs({league:league.id,group:QM.tab});
   $('qpG').innerHTML=matches.length?matches.map(n=>`<button type="button" data-n="${esc(n)}" class="${n===me?'sel':''}${n===other?' off':''}"${n===other?' disabled':''}>${crest(n,22)}<span>${esc(n)}</span><b>${Math.round(qPower(n))}</b></button>`).join(''):'<p role="status">Nessuna squadra trovata.</p>';
 }
 $('qpSearch').addEventListener('input',()=>{

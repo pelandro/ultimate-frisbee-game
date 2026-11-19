@@ -65,10 +65,16 @@ function careerSaveShape(d){
   if(d.squad!==undefined&&(!Array.isArray(d.squad)||d.squad.length<7||!d.squad.every(player)))return false;
   return !d.rost||(typeof d.rost==='object'&&Object.values(d.rost).every(r=>Array.isArray(r)&&r.length&&r.every(player)));
 }
+let careerStorageVersion,careerStorageSlot;
 function loadSave(d0){
   let data=d0;
   if(!data){
-    try{data=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');}catch(e){return false;}
+    try{
+      careerStorageVersion=saveStore.getItem(SAVE_KEY);
+      careerStorageSlot=undefined;
+      data=JSON.parse(careerStorageVersion||'null');
+      if(careerSaveShape(data))careerStorageSlot=data.slot||1;
+    }catch(e){return false;}
   }
   if(!careerSaveShape(data))return false;
   const previous=SV,squad=squadData(),lineup=lineupIds();
@@ -81,10 +87,18 @@ function loadSave(d0){
     return false;
   }
 }
-function careerSaveStatus(failed){
+function careerSaveStatus(failed,conflict=false){
   const el=$('careerSaveStatus');
   el.classList.toggle('hidden',!failed);
+  el.textContent=conflict?'Conflitto tra schede':'Salva di nuovo';
+  el.setAttribute('aria-label',conflict?'Carriera aggiornata in un’altra scheda. Esporta questa copia prima di ricaricare.':'Salvataggio non riuscito. Riprova');
+  el.title=el.getAttribute('aria-label');
 }
+window.addEventListener('storage',e=>{
+  if(e.key!==SAVE_STORE_KEY&&e.key!==SAVE_KEY&&e.key!==null)return;
+  try{if(SV.team&&saveStore.getItem(SAVE_KEY)!==careerStorageVersion)careerSaveStatus(true,true);}
+  catch(e){careerSaveStatus(true);}
+});
 $('careerSaveStatus').addEventListener('click',()=>persist());
 
 function hydrateCareer(d){
@@ -114,23 +128,28 @@ function hydrateCareer(d){
   }
   SV={};return false;
 }
-function persist(){
+function persist(changes={}){
   if(QM.on)return;   // partita veloce: la carriera non si tocca
   SV.v=SAVE_V;SV.squad=squadData();delete SV.players;SV.lineup=lineupIds();SV.savedAt=Date.now();
   if(typeof renderShell==='function'&&!QM.on&&csCur)renderShell();   // crediti e posta nella barra in alto sempre aggiornati
-  // Il salvataggio attivo è il dato canonico. La copia nello slot viene usata quando si cambia carriera.
-  let data,prev;
   try{
-    data=JSON.stringify(SV);
-    prev=localStorage.getItem(SAVE_KEY);
-    localStorage.setItem(SAVE_KEY,data);
+    const data=JSON.stringify(SV),prev=saveStore.getItem(SAVE_KEY);
+    if(careerStorageVersion!==undefined&&prev!==careerStorageVersion){
+      careerSaveStatus(true,true);return false;
+    }
+    const pending={...changes};
+    if(SV.team){
+      const key=slotKey(SV.slot||1);
+      const oldSlot=prev&&careerStorageSlot===(SV.slot||1)?prev:saveStore.getItem(key);
+      if(oldSlot&&oldSlot.length<3e6)pending[key+'-bak']=oldSlot;
+      pending[key]=data;
+      pending[SAVE_KEY]={slot:key};
+    }else pending[SAVE_KEY]=data;
+    saveStore.commit(pending);
+    careerStorageVersion=data;
+    careerStorageSlot=SV.team?(SV.slot||1):undefined;
   }catch(e){careerSaveStatus(true);return false;}
   careerSaveStatus(false);
-  try{
-    if(SV.team)localStorage.setItem(slotKey(SV.slot||1),data);
-    if(prev&&prev.length<3e6&&(JSON.parse(prev).slot||1)===(SV.slot||1))
-      localStorage.setItem(slotKey(SV.slot||1)+'-bak',prev);
-  }catch(e){}   // la copia accessoria non invalida la scrittura del salvataggio attivo
   return true;
 }
 const ranking=(tab,names)=>names.length&&tab[names[0]]&&tab[names[0]].h?usRanking(tab,names):names.slice().sort((a,b)=>tab[b].pts-tab[a].pts||(tab[b].pf-tab[b].pa)-(tab[a].pf-tab[a].pa)||tab[b].pf-tab[a].pf);   // tabelle USA (con gli scontri diretti, h): 35-usa/03-stagione-usa.js
@@ -220,15 +239,16 @@ function newSeason(){
   summerChanges(was);evolveLeague();const aim=aiMarket();   // mercato tra le squadre del computer (31-mercato-ia.js), prima del tuo
   SV.chem=clamp(50+(SV.chem-50)*0.6,0,100);SV.mor=clamp(60+(SV.mor-60)*0.5,0,100);   // estate: l'intesa si allenta un poco, l'umore torna verso la norma
   beginSeason();buildMarket();pickRival();aiMarketNews(aim);   // la notizia dopo la scelta della rivale: la segna nei colpi che la riguardano
-  seasonStartDyn();   // premi di mantenimento e usura delle strutture, nuova sfida
+  seasonStartDyn();   // premi di mantenimento e nuova sfida
   wageWarn();         // 16-bilancio.js: se con questa rosa i conti vanno sotto zero, la dirigenza avvisa subito
   retireCheck('start');starsRetire();   // chi comincia a pensare al ritiro lo dice subito
   persist();
 }
 function recordResult(win,su,so){
   SV.susp=null;   // la partita e' finita: niente piu' da riprendere
-  let msg='';SV.played=(SV.played||0)+1;if(SV.event==='camp')SV.sgp=(SV.sgp|0)+1;
-  const incPre=matchMoney(win);   // i conti di questa partita si calcolano con i tifosi e la forma di prima del risultato (26-economia-partita.js)
+  let msg='';SV.played=(SV.played||0)+1;
+  const incPre=matchMoney(win);   // prima di avanzare il calendario: casa e trasferta, tifosi e affitti sono quelli di questa partita
+  if(SV.event==='camp')SV.sgp=(SV.sgp|0)+1;
   const xm=!!(isUS()&&SV.event==='camp'&&usCrossPending());   // interregionale USA: una partita come le altre (conti, allenamento, eventi), ma non conta per la classifica della Conference e non fa girare il mercato
   if(isUS()&&SV.event==='camp'){
     fansBump(win,win?1:0);msg=usRecord(win,su,so);   // campionato USA: stagione regolare, Play-in, Nationals (35-usa/03-stagione-usa.js)
@@ -268,10 +288,10 @@ function recordResult(win,su,so){
   SV.cash+=incPre.net;SV.lastInc=incPre.net;SV.lastWage=incPre.wage;SV.lastUp=incPre.up+incPre.stf;
   econAfterMatch(incPre);   // registro dei conti, avvisi del rosso, premio a chi ha giocato una partita straordinaria
   // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso l'umore cala sempre di piu' (redPen)
-  SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-redPen()+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede')+(hasTr('men','pap')?0.3:0),0,100);
+  SV.mor=clamp(SV.mor+(win?6:-5)+(60-SV.mor)*0.1-redPen()+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+(hasTr('men','pap')?0.3:0),0,100);
   // la fatica segue i punti giocati (fatShare): chi sta in una sola linea gioca circa meta' delle mete e perde quanto recupera in settimana,
   // chi sta in attacco e in difesa le gioca tutte e si stanca il doppio. Prima contava solo «ha giocato o no», e la profondita' della rosa non serviva a nulla
-  for(const p of SQ){const sh=fatShare(p,su+so);p.cond=clamp((p.cond===undefined?100:p.cond)-(sh>0?2*sh*Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+2*staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}
+  for(const p of SQ){const sh=fatShare(p,su+so);p.cond=clamp((p.cond===undefined?100:p.cond)-(sh>0?2*sh*Math.max(5,12-p.s.res*0.06):0)+10+facRecovery()+2*staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}
   lifeAfterMatch();dynAfterMatch();
   if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0&&!xm)buildMarket();   // il mercato si rinnova ogni 5 giornate
   achCheck();   // traguardi (23-traguardi.js)

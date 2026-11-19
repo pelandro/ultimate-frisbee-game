@@ -1,10 +1,8 @@
-/* ---- SLOT CARRIERA: tre carriere separate sullo stesso dispositivo ----
-   La carriera attiva resta in SAVE_KEY (come prima, cosi' i salvataggi vecchi funzionano); persist() ne tiene una copia anche nello slot SV.slot.
-   Cambiare slot salva la carriera attuale nel suo slot e carica l'altra (o porta alla scelta della squadra, se lo slot e' vuoto). */
+/* Tre slot di carriera e scelta dello slot attivo. */
 const SLOTS_N=3,slotKey=k=>'ultimate-carriera-'+k;
 function slotInfo(k){
   if(SV&&SV.team&&(SV.slot||1)===k)return {team:SV.team,season:SV.season,sr:SV.sr,cur:true};
-  try{const d=JSON.parse(localStorage.getItem(slotKey(k))||'null');if(d&&d.team)return {team:d.team,season:d.season,sr:d.sr};}catch(e){}
+  try{const d=JSON.parse(saveStore.getItem(slotKey(k))||'null');if(d&&d.team)return {team:d.team,season:d.season,sr:d.sr};}catch(e){}
   return null;
 }
 function renderSlots(){
@@ -34,13 +32,7 @@ function slotMessage(message){
 }
 function archiveActiveCareer(){
   if(!SV.team)return true;
-  try{
-    if(persist()){
-      const active=localStorage.getItem(SAVE_KEY);
-      localStorage.setItem(slotKey(SV.slot||1),active);
-      return true;
-    }
-  }catch(e){}
+  if(persist())return true;
   slotMessage('Impossibile conservare la carriera attuale. Libera spazio o esporta il salvataggio, poi riprova.');
   return false;
 }
@@ -51,7 +43,7 @@ function restoreCareerState(previous,squad,lineup){
 }
 function slotData(k){
   if(SV&&SV.team&&(SV.slot||1)===k)return SV;
-  try{const d=JSON.parse(localStorage.getItem(slotKey(k))||'null');if(d&&d.team)return d;}catch(e){}
+  try{const d=JSON.parse(saveStore.getItem(slotKey(k))||'null');if(d&&d.team)return d;}catch(e){}
   return null;
 }
 function renderCareers(){

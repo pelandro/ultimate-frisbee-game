@@ -20,7 +20,7 @@ const ppMy=f=>!!(f&&f.team===0);
 /* passi: info = scheda da leggere (ferma il gioco); gli altri sono prove con done(b) (b = fotografia dei contatori all'inizio della prova).
    sk = velocita' dello stall durante la prova (0 fermo, 1 normale); h = suggerimento se dopo 14 s non ci sei ancora riuscito; ok = riscontro */
 const PP_STEPS=[
-  {id:'goal',info:1,t:'Come si gioca',x:'Si segna prendendo il disco dentro la meta avversaria. Chi ha il disco non può correre: si avanza solo passandolo. In questa partita impari giocando: in alto ti dico che cosa provare e aspetto che tu lo faccia.',when:()=>G.mode==='ready'},
+  {id:'goal',info:1,t:'Come si gioca',x:'Si segna prendendo il disco dentro la meta avversaria. Chi ha il disco non può correre: si avanza solo passandolo. I Primi passi ti propongono una prova alla volta durante la partita. Puoi saltare una prova o continuare senza suggerimenti.',when:()=>G.mode==='ready'},
   {id:'pull',t:'Prova: tira il pull',x:'Ogni punto comincia con il pull, il lancio lungo agli avversari. Tocca una volta per fermare la POTENZA nel verde, poi una seconda per la DIREZIONE al centro.',h:'Guarda le due barre in basso: il primo tocco quando la potenza è nel verde, il secondo quando la direzione è al centro.',
     when:()=>pullMineNow(),done:()=>!!G.pull||G.mode==='play',ok:'Pull tirato! Più cade in fondo al campo, più la tua difesa parte avvantaggiata.'},
   {id:'throw',side:0,t:'Prova: passa il disco',x:'Appoggia il dito, trascinalo all’indietro come una fionda verso un compagno e rilascia: l’arco mostra dove arriva il disco. Finché non ci riesci lo stall è fermo.',sk:0,
@@ -58,8 +58,9 @@ function ppPaint(sub,cls){
 function ppShow(s){
   ppCur=s;ppT0=G.tick;ppOkT=0;ppHintOn=false;ppAway=0;
   ppB={thr:G.st.thr[0]|0,cmp:G.st.cmp[0]|0,miss:0,call:ppEv.call|0,iso:ppEv.iso|0,sc0:G.score[0],sc1:G.score[1],pno:G.pointNo};
-  if(s.info){G.paused=true;drag=null;aimPid=null;ddrag=null;G.cdir=null;G.high=false;G.hold=false;}   // solo le schede da leggere fermano il gioco
+  if(s.info){G.paused=true;clearMatchInput();}   // solo le schede da leggere fermano il gioco
   ppPaint();$('pp').classList.remove('hidden');
+  if(s.info)$('ppOk').focus({preventScroll:true});
 }
 function ppClose(all){
   $('pp').classList.add('hidden');
@@ -96,5 +97,8 @@ $('ppSkip').addEventListener('click',()=>ppClose(true));
 window.addEventListener('keydown',e=>{
   if(!ppCur||!ppCur.info)return;
   e.stopImmediatePropagation();e.preventDefault();
-  if(!e.repeat&&(e.code==='Enter'||e.code==='Space'||e.code==='NumpadEnter'))ppClose(false);
+  if(e.repeat)return;
+  if(e.code==='Tab'){($(document.activeElement.id==='ppOk'?'ppSkip':'ppOk')).focus();return;}
+  if(e.code==='Escape')ppClose(false);
+  else if(['Enter','Space','NumpadEnter'].includes(e.code))ppClose(document.activeElement?.id==='ppSkip');
 },true);

@@ -14,4 +14,8 @@ $('evOpts').addEventListener('click',e=>{
   $('evRes').textContent=res;$('evRes').classList.remove('hidden');$('evOpts').classList.add('hidden');$('evOk').classList.remove('hidden');
   persist();
 });
-$('evOk').addEventListener('click',()=>{$('evt').classList.add('hidden');renderHome();});
+$('evOk').addEventListener('click',()=>{
+  $('evt').classList.add('hidden');
+  renderHome();
+  if(!$('club').classList.contains('hidden'))renderClub();
+});

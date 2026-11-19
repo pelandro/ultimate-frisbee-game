@@ -9,11 +9,11 @@
 const PROG_REST=62,PROG_LOW=48;   // sotto 62 di media la squadra recupera; sotto 48 un giocatore fa Recupero invece del lavoro individuale
 const progOf=()=>SV.prog||(SV.prog={on:false,team:'auto'});
 function trainForecast(list,opt,single){
-  const it=trInt(),fis=(1-0.12*facLv('fis'))*(1-0.1*staffLv('fit'));
+  const it=trInt(),fis=facInjuryK()*(1-0.1*staffLv('fit'));
   let pts=0,cond=0,risk=0,n=0,atRisk=0;
   for(const p of list){
     if(p.inj&&opt.id!=='rec')continue;n++;
-    if(opt.id==='rec'){cond+=Math.min(100-p.cond,REST_GAIN+(single?8:0)+2*facLv('fis')+4*staffLv('fit'));continue;}
+    if(opt.id==='rec'){cond+=Math.min(100-p.cond,REST_GAIN+(single?8:0)+facRecovery()+4*staffLv('fit'));continue;}
     pts+=trainExpect(p,opt,trainMul(p)*(single?1.5:1)*it.g);
     cond-=Math.round((single?TRAIN_COST1:TRAIN_COST)*it.c*(specBonus(p,opt.keys)>0?1.15:1)*trCostK());
     const r=(trainRisk(p)*it.r+(it.r>1?0.004:0))*fis;risk=1-(1-risk)*(1-r);if(trainRisk(p)>0)atRisk++;
@@ -23,8 +23,9 @@ function trainForecast(list,opt,single){
 // testo breve dell'anteprima, per i tasti degli indirizzi
 function forecastTxt(f,opt){
   if(!f.n)return 'nessuno disponibile';
+  if(opt.id==='rec'&&f.cond===0)return 'Condizione già al massimo';
   if(opt.id==='rec')return `+${Math.round(f.cond)} condizione`;
-  return `+${f.pts<9.95?f.pts.toFixed(1).replace('.',','):Math.round(f.pts)} punti · ${Math.round(f.cond)} cond.${f.risk>=0.005?` · rischio ${Math.max(1,Math.round(f.risk*100))}%`:''}`;
+  return `+${f.pts<9.95?f.pts.toFixed(1).replace('.',','):Math.round(f.pts)} punti attesi totali · ${Math.round(f.cond)} cond.${f.risk>=0.005?` · rischio ${Math.max(1,Math.round(f.risk*100))}%`:''}`;
 }
 // la seduta di squadra che il programma sceglierebbe adesso
 function progTeamPick(){

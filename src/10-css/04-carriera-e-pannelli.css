@@ -119,7 +119,7 @@
 .ibtn.off{color:#9fb0de}.ibtn.off .wv{display:none}
 .hdash .hr{padding-top:36px}
 .hgrid .wide{grid-column:1/-1}
-.hbtn .bdg{margin-left:auto;flex:none;font-style:normal;font-family:var(--pfont);font-size:8px;font-size-adjust:none;line-height:1;padding:4px 5px;background:var(--bad);color:#fff;border:2px solid #000;animation:blink 1s steps(2) infinite}
+.hbtn .bdg{margin-left:auto;flex:none;font-style:normal;font-family:var(--pfont);font-size:8px;font-size-adjust:none;line-height:1;padding:4px 5px;background:var(--bad);color:#171322;border:2px solid #000;animation:blink 1s steps(2) infinite}
 .hbtn .bdg.ok{background:var(--good);color:#06240f;animation:none}
 .smenu.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);max-width:760px;gap:8px}
 .smenu.g2 .hbtn{padding:7px 12px}.smenu.g2 .hbtn strong{font-size:20px}.smenu.g2 .hbtn small{font-size:13px}
@@ -157,7 +157,7 @@
 .lbg{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
 .lbg ol{margin:0;padding:0 0 0 22px;font-size:15px;color:#c2cbe6;line-height:1.3}.lbg ol b{color:#fff;font-weight:400;flex:none}
 .lbr{display:flex;justify-content:space-between;gap:8px}.lbr span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.ibtn .bdg{font-style:normal;font-family:var(--pfont);font-size:8px;font-size-adjust:none;line-height:1;padding:3px 4px;background:var(--bad);color:#fff;border:2px solid #000;margin-left:2px}
+.ibtn .bdg{font-style:normal;font-family:var(--pfont);font-size:8px;font-size-adjust:none;line-height:1;padding:3px 4px;background:var(--bad);color:#171322;border:2px solid #000;margin-left:2px}
 #alBody{overflow:auto;min-height:0;flex:1;margin-top:8px}
 .ali{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:2px solid rgba(0,0,0,.45)}
 .ali.new{background:rgba(255,210,63,.07)}
@@ -196,3 +196,8 @@
 .hab em{font-style:normal;font-size:14px;color:#dfe6fb;line-height:1.2}
 .hab.no b{display:none}
 #clTabs{flex-wrap:wrap}#clTabs button{min-width:30%}
+
+.tnbracket summary{cursor:pointer;color:var(--txt,#fff);padding:8px 0}
+.roster-table{overflow-x:auto;max-width:100%}
+.roster-table :is(th,td):first-child:not([colspan]){position:sticky;left:0;z-index:1;background:var(--panel,#1b2341)}
+.roster-table :is(th,td):first-child:not([colspan]){min-width:110px;max-width:210px;white-space:normal}

@@ -41,16 +41,16 @@ const utKey=()=>UT.hm?UTH_KEY:(UT.rp?UTR_KEY:UT_KEY);   // tre salvataggi: torne
 // in quello dei Superpoteri restano gettoni e risultati (portafoglio separato), eroi (hc), traguardi (ms), pacchetti eroi e a chi sono dati gli eroi
 // (ha: eroe -> carta, per utCardSig)
 const utCardSig=c=>(c.full||c.n)+'|'+c.r;
-const utJSON=k=>{try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}};
+const utJSON=k=>{try{return JSON.parse(saveStore.getItem(k)||'null');}catch(e){return null;}};
 function utSave(){try{
   if(UT.hm){
     let r=utJSON(UTR_KEY);
-    if(r&&typeof r==='object'&&Array.isArray(r.col)){r.col=UT.col.map(c=>{const o=Object.assign({},c);delete o.hk;return o;});r.sel=UT.sel;r.manual=UT.manual;r.eq=UT.eq;localStorage.setItem(UTR_KEY,JSON.stringify(r));}   // senza squadra di Real player non si crea niente: la squadra nasce li'
+    if(r&&typeof r==='object'&&Array.isArray(r.col)){r.col=UT.col.map(c=>{const o=Object.assign({},c);delete o.hk;return o;});r.sel=UT.sel;r.manual=UT.manual;r.eq=UT.eq;saveStore.setItem(UTR_KEY,JSON.stringify(r));}   // senza squadra di Real player non si crea niente: la squadra nasce li'
     const ha={};for(const c of UT.col)if(c.hk)ha[c.hk]=utCardSig(c);
-    localStorage.setItem(UTH_KEY,JSON.stringify({v:3,hc:UT.hc,ms:UT.ms|0,msh:UT.msh|0,packs:UT.packs,coins:UT.coins,stat:UT.stat,ha}));
+    saveStore.setItem(UTH_KEY,JSON.stringify({v:3,hc:UT.hc,ms:UT.ms|0,msh:UT.msh|0,packs:UT.packs,coins:UT.coins,stat:UT.stat,ha}));
     return;
   }
-  localStorage.setItem(utKey(),JSON.stringify({v:2,ms:UT.ms|0,d:UT.d,manual:UT.manual,col:UT.col,sel:UT.sel,round:UT.round,tid:UT.tid,packs:UT.packs,st:UT.st,res:UT.res,coins:UT.coins,stat:UT.stat,claimed:UT.claimed,pity:UT.pity|0,eq:UT.eq,mse:UT.mse|0}));
+  saveStore.setItem(utKey(),JSON.stringify({v:2,ms:UT.ms|0,d:UT.d,manual:UT.manual,col:UT.col,sel:UT.sel,round:UT.round,tid:UT.tid,packs:UT.packs,st:UT.st,res:UT.res,coins:UT.coins,stat:UT.stat,claimed:UT.claimed,pity:UT.pity|0,eq:UT.eq,mse:UT.mse|0}));
 }catch(e){}}
 function utOpps(){   // 6 avversarie del torneo: squadre vere scelte con un seme
   const names=Object.keys(TEAM),rng=mulberry32(hashStr('utopp|'+UT.tid)),pick=[];
@@ -165,7 +165,7 @@ function renderTeamUT(){
   const idx=UT.col.map((p,i)=>i).sort((a,b)=>UT.col[b].ovr-UT.col[a].ovr);
   if(UT.hm)UT.mode='sel';   // Superpoteri: la squadra e' di Real player e i gettoni sono a parte: potenziare e scartare si fa li'
   for(const b of $('tmMode').children){b.classList.toggle('on',b.dataset.m===UT.mode);b.classList.toggle('hidden',UT.hm&&b.dataset.m!=='sel');if(b.dataset.m==='up')b.textContent=utUpLock()?'Potenzia (da 1100 punti)':'Potenzia';}
-  const tip=UT.mode==='sel'?'tocca un giocatore per metterlo o toglierlo dai titolari'+(UT.hm?' (è la squadra di Real player: potenzia e scarta da lì)':''):(UT.mode==='up'?'tocca una carta e scegli il potenziamento: ogni carta ne ha al massimo 4 (2 per linea), il prezzo è accanto al nome':'tocca una riserva per scartarla e recuperare gettoni (i titolari non si scartano)');
+  const tip=UT.mode==='sel'?'tocca un giocatore per metterlo o toglierlo dai titolari'+(UT.hm?' (è la squadra di Sfide online: potenzia e scarta da lì)':''):(UT.mode==='up'?'tocca una carta e scegli il potenziamento: ogni carta ne ha al massimo 4 (2 per linea), il prezzo è accanto al nome':'tocca una riserva per scartarla e recuperare gettoni (i titolari non si scartano)');
   $('tmInfo').innerHTML=`Titolari: <b>${UT.sel.length}/7</b> · Forza: <b>${utPower()}</b> · Gettoni: <b>${UT.coins}</b> — ${tmMsg||tip}`;
   const hdr=`<div class="urow hd"><span></span><span>Giocatore</span><span></span>${SHOW.map(k=>`<span class="sv">${k.toUpperCase()}</span>`).join('')}</div>`;
   $('tmList').innerHTML=hdr+idx.map(i=>{const p=UT.col[i],rc=utRar(p.ovr)[1],ex=UT.mode==='up'?((p.up|0)>=UT_UP_MAX?'max':utUpCost(p)+'g'):(UT.mode==='del'&&!UT.sel.includes(i)?'+'+UT_SELL[rc]+'g':'');
@@ -228,7 +228,7 @@ function simCareerMatch(){
   const gk=carGrowK();   // crescita secondo la serie e il distacco (29-potenziali.js), come nelle partite giocate
   for(const p of SQ){p.m=newCounters();if(on.has(p.id)&&!p.inj){p.m.pts=1;p.m.sh=((lo.includes(p)?1:0)+(ld.includes(p)?1:0))/2;growBy(p,simParts(p,1),XP_ROLE[posOf(p)]*gk);}}   // sh: quota di mete giocate (fatShare)
   simMatchStats(r.a);
-  simInjuries([...on].map(id=>SQ[id]).filter(Boolean),1-0.12*facLv('fis'));   // dopo la crescita: chi si fa male in partita la partita l'ha giocata
+  simInjuries([...on].map(id=>SQ[id]).filter(Boolean),facInjuryK());   // dopo la crescita: chi si fa male in partita la partita l'ha giocata
   const msg=recordResult(w,r.a,r.b);
   showSim(w,`${SV.team} ${r.a} – ${r.b} ${m.name}`,msg,()=>renderHome());$('srMoney').innerHTML=moneyHTML(SV.lastMoney);
 }

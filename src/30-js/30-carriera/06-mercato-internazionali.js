@@ -76,9 +76,9 @@ function buildMarket(){
   // il resto dalle altre squadre del tuo campionato attorno al livello degli adulti. I campioni restano rari: le stelle solo se alla portata del tuo livello.
   const lv=squadLevel(),sd=SV.seed+'|mk|'+SV.season+'|'+(SV.mkN=(SV.mkN||0)+1),R=mulberry32(hashStr(sd)),out=[],viv=SV.fac.viv|0,nY=4+Math.min(viv,2),nSale=3,
     women=lnWomenNow(),nAb=women?0:3+(SV.rep>=70&&R()<0.4?1:0),nStar=women?0:Math.min(nAb,1+(SV.rep>=40?1:0)),nFree=3;
-  const ry=potRef('mkt'),la=potRef('adult'),pool=mkClubPool(),add=(x,kind)=>{if(x.o.sk===undefined)x.o.sk=0;out.push({o:x.o,kind,from:x.n});};
+  const ry=potRef('mkt'),la=potRef('adult'),readyBonus=Math.min(3,viv),pool=mkClubPool(),add=(x,kind)=>{if(x.o.sk===undefined)x.o.sk=0;out.push({o:x.o,kind,from:x.n});};
   // giovani: i ragazzi delle rose attorno al livello dei giovani della tua serie (il loro potenziale e' quello che hanno)
-  for(let i=0;i<nY;i++){const x=mkTakeR(pool,ry-8+R()*5+viv,R,y=>y.o.age<=MK_YOUNG,9);if(x)add(x,'Giovane promessa');}
+  for(let i=0;i<nY;i++){const x=mkTakeR(pool,ry-8+R()*5+readyBonus,R,y=>y.o.age<=MK_YOUNG,9);if(x)add(x,'Giovane promessa');}
   // in vendita: club alla tua portata, giocatori fino a 9 punti sopra il tuo livello
   for(let i=0;i<nSale;i++){const x=mkTakeR(pool,lv-4+R()*12,R,y=>y.o.age>MK_YOUNG&&y.v<=lv+9,8);if(x)add(x,'In vendita');}
   // internazionali: le stelle vere (niente giocatori troppo anziani, oltre i 37 anni, o troppo deboli, sotto 78; chi e' gia' in rosa non ricompare;
