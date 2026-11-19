@@ -1,0 +1,2 @@
+/* menu iniziale: il disco preso dal giocatore (28-titolo-tuffo.js) smette di ondeggiare, se no in mano trema */
+.ttlDisc.tdHold .fbBody,.ttlDisc.tdHold .fbShadow{animation:none!important}

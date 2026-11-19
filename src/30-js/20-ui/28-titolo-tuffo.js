@@ -5,7 +5,7 @@
    il disco resta l'elemento della pagina: qui lo si sposta (transform) fino alla mano. Le volte dopo la scena e' gia' ferma. */
 const titleBg=()=>!G.inMatch&&!G.drill&&G.mode==='home'&&!$('title').classList.contains('hidden');
 const TD_WHO={t:0,look:{hair:'#2b1b10',skin:'#d9a57c',style:1,hs:1,bw:1,hd:1}};
-const TD_ROT=1.0,TD_LEAP=0.5;   // inclinazione del tuffo (in salita verso il disco) e durata del volo, in secondi
+const TD_ROT=1.0,TD_LEAP=0.5,TD_TILT=-6;   // TD_TILT: il disco resta inclinato verso l'alto, come quando fluttua sotto l'insegna   // inclinazione del tuffo (in salita verso il disco) e durata del volo, in secondi
 const TDS={t:-1,done:false,from:null,c0:null,key:''};
 // athlete legge la divisa da cine.kits: qui ne serve una sola, la prima del campo
 function tdAthlete(x,gy,hip,pose,rot,tt,hu){
@@ -50,7 +50,7 @@ function drawTitleDive(dt){
   const el=tdDisc();if(!el)return;
   const B=titleBand(),key=[ri(B.y0),ri(B.y1),VW,VH].join('|');
   if(TDS.t<0||key!==TDS.key){   // primo disegno o schermo cambiato: rilegge dove sta il disco
-    const now=tdCtr(el);TDS.c0=tdRest(el);TDS.key=key;el.dataset.tdt='';
+    const now=tdCtr(el);TDS.c0=tdRest(el);TDS.key=key;el.dataset.tdt='';el.classList.add('tdHold');
     if(TDS.t<0){TDS.t=0;TDS.done=!!reduceMotion;const k=1/tdK();TDS.from={x:now.x*k,y:now.y*k};}
   }
   const F=tdFinal(B),hu=F.hu;
@@ -61,11 +61,11 @@ function drawTitleDive(dt){
     const g=ctx.createRadialGradient(F.T.x,F.T.y,4,F.T.x,F.T.y,hu*3.2);g.addColorStop(0,'rgba(255,248,214,.45)');g.addColorStop(1,'rgba(255,248,214,0)');ctx.fillStyle=g;ctx.fillRect(0,0,VW,VH);
     pell(ri(F.x+hu*0.1),F.gy,ri(hu*1.1),Math.max(2,ri(hu*0.1)),'rgba(20,40,20,.35)');
     tdAthlete(F.x,F.gy,F.hip,'dive',TD_ROT,0,hu);
-    tdPlace(el,F.T.x,F.T.y,0);
+    tdPlace(el,F.T.x,F.T.y,TD_TILT);
     return;
   }
   // il disco va dal punto in cui fluttuava fino alla mano, in tempo per la presa
-  const kd=easeIO(clamp(t/(run+TD_LEAP),0,1));tdPlace(el,TDS.from.x+(F.T.x-TDS.from.x)*kd,TDS.from.y+(F.T.y-TDS.from.y)*kd-Math.sin(Math.PI*kd)*hu*0.25,(1-kd)*-6);
+  const kd=easeIO(clamp(t/(run+TD_LEAP),0,1));tdPlace(el,TDS.from.x+(F.T.x-TDS.from.x)*kd,TDS.from.y+(F.T.y-TDS.from.y)*kd-Math.sin(Math.PI*kd)*hu*0.25,TD_TILT);
   let x,hip,pose,rot;
   if(t<run){const k=t/run;x=x0+(xr-x0)*k;hip=0.92;pose='run';rot=0.15;}
   else{const k=(t-run)/TD_LEAP,e=easeIO(k);x=xr+(F.x-xr)*e;hip=0.92+(F.hip-0.92)*e+Math.sin(Math.PI*k)*0.06;pose='dive';rot=0.85+(TD_ROT-0.85)*e;   // si butta subito in avanti: in piedi la testa finirebbe sotto l'insegna
