@@ -175,6 +175,11 @@ function careerSelfTest(seasons,seed){
          n>200&&Math.abs(c[0]/n-0.14)<0.04&&Math.abs(c[1]/n-0.44)<0.05&&c[4]/n<0.06&&nh>0&&nl>0&&hi/nh>lo/nl+5));}
       let dn=0,up=0,lost=0;const N=1500;
       for(let i=0;i<N;i++){const o=genPlayer(50,17,'sorp|'+i,potB(70));const s0=KEYS.reduce((a,k)=>a+o.s[k],0),t0=o.tl+o.tf+o.tv;for(let y=0;y<6;y++){o.pvx=0;const b=KEYS.reduce((a,k)=>a+o.s[k],0);o.age++;potSurprise(o);if(KEYS.reduce((a,k)=>a+o.s[k],0)<b)lost++;}const t1=o.tl+o.tf+o.tv;if(t1<t0)dn++;else if(t1>t0)up++;}
+      if(!lnWomenNow()){let fem=0;for(let i=0;i<600;i++){const o=genPlayer(50,18,'masc|'+i,potB(60));if(o.f||FEM_N.has(o.n))fem++;}
+       const d={squad:[{n:'Rossi',label:'Laura Rossi',full:'Rossi Laura K42',sur:'Rossi',gen:true,f:true}],market:[{o:{n:'Elisa',label:'Elisa Serra',full:'Serra Elisa B17',sur:'Serra',gen:true,f:true}}],rost:{X:[{n:'Giada',r:'C'}]}};menNames(d);
+       const ok=[d.squad[0],d.market[0].o,d.rost.X[0]].every(o=>!o.f&&!FEM_N.has(String(o.label||o.n).split(' ')[0]))&&d.squad[0].n==='Rossi'&&/ Rossi$/.test(d.squad[0].label)&&d.squad[0].full==='Rossi Laura K42';
+       rows.push(row('Campionati maschili: i giocatori inventati sono tutti uomini, e quelli con un nome femminile dei salvataggi di prima prendono un nome maschile',
+         `${fem} giocatrici su 600 generati · salvataggio di prima: ${d.squad[0].label}, ${d.market[0].o.label}, ${d.rost.X[0].n}`,fem===0&&ok));}
       {const mk=(ov,age)=>{const o=genPlayer(ov,age,'wg|'+ov+'|'+age,potB(ov+2));return o;},lo=mk(50,26),hi=mk(85,26),f0=SV.fac?SV.fac.oss:0;
        const w1=wageOf(lo),w2=wageOf(hi),s1=scoutCost(lo),s2=scoutCost(hi);if(SV.fac)SV.fac.oss=3;const s3=scoutCost(hi);if(SV.fac)SV.fac.oss=f0;
        rows.push(row('Stipendi, osservazioni e premio promozione: lo stipendio sale con l\'Overall, osservare costa di più chi vale di più, gli Osservatori fanno risparmiare, la promozione in A paga più di quella in B',

@@ -310,19 +310,22 @@ function selfTestPlan(opt){
       const t=tick(60*6,()=>G.holder!==h||G.mode!=='play');if(t>=4.5)bWait++;   // l'IA lancia entro pochi secondi, non aspetta la difesa (misurato su 40 brick: da 1,1 a 3,3 s, in genere 2,7 s, il tempo normale di uno schema che parte; con 3 s di soglia un solo brick lento faceva fallire il controllo). Il conto si ferma quando il portatore perde il disco, anche se il lancio viene murato sul nascere (handblock: il disco passa subito alla difesa senza volo): prima quel caso, circa 1 seme su 20, contava come attesa lunghissima
     }
     // PARTENZA DAL CENTRO: dopo il pull chi ha il disco lontano dal centro passa all'handler centrale; nessuno taglia finche' il disco non e' a lui
-    let pN=0,pH1=0,pC=0,pCut=0,pGo=0,pT=0;
-    for(let i=0;i<K;i++){
+    // si giudica su chi segue lo schema: se il portatore o l'handler centrale non lo seguono (aderenza, adhOf) si gioca libero, come previsto.
+    // Si conta anche chi non lancia affatto: l'handler centrale che partiva vicino al portatore restava fermo sul bordo del raggio da aggirare
+    // (skirt) e il portatore lo aspettava fino allo stall (con 12 prove su tutti il conto stava sulla soglia e dipendeva dal caso)
+    let pN=0,pH1=0,pC=0,pCut=0,pGo=0,pT=0,pF=0,pH1F=0;const KP=24;
+    for(let i=0;i<KP;i++){
       placeTeams(1);doPull(0.8,fwd);if(!G.pull||G.pull.oob)continue;
       tick(60*12,()=>!G.pull&&!!G.holder);const h=G.holder;if(!h||h.t!==1)continue;
       h.y=i%2?4:FIELD_W-4;h.vx=h.vy=0;G.pb[1]=null;startPlay(1);const pb=G.pb[1];if(!pb||!pb.prep)continue;
-      pN++;let cut=false;
+      pN++;let cut=false;const fol=pb.follow[h.id]&&pb.rp.H1&&pb.follow[pb.rp.H1.id];if(fol)pF++;
       const t=tick(60*8,()=>{if(pb.stage!=='set')cut=true;return !!G.flight;});if(!G.flight)continue;
       pT+=t;if(cut)pCut++;
-      if(pb.role[G.flight.intended&&G.flight.intended.id]==='H1')pH1++;if(Math.abs(G.flight.ty-MID)<=PB_CENTER+1)pC++;
+      if(pb.role[G.flight.intended&&G.flight.intended.id]==='H1'){pH1++;if(fol)pH1F++;}if(Math.abs(G.flight.ty-MID)<=PB_CENTER+1)pC++;
       tick(60*6,()=>!G.flight);if(G.holder&&G.holder.t===1&&pb.active&&!pb.prep){tick(60*3,()=>pb.stage==='go');if(pb.stage==='go')pGo++;}
     }
     return [row('Brick: difensori accanto al loro uomo appena si riparte, e l\u2019attacco lancia entro 4,5 secondi',bOk+' brick, '+bFar+' difese fuori posto, '+bWait+' attese',bOk>=Math.max(2,K/2-2)&&bFar===0&&bWait===0,'nessuna attesa'),
-      row('Partenza dal centro: chi ha preso il pull lontano dal centro passa all\u2019handler centrale',pH1+' su '+pN+', vicino al centro '+pC,pN>=K-3&&pH1>=pN*0.75&&pC>=pN*0.75,'il primo passaggio va al centro'),
+      row('Partenza dal centro: chi ha preso il pull lontano dal centro passa all\u2019handler centrale',pH1F+' su '+pF+' tra chi segue lo schema ('+pH1+' su '+pN+' in tutto), vicino al centro '+pC,pN>=KP-6&&pF>=pN*0.5&&pH1F>=pF*0.9&&pC>=pH1*0.9,'il primo passaggio va al centro'),
       row('Partenza dal centro: nessun taglio prima del passaggio, poi lo schema parte',(pCut?pCut+' tagli in anticipo':'nessun taglio in anticipo')+', parte '+pGo+' volte su '+pH1+(pN?' (passaggio dopo '+(pT/pN).toFixed(1)+' s)':''),pCut===0&&pGo>=pH1*0.7&&pN>0&&pT/pN<=4,'passaggio entro 4 s')];
   }]);
   S.steps.push(['Mira e chiamate',()=>{

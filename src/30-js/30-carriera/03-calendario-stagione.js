@@ -91,6 +91,7 @@ function hydrateCareer(d){
   if(d&&d.team&&d.mem&&d.sched&&d.tab){
     SV=d;if(SV.rost)for(const n in SV.rost)for(const o of SV.rost[n])if(o&&o.s)fillStats(o.s);SV.tTeam=!!SV.tTeam;if(!SV.eu)SV.eu=newEu(SV.season);else if(!SV.eu.nat&&SV.eu.state==='on'&&!SV.eu.rk)SV.eu=Object.assign(newEu(SV.season),{s:SV.eu.s|0});if(!SV.event||(SV.event==='eu'&&!SV.euUnlocked))SV.event='camp';
     const mig=SV.realv===1;   // carriera iniziata con i vecchi roster: la rosa diventa quella ufficiale; gli allenamenti dei giocatori veri restano
+    menNames(SV);
     if(Array.isArray(SV.squad)&&SV.squad.length>=7){for(const o of SV.squad)if(o&&o.s)fillStats(o.s);setSquad(SV.squad);}   // versione 3: la rosa e' salvata per intero (acquisti e cessioni compresi)
     else if(SV.realv&&REAL[SV.team])setSquad(userRoster());
     if(!Array.isArray(SV.squad))SQ.forEach((p,i)=>{const x=(SV.players||{})[p.full||p.name];if(!(x&&x.s)){if(!SV.realv)lowStats(p,i);return;}{for(const k of KEYS)if(typeof x.s[k]==='number')p.s[k]=Math.min(x.s[k],capOf(p,k));p.tr=!!x.tr;p.inj=x.inj|0;if(typeof x.age==='number'&&!mig)p.age=x.age;if(typeof x.s.res!=='number'&&ROSTERS[0].list[i])p.s.res=Math.min(Math.round(37+statOrig(ROSTERS[0].list[i],'res')*0.2),capOf(p,'res'));}});
