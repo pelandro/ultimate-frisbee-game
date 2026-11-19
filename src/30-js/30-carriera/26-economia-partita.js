@@ -161,7 +161,7 @@ const spBase=()=>ECO.K()*(4+0.06*(SV.rep|0));
 // l'obiettivo nelle frasi («bonus 80 se: quarti di finale ai Nationals»): minuscola solo la prima lettera, i nomi propri restano
 const lc1=s=>s.charAt(0).toLowerCase()+s.slice(1);
 const spTitleDivision=()=>isUS()||(isLN()?SV.ln.tier===lnTiers()[0].id:SV.sr==='A');
-const spBonusTxt=o=>`bonus ${o.reward} per ${lc1(o.txt)}${o.titleReward?` e ${o.titleReward} per il titolo`:''}`;
+const spBonusTxt=(o,credits=n=>n+' crediti')=>`bonus ${credits(o.reward)} per ${lc1(o.txt)}${o.titleReward?` e ${credits(o.titleReward)} per il titolo`:''}`;
 const spPayout=(ok,tit)=>(ok?SV.obj?.reward||0:0)+(tit?SV.obj?.titleReward||0:0);
 function spRankTxt(tgt,n){
   if(tgt<=1)return 'Primo posto in classifica';

@@ -164,8 +164,6 @@ html #home .hdash .hr{padding-top:0;display:flex;flex-direction:column;gap:8px}
 #home .hsim>span{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0}
 #home .hsim strong{font-size:clamp(17px,5.2vh,22px)}
 #home .hsim svg{width:26px;height:26px}
-/* il consiglio sotto «Questa settimana»: due righe al massimo, senza la parola ripetuta */
-#home .dtick{max-height:3.3em;overflow:hidden}
 #home .dtick:not(.nw):before{content:""}
 /* ---- fine stagione: scheda unica (25-fine-stagione.js) ---- */
 .endc{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:0 0 8px;padding:10px 12px;background:#141a36;border:3px solid #000;border-left-color:var(--gold)}

@@ -230,7 +230,7 @@ function newSeason(){
   SV.euUnlocked=!!SV.next.qual;if(SV.euUnlocked)SV.eu=newEu(SV.season);SV.event='camp';   // la stagione nuova riparte sempre dal campionato
   retireOwn();   // chi aveva annunciato l'addio lascia adesso
   offTrain();    // chi ha finito presto si e' allenato le settimane in cui non ha giocato (28-allenamenti-fuori-stagione.js)
-  staffYear();   // lo staff invecchia e matura (25-staff-persone.js)
+  staffYear();
   achCheck();    // (Hall of Fame)
   for(const p of SQ){p.hist=p.hist||[];p.hist.push([SV.season-1,ovr(p)]);if(p.hist.length>14)p.hist.shift();}   // storico dei progressi: l'Overall con cui ha chiuso la stagione
   const was=new Map(SQ.map(p=>[p.full,ovr(p)]));

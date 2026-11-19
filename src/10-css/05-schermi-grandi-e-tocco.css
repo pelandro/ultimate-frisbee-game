@@ -204,7 +204,7 @@ html.rotp #rot{display:none!important}
 .scard .sl{display:flex;align-items:center;gap:8px}.scard .sd{color:#7f8db8}
 .scard .sb{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;align-self:stretch}.scard .sb .sec{margin-top:0;flex:1}
 .scard .inf{margin-left:0;flex:none}
-.tk i.pt{background:#3a5aa8}.tk i.no{opacity:.3}
+.tk i.no{opacity:.3}
 .trc{align-self:flex-start;font-style:normal;font-family:var(--pfont);font-size:8px;line-height:12px;padding:2px 5px;background:#ffd23f;color:#1a1c2c;border:2px solid #000}
 .scard.empty{border-style:dashed;border-color:#3a4478}
 .hirepanel{max-width:780px;width:94%;max-height:94vh;overflow:auto}.hirepanel h3{margin:0 0 4px;font-family:var(--pfont);font-size:12px;font-weight:400;color:var(--gold);text-transform:uppercase;letter-spacing:0}

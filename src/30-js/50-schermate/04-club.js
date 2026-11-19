@@ -10,7 +10,8 @@ function renderClub(){
     // Gestione divisa in tre pagine (Società, Strutture, Staff): prima erano tutte insieme e la schermata era troppo piena. Le spiegazioni lunghe stanno dietro al tasto «i» di ciascuna voce
     const inf=(k,txt)=>`<button type="button" class="inf${clInfo.has(k)?' on':''}" data-inf="${k}" aria-expanded="${clInfo.has(k)}" aria-label="${esc(k==='soc'?'Entrate e uscite della società':k)}">i</button>${clInfo.has(k)?`<p class="infp">${txt}</p>`:''}`;
     const tick=(lv,max)=>`<span class="tk" aria-label="livello ${lv} su ${max}">${Array.from({length:max},(_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</span>`;
-    const cSoc=`<div class="ccard"><h3>Società ${inf('soc',`<p><b>Entrate</b>. In casa incassi i biglietti: lo stadio ha <b>${stadCap()}</b> posti e i tifosi, la posta in gioco e la forma decidono quanti ne riempi. In trasferta niente biglietti e <b>${travelCost()}</b> di viaggio; in campo neutro (tornei, finali) i biglietti si dividono a metà. Lo sponsor paga a ogni partita e la lega premia ogni vittoria, di più nelle partite importanti.</p><p><b>Uscite</b>. Gli stipendi costano <b>${wageBill()}</b> a partita, la manutenzione delle strutture <b>${facUpkeep()}</b>.</p><p>La reputazione decide chi accetta di venire; morale e affiatamento spostano un poco la forma dei tuoi in partita.</p>`)}</h3><div class="dcash"><span>Crediti</span><b>${SV.cash}</b></div>${redNoteHTML()}${statBar('Tifosi',fansOf(),'#ff9a3a','%')}${statBar('Reputazione',SV.rep,'#ffd23f')}<div class="dbar"><span>Morale</span><span class="cbar"><i style="width:${Math.round(SV.mor)}%;background:#4fe58f"></i></span><b>${moodFace(teamMoodKey())}</b></div>${statBar('Affiatamento',SV.chem,'#5ac8ff')}</div>`;
+    const upkeep=facUpkeep();
+    const cSoc=`<div class="ccard"><h3>Società ${inf('soc',`<p><b>Entrate</b>. In casa incassi i biglietti: lo stadio ha <b>${stadCap()}</b> posti e i tifosi, la posta in gioco e la forma decidono quanti ne riempi. In trasferta niente biglietti e <b>${travelCost()}</b> di viaggio; in campo neutro (tornei, finali) i biglietti si dividono a metà. Lo sponsor paga a ogni partita e la lega premia ogni vittoria, di più nelle partite importanti.</p><p><b>Uscite</b>. Gli stipendi costano <b>${wageBill()}</b> a partita${upkeep?`, la manutenzione delle strutture <b>${upkeep}</b>`:''}.</p><p>La reputazione decide chi accetta di venire; morale e affiatamento spostano un poco la forma dei tuoi in partita.</p>`)}</h3><div class="dcash"><span>Crediti</span><b>${SV.cash}</b></div>${redNoteHTML()}${statBar('Tifosi',fansOf(),'#ff9a3a','%')}${statBar('Reputazione',SV.rep,'#ffd23f')}<div class="dbar"><span>Morale</span><span class="cbar"><i style="width:${Math.round(SV.mor)}%;background:#4fe58f"></i></span><b>${moodFace(teamMoodKey())}</b></div>${statBar('Affiatamento',SV.chem,'#5ac8ff')}</div>`;
     const cObj=sponsorCardHTML(),cLed=ledgerHTML();
     const cBud=budgetHTML();
     const facilityRows=clTab==='str'?Object.entries(FAC).map(([k,[name,description]])=>{
@@ -18,7 +19,7 @@ function renderClub(){
       const seats=k==='stad'?` <strong>${stadCap()} posti.</strong>`:'';
       return `<div class="fbar"><span class="fn">${name}</span>${tick(lv,FAC_MAX)}<button type="button" class="sec" data-fac="${k}"${!cost||SV.cash<cost?' disabled':''}>${cost?'Migliora · '+cost:'Massimo'}</button></div><p class="sub">${description}.${seats}</p>`;
     }):[];
-    const cStr=`<div class="ccard"><h3>Strutture</h3>${facilityRows.join('')}<p class="sub">Manutenzione ${facUpkeep()} crediti a partita.</p></div>`;
+    const cStr=`<div class="ccard"><h3>Strutture</h3>${facilityRows.join('')}${upkeep?`<p class="sub">Manutenzione ${upkeep} ${upkeep===1?'credito':'crediti'} a partita.</p>`:''}</div>`;
     const cStf=clTab==='stf'?staffHTML(inf):'',cGoal=`<div class="ccard">${goalsHTML()}</div>`;
     const cNews=`<div class="ccard" style="grid-column:1/-1"><h3>Notizie</h3>${SV.news.length?`<ul class="nlist">${SV.news.slice(0,8).map(n=>`<li><i>S${n.s}·G${n.r}</i>${esc(n.txt)}</li>`).join('')}</ul>`:'<p>Nessuna notizia.</p>'}</div>`;
     h='<div class="cgrid">'+(clTab==='man'?cSoc+cObj+cLed+cGoal+cNews:(clTab==='str'?cStr+cBud:cStf))+'</div>';
@@ -162,11 +163,10 @@ $('clBox').addEventListener('click',e=>{
   if(f){const k=f.dataset.fac,c=facCost(k),lv=facLv(k);if(!c||SV.cash<c){renderClub();return;}
     const extra=k==='stad'
       ?`<tr><td>Posti</td><td>${stadCap()} → ${stadCap(lv+1)}</td></tr>`
-      :`<tr><td>Manutenzione a partita</td><td>${facUpkeep()} → ${facUpkeep(k)}</td></tr>`;
-    const estimate=k==='stad'?`<p>${paybackText(budgetPayback(k))}</p>`:'';
+      :facUpkeep(k)!==facUpkeep()?`<tr><td>Manutenzione a partita</td><td>${facUpkeep()} → ${facUpkeep(k)}</td></tr>`:'';
     askConfirm({
       title:'Migliorare '+FAC[k][0]+'?',
-      html:`<p>${esc(FAC[k][1])}.</p><table class="cfmt"><tr><td>Livello</td><td>${lv} → ${lv+1}</td></tr><tr><td>Costo</td><td>${c} crediti</td></tr><tr><td>Crediti dopo</td><td${SV.cash-c<30?' class="bad"':''}>${SV.cash-c}</td></tr>${extra}</table>${estimate}`,
+      html:`<p>${esc(FAC[k][1])}.</p><table class="cfmt"><tr><td>Livello</td><td>${lv} → ${lv+1}</td></tr><tr><td>Costo</td><td>${c} crediti</td></tr><tr><td>Crediti dopo</td><td${SV.cash-c<30?' class="bad"':''}>${SV.cash-c}</td></tr>${extra}</table>`,
       ok:'Migliora per '+c,
       onOk:()=>{
         if(buyFac(k)){clMsg='';persist();}
@@ -175,20 +175,17 @@ $('clBox').addEventListener('click',e=>{
       }
     });
     return;}
-  const sf=e.target.closest('[data-staff]');
-  if(sf){
-    const k=sf.dataset.staff,lv=staffLv(k),cost=staffCost(k);
-    askConfirm({title:'Migliorare '+STAFF[k].n.toLowerCase()+'?',ok:'Firma',html:
-      `<p>Livello ${lv} → ${lv+1} · ${STAFF[k].steps[lv]}.</p>`+staffQuoteHTML(k,lv+1,cost),
-      onOk:()=>{if(buyStaff(k))persist();renderClub();$('clBox').querySelector('[data-staff="'+k+'"]:not([disabled])')?.focus();}});
-    return;
-  }
   const cut=e.target.closest('[data-staff-cut]');
   if(cut){
-    const k=cut.dataset.staffCut,lv=staffLv(k)-1;
-    const title=lv?'Ridurre il contratto?':'Lasciare il ruolo libero?';
-    askConfirm({title,ok:'Conferma',html:`<p>${STAFF[k].n} · ${lv?'livello '+lv:'posto vacante'}.</p>`+staffQuoteHTML(k,lv,0),
-      onOk:()=>{if(staffCut(k))persist();renderClub();}});
+    const k=cut.dataset.staffCut,person=stPerson(k);
+    if(!person)return;
+    askConfirm({title:'Rescindere il contratto?',ok:'Rescindi',
+      html:`<p>${esc(person.n)} lascia il club. Il ruolo di ${STAFF[k].n.toLowerCase()} resta vacante.</p>`+staffQuoteHTML(k,0,0),
+      onOk:()=>{
+        if(staffLeave(k))persist();
+        renderClub();
+        $('clBox').querySelector('[data-hire="'+k+'"]')?.focus();
+      }});
     return;
   }
   const hb=e.target.closest('[data-hire]');if(hb){openHire(hb.dataset.hire);return;}

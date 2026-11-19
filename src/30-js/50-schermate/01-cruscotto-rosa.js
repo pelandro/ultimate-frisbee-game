@@ -215,16 +215,45 @@ function eventPages(active=eventPage){
   return `<nav class="seg evpages" aria-label="Viste della lega">${EVENT_PAGES.map(([id,label])=>`<button type="button" class="sg${active===id?' on':''}" data-evpage="${id}"${active===id?' aria-current="page"':''}>${label}</button>`).join('')}</nav>`;
 }
 function eventCalendar(){
-  const mine=SV.res||[],next=nextMatch();
-  const rows=mine.map((r,i)=>`<li class="${r.su>r.so?'w':'l'}"><span>${i+1}. ${esc(r.opp)}</span><strong>${r.su} – ${r.so}</strong></li>`);
-  if(next)rows.push(`<li class="n"><span>${esc(next.label)} · ${esc(next.name)}</span><strong>Prossima</strong></li>`);
-  if(!isUS()&&!isLN()&&!SV.done&&SV.event==='camp'&&!SV.po?.on){
-    const names=SV.mem[SV.sr],mine=names.indexOf(SV.team);
-    SV.sched.slice(SV.round+1).forEach((round,i)=>{
-      const pair=round.find(m=>m.includes(mine));
-      if(pair)rows.push(`<li><span>Giornata ${SV.round+i+2} · ${esc(names[pair.find(n=>n!==mine)])}</span><span>Da giocare</span></li>`);
+  const results=SV.res||[],next=nextMatch(),regular=regularPhase(),rows=[];
+  const add=(label,name,result,pending)=>{
+    if(!name&&!result)return;
+    const status=result?(result.su>result.so?'w':'l'):pending?'n':'';
+    const score=result?`${result.su} – ${result.so}`:pending?'Prossima':'Da giocare';
+    rows.push(`<li class="${status}"><span>${esc(label)} · ${esc(result?.opp||name)}</span><strong>${score}</strong></li>`);
+  };
+  if(isUS()){
+    let round=0,cross=0;
+    US_CAL.forEach((kind,i)=>{
+      const played=i<(SV.us.ci|0);
+      if(!played&&!regular)return;
+      const upcoming=regular&&i===(SV.us.ci|0);
+      if(kind==='c'){
+        const result=results[round];
+        if(!played||result)add(`Giornata ${round+1} di Conference`,oppAt(round),result,upcoming);
+        round++;
+      }else{
+        const result=SV.us.xl?.[cross];
+        if(!played||result)add(`Interregionale ${cross+1}`,usCrossOpp(cross),result,upcoming);
+        cross++;
+      }
     });
+  }else{
+    let played=0,marked=false;
+    for(let round=0;round<SV.sched.length;round++){
+      const name=oppAt(round);
+      if(!name)continue;
+      const label=`Giornata ${round+1}`;
+      if(round<SV.round){
+        const result=results[played++];
+        if(result)add(label,name,result,false);
+      }else if(regular){
+        add(label,name,null,!marked);
+        marked=true;
+      }
+    }
   }
+  if(next&&!regular)add(next.label,next.name,null,true);
   return rows.length?`<ul class="elist">${rows.join('')}</ul>`:'<p class="note">Il calendario comparirà quando inizierà il campionato.</p>';
 }
 $('eBody').addEventListener('click',e=>{
