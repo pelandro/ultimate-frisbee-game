@@ -21,18 +21,17 @@ les:[
 `<b>Overall</b> (OVR): il valore di un giocatore, da 1 a 99.`]],
 tip:`Non serve imparare tutto subito: nelle prime tre partite compaiono schede che spiegano ogni cosa quando serve.`},
 {id:'ini-comandi',t:'Menu e comandi',b:[
-`Dal menu iniziale scegli: <b>Carriera</b> (più stagioni; «Salvataggi» mostra i tre slot), <b>Partita veloce</b>, <b>Torneo</b>, <b>Ultimate Team</b> (carte) e <b>Allenamento</b>.`,
+`Dal menu iniziale scegli: <b>Carriera</b> (più stagioni: si apre con i tre slot), <b>Partita veloce</b>, <b>Torneo</b> e <b>Ultimate Team</b> (carte). Guida, Guida passo passo, Audio e Impostazioni stanno in «Altro», in alto a destra.`,
 [`<b>Touch e mouse</b>: per lanciare trascina il dito all’indietro e rilascia; per chiamare un compagno toccalo; in difesa usa i pulsanti rossi in basso.`,
 `<b>Tastiera</b>: frecce o WASD = direzione; Spazio o J = lancio (tieni premuto per caricare); Maiusc o K = lancio alto (in difesa, tuffo); E = taglio; Q = isolamento; C = clear; Esc = annulla; Invio = salta il possesso avversario.`,
 `<b>Controller</b>: stick o croce = direzione; A o RT = lancio; X o B = lancio alto; Y = «Salta».`],
-`Le <b>Impostazioni</b> (menu iniziale e pausa) hanno quattro schede: Partita, Comandi, Schermo e audio, Avanzate.`],
+`Le <b>Impostazioni</b> (menu iniziale, in «Altro», e pausa) hanno quattro schede: Partita, Comandi, Schermo e audio, Avanzate.`],
 tip:`Sul telefono si gioca in orizzontale: se lo tieni in verticale il gioco si gira da solo.`},
-{id:'ini-primi',t:'Imparare giocando',w:'Prime partite e menu Allenamento',b:[
+{id:'ini-primi',t:'Imparare giocando',w:'Prime partite',b:[
 `La prima partita è anche un tutorial: in alto un riquadro ti chiede una cosa alla volta (tirare il pull, passare, chiamare un taglio, difendere, segnare) mentre la partita continua.`,
 [`Quando ci riesci il riquadro diventa verde; se sbagli ti dice di riprovare e, se tardi, ti dà un suggerimento.`,
-`«Salta questo passo» va avanti, «Esci dal tutorial» lo spegne. Dura le prime tre partite; per rifarlo: Impostazioni › Partita › Suggerimenti.`],
-`Nel menu <b>Allenamento</b> trovi il <b>tutorial pratico</b> (sette lezioni, ognuna si supera facendo ciò che spiega), l’<b>allenamento libero</b> senza punteggio e le <b>sfide con medaglie</b>. Non toccano la carriera.`],
-tip:`L’allenamento libero senza difesa è il posto migliore per imparare a mirare un huck o un lancio alto.`}
+`«Salta questo passo» va avanti, «Esci dal tutorial» lo spegne. Dura le prime tre partite; per rifarlo: Impostazioni › Partita › Suggerimenti.`]],
+tip:`Una Partita veloce in Facile è il posto migliore per imparare a mirare un huck o un lancio alto.`}
 ]});
 
 TUT.push({id:'att',t:'Attacco',sub:'Pull, lancio, chiamate ai compagni, lanci lunghi, stall.',
@@ -122,7 +121,7 @@ les:[
 {id:'car-cruscotto',t:'Cominciare e la schermata Partita',w:'Menu › Carriera',b:[
 `Una nuova carriera si sceglie in tre passi:`,
 [`<b>Campionato</b>: Italia, USA, Belgio, Francia, Germania o Regno Unito.`,`<b>Squadra</b>: toccandola vedi la rosa. Con «Subentrato» salvi una squadra in crisi in una sola partita.`,`<b>Allenatore</b>: nome, cognome e volto.`],
-`«Salvataggi» (menu iniziale) mostra i tre slot. La <b>schermata Partita</b> è il punto di partenza di ogni giornata:`,
+`«Carriera» (menu iniziale) apre i tre slot. La <b>schermata Partita</b> è il punto di partenza di ogni giornata:`,
 [`<b>Inizia partita</b> (tasto giallo): la giochi tu. <b>Simula</b>: la gioca il computer.`,
 `<b>Questa settimana</b>: ciò che serve adesso (linee incomplete, infortunati, mercato, Posta). Ogni riga porta alla schermata giusta.`,
 `<b>Colonna a sinistra</b>: Partita, Squadra, Allena, Mercato, Lega, Società. <b>Menu</b>: Guida, Tutorial, Opzioni (difficoltà, durata, salvataggi) e Menu principale.`]],
@@ -203,13 +202,12 @@ tip:`Con solo 5 turni di Conference ogni partita pesa: gioca tu quelle contro le
 tip:`In Europa le avversarie sono forti: arriva con la rosa fresca.`}
 ]});
 
-TUT.push({id:'mod',t:'Le altre modalità',sub:'Partita veloce, Torneo, Allenamento, Ultimate Team, Sfide online.',
+TUT.push({id:'mod',t:'Le altre modalità',sub:'Partita veloce, Torneo, Ultimate Team, Sfide online.',
 intro:'Modalità da giocare senza impegno o con una collezione da costruire.',
 les:[
-{id:'mod-veloce',t:'Partita veloce, Torneo e Allenamento',b:[
+{id:'mod-veloce',t:'Partita veloce e Torneo',b:[
 [`<b>Partita veloce</b>: scegli due squadre di qualsiasi campionato, durata e difficoltà. Non viene registrato nulla.`,
-`<b>Torneo</b>: eliminazione diretta a 4, 8 o 16 squadre vere, anche di campionati diversi. Le partite le giochi o le simuli.`,
-`<b>Allenamento</b>: tutorial pratico, allenamento libero e sfide con medaglie.`]],
+`<b>Torneo</b>: eliminazione diretta a 4, 8 o 16 squadre vere, anche di campionati diversi. Le partite le giochi o le simuli.`]],
 tip:`La Partita veloce in Estrema è il banco di prova migliore quando ti sembra tutto troppo facile.`},
 {id:'mod-ut',t:'Ultimate Team e Sfide online',b:[
 `Apri <b>pacchetti</b> di carte con <b>giocatori veri</b> (Handler, Cutter e Defender), scegli i 7 titolari e gioca il torneo a eliminazione. Ogni partita dà <b>gettoni</b> per comprare pacchetti nel <b>Negozio</b> e potenziare le carte (al massimo 4 per carta).`,

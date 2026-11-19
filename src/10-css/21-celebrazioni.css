@@ -8,11 +8,11 @@
   margin:0 auto 8px;
   max-width:360px;
   border:2px solid #694923;
-  background:radial-gradient(ellipse,#473722,#151829 72%);
+  background:radial-gradient(ellipse,#473722,#293a55 72%);
 }
 .title-fanfare.europe {
-  border-color:#577cb8;
-  background:radial-gradient(ellipse,#344671,#111c36 75%);
+  border-color:#7f9cc4;
+  background:radial-gradient(ellipse,#405b81,#2f4462 75%);
 }
 .title-fanfare span {
   width:64px;

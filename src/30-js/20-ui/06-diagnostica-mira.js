@@ -13,7 +13,7 @@ function runDiag(n){
     $('dgState').textContent=`Passo ${i+1} di ${S.steps.length}: ${S.steps[i][0]}…`;
     setTimeout(()=>{
       const rows=selfTestRun(S,i);
-      out.insertAdjacentHTML('beforeend',`<div class="ccard" style="margin-bottom:6px"><h3>${S.steps[i][0]}</h3><ul class="nlist">${rows.map(r=>{tot++;if(r.ok)ok++;return `<li><i style="color:${r.ok?'var(--good)':'var(--bad)'}">${r.ok?'OK':'NO'}</i>${esc(r.name)}: <b style="color:#fff;font-weight:400">${esc(r.val)}</b>${r.note?' <span style="color:#7f8db8">('+esc(r.note)+')</span>':''}</li>`;}).join('')}</ul></div>`);
+      out.insertAdjacentHTML('beforeend',`<div class="ccard" style="margin-bottom:6px"><h3>${S.steps[i][0]}</h3><ul class="nlist">${rows.map(r=>{tot++;if(r.ok)ok++;return `<li><i style="color:${r.ok?'var(--good)':'var(--bad)'}">${r.ok?'OK':'NO'}</i>${esc(r.name)}: <b style="color:#fff;font-weight:400">${esc(r.val)}</b>${r.note?' <span style="color:#c5d1df">('+esc(r.note)+')</span>':''}</li>`;}).join('')}</ul></div>`);
       step(i+1);
     },60);
   };
