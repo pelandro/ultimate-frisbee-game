@@ -3,7 +3,7 @@
 #heroB.hidden{display:none}
 .hb{--p:0%;position:relative;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;width:calc(54px*var(--bz,1));height:calc(54px*var(--bz,1));border-radius:50%;border:0;padding:calc(9px*var(--bz,1));
   background:conic-gradient(var(--gold) var(--p),rgba(255,255,255,.18) 0);box-shadow:0 2px 0 rgba(0,0,0,.45);cursor:pointer}
-.hb::before{content:'';position:absolute;inset:calc(4px*var(--bz,1));border-radius:50%;background:#141a36}
+.hb::before{content:'';position:absolute;inset:calc(4px*var(--bz,1));border-radius:50%;background:#304564}
 .hb svg{position:relative;width:100%;height:100%;image-rendering:pixelated;opacity:.55;filter:saturate(.4)}
 .hb em{position:absolute;right:calc(-4px*var(--bz,1));bottom:calc(-4px*var(--bz,1));font-style:normal;font-weight:800;font-size:calc(12px*var(--bz,1));color:#fff;text-shadow:0 1px 0 #000,0 0 3px #000}
 .hb.rdy{background:var(--gold);animation:hbrdy .9s steps(2) infinite}
@@ -13,10 +13,10 @@
 .hb.off{opacity:.35}
 @keyframes hbrdy{50%{box-shadow:0 0 0 calc(3px*var(--bz,1)) rgba(255,210,63,.55),0 2px 0 rgba(0,0,0,.45)}}
 /* elenco degli eroi (Ultimate Team · Superpoteri, schermata «I tuoi eroi») */
-.qhero{margin:10px auto 0;max-width:820px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 14px;align-items:stretch;padding:10px 12px;background:#141a36;border:3px solid #000;box-shadow:4px 4px 0 #000}
+.qhero{margin:10px auto 0;max-width:820px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 14px;align-items:stretch;padding:10px 12px;background:#304564;border:3px solid #000;box-shadow:4px 4px 0 #000}
 .qhero>b{grid-column:1/-1;color:var(--gold);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
-.qhe{display:flex;gap:8px;align-items:center;min-width:0;font:inherit;color:inherit;text-align:left;cursor:pointer;background:#0d1228;border:2px solid #2a3360;padding:6px 8px;opacity:.6}
-.qhe.on{opacity:1;border-color:var(--gold);background:#1d2550;box-shadow:2px 2px 0 #000}
+.qhe{display:flex;gap:8px;align-items:center;min-width:0;font:inherit;color:inherit;text-align:left;cursor:pointer;background:#233148;border:2px solid #3e597d;padding:6px 8px;opacity:.6}
+.qhe.on{opacity:1;border-color:var(--gold);background:#3c5677;box-shadow:2px 2px 0 #000}
 .qhe i{flex:0 0 auto;width:40px;height:32px}.qhe i svg{width:100%;height:100%;image-rendering:pixelated}
 .qhe span{display:flex;flex-direction:column;min-width:0}.qhe strong{font-size:13px}.qhe small{font-size:11px;opacity:.85}
 .qhn{grid-column:1/-1;font-size:11px;opacity:.8}
@@ -24,21 +24,21 @@
 .qhe.sel{border-color:#3ddc97;background:#16364a;box-shadow:0 0 0 2px #3ddc97,2px 2px 0 #000}
 .qhe strong{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 /* livello dell'eroe: cinque quadratini, pieni fino al livello */
-.hlv,.qhe .hlv{display:inline-flex;flex-direction:row;gap:2px;vertical-align:middle}.hlv i{width:7px;height:7px;background:#2a3360;border:1px solid #000}.hlv i.on{background:var(--gold)}
+.hlv,.qhe .hlv{display:inline-flex;flex-direction:row;gap:2px;vertical-align:middle}.hlv i{width:7px;height:7px;background:#3e597d;border:1px solid #000}.hlv i.on{background:var(--gold)}
 /* carta eroe nel pacchetto: oro se l'eroe e' nuovo, viola se sale di livello (classi sue: .leg ha altre regole) */
 .ucard.hcard{--rc:#b36bff;box-shadow:0 0 11px rgba(179,107,255,.65)}.ucard.hcard.hnw{--rc:#ffd23f;box-shadow:0 0 16px rgba(255,210,63,.85)}
 .ucard.hcard .hico{display:block;width:60px;height:48px;margin:2px auto 3px}.ucard.hcard .hico svg{width:100%;height:100%;image-rendering:pixelated}
 .ucard.hcard .hlv{display:flex;justify-content:center;margin-top:3px}
 /* i 7 titolari a cui dare gli eroi */
 .uhst{max-width:820px;margin:10px auto 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-.uhp{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:8px;align-items:center;text-align:left;font:inherit;color:inherit;cursor:pointer;background:#0d1228;border:2px solid #2a3360;padding:6px 8px;box-shadow:2px 2px 0 #000;min-width:0}
+.uhp{display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:8px;align-items:center;text-align:left;font:inherit;color:inherit;cursor:pointer;background:#233148;border:2px solid #3e597d;padding:6px 8px;box-shadow:2px 2px 0 #000;min-width:0}
 .uhp b{grid-row:1/3;font-size:18px;color:var(--gold)}.uhp span{font-weight:800;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.uhp em{font-style:normal;font-size:10px;opacity:.75;grid-column:2}
 .uhp i{grid-row:1/3;grid-column:3;width:30px;height:24px}.uhp i svg{width:100%;height:100%;image-rendering:pixelated}
-.uhp.has{border-color:var(--gold);background:#1d2550}
+.uhp.has{border-color:var(--gold);background:#3c5677}
 /* combo: l'anello che si stringe attorno al pulsante (verde quando e' il momento), e la barra che si riempie giocando */
 .hbc{position:absolute;inset:0;border-radius:50%;border:calc(3px*var(--bz,1)) solid var(--gold);transform:scale(var(--cs,1.9));opacity:0;pointer-events:none}
 .hb.cmb .hbc{opacity:1}.hb.cmb.cok .hbc{border-color:#3ddc97;box-shadow:0 0 calc(8px*var(--bz,1)) #3ddc97}
-.hcb{width:calc(54px*var(--bz,1));height:calc(8px*var(--bz,1));background:#141a36;border:2px solid #000;box-shadow:0 2px 0 rgba(0,0,0,.45)}
+.hcb{width:calc(54px*var(--bz,1));height:calc(8px*var(--bz,1));background:#304564;border:2px solid #000;box-shadow:0 2px 0 rgba(0,0,0,.45)}
 .hcb i{display:block;height:100%;width:0;background:#8a4dff}.hcb.full i{background:#3ddc97;animation:hcbf .6s steps(2) infinite}.hcb.hidden{display:none}
 @keyframes hcbf{50%{background:#ffd23f}}
 

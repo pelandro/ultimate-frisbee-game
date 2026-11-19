@@ -1,4 +1,4 @@
-/* ---- audio: due musiche sintetizzate (schermata iniziale e partita) e il pubblico che tifa. Nessun file: tutto generato con Web Audio ---- */
+/* ---- audio: due musiche sintetizzate (schermata iniziale e partita) e il pubblico che tifa (brusio, cori, applausi in lontananza, trombette). Nessun file: tutto generato con Web Audio ---- */
 function buildAudio(c,dest){
   const mtof=m=>440*Math.pow(2,(m-69)/12),rr=(a,b)=>a+Math.random()*(b-a);
   const master=c.createGain();master.gain.value=0.9;
@@ -82,23 +82,21 @@ function buildAudio(c,dest){
     if(i===0||i===4)kick(out,t,0.13);
     if(i%2===1)hat(out,t,0.018,false);
   }
-  /* musica della partita: piu' tesa e veloce, 126 bpm, la minore (La-, Fa, Do, Sol, ..., Mi7) con basso pulsante e batteria */
-  const MATCH={bpm:126,bars:[
-    {root:45,chord:[57,60,64],lead:[76,0,76,74,72,0,69,0]},
-    {root:41,chord:[53,57,60],lead:[77,0,77,76,72,0,69,0]},
-    {root:48,chord:[55,60,64],lead:[72,0,76,0,79,0,76,72]},
-    {root:43,chord:[55,59,62],lead:[74,0,74,76,79,0,74,71]},
-    {root:45,chord:[57,60,64],lead:[81,0,81,79,76,0,72,0]},
-    {root:41,chord:[53,57,60],lead:[81,0,81,79,77,0,72,0]},
-    {root:43,chord:[55,59,62],lead:[79,0,79,76,74,0,71,74]},
-    {root:40,chord:[56,59,62,64],lead:[76,0,80,0,83,0,80,76]}]};
+  /* musica della partita: arcade morbido, adatto al sottofondo. 112 bpm, fa maggiore (Fa, Re-, Sib, Do): arpeggio triangolare filtrato,
+     basso rotondo, batteria leggera e una melodia a domanda e risposta solo nella seconda meta' del giro (prima era a 126 bpm con dente di sega e
+     melodia continua: stancava) */
+  const soft=(out,t,vol)=>{const o=c.createOscillator(),g=c.createGain();o.frequency.setValueAtTime(110,t);o.frequency.exponentialRampToValueAtTime(45,t+0.12);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.0001,t+0.25);o.connect(g);g.connect(out);o.start(t);o.stop(t+0.3);};
+  const brush=(out,t,vol)=>noise(out,t,0.22,'bandpass',2600,0.5,vol,0.02);
+  const MATCH={bpm:112,bars:[
+    {root:41,chord:[65,69,72],mel:[]},{root:38,chord:[62,65,69],mel:[]},{root:46,chord:[62,65,70],mel:[]},{root:48,chord:[64,67,72],mel:[]},
+    {root:41,chord:[65,69,72],mel:[77,0,76,0,74,0,72,0]},{root:38,chord:[62,65,69],mel:[74,0,0,0,69,0,0,0]},{root:46,chord:[62,65,70],mel:[70,0,72,0,74,0,77,0]},{root:48,chord:[64,67,72],mel:[76,0,0,0,0,0,0,0]}]};
   function matchStep(out,echo,i,t,sd,bar){
-    if(i%2===0)kick(out,t,0.22);
-    if(i===2||i===6)snare(out,t,0.09);
-    hat(out,t,i%2?0.035:0.018,i%2===1);
-    tone(out,'sawtooth',mtof(bar.root+((i===3||i===7)?12:0)),t,0.004,sd*0.8,0.11,520);
-    if(i===3||i===7)for(const m of bar.chord)tone(out,'sawtooth',mtof(m),t,0.004,sd*0.7,0.03,2200);
-    if(bar.lead[i]){const f=mtof(bar.lead[i]);tone(out,'square',f,t,0.005,sd*1.5,0.045,3400);tone(echo,'square',f,t,0.005,sd*1.5,0.03,3000);}
+    tone(out,'triangle',mtof(bar.chord[i%3]+(i>=4?12:0)),t,0.003,sd*0.8,0.022,2000);
+    if(i%2===0)tone(out,'triangle',mtof(bar.root+(i===4?12:0)),t,0.005,sd*1.2,0.11,650);
+    if(i===0||i===4)soft(out,t,0.13);
+    if(i===4)brush(out,t,0.04);
+    if(i%2===1)hat(out,t,0.008,false);
+    const m=bar.mel[i];if(m){tone(out,'square',mtof(m),t,0.008,sd*1.8,0.022,1500);tone(echo,'square',mtof(m),t,0.008,sd*1.8,0.016,1300);}
   }
   function makeScene(def,stepFn,vol){
     const out=c.createGain();out.gain.value=0;out.connect(musicBus);
@@ -115,7 +113,7 @@ function buildAudio(c,dest){
     };
   }
   /* pubblico: brusio continuo, applausi ritmati ogni tanto e cori ("aaah" quando si segna, "ooh" quando va male) */
-  const crowd={on:false,nodes:[],gain:null,nextClap:0};
+  const crowd={on:false,nodes:[],gain:null,nextClap:0,nextAmb:0};
   function crowdStart(t){
     if(crowd.on)return;crowd.on=true;
     const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+2);g.connect(crowdBus);crowd.gain=g;
@@ -128,7 +126,7 @@ function buildAudio(c,dest){
     layer(bb,'bandpass',650,0.6,0.05,0.13,0.02);
     layer(wb,'bandpass',1500,0.8,0.007,0.21,0.004);
     layer(bb,'lowpass',250,0.5,0.018,0.07,0.006);
-    crowd.nextClap=t+rr(4,9);
+    crowd.nextClap=t+rr(4,9);crowd.nextAmb=t+rr(8,16);
   }
   function crowdStop(t){
     if(!crowd.on)return;crowd.on=false;const g=crowd.gain,ns=crowd.nodes;crowd.nodes=[];
@@ -158,8 +156,43 @@ function buildAudio(c,dest){
     swell(t,1.4,0.3*power,900);
     voices(t,1.5,0.13*power,rr(190,215),0.8,500,850,7);
   }
-  function tickCrowd(until){while(crowd.on&&crowd.nextClap<until){chant(crowd.nextClap);crowd.nextClap+=rr(10,18);}}
-  return {sfx:SFX,master,musicBus,crowdBus,scenes:{home:makeScene(HOME,homeStep,0.6),match:makeScene(MATCH,matchStep,1.0)},crowdStart,crowdStop,tickCrowd,cheer,groan,clapTrain,chant};
+  /* applausi leggeri in lontananza: tanti battiti di mani sparsi, smorzati e distribuiti a destra e a sinistra (il pubblico intorno al campo) */
+  function applause(t,power){
+    const n=Math.round(18+40*power),dur=1.2+2.2*power,bus=c.createGain(),lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2300;bus.gain.value=0.9;lp.connect(bus);bus.connect(crowdBus);
+    for(let i=0;i<n;i++){
+      const k=Math.pow(Math.random(),0.7),at=t+k*dur,v=0.05*power*(1-k*0.75)*rr(0.5,1);   // piu' fitti all'inizio, poi si spengono
+      const pn=c.createStereoPanner?c.createStereoPanner():null;
+      if(pn){pn.pan.value=rr(-0.8,0.8);pn.connect(lp);}
+      noise(pn||lp,at,0.06,'bandpass',rr(1200,2400),0.8,v,0.002);
+    }
+  }
+  /* trombette da stadio: tromba di plastica nasale (dente di sega e quadra filtrati, un po' di vibrato), lontana e con l'eco della curva.
+     'blast' = una suonata lunga, 'doppia' = due brevi, 'carica' = la fanfara «ta-ta-ta-taaa, ta-taaa» */
+  const hornOut=c.createGain(),hornEcho=c.createDelay(1),hornFb=c.createGain(),hornLp=c.createBiquadFilter();
+  hornOut.gain.value=0.55;hornLp.type='lowpass';hornLp.frequency.value=3200;hornEcho.delayTime.value=0.23;hornFb.gain.value=0.28;
+  hornLp.connect(hornOut);hornOut.connect(crowdBus);hornOut.connect(hornEcho);hornEcho.connect(hornFb);hornFb.connect(hornEcho);hornFb.connect(crowdBus);
+  function hornNote(t,f,dur,vol,pan){
+    const g=c.createGain(),bp=c.createBiquadFilter(),bp2=c.createBiquadFilter(),pn=c.createStereoPanner?c.createStereoPanner():null;
+    bp.type='bandpass';bp.frequency.value=1150;bp.Q.value=1.4;bp2.type='bandpass';bp2.frequency.value=2600;bp2.Q.value=2;
+    g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+0.025);g.gain.setValueAtTime(vol,t+dur*0.8);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    for(const [type,mul,v] of [['sawtooth',1,1],['square',1.005,0.5]]){
+      const o=c.createOscillator(),og=c.createGain();o.type=type;o.frequency.setValueAtTime(f*mul*0.97,t);o.frequency.linearRampToValueAtTime(f*mul,t+0.04);o.frequency.setValueAtTime(f*mul,t+dur*0.75);o.frequency.linearRampToValueAtTime(f*mul*0.94,t+dur);   // attacco che sale, coda che cala
+      const lfo=c.createOscillator(),ld=c.createGain();lfo.frequency.value=rr(5,7);ld.gain.value=f*0.008;lfo.connect(ld);ld.connect(o.frequency);
+      og.gain.value=v;o.connect(og);og.connect(bp);og.connect(bp2);o.start(t);o.stop(t+dur+0.05);lfo.start(t);lfo.stop(t+dur+0.05);
+    }
+    bp.connect(g);bp2.connect(g);if(pn){pn.pan.value=pan;g.connect(pn);pn.connect(hornLp);}else g.connect(hornLp);
+  }
+  function horn(t,kind,vol){
+    const v=0.22*(vol||1),pan=rr(-0.6,0.6),f0=rr(0.96,1.04)*392;   // sol, intonato un po' a caso: ogni tifoso ha la sua trombetta
+    if(kind==='carica'){[[0,1,0.14],[0.16,4/3,0.14],[0.32,5/3,0.14],[0.48,2,0.34],[0.9,5/3,0.14],[1.06,2,0.6]].forEach(([d,m,l])=>hornNote(t+d,f0*m,l,v,pan));}
+    else if(kind==='doppia'){hornNote(t,f0*1.5,0.22,v,pan);hornNote(t+0.3,f0*1.5,0.5,v,pan);}
+    else hornNote(t,f0*rr(0.9,1.2),rr(0.9,1.4),v,pan);
+  }
+  function tickCrowd(until){
+    while(crowd.on&&crowd.nextClap<until){chant(crowd.nextClap);crowd.nextClap+=rr(10,18);}
+    while(crowd.on&&crowd.nextAmb<until){const t=crowd.nextAmb;if(Math.random()<0.6)applause(t,rr(0.12,0.22));else horn(t,'blast',rr(0.25,0.4));crowd.nextAmb+=rr(18,35);}   // ogni tanto, piano: qualcuno applaude o suona la trombetta in curva
+  }
+  return {sfx:SFX,master,musicBus,crowdBus,scenes:{home:makeScene(HOME,homeStep,0.6),match:makeScene(MATCH,matchStep,1.5)},crowdStart,crowdStop,tickCrowd,cheer,groan,clapTrain,chant,applause,horn};
 }
 const AUD=(function(){
   let A=null,eng=null,on=true,cur='none',lastSfx=-9;
@@ -188,11 +221,14 @@ const AUD=(function(){
     if(type==='ui'){eng.sfx.ui(A.currentTime);return;}   // i clic dei menu suonano anche fuori partita
     if(cur!=='match')return;
     const t=A.currentTime+0.02;
-    if(type==='goal'){eng.sfx.goal(t);if(a===0)eng.cheer(t,1);else eng.groan(t,0.9);}   // a = squadra che segna
+    if(type==='goal'){eng.sfx.goal(t);if(a===0){eng.cheer(t,1);eng.applause(t+0.6,0.8);hornAt(t+0.4,Math.random()<0.6?'carica':'doppia',1);}else eng.groan(t,0.9);}   // a = squadra che segna
     else if(type==='turn'){if(t-lastSfx<2)return;lastSfx=t;if(a===0)eng.cheer(t,0.28);else eng.groan(t,0.4);}
-    else if(type==='crowd')eng.cheer(t,a||0.5);   // boato del pubblico nei momenti decisivi (a = intensita')
+    else if(type==='crowd'){eng.cheer(t,a||0.5);if((a||0)>=0.6)hornAt(t+0.3,'blast',0.8);}   // boato del pubblico nei momenti decisivi (a = intensita')
+    else if(type==='catch'||type==='block'){eng.sfx[type](t,a,b);if(type==='block'||a>=1){eng.applause(t+0.15,type==='block'?0.45:0.6);if(Math.random()<0.35)hornAt(t+0.5,'doppia',0.8);}}   // prese in salto o in tuffo e blocchi: applauso leggero e a volte la trombetta
     else if(eng.sfx[type])eng.sfx[type](t,a,b);
   }
+  let lastHorn=-9;   // le trombette non si accavallano: al massimo una ogni 5 secondi
+  function hornAt(t,kind,vol){if(t-lastHorn<5)return;lastHorn=t;eng.horn(t,kind,vol);}
   function setOn(v){
     on=!!v;try{localStorage.setItem('ultimate-audio',on?'1':'0');}catch(e){}
     if(eng)eng.master.gain.setTargetAtTime(on?0.9:0,A.currentTime,0.08);

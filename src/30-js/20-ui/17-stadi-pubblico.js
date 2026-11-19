@@ -13,7 +13,8 @@ function venueNow(){
   // fuori dalla carriera l'impianto segue il prestigio del club di casa (un grande club gioca in un grande stadio), con un po' di varieta'
   let lv=0;if(home){let cl=0.5;try{cl=clamp(clubLvl(home),0,1);}catch(e){}lv=clamp(Math.round(cl*4.4+((h>>7)%3)*0.5-0.3),0,5);}
   G.vn=on?{v:'H',home,tier:lv>=4?2:(lv>=2?1:0),lv,n:0,cap:0,fill:0.45+((h>>4)%5)*0.12,my:0.12,big:false,ev:'',spon:'',comp:'',care:-1}
-    :{v:'H',home:null,tier:0,lv:0,n:0,cap:0,fill:G.drill?0.1:0.3,my:0.12,big:false,ev:'',spon:'',comp:'',care:-1};
+    :(G.drill?{v:'H',home:null,tier:0,lv:0,n:0,cap:0,fill:0.1,my:0.12,big:false,ev:'',spon:'',comp:'',care:-1}
+      :{v:'H',home:null,tier:2,lv:5,n:0,cap:0,fill:0.85,my:0.12,big:false,ev:'',spon:'',comp:'',care:-1});   // dietro i menu il campo grande: lo stadio pieno
   return G.vn;
 }
 const vnSide=V=>V.v==='A'?1:0;   // squadra di casa in campo: 0 tu (blu), 1 l'avversaria (rossa); in campo neutro conta la tua

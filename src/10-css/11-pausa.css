@@ -1,7 +1,7 @@
 /* ---- PAUSA: due colonne (azioni a sinistra, impostazioni a destra) cosi' sta in 375px di altezza e «Abbandona» e' sempre raggiungibile ---- */
 .pausepanel{width:min(660px,100%);max-width:660px!important;max-height:100%;overflow:auto;padding:10px 14px 12px}
 .pausepanel h1{margin:0 0 2px}
-#paSub{margin:0 0 8px;font-size:15px;color:#9fb0de}
+#paSub{margin:0 0 8px;font-size:15px;color:#d1deec}
 .pa2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px;align-items:stretch}
 .pamain,.paside{display:flex;flex-direction:column;gap:7px;min-width:0}
 .pamain .go{font-size:24px;padding:16px 12px;min-height:64px}
@@ -10,6 +10,6 @@
 .paside .sec{font-size:16px;padding:6px 10px;min-height:38px;text-align:left}
 .paside .pt{display:flex;align-items:center;gap:8px}
 .paside .pt::before{content:"";flex:none;width:10px;height:10px;border:2px solid #000;background:var(--good)}
-.paside .pt.off::before{background:#59627f}
+.paside .pt.off::before{background:#456189}
 .paside .danger{margin-top:auto;text-align:center}
 @media (max-width:560px){.pa2{grid-template-columns:1fr}.paside .danger{margin-top:0}}

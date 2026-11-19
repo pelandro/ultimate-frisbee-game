@@ -143,6 +143,5 @@ $('scBox').addEventListener('click',e=>{
   showScreen('quick');
   $('qPlay').focus();
 });
-$('tSchool').addEventListener('click',()=>showScreen('school'));
 $('deOk').addEventListener('click',()=>{exitQuick('school');});
 $('deAgain').addEventListener('click',()=>{const k=DR.ch;$('drEnd').classList.add('hidden');G.schemeOpen=false;if(k){DR.score=0;DR.tries=0;DR.last='';drillStart();cam.snap=true;}});

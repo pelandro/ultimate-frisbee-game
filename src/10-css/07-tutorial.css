@@ -1,22 +1,22 @@
 /* ---- TUTORIAL: capitoli, lezioni, progressi ---- */
 .tupanel{max-width:780px}
 #tuBody{overflow:auto;min-height:0;flex:1;padding-top:6px}
-.tupr{margin:0 0 8px;font-size:16px;line-height:1.3;color:#c3cbe6}
-.tubar{height:8px;background:#0b0f22;border:2px solid #000;margin:2px 0 10px}.tubar i{display:block;height:100%;background:#4fe58f}
+.tupr{margin:0 0 8px;font-size:16px;line-height:1.3;color:#dde6f1}
+.tubar{height:8px;background:#1d293c;border:2px solid #000;margin:2px 0 10px}.tubar i{display:block;height:100%;background:#4fe58f}
 .tuchs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px}
-.tuc,.tul{display:block;width:100%;text-align:left;font:inherit;color:#fff;background:#141a36;border:3px solid #000;padding:8px 11px;cursor:pointer}
+.tuc,.tul{display:block;width:100%;text-align:left;font:inherit;color:#fff;background:#304564;border:3px solid #000;padding:8px 11px;cursor:pointer}
 .tuc strong{display:block;font-size:19px;color:#ffd23f;margin-bottom:2px}
-.tuc span{display:block;font-size:15px;line-height:1.25;color:#c3cbe6}
+.tuc span{display:block;font-size:15px;line-height:1.25;color:#dde6f1}
 .tuc em{display:block;font-style:normal;font-size:14px;margin-top:4px;color:#4fe58f}
 .tuc.on,.tul.on{border-color:#ffd23f}
 .tuls{display:grid;gap:6px}
 .tul{display:flex;gap:9px;align-items:center;font-size:17px}
-.tul b{flex:0 0 22px;height:22px;line-height:18px;text-align:center;border:2px solid #000;background:#0b0f22;color:#8a93b6;font-size:14px}
+.tul b{flex:0 0 22px;height:22px;line-height:18px;text-align:center;border:2px solid #000;background:#1d293c;color:#c9d3de;font-size:14px}
 .tul.done b{background:#2f7b4f;color:#fff}
 .tun{font-size:14px;color:#8fb6ff;margin:0 0 2px}
 .tubody h2{margin:2px 0 8px;font-size:23px;color:#ffd23f}
-.tubody p{margin:0 0 9px;font-size:18px;line-height:1.3;color:#e3e8f8}
-.tubody ul{margin:0 0 9px;padding-left:20px;font-size:18px;line-height:1.3;color:#e3e8f8}.tubody li{margin:0 0 5px}
+.tubody p{margin:0 0 9px;font-size:18px;line-height:1.3;color:#eaf0f7}
+.tubody ul{margin:0 0 9px;padding-left:20px;font-size:18px;line-height:1.3;color:#eaf0f7}.tubody li{margin:0 0 5px}
 .tutip{border:3px solid #ffd23f;background:rgba(255,210,63,.08);padding:7px 10px;margin:4px 0 10px;font-size:17px;line-height:1.28;color:#fff}
 .tutip b{color:#ffd23f}
 .tunav{display:flex;gap:8px;justify-content:space-between;margin-top:6px}.tunav button{flex:1}

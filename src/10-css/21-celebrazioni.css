@@ -1,51 +1,19 @@
-/* La coppa conserva la sagoma anche quando gli effetti del sistema sono ridotti. */
-.title-fanfare {
-  position:relative;
-  display:grid;
-  place-items:center;
-  overflow:hidden;
-  height:76px;
-  margin:0 auto 8px;
-  max-width:360px;
-  border:2px solid #694923;
-  background:radial-gradient(ellipse,#473722,#151829 72%);
+/* La risoluzione interna del disegno resta bassa per conservare i pixel del campo. */
+#cupScene {z-index:65;text-align:center}
+.cup-panel {width:min(500px,100%);padding:12px}
+.cup-panel h1 {line-height:1.35}
+#cupPark {
+  position:static;
+  display:block;
+  pointer-events:none;
+  width:min(100%,420px,46vh * 240 / 116);
+  height:auto;
+  margin:8px auto;
+  border:2px solid #a37a46;
+  image-rendering:pixelated;
 }
-.title-fanfare.europe {
-  border-color:#577cb8;
-  background:radial-gradient(ellipse,#344671,#111c36 75%);
-}
-.title-fanfare span {
-  width:64px;
-  height:56px;
-  background:linear-gradient(90deg,#bf711f 0 18%,#ffe18a 18% 40%,#ffcf56 40% 75%,#e39a30 75%);
-  clip-path:polygon(23% 0,77% 0,77% 10%,100% 10%,100% 44%,91% 44%,91% 56%,67% 56%,67% 68%,56% 68%,56% 84%,73% 84%,73% 100%,27% 100%,27% 84%,44% 84%,44% 68%,33% 68%,33% 56%,9% 56%,9% 44%,0 44%,0 10%,23% 10%,23% 22%,10% 22%,10% 38%,23% 38%,23% 22%,77% 22%,77% 38%,90% 38%,90% 22%,77% 22%,77% 0);
-  animation:title-cup .58s steps(7,end) both;
-}
-.title-fanfare i {
-  position:absolute;
-  left:var(--x);
-  top:var(--y);
-  width:4px;
-  height:7px;
-  background:var(--c);
-  animation:title-confetti 1.1s var(--d) steps(9,end) both;
-}
-.title-fanfare.europe i:nth-child(3n) {
-  width:11px;
-  height:11px;
-  clip-path:polygon(38% 0,62% 0,62% 38%,100% 38%,100% 62%,62% 62%,62% 100%,38% 100%,38% 62%,0 62%,0 38%,38% 38%);
-}
-@keyframes title-cup {
-  0% {transform:translateY(46px);opacity:0}
-  70% {transform:translateY(-4px);filter:brightness(1.24)}
-  100% {transform:none;opacity:1}
-}
-@keyframes title-confetti {
-  0% {transform:translateY(-26px);opacity:0}
-  22% {opacity:1}
-  100% {transform:translateY(36px) rotate(135deg);opacity:0}
-}
+#cupPark.europe {border-color:#7f9cc4}
+#cupNext {min-height:44px}
 @media (prefers-reduced-motion:reduce) {
-  .title-fanfare span {animation:none}
-  .title-fanfare i {display:none}
+  #cupScene,#cupScene .panel {animation:none;transition:none}
 }

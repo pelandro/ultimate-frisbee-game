@@ -1,0 +1,36 @@
+/* TEMA AZZURRO GRIGIO (Ultimate Pixel): i blu dell'interfaccia sono gia' rimappati nei file di prima (via di mezzo tra ardesia e cielo,
+   piu' chiaro del blu notte ma con il contrasto che serve ai testi, controllato dalla prova di impaginazione).
+   Qui: accento, pulsanti piu' leggeri (bordo del colore del tema al posto del nero, luce in alto, spessore corto), sfondo sfumato,
+   angoli netti e la schermata iniziale «Stadio» (insegna in alto, campo grande dietro, quattro pulsanti su due file).
+   --E = colore dei bordi e degli spessori. */
+:root,:root[data-theme="dark"],:root:not([data-theme="light"]){--gold:#ffd23f;--accent:#ffd23f;--accent-ink:#1a1c2c;--E:#1b283b}
+.screen::before{background:repeating-linear-gradient(0deg,rgba(0,0,0,.06) 0 2px,transparent 2px 4px)!important}
+.screen{background:linear-gradient(180deg,#4a678f 0%,#3d5779 38%,#2f4463 100%)!important}
+.hbtn,.tteam,.ecard,.ttype,.go,.sec,.back,.qswap,.sg,.opt,select.qs,.qtabs button,.qpg button,.lu button,.prow,.umode button,#mkTabs button,#rail .rb,#rail button,.ibtn,.tbar button{border-color:var(--E)!important}
+.hbtn,.tteam,.ecard,.ttype,.sec,.back,.qswap,select.qs{box-shadow:inset 0 3px 0 rgba(255,255,255,.18),0 4px 0 var(--E)!important;background-image:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,0) 60%)}
+.hbtn.hp,.ecard.on,.go{box-shadow:inset 0 3px 0 rgba(255,255,255,.5),inset 0 -3px 0 rgba(0,0,0,.12),0 4px 0 var(--E)!important}
+.hbtn.hp,.go,.ecard.on,.sg.on,.qtabs button.on,.lu button.sel{color:#1a1c2c!important}
+.panel{border-color:rgba(255,255,255,.85)!important;box-shadow:0 0 0 3px var(--E),8px 8px 0 3px rgba(0,0,0,.28)!important}
+.shead h2,.htitle,.panel h1{text-shadow:3px 3px 0 var(--E)!important}
+/* angoli netti dappertutto: pulsanti, schede e pannelli (niente angoli smussati); bordi sottili */
+.screen button,.overlay button,#cshell button,#ctop button,#rail button,.tbar button,.tmenu button,select.qs,.prow,.mcard,.panel,.ccard,.lgcard,.ucard,.urow,.pcard,.rbar,.swr,#title .hl.ttl,#title .hr{border-radius:0!important}
+
+.hbtn,.tteam,.ecard,.ttype,.sec,.back,.qswap,select.qs{border-width:2px!important}
+.mcard,.panel{border-width:2px!important}
+/* ---- schermata iniziale: Stadio ---- */
+#title{background:radial-gradient(ellipse 30% 45% at 10% -8%,rgba(255,250,220,.55),transparent 70%),radial-gradient(ellipse 30% 45% at 90% -8%,rgba(255,250,220,.55),transparent 70%),linear-gradient(180deg,#3f5a80f0 0%,#3d5779b0 34%,#2f446340 62%,#1e2a3dd8 100%)!important}
+#title .hwrap{grid-template-columns:1fr!important;grid-template-rows:auto auto;justify-items:center;align-content:space-between;gap:clamp(6px,2.6vh,18px);padding-top:clamp(44px,13vh,60px)!important;padding-bottom:clamp(16px,5vh,30px)!important}
+#title .hl.ttl{flex-direction:row!important;flex-wrap:wrap;justify-content:center;align-items:center;gap:0 22px;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;position:relative}
+#title .ttl1,#title .ttl2{font-size:clamp(22px,9.5vh,46px)!important;line-height:1.1!important}
+#title .hl.ttl{padding:clamp(8px,2.4vh,14px) clamp(16px,3vw,30px)!important;background:#2f4463cc!important;border:3px solid var(--E)!important;box-shadow:0 0 0 3px #ffd23f,0 8px 0 3px rgba(0,0,0,.25)!important}
+#title .ttlDisc{position:absolute;left:50%;top:calc(100% + 8px);width:clamp(60px,16vh,96px)!important;margin:0!important;animation:discCross 4.5s ease-in-out infinite!important}
+@keyframes discCross{0%{transform:translate(-260px,-4px) rotate(-6deg)}50%{transform:translate(170px,-14px) rotate(6deg)}100%{transform:translate(-260px,-4px) rotate(-6deg)}}
+#title .tver{position:fixed;bottom:6px;left:12px;z-index:2}#title .tcred{left:auto;right:12px}
+#title .hr{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));width:min(680px,92%);background:none!important;border:0!important;box-shadow:none!important;padding:0!important}
+#title .crow,#title .hgrid{display:contents}
+#title .hgrid .hbtn:last-child{grid-column:auto!important}
+/* testi tenui e piccoli segni: abbastanza contrasto sugli sfondi piu chiari */
+.prow small{color:rgba(255,255,255,.85)}.pcl i.a{background:#4a678f}
+.pch{background:color-mix(in srgb,var(--rc) 58%,#141a28)}
+/* anche interruttori e schede con il bordo del tema invece del nero */
+.swr,.ccard,.lgcard{border-color:var(--E)!important}
