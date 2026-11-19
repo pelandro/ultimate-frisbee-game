@@ -20,7 +20,12 @@ function shop(){
 }
 function invest(){
   for(const k of ['camp','viv','stad'])if(SV.cash>facCost(k)+120&&facLv(k)<FAC_MAX){buyFac(k);break;}
-  for(const k of ['coach','men','fit','ana']){if(staffLv(k)<1||!stPerson(k)){const cs=staffCands(k);let b=-1;for(let i=0;i<cs.length;i++)if(SV.cash>STAFF_HIRE[cs[i].lv]+150)b=i;if(b>=0){staffHire(k,b);break;}}else if(SV.cash>staffCost(k)+150&&buyStaff(k))break;}
+  const f=budgetForecast();
+  const fits=(k,lv,c)=>SV.cash>c+150&&f.end-c-staffRemaining(k,lv)+staffRemaining(k)>100;
+  for(const k of Object.keys(STAFF)){
+    if(!staffLv(k)||!stPerson(k)){if(fits(k,1,STAFF_HIRE[1])&&staffHire(k,0))break;}
+    else if(staffLv(k)<2&&fits(k,staffLv(k)+1,staffCost(k))&&buyStaff(k))break;
+  }
 }
 const play=()=>{autoTrain();autoLines();fixLines();mine=true;P.xpOn=true;simCareerMatch();mine=false;P.xpOn=false;hide();evt();};
 const C=SERIES.C.slice().sort((a,b)=>TEAM[a].power-TEAM[b].power);

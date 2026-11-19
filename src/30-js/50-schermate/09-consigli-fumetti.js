@@ -46,7 +46,7 @@ function adviceList(){
   if(SV.mkSeen!==SV.mkN)L.push(['Il mercato si è rinnovato: guarda le giovani promesse e chi è alla tua portata.',3]);
   if(hurt.length)L.push([`${esc(pname(hurt[0]))} è infortunat${oa(hurt[0])}: ${hurt[0].inj} ${hurt[0].inj>1?'partite':'partita'} di stop.`,3]);
   const base=['Tocca un compagno per chiamargli il taglio: lancia dove sta correndo, non dove si trova.','Il timeout (uno a partita) azzera lo stall e fa recuperare energia.','Con più Sparo il lanciatore arriva più lontano: lo vedi dall’arco rosso mentre mira.','Controlla il meteo prima di partire: con vento forte i lanci lunghi sono più difficili.','Un giocatore che resta fuori troppo a lungo diventa scontento: ruota le linee.','Se esaurisci spesso i biglietti, amplia le Tribune.','Il programma automatico degli Allenamenti fa le sedute al posto tuo.','Nel derby si guadagna di più, ma si perde di più.'];
-  if(SV.obj)L.push([`Obiettivo dello sponsor: ${SV.obj.txt} (bonus ${SV.obj.reward} crediti a fine stagione).`,2]);
+  if(SV.obj)L.push([`Sponsor · ${spBonusTxt(SV.obj)}.`,2]);
   base.forEach(t=>L.push([t,0]));
   return L;
 }

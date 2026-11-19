@@ -18,11 +18,21 @@ function icon(o,col){
   const dots=o.pos.map(p=>`<rect x="${(p[0]*100-2.6).toFixed(1)}" y="${(p[1]*50-4.2).toFixed(1)}" width="5.2" height="8.4" fill="${col}" stroke="#10131f" stroke-width="1.2"/>`).join('');
   return `<svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><rect x="1" y="1" width="98" height="48" fill="none" stroke="rgba(255,255,255,.55)"/>${dots}</svg>`;
 }
-function buildOpts(box,list,col,cur,set){
+const SCHEME_LV={vert:0,horz:0,man_out:0,man_in:0,side:1,zone:1,hex:2,weave:2,man_poach:2,t1:3,i34:3};
+const careerSchemes=(list,lv=staffLv('ana'))=>list.filter(o=>SCHEME_LV[o.id]<=lv);
+function useCareerSchemes(sch){
+  return {
+    att:careerSchemes(ATTS).some(o=>o.id===sch?.att)?sch.att:'vert',
+    def:careerSchemes(DEFS).some(o=>o.id===sch?.def)?sch.def:'man_out'
+  };
+}
+function buildOpts(box,list,col,cur,set,career){
   box.innerHTML='';
   for(const o of list){
     const b=document.createElement('button');b.className='opt'+(o.id===cur?' on':'');b.type='button';
-    b.innerHTML=icon(o,col)+`<strong>${o.name}</strong><span>${o.desc}</span>`;
+    const level=SCHEME_LV[o.id];
+    b.disabled=career&&level>staffLv('ana');
+    b.innerHTML=icon(o,col)+`<strong>${o.name}</strong><span>${b.disabled?'Richiede analista di livello '+level:o.desc}</span>`;
     b.addEventListener('click',()=>{set(o.id);for(const x of box.children)x.classList.remove('on');b.classList.add('on');});
     box.appendChild(b);
   }
@@ -36,8 +46,10 @@ function openSchemes(first,fromHome){
   const role=(G.inMatch&&G.mode==='ready'&&!fromHome)?(G.pullTeam===0?'def':'att'):'both';
   $('hAtt').parentElement.classList.toggle('hidden',role==='def');$('hDef').parentElement.classList.toggle('hidden',role==='att');
   $('mSub').textContent=(role==='def'?'In questa meta difendi: scegli lo schema difensivo.':(role==='att'?'In questa meta attacchi: scegli lo schema d’attacco.':'Restano quelli scelti finché non li cambi.'))+(G.inMatch&&G.idn&&G.idn[1]&&G.idn[1].tags.length?' Stile degli avversari: '+G.idn[1].tags.join(', ')+'.':'');
-  buildOpts($('optAtt'),ATTS,'#2f7bff',G.sch.att,v=>{G.sch.att=v;});
-  buildOpts($('optDef'),DEFS,'#ff4b4b',G.sch.def,v=>{G.sch.def=v;});
+  const career=!QM.on&&!G.drill&&G.inMatch;
+  const choose=(side,id)=>{G.sch[side]=id;if(career)SV.scheme={...G.sch};};
+  buildOpts($('optAtt'),ATTS,'#2f7bff',G.sch.att,v=>choose('att',v),career);
+  buildOpts($('optDef'),DEFS,'#ff4b4b',G.sch.def,v=>choose('def',v),career);
   $('mTip').textContent=first?'Prima partita? Il tutorial è nel menu iniziale, alla voce Allenamento; la guida è nel menu di pausa (II).':'';
 }
 // riepilogo: rendimento delle linee (O = mete in cui ricevi il pull, D = quelle in cui lo tiri), schemi usati e migliori in campo

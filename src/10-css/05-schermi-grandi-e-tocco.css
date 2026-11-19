@@ -202,7 +202,7 @@ html.rotp #rot{display:none!important}
 .scard .spt .sr{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .spav{flex:none;line-height:0;border:2px solid #000;background:#0c1330}.spav.vac{width:52px;height:52px;border-style:dashed;border-color:#3a4478}
 .scard .sl{display:flex;align-items:center;gap:8px}.scard .sd{color:#7f8db8}
-.scard .sb{display:flex;gap:6px;margin-top:auto;align-self:stretch}.scard .sb .sec{margin-top:0;flex:1}
+.scard .sb{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;align-self:stretch}.scard .sb .sec{margin-top:0;flex:1}
 .scard .inf{margin-left:0;flex:none}
 .tk i.pt{background:#3a5aa8}.tk i.no{opacity:.3}
 .trc{align-self:flex-start;font-style:normal;font-family:var(--pfont);font-size:8px;line-height:12px;padding:2px 5px;background:#ffd23f;color:#1a1c2c;border:2px solid #000}

@@ -60,7 +60,7 @@ function objBase(){
 // raggiunto? (fine stagione, o stima nel bilancio). x.promoted: salito di serie; x.tit: campione (in Serie A lo decidono i playoff)
 function objMet(rank,x){
   const o=SV.obj;if(!o)return false;
-  let ok=o.promo?(x&&x.promoted!==undefined?!!x.promoted:rank<=o.tgt):(rank<=o.tgt||(o.tgt===1&&!!(x&&x.tit)));
+  let ok=o.title?!!x?.tit:o.promo?(x&&x.promoted!==undefined?!!x.promoted:rank<=o.tgt):(rank<=o.tgt||(o.tgt===1&&!!(x&&x.tit)));
   if(ok&&o.eu)ok=euStageNow()>=o.eu;
   return ok;
 }

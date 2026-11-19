@@ -13,10 +13,11 @@ module.exports={
       {team:'Boston DiG',kind:'top'},{team:'Denver Johnny Bravo',kind:'mid'},
       {team:'Mooncatchers',kind:'top'},{team:'Wall City',kind:'top'},{team:'Clapham Ultimate',kind:'top'},
       {team:'BFD La Fotta Offence',kind:'top',mode:'max'},{team:'Boston DiG',kind:'top',mode:'max'},{team:'Clapham Ultimate',kind:'top',mode:'max'},
+      {team:'midA',kind:'mid',mode:'stress'},{team:'Denver Johnny Bravo',kind:'mid',mode:'stress'},
       {team:'Clapham Ultimate',kind:'top',trim:16},{team:'Wall City',kind:'top',trim:16}
     ],
     nobodyRed:true,          // E1: senza spendere nessuno va in rosso e nessuno viene esonerato (vertice, meta' classifica, ultima di Serie C)
-    maxRedDays:2,            // E2: con tutto al massimo un club di vertice non sta in rosso piu' di 2 giornate in 3 stagioni, non e' esonerato e chiude piu' ricco di come parte
+    maxRedDays:2,            // E2 (19/11/2026): tutto al massimo è sostenibile per un club che domina e ha una riserva di cassa. A metà classifica consuma la riserva.
     midSeason:[-60,450],     // E3: meta' classifica in pari: guadagno medio a stagione (premi compresi) tra -60 e +450
     topSeason:[100,650],     // E4: vertice senza spendere: 1-2 buoni acquisti a stagione, non di piu' (guadagno medio a stagione)
     trimSale:650,            // E5: svuotare una rosa lunga fino a 16 non rende piu' di 650 crediti in un colpo...

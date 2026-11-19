@@ -55,14 +55,16 @@ const ECO=fs.readFileSync(path.join(__dirname,'bilanci/pagina-economia.js'),'utf
   // ---- economia ----
   const E=PF.economia,eco=jobs.filter(j=>j.k==='eco'&&j.res).map(j=>Object.assign({kind:j.r.kind},j.res));
   if(eco.length){
-    const lab=x=>x.team+(x.mode==='max'?' (tutto al massimo)':'')+(x.trim?' (rosa a '+x.trim+')':'');
+    const lab=x=>x.team+(x.mode==='max'?' (massimo, da titolo)':x.mode==='stress'?' (massimo, senza dominio)':'')+(x.trim?' (rosa a '+x.trim+')':'');
     const gain=x=>x.seasons.reduce((a,s)=>a+s.c1-s.c0,0)/x.seasons.length,base=eco.filter(x=>!x.mode&&!x.trim);
     console.log('\nEconomia ('+E.seasons+' stagioni, guadagno medio a stagione):');
     for(const x of eco)console.log(`  ${lab(x).padEnd(46)} ${String(Math.round(gain(x))).padStart(5)}  · cassa ${x.seasons.map(s=>s.c0+'→'+s.c1).join(', ')}${x.trim?' · vendite '+x.seasons.map(s=>s.sold).join('+'):''}`);
     const red=base.filter(x=>x.seasons.some(s=>s.min<0||s.fired));
     chk(!red.length,'E1 Nessuno in rosso giocando senza spendere',red.length?red.map(x=>lab(x)+' minimo '+Math.min(...x.seasons.map(s=>s.min))).join(', '):base.length+' club, cassa mai sotto zero');
-    const mx=eco.filter(x=>x.mode==='max'),mxBad=mx.filter(x=>x.seasons.some(s=>s.fired)||x.seasons.reduce((a,s)=>a+s.red,0)>E.maxRedDays||x.seasons[x.seasons.length-1].c1<x.seasons[0].c0);
-    chk(!mxBad.length,'E2 Chi e\' al vertice con strutture e staff al massimo resta in attivo',mx.map(x=>x.team+' '+x.seasons[0].c0+'→'+x.seasons[x.seasons.length-1].c1+(x.seasons.some(s=>s.red)?' ('+x.seasons.reduce((a,s)=>a+s.red,0)+' giornate in rosso)':'')).join(', '));
+    const mx=eco.filter(x=>x.mode==='max'),mxBad=mx.filter(x=>x.seasons.some(s=>s.fired)||x.seasons.filter(s=>s.title).length<2||x.seasons.reduce((a,s)=>a+s.red,0)>E.maxRedDays||gain(x)<0);
+    chk(!mxBad.length,'E2 I club che vincono con continuità possono tenere tutto al massimo',mx.map(x=>x.team+' '+x.seasons[0].c0+'→'+x.seasons.at(-1).c1+' ('+x.seasons.filter(s=>s.title).length+' titoli)').join(', '));
+    const stress=eco.filter(x=>x.mode==='stress');
+    chk(stress.every(x=>gain(x)<0),'E2b Tutto al massimo pesa su chi non domina',stress.map(x=>x.team+' '+Math.round(gain(x))+' a stagione').join(', '));
     const mid=base.filter(x=>x.kind==='mid'),midBad=mid.filter(x=>gain(x)<E.midSeason[0]||gain(x)>E.midSeason[1]);
     chk(!midBad.length,`E3 Meta' classifica in pari (tra ${E.midSeason[0]} e +${E.midSeason[1]} a stagione)`,mid.map(x=>x.team+' '+Math.round(gain(x))).join(', '));
     const top=base.filter(x=>x.kind==='top'),topBad=top.filter(x=>gain(x)<E.topSeason[0]||gain(x)>E.topSeason[1]);

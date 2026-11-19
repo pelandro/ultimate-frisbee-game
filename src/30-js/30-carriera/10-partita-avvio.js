@@ -11,7 +11,7 @@ function startMatch(resume){
   G.duo=duoMap();   // intesa tra le coppie: vale solo in carriera
   G.vn=careerVenue(m);   // chi gioca in casa, impianto e pubblico (30-stadi.js)
   {const w=careerWind(m);setWind(w[0],w[1]);setWx(careerWeather(m));}   // il meteo annunciato sul cruscotto
-  fixLines();G.lines={o:matchLine('lineO'),d:matchLine('lineD'),auto:!!SV.autoSub};G.injK=facInjuryK();   // linee d'attacco e di difesa, cambi intelligenti, fisioterapia
+  G.sch=useCareerSchemes(SV.scheme);fixLines();G.lines={o:matchLine('lineO'),d:matchLine('lineD'),auto:!!SV.autoSub};G.injK=staffInjuryK();
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
   if(first)openSchemes(true);   // la prima volta si aprono gli schemi, con il rimando a tutorial e guida
@@ -49,7 +49,7 @@ const carDiff=()=>CAR_DIFF[(SV&&SV.diff)||'easy']||CAR_DIFF.easy;
 const carLen=()=>lenOk((SV&&SV.len)|0);   // durata delle partite di carriera (Opzioni): 7, 11 o 15 punti
 const trainOpen=()=>((SV.played||0)%carDiff().n)===0;       // la sessione e' disponibile prima della 1a partita e poi ogni n partite giocate (anche in Europa)
 const trainWait=()=>{const n=carDiff().n;return n-((SV.played||0)%n);};
-const teamFormB=()=>clamp(clamp((SV.chem-50)/50*0.9+(SV.mor-50)/50*0.6,-1.5,1.5)+0.5*staffLv('ana')+(hasTr('ana','str')?0.3:0),-1.5,2.5);   // l'Analista si somma ad affiatamento e morale (prima stavano nello stesso tetto e contava poco)
+const teamFormB=()=>clamp((SV.chem-50)/50*0.9+(SV.mor-50)/50*0.6,-1.5,1.5);
 // POTENZA della tua squadra (formula unica, 12-allenamenti-rose.js): tutta la rosa, senza penalita' di giornata. Per i confronti con le altre squadre e per la forza mostrata
 const squadPower=()=>powerOfVals(SQ.map(mean9));
 // livello dei tuoi 7 titolari (3 handler e 4 cutter): riferimento di crescita, mercato e giovani (rosterLevel), non una potenza

@@ -1,6 +1,8 @@
 function renderHome(){
-  if(SV.prog&&SV.prog.on&&autoTrain())persist();   // programma di allenamento automatico: parte da solo quando c'e' una sessione disponibile
   const m=nextMatch(),names=SV.mem[SV.sr];
+  const mail=staffScoutMail(m);
+  const trained=SV.prog&&SV.prog.on&&autoTrain();
+  if(mail||trained)persist();
   renderShell();   // stemma, nome, crediti e posta stanno nel guscio (24-guscio-carriera.js)
   let nx;
   if(m){

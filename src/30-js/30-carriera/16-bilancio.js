@@ -3,7 +3,7 @@
    partite simulate), stipendi, manutenzione e staff, premio di classifica alla posizione di adesso e premio dell'obiettivo se oggi sarebbe raggiunto.
    Serve a decidere un acquisto o una struttura sapendo quanto resta dopo, e quanto rende un investimento (budgetPayback). E' una stima, non una promessa. */
 function budgetForecast(){
-  const out={left:0,inc:0,gate:0,rent:0,spon:0,wb:0,trv:0,wage:0,up:0,prize:0,obj:0,now:SV.cash,winP:0,dem:[]};
+  const out={left:0,inc:0,gate:0,rent:0,spon:0,wb:0,trv:0,wage:0,up:0,stf:0,prize:0,obj:0,now:SV.cash,winP:0,dem:[]};
   if(SV.event==='eu'||!SV.sched||SV.done)return out;
   const names=SV.mem[SV.sr],ui=names.indexOf(SV.team),me=matchPow(SV.team)+teamFormB()*0.8,pr=tixPrice(),cap=stadCap();
   let pw=0;
@@ -20,7 +20,9 @@ function budgetForecast(){
   }
   const nReg=regularGames();
   for(const [on,v] of rest){
-    const p=matchWinP(simPointP(me-(matchPow(on)+carDiff().plus)+(SIM_DIFF[carDiff().ai|0]||0)),carLen());
+    const edge=tacticPlan({name:on,roster:SV.rost[on]}).edge;
+    const diff=me+edge-matchPow(on)-carDiff().plus+(SIM_DIFF[carDiff().ai|0]||0);
+    const p=matchWinP(simPointP(diff),carLen());
     out.rent+=stadiumRent((SV.sgp|0)+out.left,nReg);
     out.left++;pw+=p;
     if(v==='H'){const d=demandExp(on);out.dem.push(d);out.gate+=Math.min(cap,d)*pr;}else out.trv+=travelCost();
@@ -28,13 +30,14 @@ function budgetForecast(){
   }
   out.winP=out.left?pw/out.left:0;
   out.inc=Math.round(out.gate+out.rent+out.spon+out.wb);out.gate=Math.round(out.gate);out.wb=Math.round(out.wb);
-  out.wage=wageBill()*out.left;out.up=(facUpkeep()+staffWage())*out.left;
+  out.wage=wageBill()*out.left;out.up=facUpkeep()*out.left;
+  out.stf=Object.keys(STAFF).reduce((a,k)=>a+staffRemaining(k,undefined,out.left),0);
   const n=names.length,rank=myRank();
   out.prize=Math.round((n-rank+1)*3*SR_K[SV.sr]);out.rank=rank;
   out.obj=objMet(rank)?SV.obj.reward:0;
   if(isLN()){out.prize=Math.round(Math.max(1,names.length-rank+1)*3*SR_K[SV.sr]);}   // leghe europee: come in Italia, secondo la posizione nel girone
   if(isUS()){const st=usExpectStage(rank);out.prize=Math.round(US_PRIZE[st]*SR_K.U);out.obj=SV.obj&&st>=SV.obj.lvl&&(!SV.obj.cr||rank<=SV.obj.cr)?SV.obj.reward:0;}   // USA: il premio dipende da quanto si va avanti, non dalla classifica
-  out.end=Math.round(SV.cash+out.inc-out.trv-out.wage-out.up);   // saldo all'ultima giornata (quello che guarda la sfida «Conti in ordine»)
+  out.end=Math.round(SV.cash+out.inc-out.trv-out.wage-out.up-out.stf);   // saldo all'ultima giornata (quello che guarda la sfida «Conti in ordine»)
   out.after=out.end+out.prize+out.obj;                          // dopo i premi di fine stagione
   return out;
 }
@@ -59,7 +62,7 @@ function budgetHTML(){
   if(!f.left)return `<div class="ccard"><h3>Bilancio previsionale</h3><p>${SV.event==='eu'?'Si calcola durante il campionato.':(isUS()&&!SV.done?'Stagione regolare conclusa: restano i Play-in e i Nationals.':(isLN()&&!SV.done?'Gironi conclusi: restano le fasi finali.':'Campionato concluso: i conti ripartono con la nuova stagione.'))}</p></div>`;
   const row=(l,v,c)=>`<div class="bgr${c?' '+c:''}"><span>${l}</span><b>${v}</b></div>`;
   return `<div class="ccard"><h3>Bilancio previsionale</h3><p>Da qui alla fine del campionato: ${f.left} ${f.left>1?'partite':'partita'}, con circa il ${Math.round(f.winP*100)}% di vittorie attese.</p>`+
-    row('Crediti adesso',f.now)+row('Biglietti attesi',sg(f.gate))+(f.rent?row('Affitti dell’impianto',sg(f.rent)):'')+row('Sponsor',sg(f.spon))+row('Premi vittoria attesi',sg(f.wb))+row('Trasferte',sg(-f.trv))+row('Stipendi',sg(-f.wage))+row('Manutenzione e staff',sg(-f.up))+
+    row('Crediti adesso',f.now)+row('Biglietti attesi',sg(f.gate))+(f.rent?row('Affitti dell’impianto',sg(f.rent)):'')+row('Sponsor',sg(f.spon))+row('Premi vittoria attesi',sg(f.wb))+row('Trasferte',sg(-f.trv))+row('Stipendi giocatori',sg(-f.wage))+row('Manutenzione',sg(-f.up))+row('Stipendi staff',sg(-f.stf))+
     row('Saldo all’ultima giornata',f.end,f.end<0?'bad':'tot')+row(`Premio di classifica (da ${f.rank}°)`,sg(f.prize))+row('Bonus dello sponsor'+(f.obj?'':' (oggi mancato)'),sg(f.obj))+
     row('Dopo i premi',f.after,f.after<0?'bad':'tot')+
     `<p>${f.end<0?'<b>Attenzione</b>: a questo ritmo finisci in rosso prima dei premi (niente acquisti e morale in calo). ':''}È una stima: cambia con i risultati, gli acquisti e le strutture.</p></div>`;

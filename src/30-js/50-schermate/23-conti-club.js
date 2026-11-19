@@ -3,8 +3,8 @@ function sponsorCardHTML(){
   const d=SV.sp,o=SV.obj;
   const where=SV.event==='camp'&&SV.round>0?(isUS()?usObjNow():isLN()?lnObjNow():` · ora ${myRank()}ª`):'';
   const choose=d?.off&&!SV.evt;
-  const sp=d&&d.k?`<p>${spStripHTML(d.name)}</p><p class="sub">Contratto ${SP_KIND[d.k].n.toLowerCase()} · ${d.fix} crediti a ogni partita · bonus ${o?o.reward:0} a fine stagione · il marchio è sui cartelloni del tuo campo</p>`:`<p>Sponsor da scegliere.</p>${choose?'<button type="button" class="go" data-cl-sponsor>Scegli lo sponsor</button>':'<p class="sub">'+(d?.off?'Completa prima la decisione in sospeso.':'Le offerte arrivano a inizio stagione.')+'</p>'}`;
-  const ob=o?`<p>Obiettivo del contratto: <b>${esc(o.txt)}</b></p><p class="sub">Il bonus arriva solo se lo raggiungi${where}</p>`:'<p>Nessun obiettivo.</p>';
+  const sp=d&&d.k?`<p>${spStripHTML(d.name)}</p><p class="sub">Contratto ${SP_KIND[d.k].n.toLowerCase()} · ${d.fix} crediti a ogni partita · ${o?esc(spBonusTxt(o)):'nessun bonus'} · il marchio è sui cartelloni del tuo campo</p>`:`<p>Sponsor da scegliere.</p>${choose?'<button type="button" class="go" data-cl-sponsor>Scegli lo sponsor</button>':'<p class="sub">'+(d?.off?'Completa prima la decisione in sospeso.':'Le offerte arrivano a inizio stagione.')+'</p>'}`;
+  const ob=o?`<p>Obiettivo del contratto: <b>${esc(o.txt)}</b></p><p class="sub">Il bonus dell’obiettivo arriva a fine stagione${where}</p>`:'<p>Nessun obiettivo.</p>';
   const ch=SV.chal?`<h3 style="margin-top:8px">Sfida della dirigenza</h3><p><b>${esc(chalTxt())}</b></p><p class="sub">${SV.chal.done?(SV.chal.won?'Riuscita: premio incassato.':'Non riuscita in questa stagione.'):'Facoltativa: '+SV.chal.reward+' crediti e reputazione se riesce, niente se non riesce.'}</p>`:'';
   return `<div class="ccard"><h3>Sponsor e obiettivo</h3>${sp}${ob}${ch}</div>`;
 }

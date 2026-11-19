@@ -178,9 +178,17 @@ $('clBox').addEventListener('click',e=>{
   const sf=e.target.closest('[data-staff]');
   if(sf){
     const k=sf.dataset.staff,lv=staffLv(k),cost=staffCost(k);
-    askConfirm({title:'Migliorare '+STAFF[k].n.toLowerCase()+'?',ok:'Migliora',html:
-      `<p>${STAFF[k].d}.</p><p>Livello ${lv} → ${lv+1} · costo ${cost} crediti · stipendio ${STAFF_WAGE[lv+1]} a partita.</p><p>Saldo dopo l’operazione: ${SV.cash-cost} crediti.</p>`,
+    askConfirm({title:'Migliorare '+STAFF[k].n.toLowerCase()+'?',ok:'Firma',html:
+      `<p>Livello ${lv} → ${lv+1} · ${STAFF[k].steps[lv]}.</p>`+staffQuoteHTML(k,lv+1,cost),
       onOk:()=>{if(buyStaff(k))persist();renderClub();$('clBox').querySelector('[data-staff="'+k+'"]:not([disabled])')?.focus();}});
+    return;
+  }
+  const cut=e.target.closest('[data-staff-cut]');
+  if(cut){
+    const k=cut.dataset.staffCut,lv=staffLv(k)-1;
+    const title=lv?'Ridurre il contratto?':'Lasciare il ruolo libero?';
+    askConfirm({title,ok:'Conferma',html:`<p>${STAFF[k].n} · ${lv?'livello '+lv:'posto vacante'}.</p>`+staffQuoteHTML(k,lv,0),
+      onOk:()=>{if(staffCut(k))persist();renderClub();}});
     return;
   }
   const hb=e.target.closest('[data-hire]');if(hb){openHire(hb.dataset.hire);return;}

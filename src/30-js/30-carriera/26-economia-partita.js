@@ -86,6 +86,8 @@ function stadiumRent(game,total,lv=facLv('stad')){
   const rent=stadRentYear(lv);
   return Math.floor(rent*(game+1)/total)-Math.floor(rent*game/total);
 }
+const regularPhase=()=>SV.event==='camp'&&!SV.done&&
+  (isUS()?SV.us.ph==='reg':isLN()?SV.ln.ph==='grp':!SV.po?.on);
 const tixPrice=()=>0.07*Math.sqrt(ECO.K());                                   // crediti per spettatore
 // interesse per la partita: derby, posta in gioco, avversaria di nome e forma recente (niente meteo)
 function interestOf(m){
@@ -120,8 +122,7 @@ function matchMoney(win,m){
   const v=venueOf(),a=attendance(m,v),pr=tixPrice();
   const gate=v==='H'?Math.round(a.att*pr):(v==='N'?Math.round(a.dem*pr*ECO.SHARE_N):0);
   const spon=SV.sp?SV.sp.fix:0,w=win?winBonus(m,v):{v:0,tag:''};
-  const regular=SV.event==='camp'&&(isUS()?SV.us.ph==='reg':isLN()?SV.ln.ph==='grp':!SV.po?.on);
-  const rent=regular&&facLv('stad')?stadiumRent(SV.sgp|0,regularGames()):0;
+  const rent=regularPhase()&&facLv('stad')?stadiumRent(SV.sgp|0,regularGames()):0;
   const trv=v==='H'?0:travelCost(),wage=wageBill(),up=facUpkeep(),stf=staffWage();
   return {v,opp:m.name,win:!!win,att:v==='H'?a.att:0,cap:v==='H'?a.cap:0,dem:a.dem,full:v==='H'&&a.full,gate,rent,spon,wb:w.v,wbTag:w.tag,trv,wage,up,stf,net:gate+rent+spon+w.v-trv-wage-up-stf};
 }
@@ -135,7 +136,8 @@ function moneyRows(r){   // [etichetta, valore con segno] solo per le voci che c
   if(r.win)x.push([`Premio vittoria${r.wbTag?' ('+r.wbTag+')':''}`,r.wb]);
   if(r.trv)x.push(['Trasferta',-r.trv]);
   x.push(['Stipendi',-r.wage]);
-  if(r.up+r.stf)x.push(['Manutenzione e staff',-(r.up+r.stf)]);
+  if(r.up)x.push(['Manutenzione',-r.up]);
+  if(r.stf)x.push(['Staff',-r.stf]);
   return x;
 }
 function moneyHTML(r){
@@ -158,6 +160,9 @@ const SP_KIND={
 const spBase=()=>ECO.K()*(4+0.06*(SV.rep|0));
 // l'obiettivo nelle frasi («bonus 80 se: quarti di finale ai Nationals»): minuscola solo la prima lettera, i nomi propri restano
 const lc1=s=>s.charAt(0).toLowerCase()+s.slice(1);
+const spTitleDivision=()=>isUS()||(isLN()?SV.ln.tier===lnTiers()[0].id:SV.sr==='A');
+const spBonusTxt=o=>`bonus ${o.reward} per ${lc1(o.txt)}${o.titleReward?` e ${o.titleReward} per il titolo`:''}`;
+const spPayout=(ok,tit)=>(ok?SV.obj?.reward||0:0)+(tit?SV.obj?.titleReward||0:0);
 function spRankTxt(tgt,n){
   if(tgt<=1)return 'Primo posto in classifica';
   if(tgt>=n-1)return 'Non chiudere ultimi';
@@ -179,15 +184,24 @@ function spOffer(){
   const base=spBase(),R=mulberry32(hashStr(SV.seed+'|spn|'+SV.season)),pool=SP_NAMES.slice(),off=[];
   for(const k of ['sic','bal','amb']){
     const i=Math.floor(R()*pool.length),name=pool.splice(i,1)[0],S=SP_KIND[k];
-    off.push({k,name,fix:Math.max(2,Math.round(base*S.fix)),obj:spVariant(k,b)});
+    const obj=spVariant(k,b);
+    if(k==='amb'&&spTitleDivision()&&!obj.rel){
+      if(obj.lvl!==7&&(isUS()||obj.tgt>1||obj.eu)){
+        obj.titleReward=Math.round(obj.reward*0.35);
+        obj.reward-=obj.titleReward;
+      }
+      if(!isUS()&&obj.tgt===1)obj.title=1;
+    }
+    off.push({k,name,fix:Math.max(2,Math.round(base*S.fix)),obj});
   }
   SV.sp={y:SV.season,off,k:null,name:'',fix:off[1].fix};   // finche' non scegli vale quello equilibrato
 }
 function spChoose(i){
   const d=SV.sp&&SV.sp.off&&SV.sp.off[i];if(!d)return '';
   SV.sp={y:SV.season,off:null,k:d.k,name:d.name,fix:d.fix};SV.obj=d.obj;
-  news(`Sponsor della stagione: ${d.name} (${SP_KIND[d.k].n.toLowerCase()}), ${d.fix} crediti a partita. Bonus di ${d.obj.reward} crediti se: ${lc1(d.obj.txt)}.`);
-  return `${d.name}: ${d.fix} crediti a partita e ${d.obj.reward} di bonus a fine stagione se: ${lc1(d.obj.txt)}.`;
+  const txt=`${d.name} · ${d.fix} crediti a partita, ${spBonusTxt(d.obj)}.`;
+  news('Sponsor della stagione · '+txt);
+  return txt;
 }
 // partenza da subentrato e salvataggi di prima: un contratto equilibrato gia' firmato
 function spDefault(){
@@ -198,10 +212,10 @@ function spDefault(){
 const spTxt=()=>SV.sp&&SV.sp.k?`${SV.sp.name} · ${SP_KIND[SV.sp.k].n.toLowerCase()}`:'Da scegliere';
 // la scelta si fa con il riquadro degli imprevisti (si apre da solo sul cruscotto e non si puo' ignorare)
 EVT.spons={w:0,ok:()=>false,mk:()=>({}),
-  t:a=>['Gli sponsor della stagione','Tre aziende vogliono il loro marchio sui cartelloni del tuo campo. Scegli il contratto: i soldi a partita arrivano comunque, il bonus solo se a fine stagione raggiungi l’obiettivo del contratto.'],
+  t:a=>['Gli sponsor della stagione','Tre aziende vogliono il loro marchio sui cartelloni del tuo campo. Scegli il contratto: i soldi a partita arrivano comunque, i bonus dipendono dai risultati di fine stagione.'],
   // il quarto elemento e' il pulsante disegnato: il cartellone dello sponsor (18-cartelloni.js) sopra le condizioni del contratto
-  o:a=>(SV.sp&&SV.sp.off?SV.sp.off:[]).map((d,i)=>{const t=`${SP_KIND[d.k].n} · ${d.name}: ${d.fix} a partita, bonus ${d.obj.reward} se: ${lc1(d.obj.txt)}`;
-    return [t,()=>spChoose(i),null,`${spStripHTML(d.name)}<span class="spo"><b>${SP_KIND[d.k].n}</b> · ${d.fix} a partita, bonus ${d.obj.reward} se: ${esc(lc1(d.obj.txt))}</span>`];})};
+  o:a=>(SV.sp&&SV.sp.off?SV.sp.off:[]).map((d,i)=>{const t=`${SP_KIND[d.k].n} · ${d.name}: ${d.fix} a partita, ${spBonusTxt(d.obj)}`;
+    return [t,()=>spChoose(i),null,`${spStripHTML(d.name)}<span class="spo"><b>${SP_KIND[d.k].n}</b> · ${d.fix} a partita, ${esc(spBonusTxt(d.obj))}</span>`];})};
 // ---------- premio a un giocatore (imprevisto) ----------
 const perfScore=p=>p&&p.lm?p.lm.g*2+p.lm.a*2+p.lm.b*3:0;
 const PERF_MIN=14;   // una partita fuori dal normale: nelle partite di 7 punti il migliore in campo arriva a 14 di rado, e solo per le squadre molto forti (mete e assist pesano 2, le difese 3, come nei premi di stagione)
