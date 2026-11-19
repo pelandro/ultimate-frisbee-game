@@ -41,7 +41,7 @@ function careerSelfTest(seasons,seed){
         for(const k of Object.keys(STAFF)){   // staff: si assume il migliore che ci si puo' permettere nei ruoli vacanti, poi si migliora; indirizzi personali: quando c'e' margine
           const level=staffLv(k)+1;
           if(level>2)continue;
-          const cost=staffAnnual(k,level),saved=staffRemaining(k);
+          const cost=staffHireCost(k,level),saved=staffRemaining(k);
           if(SV.cash>cost+90-saved&&staffHire(k,level-1))break;
         }
         for(const p of SQ)if(!p.spec&&p.age<=26&&SV.cash>specCost(p)+120){setSpec(p,Object.keys(SPECS)[Math.floor(Math.random()*6)]);spec++;break;}
@@ -132,9 +132,9 @@ function careerSelfTest(seasons,seed){
      let migOk=true;{const lv0=Object.keys(STAFF).map(k=>staffLv(k)).join();SV.coach=undefined;SV.start=undefined;SV.stp=undefined;SV.cand=undefined;SV.candN=undefined;careerInit();const c1=JSON.stringify(SV.coach);SV.coach=undefined;careerInit();   // l'allenatore di default e' sempre lo stesso per la stessa carriera
        migOk=!!SV.coach&&JSON.stringify(SV.coach)===c1&&SV.start==='cuore'&&Object.keys(STAFF).map(k=>staffLv(k)).join()===lv0&&Object.keys(STAFF).every(k=>staffLv(k)<1?!stPerson(k):(!!stPerson(k)&&stPerson(k).a>=34));}
      const k0='fit',candidate=staffCands(k0)[0],cash=SV.cash;
-     SV.cash=Math.max(SV.cash,staffAnnual(k0,candidate.lv));
+     SV.cash=Math.max(SV.cash,staffHireCost(k0,candidate.lv));
      const available=SV.cash;
-     const hired=!!staffHire(k0,0)&&stPerson(k0)?.n===candidate.n&&SV.cash===available-staffAnnual(k0,candidate.lv);
+     const hired=!!staffHire(k0,0)&&stPerson(k0)?.n===candidate.n&&SV.cash===available-staffHireCost(k0,candidate.lv);
      staffYear();
      const retained=stPerson(k0)?.n===candidate.n&&staffLv(k0)===candidate.lv;
      const released=staffLeave(k0)&&staffLv(k0)===0&&!stPerson(k0);

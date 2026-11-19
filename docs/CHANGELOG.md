@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- La rosa festeggia più unita sul podio, con riserve, salti e bandiere. Ogni struttura costa 600 crediti dal livello 0 al 5. Anche le firme dello staff costano di più, soprattutto ai livelli alti.
 - Quando segni, chi ha segnato esulta mentre compare «META!»: spike, petto contro petto con un compagno, balletto, tuffo di festa o disco lanciato al cielo con un grido nel fumetto, ogni volta diversa. Sulla meta che vince la partita i compagni lo portano in spalla. Gli avversari esultano come prima.
 - In carriera la rosa riparte in piena forma. Le giornate senza partita diventano allenamenti estivi e in Posta arrivano i tre migliori progressi. La Bacheca segue il tuo campionato e la scheda sponsor è più breve.
 - I campionati francesi giocabili sono N1 e N2. Nel Regno Unito tutti gli 11 club giocano nei Nationals. Le carriere esistenti passano al nuovo formato dopo l’ultima stagione con i vecchi gironi.

@@ -63,10 +63,12 @@ function staffRenew(k){
   if(!Object.hasOwn(STAFF,k)||SV.cash<STAFF_RENEW)return false;
   SV.cash-=STAFF_RENEW;if(!SV.candN)SV.candN={};SV.candN[k]=(SV.candN[k]|0)+1;if(SV.cand)delete SV.cand[k];return true;
 }
+// La firma dei profili più esperti costa di più, senza cambiare lo stipendio.
+const staffHireCost=(k,lv)=>Math.ceil(staffAnnual(k,lv)*(1+lv/10));
 function staffHire(k,i){
   if(!Object.hasOwn(STAFF,k))return '';
   const c=staffCands(k)[i];if(!c)return '';
-  const cost=staffAnnual(k,c.lv);if(SV.cash<cost)return '';
+  const cost=staffHireCost(k,c.lv);if(SV.cash<cost)return '';
   const old=stPerson(k);
   SV.cash-=cost;if(!SV.stp)SV.stp={};if(!SV.staff)SV.staff={};
   staffContract(k,c.lv);SV.stp[k]={n:c.n,a:c.a,lk:c.lk,tr:c.tr,hiredIn:SV.season};
