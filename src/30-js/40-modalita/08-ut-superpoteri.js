@@ -1,10 +1,12 @@
 /* ===================== ULTIMATE TEAM · SUPERPOTERI =====================
-   La terza squadra di Ultimate Team (UT.hm, salvata in ultimate-ut-eroi). Si gioca online come Real player (04-ut-online.js, ma con la radice «uh»:
-   profilo, classifica e squadre loro) e gli eroi si trovano nei pacchetti. Una carta eroe e' un potere: si da' a un titolare (p.hk sulla carta),
-   al massimo HERO_N in campo. I doppioni fanno salire l'eroe di livello (UT.hc[eroe] = copie trovate = livello, fino a HERO_LV_MAX: trasformazione piu'
-   lunga e ricarica piu' corta, 10-sim/27-superpoteri.js); oltre il massimo diventano gettoni.
-   Pacchetti eroi: ruolo HERO_PK (codice = qualita' + 10 x carte + 400). Il primo, insieme al pacchetto iniziale, ha tre eroi diversi; dalla qualita' 4
-   uno degli eroi e' uno che non hai ancora (se ce ne sono). Si comprano nel Negozio (05-ut-negozio.js) e arrivano a ogni traguardo di punti (utHeroMile).
+   Modalita' di Ultimate Team che gioca con la squadra di Real player (giocatori, titolari, equipaggiamento e gettoni sono gli stessi: utLoadHero in
+   01-ultimate-team-simulazioni.js) e ci mette sopra gli eroi. Qui si trovano solo eroi: pacchetti eroi nel Negozio e ai traguardi di punti.
+   Si gioca online come Real player (04-ut-online.js, ma con la radice «uh»: profilo, classifica e squadre loro). Il salvataggio ultimate-ut-eroi
+   tiene eroi, traguardi, pacchetti eroi e a chi sono dati (ha). Una carta eroe e' un potere: si da' a un titolare (p.hk sulla carta, solo in
+   memoria: nel salvataggio di Real player non entra), al massimo HERO_N in campo. I doppioni fanno salire l'eroe di livello (UT.hc[eroe] = copie
+   trovate = livello, fino a HERO_LV_MAX: trasformazione piu' lunga e ricarica piu' corta, 10-sim/27-superpoteri.js); oltre il massimo diventano gettoni.
+   Pacchetti eroi: ruolo HERO_PK (codice = qualita' + 10 x carte + 400). Il primo ha tre eroi diversi; dalla qualita' 4 uno degli eroi e' uno che
+   non hai ancora (se ce ne sono). Si comprano nel Negozio (05-ut-negozio.js) e arrivano a ogni traguardo di punti (utHeroMile).
    Senza altri giocatori online si gioca contro una squadra del computer con tre eroi (utHeroBot). */
 const HERO_PK=4,HERO_START_PK=430,HERO_DUP=40;   // HERO_DUP: gettoni per un doppione di un eroe gia' al livello massimo
 const UT_HERO_MILE=[[2,2],[3,2],[4,3],[5,3],[6,3]];   // traguardi: [qualita', carte], sempre migliori

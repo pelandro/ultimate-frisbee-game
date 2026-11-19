@@ -1,6 +1,7 @@
 /* ---- MERCATO TRA LE SQUADRE DEL COMPUTER (solo d'estate) ----
    Nel passaggio alla stagione nuova, dopo invecchiamento, ritiri e giovani (evolveLeague), alcune squadre del computer fanno un'operazione
-   (di rado due) per sistemare la rosa: un ACQUISTO da un altro club, uno SCAMBIO Handler contro Cutter o un giocatore SVINCOLATO.
+   (di rado due) per sistemare la rosa: un ACQUISTO da un altro club, uno SCAMBIO Handler contro Cutter o un giocatore SVINCOLATO
+   (vero: chi un club ha lasciato libero, SV.fa; chi insegue la tua squadra prende un giocatore vero di un club straniero, 33-mercato-veri.js).
    Si fa solo cio' che conviene a entrambe, misurato con la potenza di squadra (rosterPower: 60% i 7 migliori, 35% dal 8º al 14º, 5% dal 15º al 21º):
    - chi compra deve migliorare davvero (AIM.gain); chi vende non deve peggiorare quasi per niente (AIM.loss: una riserva o un giocatore
      che ha gia' chi lo sostituisce) e incassa il cartellino. Un club in ricostruzione o che punta sui giovani puo' vendere un veterano anche
@@ -67,7 +68,7 @@ function aiMarket(){
   const ch=aimChase(names,pw),chK=Math.min(AIM.chBudMax,1+AIM.chBud*Math.max(0,ch.lead-AIM.chGap));
   for(const n of names){const ro=SV.rost[n],w=aimWage(ro,null,null,W),lv=clubLvl(n),c=ch.set.has(n);
     st[n]={bud:Math.round(w*(AIM.bud+AIM.budLv*lv)*(aimTop(n)?AIM.budTop:1)*(c?chK:1)),wcap:w*(1+AIM.wUp+AIM.wUpLv*lv+(c?AIM.chWage:0)),mv:0,ch:c};}
-  const moved=new Set(),free=o=>o&&o.ret!==1&&!o.inj&&!moved.has(o),cap=Math.ceil(names.length/AIM.cap),done=[];
+  const moved=new Set(),free=o=>o&&o.ret!==1&&!o.inj&&!moved.has(o),cap=Math.ceil(names.length/AIM.cap),done=[],fa=SV.fa||[],estSeen=new Set();
   const act=names.filter(n=>st[n].ch||R()<AIM.act+(aimTop(n)?AIM.actTop:0)+(aimReb(n)?AIM.actReb:0));
   for(let i=act.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[act[i],act[j]]=[act[j],act[i]];}
   const best=b=>{   // l'operazione migliore per il club b (quella che lo migliora di piu' tra quelle che convengono anche all'altro)
@@ -97,14 +98,18 @@ function aiMarket(){
         }
       }
     }
-    for(let i=0;i<AIM.fa;i++){   // svincolato: un adulto un po' sotto il livello del club (chi resta libero non e' un titolare da vertice), senza cartellino
-      // chi insegue lo trova all'estero, sopra il suo livello: il cartellino lo paga (meta' del valore), cosi' il budget conta
-      const l0=sb.ch?Math.min(TAL_AI,p0+Math.min(AIM.chMax,AIM.chFa*ch.lead)-1+R()*3):p0-AIM.faLv+R()*5,ag=24+Math.floor(R()*8),o=genPlayer(l0,ag,SV.seed+'|aifa|'+b+'|'+SV.season+'|'+st[b].mv+'|'+i,adultPot(l0,ag,R));
-      const g=aimPow(rb,o,null,M)-p0,fee=sb.ch?Math.round(PR(o)*0.5):0;if(g>=AIM.gain&&fee<=sb.bud&&aimWage(rb,o,null,W)<=sb.wcap&&aimRoleOk(rb,o,null))take({k:sb.ch?'est':'fa',o,b,fee},g);
+    // svincolati veri (SV.fa, 33-mercato-veri.js): chi le squadre hanno lasciato libero, senza cartellino
+    // come prima con gli svincolati inventati: chi resta libero non e' un titolare da vertice, al massimo AIM.faLv-5 punti sotto la forza del club
+    // (senza questo limite i club di vertice si prendevano i buoni giocatori lasciati liberi dagli altri e la serie piu' alta cresceva troppo)
+    if(!sb.ch)for(const o of fa){if(!free(o)||M(o)<=nh(o.r)||M(o)>p0-AIM.faLv+5)continue;const g=aimPow(rb,o,null,M)-p0;if(g>=AIM.gain&&aimWage(rb,o,null,W)<=sb.wcap&&aimRoleOk(rb,o,null))take({k:'fa',o,b,fee:0},g);}
+    // chi insegue cerca all'estero, sopra il suo livello, un giocatore vero di un club straniero: il cartellino lo paga (meta' del valore), cosi' il budget conta
+    else for(let i=0;i<AIM.fa;i++){
+      const l0=Math.min(TAL_AI,p0+Math.min(AIM.chMax,AIM.chFa*ch.lead)-1+R()*3),x=mkAbroad(l0,R,estSeen);if(!x)continue;estSeen.add(x.o.full);const o=x.o;
+      const g=aimPow(rb,o,null,M)-p0,fee=Math.round(PR(o)*0.5);if(g>=AIM.gain&&fee<=sb.bud&&aimWage(rb,o,null,W)<=sb.wcap&&aimRoleOk(rb,o,null))take({k:'est',o,b,fee,fc:x.club},g);
     }
     return pick;
   };
-  const trim=(n,n0)=>{const ro=SV.rost[n];while(ro.length>Math.max(AIM.maxRo,n0)){const w=ro.slice().sort((a,b)=>M(a)-M(b)).find(o=>aimRoleOk(ro,null,o));if(!w)break;ro.splice(ro.indexOf(w),1);}};   // come evolveLeague: chi avanza lascia la rosa
+  const trim=(n,n0)=>{const ro=SV.rost[n];while(ro.length>Math.max(AIM.maxRo,n0)){const w=ro.slice().sort((a,b)=>M(a)-M(b)).find(o=>aimRoleOk(ro,null,o));if(!w)break;ro.splice(ro.indexOf(w),1);faAdd(w,n);}};   // come evolveLeague: chi avanza lascia la rosa e resta svincolato
   act.sort((a,b)=>st[b].ch-st[a].ch);   // chi insegue per primo, e fuori dal tetto di operazioni (cap) del resto del campionato
   let nN=0;const lim=b=>st[b].ch?AIM.chMoves:AIM.max;
   for(const b of act){
@@ -114,7 +119,7 @@ function aiMarket(){
       const m=best(b);if(!m)break;
       const rb=SV.rost[b],n0=rb.length;   // la rosa non supera la misura che aveva (o AIM.maxRo): chi compra lascia andare il piu' debole
       if(!st[b].ch)nN++;
-      if(m.k==='fa'||m.k==='est')rb.push(m.o);
+      if(m.k==='fa'||m.k==='est'){rb.push(m.o);if(m.k==='fa'){const k=fa.indexOf(m.o);if(k>=0)fa.splice(k,1);}else abroadAdd(m.o);}
       else{const ra=SV.rost[m.a];ra.splice(ra.indexOf(m.o),1);rb.push(m.o);
         if(m.k==='swap'){rb.splice(rb.indexOf(m.x),1);ra.push(m.x);}
         st[m.a].bud+=m.fee;st[m.a].mv++;pw[m.a]=aimPow(ra,null,null,M);}
@@ -134,7 +139,7 @@ function aiMarketNews(done){
   const who=o=>`${pname(o)} (${POS_NAME[posOf(o)]}, ${ovr(o)})`;
   const line=m=>m.k==='buy'?`Acquisto · ${pname(m.o)} (${POS_NAME[posOf(m.o)]}, ${ovr(m.o)}, ${m.o.age} anni) da ${m.a} a ${m.b} per ${m.fee} crediti${tag(m.a,m.b)}`
     :m.k==='swap'?`Scambio · ${who(m.x)} va a ${m.a}, ${who(m.o)} a ${m.b}${tag(m.a,m.b)}`
-    :m.k==='est'?`Dall’estero · ${pname(m.o)} (${POS_NAME[posOf(m.o)]}, ${ovr(m.o)}, ${m.o.age} anni) firma con ${m.b} per ${m.fee} crediti${tag(m.b)}`
+    :m.k==='est'?`Dall’estero · ${pname(m.o)} (${POS_NAME[posOf(m.o)]}, ${ovr(m.o)}, ${m.o.age} anni)${m.fc?' da '+m.fc:''} firma con ${m.b} per ${m.fee} crediti${tag(m.b)}`
     :`Svincolato · ${pname(m.o)} (${POS_NAME[posOf(m.o)]}, ${ovr(m.o)}, ${m.o.age} anni) firma con ${m.b}${tag(m.b)}`;
   const top=done.slice().sort((a,b)=>b.ov-a.ov).slice(0,AIM.show),n=done.length;
   const kn=[['buy','acquisto','acquisti'],['swap','scambio','scambi'],['fa','svincolato','svincolati'],['est','dall’estero','dall’estero']].map(([k,s1,s2])=>{const c=done.filter(m=>m.k===k).length;return c?c+' '+(c===1?s1:s2):'';}).filter(Boolean).join(', ');

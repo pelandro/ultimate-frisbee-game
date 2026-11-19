@@ -62,7 +62,8 @@ function makeLook(key,f){
   return {hair:pick(HAIR_COLORS),skin:pick(SKIN_TONES),style:f?2+Math.floor(r()*2):Math.floor(r()*5),hs:0.95+r()*0.1,bw:0.9+r()*0.22,hd:0.94+r()*0.14};
 }
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
-const NAME_POOL=['Alessandro','Andrea','Antonio','Beatrice','Camilla','Carlo','Chiara','Claudia','Daniele','Davide','Edoardo','Elisa','Emma','Federico','Francesca','Gabriele','Giorgia','Giulio','Ilaria','Jacopo','Laura','Leonardo','Lorenzo','Marco','Marta','Martina','Matteo','Michele','Nicola','Paola','Pietro','Riccardo','Sara','Simone','Stefano','Tommaso','Valentina','Vittoria','Alice','Giada'];
+// nomi dei giocatori inventati dei campionati maschili: solo nomi maschili (le giocatrici del campionato Women hanno i loro, LN_POOL.IW in 37-leghe/07-women.js)
+const NAME_POOL=['Alessandro','Andrea','Antonio','Carlo','Daniele','Davide','Edoardo','Federico','Gabriele','Giulio','Jacopo','Leonardo','Lorenzo','Marco','Matteo','Michele','Nicola','Pietro','Riccardo','Simone','Stefano','Tommaso','Luca','Giovanni','Francesco','Filippo','Emanuele','Mattia','Alberto','Giacomo','Paolo','Enrico','Samuele','Fabio','Diego','Elia','Cesare','Niccolò','Raffaele','Valerio'];
 // ---- rose delle squadre avversarie: ogni giocatore ha eta', talenti e statistiche ----
 function agePen(a,rng){   // i giovanissimi (16-18) sono meno forti, con qualche eccezione
   if(a>=19)return a===19?-3:(a===20?-1:0);

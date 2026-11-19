@@ -53,7 +53,8 @@ function spreadFrom(p,x,y,mates,R,k){
 const SKIRT_R=5.5,TEAM_R=3.2;
 function skirt(p,H,x,y,R){
   const vx=x-p.x,vy=y-p.y,L2=vx*vx+vy*vy;if(L2<1)return {x,y};
-  const t=clamp(((H.x-p.x)*vx+(H.y-p.y)*vy)/L2,0,1),cx=p.x+vx*t,cy=p.y+vy*t;
+  const t0=((H.x-p.x)*vx+(H.y-p.y)*vy)/L2;if(t0<=0)return {x,y};   // si allontana dal portatore: niente da aggirare (prima chi era gia' dentro il raggio restava fermo sul bordo)
+  const t=Math.min(t0,1),cx=p.x+vx*t,cy=p.y+vy*t;
   if(hyp(cx-H.x,cy-H.y)>=R)return {x,y};
   return awayFrom(H,cx,cy,R);   // tappa sul percorso, spinta fuori dal raggio: poi si riparte verso il punto vero
 }
