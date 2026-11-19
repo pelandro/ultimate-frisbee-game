@@ -601,8 +601,17 @@ catch(e){
     await page.click('#uhSt .uhp.has >> nth=0');if(await page.locator('#uhSt .uhp.has').count()!==2)throw new Error('toccando un titolare con l\'eroe glielo tolgo');
     await page.click('#uhAuto');if(await page.locator('#uhSt .uhp.has').count()!==3)throw new Error('«Assegna da solo» rimette tre eroi');
     await page.click('#uhSt .uhp.has >> nth=0');await page.click('#uhBack');await vis('#utReal');
-    await page.click('#urShop');await vis('#utShop');
+    await page.click('#urTeam');await vis('#utTeam');
+    if(await page.locator('#tmMode [data-m="up"]').isVisible()||await page.locator('#tmMode [data-m="del"]').isVisible())throw new Error('nei Superpoteri la squadra ha solo «Titolari»: potenzia e scarta si fa in Real player');
+    await page.click('#tmBack');await vis('#utReal');
+    // portafoglio separato: i gettoni dei Superpoteri comprano eroi e non toccano quelli di Real player
+    await page.click('#urBack');await vis('#utMode');await page.click('#umReal');await vis('#utReal');await page.click('#urBack');await vis('#utMode');   // si esce dai Superpoteri: al rientro si rilegge il salvataggio
+    const rc0=await page.evaluate(()=>{const h=JSON.parse(localStorage.getItem('ultimate-ut-eroi'));h.coins=200;localStorage.setItem('ultimate-ut-eroi',JSON.stringify(h));return JSON.parse(localStorage.getItem('ultimate-ut-real')).coins|0;});
+    await page.click('#umHero');await vis('#utReal');await page.click('#urShop');await vis('#utShop');
     if(await page.locator('#shList [data-k]').count()!==1||!(await page.locator('#shList [data-k="eroi"]').count()))throw new Error('nel Negozio dei Superpoteri c\'e\' solo il pacchetto eroi');
+    await page.click('#shList [data-k="eroi"]');
+    const w=await page.evaluate(()=>[JSON.parse(localStorage.getItem('ultimate-ut-eroi')).coins,JSON.parse(localStorage.getItem('ultimate-ut-real')).coins|0]);
+    if(w[0]!==50||w[1]!==rc0)throw new Error('il pacchetto eroi si paga con i gettoni dei Superpoteri, non con quelli di Real player: '+w.join(' e ')+', prima '+rc0);
     await page.click('#shBack');await page.click('#urBack');await vis('#utMode');
     // passando da Real player e tornando, gli eroi restano dati agli stessi titolari (due, dopo averne tolto uno)
     await page.click('#umReal');await vis('#utReal');s=await st();if(s.r.hk||s.r.n!==10)throw new Error('Real player non deve avere eroi: '+JSON.stringify(s));
