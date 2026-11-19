@@ -29,7 +29,7 @@ function updateCine(dt){
       if(c.t>=c.aimEnd){c.locked=true;c.lockT=c.t;c.bonus=0;c.quality='Nessun tocco';c.aimEnd=c.t+0.1;}
     }
     if(c.t>=c.aimEnd)cineResolve(c);
-  }else{c.rt+=dt;if(c.rt>=1.4)endCine();}
+  }else{c.rt+=dt;if(c.rt>=(reduceMotion ? 0.2 : 1.4))endCine();}
 }
 function endCine(){
   const c=cine;if(!c)return;

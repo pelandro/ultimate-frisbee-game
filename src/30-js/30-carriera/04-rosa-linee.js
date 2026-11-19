@@ -20,7 +20,7 @@ const byFull=f=>SQ.find(p=>p.full===f);
 const idsOf=names=>(names||[]).map(byFull).filter(Boolean).map(p=>p.id);
 const namesOf=ids=>ids.map(id=>SQ[id]&&SQ[id].full).filter(Boolean);
 // linee consigliate: attacco = 3 migliori handler + 4 migliori cutter; difesa = i 7 migliori difensori (almeno 2 handler per ripartire dopo un recupero)
-function autoLines(){
+function suggestedLines(){
   // valore di oggi: chi e' scarico rende meno (COND_PEN, come in partita), quindi a parita' entra il piu' fresco
   const ok=SQ.filter(p=>!p.inj),ef=(p,r)=>rate(p.s,r)-COND_PEN*(100-(p.cond===undefined?100:p.cond)),by=(r)=>(a,b)=>ef(b,r)-ef(a,r);
   const H=ok.filter(p=>p.role==='H').sort(by('H')),C=ok.filter(p=>p.role!=='H').sort(by('C'));
@@ -28,7 +28,10 @@ function autoLines(){
   // in difesa si preferisce chi non gioca gia' in attacco: chi sta in entrambe le linee rende DBL_PEN in meno in tutte e due e si stanca il doppio
   const dv=p=>ef(p,'D')-(o.includes(p)?2*DBL_PEN+2:0),byD=(a,b)=>dv(b)-dv(a);
   const dH=H.slice().sort(byD).slice(0,2);let d=dH.concat(ok.filter(p=>!dH.includes(p)).sort(byD).slice(0,5));
-  SV.lineO=o.map(p=>p.full);SV.lineD=d.map(p=>p.full);
+  return {lineO:o.map(p=>p.full),lineD:d.map(p=>p.full)};
+}
+function autoLines(){
+  Object.assign(SV,suggestedLines());
 }
 function fixLines(){   // linee sempre valide: 7 nomi presenti in rosa. Gli infortunati restano in linea: rientrano da soli quando guariscono
   for(const k of ['lineO','lineD']){

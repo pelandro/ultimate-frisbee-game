@@ -23,8 +23,9 @@ function trainForecast(list,opt,single){
 // testo breve dell'anteprima, per i tasti degli indirizzi
 function forecastTxt(f,opt){
   if(!f.n)return 'nessuno disponibile';
+  if(opt.id==='rec'&&f.cond===0)return 'Condizione già al massimo';
   if(opt.id==='rec')return `+${Math.round(f.cond)} condizione`;
-  return `+${f.pts<9.95?f.pts.toFixed(1).replace('.',','):Math.round(f.pts)} punti · ${Math.round(f.cond)} cond.${f.risk>=0.005?` · rischio ${Math.max(1,Math.round(f.risk*100))}%`:''}`;
+  return `+${f.pts<9.95?f.pts.toFixed(1).replace('.',','):Math.round(f.pts)} punti attesi totali · ${Math.round(f.cond)} cond.${f.risk>=0.005?` · rischio ${Math.max(1,Math.round(f.risk*100))}%`:''}`;
 }
 // la seduta di squadra che il programma sceglierebbe adesso
 function progTeamPick(){

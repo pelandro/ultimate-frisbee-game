@@ -78,7 +78,17 @@ window.addEventListener('keyup',e=>{
   if(k==='dir'){kbHeld.delete(e.code);kbRecalc();}else SRC.kb[k]=false;
   vinSync();
 },true);
-window.addEventListener('blur',()=>{kbHeld.clear();SRC.kb.th=SRC.kb.hm=false;SRC.kb.ang=null;SRC.pad.th=SRC.pad.hm=false;G.cdir=null;vinSync();});
+function clearMatchInput(){
+  kbHeld.clear();
+  for(const source of [SRC.kb,SRC.pad]){
+    source.th=source.hm=false;source.ang=null;
+  }
+  drag=ddrag=tap=null;aimPid=tkPid=null;
+  G.cdir=G.tkp=null;G.hold=G.high=false;
+  vinSync();
+}
+window.addEventListener('blur',clearMatchInput);
+window.addEventListener('orientationchange',clearMatchInput);
 let padSeen=false,padSw=false,padY=false;
 function padPoll(){
   const gps=navigator.getGamepads?navigator.getGamepads():null;let g=null;
@@ -89,11 +99,11 @@ function padPoll(){
   let dx=g.axes[0]||0,dy=g.axes[1]||0;if(b(14))dx=-1;if(b(15))dx=1;if(b(12))dy=-1;if(b(13))dy=1;
   SRC.pad.ang=hyp(dx,dy)>0.45?Math.atan2(dy,dx):null;
   SRC.pad.th=b(0)||b(7)||b(5);SRC.pad.hm=b(2)||b(1);
-  const enabled=kbOn()&&!G.paused;
+  const enabled=kbOn()&&!G.paused&&!activeWindow();
   if(!enabled){SRC.pad.th=false;SRC.pad.hm=false;SRC.pad.ang=null;}
   if(enabled&&b(3)&&!padY&&inDefense())skipDefense();padY=b(3);   // Y in difesa: salta il possesso avversario
   if(enabled&&b(4)&&!padSw){if(inDefense())cycleCtrl();else{const q=vinMate();if(q)quickCall({x:q.x,y:q.y-1.4},false);}}padSw=b(4);   // LB: cambia difensore o chiama il taglio
-  if(SRC.pad.th||SRC.pad.hm||SRC.pad.ang!==null||VIN.th||VIN.hm){vinSync();}
+  vinSync();
 }
 /* schermo intero (su telefono parte al primo tocco; il pulsante nella schermata Schemi lo attiva o lo chiude) */
 const fsEl=document.documentElement||{},fsReq=fsEl.requestFullscreen||fsEl.webkitRequestFullscreen;

@@ -400,6 +400,15 @@ catch(e){
     const name2=await page.locator('#hEvt').first().innerText();if(name2===name1)throw new Error('lo slot 2 ha la stessa squadra dello slot 1');
     await menu('#hOpt');await page.click('#opSlots [data-slot="1"]');await page.waitForTimeout(300);await vis('#home');
     const back=await page.locator('#hEvt').first().innerText();if(back!==name1)throw new Error('tornando allo slot 1 la carriera non e\' quella di prima: '+back);
+    await menu('#hOpt');
+    const file=await page.evaluate(()=>localStorage.getItem('ultimate-carriera-1'));
+    await page.locator('#clFile').setInputFiles({name:'carriera.json',mimeType:'application/json',buffer:Buffer.from(file)});
+    await vis('#cfm');
+    await page.selectOption('#importSlot','3');
+    await page.click('#cfmNo');
+    if(await page.evaluate(()=>localStorage.getItem('ultimate-carriera-3')))throw new Error('annullare l’importazione ha alterato lo slot di destinazione');
+    await page.click('#opX');
+
   });
   await step('il salvataggio resiste alla ricarica della pagina',async()=>{
     await page.reload();await page.waitForTimeout(500);
@@ -511,6 +520,7 @@ catch(e){
   await step('torneo personalizzato',async()=>{
     await page.click('#tTourn');await vis('#tourn');
     if(await page.locator('#tnGo').count()){await page.selectOption('#tnSize','4');await page.click('#tnGo');}
+    const bracket=page.locator('.tnbracket');if(await bracket.getAttribute('open')===null)await bracket.locator('summary').click();
     await vis('.tncols');if(await page.locator('#tnSim').count()){await page.click('#tnSim');await vis('#simres');await page.click('#srOk');}
     await page.click('#tnBack');
   });
@@ -658,7 +668,7 @@ catch(e){
     const beforeImport=await page.evaluate(()=>localStorage.getItem('ultimate-prototipo-v2'));
     const invalid=JSON.parse(beforeImport);invalid.sched=[];
     await page.locator('#clFile').setInputFiles({name:'carriera-invalida.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(invalid))});
-    await page.waitForFunction(()=>document.getElementById('opMsg').textContent.includes('Carriera non leggibile'));
+    await page.waitForFunction(()=>document.getElementById('opMsg').textContent.includes('File non valido o incompatibile'));
     if(await page.evaluate(()=>localStorage.getItem('ultimate-prototipo-v2'))!==beforeImport)throw new Error('l’importazione invalida ha cambiato il salvataggio');
     await page.click('#opX');await menu('#hBack');await page.click('#tSlots');await vis('#slots');
     const empty=await page.locator('#csBox .csl:not(:has([data-cgo])) [data-cnew]').first();

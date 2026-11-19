@@ -41,7 +41,7 @@ const LN_DEF={
       {id:'N2',name:'Open Tour',k:1,comps:1,pools:1,fin:[],play:false}]},
   // campionato femminile (w): le sue squadre giocano solo tra loro, anche nella partita veloce (allClubs, 37-leghe/07-women.js); niente EUCF
   IW:{id:'IW',cc:'Italia Women',de:'italiano femminile',name:'Italia · Women',w:true,eu:0,sub:'Campionato italiano femminile · Serie A e Serie B · 17 squadre',mv:[2],
-    txt:'Il campionato italiano Women, con lo stesso formato di quello maschile: girone unico, in Serie A playoff scudetto tra le prime 4 (semifinali e finale), in Serie B la prima sale direttamente e dal 2° al 5° posto c’è lo spareggio per la seconda promozione. Salgono due squadre e ne scendono due.',
+    txt:'Club italiani Women dei CIU 2026. Formato nel gioco: girone unico, in Serie A playoff scudetto tra le prime 4 (semifinali e finale), in Serie B la prima sale direttamente e dal 2° al 5° posto c’è lo spareggio per la seconda promozione. Salgono due squadre e ne scendono due.',
     tiers:[
       {id:'A',name:'Serie A',k:1.3,comps:1,pools:1,fin:[{f:1,t:4,m:'k4'}]},
       {id:'B',name:'Serie B',k:1,comps:1,pools:1,fin:[{f:2,t:5,m:'k4'}]}]}
