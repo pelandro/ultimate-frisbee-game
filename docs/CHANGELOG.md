@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Nuova musica della partita, più adatta al sottofondo: arcade morbido, più lenta (112 battiti), con suoni filtrati, batteria leggera e la melodia solo a tratti.
 - Pubblico più vivo in partita: applausi leggeri in lontananza e trombette da stadio. Si sentono dopo le prese in salto o in tuffo e i blocchi (a volte con la trombetta), alle tue mete (con la fanfara), nei match point, e ogni tanto piano dalla curva.
 - Schermata iniziale più pulita: Guida, Guida passo passo, Audio e Impostazioni stanno in un solo riquadro che si apre con «Altro», in alto a destra.
 - Carriera: il mercato ha solo giocatori veri, presi dalle rose che esistono. Giovani promesse e giocatori in vendita vengono dalle altre squadre del tuo campionato (chi compri lascia la sua squadra; non si vendono i 3 migliori di un club, né i 7 migliori delle squadre del tuo girone), circa 3 stranieri dai club degli altri campionati e le stelle internazionali, e gli svincolati sono giocatori veri che un club ha lasciato libero d’estate. Anche le squadre del computer prendono gli svincolati veri e, quando ti inseguono, giocatori veri dall’estero. L’Overall dei giocatori in vendita resta quello di prima, adatto al tuo livello; i giocatori di un club costano il 20% in più, gli stranieri il 15%.

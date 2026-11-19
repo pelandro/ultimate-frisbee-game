@@ -82,23 +82,21 @@ function buildAudio(c,dest){
     if(i===0||i===4)kick(out,t,0.13);
     if(i%2===1)hat(out,t,0.018,false);
   }
-  /* musica della partita: piu' tesa e veloce, 126 bpm, la minore (La-, Fa, Do, Sol, ..., Mi7) con basso pulsante e batteria */
-  const MATCH={bpm:126,bars:[
-    {root:45,chord:[57,60,64],lead:[76,0,76,74,72,0,69,0]},
-    {root:41,chord:[53,57,60],lead:[77,0,77,76,72,0,69,0]},
-    {root:48,chord:[55,60,64],lead:[72,0,76,0,79,0,76,72]},
-    {root:43,chord:[55,59,62],lead:[74,0,74,76,79,0,74,71]},
-    {root:45,chord:[57,60,64],lead:[81,0,81,79,76,0,72,0]},
-    {root:41,chord:[53,57,60],lead:[81,0,81,79,77,0,72,0]},
-    {root:43,chord:[55,59,62],lead:[79,0,79,76,74,0,71,74]},
-    {root:40,chord:[56,59,62,64],lead:[76,0,80,0,83,0,80,76]}]};
+  /* musica della partita: arcade morbido, adatto al sottofondo. 112 bpm, fa maggiore (Fa, Re-, Sib, Do): arpeggio triangolare filtrato,
+     basso rotondo, batteria leggera e una melodia a domanda e risposta solo nella seconda meta' del giro (prima era a 126 bpm con dente di sega e
+     melodia continua: stancava) */
+  const soft=(out,t,vol)=>{const o=c.createOscillator(),g=c.createGain();o.frequency.setValueAtTime(110,t);o.frequency.exponentialRampToValueAtTime(45,t+0.12);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.0001,t+0.25);o.connect(g);g.connect(out);o.start(t);o.stop(t+0.3);};
+  const brush=(out,t,vol)=>noise(out,t,0.22,'bandpass',2600,0.5,vol,0.02);
+  const MATCH={bpm:112,bars:[
+    {root:41,chord:[65,69,72],mel:[]},{root:38,chord:[62,65,69],mel:[]},{root:46,chord:[62,65,70],mel:[]},{root:48,chord:[64,67,72],mel:[]},
+    {root:41,chord:[65,69,72],mel:[77,0,76,0,74,0,72,0]},{root:38,chord:[62,65,69],mel:[74,0,0,0,69,0,0,0]},{root:46,chord:[62,65,70],mel:[70,0,72,0,74,0,77,0]},{root:48,chord:[64,67,72],mel:[76,0,0,0,0,0,0,0]}]};
   function matchStep(out,echo,i,t,sd,bar){
-    if(i%2===0)kick(out,t,0.22);
-    if(i===2||i===6)snare(out,t,0.09);
-    hat(out,t,i%2?0.035:0.018,i%2===1);
-    tone(out,'sawtooth',mtof(bar.root+((i===3||i===7)?12:0)),t,0.004,sd*0.8,0.11,520);
-    if(i===3||i===7)for(const m of bar.chord)tone(out,'sawtooth',mtof(m),t,0.004,sd*0.7,0.03,2200);
-    if(bar.lead[i]){const f=mtof(bar.lead[i]);tone(out,'square',f,t,0.005,sd*1.5,0.045,3400);tone(echo,'square',f,t,0.005,sd*1.5,0.03,3000);}
+    tone(out,'triangle',mtof(bar.chord[i%3]+(i>=4?12:0)),t,0.003,sd*0.8,0.022,2000);
+    if(i%2===0)tone(out,'triangle',mtof(bar.root+(i===4?12:0)),t,0.005,sd*1.2,0.11,650);
+    if(i===0||i===4)soft(out,t,0.13);
+    if(i===4)brush(out,t,0.04);
+    if(i%2===1)hat(out,t,0.008,false);
+    const m=bar.mel[i];if(m){tone(out,'square',mtof(m),t,0.008,sd*1.8,0.022,1500);tone(echo,'square',mtof(m),t,0.008,sd*1.8,0.016,1300);}
   }
   function makeScene(def,stepFn,vol){
     const out=c.createGain();out.gain.value=0;out.connect(musicBus);
@@ -194,7 +192,7 @@ function buildAudio(c,dest){
     while(crowd.on&&crowd.nextClap<until){chant(crowd.nextClap);crowd.nextClap+=rr(10,18);}
     while(crowd.on&&crowd.nextAmb<until){const t=crowd.nextAmb;if(Math.random()<0.6)applause(t,rr(0.12,0.22));else horn(t,'blast',rr(0.25,0.4));crowd.nextAmb+=rr(18,35);}   // ogni tanto, piano: qualcuno applaude o suona la trombetta in curva
   }
-  return {sfx:SFX,master,musicBus,crowdBus,scenes:{home:makeScene(HOME,homeStep,0.6),match:makeScene(MATCH,matchStep,1.0)},crowdStart,crowdStop,tickCrowd,cheer,groan,clapTrain,chant,applause,horn};
+  return {sfx:SFX,master,musicBus,crowdBus,scenes:{home:makeScene(HOME,homeStep,0.6),match:makeScene(MATCH,matchStep,1.5)},crowdStart,crowdStop,tickCrowd,cheer,groan,clapTrain,chant,applause,horn};
 }
 const AUD=(function(){
   let A=null,eng=null,on=true,cur='none',lastSfx=-9;
