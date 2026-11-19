@@ -171,22 +171,25 @@ function uoRecord(win){
   UT.coins+=c.base+c.bonus;if(win)UT.stat.w++;
   const grown=utGrowCards(),pk=uoMiles();utSave();
   const msg=`${uoMode()} · ${win?'vittoria':'sconfitta'} contro ${UO.opp.n} (${UO.opp.p} punti): ${real>=0?'+':''}${real} punti, ora ne hai ${np}. +${c.base+c.bonus} gettoni${c.bonus?` (${c.bonus} in più perché l’avversario aveva più punti di te)`:''}.`
-    +(pk?` Traguardo dei ${utoMilePts(UT.ms)} punti raggiunto: ${pk>1?pk+' serie di pacchetti premio (giocatori'+(UT.hm?', accessori ed eroi)':' e accessori)'):'un pacchetto di giocatori'+(UT.hm?', uno di accessori e uno di eroi':' e uno di accessori')} da aprire${UT.ms===pk?', e da ora puoi potenziare le carte':''}.`:'')
+    +(pk?` Traguardo dei ${utoMilePts(UT.ms)} punti raggiunto: ${UT.hm?(pk>1?pk+' pacchetti eroi':'un pacchetto eroi')+' da aprire':(pk>1?pk+' serie di pacchetti premio (giocatori e accessori)':'un pacchetto di giocatori e uno di accessori')+' da aprire'+(UT.ms===pk?', e da ora puoi potenziare le carte':'')}.`:'')
     +(grown.length?` ${grown.length===1?grown[0]+' è cresciuto':grown.length+' carte sono cresciute'} giocando.`:'');
   UO.msg=msg;uoPush();return msg;
 }
 // traguardi di punti non ancora premiati: un pacchetto per ognuno. Contano una volta sola (UT.ms sale e basta): se scendi e risali non si ripetono
 function uoMiles(){
   if(!UOP||!UT.rp)return 0;
-  let n=0;while((UT.ms|0)<utoMiles(UOP.p)){UT.ms=(UT.ms|0)+1;UT.packs.push(utoMilePack(UT.ms));n++;}
+  let n=0;
+  if(UT.hm){while((UT.ms|0)<utoMiles(UOP.p)){UT.ms=(UT.ms|0)+1;UT.msh=UT.ms;UT.packs.push(utHeroMile(UT.ms));n++;}return n;}   // Superpoteri: i giocatori arrivano da Real player, qui solo pacchetti eroi (sempre migliori)
+  while((UT.ms|0)<utoMiles(UOP.p)){UT.ms=(UT.ms|0)+1;UT.packs.push(utoMilePack(UT.ms));n++;}
   while((UT.mse|0)<(UT.ms|0)){UT.mse=(UT.mse|0)+1;UT.packs.push(utoMileEq(UT.mse));}
-  if(UT.hm)while((UT.msh|0)<(UT.ms|0)){UT.msh=(UT.msh|0)+1;UT.packs.push(utHeroMile(UT.msh));}   // Superpoteri: e un pacchetto eroi, anche lui sempre migliore   // e gli accessori dello stesso traguardo (anche quelli gia' raggiunti prima che esistesse l'equipaggiamento)
+  // e gli accessori dello stesso traguardo (anche quelli gia' raggiunti prima che esistesse l'equipaggiamento)
   return n;
 }
 // ingresso in Real player: si carica la sua squadra (quella del torneo resta salvata com'e') e, la prima volta, arriva il pacchetto iniziale
 function uoEnter(hm){
   utUse(true,hm);uoUseP();
-  if(!UT.col.length&&!UT.packs.length)UT.packs=hm?[0,HERO_START_PK]:[0];   // Superpoteri: con il pacchetto iniziale arrivano tre eroi diversi
+  if(hm){if(!Object.keys(UT.hc).length&&!UT.packs.length&&!(UT.ms|0))UT.packs=[HERO_START_PK];}   // Superpoteri: la squadra e' quella di Real player, all'inizio arrivano tre eroi diversi
+  else if(!UT.col.length&&!UT.packs.length)UT.packs=[0];
   uoMiles();utSave();
 }
 function uoSettle(){   // partita lasciata a meta' (gioco chiuso): sconfitta
@@ -204,10 +207,11 @@ function renderMiles(){
   for(let i=N;i>=1;i--){
     const pk=utoMilePack(i),q=utPkQ(pk),n=utPackSize(pk),pt=utoMilePts(i),st=i<=got?'done':(i===nx?'next':'');
     if(!me&&p>=pt)h+=you();
-    h+=`<div class="urmr ${st}">${utDisc(q,n,'')}<span><b>${pt} punti</b><small>${q===6?'Super pacchetto':UT_PQN[q]} · ${n} giocatori + ${utPackSize(utoMileEq(i))} accessori${UT.hm?' + '+utPackSize(utHeroMile(i))+' eroi':''}${i===1?' · potenziamenti':''}</small></span><em>${st==='done'?'✓ ottenuto':(st==='next'?'mancano '+Math.max(0,pt-p):'')}</em></div>`;
+    const hp=utHeroMile(i);
+    h+=`<div class="urmr ${st}">${UT.hm?utDisc(utPkQ(hp),utPackSize(hp),'S'):utDisc(q,n,'')}<span><b>${pt} punti</b><small>${UT.hm?utHeroPackName(hp)+' · '+utPackSize(hp)+' eroi':`${q===6?'Super pacchetto':UT_PQN[q]} · ${n} giocatori + ${utPackSize(utoMileEq(i))} accessori${i===1?' · potenziamenti':''}`}</small></span><em>${st==='done'?'✓ ottenuto':(st==='next'?'mancano '+Math.max(0,pt-p):'')}</em></div>`;
   }
   if(!me)h+=you();
-  h+=got>=N?`<p class="urmf">Poi un Super pacchetto ogni ${UTO_MILE} punti: il prossimo a ${utoMilePts(got+1)}.</p>`:'';
+  h+=got>=N?`<p class="urmf">Poi un ${UT.hm?utHeroPackName(utHeroMile(got+1)):'Super pacchetto'} ogni ${UTO_MILE} punti: il prossimo a ${utoMilePts(got+1)}.</p>`:'';
   $('urMiles').innerHTML=h;
 }
 function renderUtReal(){
@@ -218,7 +222,7 @@ function renderUtReal(){
   $('urHero').classList.toggle('hidden',!UT.hm||!UT.col.length);if(UT.hm)$('urHeroS').textContent=utHeroSub();
   $('urInfo').innerHTML=off?uoMode()+' non è disponibile in questa versione del gioco.':(UOP?`<b>${esc(UOP.name)}</b> · Punti: <b>${UOP.p}</b> · Vittorie ${UOP.w} · Sconfitte ${UOP.l}${has?` · Forza: <b>${utPower()}</b>`:''}${UT.col.length?` · Gettoni: <b>${UT.coins}</b>`:''}${UOP.dirty?' · risultato da inviare':''}`:'Scegli il tuo nome per entrare in classifica. Attenzione: una volta confermato non si può più cambiare.');
   $('urPlay').disabled=off||!UOP||!has||UO.busy||net;
-  $('urPlayS').textContent=net?'Serve internet':(!has?'Prima completa la tua squadra (7 titolari)':'Contro un giocatore con punti simili ai tuoi');
+  $('urPlayS').textContent=net?'Serve internet':(!has?(UT.hm?'Gioca con la squadra di Real player: prima completala lì (7 titolari)':'Prima completa la tua squadra (7 titolari)'):'Contro un giocatore con punti simili ai tuoi');
   $('urPack').classList.toggle('hidden',!pend);
   $('urPackT').textContent=pend?(utPkQ(UT.packs[0])===0&&!UT.col.length?'Apri il pacchetto iniziale':`Apri: ${utPackName(UT.packs[0])}${pend>1?' (+'+(pend-1)+')':''}`):'';
   $('urPackS').textContent=pend?`${utPackSize(UT.packs[0])} ${utPackContents(UT.packs[0])} · ${utPackTip(UT.packs[0])}`:'';

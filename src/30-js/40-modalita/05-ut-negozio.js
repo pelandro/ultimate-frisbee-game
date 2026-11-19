@@ -43,7 +43,7 @@ const UT_SHOP=[
   {k:'eq',n:'Pacchetto equipaggiamento',cards:2,code:321,q:1,role:'E',cost:[120,160],d:'2 accessori diversi che potenziano tutta la squadra. I doppioni diventano gettoni.'},   // equipaggiamento: 10-sim/25-ut-equipaggiamento.js
   {k:'eroi',n:'Pacchetto eroi',cards:2,code:421,q:1,role:'S',cost:[0,150],hm:true,d:'2 carte eroe: un eroe nuovo o un livello in più per uno che hai già.'}   // solo nei Superpoteri (hm): 40-modalita/08-ut-superpoteri.js
 ];
-const utShopList=()=>UT_SHOP.filter(it=>!it.hm||UT.hm);
+const utShopList=()=>UT_SHOP.filter(it=>!it.hm===!UT.hm);   // nei Superpoteri si comprano solo eroi (i giocatori e gli accessori arrivano da Real player)
 let shMsg='';
 function renderShop(){
   const rp=UT.rp?1:0,pend=UT.packs.length;

@@ -23,7 +23,7 @@ L'indirizzo e la chiave API **non sono segreti**: stanno in ogni sito che usa Fi
 | Profilo del giocatore (nome, punti, vittorie, sconfitte, forza) | `ut/players/<id>` |
 | Squadra (7 titolari e fino a 7 riserve, statistiche per carta) | `ut/teams/<id>` |
 | Identità | utente anonimo di Firebase, salvato nel browser (`ultimate-ut-online`) |
-| Superpoteri: profilo e squadra (come sopra, più l'eroe `h` dei titolari, per esempio `lupo3`) | `uh/players/<id>`, `uh/teams/<id>` (nel browser `ultimate-ut-eroi-online`) |
+| Superpoteri: profilo e squadra (la squadra di Real player, più l'eroe `h` dei titolari, per esempio `lupo3`) | `uh/players/<id>`, `uh/teams/<id>` (nel browser `ultimate-ut-eroi-online`) |
 
 **Superpoteri** usa la radice `uh`, con regole uguali a `ut` più il campo `h` delle carte. Quando le regole cambiano (come all'arrivo dei Superpoteri), chi possiede il progetto Firebase deve incollare di nuovo [`firebase-rules.json`](firebase-rules.json) in **Realtime Database › Regole** e premere *Pubblica*: finché non lo fa, i Superpoteri rispondono «Il server di Superpoteri ha rifiutato la richiesta» e Real player continua a funzionare come prima. Il nome e l'accesso anonimo sono gli stessi delle due modalità; i punti no.
 

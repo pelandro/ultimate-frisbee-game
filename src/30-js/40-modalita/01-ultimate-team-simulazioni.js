@@ -35,24 +35,58 @@ function utOppRoster(power,seed){
   return out;
 }
 const UT_DIFF=[{name:'Facile',txt:'L’IA avversaria gioca come sempre.'},{name:'Medio',txt:'L’IA avversaria sceglie e reagisce un po’ meglio.'},{name:'Difficile',txt:'L’IA avversaria sceglie e reagisce molto meglio.'},{name:'Estrema',txt:'Ancora più attenta del Difficile, e la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'}];
-const UT={on:false,d:0,manual:false,col:[],sel:[],round:0,tid:0,packs:[],st:'play',res:'',opp:[],stage:'closed',cur:[],coins:0,stat:{w:0,t:0,up:0},claimed:{},mode:'sel',pity:0,rp:false,hm:false,ms:0,mse:0,msh:0,hc:{},eq:eqInit()};   // hm: e' caricata la squadra dei Superpoteri (con rp: anche lei gioca online); hc: copie delle carte eroe (il livello), msh: traguardi gia' premiati con un pacchetto eroi (08-ut-superpoteri.js)   // mse: traguardi di cui hai gia' avuto gli accessori   // pity: pacchetti di fila senza Epici   // rp: e' caricata la squadra di Real player (false = quella del torneo contro il computer); ms: traguardi di punti gia' premiati (solo Real player)   // col: giocatori; sel: indici dei 7 titolari; packs: qualita' dei pacchetti da aprire
-const utKey=()=>UT.hm?UTH_KEY:(UT.rp?UTR_KEY:UT_KEY);   // tre squadre separate: torneo contro il computer, Real player, Superpoteri
-function utSave(){try{localStorage.setItem(utKey(),JSON.stringify({v:2,hc:UT.hc,msh:UT.msh|0,ms:UT.ms|0,d:UT.d,manual:UT.manual,col:UT.col,sel:UT.sel,round:UT.round,tid:UT.tid,packs:UT.packs,st:UT.st,res:UT.res,coins:UT.coins,stat:UT.stat,claimed:UT.claimed,pity:UT.pity|0,eq:UT.eq,mse:UT.mse|0}));}catch(e){}}
+const UT={on:false,d:0,manual:false,col:[],sel:[],round:0,tid:0,packs:[],st:'play',res:'',opp:[],stage:'closed',cur:[],coins:0,stat:{w:0,t:0,up:0},claimed:{},mode:'sel',pity:0,rp:false,hm:false,ms:0,rms:0,mse:0,msh:0,hc:{},eq:eqInit()};   // hm: e' caricata la squadra dei Superpoteri (con rp: anche lei gioca online); hc: copie delle carte eroe (il livello), msh: traguardi gia' premiati con un pacchetto eroi (08-ut-superpoteri.js)   // mse: traguardi di cui hai gia' avuto gli accessori   // pity: pacchetti di fila senza Epici   // rp: e' caricata la squadra di Real player (false = quella del torneo contro il computer); ms: traguardi di punti gia' premiati (solo Real player)   // col: giocatori; sel: indici dei 7 titolari; packs: qualita' dei pacchetti da aprire
+const utKey=()=>UT.hm?UTH_KEY:(UT.rp?UTR_KEY:UT_KEY);   // tre salvataggi: torneo contro il computer, Real player, Superpoteri (che pero' gioca con la squadra di Real player)
+// Superpoteri: la squadra (giocatori, titolari, equipaggiamento, gettoni) e' quella di Real player e si salva nel suo salvataggio, senza gli eroi;
+// in quello dei Superpoteri restano eroi (hc), traguardi (ms), pacchetti eroi e a chi sono dati gli eroi (ha: eroe -> carta, per utCardSig)
+const utCardSig=c=>(c.full||c.n)+'|'+c.r;
+const utJSON=k=>{try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}};
+function utSave(){try{
+  if(UT.hm){
+    let r=utJSON(UTR_KEY);
+    if(UT.col.length||UT.coins||r){r=r&&typeof r==='object'?r:{v:2,packs:[]};r.col=UT.col.map(c=>{const o=Object.assign({},c);delete o.hk;return o;});r.sel=UT.sel;r.manual=UT.manual;r.eq=UT.eq;r.coins=UT.coins;r.stat=UT.stat;localStorage.setItem(UTR_KEY,JSON.stringify(r));}
+    const ha={};for(const c of UT.col)if(c.hk)ha[c.hk]=utCardSig(c);
+    localStorage.setItem(UTH_KEY,JSON.stringify({v:3,hc:UT.hc,ms:UT.ms|0,msh:UT.msh|0,packs:UT.packs,ha}));
+    return;
+  }
+  localStorage.setItem(utKey(),JSON.stringify({v:2,ms:UT.ms|0,d:UT.d,manual:UT.manual,col:UT.col,sel:UT.sel,round:UT.round,tid:UT.tid,packs:UT.packs,st:UT.st,res:UT.res,coins:UT.coins,stat:UT.stat,claimed:UT.claimed,pity:UT.pity|0,eq:UT.eq,mse:UT.mse|0}));
+}catch(e){}}
 function utOpps(){   // 6 avversarie del torneo: squadre vere scelte con un seme
   const names=Object.keys(TEAM),rng=mulberry32(hashStr('utopp|'+UT.tid)),pick=[];
   while(pick.length<6){const n=names[Math.floor(rng()*names.length)];if(!pick.includes(n))pick.push(n);}
   UT.opp=pick.map((n,i)=>({name:n,power:UT_POWERS[i]}));
 }
-// Le due squadre (torneo contro il computer e Real player) sono separate: giocatori, gettoni, pacchetti e potenziamenti dell'una non toccano l'altra.
+// Le due squadre (torneo contro il computer e Real player) sono separate: giocatori, gettoni, pacchetti e potenziamenti dell'una non toccano l'altra
+// (i Superpoteri usano quella di Real player: utLoadHero).
 // In memoria ce n'e' una alla volta, sempre nello stesso oggetto UT: utUse salva quella caricata e legge l'altra dalla sua chiave
+function utLoadSq(o){   // giocatori, titolari, equipaggiamento e gettoni di una squadra salvata
+  if(!o||!Array.isArray(o.col))return;
+  for(const c of o.col)if(c&&c.s)fillStats(c.s);
+  UT.col=o.col;UT.sel=(o.sel||[]).filter(i=>o.col[i]);UT.manual=!!o.manual;UT.coins=o.coins|0;UT.stat=Object.assign({w:0,t:0,up:0},o.stat||{});UT.eq=eqInit(o.eq);   // equipaggiamento (10-sim/25-ut-equipaggiamento.js)
+  for(const c of UT.col){delete c.hk;c.ovr=ovr(c);if(c.trait===undefined)c.trait=traitFor(c.full||c.n,c.s,c.r);c.up=c.up|0;}   // salvataggi precedenti: il valore delle carte diventa l'Overall nel ruolo
+}
 function utLoad(){
-  Object.assign(UT,{d:0,manual:false,col:[],sel:[],round:0,tid:0,packs:[],st:'play',res:'',opp:[],stage:'closed',cur:[],coins:0,stat:{w:0,t:0,up:0},claimed:{},mode:'sel',pity:0,ms:0,upSel:undefined,eq:eqInit(),mse:0,msh:0,hc:{}});
-  try{const o=JSON.parse(localStorage.getItem(utKey())||'null');if(o&&Array.isArray(o.col)){for(const c of o.col)if(c&&c.s)fillStats(c.s);for(const pk of (o.packs||[]))for(const c of (Array.isArray(pk)?pk:[]))if(c&&c.s)fillStats(c.s);UT.col=o.col;UT.d=(o.d>=0&&o.d<4)?o.d|0:0;UT.manual=!!o.manual;UT.sel=(o.sel||[]).filter(i=>o.col[i]);UT.round=o.round|0;UT.tid=o.tid|0;UT.packs=o.packs||[];UT.st=o.st||'play';UT.res=o.res||'';UT.coins=o.coins|0;UT.stat=Object.assign({w:0,t:0,up:0},o.stat||{});UT.claimed=o.claimed||{};
-    UT.pity=o.pity|0;UT.ms=o.ms|0;UT.eq=eqInit(o.eq);UT.mse=o.mse|0;UT.hc=utHeroHc(o.hc);UT.msh=o.msh|0;   // equipaggiamento (10-sim/25-ut-equipaggiamento.js)
-    for(const c of UT.col){c.ovr=ovr(c);if(c.trait===undefined)c.trait=traitFor(c.full||c.n,c.s,c.r);c.up=c.up|0;}}}catch(e){}   // salvataggi precedenti: il valore delle carte diventa l'Overall nel ruolo
+  Object.assign(UT,{d:0,manual:false,col:[],sel:[],round:0,tid:0,packs:[],st:'play',res:'',opp:[],stage:'closed',cur:[],coins:0,stat:{w:0,t:0,up:0},claimed:{},mode:'sel',pity:0,ms:0,rms:0,upSel:undefined,eq:eqInit(),mse:0,msh:0,hc:{}});
+  if(UT.hm){utLoadHero();return;}
+  const o=utJSON(utKey());
+  try{if(o&&Array.isArray(o.col)){for(const pk of (o.packs||[]))for(const c of (Array.isArray(pk)?pk:[]))if(c&&c.s)fillStats(c.s);utLoadSq(o);UT.d=(o.d>=0&&o.d<4)?o.d|0:0;UT.round=o.round|0;UT.tid=o.tid|0;UT.packs=o.packs||[];UT.st=o.st||'play';UT.res=o.res||'';UT.claimed=o.claimed||{};
+    UT.pity=o.pity|0;UT.ms=o.ms|0;UT.mse=o.mse|0;}}catch(e){}
   if(UT.tid)utOpps();
 }
-function utUse(rp,hm){rp=!!rp||!!hm;hm=!!hm;if(UT.rp===rp&&UT.hm===hm)return;utSave();UT.rp=rp;UT.hm=hm;utLoad();}   // hm: Superpoteri (gioca online come Real player, ma con la sua squadra)
+// Superpoteri: la squadra di Real player con gli eroi sopra. I salvataggi di prima (v2) avevano una squadra loro: i suoi giocatori si lasciano,
+// i gettoni passano a Real player, eroi, traguardi e pacchetti eroi restano
+function utLoadHero(){
+  const r=utJSON(UTR_KEY),h=utJSON(UTH_KEY);
+  try{utLoadSq(r);UT.rms=r&&r.ms|0;}catch(e){}
+  if(!h||typeof h!=='object')return;
+  UT.hc=utHeroHc(h.hc);UT.ms=Math.max(h.ms|0,h.msh|0);UT.msh=UT.ms;UT.packs=(Array.isArray(h.packs)?h.packs:[]).filter(v=>typeof v==='number'&&utPkRole(v)===HERO_PK);
+  const old=(h.v|0)<3&&Array.isArray(h.col);if(old)UT.coins+=h.coins|0;
+  for(const k in (h.ha||{})){if(!UT.hc[k])continue;const i=UT.sel.find(i=>!UT.col[i].hk&&utCardSig(UT.col[i])===h.ha[k]);if(i!==undefined)UT.col[i].hk=k;}
+  if(UT.sel.length===7&&Object.keys(UT.hc).length&&!UT.col.some(c=>c.hk))utHeroAuto();   // nessun eroe in campo (per esempio la prima volta con questa squadra): i piu' forti
+  utHeroFix();
+  if(old)utSave();
+}
+function utUse(rp,hm){rp=!!rp||!!hm;hm=!!hm;if(UT.rp===rp&&UT.hm===hm)return;utSave();UT.rp=rp;UT.hm=hm;utLoad();}   // hm: Superpoteri (gioca online come Real player, con la stessa squadra e gli eroi)
 function utEnter(){
   if(!UT.col.length&&!UT.packs.length){UT.tid=1;UT.round=0;UT.st='play';UT.packs=[0];UT.res='';utOpps();utSave();}
   showScreen('ut');
@@ -141,7 +175,7 @@ function renderTeamUT(){
 let tmMsg='';
 // in Real player i potenziamenti si sbloccano al primo traguardo (1100 punti): all'inizio i gettoni rendono molto di piu' in pacchetti,
 // e chi e' appena arrivato non li spreca
-const utUpLock=()=>UT.rp&&(UT.ms|0)<1,UT_UP_LOCK='i potenziamenti si sbloccano quando arrivi a 1100 punti: fino ad allora usa i gettoni per i pacchetti';
+const utUpLock=()=>UT.rp&&((UT.hm?UT.rms:UT.ms)|0)<1,UT_UP_LOCK='i potenziamenti si sbloccano quando arrivi a 1100 punti: fino ad allora usa i gettoni per i pacchetti';
 function renderUp(){
   const p=UT.mode==='up'&&UT.upSel!==undefined?UT.col[UT.upSel]:null,box=$('tmUp');
   box.classList.toggle('hidden',!p);if(!p)return;
