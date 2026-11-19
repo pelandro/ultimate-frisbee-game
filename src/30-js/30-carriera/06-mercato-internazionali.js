@@ -98,7 +98,7 @@ function buildMarket(){
   for(const m of out){m.price=Math.round(priceOf(m.o)*(m.from?MK_PRICE.club:(m.star||m.fc?MK_PRICE.est:MK_PRICE.fa)));m.base=m.price;motAssign(m,R);}
   SV.market=out;mkReprice();   // motivazioni e prezzi che ne dipendono (18-motivazioni.js)
 }
-function canSign(m){return SV.cash<0?'Crediti insufficienti':SQ.length>=SQ_MAX?'Rosa al completo ('+SQ_MAX+')':(SV.cash<m.price?'Crediti insufficienti':(ovr(m.o)>repCap()?'Non interessato: serve più reputazione':motBlock(m)));}
+function canSign(m){return SV.cash<0?'Fondi insufficienti':SQ.length>=SQ_MAX?'Rosa al completo ('+SQ_MAX+')':(SV.cash<m.price?'Fondi insufficienti':(ovr(m.o)>repCap()?'Non interessato: serve più reputazione':motBlock(m)));}
 function signPlayer(i){
   const m=SV.market[i];if(!m||canSign(m))return false;
   SV.cash-=m.price;SV.market.splice(i,1);

@@ -4,7 +4,7 @@ function openEvt(){
   const t=EVT[e.id].t(e.a),ops=EVT[e.id].o(e.a);
   $('evTitle').textContent=t[0];$('evTxt').textContent=t[1];
   // o[3]: il pulsante gia' disegnato in HTML (lo sponsor con il suo cartellone), o[0] resta il testo per i lettori di schermo
-  $('evOpts').innerHTML=ops.map((o,i)=>{const ok=!o[2]||o[2]();return `<button type="button" class="${i?'sec':'go'}" data-ev="${i}"${ok?'':' disabled'}${o[3]?` aria-label="${esc(o[0])}"`:''}>${o[3]||esc(o[0])}${ok?'':' · crediti insufficienti'}</button>`;}).join('');
+  $('evOpts').innerHTML=ops.map((o,i)=>{const ok=!o[2]||o[2]();return `<button type="button" class="${i?'sec':'go'}" data-ev="${i}"${ok?'':' disabled'}${o[3]?` aria-label="${esc(o[0]).replace(/\bcrediti\b/gi,'monete').replace(/\bcredito\b/gi,'moneta')}"`:''}>${o[3]||esc(o[0])}${ok?'':' · fondi insufficienti'}</button>`;}).join('');
   $('evOpts').classList.remove('hidden');$('evRes').classList.add('hidden');$('evOk').classList.add('hidden');
   $('evt').classList.remove('hidden');
 }

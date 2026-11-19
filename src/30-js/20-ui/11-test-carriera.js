@@ -262,7 +262,7 @@ function careerSelfTest(seasons,seed){
          if(!(SV.alerts||[]).some(a=>a.k==='dir'))fb.push(tag+': nessun avviso della dirigenza');
          if(!pens.every((v,i)=>i===0||v>=pens[i-1])||pens[pens.length-1]<=pens[0])fb.push(tag+': il morale non cala sempre di piu\'');
          const of=SV.fired.offers;if(!of.length||of.some(n=>qPowOf(n)>=me0||n===SV.team))fb.push(tag+': offerte non piu\' scarse');
-         const sell=canSign(SV.market[0]);if(sell!=='Crediti insufficienti')fb.push(tag+': il mercato non e\' fermo');
+         const sell=canSign(SV.market[0]);if(sell!=='Fondi insufficienti')fb.push(tag+': il mercato non e\' fermo');
          const r=firedAccept(of[0]);if(!r||SV.fired||SV.team===nm||!SV.sp||!SV.sp.off)fb.push(tag+': ripartenza dopo l\'esonero');
        }
        if(fb.length)break;

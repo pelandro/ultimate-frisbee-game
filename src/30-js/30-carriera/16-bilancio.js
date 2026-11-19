@@ -46,7 +46,7 @@ function budgetHTML(){
   if(!f.left)return `<div class="ccard"><h3>Bilancio previsionale</h3><p>${SV.event==='eu'?'Si calcola durante il campionato.':(isUS()&&!SV.done?'Stagione regolare conclusa: restano i Play-in e i Nationals.':(isLN()&&!SV.done?'Gironi conclusi: restano le fasi finali.':'Campionato concluso: i conti ripartono con la nuova stagione.'))}</p></div>`;
   const row=(l,v,c)=>`<div class="bgr${c?' '+c:''}"><span>${l}</span><b>${v}</b></div>`;
   return `<div class="ccard"><h3>Bilancio previsionale</h3><p>Da qui alla fine del campionato: ${f.left} ${f.left>1?'partite':'partita'}, con circa il ${Math.round(f.winP*100)}% di vittorie attese.</p>`+
-    row('Crediti adesso',f.now)+row('Biglietti attesi',sg(f.gate))+(f.rent?row('Affitti dell’impianto',sg(f.rent)):'')+row('Sponsor',sg(f.spon))+row('Premi vittoria attesi',sg(f.wb))+row('Trasferte',sg(-f.trv))+row('Stipendi giocatori',sg(-f.wage))+(f.up?row('Manutenzione',sg(-f.up)):'')+row('Stipendi staff',sg(-f.stf))+
+    row('Saldo',f.now)+row('Biglietti attesi',sg(f.gate))+(f.rent?row('Affitti dell’impianto',sg(f.rent)):'')+row('Sponsor',sg(f.spon))+row('Premi vittoria attesi',sg(f.wb))+row('Trasferte',sg(-f.trv))+row('Stipendi giocatori',sg(-f.wage))+(f.up?row('Manutenzione',sg(-f.up)):'')+row('Stipendi staff',sg(-f.stf))+
     row('Saldo all’ultima giornata',f.end,f.end<0?'bad':'tot')+row(`Premio di classifica (da ${f.rank}°)`,sg(f.prize))+row('Bonus dello sponsor'+(f.obj?'':' (oggi mancato)'),sg(f.obj))+
     row('Dopo i premi',f.after,f.after<0?'bad':'tot')+
     `<p>${f.end<0?'<b>Attenzione</b>: a questo ritmo finisci in rosso prima dei premi (niente acquisti e morale in calo). ':''}È una stima: cambia con i risultati, gli acquisti e le strutture.</p></div>`;
