@@ -11,6 +11,7 @@ const STAFF={
   ana:{n:'Analista tattico',d:'Sblocca schemi per la carriera',
     steps:['Stack laterale e Zona a coppa','Esagono, Weave e Uomo con aiuti','T1, 1 in 3-4 e un consiglio in Posta per i derby']}
 };
+// Il costo del livello massimo deve pesare sui club senza risultati da vertice.
 const STAFF_MAX=3,STAFF_WAGE=[0,24,80,200];
 const staffLv=k=>(SV&&SV.staff&&SV.staff[k])|0;
 const staffCost=k=>stPerson(k)?.x>=2?0:50*(staffLv(k)+1);
