@@ -39,16 +39,31 @@ function drawWind(){
   }
   if(wx){wxIcon(cx,y+4,wx);if(!lv)ptext(WX_N[wx].toUpperCase(),cx+9,y+3,{f:'t',a:'l',c:wx===1?'#9fc4ff':'#e8f2ff',o:false});}
 }
-// pioggia e neve: velo sul campo e gocce o fiocchi che cadono (posizioni calcolate dal tempo, niente stato); il vento le spinge di lato
+// pioggia e neve: velo sul campo e gocce o fiocchi che cadono (posizioni calcolate dal tempo, niente stato); il vento le spinge di lato.
+// Pioggia: righe oblique a due profondita' (le vicine piu' lunghe e chiare) e gli schizzi sul prato. Neve: fiocchi di tre grandezze che ondeggiano
 function drawWeather(){
   const wx=G.wx|0;if(!wx||!wxShow())return;
-  const t=G.tick,W=G.wind&&G.wind.lv?G.wind:{x:0},dr=W.x*(wx===1?5:3);
+  const t=G.tick,W=G.wind&&G.wind.lv?G.wind:{x:0},dr=W.x*(wx===1?5:3),H=VH-BAR,near=(x,y)=>Math.abs(x-discScr.x)<12&&Math.abs(y-discScr.y)<9;   // attorno al disco niente gocce: i due bianchi si confondevano
   if(wx===1){
-    px(0,BAR,VW,VH-BAR,'rgba(24,44,78,.13)');
-    for(let i=0;i<110;i++){const sp=90+(i%5)*14,x=(((i*97.3)%VW+t*(dr-8))%VW+VW)%VW,y=BAR+(((i*61.7)%(VH-BAR))+t*sp)%(VH-BAR);if(Math.abs(x-discScr.x)<12&&Math.abs(y-discScr.y)<9)continue;px(x,y,1,3,'rgba(215,230,255,.72)');}   // attorno al disco niente gocce: i due bianchi si confondevano
+    px(0,BAR,VW,H,'rgba(24,44,78,.13)');
+    const sl=clamp(W.x*0.35-0.12,-0.8,0.6);   // inclinazione: il vento piega la pioggia
+    for(let i=0;i<120;i++){
+      const nr=i%3===0,sp=nr?150:95+(i%4)*12,x=(((i*97.3)%VW+t*(dr-8))%VW+VW)%VW,y=BAR+(((i*61.7)%H)+t*sp)%H;if(near(x,y))continue;
+      const c=nr?'rgba(226,238,255,.8)':'rgba(200,218,246,.55)',L=nr?4:2;
+      for(let k=0;k<L;k++)px(x+ri(sl*k),y+k,1,1,c);
+    }
+    for(let i=0;i<34;i++){   // schizzi: una corona di tre pixel che dura un attimo, ognuno nel suo punto
+      const ph=t*2.2+i*0.61,cyc=Math.floor(ph),f=ph-cyc;if(f>0.28)continue;
+      const h=ihash(i,cyc),x=h%VW,y=BAR+12+((h>>>10)%Math.max(1,H-14));if(near(x,y))continue;
+      const c='rgba(230,242,255,.75)';if(f<0.14)px(x,y,1,1,c);else{px(x-1,y,1,1,c);px(x+1,y,1,1,c);px(x,y-1,1,1,c);}
+    }
   }else{
-    px(0,BAR,VW,VH-BAR,'rgba(236,243,255,.11)');
-    for(let i=0;i<60;i++){const sp=10+(i%4)*5,x=(((i*83.9)%VW+t*dr+Math.sin(t*0.8+i)*5)%VW+VW)%VW,y=BAR+(((i*57.3)%(VH-BAR))+t*sp)%(VH-BAR),big=i%3===0;px(x,y,big?2:1,big?2:1,'rgba(255,255,255,.9)');}
+    px(0,BAR,VW,H,'rgba(236,243,255,.11)');
+    for(let i=0;i<78;i++){
+      const sz=i%7===0?2:(i%3===0?1:0),sp=8+(i%4)*4+sz*5,x=(((i*83.9)%VW+t*dr*(0.6+sz*0.3)+Math.sin(t*0.8+i)*(4+sz*2))%VW+VW)%VW,y=BAR+(((i*57.3)%H)+t*sp)%H;
+      if(sz===2){px(x,y-1,1,3,'rgba(255,255,255,.95)');px(x-1,y,3,1,'rgba(255,255,255,.95)');}   // i fiocchi vicini, a croce
+      else if(sz===1)px(x,y,2,2,'rgba(255,255,255,.9)');else px(x,y,1,1,'rgba(240,246,255,.8)');
+    }
   }
   // l'etichetta del tempo sta insieme a quella del vento (drawWind)
 }
