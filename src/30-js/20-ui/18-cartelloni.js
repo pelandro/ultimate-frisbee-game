@@ -127,6 +127,7 @@ function drawBoard(a,b,y,k,st,seq,off){
     const it=seq[i0];px(a,y,w,BOARD_H,it.bg);px(a,y,w,1,st?'rgba(255,255,255,.22)':'rgba(255,255,255,.12)');
     boardFace(it,a,w,y);
     if(!st){px(a,y+3,w,1,'rgba(0,0,0,.08)');px(a-1,y-2,1,2,PAL.out);px(b,y-2,1,2,PAL.out);}   // la piega e i lacci alla rete
+    boardSnow(a,b,y);
     return;
   }
   // LED: ogni LED_T secondi cambia scritta; il cambio scorre dal basso e parte un po' dopo per ogni cartellone (un'onda lungo il campo)
@@ -147,11 +148,18 @@ function drawBoard(a,b,y,k,st,seq,off){
   }
   for(let r=1;r<BOARD_H;r+=2)px(a,y+r,w,1,'rgba(0,0,0,.10)');   // righe dei LED
   px(a,y,w,1,'rgba(255,255,255,.28)');
+  boardSnow(a,b,y);
+}
+// con la neve sopra i cartelloni c'e' un filo bianco, qua e la' un cumulo
+function boardSnow(a,b,y){
+  if((G.wx|0)!==2)return;
+  px(a-1,y-2,b-a+2,1,'#f4f8fc');
+  for(let x=a+2;x<b-3;x+=9)if(ihash(x+CX,y)%3===0)px(x,y-3,3,1,'#e6eef7');
 }
 // fila in alto, davanti alla tribuna: lunghezza dei cartelloni e varchi secondo l'impianto (lo stadio quasi pieno di LED, il comunale pochi striscioni)
 const TOP_ROW=[[16,16],[22,8],[24,4]];   // [cartellone, varco] in metri per tier 0, 1, 2: a campo intero (4 px al metro) 24 m bastano per il nome piu' lungo con l'icona
 function drawTopBoards(y0){
-  const V=venueNow(),st=clamp(V.tier|0,0,2),[bw,gap]=TOP_ROW[st],step=bw+gap,seq=boardSeq(),y=y0-9;
+  const V=venueNow(),st=vnTier(V),[bw,gap]=TOP_ROW[st],step=bw+gap,seq=boardSeq(),y=y0-9;
   const k0=Math.floor(toWorld(0,0).x/step)-1,k1=Math.ceil(toWorld(VW,0).x/step)+1;
   for(let k=k0;k<=k1;k++){
     const wx=k*step+gap/2-4,a=sxw(wx),b=sxw(wx+bw);if(b<0||a>VW)continue;
@@ -161,7 +169,7 @@ function drawTopBoards(y0){
 // fila in basso (davanti alle panchine niente cartelloni): gli stessi contenuti, sfasati rispetto a quella in alto
 const BOT_ROW=[[16,10],[22,2],[24,2]];
 function drawBottomBoards(y,skip){
-  const V=venueNow(),st=clamp(V.tier|0,0,2),[bw,gap]=BOT_ROW[st],step=bw+gap,seq=boardSeq();
+  const V=venueNow(),st=vnTier(V),[bw,gap]=BOT_ROW[st],step=bw+gap,seq=boardSeq();
   const k0=Math.floor(toWorld(0,0).x/step)-1,k1=Math.ceil(toWorld(VW,0).x/step)+1;
   for(let k=k0;k<=k1;k++){
     const wx=k*step-4;if(skip&&wx+bw>skip[0]&&wx<skip[1])continue;

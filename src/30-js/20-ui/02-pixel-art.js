@@ -84,62 +84,84 @@ const FAN_C=['#2f7bff','#ff4b4b','#ffd23f','#f4f4f4','#3fd183','#b36bff','#ff9a3
 const KITS=[[{shirt:'#2f7bff',shorts:'#f2f5fa',socks:'#2f7bff'},{shirt:'#1f5fd0',shorts:'#172554',socks:'#f2f5fa'},{shirt:'#3aa0ff',shorts:'#f2f5fa',socks:'#f2f5fa'},{shirt:'#2a4fb8',shorts:'#ffd23f',socks:'#2a4fb8'},{shirt:'#2f7bff',shorts:'#101827',socks:'#101827'}],
   [{shirt:'#ff4b4b',shorts:'#1f2740',socks:'#ff4b4b'},{shirt:'#d93636',shorts:'#f2f5fa',socks:'#d93636'},{shirt:'#ff6a3d',shorts:'#1f2740',socks:'#1f2740'},{shirt:'#c22d55',shorts:'#f2f5fa',socks:'#f2f5fa'},{shirt:'#ff4b4b',shorts:'#101010',socks:'#ffd23f'}]];
 const KIT_AWAY={shirt:'#f2f5fa',shorts:'#1f2740',socks:'#f2f5fa'};
-const VENUES=[{grass:'#8ab66b',grass2:'#83af64',dot:'#a8cb8d',apron:'#6f9c58',apron2:'#648f4f',dim:'#b7d6a0',num:'#a3c888'},
-  {grass:'#7fae72',grass2:'#77a66a',dot:'#9cc590',apron:'#5f8f63',apron2:'#55835a',dim:'#a9cf9f',num:'#97c08b'},
-  {grass:'#9bb866',grass2:'#93b05e',dot:'#b6cd88',apron:'#86995a',apron2:'#7a8d50',dim:'#c3d69c',num:'#b0c684'},
-  {grass:'#7da26a',grass2:'#759a62',dot:'#98bb86',apron:'#8a6f52',apron2:'#7d6448',dim:'#a8c796',num:'#93b582'}];
+// prati saturi come nei giochi a 16 bit (prima erano verdi slavati): classico, verde-azzurro, secco d'estate, vecchio campo con il bordo in terra
+const VENUES=[{grass:'#5ba348',grass2:'#4f9440',dot:'#72b85d',apron:'#3f8436',apron2:'#37752f',dim:'#e4f0d8',num:'#eef6e6'},
+  {grass:'#4e9c58',grass2:'#448e4e',dot:'#66b06e',apron:'#367f43',apron2:'#2f703b',dim:'#dff0dc',num:'#ebf6e8'},
+  {grass:'#7aa646',grass2:'#6e983e',dot:'#8fb85a',apron:'#5f8a39',apron2:'#547b32',dim:'#eef3d8',num:'#f4f7e6'},
+  {grass:'#5a9845',grass2:'#4f8b3d',dot:'#6fab58',apron:'#8a6c4c',apron2:'#7a5e42',dim:'#e2eed6',num:'#edf5e4'}];
 let lookKey='';
 function matchLook(){
-  const on=!!G.inMatch,V=venueNow(),uk=on&&typeof utKitNow==='function'?utKitNow():null,key=(on?(G.myName||'')+'|'+(G.oppName||''):'')+'|'+V.home+'|'+V.v+'|'+V.tier+'|'+V.care+'|'+(uk?uk.shirt+uk.shorts+uk.socks+uk.shirtB+uk.pat:'');if(key===lookKey)return;lookKey=key;
+  const on=!!G.inMatch,V=venueNow(),uk=on&&typeof utKitNow==='function'?utKitNow():null,key=(on?(G.myName||'')+'|'+(G.oppName||''):'')+'|'+V.home+'|'+V.v+'|'+V.tier+'|'+vnLv(V)+'|'+V.care+'|'+(G.wx|0)+'|'+(uk?uk.shirt+uk.shorts+uk.socks+uk.shirtB+uk.pat:'');if(key===lookKey)return;lookKey=key;   // anche il tempo: con la pioggia il prato e' piu' scuro
   Object.assign(UNI[0],{pat:'',shirtB:''},uk||KITS[0][on&&G.myName?hashStr('kit|'+G.myName)%KITS[0].length:0]);   // in Ultimate Team la divisa la scegli tu (Equipaggiamento), anche a motivi (pat, shirtB)
   Object.assign(UNI[1],uk&&uk.hot?KIT_AWAY:KITS[1][on&&G.oppName?hashStr('kit|'+G.oppName)%KITS[1].length:0]);   // se ti vesti di rosso o arancione l'avversaria gioca in bianco
   Object.assign(PAL,venuePal());grassPat=null;   // prato del club di casa (17-stadi-pubblico.js)
+  PAL.blueZ=ezColor(0);PAL.redZ=ezColor(1);   // mete piene nel colore delle due divise di oggi
+  PAL.tick=cMix(PAL.dim,PAL.grass,0.5);   // le tacche ogni 2 m: piu' discrete delle linee
 }
+// colore della meta: la maglia della squadra (i pantaloncini se la maglia e' bianca), un po' piu' scura e appena velata dal verde del prato
+function ezColor(t){const V=venueNow(),u=UNI[t],c=cLum(u.shirt)>0.78?u.shorts:u.shirt,z=cMix(cShade(c,-0.12),PAL.grass,fieldKind(V)===0?0.5:0.05+0.4*fieldWear(V));return (G.wx|0)===2?cMix(z,'#eef3f8',0.22):z;}   // sui campi poveri la vernice e' sbiadita (sulla terra resta appena un velo di colore); con la neve un po' piu' chiara
 // Stesso stemma dei menu, disegnato sulla griglia del campo senza immagini o filtri.
 function crestPx(cx,cy,w,name,alpha){clubDraw(cx,cy,w,name,alpha);}
+/* IL CAMPO, dal basso verso l'alto: bordo campo, prato tagliato, mete piene, ciuffi d'erba, usura, neve o pozzanghere, stemma, scritte, linee;
+   poi tutto quello che sta fuori: tribuna (in alto), panchine e cartelloni (in basso), fotografi e cumuli dietro le mete (24-bordocampo-persone.js).
+   Tre tipi di campo (fieldKind, 22-campo-retro.js): terra battuta senza le linee delle distanze (livelli 0-1), prato consumato senza i numeri (2-3),
+   prato curato con linee e numeri (4-5). Sui campi poveri (fieldWear) le linee sono di gesso e le mete sbiadite */
 function drawField(){
   matchLook();
-  const x0=sxw(0),x1=sxw(FIELD_L),y0=syw(0),y1=syw(FIELD_W),H=y1-y0,gl=sxw(EZ),gr=sxw(FIELD_L-EZ);
+  const V=venueNow(),lv=vnLv(V),wx=G.wx|0,x0=sxw(0),x1=sxw(FIELD_L),y0=syw(0),y1=syw(FIELD_W),H=y1-y0,gl=sxw(EZ),gr=sxw(FIELD_L-EZ);
   px(0,0,VW,VH,PAL.apron);
-  // bordo campo: fascia piu' scura in basso (quella in alto e' la tribuna, disegnata da drawStands)
-  px(0,y1+13,VW,VH,PAL.apron2);
+  // bordo campo: fascia piu' scura in basso, dietro le panchine (quella in alto e' la tribuna, disegnata da drawStands)
+  px(0,y1+21,VW,VH,PAL.apron2);
+  const fw=fieldWear(V),fk=fieldKind(V);
+  if(wx===2){const t=snowTexture();patFill(t,0,0,VW,y0,24);patFill(t,0,y1,VW,VH-y1,24);patFill(t,0,y0,x0,H,24);patFill(t,x1,y0,VW-x1,H,24);}
+  else if(fk<2)patFill(tuftPattern(0,fw),0,y1,VW,VH-y1,24);   // erba alta attorno ai campi poveri
   // prato tagliato secondo il club di casa: strisce, strisce larghe, quadri o sintetico (17-stadi-pubblico.js)
   drawMow(y0,H);
   const blueRight=G.dir[0]>0;
   px(x0,y0,gl-x0,H,blueRight?PAL.redZ:PAL.blueZ);px(gr,y0,x1-gr,H,blueRight?PAL.blueZ:PAL.redZ);
-  ezHatch(x0,y0,gl-x0,H);ezHatch(gr,y0,x1-gr,H);   // mete nel colore della squadra, con la trama (15-bordocampo.js)
-  const pat=grassPattern();
-  if(pat){ctx.save();ctx.translate(-(((CX%16)+16)%16),((OYi%16)+16)%16-16);ctx.fillStyle=pat;ctx.fillRect(0,0,VW+32,VH+32);ctx.restore();}
-  drawWear();   // erba consumata sui campi comunali
+  if(fk>0){ezHatch(x0,y0,gl-x0,H);ezHatch(gr,y0,x1-gr,H);}   // mete nel colore della squadra, con la trama (15-bordocampo.js)
+  if(fk===0)patFill(dirtPattern(turfCover(V)),x0,y0,x1-x0,H,40);   // terra battuta: granelli, sassolini, qualche filo d'erba (anche nelle mete)
+  else if(mowKind(V)!==3)patFill(tuftPattern(lv,wx===2?0:fw),gl,y0,gr-gl,H,24);   // ciuffi d'erba (non sul sintetico), con la terra che si vede sui campi poveri
+  drawWear();   // erba consumata sui campi poveri (fango con la pioggia)
+  standShadow(y0);   // con il sole, l'ombra della tribuna sul bordo lontano
   // a centrocampo lo stemma della squadra di casa (in campo neutro il nome della manifestazione)
   drawCenterMark();
-  // scritta nelle mete: il nome della squadra che segna in quella meta (Blu e Rossi quando i nomi non ci sono)
-  const nmB=G.inMatch&&G.myName?G.myName:'BLU',nmR=G.inMatch&&G.oppName?G.oppName:'ROSSI';
+  // scritta nelle mete: il nome della squadra che segna in quella meta (Blu e Rossi quando i nomi non ci sono), dipinta in bianco.
+  // Se e' lunga va a capo (fino a tre righe) e passa al carattere piccolo: resta sempre dentro la meta, centrata (ezNameFit, 22-campo-retro.js)
+  const nmB=G.inMatch&&G.myName?G.myName:'BLU',nmR=G.inMatch&&G.oppName?G.oppName:'ROSSI',paint=wx===2?'rgba(255,255,255,.7)':cMix('#ffffff',PAL.grass,0.12+0.3*fw);
   for(const z of [[EZ/2,blueRight?nmR:nmB,-1],[FIELD_L-EZ/2,blueRight?nmB:nmR,1]]){
-    let nm=String(z[1]).replace(/ \([ABC]\)$/,'').toUpperCase();if(nm.length>18)nm=nm.slice(0,17)+'…';
+    const nm=String(z[1]).replace(/ \([ABC]\)$/,'').toUpperCase(),fit=ezNameFit(nm,FIELD_W*S*0.88,EZ*S*0.82),tot=(fit.ls.length-1)*fit.lh+fit.gh;
     ctx.save();ctx.translate(sxw(z[0]),syw(MID));ctx.rotate(z[2]*Math.PI/2);
-    const f=S>5.4&&ptw(nm,'P')<FIELD_W*S*0.9?'P':'p';
-    ptext(nm,0,f==='P'?-8:-4,{f,c:'rgba(255,255,255,.55)',o:false});ctx.restore();
+    for(let i=0;i<fit.ls.length;i++)ptext(fit.ls[i],0,-ri(tot/2)+i*fit.lh,{f:fit.f,c:paint,sh:1,o:'rgba(8,14,36,.32)'});
+    ctx.restore();
   }
-  // linee ogni 8 m con la distanza dalla linea di meta piu' vicina (aiuta a misurare i lanci), tacche ogni 2 m
-  const big=S>5.4;
-  for(let k=1;k<8;k++){
-    const x=sxw(EZ+k*8);px(x,y0,1,H,PAL.dim);
-    const d=Math.min(k,8-k)*8,txt=String(d);
-    ptext(txt,x+1,y1-(big?26:16),{f:big?'P':'p',c:PAL.num,o:false});
-    ctx.save();ctx.translate(x,y0+(big?26:16));ctx.rotate(Math.PI);ptext(txt,0,0,{f:big?'P':'p',c:PAL.num,o:false});ctx.restore();
-  }
-  for(let m=EZ+2;m<FIELD_L-EZ;m+=2){
-    const x=sxw(m);px(x,y0+2,1,2,PAL.dim);px(x,y1-4,1,2,PAL.dim);
-    px(x,syw(FIELD_W/3)-1,1,2,PAL.dim);px(x,syw(FIELD_W*2/3)-1,1,2,PAL.dim);
+  // linee ogni 8 m e tacche ogni 2 m: non sulla terra battuta. I numeri della distanza dalla linea di meta (aiutano a misurare i lanci) solo negli stadi
+  // e nelle prove. Sui campi poveri le linee sono di gesso: qualche buco qua e la'
+  const big=S>5.4,chalk=fw>0.6,nums=fk===2||!!G.drill;
+  if(fk>0){
+    for(let k=1;k<8;k++){
+      const x=sxw(EZ+k*8);
+      if(chalk){for(let y=y0;y<y1;y+=6){const g=ihash(k,y-y0)%5===0;px(x,y,1,g?3:6,PAL.dim);}}else px(x,y0,1,H,PAL.dim);
+      if(!nums)continue;
+      const d=Math.min(k,8-k)*8,txt=String(d);
+      ptext(txt,x+1,y1-(big?26:16),{f:big?'P':'p',c:PAL.num,o:false});
+      ctx.save();ctx.translate(x,y0+(big?26:16));ctx.rotate(Math.PI);ptext(txt,0,0,{f:big?'P':'p',c:PAL.num,o:false});ctx.restore();
+    }
+    for(let m=EZ+2;m<FIELD_L-EZ;m+=2){
+      const x=sxw(m);px(x,y0+2,1,2,PAL.tick);px(x,y1-4,1,2,PAL.tick);
+      px(x,syw(FIELD_W/3)-1,1,2,PAL.tick);px(x,syw(FIELD_W*2/3)-1,1,2,PAL.tick);
+    }
   }
   // perimetro e linee di meta
   px(x0-1,y0-1,x1-x0+2,2,PAL.line);px(x0-1,y1-1,x1-x0+2,2,PAL.line);px(x0-1,y0,2,H,PAL.line);px(x1-1,y0,2,H,PAL.line);
   px(gl-1,y0,2,H,PAL.line);px(gr-1,y0,2,H,PAL.line);
+  if(chalk)for(const yy of [y0-1,y1-1])for(let x=x0;x<x1;x+=7)if(ihash(x-x0,yy)%6===0)px(x,yy,1,2,PAL.grass2);   // gesso consumato
   // brick
   for(const bx of [EZ+18,FIELD_L-EZ-18]){const x=sxw(bx),y=syw(MID);for(let i=-2;i<=2;i++){px(x+i,y+i,1,1,PAL.line);px(x+i,y-i,1,1,PAL.line);}}
+  if(wx===1)drawPuddles();   // l'acqua copre anche le linee
   drawStands(y0);
   drawSideline(y1);
+  drawEnds();   // dietro le mete: fotografi, borse, cumuli di neve (24-bordocampo-persone.js)
   const fl=cornerFlags();   // negli stadi e nelle partite importanti agli angoli ci sono le bandierine
   for(const c of [[0,0],[0,FIELD_W],[FIELD_L,0],[FIELD_L,FIELD_W],[EZ,0],[EZ,FIELD_W],[FIELD_L-EZ,0],[FIELD_L-EZ,FIELD_W]])(fl&&(c[0]===0||c[0]===FIELD_L)?cornerFlag:cone)(sxw(c[0]),syw(c[1]));
 }
