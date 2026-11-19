@@ -29,6 +29,7 @@ catch(e){
   await page.addLocatorHandler(page.locator('#intro:not(.hidden) #inGo'),async()=>{await page.click('#inGo');});
   // la conferenza stampa dopo le partite che contano si salta con un tocco
   await page.addLocatorHandler(page.locator('#press:not(.hidden) #prSkip'),async()=>{await page.click('#prSkip');});
+  const titleMenu=async(pg,id)=>{if(!(await pg.locator(id).isVisible()))await pg.click('#tMore');await pg.click(id);};   // le voci Guida, Guida passo passo, Audio e Impostazioni stanno nel riquadro «Altro»
   const vis_=async(pg,sel)=>{if(!(await pg.locator(sel).isVisible()))throw new Error('non visibile: '+sel);};
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
   const menu=async id=>{for(let i=0;i<3;i++){if(!(await page.locator('#cmenu').isVisible()))await page.click('#hMenu');try{await page.click(id,{timeout:3000});return;}catch(e){}}await page.click(id);};   // i fumetti e gli imprevisti che si aprono da soli chiudono il menu: si riapre   // Opzioni, Guida, Tutorial e «Menu principale» stanno nel menu della barra in alto
@@ -57,11 +58,11 @@ catch(e){
   // Si scrive a pagina caricata e poi si ricarica: uno script iniziale che scrive nel localStorage prima del caricamento, in Chromium, a volte fa perdere i dati dopo una ricarica
   await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   await step('menu iniziale, guida e impostazioni',async()=>{
-    await vis('#title');await page.click('#tHelp');await vis('#guide');await page.click('#gdX');
-    await page.click('#tSet');await vis('#settings');await page.click('#sBack');await vis('#title');
+    await vis('#title');await titleMenu(page,'#tHelp');await vis('#guide');await page.click('#gdX');
+    await titleMenu(page,'#tSet');await vis('#settings');await page.click('#sBack');await vis('#title');
   });
   await step('tutorial completo dal menu: capitoli, lezioni, progressi salvati, Esc e ingresso dalla Guida',async()=>{
-    await page.click('#tTut');await vis('#tut');
+    await titleMenu(page,'#tTut');await vis('#tut');
     if(await page.locator('#tuBody .tuc').count()!==6)throw new Error('il tutorial deve avere 6 capitoli');
     await page.click('#tuBody .tuc >> nth=0');await vis('#tuBody .tul >> nth=0');
     await page.click('#tuBody .tul >> nth=0');
@@ -71,7 +72,7 @@ catch(e){
     if(Object.keys(st).length<2)throw new Error('le lezioni lette devono restare salvate: '+JSON.stringify(st));
     await page.keyboard.press('Escape');await page.waitForTimeout(100);
     if(await page.locator('#tut:not(.hidden)').count())throw new Error('Esc deve chiudere il tutorial');
-    await page.click('#tHelp');await vis('#guide');await page.click('#gdTut');await vis('#tut');
+    await titleMenu(page,'#tHelp');await vis('#guide');await page.click('#gdTut');await vis('#tut');
     if(await page.locator('#guide:not(.hidden)').count())throw new Error('aprendo il tutorial la Guida deve chiudersi');
     await page.click('#tuBody .tuc >> nth=0');await page.click('#tuBody [data-tu^="h"]');   // dal capitolo si torna all'indice
     if(await page.locator('#tuBody .tuc').count()!==6)throw new Error('«Tutti i capitoli» deve riportare all\'indice');
@@ -89,7 +90,7 @@ catch(e){
       if(u<min||u>max||b<1.5||big!=='1')throw new Error(w+'x'+h+': ingrandimento '+u+' (atteso '+min+'-'+max+'), pulsanti '+b);
     }
     // scelta del giocatore: «Molto piu' grande» sul telefono = 1,5, poi si torna all'automatico
-    await page.click('#tSet');await vis('#settings');await page.click('#sTabScr');
+    await titleMenu(page,'#tSet');await vis('#settings');await page.click('#sTabScr');
     await page.click('#sUz button[data-i="3"]');await page.waitForTimeout(150);if(await ui(page)!==1.5)throw new Error('«Molto piu\' grande» deve portare il telefono a 1,5');
     if(!(await page.evaluate(()=>document.documentElement.dataset.ew)))throw new Error('con l\'interfaccia ingrandita lo spazio utile stretto deve attivare le disposizioni compatte (data-ew)');
     await page.click('#sUz button[data-i="0"]');await page.waitForTimeout(150);if(await ui(page)!==0.75)throw new Error('«Piu\' piccola» deve portare il telefono a 0,75');
@@ -100,7 +101,7 @@ catch(e){
     await page.click('#sBack');await vis('#title');   // le schede non hanno sottolivelli: un solo «Indietro»
   });
   await step('diagnostica: carriera di prova di 12 stagioni',async()=>{
-    await page.click('#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgCar');
+    await titleMenu(page,'#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgCar');
     await page.waitForFunction(()=>/^Finito/.test(document.getElementById('dgState').textContent),null,{timeout:120000});
     const no=await page.locator('#dgOut li').filter({hasText:/^NO/}).allInnerTexts(),n=await page.locator('#dgOut li').count();
     await page.click('#sBack');await page.click('#sBack').catch(()=>{});await vis('#title');   // si torna al menu anche se un controllo e' fallito
@@ -109,7 +110,7 @@ catch(e){
     if(/Continua/.test(await page.locator('#tCareerS').innerText()))throw new Error('il test della carriera ha lasciato una carriera salvata');
   });
   await step('diagnostica: campionato USA (32 club, 4 Conference, Play-in, Nationals, 4 carriere da 6 stagioni)',async()=>{
-    await page.click('#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgUs');
+    await titleMenu(page,'#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgUs');
     await page.waitForFunction(()=>/^Finito/.test(document.getElementById('dgState').textContent),null,{timeout:120000});
     const no=await page.locator('#dgOut li').filter({hasText:/^NO/}).allInnerTexts(),n=await page.locator('#dgOut li').count();
     await page.click('#sBack');await page.click('#sBack').catch(()=>{});await vis('#title');
@@ -168,7 +169,7 @@ catch(e){
     await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   });
   await step('diagnostica: leghe europee (Belgio, Francia, Germania, Regno Unito: dati, rose, formati, promozioni, coppa europea)',async()=>{
-    await page.click('#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgLn');
+    await titleMenu(page,'#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgLn');
     await page.waitForFunction(()=>/^Finito/.test(document.getElementById('dgState').textContent),null,{timeout:240000});
     const no=await page.locator('#dgOut li').filter({hasText:/^NO/}).allInnerTexts(),n=await page.locator('#dgOut li').count();
     await page.click('#sBack');await page.click('#sBack').catch(()=>{});await vis('#title');
@@ -742,7 +743,7 @@ catch(e){
     if(await p.locator('#menu').isVisible())await p.click('#bGo');
     await p.waitForSelector('#bExit:not(.hidden)');await p.click('#bExit');await p.waitForSelector('#pause:not(.hidden)');
     await p.click('#paQuit');await p.click('#paQuit');await p.waitForSelector('#quick:not(.hidden)');
-    await p.click('#qBack');await p.click('#tSet');await p.click('#sTabScr');await p.click('#sRot');
+    await p.click('#qBack');await titleMenu(p,'#tSet');await p.click('#sTabScr');await p.click('#sRot');
     if(await p.evaluate(()=>document.documentElement.classList.contains('rotp')))throw new Error('la rotazione non si spegne dalle Impostazioni');
     await p.click('#sRot').catch(()=>{});await ctx.close();
     if(er.length)throw new Error('errore in verticale: '+er[0]);
