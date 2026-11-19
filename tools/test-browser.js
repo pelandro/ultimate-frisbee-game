@@ -668,7 +668,7 @@ catch(e){
     const beforeImport=await page.evaluate(()=>localStorage.getItem('ultimate-prototipo-v2'));
     const invalid=JSON.parse(beforeImport);invalid.sched=[];
     await page.locator('#clFile').setInputFiles({name:'carriera-invalida.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(invalid))});
-    await page.waitForFunction(()=>document.getElementById('opMsg').textContent.includes('Carriera non leggibile'));
+    await page.waitForFunction(()=>document.getElementById('opMsg').textContent.includes('File non valido o incompatibile'));
     if(await page.evaluate(()=>localStorage.getItem('ultimate-prototipo-v2'))!==beforeImport)throw new Error('l’importazione invalida ha cambiato il salvataggio');
     await page.click('#opX');await menu('#hBack');await page.click('#tSlots');await vis('#slots');
     const empty=await page.locator('#csBox .csl:not(:has([data-cgo])) [data-cnew]').first();

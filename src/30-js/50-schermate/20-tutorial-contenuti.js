@@ -195,14 +195,14 @@ tip:`Dopo uno scudetto le rivali di Serie A si rinforzano: investi in rosa e str
 `In Classifica: verde = Nationals diretti, giallo = Play-in, rosso = fuori.`],
 tip:`Con solo 5 turni di Conference ogni partita pesa: gioca tu quelle contro le rivali dirette.`},
 {id:'lega-eu',t:'Europa: campionati nazionali ed EUCF',b:[
-`<b>Belgio, Francia, Germania e Regno Unito</b>: campionati Open veri, con i formati del 2026. Nessuno è eliminato: ogni turno delle fasi finali vale per il piazzamento, e a fine stagione si sale e si scende tra i livelli.`,
-[`<b>Belgio</b>: 6 livelli da 8 squadre. <b>Francia</b>: la N1 ha 12 squadre e un Top 8. <b>Germania</b>: la 1. Liga ha 16 squadre in due gironi. <b>Regno Unito</b>: Nationals e Open Tour.`,
+`<b>Belgio, Francia, Germania e Regno Unito</b>: club Open del 2026, con formati adattati al gioco. Nessuno è eliminato: ogni turno delle fasi finali vale per il piazzamento, e a fine stagione si sale e si scende tra i livelli.`,
+[`<b>Belgio</b>: 46 squadre su 6 livelli. <b>Francia</b>: la N1 ha 12 squadre e un Top 8. <b>Germania</b>: la 1. Liga ha 16 squadre in due gironi. <b>Regno Unito</b>: Nationals e Open Tour.`,
 `Chi arriva fino in fondo gioca almeno <b>11 partite</b> a stagione.`],
 `Il <b>Campionato europeo (EUCF)</b> si sblocca chiudendo il campionato tra i posti qualificanti (prime 3 in Serie A e Belgio, prime 2 in Francia e Regno Unito, prima in Germania) e si gioca la stagione dopo: 16 club in gironi, poi quarti, semifinali e finale. Ogni turno superato porta <b>crediti</b>.`],
 tip:`In Europa le avversarie sono forti: arriva con la rosa fresca.`}
 ]});
 
-TUT.push({id:'mod',t:'Le altre modalità',sub:'Partita veloce, Torneo, Allenamento, Ultimate Team, Real player.',
+TUT.push({id:'mod',t:'Le altre modalità',sub:'Partita veloce, Torneo, Allenamento, Ultimate Team, Sfide online.',
 intro:'Modalità da giocare senza impegno o con una collezione da costruire.',
 les:[
 {id:'mod-veloce',t:'Partita veloce, Torneo e Allenamento',b:[
@@ -210,13 +210,13 @@ les:[
 `<b>Torneo</b>: eliminazione diretta a 4, 8 o 16 squadre vere, anche di campionati diversi. Le partite le giochi o le simuli.`,
 `<b>Allenamento</b>: tutorial pratico, allenamento libero e sfide con medaglie.`]],
 tip:`La Partita veloce in Estrema è il banco di prova migliore quando ti sembra tutto troppo facile.`},
-{id:'mod-ut',t:'Ultimate Team e Real player',b:[
+{id:'mod-ut',t:'Ultimate Team e Sfide online',b:[
 `Apri <b>pacchetti</b> di carte con <b>giocatori veri</b> (Handler, Cutter e Defender), scegli i 7 titolari e gioca il torneo a eliminazione. Ogni partita dà <b>gettoni</b> per comprare pacchetti nel <b>Negozio</b> e potenziare le carte (al massimo 4 per carta).`,
 [`<b>Pacchetti premio</b>: passando i turni ricevi pacchetti sempre più rari; chi vince il torneo ottiene il Super pacchetto.`,
 `<b>Doppioni</b>: si scartano per recuperare gettoni.`,
 `<b>Equipaggiamento</b>: accessori Comuni, Rari o Epici (scarpini, guantini, coach…) che alzano una statistica di tutta la squadra. Li indossi sul manichino, dove scegli anche colori e motivo della divisa.`],
-`Con <b>Real player</b> (al posto di «Computer») sfidi le squadre di altri giocatori, guidate dal computer. Scegli un nome (poi non si cambia) e parti da 1000 punti: battere uno più forte vale di più.`,
+`Con <b>Sfide online</b> (al posto di «Torneo contro l’IA») sfidi le squadre di altri giocatori, guidate dal computer. Scegli un nome (poi non si cambia) e parti da 1000 punti: battere uno più forte vale di più.`,
 [`Il riquadro <b>Traguardi</b> mostra i pacchetti premio (da 1100 punti in su).`,
 `Servono internet e la partita va finita: abbandonare conta come sconfitta.`]],
-tip:`Costruisci prima una squadra equilibrata nel torneo contro il computer, poi spendi i gettoni di Real player.`}
+tip:`Costruisci prima una squadra equilibrata nel torneo contro il computer, poi spendi i gettoni di Sfide online.`}
 ]});

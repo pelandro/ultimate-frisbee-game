@@ -14,7 +14,7 @@ function rpRecord(step){
   RP.next+=1/30;
   if(RP.next<=RP.clock+1e-8)RP.next=RP.clock+1/30;
   const all=T[0].concat(T[1]),d=G.disc;
-  RP.buf.push({t:RP.clock,at:G.tick,p:all.map(p=>({actor:p,x:p.x,y:p.y,face:p.fc||dirOf(p.t),
+  RP.buf.push({t:RP.clock,at:G.tick,p:all.map(p=>({team:p.t,look:heroLook(p),hero:heroVis(p)?p.hero:null,scale:heroScale(p),x:p.x,y:p.y,face:p.fc||dirOf(p.t),
     speed:hyp(p.vx,p.vy),phase:p.ph||0,pose:poseOf(p),dive:p.dv?diveProg(p):0,
     dir:p.dv?.dir,air:p.dv?diveAir(p):0})),d:[d.x,d.y,d.z],h:all.indexOf(G.holder),kind:G.flight?.kind});
   while(RP.buf.length&&RP.clock-RP.buf[0].t>RP_KEEP)RP.buf.shift();
@@ -69,12 +69,12 @@ function renderReplay(frame,dt){
   updateCamera(dt,frame.d);
   drawField();
   for(const p of frame.p.slice().sort((a,b)=>a.y-b.y)){
-    const actor=p.actor,x=sxw(p.x),y=syw(p.y);
+    const x=sxw(p.x),y=syw(p.y);
     pell(x+1,y,5,1,'rgba(10,30,10,.28)');
     if(p===frame.p[frame.h])pring(x,y,9,3,PAL.gold,1);
-    if(p.dive>.45)puppetDive(x+p.dir*6*p.dive,y,UNI[actor.t],heroLook(actor),p.dir,2+7*p.air);
-    else puppet(x,y,UNI[actor.t],heroLook(actor),p.face,p.pose,p.phase,Math.min(1,p.speed/6),0,
-      {hero:heroVis(actor)?actor.hero:null,sc:heroScale(actor)});
+    if(p.dive>.45)puppetDive(x+p.dir*6*p.dive,y,UNI[p.team],p.look,p.dir,2+7*p.air);
+    else puppet(x,y,UNI[p.team],p.look,p.face,p.pose,p.phase,Math.min(1,p.speed/6),0,
+      {hero:p.hero,sc:p.scale});
   }
   const [x,y,z]=frame.d,lift=z*S*.5;
   pell(sxw(x),syw(y),3,1,'rgba(10,30,10,.28)');
