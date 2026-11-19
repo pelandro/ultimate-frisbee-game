@@ -28,17 +28,18 @@ function usEndSeason(){
   else if(st===0)short=`Fuori dai Play-in (${rank}° nella ${usConfName(U.cf)}).`;
   else short=({1:'Eliminati ai Play-in.',2:'Eliminati nel girone dei Nationals.',3:'Eliminati ai prequarti dei Nationals.',4:'Eliminati ai quarti dei Nationals.',5:'Eliminati in semifinale ai Nationals.',6:'Finale dei Nationals persa.'})[st];
   const prize=Math.round(US_PRIZE[st]*SR_K.U),ok=usObjOk(rank);SV.cash+=prize;
-  if(SV.obj){if(ok){SV.cash+=SV.obj.reward;SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,st-SV.obj.lvl)),0,100);}else SV.rep=clamp(SV.rep-4,0,100);}
+  const objPay=spPayout(ok,tit);SV.cash+=objPay;
+  if(SV.obj){if(ok||objPay){SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,st-SV.obj.lvl)),0,100);}else SV.rep=clamp(SV.rep-4,0,100);}
   if(tit)SV.rep=clamp(SV.rep+6,0,100);
   SV.fans=clamp(fansOf()+[-3,-1,0,1,2,3,4,6][st],0,100);
   SV.done=true;SV.po=null;SV.poRes=null;
-  SV.next={mem:SV.mem,sr:'U',rank,short,qual:false,tit,champs:{U:champ},po:null,prize,objOk:!!ok,us:{stage:st,champ,conf:U.cf,pos:usPos(SV.team)}};
+  SV.next={mem:SV.mem,sr:'U',rank,short,qual:false,tit,champs:{U:champ},po:null,prize,objOk:!!objPay,objPay,us:{stage:st,champ,conf:U.cf,pos:usPos(SV.team)}};
   if(champ&&U.nat){const fin=U.nat.ko[3]&&U.nat.ko[3][0];if(fin)SV.usAlb=[{s:SV.season,champ,run:fin[0]===champ?fin[1]:fin[0],sc:[Math.max(fin[2],fin[3]),Math.min(fin[2],fin[3])]}].concat(SV.usAlb||[]).slice(0,60);}
   seasonEndDyn(rank);   // sfida della dirigenza e obiettivi personali
   seasonAwards(rank,null);
   if(SV.hist[0]&&SV.hist[0].season===SV.season)SV.hist[0].us={stage:st,champ,conf:U.cf,pos:usPos(SV.team)};
   achCheck();
-  news(`Stagione ${SV.season} conclusa: ${short} Premio di ${prize} crediti`+(SV.obj?(ok?`, bonus dello sponsor (+${SV.obj.reward})`:', lo sponsor non paga il bonus'):'')+'.');
+  news(`Stagione ${SV.season} conclusa: ${short} Premio di ${prize} crediti`+(SV.obj?(objPay?`, bonus dello sponsor (+${objPay})`:', lo sponsor non paga il bonus'):'')+'.');
 }
 // ---- offerte per i tuoi giocatori: dai club della stessa lega piu' forti del tuo ----
 function usOfferTeams(){

@@ -208,15 +208,16 @@ function endSeason(){
   // premi di fine stagione: classifica, obiettivo, reputazione, premi individuali
   const n=SV.mem[SV.sr].length,prize=Math.round((n-rank+1)*3*SR_K[SV.sr]);SV.cash+=prize;
   const ok=objMet(rank,{promoted:nsr<SV.sr,tit});
-  if(SV.obj){if(ok){SV.cash+=SV.obj.reward;SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}
+  const objPay=spPayout(ok,tit);SV.cash+=objPay;
+  if(SV.obj){if(ok||objPay){SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}
   if(nsr<SV.sr){SV.rep=clamp(SV.rep+6,0,100);const pp=promoPrize(nsr);SV.cash+=pp;SV.next.promoP=pp;news('Premio della lega per la promozione: +'+pp+' crediti per rinforzarvi in '+SERIES_NAME[nsr]+'.');}else if(nsr>SV.sr)SV.rep=clamp(SV.rep-8,0,100);
   if(tit&&SV.sr==='A')SV.rep=clamp(SV.rep+6,0,100);
   fansSeason(tit&&SV.sr==='A'?1:rank,nsr,SV.sr);
-  SV.next.prize=prize;SV.next.objOk=!!ok;
+  SV.next.prize=prize;SV.next.objOk=!!objPay;SV.next.objPay=objPay;
   seasonEndDyn(rank);   // sfida della dirigenza, reazione delle rivali
   seasonAwards(rank,order);
   achCheck();
-  news('Stagione '+SV.season+' conclusa al '+rank+'° posto: premio di '+prize+' crediti'+(SV.obj?(ok?', bonus dello sponsor (+'+SV.obj.reward+')':', lo sponsor non paga il bonus'):'')+'.');
+  news('Stagione '+SV.season+' conclusa al '+rank+'° posto: premio di '+prize+' crediti'+(SV.obj?(objPay?', bonus dello sponsor (+'+objPay+')':', lo sponsor non paga il bonus'):'')+'.');
 }
 // nuova stagione: tutti i giocatori (anche i tuoi) invecchiano di un anno e le statistiche cambiano di conseguenza
 function agePlayers(){
@@ -234,7 +235,7 @@ function newSeason(){
   const was=new Map(SQ.map(p=>[p.full,ovr(p)]));
   agePlayers();
   potNews();   // 29-potenziali.js: chi si e' fermato e chi ha scoperto piu' margine
-  for(const p of SQ){p.sk=Math.min(3,(p.sk|0)+1+(hasTr('ana','occ')?1:0));p.cond=100;}   // un anno insieme: conosci meglio il potenziale dei tuoi
+  for(const p of SQ){p.sk=Math.min(3,(p.sk|0)+1);p.cond=100;}   // un anno insieme: conosci meglio il potenziale dei tuoi
   summerChanges(was);evolveLeague();const aim=aiMarket();   // mercato tra le squadre del computer (31-mercato-ia.js), prima del tuo
   SV.chem=clamp(50+(SV.chem-50)*0.6,0,100);SV.mor=clamp(60+(SV.mor-60)*0.5,0,100);   // estate: l'intesa si allenta un poco, l'umore torna verso la norma
   beginSeason();buildMarket();pickRival();aiMarketNews(aim);   // la notizia dopo la scelta della rivale: la segna nei colpi che la riguardano
@@ -276,9 +277,10 @@ function recordResult(win,su,so){
   }
   for(const p of SQ){   // nuova giornata: tornano gli allenamenti, gli infortunati recuperano; ogni infortunio e ogni rientro viene segnalato
     p.tr=false;
-    if(p.injNew&&(SV.fisShield|0)>0&&p.inj>1){p.inj=Math.ceil(p.inj/2);SV.fisShield--;}   // prevenzione (fisioterapia tenuta almeno al livello 3)
-    if(p.injNew&&p.inj>1&&hasTr('fit','fis'))p.inj--;   // caratteristica del preparatore: «Fisioterapista»
-    if(p.injNew){const big=p.inj>=5;if(big){p.injC=(p.injC|0)+1;p.injBig=1;}alertAdd('inj',`${pname(p)} si è infortunat${oa(p)}${big?' in modo serio':''}: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full});}
+    if(p.injNew){const days=p.inj,big=days>=5;p.inj=injuryStop(days);
+      const shield=Math.ceil(days/2);
+      if((SV.fisShield|0)>0&&p.inj>shield){p.inj=shield;SV.fisShield--;}
+      if(big){p.injC=(p.injC|0)+1;p.injBig=1;}alertAdd('inj',`${pname(p)} si è infortunat${oa(p)}${big?' in modo serio':''}: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full});}
     else if(p.inj>0){p.inj--;if(p.inj===0){if(p.abs)p.abs=0;else healed(p);}}   // abs: assenza per impegni, non un infortunio
     p.injNew=false;
   }
@@ -287,10 +289,10 @@ function recordResult(win,su,so){
   SV.cash+=incPre.net;SV.lastInc=incPre.net;SV.lastWage=incPre.wage;SV.lastUp=incPre.up+incPre.stf;
   econAfterMatch(incPre);   // registro dei conti, avvisi del rosso, premio a chi ha giocato una partita straordinaria
   // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso l'umore cala sempre di piu' (redPen)
-  SV.mor=clamp(SV.mor+(win?6:-5)+(60-SV.mor)*0.1-redPen()+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+(hasTr('men','pap')?0.3:0),0,100);
+  SV.mor=clamp(SV.mor+(win?6:-5)+(60-SV.mor)*0.1-redPen(),0,100);SV.chem=clamp(SV.chem+0.5,0,100);
   // la fatica segue i punti giocati (fatShare): chi sta in una sola linea gioca circa meta' delle mete e perde quanto recupera in settimana,
   // chi sta in attacco e in difesa le gioca tutte e si stanca il doppio. Prima contava solo «ha giocato o no», e la profondita' della rosa non serviva a nulla
-  for(const p of SQ){const sh=fatShare(p,su+so);p.cond=clamp((p.cond===undefined?100:p.cond)-(sh>0?2*sh*Math.max(5,12-p.s.res*0.06):0)+10+facRecovery()+2*staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}
+  for(const p of SQ){const sh=fatShare(p,su+so);p.cond=clamp((p.cond===undefined?100:p.cond)-(sh>0?2*sh*Math.max(5,12-p.s.res*0.06):0)+10+facRecovery()+physRecovery(),0,100);}
   lifeAfterMatch();dynAfterMatch();
   if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0&&!xm)buildMarket();   // il mercato si rinnova ogni 5 giornate
   achCheck();   // traguardi (23-traguardi.js)

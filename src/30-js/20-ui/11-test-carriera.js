@@ -29,13 +29,13 @@ function careerSelfTest(seasons,seed){
         }
         for(const k of Object.keys(FAC).sort((x,y)=>facCost(x)-facCost(y)))if(SV.cash>facCost(k)+60&&facLv(k)<FAC_MAX){buyFac(k);break;}
         for(const k of Object.keys(STAFF)){   // staff: si assume il migliore che ci si puo' permettere nei ruoli vacanti, poi si migliora; indirizzi personali: quando c'e' margine
-          if(staffLv(k)<1||!stPerson(k)){const cs=staffCands(k);let b=-1;for(let i=0;i<cs.length;i++)if(SV.cash>STAFF_HIRE[cs[i].lv]+90)b=i;if(b>=0){staffHire(k,b);break;}}
-          else if(SV.cash>staffCost(k)+90&&buyStaff(k))break;
+          if(staffLv(k)<1||!stPerson(k)){if(SV.cash>STAFF_HIRE[1]+90+staffRemaining(k,1)&&staffHire(k,0))break;}
+          else if(staffLv(k)<2&&SV.cash>staffCost(k)+90+staffRemaining(k,staffLv(k)+1)-staffRemaining(k)&&buyStaff(k))break;
         }
         for(const p of SQ)if(!p.spec&&p.age<=26&&SV.cash>specCost(p)+120){setSpec(p,Object.keys(SPECS)[Math.floor(Math.random()*6)]);spec++;break;}
         duoMax=Math.max(duoMax,...Object.values(SV.duo||{}),0);
         if(SV.po&&SV.po.on)poDays++;
-        const a0=SV.alN|0,sp0=SV.sp&&SV.sp.off?SV.sp.off:null;if(sp0){spSeen.add(s);const ok3=sp0.length===3&&sp0.every(d=>d.fix>0&&d.obj&&d.obj.reward>0&&d.obj.txt)&&sp0[0].fix>sp0[1].fix&&sp0[1].fix>sp0[2].fix&&sp0[2].obj.reward>sp0[1].obj.reward&&sp0[1].obj.reward>sp0[0].obj.reward;if(!ok3)spBad.push(`S${s}: offerte non valide`);
+        const a0=SV.alN|0,sp0=SV.sp&&SV.sp.off?SV.sp.off:null;if(sp0){spSeen.add(s);const ok3=sp0.length===3&&sp0.every(d=>d.fix>0&&d.obj&&d.obj.reward>0&&d.obj.txt)&&sp0[0].fix>sp0[1].fix&&sp0[1].fix>sp0[2].fix&&sp0[2].obj.reward+(sp0[2].obj.titleReward||0)>sp0[1].obj.reward&&sp0[1].obj.reward>sp0[0].obj.reward;if(!ok3)spBad.push(`S${s}: offerte non valide`);
           if(!isUS()&&!sp0[0].obj.rel){const t=sp0.map(d=>d.obj.tgt),c0=objCtx();if(!(t[2]<=t[1]&&t[1]<=t[0])||(c0.n>=8&&sp0[1].obj.exp<=c0.n/2&&t[0]>=c0.safe))spBad.push(`S${s}: obiettivi ${t.join('/')} (attesa ${sp0[1].obj.exp} su ${c0.n})`);}   // dal piu' difficile al piu' facile; a meta' classifica il sicuro non e' la sola salvezza
           if(isUS()){const l=sp0.map(d=>d.obj.lvl*10+(8-(d.obj.cr||8)));if(!(l[2]>=l[1]&&l[1]>=l[0]))spBad.push(`S${s}: obiettivi USA ${sp0.map(d=>d.obj.id).join('/')}`);}}   // sicuro: piu' soldi a partita e bonus piu' piccolo; ambizioso: l'opposto
         simCareerMatch();hide();
@@ -82,7 +82,7 @@ function careerSelfTest(seasons,seed){
     // programma automatico, bilancio previsionale, storico dei progressi (la stagione nuova e' appena cominciata: c'e' una sessione disponibile)
     SV.prog={on:true,team:'auto'};for(const p of SQ)p.tr=false;SV.tTeam=false;SV.played=0;
     const at=autoTrain(),progOk=!!at&&SV.tTeam&&SQ.filter(p=>p.tr).length===Math.min(3,SQ.length)&&autoTrain()===null;
-    const bf=budgetForecast(),bOk=isFinite(bf.end)&&bf.left===SV.sched.length-SV.round&&bf.end===Math.round(SV.cash+bf.inc-bf.trv-bf.wage-bf.up)&&bf.winP>0&&bf.winP<1&&bf.after===bf.end+bf.prize+bf.obj;
+    const bf=budgetForecast(),bOk=isFinite(bf.end)&&bf.left===SV.sched.length-SV.round&&bf.end===Math.round(SV.cash+bf.inc-bf.trv-bf.wage-bf.up-bf.stf)&&bf.winP>0&&bf.winP<1&&bf.after===bf.end+bf.prize+bf.obj;
     const hOk=seasons<3||(SQ.some(p=>(p.hist||[]).length>=2)&&SQ.every(p=>(p.hist||[]).length<=14));
     rows.push(row('Programma automatico: fa la seduta di squadra e i 3 lavori individuali, una volta sola',progOk?'sì':'no'+(at?'':' (non parte)'),progOk));
     rows.push(row('Bilancio previsionale: partite rimaste, vittorie attese e saldo finale coerenti',bOk?`sì (${bf.left} partite, ${Math.round(bf.winP*100)}% vittorie, saldo ${bf.end})`:'no',bOk));
@@ -114,7 +114,7 @@ function careerSelfTest(seasons,seed){
        if(lv<1){if(s)bs.push(k+': persona senza livello');continue;}
        if(!s){bs.push(k+': livello senza persona');continue;}
        if(!s.n||!(s.a>=20&&s.a<STAFF_RETIRE)||s.pot<lv||lv>STAFF_MAX||(s.tr&&(!STAFF_TR[s.tr]||STAFF_TR[s.tr].r!==k))||!s.lk||!s.lk.hair)bs.push(k+': dati non validi');}
-     const cs=staffCands('coach'),csOk=cs.length===3&&cs.every(c=>c.lv>=1&&c.lv<=STAFF_MAX&&c.pot>=c.lv&&c.pot<=STAFF_MAX&&c.n&&c.a>=20&&(!c.tr||STAFF_TR[c.tr].r==='coach'));
+     const cs=staffCands('fit'),csOk=cs.length===3&&cs.every(c=>c.lv>=1&&c.lv<=STAFF_MAX&&c.pot>=c.lv&&c.pot<=STAFF_MAX&&c.n&&c.a>=20&&(!c.tr||STAFF_TR[c.tr].r==='fit'));
      // salvataggio di prima dell'ondata 3 (senza allenatore e senza persone nello staff): careerInit li ricostruisce, sempre uguali, coi livelli gia' pagati
      let migOk=true;{const lv0=Object.keys(STAFF).map(k=>staffLv(k)).join();SV.coach=undefined;SV.start=undefined;SV.stp=undefined;SV.cand=undefined;SV.candN=undefined;careerInit();const c1=JSON.stringify(SV.coach);SV.coach=undefined;careerInit();   // l'allenatore di default e' sempre lo stesso per la stessa carriera
        migOk=!!SV.coach&&JSON.stringify(SV.coach)===c1&&SV.start==='cuore'&&Object.keys(STAFF).map(k=>staffLv(k)).join()===lv0&&Object.keys(STAFF).every(k=>staffLv(k)<1?!stPerson(k):(!!stPerson(k)&&stPerson(k).pot>=staffLv(k)&&stPerson(k).a>=34));}
@@ -122,7 +122,7 @@ function careerSelfTest(seasons,seed){
      const k0=Object.keys(STAFF).find(k=>staffLv(k)>=1),l0=k0?staffLv(k0):0;let lvOk=true;
      if(k0){staffLeave(k0);const l1=staffLv(k0);lvOk=l1===l0-1&&(l1>=1?!!stPerson(k0)&&stPerson(k0).pot>=l1:!stPerson(k0));}
      const hired=Object.keys(STAFF).filter(k=>stPerson(k)).length;
-     rows.push(row('Staff come persone: ruoli e livelli coerenti, candidati validi, chi se ne va viene sostituito, salvataggi vecchi',bs.length||!csOk||!lvOk||!migOk?(bs.slice(0,2).join('; ')||(csOk?'':'candidati non validi')||(lvOk?'salvataggio vecchio non ricostruito bene':'sostituzione non corretta')):`sì (${hired} ruoli su 4 coperti, salvataggi vecchi ricostruiti)`,!bs.length&&csOk&&lvOk&&migOk));}
+     rows.push(row('Staff come persone: ruoli e livelli coerenti, candidati validi, chi se ne va viene sostituito, salvataggi vecchi',bs.length||!csOk||!lvOk||!migOk?(bs.slice(0,2).join('; ')||(csOk?'':'candidati non validi')||(lvOk?'salvataggio vecchio non ricostruito bene':'sostituzione non corretta')):`sì (${hired} ruoli su 3 coperti, salvataggi vecchi ricostruiti)`,!bs.length&&csOk&&lvOk&&migOk));}
     {const bad3=[],c1=coachNorm({n:'  <b>Gi0>  ',s:'De  Santis!!',lk:null}),c2=coachNorm({n:'',s:'',lk:{hair:'#000000',skin:'#f0c9a4',style:2}});
      if(!SV.coach||!SV.coach.n||!SV.coach.s||!SV.coach.lk||!SV.coach.lk.hair)bad3.push('allenatore mancante');
      if(!/^[\p{L}' .-]+$/u.test(c1.n+c1.s)||c1.s!=='De Santis')bad3.push('nome non ripulito: '+c1.n+'|'+c1.s);

@@ -8,7 +8,7 @@ function talentGrow(p){
   if((p.ext|0)>=EXT_MAX||p.age<21||p.age>31||p.inj)return false;
   let at=0;for(const k of KEYS)if(p.s[k]>=capX(p,k)-1)at++;
   if(at<KEYS.length/2)return false;
-  const pr=0.07*(p.dev||1)*(1+0.25*staffLv('coach')+0.12*facLv('camp')+(p.spec?0.15:0));
+  const pr=0.07*(p.dev||1)*(1+0.12*staffLv('fit')+0.12*facLv('camp')+(p.spec?0.15:0));
   if(Math.random()>=pr)return false;
   p.tl=Math.min(99,p.tl+1);p.tf=Math.min(99,p.tf+1);p.tv=Math.min(99,p.tv+1);p.tal=Math.round((p.tl+p.tf+p.tv)/3);p.ext=(p.ext|0)+1;talentGrow.n=(talentGrow.n|0)+1;
   alertAdd('up',`${pname(p)} ha superato il proprio limite: il suo talento cresce (${p.ext} su ${EXT_MAX}).`,{full:p.full,seen:1});

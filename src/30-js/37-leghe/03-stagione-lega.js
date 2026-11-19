@@ -303,16 +303,17 @@ function lnEndSeason(){
   else short=`Restate in ${tr.name}: ${rank}° su ${n}.`;
   // premio, obiettivo, reputazione e tifosi
   const prize=Math.round(LN_PRIZE(Math.max(1,n-rank+1)*3)*SR_K[SV.sr]),ok=objMet(rank,{promoted:ni<ci,tit});SV.cash+=prize;
-  if(SV.obj){if(ok){SV.cash+=SV.obj.reward;SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}
+  const objPay=spPayout(ok,tit&&L.tier===top);SV.cash+=objPay;
+  if(SV.obj){if(ok||objPay){SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}
   if(ni<ci){SV.rep=clamp(SV.rep+6,0,100);const nk=lnKey(lk,LN_DEF[lk].tiers[ni].id),pp=promoPrize(nk);SV.cash+=pp;news('Premio della lega per la promozione: +'+pp+' crediti per rinforzarvi in '+LN_DEF[lk].tiers[ni].name+'.');}else if(ni>ci)SV.rep=clamp(SV.rep-8,0,100);   // premio della lega: 30-carriera/05-economia.js
   if(tit)SV.rep=clamp(SV.rep+6,0,100);
   fansSeason(rank,nTier,L.tier);if(tit)SV.fans=clamp(fansOf()+6,0,100);
   const eu=LN_DEF[lk].eu,euQ=L.tier===top?mine.slice(0,eu):[],qual=L.tier===top&&rank<=eu;
   SV.done=true;SV.po=null;SV.poRes=null;
-  SV.next={mem:{[lnKey(lk,nTier)]:[]},sr:lnKey(lk,nTier),rank,short,qual,euQ,tit,champs:{[lk]:champ},po:null,prize,objOk:ok,ln:{tier:L.tier,n,champ,nTier}};
+  SV.next={mem:{[lnKey(lk,nTier)]:[]},sr:lnKey(lk,nTier),rank,short,qual,euQ,tit,champs:{[lk]:champ},po:null,prize,objOk:!!objPay,objPay,ln:{tier:L.tier,n,champ,nTier}};
   seasonEndDyn(rank);   // sfida della dirigenza e obiettivi personali
   seasonAwards(rank,null);
   if(SV.hist[0]&&SV.hist[0].season===SV.season)SV.hist[0].ln={tier:L.tier,rank,n,champ};
   achCheck();
-  news(`Stagione ${SV.season} conclusa: ${short} Premio di ${prize} crediti`+(SV.obj?(ok?`, bonus dello sponsor (+${SV.obj.reward})`:', lo sponsor non paga il bonus'):'')+'.');
+  news(`Stagione ${SV.season} conclusa: ${short} Premio di ${prize} crediti`+(SV.obj?(objPay?`, bonus dello sponsor (+${objPay})`:', lo sponsor non paga il bonus'):'')+'.');
 }

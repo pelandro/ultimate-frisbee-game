@@ -219,8 +219,8 @@ catch(e){
     await page.click('#hCoach');await vis('#coachsel');await page.fill('#coS','Bianchi');await page.click('#coGo');await vis('#home');
     if(!/Bianchi/.test(await page.locator('#hCoach').getAttribute('title')))throw new Error('il cambio di nome non arriva al cruscotto');
     await page.click('#hClub');await vis('#club');
-    await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard.empty').count()!==4)throw new Error('a inizio carriera i quattro ruoli dello staff devono essere vacanti');
-    await page.click('#clBox [data-hire="coach"]');await vis('#hire');
+    await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard.empty').count()!==3)throw new Error('a inizio carriera i tre ruoli dello staff devono essere vacanti');
+    await page.click('#clBox [data-hire="fit"]');await vis('#hire');
     if(await page.locator('#hireList .hcn').count()!==3)throw new Error('i candidati devono essere tre');
     const first=await page.locator('#hireList .hcn .sr').first().innerText();
     await page.click('#hireRenew');if(await page.locator('#hireList .hcn').count()!==3)throw new Error('dopo il rinnovo i candidati devono essere ancora tre');
@@ -258,13 +258,13 @@ catch(e){
     if(await page.locator('#tList .prow:not([disabled])').count()>await page.locator('#tList .prow').count()-3)throw new Error('il programma automatico non ha fatto i lavori individuali');
     await page.click('#tTeamBox [data-prog]');await page.click('#hHome');
     await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#hHome');
-    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="man"]');{const t=await page.locator('#clBox').innerText();if(!/Sponsor e obiettivo/i.test(t)||!/a ogni partita/.test(t)||!/Conti delle partite/i.test(t))throw new Error('la scheda Società deve mostrare lo sponsor scelto e i conti delle partite: '+t.replace(/\s+/g,' ').slice(0,900));}await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==3)throw new Error('devono esserci tre strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci quattro figure dello staff');
+    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="man"]');{const t=await page.locator('#clBox').innerText();if(!/Sponsor e obiettivo/i.test(t)||!/a ogni partita/.test(t)||!/Conti delle partite/i.test(t))throw new Error('la scheda Società deve mostrare lo sponsor scelto e i conti delle partite: '+t.replace(/\s+/g,' ').slice(0,900));}await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==3)throw new Error('devono esserci tre strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==3)throw new Error('devono esserci tre figure dello staff');
     // le altre linguette del Club: traguardi (ventidue schede, percentuale), albo d'oro e Hall of Fame
     await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="ach"]');if(await page.locator('#clBox .ach').count()!==22||!/%/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi devono essere ventidue, con la percentuale');
     await page.click('#clSub [data-k="hon"]');if(await page.locator('#clBox .trt').count()<7)throw new Error('manca la bacheca dei trofei');
     await page.click('#clSub [data-k="rec"]');if(await page.locator('#clBox .hofbox').count()!==1)throw new Error('manca la Hall of Fame');
     await page.click('#clTabs button[data-k="stf"]');
-    if(await page.locator('#clBox .scard').count()!==4||await page.locator('#clBox [data-hire]').count()<4)throw new Error('le figure dello staff devono essere quattro, ciascuna con «Cambia» o «Scegli chi assumere»');
+    if(await page.locator('#clBox .scard').count()!==3||await page.locator('#clBox [data-hire]').count()<3)throw new Error('le figure dello staff devono essere tre, ciascuna con «Cambia» o «Scegli chi assumere»');
     await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="rec"]');await page.click('#hHome');
     await page.click('#hEvent');await vis('#event');await page.click('#evTabs [data-sr="A"]');await page.click('#evTabs [data-sr="B"]');await vis('#eBody table.rt');
     const trs=await page.locator('#eBody table.rt tr').count();if(trs<8)throw new Error('classifica di un\'altra serie troppo corta: '+trs);

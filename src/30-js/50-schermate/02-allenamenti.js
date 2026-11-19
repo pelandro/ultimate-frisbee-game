@@ -7,13 +7,13 @@ const TR_OPTS=CATS.concat([{id:'rec',name:'Recupero',keys:[]}]);
 const TR_SUB={tec:'Lancio, Buco, Sparo, Presa',atl:'Velocità, Scatto, Agilità, Salto, Resistenza',dif:'Difesa, Tuffo',tat:'Visione; di squadra anche affiatamento',rec:'Ridà condizione, nessuna crescita'};
 function trainApply(p,opt,single){
   if(opt.id==='rec'){
-    const before=p.cond;p.cond=clamp(p.cond+REST_GAIN+(single?8:0)+facRecovery()+4*staffLv('fit'),0,100);
+    const before=p.cond;p.cond=clamp(p.cond+REST_GAIN+(single?8:0)+facRecovery()+physRecovery(),0,100);
     let heal=false;if(single&&p.inj>1){p.inj--;heal=true;}   // il lavoro individuale di recupero accorcia di una partita uno stop lungo
     return {p,c:opt,changes:[],gain:0,rest:Math.round(p.cond-before),heal};
   }
-  const it=trInt(),r=trainCategory(p,opt,trainMul(p)*(single?1.5:1)*it.g);   // il lavoro individuale rende il 50% in piu'; il campo di allenamento il 10% per livello; l'intensita' scelta fa il resto
+  const it=trInt(),r=trainCategory(p,opt,trainMul(p,single)*(single?1.5:1)*it.g);
   p.cond=clamp(p.cond-Math.round((single?TRAIN_COST1:TRAIN_COST)*it.c*(r.spec?1.15:1)*trCostK()),0,100);   // le sedute dell'indirizzo personale costano un po' di piu'
-  if(Math.random()<(trainRisk(p)*it.r+(it.r>1?0.004:0))*(facInjuryK())*(1-0.1*staffLv('fit'))){p.inj=1+Math.floor(Math.random()*2);r.hurt=p.inj;alertAdd('inj',`${pname(p)} si è infortunat${oa(p)} in allenamento: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full,seen:1});}
+  if(Math.random()<(trainRisk(p)*it.r+(it.r>1?0.004:0))*staffInjuryK()){p.inj=injuryStop(1+Math.floor(Math.random()*2));r.hurt=p.inj;alertAdd('inj',`${pname(p)} si è infortunat${oa(p)} in allenamento: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full,seen:1});}
   return r;
 }
 // riquadro del programma automatico (le regole sono in 30-carriera/15-programma-allenamenti.js)

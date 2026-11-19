@@ -9,12 +9,12 @@
 const PROG_REST=62,PROG_LOW=48;   // sotto 62 di media la squadra recupera; sotto 48 un giocatore fa Recupero invece del lavoro individuale
 const progOf=()=>SV.prog||(SV.prog={on:false,team:'auto'});
 function trainForecast(list,opt,single){
-  const it=trInt(),fis=facInjuryK()*(1-0.1*staffLv('fit'));
+  const it=trInt(),fis=staffInjuryK();
   let pts=0,cond=0,risk=0,n=0,atRisk=0;
   for(const p of list){
     if(p.inj&&opt.id!=='rec')continue;n++;
-    if(opt.id==='rec'){cond+=Math.min(100-p.cond,REST_GAIN+(single?8:0)+facRecovery()+4*staffLv('fit'));continue;}
-    pts+=trainExpect(p,opt,trainMul(p)*(single?1.5:1)*it.g);
+    if(opt.id==='rec'){cond+=Math.min(100-p.cond,REST_GAIN+(single?8:0)+facRecovery()+physRecovery());continue;}
+    pts+=trainExpect(p,opt,trainMul(p,single)*(single?1.5:1)*it.g);
     cond-=Math.round((single?TRAIN_COST1:TRAIN_COST)*it.c*(specBonus(p,opt.keys)>0?1.15:1)*trCostK());
     const r=(trainRisk(p)*it.r+(it.r>1?0.004:0))*fis;risk=1-(1-risk)*(1-r);if(trainRisk(p)>0)atRisk++;
   }
@@ -38,7 +38,7 @@ function progTeamPick(){
 // i lavori individuali: [giocatore, indirizzo]
 function progSinglePick(n){
   const out=[],used=new Set(),rec=TR_OPTS.find(c=>c.id==='rec');
-  const bestCat=p=>{let b=CATS[0],bs=-1;for(const c of CATS){const v=trainExpect(p,c,trainMul(p)*1.5);if(v>bs){bs=v;b=c;}}return [b,bs];};
+  const bestCat=p=>{let b=CATS[0],bs=-1;for(const c of CATS){const v=trainExpect(p,c,trainMul(p,true)*1.5);if(v>bs){bs=v;b=c;}}return [b,bs];};
   const add=(p,c)=>{if(out.length<n&&!used.has(p)&&!p.tr){used.add(p);out.push([p,c]);}};
   for(const p of SQ.filter(q=>q.pri))add(p,p.inj||p.cond<PROG_LOW?rec:bestCat(p)[0]);                      // le tue priorita'
   for(const p of SQ.filter(q=>q.inj>1).sort((a,b)=>b.inj-a.inj))add(p,rec);                                 // stop lunghi: il Recupero li accorcia

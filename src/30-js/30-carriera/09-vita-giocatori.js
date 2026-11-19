@@ -13,7 +13,7 @@ function alertAdd(k,txt,o){
   o=o||{};if(!SV.alerts)SV.alerts=[];
   SV.alerts.unshift({id:(SV.alN=(SV.alN|0)+1),s:SV.season,r:(SV.round|0)+1,k,txt,full:o.full||'',act:o.act||'',data:o.data||null,seen:o.seen?1:0,done:0});
   if(SV.alerts.length>60)SV.alerts.length=60;
-  news(txt);
+  if(!o.quiet)news(txt);
 }
 const retBase=x=>33+hashStr('rit|'+(x.full||x.name||x.n))%7;
 function retAnchor(x){if(x.ra===undefined)x.ra=Math.max(retBase(x),x.age+1+hashStr('ra|'+(x.full||x.name||x.n))%4);return x.ra;}   // chi a 45 anni gioca ancora non smette domani

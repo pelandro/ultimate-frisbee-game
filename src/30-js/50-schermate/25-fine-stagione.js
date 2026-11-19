@@ -10,7 +10,7 @@ function endSeasonHTML(o){
   if(nx.rank)pills+=pill(esc(o.rl||'Classifica'),ordTxt(nx.rank));
   if(nx.qual)pills+=pill('Qualificazione','EUCF dalla prossima stagione','ok');
   if(nx.prize!==undefined)pills+=pill('Premio','+'+nx.prize+' crediti');
-  if(SV.obj&&nx.prize!==undefined)pills+=pill('Sponsor',nx.objOk?'+'+SV.obj.reward+' crediti':'nessun bonus',nx.objOk?'ok':'ko');
+  if(SV.obj&&nx.prize!==undefined)pills+=pill('Sponsor',nx.objOk?'+'+(nx.objPay??SV.obj.reward)+' crediti':'nessun bonus',nx.objOk?'ok':'ko');
   if(Number.isFinite(SV.cash))pills+=pill('Saldo attuale',Math.round(SV.cash)+' crediti');
   if(hx&&hx.mvp)pills+=pill('MVP',esc(hx.mvp)+' ('+hx.mvpS+')');
   const aw=hx&&hx.aw&&hx.aw.length?`<div class="seas"><h3>Premi della stagione · ${esc(o.awTitle||SERIES_NAME[SV.sr])}</h3><ul class="awl">${hx.aw.map(awRow).join('')}</ul>${hx.best7&&hx.best7.length?`<p>Squadra ideale: ${hx.best7.map(q=>`${q.mine?'<b style="color:var(--gold)">':'<b>'}${esc(q.name)}</b> (${q.pos})`).join(', ')}</p>`:''}</div>`:'';
