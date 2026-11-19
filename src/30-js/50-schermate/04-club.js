@@ -8,7 +8,7 @@ function renderClub(){
   let h='';
   if(clTab==='man'||clTab==='str'||clTab==='stf'){
     // Gestione divisa in tre pagine (Società, Strutture, Staff): prima erano tutte insieme e la schermata era troppo piena. Le spiegazioni lunghe stanno dietro al tasto «i» di ciascuna voce
-    const inf=(k,txt)=>`<button type="button" class="inf${clInfo.has(k)?' on':''}" data-inf="${k}" aria-label="Spiegazione">i</button>${clInfo.has(k)?`<p class="infp">${txt}</p>`:''}`;
+    const inf=(k,txt)=>`<button type="button" class="inf${clInfo.has(k)?' on':''}" data-inf="${k}" aria-expanded="${clInfo.has(k)}" aria-label="${esc(k==='soc'?'Entrate e uscite della società':(k[0]==='f'&&FAC[k.slice(1)]?FAC[k.slice(1)][0]:k))}">i</button>${clInfo.has(k)?`<p class="infp">${txt}</p>`:''}`;
     const tick=(lv,max)=>`<span class="tk" aria-label="livello ${lv} su ${max}">${Array.from({length:max},(_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</span>`;
     const cSoc=`<div class="ccard"><h3>Società ${inf('soc',`<p><b>Entrate</b>. In casa incassi i biglietti: lo stadio ha <b>${stadCap()}</b> posti e i tifosi, la posta in gioco e la forma decidono quanti ne riempi. In trasferta niente biglietti e <b>${travelCost()}</b> di viaggio; in campo neutro (tornei, finali) i biglietti si dividono a metà. Lo sponsor paga a ogni partita e la lega premia ogni vittoria, di più nelle partite importanti.</p><p><b>Uscite</b>. Gli stipendi costano <b>${wageBill()}</b> a partita, la manutenzione delle strutture <b>${facUpkeep()}</b>.</p><p>La reputazione decide chi accetta di venire; morale e affiatamento spostano un poco la forma dei tuoi in partita.</p>`)}</h3><div class="dcash"><span>Crediti</span><b>${SV.cash}</b></div>${redNoteHTML()}${statBar('Tifosi',fansOf(),'#ff9a3a','%')}${statBar('Reputazione',SV.rep,'#ffd23f')}<div class="dbar"><span>Morale</span><span class="cbar"><i style="width:${Math.round(SV.mor)}%;background:#4fe58f"></i></span><b>${moodFace(teamMoodKey())}</b></div>${statBar('Affiatamento',SV.chem,'#5ac8ff')}</div>`;
     const cObj=sponsorCardHTML(),cLed=ledgerHTML();
@@ -99,22 +99,23 @@ function importSave(txt,destination=SV.slot||1,all=false,withExtras=true){
       const raw=localStorage.getItem(key),attempt=JSON.stringify(value);
       localStorage.setItem(key,attempt);written.push([key,raw,attempt]);
     };
-    if(!all&&destination!==(previous.slot||1)&&previous.team&&!archiveActiveCareer())
-      return 'Impossibile conservare la carriera aperta. Import annullato.';
     if(careerStorageVersion!==undefined&&localStorage.getItem(SAVE_KEY)!==careerStorageVersion)
       return 'La carriera è stata aggiornata in un’altra scheda. Ricarica il gioco prima di importare.';
-    if(all){
-      destination=backup.career.slot||1;
-      for(const [slot,save] of backup.slots){
-        if(!loadSave(save))throw new Error('Slot incompatibile');
-        if(+slot===destination)continue;
-        const key=slotKey(slot),old=localStorage.getItem(key);
-        if(old)write(key+'-bak',JSON.parse(old));
-        write(key,{...SV,slot:+slot});
-      }
+    if(all)destination=backup.career.slot||1;
+    const slots=[];
+    if(all)for(const [slot,save] of backup.slots){
+      if(!loadSave(save))throw new Error('Slot incompatibile');
+      if(+slot!==destination)slots.push([+slot,{...SV,slot:+slot}]);
     }
     if(!loadSave(backup.career))throw new Error('Carriera incompatibile');
     SV.slot=destination;
+    if(previous.team&&(previous.slot||1)!==destination&&!slots.some(([slot])=>slot===(previous.slot||1)))
+      write(slotKey(previous.slot||1),{...previous,squad,lineup});
+    for(const [slot,save] of slots){
+      const key=slotKey(slot),old=localStorage.getItem(key);
+      if(old)write(key+'-bak',JSON.parse(old));
+      write(key,save);
+    }
     if(withExtras)for(const [key,,value] of backup.extra)write(key,value);
     if(!persist())throw new Error('Scrittura carriera');
   }catch(e){

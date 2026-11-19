@@ -4,6 +4,7 @@
    prima della fascia della meta, con una didascalia. Un tocco lo salta. Segue l'interruttore «Stacchi laterali» (G.opt.cine).
    La fascia della meta viene allungata di quanto dura il replay (G.banner.t > 2,4 = replay in corso), cosi' il ritmo della partita non cambia altrove. */
 const RP={buf:[],on:null,pt:-1,n:0,clock:0,next:0};
+HOOKS.newMatch=()=>{RP.buf.length=0;RP.pt=-1;RP.on=null;};
 const RP_KEEP=3,RP_SPAN=1.6,RP_SPEED=0.75,RP_DUR=RP_SPAN/RP_SPEED;
 function rpRecord(step){
   if(!G.inMatch||G.drill||G.paused||G.auto||reduceMotion)return;
