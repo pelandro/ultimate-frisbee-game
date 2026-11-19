@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Quando segni, chi ha segnato esulta mentre compare «META!»: spike, petto contro petto con un compagno, balletto, tuffo di festa o disco lanciato al cielo con un grido nel fumetto, ogni volta diversa. Sulla meta che vince la partita i compagni lo portano in spalla. Gli avversari esultano come prima.
 - Festeggia i titoli del campionato e dell’EUCF con una coppa animata. Se ti qualifichi all’EUCF, concludilo prima di iniziare il prossimo campionato. L’EUCF ha incassi e premi propri, mentre lo sponsor paga la quota fissa durante il campionato.
 - Salti e tuffi riprendono la tribuna dell’impianto in cui giochi, dal campo comunale al grande stadio illuminato.
 - Nei primi piani di salto e tuffo ogni squadra mantiene la propria divisa, anche nelle scie dei giocatori.
