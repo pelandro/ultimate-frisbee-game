@@ -19,7 +19,7 @@ function syncWindowBackground(){
   for(const el of document.querySelectorAll('.screen,#cshell'))el.inert=!!top&&!el.contains(top);
   for(const el of windows)el.inert=!!top&&el!==top&&!el.contains(top);
 }
-const windowCloseIds={rpv:'rpX',qPick:'qpX',pause:'paGo',tut:'tuX',subs:'bSubGo',intro:'inGo',menu:'bGo'};
+const windowCloseIds={rpv:'rpX',qPick:'qpX',pause:'paGo',tut:'tuX',subs:'bSubGo',intro:'inGo',menu:'bGo',cupScene:'cupNext'};
 window.addEventListener('keydown',e=>{
   // La tastiera del campo può avere appena aperto la pausa con questo stesso Esc.
   if(e.defaultPrevented)return;
