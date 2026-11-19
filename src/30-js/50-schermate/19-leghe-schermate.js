@@ -50,12 +50,12 @@ const lnPrevCache={},lnPreview=n=>lnPrevCache[n]||(lnPrevCache[n]=Math.round(ros
 function renderTeamsLN(){
   const lk=teamLg,D=LN_DEF[lk];
   $('tMode').classList.add('hidden');$('tRelief').classList.add('hidden');$('tTeams').classList.remove('hidden');
-  if(!D.tiers.some(t=>t.id===teamTier))teamTier=D.tiers.find(t=>t.play!==false).id;
-  $('tSr').innerHTML=D.tiers.filter(t=>t.play!==false).map(t=>`<button type="button" data-k="${t.id}">${esc(t.name)}</button>`).join('');
+  if(!D.tiers.some(t=>t.id===teamTier))teamTier=D.tiers[0].id;
+  $('tSr').innerHTML=D.tiers.map(t=>`<button type="button" data-k="${t.id}">${esc(t.name)}</button>`).join('');
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamTier);
   const tr=D.tiers.find(t=>t.id===teamTier);
   $('tNote').textContent=D.txt+' ('+lnFormatTxt(tr)+')';
-  const cl=LN_CL[lk].filter(r=>r[1]===teamTier).map(r=>r[0]).sort((a,b)=>favFirst(a,b)||lnBasePower(b)-lnBasePower(a));
+  const cl=lnClubRows(lk).filter(r=>r[1]===teamTier).map(r=>r[0]).sort((a,b)=>favFirst(a,b)||lnBasePower(b)-lnBasePower(a));
   $('tTeams').innerHTML=cl.map((n,i)=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${favMark(n)}${esc(n)}<small class="tcity">${esc(D.cc)} · ${esc(tr.name)} · n° ${i+1}</small></span></span><b class="tp">${lnPreview(n)}</b></button>`).join('');
 }
 // descrizione breve di un livello: gironi e fasi finali
@@ -106,7 +106,9 @@ function lnFinView(){
   return h;
 }
 function lnTiersView(){
-  const L=SV.ln,D=LN_DEF[SV.lk];let h=`<p class="estat">${esc(D.cc)} · tutti i livelli ${infoB('lntiers')}</p>${infoX('lntiers',`<p>Ogni stagione salgono e scendono squadre tra un livello e il successivo (${D.mv.map((n,i)=>D.tiers[i].name+'-'+D.tiers[i+1].name+': '+n).join(', ')}). La cifra accanto al nome è la forza della rosa.</p>`)}`;
+  const L=SV.ln,D=lnSeasonDef(SV.lk,L.T);
+  const moves=D.mv.length?`Tra i livelli salgono e scendono squadre ogni stagione (${D.mv.map((n,i)=>D.tiers[i].name+'-'+D.tiers[i+1].name+': '+n).join(', ')}). `:'';
+  let h=`<p class="estat">${esc(D.cc)} · ${D.mv.length?'tutti i livelli':'club'} ${infoB('lntiers')}</p>${infoX('lntiers',`<p>${moves}La cifra accanto al nome è la forza della rosa.</p>`)}`;
   D.tiers.forEach((tr,ti)=>{
     h+=`<h3 class="eh">${esc(tr.name)}${tr.id===L.tier?' · il tuo livello':''}</h3>`;
     for(const c of L.T[tr.id]){
@@ -114,7 +116,8 @@ function lnTiersView(){
       h+=`<div style="overflow-x:auto"><table class="rt">${tr.comps>1?`<tr><th>Gruppo ${esc(c.id)}</th></tr>`:''}${rows}</table></div>`;
     }
   });
-  if(SV.lnAlb&&SV.lnAlb.length)h+=`<h3 class="eh">Albo d’oro · ${esc(D.cc)}</h3><ul class="elist">${SV.lnAlb.filter(a=>a.lk===SV.lk).slice(0,6).map(a=>`<li><span>${a.s}: ${esc(a.champ)}</span><span>${a.run?'finale con '+esc(a.run):''}</span></li>`).join('')}</ul>`;
+  const a=leagueHonours();
+  if(a.entries.length)h+=`<h3 class="eh">Albo d’oro · ${esc(a.name)}</h3>${albHTML(a.entries.slice(0,6))}`;
   return h;
 }
 function renderEventLN(){
@@ -133,7 +136,7 @@ function renderEventLN(){
     $('eBody').innerHTML=body+detail;
     return;
   }
-  body+=`<div class="seg" id="lnTabs">${[['grp','Girone'],['fin','Fase finale'],['tiers','Livelli']].map(([k,l])=>`<button type="button" class="sg${lnTabSel===k?' on':''}" data-lt="${k}">${l}</button>`).join('')}</div>`;
+  body+=`<div class="seg" id="lnTabs">${[['grp','Girone'],['fin','Fase finale'],['tiers',lnTiers().length>1?'Livelli':'Club']].map(([k,l])=>`<button type="button" class="sg${lnTabSel===k?' on':''}" data-lt="${k}">${l}</button>`).join('')}</div>`;
   body+=lnTabSel==='fin'?lnFinView():(lnTabSel==='tiers'?lnTiersView():lnPoolView());
   $('eBody').innerHTML=body;
 }
