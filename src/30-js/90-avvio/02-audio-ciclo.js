@@ -1,4 +1,4 @@
-/* ---- audio: due musiche sintetizzate (schermata iniziale e partita) e il pubblico che tifa (brusio, cori, applausi in lontananza, trombette). Nessun file: tutto generato con Web Audio ---- */
+/* ---- audio: tre musiche sintetizzate (schermata iniziale, partita e la canzoncina della festa del titolo) e il pubblico che tifa (brusio, cori, applausi in lontananza, trombette). Nessun file: tutto generato con Web Audio ---- */
 function buildAudio(c,dest){
   const mtof=m=>440*Math.pow(2,(m-69)/12),rr=(a,b)=>a+Math.random()*(b-a);
   const master=c.createGain();master.gain.value=0.9;
@@ -98,6 +98,59 @@ function buildAudio(c,dest){
     if(i%2===1)hat(out,t,0.008,false);
     const m=bar.mel[i];if(m){tone(out,'square',mtof(m),t,0.008,sd*1.8,0.022,1500);tone(echo,'square',mtof(m),t,0.008,sd*1.8,0.016,1300);}
   }
+  /* ---- la canzoncina della vittoria (festa del titolo, 50-schermate/32-alza-coppa.js) ----
+     Va al tempo del balletto: una croma = CUP_BEAT (0,24 s, 125 bpm). Rullo di tamburi mentre il capitano si carica; quando la coppa arriva
+     in alto (CUP_LIFT) il colpo pieno: cassa, piatto, accordo di ottoni, boato e la trombetta della curva; due note di attacco e poi il giro
+     di 8 battute in do maggiore, da capo finche' la festa resta aperta: cassa in quattro, basso a ottave, accordi in levare, melodia quadra con l'eco.
+     Ogni due battute (passo 14 di 16, quando nel balletto saltano tutti) la squadra grida «Ehi!» con il battimani. */
+  const FESTA_LEAD=0.08;   // margine per programmare le prime note
+  const FESTA=[
+    {root:36,chord:[60,64,67],mel:[72,0,76,79,0,79,81,79]},
+    {root:41,chord:[60,65,69],mel:[77,0,81,0,79,0,0,0]},
+    {root:43,chord:[59,62,67],mel:[74,0,79,0,79,77,76,74]},
+    {root:36,chord:[60,64,67],mel:[76,0,72,0,74,0,0,0]},
+    {root:45,chord:[60,64,69],mel:[81,0,84,0,83,81,79,0]},
+    {root:41,chord:[60,65,69],mel:[77,0,81,0,79,0,0,0]},
+    {root:43,chord:[59,62,67],mel:[79,79,81,79,77,76,74,71]},
+    {root:36,chord:[60,64,67],mel:[72,0,76,0,72,0,0,0]}];
+  const hey=(t,fem)=>{noise(crowdBus,t,0.06,'highpass',2500,0.7,0.07,0.002);voices(t,0.32,0.2,fem?rr(290,320):rr(175,200),0.88,fem?800:650,fem?2100:1850,7);clap(t+0.01,0.12);};   // «Ehi!»: voci piu' acute per le squadre femminili
+  const brass=(out,notes,t,dur,vol)=>{for(const m of notes){tone(out,'sawtooth',mtof(m),t,0.02,dur,vol,2400);tone(out,'square',mtof(m)*1.003,t,0.02,dur*0.8,vol*0.5,1800);}};
+  function festaIntro(out,t,lift,sd){
+    for(let u=0;u<lift-0.05;u+=0.04)snare(out,t+u,0.015+0.1*Math.pow(u/lift,1.6));   // rullo che cresce
+    sweep(out,t,lift,300,3600,1.1,0.08);kick(out,t,0.12);   // e un fruscio che sale
+    const h=t+lift;
+    kick(out,h,0.2);noise(out,h,1.8,'highpass',5200,0.6,0.14,0.003);   // la coppa in alto: cassa e piatto
+    brass(out,[60,64,67,72],h,1.0,0.03);tone(out,'triangle',mtof(36),h,0.01,1.0,0.16,600);tone(out,'square',mtof(84),h,0.01,0.4,0.05,2600);
+    tone(out,'square',mtof(67),h+sd,0.006,sd*0.45,0.05,2600);tone(out,'square',mtof(71),h+sd*1.5,0.006,sd*0.45,0.05,2600);   // le due note che portano al giro
+    cheer(h,0.8);applause(h+0.4,0.8);horn(h+0.25,'carica',0.9);
+  }
+  function festaStep(out,echo,i,t,sd,bar,s){
+    if(i%2===0)kick(out,t,0.15);
+    if(i===2||i===6)snare(out,t,0.06);
+    if(i%2===1)hat(out,t,i===7?0.035:0.025,i===7);
+    tone(out,'triangle',mtof(bar.root+(i%2?12:0)),t,0.005,sd*0.9,0.12,750);   // basso a ottave
+    if(i===1||i===5)for(const m of bar.chord)tone(out,'square',mtof(m),t,0.004,sd*0.5,0.016,2200);   // accordi in levare
+    if(i===0&&s%64===0)noise(out,t,1.3,'highpass',6000,0.6,0.1,0.003);   // piatto a inizio giro
+    const m=bar.mel[i];
+    if(m){tone(out,'square',mtof(m),t,0.006,sd*1.5,0.045,2800);tone(out,'triangle',mtof(m-12),t,0.006,sd*1.5,0.03,1500);tone(echo,'square',mtof(m),t,0.006,sd*1.5,0.025,2400);}
+    if(s%16===14)hey(t,!!(cup&&cup.fem));
+  }
+  function makeFesta(vol){
+    const out=c.createGain();out.gain.value=0;out.connect(musicBus);
+    const sd=CUP_BEAT,echo=c.createDelay(1.5),fb=c.createGain(),elp=c.createBiquadFilter();
+    echo.delayTime.value=sd*3;fb.gain.value=0.25;elp.type='lowpass';elp.frequency.value=2400;echo.connect(elp);elp.connect(fb);fb.connect(echo);elp.connect(out);
+    let next=null,step=0,t0=null;
+    return {
+      start(t){out.gain.cancelScheduledValues(t);out.gain.setValueAtTime(vol,t);t0=t+FESTA_LEAD;festaIntro(out,t0,CUP_LIFT,sd);next=t0+CUP_DANCE;step=0;},
+      stop(t){out.gain.cancelScheduledValues(t);out.gain.setValueAtTime(out.gain.value,t);out.gain.linearRampToValueAtTime(0,t+0.8);next=null;},
+      schedule(until,now){
+        if(next===null)return;
+        if(now&&next<now-0.02){const k=Math.ceil((now-next)/sd);next+=k*sd;step+=k;}   // dopo una pausa salta avanti, sempre a tempo con il balletto
+        while(next<until){festaStep(out,echo,step%8,next,sd,FESTA[Math.floor(step/8)%FESTA.length],step);step++;next+=sd;}
+      },
+      t0:()=>t0
+    };
+  }
   function makeScene(def,stepFn,vol){
     const out=c.createGain();out.gain.value=0;out.connect(musicBus);
     const sd=60/def.bpm/2,echo=c.createDelay(1.5),fb=c.createGain(),elp=c.createBiquadFilter();
@@ -192,7 +245,7 @@ function buildAudio(c,dest){
     while(crowd.on&&crowd.nextClap<until){chant(crowd.nextClap);crowd.nextClap+=rr(10,18);}
     while(crowd.on&&crowd.nextAmb<until){const t=crowd.nextAmb;if(Math.random()<0.6)applause(t,rr(0.12,0.22));else horn(t,'blast',rr(0.25,0.4));crowd.nextAmb+=rr(18,35);}   // ogni tanto, piano: qualcuno applaude o suona la trombetta in curva
   }
-  return {sfx:SFX,master,musicBus,crowdBus,scenes:{home:makeScene(HOME,homeStep,0.6),match:makeScene(MATCH,matchStep,1.5)},crowdStart,crowdStop,tickCrowd,cheer,groan,clapTrain,chant,applause,horn};
+  return {sfx:SFX,master,musicBus,crowdBus,scenes:{home:makeScene(HOME,homeStep,0.6),match:makeScene(MATCH,matchStep,1.5),festa:makeFesta(1.3)},crowdStart,crowdStop,tickCrowd,cheer,groan,clapTrain,chant,applause,horn};
 }
 const AUD=(function(){
   let A=null,eng=null,on=true,cur='none',lastSfx=-9;
@@ -214,7 +267,21 @@ const AUD=(function(){
     const t=A.currentTime;
     if(eng.scenes[cur])eng.scenes[cur].stop(t);
     cur=name;eng.scenes[name].start(t);
-    if(name==='match')eng.crowdStart(t);else eng.crowdStop(t);
+    if(name==='match'||name==='festa')eng.crowdStart(t);else eng.crowdStop(t);
+  }
+  // la festa del titolo: la canzoncina riparte sempre dall'inizio, anche se era gia' aperta (true = partita)
+  function festa(){
+    if(!A||!eng)return false;
+    const t=A.currentTime;
+    if(eng.scenes[cur])eng.scenes[cur].stop(t);
+    cur='festa';eng.scenes.festa.start(t);eng.crowdStart(t);
+    return true;
+  }
+  // secondi dall'inizio della canzoncina, come li sente chi gioca: il balletto li segue per restare a tempo (null senza audio)
+  function festaT(){
+    if(!A||!eng||!on||A.state!=='running'||cur!=='festa')return null;
+    const t0=eng.scenes.festa.t0();
+    return t0===null?null:A.currentTime-(A.outputLatency||A.baseLatency||0)-t0;
   }
   function sfx(type,a,b){
     if(!A||!eng||!on||A.state!=='running')return;
@@ -238,7 +305,7 @@ const AUD=(function(){
   function hold(){try{if(A&&A.state==='running')A.suspend().catch(()=>{});}catch(e){}}
   function back(){try{if(A&&on&&!document.hidden&&A.state!=='running'&&A.state!=='closed')A.resume().catch(()=>{});}catch(e){}}
   function close(){try{if(A&&A.state!=='closed')A.close().catch(()=>{});}catch(e){}A=null;eng=null;}
-  return {init,sync,sfx,setOn,hold,back,close,isOn:()=>on};
+  return {init,sync,sfx,setOn,hold,back,close,festa,festaT,isOn:()=>on};
 })();
 window.addEventListener('pointerdown',()=>AUD.init(),{capture:true});
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('button'))AUD.sfx('ui');},true);
@@ -283,7 +350,7 @@ function syncCall(){
 let simRemainder=0,menuDrawElapsed=0;
 function frame(now){
   const dt=Math.min(0.05,Math.max(0,(now-last)/1000));last=now;
-  AUD.sync(G.inMatch&&G.mode!=='over'?'match':'home');
+  AUD.sync(cup?'festa':(G.inMatch&&G.mode!=='over'?'match':'home'));   // cup: la festa del titolo e' aperta (32-alza-coppa.js)
   if(!portrait()||rotOn){   // in verticale il gioco si ferma, tranne quando si disegna ruotato da solo
     G.tick+=dt;
     padPoll();vinPushDir();

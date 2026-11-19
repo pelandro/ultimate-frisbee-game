@@ -10,7 +10,8 @@
    - EUCF ('eu'): due compagni portano in spalla il capitano con la coppa d'argento; dietro, salti a onda;
    - Nationals ('us'): il capitano alza il trofeo con il disco d'oro; dietro, petto contro petto a coppie; fuochi d'artificio.
    Prima della coppa la squadra guarda il capitano e applaude; quando la coppa arriva in alto partono coriandoli, stelle filanti e flash.
-   Il balletto dura due battute (16 passi da CUP_BEAT) e finisce con il salto di tutti e il fumetto «EHI!».
+   La canzoncina della vittoria (scena audio 'festa', 90-avvio/02-audio-ciclo.js) va allo stesso tempo: una croma = CUP_BEAT, il colpo pieno a CUP_LIFT,
+   il giro da CUP_DANCE; il balletto dura due battute (16 passi) e finisce con il salto di tutti e il grido «Ehi!» (fumetto EHI!).
    Tutto dipende dal tempo e da ihash (niente Math.random): con «riduci animazioni» resta un solo fotogramma, a coppa alzata. */
 const CUP_H=144,CUP_W0=200,CUP_W1=320;   // altezza fissa del disegno; la larghezza segue la finestra
 const CUP_BEAT=0.24,CUP_LIFT=1.05,CUP_DANCE=CUP_LIFT+2*CUP_BEAT;   // un passo del balletto (in campo 0,22 s), coppa in alto, inizio del balletto
@@ -107,9 +108,11 @@ function openCupScene(title,after){
   $('cupTeam').textContent=team;
   $('cupScene').classList.remove('hidden');
   cupFit();
+  cup.aud=AUD.festa();   // la canzoncina della vittoria (90-avvio/02-audio-ciclo.js): parte adesso
   const loop=now=>{
     if(!cup)return;
-    cupDraw(cup.reduced?CUP_STILL:(now-cup.t0)/1000);
+    const ta=cup.aud?AUD.festaT():null;   // con l'audio il tempo e' quello della musica, cosi' il balletto resta a tempo
+    cupDraw(cup.reduced?CUP_STILL:Math.max(0,ta!==null?ta:(now-cup.t0)/1000));
     if(!cup.reduced)cupFrame=requestAnimationFrame(loop);
   };
   loop(cup.t0);
