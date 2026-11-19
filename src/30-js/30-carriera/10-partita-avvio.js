@@ -11,7 +11,7 @@ function startMatch(resume){
   G.duo=duoMap();   // intesa tra le coppie: vale solo in carriera
   G.vn=careerVenue(m);   // chi gioca in casa, impianto e pubblico (30-stadi.js)
   {const w=careerWind(m);setWind(w[0],w[1]);setWx(careerWeather(m));}   // il meteo annunciato sul cruscotto
-  fixLines();G.lines={o:matchLine('lineO'),d:matchLine('lineD'),auto:!!SV.autoSub};G.injK=1-0.12*facLv('fis');   // linee d'attacco e di difesa, cambi intelligenti, fisioterapia
+  fixLines();G.lines={o:matchLine('lineO'),d:matchLine('lineD'),auto:!!SV.autoSub};G.injK=facInjuryK();   // linee d'attacco e di difesa, cambi intelligenti, fisioterapia
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
   if(first)openSchemes(true);   // la prima volta si aprono gli schemi, con il rimando a tutorial e guida

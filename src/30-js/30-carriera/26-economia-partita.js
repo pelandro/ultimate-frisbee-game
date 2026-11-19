@@ -72,7 +72,20 @@ function phaseImp(){
 }
 const oppPowOf=n=>{const t=teamPower(n);if(t!=null)return t;if(typeof euPowOf==='function'){const e=euPowOf(n);if(e)return e;}return TEAM[n]?TEAM[n].power-PW_LV:squadPower();};
 // ---------- spettatori ----------
-const stadCap=()=>Math.round(450*Math.sqrt(ECO.K())*(1+0.55*facLv('stad')));   // le Tribune allargano lo stadio
+// Nella stessa serie i campi partono piccoli. Solo chi porta più tifosi beneficia dei posti in più.
+const STAD_SEATS=[450,490,530,570,610,650];
+const stadCap=(lv=facLv('stad'))=>Math.round(STAD_SEATS[lv]*Math.sqrt(ECO.K()));
+const stadRentYear=(lv=facLv('stad'))=>Math.round(0.52*facTotalCost(lv));
+function regularGames(){
+  if(isUS())return US_CAL.length;
+  const index=SV.mem[SV.sr].indexOf(SV.team);
+  return SV.sched.filter(day=>day.some(pair=>pair.includes(index))).length;
+}
+function stadiumRent(game,total,lv=facLv('stad')){
+  if(!total||game>=total||!lv)return 0;
+  const rent=stadRentYear(lv);
+  return Math.floor(rent*(game+1)/total)-Math.floor(rent*game/total);
+}
 const tixPrice=()=>0.07*Math.sqrt(ECO.K());                                   // crediti per spettatore
 // interesse per la partita: derby, posta in gioco, avversaria di nome e forma recente (niente meteo)
 function interestOf(m){
@@ -107,14 +120,17 @@ function matchMoney(win,m){
   const v=venueOf(),a=attendance(m,v),pr=tixPrice();
   const gate=v==='H'?Math.round(a.att*pr):(v==='N'?Math.round(a.dem*pr*ECO.SHARE_N):0);
   const spon=SV.sp?SV.sp.fix:0,w=win?winBonus(m,v):{v:0,tag:''};
+  const regular=SV.event==='camp'&&(isUS()?SV.us.ph==='reg':isLN()?SV.ln.ph==='grp':!SV.po?.on);
+  const rent=regular&&facLv('stad')?stadiumRent(SV.sgp|0,regularGames()):0;
   const trv=v==='H'?0:travelCost(),wage=wageBill(),up=facUpkeep(),stf=staffWage();
-  return {v,opp:m.name,win:!!win,att:v==='H'?a.att:0,cap:v==='H'?a.cap:0,dem:a.dem,full:v==='H'&&a.full,gate,spon,wb:w.v,wbTag:w.tag,trv,wage,up,stf,net:gate+spon+w.v-trv-wage-up-stf};
+  return {v,opp:m.name,win:!!win,att:v==='H'?a.att:0,cap:v==='H'?a.cap:0,dem:a.dem,full:v==='H'&&a.full,gate,rent,spon,wb:w.v,wbTag:w.tag,trv,wage,up,stf,net:gate+rent+spon+w.v-trv-wage-up-stf};
 }
 const ecoSg=v=>(v>=0?'+':'−')+Math.abs(Math.round(v));
 function moneyRows(r){   // [etichetta, valore con segno] solo per le voci che ci sono
   const x=[];
   if(r.v==='H')x.push([`Biglietti (${r.att} spettatori su ${r.cap}${r.full?', tutto esaurito':''})`,r.gate]);
   else if(r.v==='N')x.push(['Quota biglietti del torneo',r.gate]);
+  if(r.rent)x.push(['Affitti dell’impianto',r.rent]);
   x.push([`Sponsor${SV.sp&&SV.sp.name?' · '+SV.sp.name:''}`,r.spon]);
   if(r.win)x.push([`Premio vittoria${r.wbTag?' ('+r.wbTag+')':''}`,r.wb]);
   if(r.trv)x.push(['Trasferta',-r.trv]);
@@ -129,7 +145,7 @@ function moneyHTML(r){
 // registro delle ultime partite (Club > Società)
 function ledgerAdd(r){
   if(!SV.fin)SV.fin=[];
-  SV.fin.unshift({s:SV.season,r:(SV.played|0),o:r.opp,v:r.v,w:r.win?1:0,n:r.net,c:SV.cash,gt:r.gate,sp:r.spon,wb:r.wb,tr:r.trv,ex:r.wage+r.up+r.stf});
+  SV.fin.unshift({s:SV.season,r:(SV.played|0),o:r.opp,v:r.v,w:r.win?1:0,n:r.net,c:SV.cash,gt:r.gate,rt:r.rent,sp:r.spon,wb:r.wb,tr:r.trv,ex:r.wage+r.up+r.stf});
   if(SV.fin.length>30)SV.fin.length=30;
 }
 // ---------- sponsor ----------

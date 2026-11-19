@@ -19,7 +19,7 @@ function shop(){
   }
 }
 function invest(){
-  for(const k of ['camp','viv','oss','fis','sede','stad'])if(SV.cash>facCost(k)+120&&facLv(k)<FAC_MAX){buyFac(k);break;}
+  for(const k of ['camp','viv','stad'])if(SV.cash>facCost(k)+120&&facLv(k)<FAC_MAX){buyFac(k);break;}
   for(const k of ['coach','men','fit','ana']){if(staffLv(k)<1||!stPerson(k)){const cs=staffCands(k);let b=-1;for(let i=0;i<cs.length;i++)if(SV.cash>STAFF_HIRE[cs[i].lv]+150)b=i;if(b>=0){staffHire(k,b);break;}}else if(SV.cash>staffCost(k)+150&&buyStaff(k))break;}
 }
 const play=()=>{autoTrain();autoLines();fixLines();mine=true;P.xpOn=true;simCareerMatch();mine=false;P.xpOn=false;hide();evt();};

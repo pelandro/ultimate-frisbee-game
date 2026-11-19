@@ -45,7 +45,7 @@ function adviceList(){
   if(af)L.push([`Hai ${SV.cash} crediti: ${FAC[af][0]} al livello ${facLv(af)+1} costa ${facCost(af)}. ${FAC[af][1]}.`,4]);
   if(SV.mkSeen!==SV.mkN)L.push(['Il mercato si è rinnovato: guarda le giovani promesse e chi è alla tua portata.',3]);
   if(hurt.length)L.push([`${esc(pname(hurt[0]))} è infortunat${oa(hurt[0])}: ${hurt[0].inj} ${hurt[0].inj>1?'partite':'partita'} di stop.`,3]);
-  const base=['Tocca un compagno per chiamargli il taglio: lancia dove sta correndo, non dove si trova.','Il timeout (uno a partita) azzera lo stall e fa recuperare energia.','Con più Sparo il lanciatore arriva più lontano: lo vedi dall’arco rosso mentre mira.','Controlla il meteo prima di partire: con vento forte i lanci lunghi sono più difficili.','Un giocatore che resta fuori troppo a lungo diventa scontento: ruota le linee.','Le Tribune allargano lo stadio e tengono i tifosi: incassi di più quando lo stadio si riempie.','Il programma automatico degli Allenamenti fa le sedute al posto tuo.','Nel derby si guadagna di più, ma si perde di più.'];
+  const base=['Tocca un compagno per chiamargli il taglio: lancia dove sta correndo, non dove si trova.','Il timeout (uno a partita) azzera lo stall e fa recuperare energia.','Con più Sparo il lanciatore arriva più lontano: lo vedi dall’arco rosso mentre mira.','Controlla il meteo prima di partire: con vento forte i lanci lunghi sono più difficili.','Un giocatore che resta fuori troppo a lungo diventa scontento: ruota le linee.','Se esaurisci spesso i biglietti, amplia le Tribune.','Il programma automatico degli Allenamenti fa le sedute al posto tuo.','Nel derby si guadagna di più, ma si perde di più.'];
   if(SV.obj)L.push([`Obiettivo dello sponsor: ${SV.obj.txt} (bonus ${SV.obj.reward} crediti a fine stagione).`,2]);
   base.forEach(t=>L.push([t,0]));
   return L;
@@ -67,7 +67,7 @@ const TIPS={
   home:'Benvenuto! Da qui parte ogni giornata: «Inizia partita» (tasto giallo) la giochi tu, «Simula» la gioca il computer. «Questa settimana» ti dice cosa sistemare prima di partire. La colonna a lato porta alle altre sezioni.',
   roster:'Qui ci sono i tuoi giocatori. Su ogni carta: Overall (quanto è forte), barra verde (condizione) e faccina (umore). Tocca una carta per aprire la scheda. A e D dicono chi gioca in attacco e in difesa: si cambiano con ATT e DIF, o con «Linee consigliate».',
   market:'Qui compri giocatori; l’elenco cambia ogni 5 giornate. Il potenziale dei giovani è un intervallo: «Osserva» (qualche credito) lo restringe. Ogni acquisto ha uno stipendio a ogni partita.',
-  club:'Qui gestisci il club: strutture, staff, conti e bacheca. Ogni livello di una struttura dà un vantaggio, ma costa di più e ha una manutenzione a ogni partita. Il tasto «i» spiega ogni voce.',
+  club:'Gestisci qui conti, strutture e staff. Dai un’occhiata alla cassa prima di investire.',
   train:'Quando l’allenamento è disponibile, puoi fare una seduta di squadra e fino a tre lavori individuali. Sopra ogni tasto vedi i punti che guadagni e la condizione che costa: alterna lavoro e Recupero. Il Programma automatico può farlo al posto tuo.',
   event:'Qui trovi la classifica della tua serie e delle altre e i migliori per mete, assist e difese. A fine stagione vedi premi e riepilogo, e da qui parte la stagione nuova.'
 };

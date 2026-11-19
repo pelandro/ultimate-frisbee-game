@@ -238,15 +238,16 @@ function newSeason(){
   summerChanges(was);evolveLeague();const aim=aiMarket();   // mercato tra le squadre del computer (31-mercato-ia.js), prima del tuo
   SV.chem=clamp(50+(SV.chem-50)*0.6,0,100);SV.mor=clamp(60+(SV.mor-60)*0.5,0,100);   // estate: l'intesa si allenta un poco, l'umore torna verso la norma
   beginSeason();buildMarket();pickRival();aiMarketNews(aim);   // la notizia dopo la scelta della rivale: la segna nei colpi che la riguardano
-  seasonStartDyn();   // premi di mantenimento e usura delle strutture, nuova sfida
+  seasonStartDyn();   // premi di mantenimento e nuova sfida
   wageWarn();         // 16-bilancio.js: se con questa rosa i conti vanno sotto zero, la dirigenza avvisa subito
   retireCheck('start');starsRetire();   // chi comincia a pensare al ritiro lo dice subito
   persist();
 }
 function recordResult(win,su,so){
   SV.susp=null;   // la partita e' finita: niente piu' da riprendere
-  let msg='';SV.played=(SV.played||0)+1;if(SV.event==='camp')SV.sgp=(SV.sgp|0)+1;
-  const incPre=matchMoney(win);   // i conti di questa partita si calcolano con i tifosi e la forma di prima del risultato (26-economia-partita.js)
+  let msg='';SV.played=(SV.played||0)+1;
+  const incPre=matchMoney(win);   // prima di avanzare il calendario: casa e trasferta, tifosi e affitti sono quelli di questa partita
+  if(SV.event==='camp')SV.sgp=(SV.sgp|0)+1;
   const xm=!!(isUS()&&SV.event==='camp'&&usCrossPending());   // interregionale USA: una partita come le altre (conti, allenamento, eventi), ma non conta per la classifica della Conference e non fa girare il mercato
   if(isUS()&&SV.event==='camp'){
     fansBump(win,win?1:0);msg=usRecord(win,su,so);   // campionato USA: stagione regolare, Play-in, Nationals (35-usa/03-stagione-usa.js)
@@ -286,10 +287,10 @@ function recordResult(win,su,so){
   SV.cash+=incPre.net;SV.lastInc=incPre.net;SV.lastWage=incPre.wage;SV.lastUp=incPre.up+incPre.stf;
   econAfterMatch(incPre);   // registro dei conti, avvisi del rosso, premio a chi ha giocato una partita straordinaria
   // morale: sale con le vittorie e scende con le sconfitte, ma tende a tornare verso 60; con i conti in rosso l'umore cala sempre di piu' (redPen)
-  SV.mor=clamp(SV.mor+(win?6:-5)+(60+2*facLv('sede')-SV.mor)*0.1-redPen()+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+0.2*facLv('sede')+(hasTr('men','pap')?0.3:0),0,100);
+  SV.mor=clamp(SV.mor+(win?6:-5)+(60-SV.mor)*0.1-redPen()+(hasTr('coach','mot')?1:0),0,100);SV.chem=clamp(SV.chem+0.5+(hasTr('men','pap')?0.3:0),0,100);
   // la fatica segue i punti giocati (fatShare): chi sta in una sola linea gioca circa meta' delle mete e perde quanto recupera in settimana,
   // chi sta in attacco e in difesa le gioca tutte e si stanca il doppio. Prima contava solo «ha giocato o no», e la profondita' della rosa non serviva a nulla
-  for(const p of SQ){const sh=fatShare(p,su+so);p.cond=clamp((p.cond===undefined?100:p.cond)-(sh>0?2*sh*Math.max(5,12-p.s.res*0.06):0)+10+2*facLv('fis')+2*staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}
+  for(const p of SQ){const sh=fatShare(p,su+so);p.cond=clamp((p.cond===undefined?100:p.cond)-(sh>0?2*sh*Math.max(5,12-p.s.res*0.06):0)+10+facRecovery()+2*staffLv('fit')+(hasTr('fit','rec')?2:0),0,100);}
   lifeAfterMatch();dynAfterMatch();
   if(SV.event==='camp'&&!SV.done&&!(SV.po&&SV.po.on)&&SV.round%5===0&&!xm)buildMarket();   // il mercato si rinnova ogni 5 giornate
   achCheck();   // traguardi (23-traguardi.js)

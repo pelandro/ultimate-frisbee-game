@@ -9,11 +9,11 @@
 const PROG_REST=62,PROG_LOW=48;   // sotto 62 di media la squadra recupera; sotto 48 un giocatore fa Recupero invece del lavoro individuale
 const progOf=()=>SV.prog||(SV.prog={on:false,team:'auto'});
 function trainForecast(list,opt,single){
-  const it=trInt(),fis=(1-0.12*facLv('fis'))*(1-0.1*staffLv('fit'));
+  const it=trInt(),fis=facInjuryK()*(1-0.1*staffLv('fit'));
   let pts=0,cond=0,risk=0,n=0,atRisk=0;
   for(const p of list){
     if(p.inj&&opt.id!=='rec')continue;n++;
-    if(opt.id==='rec'){cond+=Math.min(100-p.cond,REST_GAIN+(single?8:0)+2*facLv('fis')+4*staffLv('fit'));continue;}
+    if(opt.id==='rec'){cond+=Math.min(100-p.cond,REST_GAIN+(single?8:0)+facRecovery()+4*staffLv('fit'));continue;}
     pts+=trainExpect(p,opt,trainMul(p)*(single?1.5:1)*it.g);
     cond-=Math.round((single?TRAIN_COST1:TRAIN_COST)*it.c*(specBonus(p,opt.keys)>0?1.15:1)*trCostK());
     const r=(trainRisk(p)*it.r+(it.r>1?0.004:0))*fis;risk=1-(1-risk)*(1-r);if(trainRisk(p)>0)atRisk++;
