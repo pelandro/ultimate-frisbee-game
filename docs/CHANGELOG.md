@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Menu iniziale: dietro i pulsanti lo stadio è vuoto, senza squadre in campo né nomi nelle mete. All’apertura del gioco un giocatore entra di corsa, prende in tuffo il disco sotto l’insegna e resta fermo in quella posa.
 - Potenziare una struttura dal livello 0 al 5 costa 430 crediti.
 - Chi salta una partita per un impegno viene indicato come indisponibile.
 - In carriera, la parola che indicava la valuta è stata sostituita dalla moneta pixelata in schermate, avvisi e guida.
