@@ -7,6 +7,8 @@ Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattrib
 - Nuovi formati dei campionati: ogni avversaria del girone si incontra lo stesso numero di volte. Belgio su 3 livelli (N1, N2, N3) a girone unico con playoff e spareggi come in Italia; Francia con la N1 a girone unico e tabellone a 6, la N2 in due gironi geografici con semifinali e finale per la promozione; Germania a girone unico in tutte le leghe (playoff in 1. Liga; in 2. Liga salgono 2 e scendono 3, in 3. Liga salgono 3); Regno Unito a girone unico con il tabellone dai quarti; Serie B Women con andata e ritorno. Le carriere in corso finiscono la stagione con il formato vecchio.
 - Playoff scudetto (Italia, Belgio, Germania, Francia): chi perde la semifinale gioca la finale per il 3° posto.
 - EUCF con 16 club veri: le prime 3 dopo i playoff di Italia, Belgio, Francia, Germania e Regno Unito, più la quarta classificata più forte di questi campionati.
+- Potenziare una struttura dal livello 0 al 5 costa 430 crediti.
+- Chi salta una partita per un impegno viene indicato come indisponibile.
 - In carriera, la parola che indicava la valuta è stata sostituita dalla moneta pixelata in schermate, avvisi e guida.
 - Scelta del campionato: ogni scheda ha i colori sbiaditi della bandiera del paese e mostra solo il nome, le serie (o le Conference) e il numero di squadre, scritti più grandi.
 - La rosa festeggia più unita sul podio, con riserve, salti e bandiere. Ogni struttura costa 600 crediti dal livello 0 al 5. Anche le firme dello staff costano di più, soprattutto ai livelli alti.
