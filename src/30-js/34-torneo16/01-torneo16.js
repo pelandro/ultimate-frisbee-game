@@ -5,6 +5,7 @@
    ko[0..3] = prequarti, quarti, semifinali, finale; ogni partita e' [a,b,punti a,punti b,vincitrice].
    Il contesto ctx collega il torneo al campionato che lo usa: ctx.rate(t) = forza per le fasce e i tabelloni, ctx.grp(t) = gruppo da tenere in gironi diversi
    (Conference, Paese), ctx.play(a,b) = simula la partita e aggiorna il ranking, ritorna [a,b,pa,pb,vincitrice]. */
+const T16_MAX_GAMES=7;
 function t16Perms(n){if(n===1)return [[0]];const out=[];for(const p of t16Perms(n-1))for(let i=0;i<=p.length;i++)out.push(p.slice(0,i).concat(n-1,p.slice(i)));return out;}
 const T16_PERMS=t16Perms(4);
 function t16Begin(ctx,q,me){

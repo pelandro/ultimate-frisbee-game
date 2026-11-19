@@ -112,7 +112,6 @@ function summerChanges(was){   // dopo l'estate: chi e' cresciuto, chi accusa l'
     talentGrow(p);
     const a=was.get(p.full),b=ovr(p);if(a===undefined)continue;
     if(p.boom){p.boom=0;alertAdd('up',`${pname(p)} (${p.age} anni) è esplos${oa(p)} durante l’estate: Overall da ${a} a ${b}.`,{full:p.full});}
-    else if(b-a>=2)alertAdd('up',`${pname(p)} è cresciut${oa(p)} durante l’estate: Overall da ${a} a ${b}.`,{full:p.full});
     else if(a-b>=2)alertAdd('dec',`${pname(p)} (${p.age} anni) accusa l’età: Overall da ${a} a ${b}.`,{full:p.full});
   }
 }

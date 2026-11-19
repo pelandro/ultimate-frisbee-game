@@ -5,15 +5,43 @@ function roman(n){
   return s;
 }
 function achHTML(){
-  const g=achPct(),st=ACH.map(achState).sort((a,b)=>(a.done-b.done)||(b.pct-a.pct));   // prima quelli in corso, i più vicini in alto; gli ottenuti in fondo
+  const g=achPct(),st=achList().map(achState).sort((a,b)=>(a.done-b.done)||(b.pct-a.pct));   // prima quelli in corso, i più vicini in alto; gli ottenuti in fondo
   return `<div class="ccard achtop"><h3>Traguardi</h3><div class="achbig"><b>${g.pct}%</b><span>${g.n} su ${g.tot} completati</span></div><div class="achbar"><i style="width:${g.pct}%"></i></div></div>
   <div class="achg">${st.map(a=>`<div class="ach${a.done?' on':''}"><h4>${a.done?'<em>✓</em> ':''}${esc(a.name)}</h4><p>${esc(a.txt)}</p><div class="achbar"><i style="width:${a.pct}%"></i></div><span>${a.done?`Raggiunto · stagione ${a.s}`:`${a.v} / ${a.goal} · premio ${a.rw}`}</span></div>`).join('')}</div>`;
 }
-// albo d'oro della Serie A: un'edizione per riga, in numeri romani; la tua squadra è in oro
-function albHTML(){
-  const a=SV.alb||[];
-  if(!a.length)return '<p class="note">Qui comparirà l’albo d’oro della Serie A: a fine stagione, dopo la finale dei playoff, si aggiunge il nome della campione, con il numero dell’edizione in numeri romani.</p>';
-  return `<ul class="albl">${a.map(e=>`<li class="${e.champ===SV.team?'me':''}"><i>${roman(e.s)}</i>${crest(e.champ,18)}<b>${esc(e.champ)}</b><span class="sc">${e.ft?e.ft[0]+'–'+e.ft[1]+' su ':'finale su '}${esc(e.run)}</span></li>`).join('')}</ul>`;
+function leagueHonours(){
+  if(isUS())return {name:'Nationals USA',entries:SV.usAlb||[]};
+  if(isLN())return {name:SERIES_NAME[nationalKey(SV.lk)],entries:(SV.lnAlb||[]).filter(e=>e.lk===SV.lk)};
+  return {name:'Serie A',entries:SV.alb||[]};
+}
+// Una riga per edizione. I record delle altre leghe restano nel salvataggio quando cambi paese.
+function albHTML(entries=leagueHonours().entries){
+  if(!entries.length)return '<p class="note">La prima squadra campione comparirà qui a fine stagione.</p>';
+  return `<ul class="albl">${entries.map(e=>{
+    const score=e.ft||e.sc;
+    const final=e.run?(score?score.join('–')+' su ':'Finale contro ')+e.run:'';
+    return `<li class="${e.champ===SV.team?'me':''}"><i>${roman(e.s)}</i>${crest(e.champ,18)}<b>${esc(e.champ)}</b><span class="sc">${esc(final)}</span></li>`;
+  }).join('')}</ul>`;
+}
+function honoursTrophies(){
+  let titles;
+  if(isUS())titles=[['U','Nationals USA']];
+  else if(isLN())titles=[[nationalKey(SV.lk),lnWomenNow()?'Scudetti Women':SV.lk==='UK'?'Nationals britannici':'Titoli '+LN_DEF[SV.lk].de]];
+  else titles=[['A','Scudetti<br>Serie A'],['B','Titoli<br>Serie B'],['C','Titoli<br>Serie C']];
+  if(leagueHasPromotion())titles.push(['promo','Promozioni']);
+  if(leagueHasEurope())titles.push(['eu','Titoli<br>europei']);
+  return titles.concat([['aw','Premi<br>individuali'],['b7','Presenze in<br>squadra ideale']]);
+}
+function honoursSeasonNames(x){
+  const lk=LN_TIER[x.sr]?.lk;
+  const league=x.sr==='U'?(x.us?.conf?usConfName(x.us.conf):'Men’s Club USA')
+    :(SERIES_NAME[x.sr]||x.sr);
+  const keys=x.sr==='U'?['U']:lk?[lk]:['A','B','C'];
+  const champions=keys.filter(k=>x.champs?.[k]).map(k=>{
+    const champ=x.champs[k],name=k==='U'?'Nationals USA':lk?SERIES_NAME[nationalKey(lk)]:SERIES_NAME[k];
+    return `${esc(name)}: <b${champ===SV.team?' style="color:var(--gold)"':''}>${esc(champ)}</b>`;
+  }).join(' · ');
+  return {league,champions};
 }
 // Hall of Fame: una carta dorata per ogni grande ritirato (le voci di prima del cambio hanno solo i numeri: niente ruolo né volto)
 function hofCard(x){

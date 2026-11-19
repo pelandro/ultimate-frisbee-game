@@ -22,21 +22,22 @@ function lnSnake(clubs,k){   // k gironi con le teste di serie a serpentina seco
 // composizione iniziale (dai dati) e gironi di ogni competizione
 function lnBuildT(lk){
   const T={};
+  const clubs=lnClubRows(lk);
   for(const tr of LN_DEF[lk].tiers){
-    const rows=LN_CL[lk].filter(r=>r[1]===tr.id);
+    const rows=clubs.filter(r=>r[1]===tr.id);
     if(tr.comps>1){const gs=[];for(const r of rows)if(!gs.includes(r[2]))gs.push(r[2]);T[tr.id]=gs.map(g=>({id:g,clubs:rows.filter(r=>r[2]===g).map(r=>r[0])}));}
     else T[tr.id]=[{id:'',clubs:rows.map(r=>r[0]),g:Object.fromEntries(rows.map(r=>[r[0],r[2]]))}];
   }
   return T;
 }
 function lnPools(T,lk,real){   // gironi: i veri dove si conoscono (prima stagione), altrimenti a serpentina
-  for(const tr of LN_DEF[lk].tiers)for(const c of T[tr.id]){
+  for(const tr of lnSeasonDef(lk,T).tiers)for(const c of T[tr.id]){
     if(tr.pools<=1){c.pools=[c.clubs.slice().sort((a,b)=>lnP(b)-lnP(a)||(a<b?-1:1))];continue;}
     const A=c.g&&real?c.clubs.filter(n=>c.g[n]==='A'):[],B=c.g&&real?c.clubs.filter(n=>c.g[n]==='B'):[];
     c.pools=A.length&&B.length&&A.length+B.length===c.clubs.length?[A,B]:lnSnake(c.clubs,tr.pools);
   }
 }
-const lnTierDef=()=>LN_DEF[SV.lk].tiers.find(t=>t.id===SV.ln.tier);
+const lnTierDef=()=>lnTiers().find(t=>t.id===SV.ln.tier);
 const lnComp=()=>SV.ln.T[SV.ln.tier][SV.ln.ci];
 function lnLocate(club){
   const L=SV.ln;
@@ -51,6 +52,25 @@ function lnPrepSeason(){
   lnPools(L.T,SV.lk,first);
   const at=lnLocate(SV.team);L.tier=at.tier;L.ci=at.ci;L.pi=at.pi;
   SV.sr=lnKey(SV.lk,L.tier);SV.mem={[SV.sr]:L.T[L.tier][L.ci].pools[L.pi].slice()};
+}
+function lnUpgradeFormat(){
+  const L=SV.ln,lk=SV.lk,old=LN_OLD[lk],T=L?.nT;
+  if(!old||!T?.[old.extra.id])return;
+  if(lk==='UK'){
+    T.N1[0].clubs.push(...T.N2.flatMap(c=>c.clubs));
+    L.nTier='N1';
+  }else if(L.nTier==='N3'){
+    // Il club allenato resta giocabile insieme ai club già ammessi in N1 o N2.
+    const group=T.N2.reduce((a,b)=>a.clubs.length<=b.clubs.length?a:b);
+    group.clubs.push(SV.team);
+    L.nTier='N2';
+  }
+  delete T[old.extra.id];
+  const active=new Set(Object.values(T).flatMap(cs=>cs.flatMap(c=>c.clubs)));
+  for(const club of Object.keys(SV.rost))if(!active.has(club))delete SV.rost[club];
+  SV.next.sr=lnKey(lk,L.nTier);
+  SV.next.mem={[SV.next.sr]:[]};
+  news(lk==='UK'?'I Nationals ora riuniscono tutti gli 11 club britannici.':'Il campionato francese riparte con due livelli, N1 e N2.');
 }
 function lnLeagueBegin(){   // chiamata da leagueBegin() a ogni inizio stagione
   const L=SV.ln,comp=lnComp(),g=lnCompMin(lnTierDef(),comp);SV.lg={};
@@ -253,7 +273,7 @@ function lnTierOrder(tr,orders){   // un solo elenco per livello: le prime di og
 }
 // nuova composizione: le ultime n di un livello scambiano con le prime n del successivo
 function lnMoves(lk,tierOrders){
-  const tiers=LN_DEF[lk].tiers,mv=LN_DEF[lk].mv,nm={};for(const t of tiers)nm[t.id]=tierOrders[t.id].slice();
+  const {tiers,mv}=lnSeasonDef(lk,tierOrders),nm={};for(const t of tiers)nm[t.id]=tierOrders[t.id].slice();
   for(let i=0;i<tiers.length-1;i++){
     const n=Math.min(mv[i],Math.floor(tierOrders[tiers[i].id].length/2),Math.floor(tierOrders[tiers[i+1].id].length/2)),hi=tiers[i].id,lo=tiers[i+1].id;
     const down=tierOrders[hi].slice(-n),up=tierOrders[lo].slice(0,n);
@@ -264,7 +284,7 @@ function lnMoves(lk,tierOrders){
 // le competizioni separate (N2 francese, 2. Liga...) tengono i loro club; i nuovi arrivati vanno dove c'e' posto
 function lnRegroup(lk,T,nm){
   const out={};
-  for(const tr of LN_DEF[lk].tiers){
+  for(const tr of lnSeasonDef(lk,T).tiers){
     const old=T[tr.id],set=new Set(nm[tr.id]);
     if(tr.comps<=1){out[tr.id]=[{id:old[0].id,clubs:nm[tr.id].slice()}];continue;}
     const comps=old.map(c=>({id:c.id,clubs:c.clubs.filter(n=>set.has(n))})),placed=new Set([].concat(...comps.map(c=>c.clubs))),size=comps.map(c=>c.clubs.length);
@@ -298,14 +318,14 @@ function lnEndSeason(){
   SV.lnAlb=[{s:SV.season,champ,run,lk,tier:top}].concat(SV.lnAlb||[]).slice(0,60);
   let short;
   if(tit)short=`Siete campioni ${LN_DEF[lk].de}!`;
-  else if(ni<ci)short=`Promossi in ${LN_DEF[lk].tiers[ni].name}!`;
-  else if(ni>ci)short=`Retrocessi in ${LN_DEF[lk].tiers[ni].name}.`;
+  else if(ni<ci)short=`Promossi in ${tiers[ni].name}!`;
+  else if(ni>ci)short=`Retrocessi in ${tiers[ni].name}.`;
   else short=`Restate in ${tr.name}: ${rank}° su ${n}.`;
   // premio, obiettivo, reputazione e tifosi
   const prize=Math.round(LN_PRIZE(Math.max(1,n-rank+1)*3)*SR_K[SV.sr]),ok=objMet(rank,{promoted:ni<ci,tit});SV.cash+=prize;
   const objPay=spPayout(ok,tit&&L.tier===top);SV.cash+=objPay;
   if(SV.obj){if(ok||objPay){SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}
-  if(ni<ci){SV.rep=clamp(SV.rep+6,0,100);const nk=lnKey(lk,LN_DEF[lk].tiers[ni].id),pp=promoPrize(nk);SV.cash+=pp;news('Premio della lega per la promozione: +'+pp+' crediti per rinforzarvi in '+LN_DEF[lk].tiers[ni].name+'.');}else if(ni>ci)SV.rep=clamp(SV.rep-8,0,100);   // premio della lega: 30-carriera/05-economia.js
+  if(ni<ci){SV.rep=clamp(SV.rep+6,0,100);const nk=lnKey(lk,nTier),pp=promoPrize(nk);SV.cash+=pp;news('Premio della lega per la promozione: +'+pp+' crediti per rinforzarvi in '+tiers[ni].name+'.');}else if(ni>ci)SV.rep=clamp(SV.rep-8,0,100);   // premio della lega: 30-carriera/05-economia.js
   if(tit)SV.rep=clamp(SV.rep+6,0,100);
   fansSeason(rank,nTier,L.tier);if(tit)SV.fans=clamp(fansOf()+6,0,100);
   const eu=LN_DEF[lk].eu,euQ=L.tier===top?mine.slice(0,eu):[],qual=L.tier===top&&rank<=eu;
