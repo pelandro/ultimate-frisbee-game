@@ -91,8 +91,6 @@ html[data-ew="xs"] #title .ttl2{font-size:34px}
 html[data-ew="xs"] .tteams{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 /* «Salvataggi» e' piu' lungo di «Carriere»: il tasto accanto a Carriera non deve uscire dalla riga */
 #title .crow .hbtn{min-width:0}#title .crow .hbtn>span{min-width:0}
-#title #tSlots strong,#title #tSlots small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
-html[data-ew="xs"] #title #tSlots svg{display:none}
 html[data-ew="xs"] #team .seg{flex-wrap:wrap}html[data-ew="xs"] #team .seg .sg{flex:1 1 auto;min-width:0}
 
 /* tutorial in partita (14-primi-passi.js): «prova» con il bordo azzurro, riuscita in verde, suggerimento e «riprova» in un riquadro a parte */

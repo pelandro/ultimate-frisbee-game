@@ -89,7 +89,11 @@ function renderTeamList(){for(const b of $('tSr').children)b.classList.toggle('o
 // ---- menu iniziale e partita veloce ----
 const QM={on:false,bak:null,a:null,b:null,s:1};   // s: la squadra che inizia in attacco (0 = tua/blu, 1 = avversaria/rossa)
 const hasCareer=()=>!!(SV&&SV.team);
-function renderTitle(){$('tCareerT').textContent=hasCareer()?'Continua carriera':'Carriera';$('tSchoolS').textContent=SCH.tut?'Lezioni sul campo, pratica e sfide':((SCH.lv|0)?`Riprendi la lezione ${(SCH.lv|0)+1} di ${TUT_STEPS.length}`:'Lezioni sul campo e allenamento libero');$('tCareerS').textContent=hasCareer()?`Continua: ${SV.team}, ${SERIES_NAME[SV.sr]}${SV.susp?' · partita sospesa':''}`:'Scegli la squadra e inizia';const n=[1,2,3].filter(k=>slotInfo(k)).length;$('tSlotsS').textContent=n?`${n} di 3 slot · nuova`:'3 slot liberi';}
+function renderTitle(){   // Carriera apre i tre slot (Salvataggi): continui quella che vuoi o ne inizi una nuova
+  const n=[1,2,3].filter(k=>slotInfo(k)).length;
+  $('tCareerT').textContent=hasCareer()?'Continua carriera':'Carriera';
+  $('tCareerS').textContent=hasCareer()?`Continua: ${SV.team}, ${SERIES_NAME[SV.sr]}${SV.susp?' · partita sospesa':''}`:(n?`${n} di 3 slot usati`:'Scegli lo slot e la squadra');
+}
 const qPowCache={};
 function qRoster(n,min){if(US_TEAM[n]||LN_BY[n])return foreignRoster(n,'qm|'+n);return REAL[n]?realRoster(REAL[n],'qm|'+n,realOpt(n,min)):makeRoster(TEAM[n].power,'qm|'+n);}
 function qPower(n){if(qPowCache[n]==null)qPowCache[n]=rosterPower(qRoster(n,7));return qPowCache[n];}

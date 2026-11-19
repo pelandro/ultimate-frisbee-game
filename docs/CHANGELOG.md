@@ -4,6 +4,8 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Il gioco si chiama Ultimate Pixel (titolo, nome della pagina e dell’icona, cartelloni a bordo campo).
+- Menu iniziale: «Carriera» apre per prima cosa i tre slot (prima c’era il tasto «Salvataggi» a parte); la modalità Allenamento non c’è più. Dietro il menu si vede il campo grande, con lo stadio pieno.
 - Nuova musica della partita, più adatta al sottofondo: arcade morbido, più lenta (112 battiti), con suoni filtrati, batteria leggera e la melodia solo a tratti.
 - Pubblico più vivo in partita: applausi leggeri in lontananza e trombette da stadio. Si sentono dopo le prese in salto o in tuffo e i blocchi (a volte con la trombetta), alle tue mete (con la fanfara), nei match point, e ogni tanto piano dalla curva.
 - Schermata iniziale più pulita: Guida, Guida passo passo, Audio e Impostazioni stanno in un solo riquadro che si apre con «Altro», in alto a destra.

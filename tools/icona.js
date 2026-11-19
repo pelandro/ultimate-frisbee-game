@@ -33,7 +33,7 @@ function png(side){
 }
 // file per la pagina web: icone e manifest (nome, schermo intero, orizzontale: su Android l'app aggiunta alla Home si apre gia' girata)
 function webFiles(){
-  const man={name:'Ultimate Frisbee',short_name:'Ultimate',start_url:'./',scope:'./',display:'fullscreen',orientation:'landscape',background_color:'#1d2b53',theme_color:'#1d2b53',
+  const man={name:'Ultimate Pixel',short_name:'Ultimate Pixel',start_url:'./',scope:'./',display:'fullscreen',orientation:'landscape',background_color:'#1d2b53',theme_color:'#1d2b53',
     icons:[{src:'icona-192.png',sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:'icona-512.png',sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
   return {'icona-192.png':png(192),'icona-512.png':png(512),'apple-touch-icon.png':png(180),'manifest.webmanifest':Buffer.from(JSON.stringify(man,null,1))};
 }

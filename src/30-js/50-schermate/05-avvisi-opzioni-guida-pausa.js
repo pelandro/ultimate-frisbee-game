@@ -155,7 +155,7 @@ HOOKS.injury=list=>{
 $('hSim').addEventListener('click',simCareerMatch);
 $('hPlay').addEventListener('click',()=>{if(suspOk())resumeMatch();else if(nextMatch())startMatch();else if(SV.event==='eu'&&!SV.done){SV.event='camp';persist();renderHome();}else{SV.event='camp';showScreen('event');}});
 $('hRoster').addEventListener('click',()=>showScreen('roster'));
-$('tCareer').addEventListener('click',()=>showScreen(hasCareer()?'home':'league'));
+$('tCareer').addEventListener('click',()=>showScreen('slots'));   // prima i tre slot (Salvataggi): da li' si continua o si inizia
 $('tQuick').addEventListener('click',()=>showScreen('quick'));
 $('tSet').addEventListener('click',()=>{setFrom='title';showScreen('settings');setSView('game');});
 $('sBack').addEventListener('click',()=>{const to=setFrom;setFrom='title';showScreen(to);});   // le schede non hanno sottolivelli: «Indietro» torna sempre da dove si e' venuti

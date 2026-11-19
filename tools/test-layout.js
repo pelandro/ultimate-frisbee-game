@@ -109,14 +109,13 @@ const DET=()=>{
     try{
       await look('menu iniziale');
       await titleMenu(page,'#tHelp');await look('Guida');await page.click('#gdX');
-      await page.click('#tSchool');await look('Allenamento e lezioni');await page.click('#scBack');
       await titleMenu(page,'#tSet');for(const [t,n] of [['#sTabGame','Impostazioni · Partita'],['#sTabCtl','Impostazioni · Comandi'],['#sTabScr','Impostazioni · Schermo e audio'],['#sGoDiag','Impostazioni · Avanzate']]){await page.click(t);await look(n);}await page.click('#sBack');
       await page.click('#tQuick');await look('partita veloce');await page.click('#qA');
       await look('catalogo squadre');await page.click('#qpX');await page.click('#qBack');
       await page.click('#tTourn');await look('configurazione torneo');await page.click('#tnBack');
       await page.click('#tUT');await page.click('#umCpu');if(await page.locator('#uPack').isVisible()){await page.click('#uPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');}
       await page.click('#uEquip');await look('Ultimate Team · Equipaggiamento');await page.click('#eqBack');await page.click('#uBack');await page.click('#umBack');
-      await page.click('#tCareer');await look('scelta del campionato');
+      await page.click('#tCareer');await look('Carriera · slot');await page.click('#csBox [data-cnew] >> nth=0');await look('scelta del campionato');
       await page.click('#lgList [data-div="m"]');await look('scelta del campionato maschile');
       await page.click('#lgList [data-lg="IT"]');await look('scelta della squadra');
       await page.click('.tteam >> nth=0');await look('anteprima della rosa');

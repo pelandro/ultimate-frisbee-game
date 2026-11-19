@@ -58,7 +58,8 @@ html[data-ew="xs"] .todo h3,html[data-ew="xs"] .ccard h3{font-size:11px}
 .pabr{display:grid;grid-template-columns:3em 1fr 3em;text-align:center;font-size:15px;color:#c2cbe6;padding:2px 0;border-top:1px solid #29366a}
 .pabr span:first-child{color:#8db5ff}.pabr span:last-child{color:#ff9a9a}
 /* MENU INIZIALE: Carriera e Salvataggi sulle stesse due colonne dei pulsanti sotto (prima le righe avevano larghezze diverse e la griglia sembrava storta) */
-#title .crow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+#title .crow{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}   /* solo Carriera: i Salvataggi stanno dentro (08-slot.js) */
+#title .hgrid .hbtn:last-child:nth-child(odd){grid-column:1/-1}
 #title .crow .cslot{width:auto;max-width:none}
 .pah{color:var(--hd)}
 /* Overall della fascia piu' bassa: bronzo invece del grigio, che sembrava un pulsante disattivato */
