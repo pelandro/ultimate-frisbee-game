@@ -130,7 +130,7 @@ const PB_STALL=3,PB_CENTER=6,PB_PREP_STALL=6;   // PB_CENTER: oltre questi metri
 const PB_FREE=3.5,PB_FREE_D=2.7;   // distanza minima di un difensore dal ricevitore previsto perche' sia «libero»: 3,5 m con Visione bassa, 0,8 m con Visione alta (da 80)
 const pbStall=pb=>PLAYBOOK[pb.id].stall||PB_STALL;   // gli schemi con piu' tagli di fila (1 in 3-4) aspettano un po' di piu'
 const pbWait=h=>{const pb=G.pb&&G.pb[h.t];if(!pb||!pb.active||!pb.follow[h.id])return false;
-  if(pb.prep){const c=pb.rp.H1;return !!c&&G.stallT<PB_PREP_STALL&&hyp(c.x-pb.cspot.x,c.y-pb.cspot.y)>2.5;}   // aspetta che l'handler centrale sia al suo posto
+  if(pb.prep){const c=pb.rp.H1;return !!c&&pb.follow[c.id]&&G.stallT<PB_PREP_STALL&&hyp(c.x-pb.cspot.x,c.y-pb.cspot.y)>2.5;}   // aspetta che l'handler centrale sia al suo posto (se non segue lo schema non ci va: non lo si aspetta)
   return G.stallT<pbStall(pb)&&(pb.stage==='set'||!pb.ready);};
 function pbAllowed(th){   // a chi puo' lanciare chi segue lo schema
   const pb=G.pb&&G.pb[th.t];if(!pb||!pb.active||!pb.follow[th.id])return null;

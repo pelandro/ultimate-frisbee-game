@@ -66,7 +66,7 @@ function euOpponent(){   // l'avversaria del turno, per nextMatch()
   euEnsure();const c=E.cur;if(!c)return null;
   const pw=euPowOf(c.opp)+euPlus();   // ogni coppa vinta alza il livello dei club europei
   if(SV.rost&&SV.rost[c.opp])return {name:c.opp,roster:SV.rost[c.opp],label:c.label};
-  return LN_BY[c.opp]?{name:c.opp,roster:lnRoster(c.opp,SV.seed+'|eu|'+SV.season,{p:pw}),label:c.label}:{name:c.opp,power:pw,label:c.label};   // i club veri dei nuovi campionati hanno i loro giocatori
+  return LN_BY[c.opp]?{name:c.opp,roster:abroadDrop(lnRoster(c.opp,SV.seed+'|eu|'+SV.season,{p:pw})),label:c.label}:{name:c.opp,power:pw,label:c.label};   // i club veri dei nuovi campionati hanno i loro giocatori
 }
 // una tua partita europea (giocata o simulata): ritorna il messaggio
 function euRecord(win,su,so){

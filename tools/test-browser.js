@@ -616,30 +616,47 @@ catch(e){
     await page.click('#uBack');await page.click('#umBack');await vis('#title');
     await page.evaluate(()=>{localStorage.removeItem('ultimate-ut-online');window.testSaves.removeItem('ultimate-ut-real');});await page.reload();await page.waitForTimeout(500);
   });
-  await step('Ultimate Team: Superpoteri con una squadra sua, eroi dai pacchetti e assegnati ai titolari',async()=>{
-    const real0=await page.evaluate(()=>window.testSaves.getItem('ultimate-ut-real'));
+  await step('Ultimate Team: Superpoteri con la squadra di Sfide online, solo eroi dai pacchetti, assegnati ai titolari',async()=>{
+    const st=()=>page.evaluate(()=>{const r=JSON.parse(window.testSaves.getItem('ultimate-ut-real')||'null'),h=JSON.parse(window.testSaves.getItem('ultimate-ut-eroi')||'null');
+      return {r:r?{n:r.col.length,hk:r.col.filter(c=>c.hk).length,sel:r.sel.length,c:r.coins|0}:null,h:h?{col:!!h.col,hc:Object.keys(h.hc||{}).length,ha:Object.keys(h.ha||{}),pk:(h.packs||[]).length}:null};});
     await page.click('#tUT');await vis('#utMode');await page.click('#umHero');await vis('#utReal');
     if((await page.locator('#urH').textContent()).trim()!=='Superpoteri')throw new Error('la schermata deve chiamarsi Superpoteri');
-    if(await page.locator('#urTeam').isVisible()||await page.locator('#urHero').isVisible())throw new Error('i Superpoteri devono partire senza giocatori e senza eroi');
-    await page.click('#urPack');await vis('#utPack');
-    await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await page.waitForTimeout(300);   // giocatori, poi il pacchetto eroi
-    await page.click('#pkGo');await page.waitForTimeout(1800);
-    if(await page.locator('#pkBody .hcard').count()!==3)throw new Error('il pacchetto eroi iniziale ha 3 carte eroe');
+    if(await page.locator('#urTeam').isVisible()||await page.locator('#urHero').isVisible())throw new Error('senza la squadra di Real player non ci sono giocatori da mostrare');
+    if(!/Sfide online/.test(await page.locator('#urPlayS').textContent()))throw new Error('senza squadra deve dire di completarla in Sfide online');
+    await page.click('#urPack');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(1800);
+    if(await page.locator('#pkBody .hcard').count()!==3)throw new Error('il primo pacchetto eroi ha 3 carte eroe');
     await page.click('#pkGo');await vis('#utReal');
-    const h=await page.evaluate(()=>{const o=JSON.parse(window.testSaves.getItem('ultimate-ut-eroi')||'null');return o?{n:o.col.length,hc:o.hc,hk:o.col.filter(c=>c.hk).map(c=>c.hk)}:null;});
-    if(!h||h.n!==10||Object.keys(h.hc).length!==3||h.hk.length!==3||new Set(h.hk).size!==3)throw new Error('attesi 10 giocatori e 3 eroi diversi in campo: '+JSON.stringify(h));
+    let s=await st();if(s.r||!s.h||s.h.hc!==3||s.h.col)throw new Error('nei Superpoteri arrivano solo eroi, nessun giocatore: '+JSON.stringify(s));
+    // la squadra si fa in Real player: tornando nei Superpoteri c'e' lei, con i tre eroi in campo
+    await page.click('#urBack');await vis('#utMode');await page.click('#umReal');await vis('#utReal');
+    await page.click('#urPack');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await vis('#utReal');
+    await page.click('#urShop');await vis('#utShop');if(await page.locator('#shList [data-k="eroi"]').count())throw new Error('il pacchetto eroi sta solo nei Superpoteri');
+    await page.click('#shBack');await page.click('#urBack');await vis('#utMode');await page.click('#umHero');await vis('#utReal');
+    s=await st();if(!s.r||s.r.n!==10||s.r.hk||s.h.ha.length!==3||new Set(s.h.ha).size!==3)throw new Error('attesi i 10 giocatori di Real player (senza eroi nel suo salvataggio) e 3 eroi diversi in campo: '+JSON.stringify(s));
+    if(!(await page.locator('#urTeam').isVisible())||!/10 giocatori/.test(await page.locator('#urTeamS').textContent()))throw new Error('nei Superpoteri si vede la squadra di Real player');
     await page.click('#urHero');await vis('#utHero');
     if(await page.locator('#uhList .qhe').count()!==9||await page.locator('#uhList .qhe:disabled').count()!==6)throw new Error('gli eroi sono 9, sei ancora da trovare');
     await page.click('#uhSt .uhp.has >> nth=0');if(await page.locator('#uhSt .uhp.has').count()!==2)throw new Error('toccando un titolare con l\'eroe glielo tolgo');
     await page.click('#uhAuto');if(await page.locator('#uhSt .uhp.has').count()!==3)throw new Error('«Assegna da solo» rimette tre eroi');
-    await page.click('#uhBack');await vis('#utReal');await page.click('#urShop');await vis('#utShop');
-    if(!(await page.locator('#shList [data-k="eroi"]').count()))throw new Error('nel Negozio dei Superpoteri c\'e\' il pacchetto eroi');
+    await page.click('#uhSt .uhp.has >> nth=0');await page.click('#uhBack');await vis('#utReal');
+    await page.click('#urTeam');await vis('#utTeam');
+    if(await page.locator('#tmMode [data-m="up"]').isVisible()||await page.locator('#tmMode [data-m="del"]').isVisible())throw new Error('nei Superpoteri la squadra ha solo «Titolari»: potenzia e scarta si fa in Real player');
+    await page.click('#tmBack');await vis('#utReal');
+    // portafoglio separato: i gettoni dei Superpoteri comprano eroi e non toccano quelli di Real player
+    await page.click('#urBack');await vis('#utMode');await page.click('#umReal');await vis('#utReal');await page.click('#urBack');await vis('#utMode');   // si esce dai Superpoteri: al rientro si rilegge il salvataggio
+    const rc0=await page.evaluate(()=>{const h=JSON.parse(window.testSaves.getItem('ultimate-ut-eroi'));h.coins=200;window.testSaves.setItem('ultimate-ut-eroi',JSON.stringify(h));return JSON.parse(window.testSaves.getItem('ultimate-ut-real')).coins|0;});
+    await page.click('#umHero');await vis('#utReal');await page.click('#urShop');await vis('#utShop');
+    if(await page.locator('#shList [data-k]').count()!==1||!(await page.locator('#shList [data-k="eroi"]').count()))throw new Error('nel Negozio dei Superpoteri c\'e\' solo il pacchetto eroi');
+    await page.click('#shList [data-k="eroi"]');
+    const w=await page.evaluate(()=>[JSON.parse(window.testSaves.getItem('ultimate-ut-eroi')).coins,JSON.parse(window.testSaves.getItem('ultimate-ut-real')).coins|0]);
+    if(w[0]!==50||w[1]!==rc0)throw new Error('il pacchetto eroi si paga con i gettoni dei Superpoteri, non con quelli di Real player: '+w.join(' e ')+', prima '+rc0);
     await page.click('#shBack');await page.click('#urBack');await vis('#utMode');
-    if(await page.evaluate(()=>window.testSaves.getItem('ultimate-ut-real'))!==real0)throw new Error('i Superpoteri hanno toccato la squadra di Real player');
-    await page.click('#umCpu');await vis('#ut');
-    await page.click('#uShop');await vis('#utShop');if(await page.locator('#shList [data-k="eroi"]').count())throw new Error('il pacchetto eroi sta solo nei Superpoteri');
-    await page.click('#shBack');await page.click('#uBack');await page.click('#umBack');await vis('#title');
-    await page.evaluate(()=>{window.testSaves.removeItem('ultimate-ut-eroi');localStorage.removeItem('ultimate-ut-eroi-online');});await page.reload();await page.waitForTimeout(500);
+    // passando da Real player e tornando, gli eroi restano dati agli stessi titolari (due, dopo averne tolto uno)
+    await page.click('#umReal');await vis('#utReal');s=await st();if(s.r.hk||s.r.n!==10)throw new Error('Real player non deve avere eroi: '+JSON.stringify(s));
+    await page.click('#urBack');await vis('#utMode');await page.click('#umHero');await vis('#utReal');await page.click('#urHero');await vis('#utHero');
+    if(await page.locator('#uhSt .uhp.has').count()!==2)throw new Error('gli eroi assegnati devono restare dove li hai messi');
+    await page.click('#uhBack');await page.click('#urBack');await page.click('#umBack');await vis('#title');
+    await page.evaluate(()=>{for(const k of ['ultimate-ut-eroi','ultimate-ut-real'])window.testSaves.removeItem(k);for(const k of ['ultimate-ut-eroi-online','ultimate-ut-online'])localStorage.removeItem(k);});await page.reload();await page.waitForTimeout(500);
   });
   await step('Ultimate Team: potenziamenti specializzati',async()=>{
     await page.evaluate(()=>{const o=JSON.parse(window.testSaves.getItem('ultimate-ut')||'null');if(o){o.coins=900;window.testSaves.setItem('ultimate-ut',JSON.stringify(o));}});

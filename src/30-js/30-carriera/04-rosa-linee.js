@@ -12,7 +12,7 @@ function genPlayer(level,age,seedStr,potB){
   const role=rng()<0.45?'H':'C',d=role==='H'?0.5:-0.5,pb0=potB===undefined?level+R(5,24):potB,pb=pb0>90?90+(pb0-90)*0.45:pb0;
   const tg=x=>clamp(Math.round(pb+x+R(-4,4)),45,99),tl=tg(4*d),tf=tg(-4*d),tv=tg(0),st={};
   KEYS.forEach(k=>{const g=(k==='lan'||k==='buc'||k==='spa')?'L':(k==='vis'?'V':'F'),off=g==='L'?9*d:(g==='V'?3*d:-7*d);st[k]=clamp(Math.round(level+off+R(-5,5)),25,capVal(full,k,g==='L'?tl:(g==='V'?tv:tf)));});
-  return {n:nm,label:nm+' '+sur,full,sur,r:role,age,tl,tf,tv,s:st,gen:true,f:FEM_N.has(nm)||lnWomenNow(),trait:traitFor(full,st,role),dev:devOf(full),sk:0,cond:100,car:null};
+  return {n:nm,label:nm+' '+sur,full,sur,r:role,age,tl,tf,tv,s:st,gen:true,f:lnWomenNow(),trait:traitFor(full,st,role),dev:devOf(full),sk:0,cond:100,car:null};
 }
 // la rosa come dati (cio' che si salva): una scheda per giocatore
 const squadData=()=>SQ.map(p=>({n:p.name,label:p.label,full:p.full,sur:p.sur||'',r:p.role,age:p.age,tl:p.tl,tf:p.tf,tv:p.tv,s:Object.assign({},p.b||p.s),gen:p.gen,f:!!p.f,trait:p.trait,dev:p.dev,sk:p.sk,cond:Math.round(p.cond),inj:p.inj|0,tr:!!p.tr,car:p.car||null,star:p.star||undefined,nat:p.nat||undefined,pos:p.pos||undefined,ae:p.ae||undefined,aw:p.aw&&p.aw.length?p.aw:undefined,ra:p.ra,ret:p.ret||undefined,retHold:p.retHold||undefined,injC:p.injC||undefined,injBig:p.injBig||undefined,idle:p.idle||undefined,mood:p.mood||undefined,prom:p.prom||undefined,rw:p.rw||undefined,spec:p.spec||undefined,goal:p.goal||undefined,sad:p.sad||undefined,ex:p.ext||undefined,nk:p.nick||undefined,lm:p.lm||undefined,ti:p.ti||undefined,tk:p.tk||undefined,pri:p.pri||undefined,hi:p.hist&&p.hist.length?p.hist:undefined}));
@@ -52,6 +52,16 @@ function matchLine(k){   // la linea di oggi: al posto di chi e' infortunato ent
   }
   return out;
 }
+// salvataggi di prima: i giocatori inventati con un nome femminile nei campionati maschili (il vecchio elenco dei nomi li mescolava) prendono un nome
+// maschile, sempre lo stesso per lo stesso giocatore (anche nel mercato e nelle rose delle altre squadre); full resta com'era: e' la chiave di statistiche e confronti
+function menNames(d){
+  if(!d||lnWomenNow())return;
+  const fix=o=>{if(!o||(!o.gen&&o.sur))return;   // anche i giocatori senza cognome delle rose inventate (makeRoster)
+    const fn=String(o.label||o.n||'').split(' ')[0];if(!o.f&&!FEM_N.has(fn))return;o.f=false;if(!FEM_N.has(fn))return;   // nella rosa salvata n e' il nome in campo (il cognome): il nome sta in label
+    const nm=NAME_POOL[hashStr('m|'+(o.full||o.label||o.n))%NAME_POOL.length];if(o.label)o.label=nm+o.label.slice(fn.length);if(o.n===fn)o.n=nm;};
+  (d.squad||[]).forEach(fix);(d.market||[]).forEach(m=>fix(m&&m.o));
+  if(d.rost)for(const n in d.rost)(d.rost[n]||[]).forEach(fix);
+}
 function careerInit(){   // campi nuovi della carriera (anche per i salvataggi piu' vecchi)
   if(SV.cash===undefined)SV.cash=Math.max(Math.round(70*SR_K[SV.sr]),wageBill()*4);   // in cassa almeno quattro partite di stipendi: le rose lunghe di USA ed Europa altrimenti partivano in rosso
   if(SV.rep===undefined)SV.rep=SV.sr==='U'?usRepStart():(isLN()?lnRepStart():(SV.sr==='A'?60:(SV.sr==='B'?40:20)));
@@ -71,7 +81,8 @@ function careerInit(){   // campi nuovi della carriera (anche per i salvataggi p
   if(!SV.obj&&SV.tab)setObjective();
   if(!SV.sp&&SV.obj)spDefault();   // salvataggi di prima: un contratto equilibrato gia' firmato; dalla stagione dopo si sceglie
   if(!SV.red)SV.red={n:0,w:0};if(!SV.fin)SV.fin=[];
-  if(!SV.market||SV.mkStars!==2){buildMarket();SV.mkStars=2;}
+  if(!SV.fa)SV.fa=[];if(!SV.abroad)SV.abroad=[];   // svincolati veri e chi e' arrivato dall'estero (33-mercato-veri.js)
+  if(!SV.market||SV.mkStars!==3){buildMarket();SV.mkStars=3;}   // 3: mercato di giocatori veri
   leagueAnchors();
   for(const p of SQ)retAnchor(p);
   coachInit();staffInit();
