@@ -8,7 +8,7 @@
    Inventati restano solo i ragazzi del tuo vivaio e del provino e i giovani che ogni anno entrano nelle squadre del computer per chi si ritira:
    col tempo anche loro, stando nelle rose, possono arrivare nel mercato. L'Overall si sceglie come prima, attorno ai livelli di potRef. */
 const MK_YOUNG=21;          // fino a questa eta' un giocatore di un club e' una «Giovane promessa»
-const MK_KEEP=3;            // i migliori di ogni club che non si vendono
+const MK_KEEP=3,MK_KEEP_RIV=7;   // i migliori di ogni club che non si vendono; le rivali dirette (il tuo girone) non ti cedono i titolari
 const MK_FA_MAX=40,MK_FA_AGE=34,MK_FA_YRS=2;   // svincolati: quanti ne restano liberi, fino a che eta', per quante estati
 const MK_PRICE={club:1.2,est:1.15,fa:1};       // prezzo rispetto al valore (priceOf): cartellino di un club, trasferimento dall'estero, svincolato
 // un giocatore lasciato libero da un club: entra tra gli svincolati (i piu' forti, se sono troppi)
@@ -29,10 +29,10 @@ const mkMine=()=>new Set(SQ.map(p=>p.full));
 const mkClubLv=n=>US_TEAM[n]?US_TEAM[n].power:(LN_BY[n]?LN_BY[n].p:(TEAM[n]?TEAM[n].power:60));
 // i giocatori delle altre squadre del tuo campionato che si possono comprare (v = Overall, gia' calcolato)
 function mkClubPool(){
-  const mine=mkMine(),out=[];
+  const mine=mkMine(),out=[],riv=new Set((SV.mem&&SV.mem[SV.sr])||[]);   // comprare un titolare da una rivale diretta ti rafforza e la indebolisce insieme: nei campionati piccoli (UK) bastava per scappare via
   for(const n in SV.rost){
     const ro=SV.rost[n];if(n===SV.team||!ro||ro.length<=12)continue;
-    const top=new Set(ro.slice().sort((a,b)=>ovrX(b)-ovrX(a)).slice(0,MK_KEEP));
+    const top=new Set(ro.slice().sort((a,b)=>ovrX(b)-ovrX(a)).slice(0,riv.has(n)?MK_KEEP_RIV:MK_KEEP));
     for(const o of ro)if(!top.has(o)&&o.ret!==1&&!o.inj&&!mine.has(o.full))out.push({o,n,v:ovrX(o)});
   }
   return out;
