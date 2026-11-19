@@ -97,7 +97,7 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 
 ## Fine campionato ed EUCF
 
-`36-europa/02-fine-campionato.js` gestisce il passaggio al torneo dopo la qualificazione. `SV.eu.postSeason` distingue la nuova edizione da quelle dei vecchi salvataggi. `newSeason()` aspetta la conclusione dell’EUCF. `50-schermate/31-celebrazioni.js` mostra il titolo nel risultato della partita decisiva, anche se simulata.
+`36-europa/02-fine-campionato.js` gestisce il passaggio al torneo dopo la qualificazione. `SV.eu.postSeason` distingue la nuova edizione da quelle dei vecchi salvataggi. `newSeason()` aspetta la conclusione dell’EUCF. `50-schermate/31-celebrazioni.js` riconosce il titolo della partita decisiva. Da «Continua» nel riepilogo, `32-alza-coppa.js` disegna la squadra su un canvas separato, anche dopo una simulazione.
 
 ## Come parlano le parti
 

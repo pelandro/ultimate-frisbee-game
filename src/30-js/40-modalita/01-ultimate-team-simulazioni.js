@@ -211,7 +211,7 @@ $('tmBack').addEventListener('click',()=>showScreen(utTeamBack));
 //  con la scala misurata sulle partite giocate (simPointP e SIM_DIFF in 10-sim/13-partite-simulate.js). Si gioca ai 7 punti, come la partita vera.
 let simAfter=null;
 function showSim(win,score,msg,after,title){
-  $('srMoney').innerHTML='';$('srTitle').textContent=win?'Vittoria!':'Sconfitta';$('srScore').textContent=score;$('srEvent').textContent=msg;simAfter=after;renderTitleCelebration($('srTitle'),title);$('simres').classList.remove('hidden');
+  $('srMoney').innerHTML='';$('srTitle').textContent=title?.text||(win?'Vittoria!':'Sconfitta');$('srScore').textContent=score;$('srEvent').textContent=msg;simAfter=title?()=>openCupScene(title,after):after;$('simres').classList.remove('hidden');
 }
 $('srOk').addEventListener('click',()=>{$('simres').classList.add('hidden');const f=simAfter;simAfter=null;if(f)f();});
 function simCareerMatch(){
