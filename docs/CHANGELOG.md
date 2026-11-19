@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- In carriera, la parola che indicava la valuta è stata sostituita dalla moneta pixelata in schermate, avvisi e guida.
 - Scelta del campionato: ogni scheda ha i colori sbiaditi della bandiera del paese e mostra solo il nome, le serie (o le Conference) e il numero di squadre, scritti più grandi.
 - La rosa festeggia più unita sul podio, con riserve, salti e bandiere. Ogni struttura costa 600 crediti dal livello 0 al 5. Anche le firme dello staff costano di più, soprattutto ai livelli alti.
 - Quando segni, chi ha segnato esulta mentre compare «META!»: spike, petto contro petto con un compagno, balletto, tuffo di festa o disco lanciato al cielo con un grido nel fumetto, ogni volta diversa. Sulla meta che vince la partita i compagni lo portano in spalla. Gli avversari esultano come prima.

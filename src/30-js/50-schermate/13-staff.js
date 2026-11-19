@@ -35,7 +35,7 @@ function renderHire(){
     const cost=staffHireCost(k,c.lv),tr=STAFF_TR[c.tr];
     return `<div class="hcn"><span class="spav">${avatar({look:c.lk,full:c.n,gen:true,t:0},48)}</span><b class="sr">${esc(c.n)}</b><small>${c.a} anni</small>${stTicks(c.lv)}<small>Livello ${c.lv}</small><small>${STAFF[k].steps[c.lv-1]}.</small>${habHTML(tr)}<small>${staffAnnual(k,c.lv)} crediti a stagione</small><button type="button" class="go sm" data-hirei="${i}"${SV.cash<cost?' disabled':''}>Assumi · ${cost}</button></div>`;
   }).join('');
-  $('hireMsg').textContent=hireMsg||`Hai ${SV.cash} crediti.`;
+  $('hireMsg').textContent=hireMsg||`Saldo: ${SV.cash}.`;
   $('hireRenew').textContent=`Altri candidati · ${STAFF_RENEW}`;$('hireRenew').disabled=SV.cash<STAFF_RENEW;
 }
 $('hireList').addEventListener('click',e=>{
@@ -43,7 +43,7 @@ $('hireList').addEventListener('click',e=>{
   const k=hireK,i=+b.dataset.hirei,c=staffCands(k)[i];if(!c)return;const cost=staffHireCost(k,c.lv);
   askConfirm({title:'Assumere '+c.n+'?',html:`<p>Livello ${c.lv} · ${STAFF[k].steps[c.lv-1]}.</p>`+staffQuoteHTML(k,c.lv,cost)+
     (staffLv(k)?'<p>Chi ricopre ora il ruolo lascia il posto.</p>':''),ok:'Assumi per '+cost,onOk:()=>{
-    const t=staffHire(k,i);if(!t){hireMsg='Servono più crediti.';renderHire();return;}
+    const t=staffHire(k,i);if(!t){hireMsg='Fondi insufficienti.';renderHire();return;}
     persist();closeHire();renderClub();}});
 });
 $('hireRenew').addEventListener('click',()=>{if(hireK&&staffRenew(hireK)){hireMsg='';persist();}renderHire();});
