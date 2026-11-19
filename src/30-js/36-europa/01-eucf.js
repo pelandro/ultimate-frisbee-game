@@ -5,7 +5,7 @@
    Chi partecipa: il campo dell'EUCF Open 2026, 16 club: 3 italiani, 3 belgi, 2 francesi, 2 britannici e 1 tedesco (club veri dei campionati del gioco, i piu' forti di
    ogni paese con un po' di caso) piu' 5 club europei INVENTATI (EU_CLUBS: Spagna, Paesi Bassi, Cechia, Svizzera, Irlanda). I club del tuo paese sono i primi classificati
    dell'anno prima (SV.eu.it, scelti a fine stagione: Serie A in Italia, livello piu' alto in Belgio, Francia, Germania e Regno Unito); la forza di quelli che non
-   giochi cambia da un'edizione all'altra (SV.eup). Si sblocca chiudendo il campionato tra i primi posti qualificanti e si gioca nella stagione dopo, una sola volta (SV.eu.s). Stato: SV.eu={s, state:'on'|'out'|'champ', it, nat (stato del torneo, vedi 01-torneo16.js), rk (ranking), cur, stage, cash}.
+   giochi cambia da un'edizione all'altra (SV.eup). Si sblocca chiudendo il campionato tra i primi posti qualificanti e si gioca prima di avviare il campionato successivo (SV.eu.s). Stato: SV.eu={s, state:'on'|'out'|'champ', it, nat (stato del torneo, vedi 01-torneo16.js), rk (ranking), cur, stage, cash}.
    Salvataggi vecchi (coppa a 3 turni, senza nat): l'edizione riparte nel nuovo formato. */
 // [nome, paese, forza]: club inventati, non corrispondono a squadre vere
 const EU_CLUBS=[['Madrid Toros','ESP',91],['Amsterdam Windmills','NED',88],['Prague Golems','CZE',87],['Barcelona Mar','ESP',85],['Zurich Alpentraum','SUI',83],['Dublin Shamrocks','IRL',78]];

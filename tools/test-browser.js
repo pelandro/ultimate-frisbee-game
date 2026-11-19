@@ -730,6 +730,49 @@ catch(e){
     await menu('#hBack');await vis('#title');
     if(!(await page.locator('link[rel="icon"]').getAttribute('href')||'').startsWith('data:image/png'))throw new Error('manca l\'icona del gioco');
   });
+  await step('titoli di campionato ed EUCF, blocco della nuova stagione e ripresa dal salvataggio',async()=>{
+    const testFile=path.join(folder,'fine-campionato.html');
+    fs.writeFileSync(testFile,build().replace('const hasSave=loadSave();','window.testCareer=s=>eval(s);const hasSave=loadSave();'));
+    const ctx=await browser.newContext({viewport:{width:844,height:390},reducedMotion:'reduce'});
+    try{
+      const p=await ctx.newPage();
+      await p.goto('file://'+testFile);
+      const run=code=>p.evaluate(code=>window.testCareer(code),code);
+      await run(`(()=>{
+        startCareer(SERIES.A[0]);
+        for(let i=0;i<30&&!SV.done;i++){
+          const before=SV.done;
+          const msg=recordResult(true,7,0);
+          if(SV.done)showSim(true,'7 – 0',msg,null,careerTitleAfter(before,false));
+        }
+        if(!SV.next?.qual||newSeason())throw new Error('EUCF aggirabile prima di cominciare');
+        if(!$('srTitle').textContent.includes('Campioni di Serie A'))throw new Error('manca la celebrazione nazionale');
+        $('srOk').click();
+        showScreen('event');
+      })()`);
+      await p.locator('#eEurope').click();
+      await p.reload();
+      await run(`(()=>{
+        if(SV.event!=='eu'||!SV.eu.postSeason||!nextMatch()||newSeason())throw new Error('EUCF perso al caricamento');
+        for(let i=0;i<7&&euActive();i++){
+          const msg=recordResult(true,7,0);
+          if(!euActive())showSim(true,'7 – 0',msg,null,careerTitleAfter(true,false));
+        }
+        if(SV.eu.state!=='champ'||openSeasonEurope())throw new Error('EUCF vinto ripetibile');
+      })()`);
+      if(await p.locator('#srTitle').textContent()!=='Campioni d’Europa')throw new Error('manca la celebrazione europea');
+      if(await p.locator('.title-fanfare span').evaluate(el=>getComputedStyle(el).animationName)!=='none')throw new Error('movimento ridotto non rispettato');
+      await run(`(()=>{
+        $('srOk').click();SV.event='camp';showScreen('event');
+        if(!$('eReset')||!newSeason()||SV.season!==2||SV.euUnlocked)throw new Error('ripartenza errata dopo il titolo');
+        startCareer(SERIES.A[0]);
+        for(let i=0;i<30&&!SV.done;i++)recordResult(true,7,0);
+        openSeasonEurope();
+        for(let i=0;i<3;i++)recordResult(false,0,7);
+        if(SV.eu.state!=='out'||!newSeason())throw new Error('la sconfitta non sblocca la nuova stagione');
+      })()`);
+    }finally{await ctx.close();}
+  });
   // ROTAZIONE AUTOMATICA: telefono tenuto in verticale. Il gioco si disegna girato, i menu si toccano e una partita si gioca
   await step('telefono in verticale: il gioco si gira da solo e risponde al tocco',async()=>{
     const ctx=await browser.newContext({viewport:{width:390,height:664},isMobile:true,hasTouch:true,deviceScaleFactor:1}),p=await ctx.newPage(),er=[];

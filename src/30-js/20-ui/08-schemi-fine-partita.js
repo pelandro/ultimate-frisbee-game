@@ -77,25 +77,27 @@ function recordFinishedMatch(){
   if(!G.inMatch||G.recorded)return;
   const win=G.score[0]>G.score[1];
   const hurt=QM.on?[]:SQ.filter(p=>p.injNew);
-  let msg='',grow=[],mny='';
+  let msg='',grow=[],mny='',title=null;
   G.recorded=true;
   restoreForm();
   if(!QM.on){
     grow=matchGrowth(0,carGrowK());
     recordMatchStats();
+    const wasDone=SV.done,wasEuropeanChampion=SV.eu?.state==='champ';
     msg=recordResult(win,G.score[0],G.score[1]);
+    title=careerTitleAfter(wasDone,wasEuropeanChampion);
     mny=moneyHTML(SV.lastMoney);
     pressPending=null;
     if(!G.forfeit)pressNext=pressCtxOf(win,G.score[0],G.score[1],G.oppName);
   }else if(UT.on)msg=UO.on?uoRecord(win):utRecord(win);
   else if(TN.on)msg=tnRecord(win,G.score[0],G.score[1]);
   else msg='Partita veloce: non cambia la carriera.';
-  G.finish={msg,grow,mny,hurt};
+  G.finish={msg,grow,mny,hurt,title};
 }
 function showOver(){
   recordFinishedMatch();
   const w=G.score[0]>G.score[1],on=G.oppName||'Rossi';
-  const {msg='',grow=[],mny='',hurt=[]}=G.finish||{};
+  const {msg='',grow=[],mny='',hurt=[],title=null}=G.finish||{};
   // crescita in partita, raggruppata per giocatore
   let gh='';
   if(!QM.on){
@@ -106,6 +108,7 @@ function showOver(){
   $('oGrow').innerHTML=gh;
   $('oMore').innerHTML=`<details class="odet"><summary>Dettagli della partita</summary>${overMoreHTML()}</details>`;   // attacco, difesa, schemi e migliori: si aprono a richiesta
   $('oTitle').textContent=w?'Vittoria!':(G.forfeit?'Sconfitta a tavolino':'Sconfitta');
+  renderTitleCelebration($('oTitle'),title);
   // TABELLONE: stemmi, nomi e punteggio grande (i numeri contano da zero); sotto il migliore in campo
   const my=G.myName||'Blu',best=overBest()[0];
   $('oScore').innerHTML=`<span class="osb"><span class="ot">${crest(my,34)}<b>${esc(my)}</b></span><em class="${w?'w':''}">0</em><i>–</i><em class="${w?'':'w'}">0</em><span class="ot r"><b>${esc(on)}</b>${crest(on,34)}</span></span>`+

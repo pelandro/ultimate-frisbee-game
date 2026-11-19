@@ -112,7 +112,9 @@ const demandExp=n=>Math.round(300*Math.sqrt(ECO.K())*(0.35+1.3*fansOf()/100)*(1+
 function winBonus(m,v){
   const my=squadPower(),op=oppPowOf(m.name),up=clamp((op-my-2)/10,0,0.8);
   const derby=v!=='N'&&m.name===SV.riv&&SV.event==='camp';
-  const imp=phaseImp()*(derby?1.5:1)*(1+up);
+  // L’EUCF ha già premi di passaggio del turno. La singola vittoria conta quanto un derby.
+  const phase=SV.event==='eu'&&SV.eu?.postSeason?1.5:phaseImp();
+  const imp=phase*(derby?1.5:1)*(1+up);
   return {v:Math.round(ECO.WB*ECO.K()*imp),tag:derby?'derby':(up>=0.3?'impresa':(phaseImp()>1?'partita decisiva':''))};
 }
 const travelCost=()=>Math.round(ECO.TRV*ECO.K());
@@ -121,7 +123,10 @@ function matchMoney(win,m){
   m=m||nextMatch();
   const v=venueOf(),a=attendance(m,v),pr=tixPrice();
   const gate=v==='H'?Math.round(a.att*pr):(v==='N'?Math.round(a.dem*pr*ECO.SHARE_N):0);
-  const spon=SV.sp?SV.sp.fix:0,w=win?winBonus(m,v):{v:0,tag:''};
+  // La quota del contratto è tarata sulle partite del campionato. Con l’EUCF obbligatorio
+  // versarla anche a fine stagione porta i club di vertice fuori dai limiti del bilancio.
+  const endEurope=SV.event==='eu'&&SV.eu?.postSeason;
+  const spon=endEurope?0:(SV.sp?.fix||0),w=win?winBonus(m,v):{v:0,tag:''};
   const rent=regularPhase()&&facLv('stad')?stadiumRent(SV.sgp|0,regularGames()):0;
   const trv=v==='H'?0:travelCost(),wage=wageBill(),up=facUpkeep(),stf=staffWage();
   return {v,opp:m.name,win:!!win,att:v==='H'?a.att:0,cap:v==='H'?a.cap:0,dem:a.dem,full:v==='H'&&a.full,gate,rent,spon,wb:w.v,wbTag:w.tag,trv,wage,up,stf,net:gate+rent+spon+w.v-trv-wage-up-stf};
@@ -132,7 +137,7 @@ function moneyRows(r){   // [etichetta, valore con segno] solo per le voci che c
   if(r.v==='H')x.push([`Biglietti (${r.att} spettatori su ${r.cap}${r.full?', tutto esaurito':''})`,r.gate]);
   else if(r.v==='N')x.push(['Quota biglietti del torneo',r.gate]);
   if(r.rent)x.push(['Affitti dell’impianto',r.rent]);
-  x.push([`Sponsor${SV.sp&&SV.sp.name?' · '+SV.sp.name:''}`,r.spon]);
+  if(r.spon)x.push([`Sponsor${SV.sp&&SV.sp.name?' · '+SV.sp.name:''}`,r.spon]);
   if(r.win)x.push([`Premio vittoria${r.wbTag?' ('+r.wbTag+')':''}`,r.wb]);
   if(r.trv)x.push(['Trasferta',-r.trv]);
   x.push(['Stipendi',-r.wage]);
@@ -212,7 +217,7 @@ function spDefault(){
 const spTxt=()=>SV.sp&&SV.sp.k?`${SV.sp.name} · ${SP_KIND[SV.sp.k].n.toLowerCase()}`:'Da scegliere';
 // la scelta si fa con il riquadro degli imprevisti (si apre da solo sul cruscotto e non si puo' ignorare)
 EVT.spons={w:0,ok:()=>false,mk:()=>({}),
-  t:a=>['Gli sponsor della stagione','Tre aziende vogliono il loro marchio sui cartelloni del tuo campo. Scegli il contratto: i soldi a partita arrivano comunque, i bonus dipendono dai risultati di fine stagione.'],
+  t:a=>['Gli sponsor della stagione','Tre aziende vogliono il loro marchio sui cartelloni del tuo campo. Scegli il contratto: la quota fissa si paga durante il campionato. I bonus dipendono dai risultati di fine stagione.'],
   // il quarto elemento e' il pulsante disegnato: il cartellone dello sponsor (18-cartelloni.js) sopra le condizioni del contratto
   o:a=>(SV.sp&&SV.sp.off?SV.sp.off:[]).map((d,i)=>{const t=`${SP_KIND[d.k].n} · ${d.name}: ${d.fix} a partita, ${spBonusTxt(d.obj)}`;
     return [t,()=>spChoose(i),null,`${spStripHTML(d.name)}<span class="spo"><b>${SP_KIND[d.k].n}</b> · ${d.fix} a partita, ${esc(spBonusTxt(d.obj))}</span>`];})};

@@ -67,6 +67,7 @@ function lnSelfTest(seasons,seed){
         for(const t in sz)chk('promozioni',sz[t]===t0[t],'dimensione del livello '+t+': '+sz[t]+' invece di '+t0[t]);
         if(N.ln.tier!==N.ln.nTier)moved++;
         titles.add(N.ln.champ);
+        if(s===1||s<seasons-1)finishEuropeForDiagnostics();
         if(s===1){   // salvataggio a meta' della stagione dopo
           newSeason();chk('flusso',SV.mem[SV.sr].includes(club)||SV.mem[SV.sr].includes(SV.team),'non sei nel tuo girone');
           const m=nextMatch();const r=simPower(SV.team,m.name);recordResult(r[0]>r[1],r[0],r[1]);hide();

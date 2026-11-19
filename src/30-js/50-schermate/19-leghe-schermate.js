@@ -121,7 +121,7 @@ function renderEventLN(){
   const L=SV.ln,D=LN_DEF[SV.lk],eu=SV.euUnlocked;
   $('eCards').innerHTML=`<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>${esc(D.name)}</strong><small>${esc(SERIES_NAME[SV.sr])}: ${esc(lnFormatTxt(lnTierDef()))}. ${SV.done?'Stagione conclusa.':esc(lnShort())+'.'}</small></button>`+
     (eu?`<button type="button" class="ecard${SV.event==='eu'?' on':''}" data-e="eu"><strong>Campionato europeo (EUCF)</strong><small>16 club in 4 gironi da 4, poi prequarti, quarti, semifinali e finale. ${euCardSub()}</small></button>`
-       :(D.eu?`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo</strong><small>Bloccato: serve chiudere la stagione tra le prime ${D.eu} del livello più alto, e vale per la stagione dopo.</small></button>`:''));   // il campionato Women non va all'EUCF
+       :(D.eu?`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo</strong><small>${euQualifiedPending()?'Qualificati: apri il torneo dal riepilogo.':`Per qualificarti devi arrivare ${D.eu===1?'al primo posto':'tra le prime '+D.eu} del livello più alto.`}</small></button>`:''));   // il campionato Women non va all'EUCF
   if(SV.event!=='camp'){$('eBody').innerHTML=euView();return;}   // EUCF: gironi e tabellone (18-eucf-schermate.js)
   if(lnTabPh!==L.ph){lnTabPh=L.ph;lnTabSel=L.ph==='grp'?'grp':'fin';}
   let body='';

@@ -94,6 +94,10 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `11b-specializzazioni.js`, `11c-intesa.js` | Indirizzi di sviluppo dei giocatori (`SPECS`, `specBonus`) e intesa tra coppie (`G.duo`, `duoOf`) |
 | `15-vento.js` | Vento e meteo della partita (`G.wind`, `setWind`, `rollWind`, `windOn`; `G.wx`, `weatherFor`, `setWx`): deriva, dispersione e gittata dei lanci; pioggia e neve peggiorano un po' le prese e la precisione |
 
+## Fine campionato ed EUCF
+
+`36-europa/02-fine-campionato.js` gestisce il passaggio al torneo dopo la qualificazione. `SV.eu.postSeason` distingue la nuova edizione da quelle dei vecchi salvataggi. `newSeason()` aspetta la conclusione dell’EUCF. `50-schermate/31-celebrazioni.js` mostra il titolo nel risultato della partita decisiva, anche se simulata.
+
 ## Come parlano le parti
 
 - **Motore → interfaccia**: solo tramite `HOOKS` (`toast`, `sfx`, `cine`, `menu`, `over`, `half`, `injury`, `shake`, `vibe`, `drill`). Nei test i ganci sono spenti.

@@ -159,7 +159,7 @@ tip:`Se fai spesso il tutto esaurito, valuta di ampliare le Tribune.`},
 `Ogni partita ha il suo <b>conto</b>, in Società › Conti:`,
 [`<b>Entrate</b>: biglietti (in casa), affitti dell’impianto, sponsor e premio vittoria.`,
 `<b>Uscite</b>: gli <b>stipendi</b> sono la spesa più grande, poi strutture, staff e viaggi. Anche una vittoria può chiudersi in rosso.`],
-`A inizio stagione scegli lo <b>sponsor</b>: Sicuro (più soldi a partita, bonus piccolo) o Ambizioso (meno soldi, bonus grande se raggiungi l’obiettivo). Il suo marchio va sui cartelloni del tuo campo.`,
+`A inizio stagione scegli lo <b>sponsor</b>: Sicuro (più soldi a partita di campionato, bonus piccolo) o Ambizioso (meno soldi, bonus grande se raggiungi l’obiettivo). Il suo marchio va sui cartelloni del tuo campo.`,
 `<b>Conti in rosso</b>: mercato, strutture e staff si fermano e il morale cala. Se dura troppo vieni <b>esonerato</b> e riparti da una squadra più debole.`,
 `I <b>tifosi</b> riempiono lo stadio, il <b>morale</b> sale con vittorie e Recupero, la <b>reputazione</b> apre porte (mercato, offerte).`],
 tip:`Tieni una riserva di crediti per le emergenze e guarda il bilancio prima di ogni acquisto grosso.`},
@@ -185,7 +185,7 @@ les:[
 `Tre serie con le squadre e le rose dei <b>Campionati Italiani Ultimate Open 2026</b>, 15 giornate ciascuna. Salgono due squadre e ne scendono due.`,
 [`<b>Serie A</b>: le prime 4 giocano semifinali e finale per lo scudetto.`,
 `<b>Serie B e C</b>: la prima sale direttamente; dal 2° al 5° posto c’è lo spareggio per la seconda promozione.`,
-`Le prime 3 della Serie A giocano il <b>Campionato europeo (EUCF)</b> la stagione dopo.`]],
+`Le prime 3 della Serie A giocano il <b>Campionato europeo (EUCF)</b> prima di iniziare il prossimo campionato.`]],
 tip:`Dopo uno scudetto le rivali di Serie A si rinforzano: investi in rosa e strutture per difendere il titolo.`},
 {id:'lega-usa',t:'USA Men’s Club',b:[
 `<b>48 club</b> veri in <b>8 Conference</b> da 6. Niente promozioni né retrocessioni.`,
@@ -199,7 +199,7 @@ tip:`Con solo 5 turni di Conference ogni partita pesa: gioca tu quelle contro le
 `<b>Belgio, Francia, Germania e Regno Unito</b>: club Open del 2026, con formati adattati al gioco. Nessuno è eliminato: ogni turno delle fasi finali vale per il piazzamento, e a fine stagione si sale e si scende tra i livelli.`,
 [`<b>Belgio</b>: 46 squadre su 6 livelli. <b>Francia</b>: la N1 ha 12 squadre e un Top 8. <b>Germania</b>: la 1. Liga ha 16 squadre in due gironi. <b>Regno Unito</b>: Nationals e Open Tour.`,
 `Chi arriva fino in fondo gioca almeno <b>11 partite</b> a stagione.`],
-`Il <b>Campionato europeo (EUCF)</b> si sblocca chiudendo il campionato tra i posti qualificanti (prime 3 in Serie A e Belgio, prime 2 in Francia e Regno Unito, prima in Germania) e si gioca la stagione dopo: 16 club in gironi, poi quarti, semifinali e finale. Ogni turno superato porta <b>crediti</b>.`],
+`Il <b>Campionato europeo (EUCF)</b> si sblocca chiudendo il campionato tra i posti qualificanti (prime 3 in Serie A e Belgio, prime 2 in Francia e Regno Unito, prima in Germania) e si conclude prima del prossimo campionato: 16 club in gironi, poi quarti, semifinali e finale. Ogni turno superato porta <b>crediti</b>.`],
 tip:`In Europa le avversarie sono forti: arriva con la rosa fresca.`}
 ]});
 
