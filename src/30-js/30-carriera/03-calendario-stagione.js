@@ -65,11 +65,16 @@ function careerSaveShape(d){
   if(d.squad!==undefined&&(!Array.isArray(d.squad)||d.squad.length<7||!d.squad.every(player)))return false;
   return !d.rost||(typeof d.rost==='object'&&Object.values(d.rost).every(r=>Array.isArray(r)&&r.length&&r.every(player)));
 }
-let careerStorageVersion;
+let careerStorageVersion,careerStorageSlot;
 function loadSave(d0){
   let data=d0;
   if(!data){
-    try{careerStorageVersion=localStorage.getItem(SAVE_KEY);data=JSON.parse(careerStorageVersion||'null');}catch(e){return false;}
+    try{
+      careerStorageVersion=saveStore.getItem(SAVE_KEY);
+      careerStorageSlot=undefined;
+      data=JSON.parse(careerStorageVersion||'null');
+      if(careerSaveShape(data))careerStorageSlot=data.slot||1;
+    }catch(e){return false;}
   }
   if(!careerSaveShape(data))return false;
   const previous=SV,squad=squadData(),lineup=lineupIds();
@@ -90,8 +95,9 @@ function careerSaveStatus(failed,conflict=false){
   el.title=el.getAttribute('aria-label');
 }
 window.addEventListener('storage',e=>{
-  if(e.key!==SAVE_KEY&&e.key!==null)return;
-  if(SV.team)careerSaveStatus(true,true);
+  if(e.key!==SAVE_STORE_KEY&&e.key!==SAVE_KEY&&e.key!==null)return;
+  try{if(SV.team&&saveStore.getItem(SAVE_KEY)!==careerStorageVersion)careerSaveStatus(true,true);}
+  catch(e){careerSaveStatus(true);}
 });
 $('careerSaveStatus').addEventListener('click',()=>persist());
 
@@ -121,28 +127,28 @@ function hydrateCareer(d){
   }
   SV={};return false;
 }
-function persist(){
+function persist(changes={}){
   if(QM.on)return;   // partita veloce: la carriera non si tocca
   SV.v=SAVE_V;SV.squad=squadData();delete SV.players;SV.lineup=lineupIds();SV.savedAt=Date.now();
   if(typeof renderShell==='function'&&!QM.on&&csCur)renderShell();   // crediti e posta nella barra in alto sempre aggiornati
-  // Il salvataggio attivo è il dato canonico. La copia nello slot viene usata quando si cambia carriera.
-  let data,prev;
   try{
-    data=JSON.stringify(SV);
-    prev=localStorage.getItem(SAVE_KEY);
+    const data=JSON.stringify(SV),prev=saveStore.getItem(SAVE_KEY);
     if(careerStorageVersion!==undefined&&prev!==careerStorageVersion){
       careerSaveStatus(true,true);return false;
     }
-    localStorage.setItem(SAVE_KEY,data);
+    const pending={...changes};
+    if(SV.team){
+      const key=slotKey(SV.slot||1);
+      const oldSlot=prev&&careerStorageSlot===(SV.slot||1)?prev:saveStore.getItem(key);
+      if(oldSlot&&oldSlot.length<3e6)pending[key+'-bak']=oldSlot;
+      pending[key]=data;
+      pending[SAVE_KEY]={slot:key};
+    }else pending[SAVE_KEY]=data;
+    saveStore.commit(pending);
     careerStorageVersion=data;
+    careerStorageSlot=SV.team?(SV.slot||1):undefined;
   }catch(e){careerSaveStatus(true);return false;}
   careerSaveStatus(false);
-  try{
-    const key=slotKey(SV.slot||1);
-    const oldSlot=prev&&(JSON.parse(prev).slot||1)===(SV.slot||1)?prev:localStorage.getItem(key);
-    if(oldSlot&&oldSlot.length<3e6)localStorage.setItem(key+'-bak',oldSlot);
-    if(SV.team)localStorage.setItem(key,data);
-  }catch(e){}   // la copia accessoria non invalida la scrittura del salvataggio attivo
   return true;
 }
 const ranking=(tab,names)=>names.length&&tab[names[0]]&&tab[names[0]].h?usRanking(tab,names):names.slice().sort((a,b)=>tab[b].pts-tab[a].pts||(tab[b].pf-tab[b].pa)-(tab[a].pf-tab[a].pa)||tab[b].pf-tab[a].pf);   // tabelle USA (con gli scontri diretti, h): 35-usa/03-stagione-usa.js

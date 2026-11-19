@@ -17,6 +17,9 @@ if(r.status!==0)fail(groups[0][0]);
 console.log('\n### Stemmi e sigle');
 r=spawnSync(process.execPath,['tools/test-stemmi.js'],{cwd,stdio:'inherit'});
 if(r.status!==0)fail('Stemmi e sigle');
+console.log('\n### Salvataggi');
+r=spawnSync(process.execPath,['tools/test-salvataggi.js'],{cwd,stdio:'inherit'});
+if(r.status!==0)fail('Salvataggi');
 const rest=groups.slice(1);
 if(serial||rest.length<2){
   for(const [name,args] of rest){console.log('\n### '+name);r=spawnSync(process.execPath,args,{cwd,stdio:'inherit'});if(r.status!==0)fail(name);}
