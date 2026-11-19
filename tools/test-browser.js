@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 20229)
-Total output lines: 759
-
 #!/usr/bin/env node
 /* Prova del gioco in un browser vero (Playwright, Chromium senza finestra): apre il gioco costruito e attraversa i percorsi principali
    come farebbe un giocatore. Fallisce se compare un errore JavaScript o se una schermata non si apre.
@@ -261,7 +258,236 @@ catch(e){
     if(await page.locator('#tList .prow:not([disabled])').count()>await page.locator('#tList .prow').count()-3)throw new Error('il programma automatico non ha fatto i lavori individuali');
     await page.click('#tTeamBox [data-prog]');await page.click('#hHome');
     await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#hHome');
-    await page.click('#hClub');await vis('#club');awa…6229 tokens truncated…ew Error('una dita: il lancio deve essere piatto ('+await aim()+')');
+    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="man"]');{const t=await page.locator('#clBox').innerText();if(!/Sponsor e obiettivo/i.test(t)||!/a ogni partita/.test(t)||!/Conti delle partite/i.test(t))throw new Error('la scheda Società deve mostrare lo sponsor scelto e i conti delle partite: '+t.replace(/\s+/g,' ').slice(0,900));}await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==3)throw new Error('devono esserci tre strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci quattro figure dello staff');
+    // le altre linguette del Club: traguardi (ventidue schede, percentuale), albo d'oro e Hall of Fame
+    await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="ach"]');if(await page.locator('#clBox .ach').count()!==22||!/%/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi devono essere ventidue, con la percentuale');
+    await page.click('#clSub [data-k="hon"]');if(await page.locator('#clBox .trt').count()<7)throw new Error('manca la bacheca dei trofei');
+    await page.click('#clSub [data-k="rec"]');if(await page.locator('#clBox .hofbox').count()!==1)throw new Error('manca la Hall of Fame');
+    await page.click('#clTabs button[data-k="stf"]');
+    if(await page.locator('#clBox .scard').count()!==4||await page.locator('#clBox [data-hire]').count()<4)throw new Error('le figure dello staff devono essere quattro, ciascuna con «Cambia» o «Scegli chi assumere»');
+    await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="rec"]');await page.click('#hHome');
+    await page.click('#hEvent');await vis('#event');await page.click('#evTabs [data-sr="A"]');await page.click('#evTabs [data-sr="B"]');await vis('#eBody table.rt');
+    const trs=await page.locator('#eBody table.rt tr').count();if(trs<8)throw new Error('classifica di un\'altra serie troppo corta: '+trs);
+    await page.click('#eBody [data-evpage="calendar"]');
+    if(!/Prossima|Da giocare/.test(await page.locator('#eBody').innerText()))throw new Error('calendario senza prossime partite');
+    await page.click('#eBody [data-evpage="stats"]');await vis('#eBody [data-evpage="stats"][aria-current="page"]');
+    await page.click('#eBody [data-evpage="final"]');await vis('#eBody [data-evpage="final"][aria-current="page"]');
+    await page.click('#eBody [data-evpage="table"]');await vis('#eBody table.rt');
+    await page.click('#hHome');
+    await menu('#hOpt');await vis('#opts');await page.click('#opX');
+    await page.click('#hBell');await vis('#alerts');   // lo chiude il gestore qui sopra alla prossima azione
+  });
+  await step('Posta: «Chiudi» non segna come letto, «Segna tutto come letto» sì; Mercato: conferma prima di comprare; Allena: lavoro individuale in due passi',async()=>{
+    // una notizia nuova di sicuro: un avviso non urgente scritto nel salvataggio, poi ricarica
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.alerts=d.alerts||[];d.alN=(d.alN|0)+1;d.alerts.unshift({id:d.alN,s:d.season,r:1,k:'grow',txt:'Prova di lettura',full:'',act:'',data:null,seen:0,done:0,sh:1});window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
+    // qui i tocchi passano da evaluate: il gestore in cima alla prova chiuderebbe la Posta prima di ogni click
+    const unread=async()=>(await page.locator('#alBody .ali.new').count()),tap=id=>page.evaluate(i=>document.getElementById(i).click(),id);
+    await tap('hBell');await vis('#alerts');const n0=await unread();if(n0<1)throw new Error('la notizia di prova non risulta nuova');
+    await tap('alX');await tap('hBell');await vis('#alerts');
+    if(await unread()!==n0)throw new Error('«Chiudi» ha segnato le notizie come lette');
+    await tap('alAll');if(await unread())throw new Error('«Segna tutto come letto» non ha segnato tutto');
+    await tap('alX');
+    // mercato: con i crediti per comprare, «Acquista» apre il riepilogo; «Annulla» non compra niente
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.cash=5000;window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
+    await page.click('#hMarket');await vis('#market');
+    const buy=page.locator('#mkBox [data-buy]:not([disabled])').first();
+    if(await buy.count()){
+      const r0=await page.locator('#mkTop').innerText();
+      await buy.click();await vis('#cfm');if(!/Stipendi/.test(await page.locator('#cfmBody').innerText()))throw new Error('il riepilogo dell\'acquisto non mostra lo stipendio');
+      await page.click('#cfmNo');if(await page.locator('#cfm:not(.hidden)').count())throw new Error('«Annulla» non chiude la conferma');
+      if(await page.locator('#mkTop').innerText()!==r0)throw new Error('«Annulla» ha comprato lo stesso');
+      await buy.click();await vis('#cfm');await page.keyboard.press('Escape');if(await page.locator('#cfm:not(.hidden)').count())throw new Error('Esc non chiude la conferma');
+    }
+    // allenamento individuale: scegliere un indirizzo non lo esegue, «Avvia» sì
+    await page.click('#hTrain');await vis('#train');
+    const pr=page.locator('#tList .prow:not([disabled])').first();
+    if(await pr.count()){
+      await pr.click();
+      if(await page.locator('#tTypes .ttype[data-k="rec"]:not([disabled])').count()){   // se restano lavori individuali in questa giornata
+        await page.click('#tTypes .ttype[data-k="rec"]');
+        if(await page.locator('#tRes .tres').count())throw new Error('il lavoro individuale parte senza conferma');
+        await vis('#tCf .tcf');await page.click('#tCf [data-trgo]');await vis('#tRes .tres');
+      }
+    }
+    await page.click('#hHome');
+  });
+  await step('rosa: filtri, ordinamento e scheda in tre parti; mercato: filtro e ordinamento; guida contestuale',async()=>{
+    await vis('#home');await page.click('#hRoster');await vis('#roster');
+    await page.click('#rBox [data-rv="c"]');   // la vista scelta resta salvata: qui si controllano le carte
+    if(await page.locator('#rBox .pgrid .pcard').count()<7)throw new Error('la vista a carte non mostra la rosa');
+    await page.click('#rBox [data-rv="t"]');   // il resto del percorso usa la tabella
+    const all=await page.locator('#rBox tr.pl').count();
+    await page.click('#rBox [data-rf="H"]');const hs=await page.locator('#rBox tr.pl').count();
+    if(!(hs>0&&hs<all))throw new Error('il filtro Handler non restringe la rosa ('+hs+' su '+all+')');
+    await page.click('#rBox [data-rf="all"]');await page.selectOption('#rBox [data-rsort]','age');
+    const ages=(await page.locator('#rBox tr.pl small.rl').allInnerTexts()).map(t=>+(t.match(/(\d+) anni/)||[0,0])[1]);
+    if(ages.some((a,i)=>i&&a<ages[i-1]))throw new Error('ordinamento per età non rispettato: '+ages.join(','));
+    await page.click('#rBox .dbtn >> nth=0');
+    for(const t of ['pre','svi','att']){await page.click('#rBox [data-dtab="'+t+'"] >> nth=0');await vis('#rBox [data-dtab="'+t+'"].on >> nth=0');}   // puo' esserci piu' di una scheda aperta
+    // vista a carte: scheda a tutto schermo, azioni e soprannome
+    await page.click('#rBox [data-rv="c"]');await page.click('#rBox [data-card] >> nth=0');await vis('#rBox .pcpanel');
+    for(const a of ['rest','talk','nick'])if(!(await page.locator('#rBox [data-'+a+']').count()))throw new Error('manca l\'azione '+a+' nella scheda');
+    await page.click('#rBox [data-nick]');await page.fill('#nkIn','Zio');await page.click('#rBox [data-nkok]');
+    if(!/Zio/.test(await page.locator('#rBox .pcti h3').innerText()))throw new Error('il soprannome non compare nella scheda');
+    await page.click('#rBox [data-dtab="pre"]');if(await page.locator('#rBox .dp3 .dpc').count()!==3)throw new Error('le statistiche non sono in tre colonne');
+    await page.click('#rBox .pcx');
+    await page.click('#roster .shelp');await vis('#guide');if(!(await page.locator('#gdBody li.ghi').count()))throw new Error('la guida contestuale non evidenzia la voce della Rosa');
+    await page.click('#gdX');await page.click('#hHome');
+    await page.click('#hMarket');await vis('#market');const m0=await page.locator('#mkBox .mcard').count();
+    await page.check('#mkBox [data-mkonly]');const m1=await page.locator('#mkBox .mcard').count();if(m1>m0)throw new Error('il filtro del mercato aggiunge righe');
+    await page.uncheck('#mkBox [data-mkonly]');await page.click('#mkTabs [data-k="all"]');await page.selectOption('#mkBox [data-mksort]','price');
+    const pr=(await page.locator('#mkBox .mpr').allInnerTexts()).map(x=>parseInt(x,10)).filter(x=>!isNaN(x));
+    if(pr.length<3||pr.some((a,i)=>i&&a<pr[i-1]))throw new Error('ordinamento per prezzo non rispettato: '+pr.join(','));
+    await page.click('#hHome');await vis('#home');
+  });
+  await step('partite simulate dal cruscotto',async()=>{
+    for(let i=0;i<2;i++){
+      await page.click('#hSim');await vis('#simres');
+      const mny=await page.locator('#srMoney').innerText();   // i conti della giornata: biglietti (se in casa), sponsor, stipendi, saldo
+      if(!/Conti della giornata/.test(mny)||!/Sponsor/.test(mny)||!/Stipendi/.test(mny)||!/Saldo/.test(mny)||(/In casa/.test(mny)&&!/Biglietti/.test(mny))||(/In trasferta/.test(mny)&&(!/Trasferta/.test(mny)||/Biglietti/.test(mny))))throw new Error('conti della giornata incompleti: '+mny.replace(/\s+/g,' '));
+      await page.click('#srOk');await page.waitForTimeout(100);
+    }
+  });
+  await step('partita di carriera fino alla fine (con «Simula meta» e pausa)',async()=>{
+    await page.click('#hPlay');await page.waitForTimeout(500);if(await page.locator('#menu').isVisible())await page.click('#bGo');
+    await page.waitForTimeout(300);await page.click('#bExit');await vis('#pause');await page.click('#paGo');
+    await playOut();await vis('#over');await page.click('#bAgain');await page.waitForTimeout(200);await vis('#home');
+  });
+  await step('partita sospesa: si salva, resiste alla ricarica e si riprende dal punteggio salvato',async()=>{
+    await vis('#home');await page.click('#hPlay');await page.waitForTimeout(500);if(await page.locator('#menu').isVisible())await page.click('#bGo');
+    for(let i=0;i<2;i++){await page.waitForSelector('#bSimPt:not(.hidden)',{timeout:20000});await page.click('#bSimPt');await page.waitForTimeout(150);}
+    await page.waitForSelector('#bExit:not(.hidden)');await page.waitForTimeout(3500);   // finisce la fascia della meta
+    for(let i=0;i<30&&!(await page.locator('#pause').isVisible());i++){await page.keyboard.press('Escape');await page.waitForTimeout(250);}
+    await vis('#pause');await page.click('#paSusp');await vis('#home');
+    const t=await page.locator('#hPlayT').innerText(),sub=await page.locator('#hPlayS').innerText();
+    if(!/Riprendi/.test(t))throw new Error('dopo la sospensione il cruscotto non propone di riprendere: '+t);
+    const sc=(sub.match(/(\d+)–(\d+)/)||[]).slice(1).map(Number);if(sc.length!==2||sc[0]+sc[1]<1)throw new Error('punteggio sospeso non valido: '+sub);
+    await page.reload();await page.waitForTimeout(500);
+    if(!/sospesa/.test(await page.locator('#tCareerS').innerText()))throw new Error('dopo la ricarica la partita sospesa non c\'e\' piu\'');
+    await page.click('#tCareer');await vis('#home');await page.click('#hPlay');await page.waitForTimeout(600);if(await page.locator('#menu').isVisible())await page.click('#bGo');
+    const s2=(await page.locator('#score').innerText()).match(/(\d+)\s*[–-]\s*(\d+)/);
+    if(!s2||+s2[1]!==sc[0]||+s2[2]!==sc[1])throw new Error('ripresa con un punteggio diverso: '+(s2?s2[0]:'?')+' invece di '+sc.join('-'));
+    await playOut();await vis('#over');await page.click('#bAgain');await page.waitForTimeout(200);await vis('#home');
+    if(/Riprendi/.test(await page.locator('#hPlayT').innerText()))throw new Error('a partita finita resta una sospensione');
+  });
+  await step('abbandonare una partita di carriera è una sconfitta a tavolino',async()=>{
+    await vis('#home');const before=await page.locator('#hNext').innerText();
+    await page.click('#hPlay');await page.waitForTimeout(500);if(await page.locator('#menu').isVisible())await page.click('#bGo');
+    for(let i=0;i<30&&!(await page.locator('#pause').isVisible());i++){await page.keyboard.press('Escape');await page.waitForTimeout(250);}
+    await vis('#pause');await page.click('#paQuit');await page.click('#paQuit');await vis('#over');
+    if(!/tavolino/i.test(await page.locator('#oTitle').innerText()))throw new Error('l\'abbandono non e\' registrato come sconfitta a tavolino');
+    await page.click('#bAgain');await page.waitForTimeout(200);await vis('#home');
+    if((await page.locator('#hNext').innerText())===before)throw new Error('dopo l\'abbandono la stessa partita si puo\' rigiocare');
+  });
+  await step('Campionato europeo: una sola edizione a stagione, poi si torna al campionato',async()=>{
+    // la coppa si sblocca solo dalla Serie A: per provarla si modifica il salvataggio (come se la squadra si fosse qualificata) e si ricarica
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.euUnlocked=true;d.event='eu';d.eu={round:0,state:'on',s:d.season,opps:['Berlino','Parigi','Madrid']};   // formato vecchio: l'edizione riparte come EUCF
+    d.susp=null;window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
+    for(let i=0;i<12&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim');await vis('#simres');await page.click('#srOk');await page.waitForTimeout(150);if(/Torna al campionato/.test(await page.locator('#hPlayT').innerText()))break;}
+    const t=await page.locator('#hPlayT').innerText();if(!/Torna al campionato/.test(t))throw new Error('a coppa conclusa il tasto principale dice «'+t+'»');
+    if(/nuova stagione/i.test(await page.locator('#hNext').innerText()))throw new Error('a coppa conclusa il cruscotto parla di nuova stagione');
+    await page.click('#hEvent');await vis('#event');
+    if(await page.locator('#eReset').count())throw new Error('la coppa conclusa si puo\' ancora far ripartire');
+    await page.click('#eCamp');await page.waitForTimeout(150);await page.click('#hHome');await vis('#home');
+    if(!/Inizia partita/.test(await page.locator('#hPlayT').innerText()))throw new Error('dopo la coppa non si torna al campionato');
+  });
+  await step('fine stagione: riepilogo in cima, tasto «Inizia la nuova stagione» ben visibile e premi dietro un tasto',async()=>{
+    for(let i=0;i<70&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim',{timeout:4000});await vis('#simres');await page.click('#srOk',{timeout:4000});await page.waitForTimeout(120);}
+    await page.click('#hEvent');await vis('#event');
+    if(await page.locator('#eCards [data-e="camp"]').count())await page.click('#eCards [data-e="camp"]');   // il passo precedente puo' aver lasciato aperta la coppa
+    if(!(await page.locator('#eBody .endc').count()))throw new Error('manca la scheda di fine stagione');
+    const vh=page.viewportSize().height,bb=await page.locator('#eReset').boundingBox();
+    if(!bb||bb.y+bb.height>vh)throw new Error('«Inizia la nuova stagione» non si vede senza scorrere');
+    if(await page.locator('#eBody .endtog').count()&&await page.locator('#eBody [data-infobox="endaw"]:not(.hidden)').count())throw new Error('i premi devono essere chiusi all\'apertura');
+    await page.click('#eReset');await page.waitForTimeout(300);
+    if(await page.locator('#eReset').count())throw new Error('la nuova stagione non e\' partita');
+    await page.click('#hHome');await vis('#home');
+  });
+  await step('slot carriera: una seconda carriera e il ritorno alla prima',async()=>{
+    const team1=(await page.locator('#tCareerS').innerText().catch(()=>''));
+    await vis('#home');const name1=await page.locator('#hEvt').first().innerText();
+    await menu('#hOpt');await vis('#opts');if(await page.locator('#opSlots [data-slot]').count()!==3)throw new Error('gli slot devono essere tre');
+    await page.click('#opSlots [data-slot="2"]');await await vis('#league');await page.click('#lgList [data-div="m"]');await page.click('#lgList [data-lg="IT"]');await vis('#team');await page.click('#tSr button[data-k="B"]');await page.click('.tteam >> nth=3');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
+    const name2=await page.locator('#hEvt').first().innerText();if(name2===name1)throw new Error('lo slot 2 ha la stessa squadra dello slot 1');
+    await menu('#hOpt');await page.click('#opSlots [data-slot="1"]');await page.waitForTimeout(300);await vis('#home');
+    const back=await page.locator('#hEvt').first().innerText();if(back!==name1)throw new Error('tornando allo slot 1 la carriera non e\' quella di prima: '+back);
+    await menu('#hOpt');
+    const file=await page.evaluate(()=>window.testSaves.getItem('ultimate-carriera-1'));
+    await page.locator('#clFile').setInputFiles({name:'carriera.json',mimeType:'application/json',buffer:Buffer.from(file)});
+    // FileReader apre l’anteprima dopo la lettura asincrona.
+    await page.locator('#importSlot').waitFor({state:'visible'});
+    await page.selectOption('#importSlot','3');
+    await page.click('#cfmNo');
+    if(await page.evaluate(()=>window.testSaves.getItem('ultimate-carriera-3')))throw new Error('annullare l’importazione ha alterato lo slot di destinazione');
+    const atomic=await page.evaluate(()=>{
+      const key='ultimate-salvataggi-v1',storage=Storage.prototype,set=storage.setItem;
+      const before=localStorage.getItem(key),career=JSON.parse(window.testSaves.getItem('ultimate-prototipo-v2'));
+      const backup={app:'ultimate-frisbee',v:career.v,career,slots:{3:{...career,slot:3}},
+        extra:{'ultimate-ut':{col:[],sel:[],packs:[0]}}};
+      storage.setItem=function(k,v){
+        if(k===key)throw new DOMException('Quota di prova','QuotaExceededError');
+        return set.call(this,k,v);
+      };
+      try{return !!window.testImport(JSON.stringify(backup),1,true,true)&&localStorage.getItem(key)===before;}
+      finally{storage.setItem=set;}
+    });
+    if(!atomic)throw new Error('un errore di quota ha lasciato un import parziale');
+    await page.click('#opX');
+
+  });
+  await step('il salvataggio resiste alla ricarica della pagina',async()=>{
+    await page.reload();await page.waitForTimeout(500);
+    const t=await page.locator('#tCareerS').innerText();if(!/Continua/.test(t))throw new Error('carriera non ritrovata dopo la ricarica: «'+t+'»');
+  });
+  await step('partita veloce: avvio, pausa, abbandono',async()=>{
+    await page.click('#tQuick');await vis('#quick');await page.click('#qPlay');await page.waitForTimeout(500);
+    await page.keyboard.press('Escape');await vis('#pause');await vis('#paFs');if(!/Schermo intero/.test(await page.locator('#paFs').innerText()))throw new Error('il menu pausa deve avere il pulsante dello schermo intero');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
+  });
+  await step('Cambi: «Cambia tutti e 7» in partita veloce fa entrare i secondi 7 e premendolo di nuovo tornano i primi',async()=>{
+    await page.click('#tQuick');await vis('#quick');await page.click('#qPlay');await page.waitForTimeout(600);
+    await page.waitForSelector('#bSub:not(.hidden)',{timeout:20000});await page.click('#bSub');await vis('#subs');
+    const field=()=>page.evaluate(()=>[...document.querySelectorAll('#subBox .lu')[0].querySelectorAll('button[data-id]')].map(b=>b.dataset.id).sort().join());
+    const f0=await field();
+    if(await page.locator('#subBox .lu-all').count()!==1)throw new Error('nel pannello Cambi manca il pulsante «Cambia tutti e 7»');
+    await page.click('#subBox .lu-all');const f1=await field();
+    if(f1===f0||f1.split(',').some(id=>f0.split(',').includes(id)))throw new Error('«Cambia tutti e 7» deve far uscire tutti i 7 in campo');
+    if(f1.split(',').length!==7)throw new Error('in campo devono restare 7 giocatori');
+    await page.click('#subBox .lu-all');if(await field()!==f0)throw new Error('premuto di nuovo, «Cambia tutti e 7» deve riportare in campo i primi 7');
+    await page.click('#bSubGo');await page.keyboard.press('Escape');await vis('#pause');await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#qBack');
+  });
+  await step('pausa: tutti i pulsanti sono dentro lo schermo, anche sul telefono piccolo (667x375), e Abbandona si raggiunge',async()=>{
+    const c=await browser.newContext({viewport:{width:667,height:375}}),p=await c.newPage();p.setDefaultTimeout(15000);
+    await p.addInitScript(()=>{try{localStorage.setItem('ultimate-primi','{"d":[],"m":9,"off":1}');}catch(e){}});   // niente schede dei «Primi passi» sopra la partita
+    await p.goto('file://'+OUT);await p.waitForTimeout(400);
+    await p.click('#tQuick');await vis_(p,'#quick');await p.click('#qPlay');await p.waitForTimeout(700);
+    await p.keyboard.press('Escape');await p.waitForSelector('#pause:not(.hidden)');
+    const bad=await p.evaluate(()=>[...document.querySelectorAll('#pause button')].filter(b=>b.getBoundingClientRect().width>0).map(b=>{const r=b.getBoundingClientRect();return {id:b.id,ok:r.top>=0&&r.bottom<=innerHeight&&r.left>=0&&r.right<=innerWidth&&r.height>=34};}).filter(x=>!x.ok).map(x=>x.id));
+    if(bad.length)throw new Error('pulsanti della pausa fuori dallo schermo o troppo piccoli: '+bad.join(', '));
+    await p.click('#paQuit');await p.click('#paQuit');await p.waitForTimeout(300);   // due tocchi: conferma
+    if(await p.locator('#pause:not(.hidden)').count())throw new Error('«Abbandona» (con conferma) deve chiudere la partita');
+    await c.close();
+  });
+  await step('timeout: uno a partita, ferma il gioco e si riprende',async()=>{
+    await page.click('#tQuick');await vis('#quick');await page.selectOption('#qS','0');await page.click('#qPlay');await page.waitForTimeout(600);
+    if(await page.locator('#menu').isVisible())await page.click('#bGo');
+    await page.waitForSelector('#bTO:not(.hidden)',{timeout:40000});   // compare quando hai il disco in mano
+    // tipo di lancio con le dita: una = piatto, due (o piu') = alto (il rovesciato); niente pulsante in attacco. Si annulla riportando il dito al punto di partenza
+    if(await page.locator('#bHammer:not(.hidden)').count())throw new Error('in attacco non deve esserci il pulsante dei tipi di lancio');
+    {const cdp=await page.context().newCDPSession(page),TT=(type,pts)=>cdp.send('Input.dispatchTouchEvent',{type,touchPoints:pts}),aim=async()=>await page.locator('canvas').first().getAttribute('data-aim');
+     // doppio tocco: un tocco rapido nel campo libero (lontano da ogni compagno), poi un secondo tocco tenuto premuto = lancio alto con un dito solo
+     // il gioco sta in una funzione chiusa: non si leggono le posizioni dei giocatori, quindi si provano alcuni punti finche' ne arma uno libero (un tocco su un compagno e' una chiamata e non arma niente)
+     const dbl=async(pt,gap)=>{await TT('touchStart',[{x:pt.x,y:pt.y,id:1}]);await page.waitForTimeout(60);await TT('touchEnd',[]);await page.waitForTimeout(gap);
+       await TT('touchStart',[{x:pt.x,y:pt.y,id:1}]);await TT('touchMove',[{x:pt.x-40,y:pt.y-10,id:1}]);await page.waitForTimeout(150);const r=await aim();
+       await TT('touchMove',[{x:pt.x,y:pt.y,id:1}]);await page.waitForTimeout(80);await TT('touchEnd',[]);await page.waitForTimeout(250);return r;};
+     let free=null;for(const fy of [0.3,0.5,0.7,0.85])for(const fx of [0.15,0.3,0.45,0.6,0.75,0.9]){if(free)break;const pt={x:Math.round(844*fx),y:Math.round(390*fy)};if(await dbl(pt,120)==='alto')free=pt;}
+     if(!free)throw new Error('doppio tocco: nessun punto del campo ha armato il lancio alto');
+     if(await aim())throw new Error('doppio tocco: finita la mira il tipo di lancio deve sparire');
+     if(await dbl(free,600)!=='piatto')throw new Error('doppio tocco troppo lento: il lancio deve restare piatto');
+     await TT('touchStart',[{x:420,y:250,id:1}]);await TT('touchMove',[{x:380,y:240,id:1}]);await page.waitForTimeout(150);
+     if(await aim()!=='piatto')throw new Error('una dita: il lancio deve essere piatto ('+await aim()+')');
      await TT('touchStart',[{x:380,y:240,id:1},{x:300,y:300,id:2}]);await page.waitForTimeout(150);
      if(await aim()!=='alto')throw new Error('due dita: il lancio deve essere alto ('+await aim()+')');
      await TT('touchStart',[{x:380,y:240,id:1},{x:300,y:300,id:2},{x:200,y:300,id:3}]);await page.waitForTimeout(150);
