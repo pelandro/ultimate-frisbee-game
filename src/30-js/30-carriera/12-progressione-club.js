@@ -14,11 +14,11 @@ const staffLv=k=>(SV&&SV.staff&&SV.staff[k])|0;
 const staffCost=k=>50*(staffLv(k)+1);
 const staffWage=()=>Object.keys(STAFF).reduce((a,k)=>a+STAFF_WAGE[staffLv(k)],0);
 // buyStaff (migliorare chi hai gia'): 25-staff-persone.js
-// fatica degli allenamenti: il Campo la riduce del 6% per livello
-const trCostK=()=>1-0.06*facLv('camp');
-// moltiplicatore degli allenamenti: campo, allenatore e mentore insieme non superano mai +50% (il Campo da' il 6% per livello: prima il 10%, e con Campo 3 e Allenatore 3 il resto non serviva piu')
+// Il Centro sportivo riduce la fatica durante le sedute.
+const trCostK=()=>1-0.04*facLv('camp');
+// Centro sportivo, allenatore e mentore migliorano le sedute fino al tetto comune.
 const TRAIN_CAP=1.5;
-const trainMul=p=>carGrowK()*Math.min(TRAIN_CAP,(1+0.06*facLv('camp'))*(1+0.05*staffLv('coach'))*(p.age<=23?1+(0.07+(p.age<=21&&hasTr('men','tal')?0.035:0))*staffLv('men'):1));
+const trainMul=p=>carGrowK()*Math.min(TRAIN_CAP,(1+0.05*facLv('camp'))*(1+0.05*staffLv('coach'))*(p.age<=23?1+(0.07+(p.age<=21&&hasTr('men','tal')?0.035:0))*staffLv('men'):1));
 /* ---- SPECIALIZZAZIONI (le regole stanno in 10-sim/11b-specializzazioni.js) ---- */
 const specCost=p=>Math.round((40+2*Math.max(0,ovrX(p)-50))*(p.spec?1.5:1));
 function setSpec(p,id){

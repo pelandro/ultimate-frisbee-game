@@ -150,13 +150,14 @@ tip:`Un giovane con potenziale alto che oggi è scarso diventa il titolare di do
 tip:`Fai Recupero il giorno prima di una partita importante. Punta su 2-3 giovani con potenziale alto.`},
 {id:'car-club',t:'Società: strutture e staff',w:'Colonna › Società',b:[
 `Stemmi e sigle identificano la squadra nei menu e sul campo. La Società ha quattro parti: <b>Conti</b>, <b>Strutture</b>, <b>Staff</b> e <b>Bacheca</b> (albo d’oro, traguardi, record).`,
-[`<b>Strutture</b> (livello massimo 5, con una manutenzione a ogni partita): <b>Campo di allenamento</b> (allenamenti), <b>Fisioterapia</b> (recupero), <b>Vivaio</b> (giovani), <b>Tribune</b> (più posti, utili se lo stadio si riempie), <b>Rete di osservatori</b> e <b>Sede del club</b>.`,
-`Le strutture si consumano: d’estate possono perdere un livello. Se ne tieni una almeno al livello 3 per metà stagione ricevi un premio.`,
+[`<b>Centro sportivo</b>: allena la squadra e falla recuperare.`,
+`<b>Vivaio e osservatori</b>: scopri giovani e osservali spendendo meno.`,
+`<b>Tribune</b>: fai spazio ai tifosi e incassa dagli affitti.`,
 `<b>Staff</b>: Allenatore, Preparatore atletico, Analista tattico e Mentore dei giovani, ognuno con un livello da 1 a 3. «Scegli chi assumere» mostra tre candidati; lo stipendio è a ogni partita.`]],
-tip:`Con pochi crediti parti dal Campo di allenamento. Le Tribune servono solo se lo stadio è pieno.`},
+tip:`Se fai spesso il tutto esaurito, valuta di ampliare le Tribune.`},
 {id:'car-soldi',t:'Soldi, tifosi e morale',b:[
 `Ogni partita ha il suo <b>conto</b>, in Società › Conti:`,
-[`<b>Entrate</b>: biglietti (solo in casa), sponsor e premio vittoria.`,
+[`<b>Entrate</b>: biglietti (in casa), affitti dell’impianto, sponsor e premio vittoria.`,
 `<b>Uscite</b>: gli <b>stipendi</b> sono la spesa più grande, poi strutture, staff e viaggi. Anche una vittoria può chiudersi in rosso.`],
 `A inizio stagione scegli lo <b>sponsor</b>: Sicuro (più soldi a partita, bonus piccolo) o Ambizioso (meno soldi, bonus grande se raggiungi l’obiettivo). Il suo marchio va sui cartelloni del tuo campo.`,
 `<b>Conti in rosso</b>: mercato, strutture e staff si fermano e il morale cala. Se dura troppo vieni <b>esonerato</b> e riparti da una squadra più debole.`,

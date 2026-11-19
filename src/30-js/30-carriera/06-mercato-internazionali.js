@@ -77,7 +77,8 @@ function buildMarket(){
   const lv=squadLevel(),sd=SV.seed+'|mk|'+SV.season+'|'+(SV.mkN=(SV.mkN||0)+1),R=mulberry32(hashStr(sd)),out=[],viv=SV.fac.viv|0,nY=4+Math.min(viv,2),nSale=3,nStar=1+(SV.rep>=40?1:0)+(SV.rep>=70&&R()<0.4?1:0),nFree=MARKET_N-nY-nSale-nStar;
   // giovani: potenziale a fasce attorno al livello della serie (29-potenziali.js); adulti: livello tra la tua squadra e la tua serie, poco margine
   const ry=potRef('mkt'),la=potRef('adult');
-  for(let i=0;i<nY;i++){const o=genPlayer(ry-11+R()*7+viv,16+Math.floor(R()*4),sd+'y'+i,potB(potDraw('mkt',ry,R,viv).p));out.push({o,kind:'Giovane promessa',from:null});}
+  const readyBonus=Math.min(3,viv);   // il vivaio alto offre più potenziale, con giovani ancora da far crescere
+  for(let i=0;i<nY;i++){const o=genPlayer(ry-11+R()*7+readyBonus,16+Math.floor(R()*4),sd+'y'+i,potB(potDraw('mkt',ry,R,viv).p));out.push({o,kind:'Giovane promessa',from:null});}
   for(let i=0;i<nFree;i++){const l0=la-5+R()*9,ag=23+Math.floor(R()*11),o=genPlayer(l0,ag,sd+'f'+i,adultPot(l0,ag,R));out.push({o,kind:'Svincolato',from:null});}   // un adulto ha poco margine
   const teams=Object.keys(SV.rost).filter(n=>SV.rost[n]&&SV.rost[n].length>14&&teamLevel(n)>=lv-14&&teamLevel(n)<=lv+12);   // club del tuo livello, non i migliori della lega
   for(let i=0;i<nSale&&teams.length;i++){

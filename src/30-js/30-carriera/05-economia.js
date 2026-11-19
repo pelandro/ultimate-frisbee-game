@@ -20,11 +20,35 @@ const wageSeason=list=>{const v=list.map(o=>wageOf(o)).sort((a,b)=>b-a);return v
 const wageBill=()=>Math.round(wageSeason(SQ)/15);
 const wagePart=p=>SQ.length>WAGE_FULL?wageW(SQ.slice().sort((a,b)=>wageOf(b)-wageOf(a)).indexOf(p)):1;
 const wageRes=p=>wagePart(p)<1;   // riserva: oltre i 14 stipendi piu' alti
-// STRUTTURE: sei, fino al livello 5 (FAC_MAX). Costano sempre di piu', hanno una manutenzione a partita e d'estate possono perdere un livello (11-carriera-dinamica.js)
+// La spesa sale con il livello. L'impianto ha una voce a parte: gli affitti sono già al netto della sua gestione.
 const FAC_MAX=5;
-const FAC={camp:['Campo di allenamento','Gli allenamenti rendono il 6% in più per livello e stancano il 6% in meno'],fis:['Fisioterapia','Più recupero a ogni giornata e infortuni meno frequenti (−12% per livello)'],viv:['Vivaio','Più giovani promesse sul mercato, e più forti'],
-  stad:['Tribune','Stadio più capiente: +55% di posti per livello (se i tifosi sono tanti si riempie, e l’incasso cresce)'],oss:['Rete di osservatori','Osservare un giocatore costa il 15% in meno per livello'],sede:['Sede del club','Affiatamento più rapido e morale di base più alto']};
+const FAC={
+  camp:['Centro sportivo','Allenati meglio e limita gli infortuni'],
+  viv:['Vivaio e osservatori','Trova più giovani e spendi meno per osservarli'],
+  stad:['Tribune','Ospita più tifosi e incassa dagli affitti']
+};
+const FAC_PRICES=[40,55,75,100,125];
+const facTotalCost=lv=>FAC_PRICES.slice(0,lv).reduce((sum,cost)=>sum+cost,0);
 const facLv=k=>(SV.fac&&SV.fac[k])|0;
-const facCost=k=>Math.round(60*(facLv(k)+1)*(1+0.2*facLv(k)));   // 60, 144, 252, 384, 540
-function buyFac(k){const c=facCost(k);if(facLv(k)>=FAC_MAX||SV.cash<c)return false;SV.cash-=c;SV.fac[k]=(SV.fac[k]|0)+1;news('Struttura migliorata: '+FAC[k][0]+' al livello '+SV.fac[k]+'.');return true;}
+const facCost=k=>Object.hasOwn(FAC,k)?FAC_PRICES[facLv(k)]??0:0;
+const facRecovery=()=>[0,0,1,1,2,3][facLv('camp')];
+const facInjuryK=()=>1-0.08*facLv('camp');
+function migrateFacilities(){
+  if(!SV.fac)SV.fac={};
+  // Livelli e giornate dei premi seguono il ramo già più sviluppato.
+  for(const [key,old] of [['camp','fis'],['viv','oss']]){
+    for(const data of [SV.fac,SV.facDays,SV.facKeep])if(data&&Object.hasOwn(data,old)){
+      data[key]=Math.max(data[key]|0,data[old]|0);
+      delete data[old];
+    }
+  }
+  // Si restituisce il costo della Sede alla scala nuova una sola volta.
+  if(Object.hasOwn(SV.fac,'sede')){
+    SV.cash+=facTotalCost(clamp(facLv('sede'),0,FAC_MAX));
+    delete SV.fac.sede;
+  }
+  for(const data of [SV.facDays,SV.facKeep])if(data){delete data.sede;delete data.stad;}
+  if(SV.evt?.id==='guasto')SV.evt=null;
+}
+function buyFac(k){const c=facCost(k);if(!c||SV.cash<c)return false;SV.cash-=c;SV.fac[k]=(SV.fac[k]|0)+1;news('Struttura migliorata: '+FAC[k][0]+' al livello '+SV.fac[k]+'.');return true;}
 /* ---- mercato: giovani promesse, svincolati e giocatori messi in vendita dalle altre squadre. Del potenziale si vede solo un intervallo: gli osservatori lo stringono ---- */

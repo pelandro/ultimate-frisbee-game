@@ -6,7 +6,7 @@ function careerSelfTest(seasons,seed){
   const bak=hasCareer()?(persist(),JSON.stringify(SV)):null,R0=Math.random,q0=QM.on,rows=[],row=(name,val,ok,note)=>({name,val,ok:!!ok,note:note||''});
   Math.random=mulberry32(seed||2026);QM.on=true;talentGrow.n=0;
   const hide=()=>{for(const id of ['simres','alerts','evt'])$(id).classList.add('hidden');};
-  let aimChk=[],aimN=[],lgBad=[],stories=0,derby=0,spec=0,goalsOk=0,goalsKo=0,duoMax=0,err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,worn=0,keep=0,signed=0,poDays=0,poTit=0,sizeBad=[],sz0=null,moneyBad=[],ven={H:0,A:0,N:0},spBad=[],spSeen=new Set(),bonusEv=0,netTot=0,matchesTot=0;
+  let aimChk=[],aimN=[],lgBad=[],stories=0,derby=0,spec=0,goalsOk=0,goalsKo=0,duoMax=0,err='',bad=[],inj=0,evts=0,champ=0,promo=0,seasonsDone=0,cashMax=-1e9,cashMin=1e9,pw=[],maxed=0,keep=0,signed=0,poDays=0,poTit=0,sizeBad=[],sz0=null,moneyBad=[],ven={H:0,A:0,N:0},spBad=[],spSeen=new Set(),bonusEv=0,netTot=0,matchesTot=0;
   try{
     startCareer(SERIES.C[2]);
     sz0={A:SV.mem.A.length,B:SV.mem.B.length,C:SV.mem.C.length};
@@ -40,7 +40,7 @@ function careerSelfTest(seasons,seed){
           if(isUS()){const l=sp0.map(d=>d.obj.lvl*10+(8-(d.obj.cr||8)));if(!(l[2]>=l[1]&&l[1]>=l[0]))spBad.push(`S${s}: obiettivi USA ${sp0.map(d=>d.obj.id).join('/')}`);}}   // sicuro: piu' soldi a partita e bonus piu' piccolo; ambizioso: l'opposto
         simCareerMatch();hide();
         {const L=SV.lastMoney;   // il conto della partita: le voci tornano, mai oltre la capienza, biglietti solo in casa o al torneo, trasferta solo fuori casa
-         if(!L||L.net!==L.gate+L.spon+L.wb-L.trv-L.wage-L.up-L.stf||!isFinite(L.net)||(L.v==='H'&&(L.att>L.cap||L.att<=0||L.trv))||(L.v==='A'&&(L.gate||!L.trv))||(L.v==='N'&&!L.trv)||L.spon<=0||L.wb<0||(!L.win&&L.wb))moneyBad.push(`S${s} G${r+1}: ${L?JSON.stringify(L).slice(0,90):'manca'}`);
+         if(!L||L.net!==L.gate+L.rent+L.spon+L.wb-L.trv-L.wage-L.up-L.stf||!isFinite(L.net)||(L.v==='H'&&(L.att>L.cap||L.att<=0||L.trv))||(L.v==='A'&&(L.gate||!L.trv))||(L.v==='N'&&!L.trv)||L.spon<=0||L.wb<0||(!L.win&&L.wb))moneyBad.push(`S${s} G${r+1}: ${L?JSON.stringify(L).slice(0,90):'manca'}`);
          else{ven[L.v]++;netTot+=L.net;matchesTot++;}}
         inj+=(SV.alerts||[]).filter(a=>a.id>a0&&a.k==='inj').length;   // gli infortuni di questa giornata (in partita e in allenamento)
         if(SV.evt){evts++;if(SV.evt.id==='bonus')bonusEv++;const e=SV.evt,ops=EVT[e.id].o(e.a),ok=ops.map((o,i)=>(!o[2]||o[2]())?i:-1).filter(i=>i>=0);evtAnswer(ok[Math.floor(Math.random()*ok.length)]);}
@@ -66,7 +66,7 @@ function careerSelfTest(seasons,seed){
       const n0=SV.news.length;newSeason();hide();seasonsDone++;
       {const L=aiMarket.last,al=(SV.alerts||[]).find(x=>x.k==='mkt'&&x.s===SV.season),all=Object.values(SV.rost).filter(r=>r&&r.length).flat();   // mercato tra le squadre del computer (31-mercato-ia.js)
        aimChk.push(!!L&&L.n<=L.cap&&L.per<=AIM.max&&L.perCh<=AIM.chMoves&&L.bud&&(L.n+L.nCh===0||(!!al&&al.data&&al.data.mv.length===Math.min(AIM.show,L.n+L.nCh)))&&L.ros&&new Set(all).size===all.length);aimN.push(L?L.n:-1);}
-      worn+=SV.news.filter(x=>/Usura estiva/.test(x.txt)&&x.s===SV.season).length;keep+=SV.news.filter(x=>/Premi di mantenimento/.test(x.txt)&&x.s===SV.season).length;
+      keep+=SV.news.filter(x=>/Premi di mantenimento/.test(x.txt)&&x.s===SV.season).length;
       for(const a of SV.alerts)a.seen=1;
     }
     maxed=SQ.filter(p=>ovrX(p)>=90).length/Math.max(1,SQ.length);
@@ -142,7 +142,7 @@ function careerSelfTest(seasons,seed){
     rows.push(row('Infortuni per stagione (partite simulate)',(inj/Math.max(1,seasonsDone)).toFixed(1),inj>=1&&inj/Math.max(1,seasonsDone)<=12,'almeno uno in tutto il test, al massimo 12 a stagione (la squadra del test si riposa quasi sempre: ne servono pochi)'));
     rows.push(row('Imprevisti per stagione',(evts/Math.max(1,seasonsDone)).toFixed(1),evts/Math.max(1,seasonsDone)>=0.4&&evts/Math.max(1,seasonsDone)<=4,'tra 0,4 e 4'));
     rows.push(row('Scudetti e promozioni',champ+' e '+promo,champ<=Math.ceil(seasons*0.6),'nessun dominio automatico'));
-    rows.push(row('Premi di mantenimento e usura estiva',keep+' e '+worn,true));
+    rows.push(row('Premi di mantenimento',String(keep),true));
     rows.push(row('Altre serie: tutte le giornate giocate, vittorie = sconfitte',lgBad.length?lgBad.slice(0,2).join('; '):'sì',!lgBad.length));
     rows.push(row('Storie dal campionato per stagione',(stories/Math.max(1,seasonsDone)).toFixed(1),stories/Math.max(1,seasonsDone)>=2,'almeno 2'));
     rows.push(row('Derby giocati nelle stagioni',String(derby),derby>=seasons*0.5,'almeno uno ogni due stagioni'));
@@ -175,8 +175,8 @@ function careerSelfTest(seasons,seed){
          n>200&&Math.abs(c[0]/n-0.14)<0.04&&Math.abs(c[1]/n-0.44)<0.05&&c[4]/n<0.06&&nh>0&&nl>0&&hi/nh>lo/nl+5));}
       let dn=0,up=0,lost=0;const N=1500;
       for(let i=0;i<N;i++){const o=genPlayer(50,17,'sorp|'+i,potB(70));const s0=KEYS.reduce((a,k)=>a+o.s[k],0),t0=o.tl+o.tf+o.tv;for(let y=0;y<6;y++){o.pvx=0;const b=KEYS.reduce((a,k)=>a+o.s[k],0);o.age++;potSurprise(o);if(KEYS.reduce((a,k)=>a+o.s[k],0)<b)lost++;}const t1=o.tl+o.tf+o.tv;if(t1<t0)dn++;else if(t1>t0)up++;}
-      {const mk=(ov,age)=>{const o=genPlayer(ov,age,'wg|'+ov+'|'+age,potB(ov+2));return o;},lo=mk(50,26),hi=mk(85,26),f0=SV.fac?SV.fac.oss:0;
-       const w1=wageOf(lo),w2=wageOf(hi),s1=scoutCost(lo),s2=scoutCost(hi);if(SV.fac)SV.fac.oss=3;const s3=scoutCost(hi);if(SV.fac)SV.fac.oss=f0;
+      {const mk=(ov,age)=>{const o=genPlayer(ov,age,'wg|'+ov+'|'+age,potB(ov+2));return o;},lo=mk(50,26),hi=mk(85,26),f0=SV.fac?SV.fac.viv:0;
+       const w1=wageOf(lo),w2=wageOf(hi),s1=scoutCost(lo),s2=scoutCost(hi);if(SV.fac)SV.fac.viv=3;const s3=scoutCost(hi);if(SV.fac)SV.fac.viv=f0;
        rows.push(row('Stipendi, osservazioni e premio promozione: lo stipendio sale con l\'Overall, osservare costa di più chi vale di più, gli Osservatori fanno risparmiare, la promozione in A paga più di quella in B',
          `stipendio ${w1.toFixed(1)} e ${w2.toFixed(1)} a stagione, osservare ${s1} e ${s2} (${s3} con Osservatori 3), promozione ${promoPrize('B')} e ${promoPrize('A')}`,
          w2>w1*4&&w1>=5&&s2>s1&&s3<s2&&promoPrize('A')>promoPrize('B')));}

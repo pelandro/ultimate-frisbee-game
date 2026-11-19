@@ -192,7 +192,7 @@ function simCareerMatch(){
   const gk=carGrowK();   // crescita secondo la serie e il distacco (29-potenziali.js), come nelle partite giocate
   for(const p of SQ){p.m=newCounters();if(on.has(p.id)&&!p.inj){p.m.pts=1;p.m.sh=((lo.includes(p)?1:0)+(ld.includes(p)?1:0))/2;growBy(p,simParts(p,1),XP_ROLE[posOf(p)]*gk);}}   // sh: quota di mete giocate (fatShare)
   simMatchStats(r.a);
-  simInjuries([...on].map(id=>SQ[id]).filter(Boolean),1-0.12*facLv('fis'));   // dopo la crescita: chi si fa male in partita la partita l'ha giocata
+  simInjuries([...on].map(id=>SQ[id]).filter(Boolean),facInjuryK());   // dopo la crescita: chi si fa male in partita la partita l'ha giocata
   const msg=recordResult(w,r.a,r.b);
   showSim(w,`${SV.team} ${r.a} – ${r.b} ${m.name}`,msg,()=>renderHome());$('srMoney').innerHTML=moneyHTML(SV.lastMoney);
 }

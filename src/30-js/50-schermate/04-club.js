@@ -8,12 +8,17 @@ function renderClub(){
   let h='';
   if(clTab==='man'||clTab==='str'||clTab==='stf'){
     // Gestione divisa in tre pagine (Società, Strutture, Staff): prima erano tutte insieme e la schermata era troppo piena. Le spiegazioni lunghe stanno dietro al tasto «i» di ciascuna voce
-    const inf=(k,txt)=>`<button type="button" class="inf${clInfo.has(k)?' on':''}" data-inf="${k}" aria-expanded="${clInfo.has(k)}" aria-label="${esc(k==='soc'?'Entrate e uscite della società':(k[0]==='f'&&FAC[k.slice(1)]?FAC[k.slice(1)][0]:k))}">i</button>${clInfo.has(k)?`<p class="infp">${txt}</p>`:''}`;
+    const inf=(k,txt)=>`<button type="button" class="inf${clInfo.has(k)?' on':''}" data-inf="${k}" aria-expanded="${clInfo.has(k)}" aria-label="${esc(k==='soc'?'Entrate e uscite della società':k)}">i</button>${clInfo.has(k)?`<p class="infp">${txt}</p>`:''}`;
     const tick=(lv,max)=>`<span class="tk" aria-label="livello ${lv} su ${max}">${Array.from({length:max},(_,i)=>`<i class="${i<lv?'on':''}"></i>`).join('')}</span>`;
     const cSoc=`<div class="ccard"><h3>Società ${inf('soc',`<p><b>Entrate</b>. In casa incassi i biglietti: lo stadio ha <b>${stadCap()}</b> posti e i tifosi, la posta in gioco e la forma decidono quanti ne riempi. In trasferta niente biglietti e <b>${travelCost()}</b> di viaggio; in campo neutro (tornei, finali) i biglietti si dividono a metà. Lo sponsor paga a ogni partita e la lega premia ogni vittoria, di più nelle partite importanti.</p><p><b>Uscite</b>. Gli stipendi costano <b>${wageBill()}</b> a partita, la manutenzione delle strutture <b>${facUpkeep()}</b>.</p><p>La reputazione decide chi accetta di venire; morale e affiatamento spostano un poco la forma dei tuoi in partita.</p>`)}</h3><div class="dcash"><span>Crediti</span><b>${SV.cash}</b></div>${redNoteHTML()}${statBar('Tifosi',fansOf(),'#ff9a3a','%')}${statBar('Reputazione',SV.rep,'#ffd23f')}<div class="dbar"><span>Morale</span><span class="cbar"><i style="width:${Math.round(SV.mor)}%;background:#4fe58f"></i></span><b>${moodFace(teamMoodKey())}</b></div>${statBar('Affiatamento',SV.chem,'#5ac8ff')}</div>`;
     const cObj=sponsorCardHTML(),cLed=ledgerHTML();
     const cBud=budgetHTML();
-    const cStr=`<div class="ccard"><h3>Strutture</h3>${Object.keys(FAC).map(k=>{const lv=facLv(k),c=facCost(k),dd=(SV.facDays&&SV.facDays[k])|0,rn=SV.facRnd|0,pb=budgetPayback(k);return `<div class="fbar"><span class="fn">${FAC[k][0]}${inf('f'+k,`${FAC[k][1]}.${pb?(pb.n?` Il prossimo livello rende circa ${pb.gain.toFixed(1).replace('.',',')} crediti a partita: si ripaga in ${pb.n} partite.`:' Al prossimo livello la manutenzione in più supera l’incasso in più.'):''} Premio estivo (livello ${KEEP_LV}+ per almeno metà stagione): ${FAC_KEEP[k]}.${rn?` Finora ${dd} giornate su ${rn}.`:''}`)}</span>${tick(lv,FAC_MAX)}<button type="button" class="sec" data-fac="${k}"${lv>=FAC_MAX||SV.cash<c?' disabled':''} title="${lv>=FAC_MAX?'Livello massimo':(SV.cash<c?'Servono '+c+' crediti':'Migliora per '+c+' crediti')}">${lv>=FAC_MAX?'Massimo':'Migliora · '+c}</button></div>`;}).join('')}<p class="sub">Manutenzione ${facUpkeep()} a partita. D’estate una struttura avanzata può perdere un livello.</p></div>`;
+    const facilityRows=clTab==='str'?Object.entries(FAC).map(([k,[name,description]])=>{
+      const lv=facLv(k),cost=facCost(k);
+      const seats=k==='stad'?` <strong>${stadCap()} posti.</strong>`:'';
+      return `<div class="fbar"><span class="fn">${name}</span>${tick(lv,FAC_MAX)}<button type="button" class="sec" data-fac="${k}"${!cost||SV.cash<cost?' disabled':''}>${cost?'Migliora · '+cost:'Massimo'}</button></div><p class="sub">${description}.${seats}</p>`;
+    }):[];
+    const cStr=`<div class="ccard"><h3>Strutture</h3>${facilityRows.join('')}<p class="sub">Manutenzione ${facUpkeep()} crediti a partita.</p></div>`;
     const cStf=clTab==='stf'?staffHTML(inf):'',cGoal=`<div class="ccard">${goalsHTML()}</div>`;
     const cNews=`<div class="ccard" style="grid-column:1/-1"><h3>Notizie</h3>${SV.news.length?`<ul class="nlist">${SV.news.slice(0,8).map(n=>`<li><i>S${n.s}·G${n.r}</i>${esc(n.txt)}</li>`).join('')}</ul>`:'<p>Nessuna notizia.</p>'}</div>`;
     h='<div class="cgrid">'+(clTab==='man'?cSoc+cObj+cLed+cGoal+cNews:(clTab==='str'?cStr+cBud:cStf))+'</div>';
@@ -154,9 +159,21 @@ $('clBox').addEventListener('click',e=>{
   const sb=e.target.closest('#clSub [data-k]');if(sb){clTab=sb.dataset.k;renderClub();return;}
   const ib=e.target.closest('[data-inf]');if(ib){const k=ib.dataset.inf;if(clInfo.has(k))clInfo.delete(k);else clInfo.add(k);renderClub();return;}
   const f=e.target.closest('[data-fac]');
-  if(f){const k=f.dataset.fac,c=facCost(k),lv=facLv(k);if(lv>=FAC_MAX||SV.cash<c){renderClub();return;}
-    const levels=Object.keys(FAC).reduce((sum,key)=>sum+facLv(key),0),upkeep=Math.round((levels+1)*.2);
-    askConfirm({title:'Migliorare '+FAC[k][0]+'?',html:`<p>${esc(FAC[k][1])}.</p><table class="cfmt"><tr><td>Livello</td><td>${lv} → ${lv+1} su ${FAC_MAX}</td></tr><tr><td>Costo</td><td>${c} crediti</td></tr><tr><td>Crediti dopo</td><td${SV.cash-c<30?' class="bad"':''}>${SV.cash-c} crediti</td></tr></table><p>Manutenzione totale per partita: ${facUpkeep()} → ${upkeep} crediti.</p>`,ok:'Migliora per '+c,onOk:()=>{if(buyFac(k)){clMsg='';persist();}renderClub();}});
+  if(f){const k=f.dataset.fac,c=facCost(k),lv=facLv(k);if(!c||SV.cash<c){renderClub();return;}
+    const extra=k==='stad'
+      ?`<tr><td>Posti</td><td>${stadCap()} → ${stadCap(lv+1)}</td></tr>`
+      :`<tr><td>Manutenzione a partita</td><td>${facUpkeep()} → ${facUpkeep(k)}</td></tr>`;
+    const estimate=k==='stad'?`<p>${paybackText(budgetPayback(k))}</p>`:'';
+    askConfirm({
+      title:'Migliorare '+FAC[k][0]+'?',
+      html:`<p>${esc(FAC[k][1])}.</p><table class="cfmt"><tr><td>Livello</td><td>${lv} → ${lv+1}</td></tr><tr><td>Costo</td><td>${c} crediti</td></tr><tr><td>Crediti dopo</td><td${SV.cash-c<30?' class="bad"':''}>${SV.cash-c}</td></tr>${extra}</table>${estimate}`,
+      ok:'Migliora per '+c,
+      onOk:()=>{
+        if(buyFac(k)){clMsg='';persist();}
+        renderClub();
+        $('clBox').querySelector('[data-fac="'+k+'"]:not([disabled])')?.focus();
+      }
+    });
     return;}
   const sf=e.target.closest('[data-staff]');
   if(sf){
