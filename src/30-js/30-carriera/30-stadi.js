@@ -9,6 +9,16 @@ function lgStadTier(){
   return SV.sr==='A'?2:(SV.sr==='B'?1:0);
 }
 const myStadTier=()=>{const l=facLv('stad');return l>=4?2:(l>=2?1:0);};   // il tuo impianto cresce con le Tribune: gradoni dal livello 2, stadio dal 4
+/* LIVELLO DELL'IMPIANTO IN PARTITA (G.vn.lv, da 0 a 5): quello che si vede a bordo campo (20-ui/23-tribune.js, 24-bordocampo-persone.js).
+   Il tuo campo segue le Tribune livello per livello (ogni acquisto aggiunge qualcosa); in trasferta conta la serie, con un livello in piu' o in meno per i club
+   di nome o piccoli; in campo neutro c'e' il grande stadio. Vale per tutti i campionati: la serie piu' alta parte da 4, il USA da 3.
+   Il tier (0-2) dei conti resta quello di prima: lv serve solo al disegno. */
+function lgStadLv(){
+  if(isUS())return 3;
+  if(isLN()){const i=lnTiers().findIndex(t=>t.id===SV.ln.tier);return i<=0?4:(i===1?2:0);}
+  return SV.sr==='A'?4:(SV.sr==='B'?2:0);
+}
+const myStadLv=()=>clamp(facLv('stad'),0,5);
 // in campo neutro a centrocampo c'e' il nome della manifestazione
 const neutralName=()=>SV.event==='eu'?'EUCF':(isUS()?'NATIONALS':(isLN()?'FINALI':'FINALE'));
 function careerVenue(m){
@@ -16,16 +26,16 @@ function careerVenue(m){
   const v=venueOf(),K=Math.sqrt(ECO.K()),imp=phaseImp(),derby=v!=='N'&&m.name===SV.riv&&SV.event==='camp';
   const o={v,home:null,tier:0,n:0,cap:0,my:0.5,big:derby||imp>1,ev:'',spon:'',comp:'',care:-1};
   if(v==='H'){
-    const a=attendance(m,'H');Object.assign(o,{home:SV.team,tier:myStadTier(),n:a.att,cap:a.cap,my:0.1,care:facLv('camp')});   // my: i pochi tifosi ospiti
+    const a=attendance(m,'H');Object.assign(o,{home:SV.team,tier:myStadTier(),lv:myStadLv(),n:a.att,cap:a.cap,my:0.1,care:facLv('camp')});   // my: i pochi tifosi ospiti
     if(SV.sp&&SV.sp.name)o.spon=SV.sp.name;   // il tuo sponsor sui cartelloni di casa
   }else if(v==='A'){
     // lo stadio avversario: quello della serie, piu' grande per i club di nome; si riempie di piu' per i club di nome e le partite che contano
     const lv=clamp(clubLvl(m.name),0,1),tier=clamp(lgStadTier()+(lv>0.75?1:0)-(lv<0.25?1:0),0,2),cap=Math.round(450*K*(1+0.8*tier));
     const n=Math.round(cap*clamp(0.3+0.45*lv+(interestOf(m)-1)*0.9,0.2,1));
-    Object.assign(o,{home:m.name,tier,n,cap,my:clamp(0.05+fansOf()/100*0.22,0.05,0.27)});   // i tuoi tifosi in trasferta: pochi, di piu' con tanti tifosi
+    Object.assign(o,{home:m.name,tier,lv:clamp(lgStadLv()+(lv>0.75?1:0)-(lv<0.25?1:0),0,5),n,cap,my:clamp(0.05+fansOf()/100*0.22,0.05,0.27)});   // i tuoi tifosi in trasferta: pochi, di piu' con tanti tifosi
   }else{
     const cap=Math.round(450*K*3.2),fill=clamp(0.5+0.22*(imp-1),0.5,1);
-    Object.assign(o,{tier:2,cap,n:Math.round(cap*fill),my:clamp(0.3+fansOf()/100*0.25,0.3,0.55),ev:neutralName()});
+    Object.assign(o,{tier:2,lv:imp>1?5:4,cap,n:Math.round(cap*fill),my:clamp(0.3+fansOf()/100*0.25,0.3,0.55),ev:neutralName()});
     if(SV.sp&&SV.sp.name)o.spon=SV.sp.name;   // in campo neutro il tuo sponsor e' tra quelli della manifestazione
   }
   o.comp=SV.event==='eu'?'EUCF':(SERIES_NAME[SV.sr]||'');   // la competizione, su un cartellone (18-cartelloni.js)
