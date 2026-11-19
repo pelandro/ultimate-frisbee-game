@@ -14,7 +14,7 @@ function drawCupScene(canvas,looks,kit,europe,seconds,reduced){
   const liftTime=Math.max(0,t-1.2),bounce=reduced?0:Math.sin(liftTime*10)*Math.max(0,2-liftTime);
   const cupY=68-Math.round(25*raise+bounce);
   const accent=europe?'#7bb6ff':'#f3ba5b';
-  box(0,0,240,116,europe?'#172949':'#1c2539');
+  box(0,0,240,116,europe?'#2f4462':'#293a55');
   for(const x of [17,218]){
     box(x+2,10,2,34,'#374862');
     box(x-6,7,17,7,'#465c7b');box(x-4,9,13,3,'#f6e8af');
@@ -91,6 +91,7 @@ function drawCupScene(canvas,looks,kit,europe,seconds,reduced){
 function openCupScene(title,after){
   cancelAnimationFrame(cupFrame);
   const canvas=$('cupPark'),team=SV.team;
+  canvas.classList.toggle('europe',!!title.europe);
   const kit=KITS[0][hashStr('kit|'+team)%KITS[0].length];
   const ids=matchLine('lineO');
   const looks=CUP_PLAYERS.map((_,i)=>lookOf(SQ[ids[i]]||SQ[i]));

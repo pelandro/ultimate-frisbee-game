@@ -9,7 +9,7 @@
 /* traguardi di punti: colonna a destra del menu (a capo sotto, sugli schermi stretti) */
 .urcols{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
 .urcol{flex:1 1 400px;max-width:440px}
-.urm{flex:1 1 300px;max-width:420px;background:#141a36;border:3px solid #fff;box-shadow:4px 4px 0 #000;padding:6px 8px;margin-top:6px}
+.urm{flex:1 1 300px;max-width:420px;background:#304564;border:3px solid #fff;box-shadow:4px 4px 0 #000;padding:6px 8px;margin-top:6px}
 .urmh{font-family:var(--pfont);font-size:12px;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
 .urmr{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:8px;align-items:center;padding:0 6px;border:3px solid transparent;opacity:.5}
 .urmr .disc{width:46px;animation:none;filter:none}

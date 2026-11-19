@@ -3,6 +3,7 @@
    e cerca i difetti che i test funzionali non vedono: elementi che escono dallo schermo, pulsanti che si sovrappongono,
    pulsanti troppo piccoli da toccare, pagine che scorrono di lato. Se Playwright non c'e' la prova viene saltata (in CI e' obbligatoria). */
 const fs=require('fs'),os=require('os'),path=require('path'),{build}=require('./build');
+const titleMenu=async(pg,id)=>{if(!(await pg.locator(id).isVisible()))await pg.click('#tMore');await pg.click(id);};   // le voci Guida, Guida passo passo, Audio e Impostazioni stanno nel riquadro «Altro»
 let chromium;
 try{({chromium}=require('playwright'));}
 catch(e){if(process.env.CI){console.error('Playwright non installato');process.exit(1);}console.log('Prova di impaginazione saltata: Playwright non e\' installato');process.exit(0);}
@@ -107,15 +108,14 @@ const DET=()=>{
     const look=async name=>{await page.waitForTimeout(150);const r=await page.evaluate(DET);checks++;contrasts+=r.contrasts;targets+=r.targets;centres+=r.centres;for(const x of r.errors)errs.push(S.n+' · '+name+': '+x);};
     try{
       await look('menu iniziale');
-      await page.click('#tHelp');await look('Guida');await page.click('#gdX');
-      await page.click('#tSchool');await look('Allenamento e lezioni');await page.click('#scBack');
-      await page.click('#tSet');for(const [t,n] of [['#sTabGame','Impostazioni · Partita'],['#sTabCtl','Impostazioni · Comandi'],['#sTabScr','Impostazioni · Schermo e audio'],['#sGoDiag','Impostazioni · Avanzate']]){await page.click(t);await look(n);}await page.click('#sBack');
+      await titleMenu(page,'#tHelp');await look('Guida');await page.click('#gdX');
+      await titleMenu(page,'#tSet');for(const [t,n] of [['#sTabGame','Impostazioni · Partita'],['#sTabCtl','Impostazioni · Comandi'],['#sTabScr','Impostazioni · Schermo e audio'],['#sGoDiag','Impostazioni · Avanzate']]){await page.click(t);await look(n);}await page.click('#sBack');
       await page.click('#tQuick');await look('partita veloce');await page.click('#qA');
       await look('catalogo squadre');await page.click('#qpX');await page.click('#qBack');
       await page.click('#tTourn');await look('configurazione torneo');await page.click('#tnBack');
       await page.click('#tUT');await page.click('#umCpu');if(await page.locator('#uPack').isVisible()){await page.click('#uPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');}
       await page.click('#uEquip');await look('Ultimate Team · Equipaggiamento');await page.click('#eqBack');await page.click('#uBack');await page.click('#umBack');
-      await page.click('#tCareer');await look('scelta del campionato');
+      await page.click('#tCareer');await look('Carriera · slot');await page.click('#csBox [data-cnew] >> nth=0');await look('scelta del campionato');
       await page.click('#lgList [data-div="m"]');await look('scelta del campionato maschile');
       await page.click('#lgList [data-lg="IT"]');await look('scelta della squadra');
       await page.click('.tteam >> nth=0');await look('anteprima della rosa');

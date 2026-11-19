@@ -5,6 +5,12 @@ Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattrib
 
 ## Non ancora pubblicato
 - Dopo i conti della partita decisiva, premi Continua per vedere la squadra sul podio mentre alza la coppa insieme.
+- Nuova grafica: tutte le schermate passano dal blu notte a un azzurro grigio più chiaro e leggero, con pulsanti dal bordo morbido, angoli netti e sfondo sfumato. Nuova schermata iniziale «Stadio»: il nome in un’insegna in alto, il disco che vola, lo stadio pieno dietro e i quattro pulsanti su due file.
+- Il gioco si chiama Ultimate Pixel (titolo, nome della pagina e dell’icona, cartelloni a bordo campo).
+- Menu iniziale: «Carriera» apre per prima cosa i tre slot (prima c’era il tasto «Salvataggi» a parte); la modalità Allenamento non c’è più. Dietro il menu si vede il campo grande, con lo stadio pieno.
+- Nuova musica della partita, più adatta al sottofondo: arcade morbido, più lenta (112 battiti), con suoni filtrati, batteria leggera e la melodia solo a tratti.
+- Pubblico più vivo in partita: applausi leggeri in lontananza e trombette da stadio. Si sentono dopo le prese in salto o in tuffo e i blocchi (a volte con la trombetta), alle tue mete (con la fanfara), nei match point, e ogni tanto piano dalla curva.
+- Schermata iniziale più pulita: Guida, Guida passo passo, Audio e Impostazioni stanno in un solo riquadro che si apre con «Altro», in alto a destra.
 - Festeggia i titoli del campionato e dell’EUCF con una coppa animata. Se ti qualifichi all’EUCF, concludilo prima di iniziare il prossimo campionato. L’EUCF ha incassi e premi propri, mentre lo sponsor paga la quota fissa durante il campionato.
 - Salti e tuffi riprendono la tribuna dell’impianto in cui giochi, dal campo comunale al grande stadio illuminato.
 - Nei primi piani di salto e tuffo ogni squadra mantiene la propria divisa, anche nelle scie dei giocatori.

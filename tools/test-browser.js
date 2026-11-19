@@ -29,6 +29,8 @@ catch(e){
   await page.addLocatorHandler(page.locator('#intro:not(.hidden) #inGo'),async()=>{await page.click('#inGo');});
   // la conferenza stampa dopo le partite che contano si salta con un tocco
   await page.addLocatorHandler(page.locator('#press:not(.hidden) #prSkip'),async()=>{await page.click('#prSkip');});
+  const careerOpen=async pg=>{await pg.click('#tCareer');await pg.locator('#slots:not(.hidden)').waitFor();const g=pg.locator('#csBox .csl.on [data-cgo]');if(await g.count())await g.first().click();else await pg.click('#csBox [data-cnew] >> nth=0');};   // Carriera apre gli slot: si continua quella in uso o se ne inizia una
+  const titleMenu=async(pg,id)=>{if(!(await pg.locator(id).isVisible()))await pg.click('#tMore');await pg.click(id);};   // le voci Guida, Guida passo passo, Audio e Impostazioni stanno nel riquadro «Altro»
   const vis_=async(pg,sel)=>{if(!(await pg.locator(sel).isVisible()))throw new Error('non visibile: '+sel);};
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
   const menu=async id=>{for(let i=0;i<3;i++){if(!(await page.locator('#cmenu').isVisible()))await page.click('#hMenu');try{await page.click(id,{timeout:3000});return;}catch(e){}}await page.click(id);};   // i fumetti e gli imprevisti che si aprono da soli chiudono il menu: si riapre   // Opzioni, Guida, Tutorial e «Menu principale» stanno nel menu della barra in alto
@@ -57,11 +59,11 @@ catch(e){
   // Si scrive a pagina caricata e poi si ricarica: uno script iniziale che scrive nel localStorage prima del caricamento, in Chromium, a volte fa perdere i dati dopo una ricarica
   await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   await step('menu iniziale, guida e impostazioni',async()=>{
-    await vis('#title');await page.click('#tHelp');await vis('#guide');await page.click('#gdX');
-    await page.click('#tSet');await vis('#settings');await page.click('#sBack');await vis('#title');
+    await vis('#title');await titleMenu(page,'#tHelp');await vis('#guide');await page.click('#gdX');
+    await titleMenu(page,'#tSet');await vis('#settings');await page.click('#sBack');await vis('#title');
   });
   await step('tutorial completo dal menu: capitoli, lezioni, progressi salvati, Esc e ingresso dalla Guida',async()=>{
-    await page.click('#tTut');await vis('#tut');
+    await titleMenu(page,'#tTut');await vis('#tut');
     if(await page.locator('#tuBody .tuc').count()!==6)throw new Error('il tutorial deve avere 6 capitoli');
     await page.click('#tuBody .tuc >> nth=0');await vis('#tuBody .tul >> nth=0');
     await page.click('#tuBody .tul >> nth=0');
@@ -71,7 +73,7 @@ catch(e){
     if(Object.keys(st).length<2)throw new Error('le lezioni lette devono restare salvate: '+JSON.stringify(st));
     await page.keyboard.press('Escape');await page.waitForTimeout(100);
     if(await page.locator('#tut:not(.hidden)').count())throw new Error('Esc deve chiudere il tutorial');
-    await page.click('#tHelp');await vis('#guide');await page.click('#gdTut');await vis('#tut');
+    await titleMenu(page,'#tHelp');await vis('#guide');await page.click('#gdTut');await vis('#tut');
     if(await page.locator('#guide:not(.hidden)').count())throw new Error('aprendo il tutorial la Guida deve chiudersi');
     await page.click('#tuBody .tuc >> nth=0');await page.click('#tuBody [data-tu^="h"]');   // dal capitolo si torna all'indice
     if(await page.locator('#tuBody .tuc').count()!==6)throw new Error('«Tutti i capitoli» deve riportare all\'indice');
@@ -89,7 +91,7 @@ catch(e){
       if(u<min||u>max||b<1.5||big!=='1')throw new Error(w+'x'+h+': ingrandimento '+u+' (atteso '+min+'-'+max+'), pulsanti '+b);
     }
     // scelta del giocatore: «Molto piu' grande» sul telefono = 1,5, poi si torna all'automatico
-    await page.click('#tSet');await vis('#settings');await page.click('#sTabScr');
+    await titleMenu(page,'#tSet');await vis('#settings');await page.click('#sTabScr');
     await page.click('#sUz button[data-i="3"]');await page.waitForTimeout(150);if(await ui(page)!==1.5)throw new Error('«Molto piu\' grande» deve portare il telefono a 1,5');
     if(!(await page.evaluate(()=>document.documentElement.dataset.ew)))throw new Error('con l\'interfaccia ingrandita lo spazio utile stretto deve attivare le disposizioni compatte (data-ew)');
     await page.click('#sUz button[data-i="0"]');await page.waitForTimeout(150);if(await ui(page)!==0.75)throw new Error('«Piu\' piccola» deve portare il telefono a 0,75');
@@ -100,7 +102,7 @@ catch(e){
     await page.click('#sBack');await vis('#title');   // le schede non hanno sottolivelli: un solo «Indietro»
   });
   await step('diagnostica: carriera di prova di 12 stagioni',async()=>{
-    await page.click('#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgCar');
+    await titleMenu(page,'#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgCar');
     await page.waitForFunction(()=>/^Finito/.test(document.getElementById('dgState').textContent),null,{timeout:120000});
     const no=await page.locator('#dgOut li').filter({hasText:/^NO/}).allInnerTexts(),n=await page.locator('#dgOut li').count();
     await page.click('#sBack');await page.click('#sBack').catch(()=>{});await vis('#title');   // si torna al menu anche se un controllo e' fallito
@@ -109,7 +111,7 @@ catch(e){
     if(/Continua/.test(await page.locator('#tCareerS').innerText()))throw new Error('il test della carriera ha lasciato una carriera salvata');
   });
   await step('diagnostica: campionato USA (32 club, 4 Conference, Play-in, Nationals, 4 carriere da 6 stagioni)',async()=>{
-    await page.click('#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgUs');
+    await titleMenu(page,'#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgUs');
     await page.waitForFunction(()=>/^Finito/.test(document.getElementById('dgState').textContent),null,{timeout:120000});
     const no=await page.locator('#dgOut li').filter({hasText:/^NO/}).allInnerTexts(),n=await page.locator('#dgOut li').count();
     await page.click('#sBack');await page.click('#sBack').catch(()=>{});await vis('#title');
@@ -118,7 +120,7 @@ catch(e){
     if(/Continua/.test(await page.locator('#tCareerS').innerText()))throw new Error('il test USA ha lasciato una carriera salvata');
   });
   await step('divisione femminile: carriera e partita veloce solo tra squadre femminili, testi al femminile',async()=>{
-    await page.click('#tCareer');await vis('#league');
+    await careerOpen(page);await vis('#league');
     if(await page.locator('#lgList [data-div]').count()!==2)throw new Error('prima del campionato si sceglie la divisione (maschile o femminile)');
     if(await page.locator('#lgList [data-lg="IW"]').count())throw new Error('il campionato femminile non deve stare tra i campionati maschili');
     await page.click('#lgList [data-div="w"]');await vis('#team');
@@ -149,7 +151,7 @@ catch(e){
     await page.click('#qBack');await vis('#title');
   });
   await step('carriera USA dall\'interfaccia: Italia/USA, Conference, club, allenatore, Classifica a tre viste, partita simulata',async()=>{
-    await page.click('#tCareer');await vis('#league');await page.click('#lgList [data-div="m"]');if(await page.locator('#lgList .lgcard').count()<2)throw new Error('servono le schede dei campionati');await page.click('#lgList [data-lg="US"]');await vis('#team');
+    await careerOpen(page);await vis('#league');await page.click('#lgList [data-div="m"]');if(await page.locator('#lgList .lgcard').count()<2)throw new Error('servono le schede dei campionati');await page.click('#lgList [data-lg="US"]');await vis('#team');
     if(await page.locator('#tSr button').count()!==8)throw new Error('servono le 8 Conference');
     await page.click('#tSr button[data-k="NE"]');
     if(await page.locator('.tteam').count()!==6)throw new Error('ogni Conference ha 6 club');
@@ -168,7 +170,7 @@ catch(e){
     await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   });
   await step('diagnostica: leghe europee (Belgio, Francia, Germania, Regno Unito: dati, rose, formati, promozioni, coppa europea)',async()=>{
-    await page.click('#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgLn');
+    await titleMenu(page,'#tSet');await vis('#settings');await page.click('#sGoDiag');await page.click('#dgLn');
     await page.waitForFunction(()=>/^Finito/.test(document.getElementById('dgState').textContent),null,{timeout:240000});
     const no=await page.locator('#dgOut li').filter({hasText:/^NO/}).allInnerTexts(),n=await page.locator('#dgOut li').count();
     await page.click('#sBack');await page.click('#sBack').catch(()=>{});await vis('#title');
@@ -177,7 +179,7 @@ catch(e){
     if(/Continua/.test(await page.locator('#tCareerS').innerText()))throw new Error('il test delle leghe europee ha lasciato una carriera salvata');
   });
   await step('carriera in Belgio dall\'interfaccia: paese, livello, club, roster, allenatore, Classifica a tre viste, partita simulata',async()=>{
-    await page.click('#tCareer');await vis('#league');await page.click('#lgList [data-div="m"]');if(await page.locator('#lgList .lgcard').count()<6)throw new Error('servono le schede dei sei campionati');await page.click('#lgList [data-lg="BE"]');await vis('#team');
+    await careerOpen(page);await vis('#league');await page.click('#lgList [data-div="m"]');if(await page.locator('#lgList .lgcard').count()<6)throw new Error('servono le schede dei sei campionati');await page.click('#lgList [data-lg="BE"]');await vis('#team');
     if(await page.locator('#tSr button').count()!==6)throw new Error('servono i 6 livelli belgi');
     await page.click('#tSr button[data-k="N1"]');
     if(await page.locator('.tteam').count()!==8)throw new Error('la N1 belga ha 8 club');
@@ -193,7 +195,7 @@ catch(e){
     await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
   });
   await step('nuova carriera e cruscotto',async()=>{
-    await page.click('#tCareer');await vis('#league');await page.click('#lgList [data-div="m"]');await page.click('#lgList [data-lg="IT"]');await vis('#team');await page.click('#tSr button[data-k="C"]');await page.click('.tteam >> nth=0');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');
+    await careerOpen(page);await vis('#league');await page.click('#lgList [data-div="m"]');await page.click('#lgList [data-lg="IT"]');await vis('#team');await page.click('#tSr button[data-k="C"]');await page.click('.tteam >> nth=0');await vis('#rpv');await page.click('#rpGo');await vis('#coachsel');
     // schermata dell'allenatore: personaggio casuale, volto e nomi scelti a mano, anteprima che segue
     await page.click('#coRnd');if(!(await page.inputValue('#coN'))||!(await page.inputValue('#coS')))throw new Error('«Personaggio casuale» deve riempire nome e cognome');
     if(await page.locator('#coFaces button').count()!==12)throw new Error('i volti devono essere dodici');
@@ -280,7 +282,7 @@ catch(e){
   await step('Posta: «Chiudi» non segna come letto, «Segna tutto come letto» sì; Mercato: conferma prima di comprare; Allena: lavoro individuale in due passi',async()=>{
     // una notizia nuova di sicuro: un avviso non urgente scritto nel salvataggio, poi ricarica
     await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.alerts=d.alerts||[];d.alN=(d.alN|0)+1;d.alerts.unshift({id:d.alN,s:d.season,r:1,k:'grow',txt:'Prova di lettura',full:'',act:'',data:null,seen:0,done:0,sh:1});window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
-    await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
+    await page.reload();await page.waitForTimeout(500);await careerOpen(page);await vis('#home');
     // qui i tocchi passano da evaluate: il gestore in cima alla prova chiuderebbe la Posta prima di ogni click
     const unread=async()=>(await page.locator('#alBody .ali.new').count()),tap=id=>page.evaluate(i=>document.getElementById(i).click(),id);
     await tap('hBell');await vis('#alerts');const n0=await unread();if(n0<1)throw new Error('la notizia di prova non risulta nuova');
@@ -290,7 +292,7 @@ catch(e){
     await tap('alX');
     // mercato: con i crediti per comprare, «Acquista» apre il riepilogo; «Annulla» non compra niente
     await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.cash=5000;window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
-    await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
+    await page.reload();await page.waitForTimeout(500);await careerOpen(page);await vis('#home');
     await page.click('#hMarket');await vis('#market');
     const buy=page.locator('#mkBox [data-buy]:not([disabled])').first();
     if(await buy.count()){
@@ -366,7 +368,7 @@ catch(e){
     const sc=(sub.match(/(\d+)–(\d+)/)||[]).slice(1).map(Number);if(sc.length!==2||sc[0]+sc[1]<1)throw new Error('punteggio sospeso non valido: '+sub);
     await page.reload();await page.waitForTimeout(500);
     if(!/sospesa/.test(await page.locator('#tCareerS').innerText()))throw new Error('dopo la ricarica la partita sospesa non c\'e\' piu\'');
-    await page.click('#tCareer');await vis('#home');await page.click('#hPlay');await page.waitForTimeout(600);if(await page.locator('#menu').isVisible())await page.click('#bGo');
+    await careerOpen(page);await vis('#home');await page.click('#hPlay');await page.waitForTimeout(600);if(await page.locator('#menu').isVisible())await page.click('#bGo');
     const s2=(await page.locator('#score').innerText()).match(/(\d+)\s*[–-]\s*(\d+)/);
     if(!s2||+s2[1]!==sc[0]||+s2[2]!==sc[1])throw new Error('ripresa con un punteggio diverso: '+(s2?s2[0]:'?')+' invece di '+sc.join('-'));
     await playOut();await vis('#over');await page.click('#bAgain');await page.waitForTimeout(200);await vis('#home');
@@ -385,7 +387,7 @@ catch(e){
     // la coppa si sblocca solo dalla Serie A: per provarla si modifica il salvataggio (come se la squadra si fosse qualificata) e si ricarica
     await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.euUnlocked=true;d.event='eu';d.eu={round:0,state:'on',s:d.season,opps:['Berlino','Parigi','Madrid']};   // formato vecchio: l'edizione riparte come EUCF
     d.susp=null;window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
-    await page.reload();await page.waitForTimeout(500);await page.click('#tCareer');await vis('#home');
+    await page.reload();await page.waitForTimeout(500);await careerOpen(page);await vis('#home');
     for(let i=0;i<12&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim');await vis('#simres');await page.click('#srOk');if(await page.locator('#cupNext').isVisible())await page.click('#cupNext');await page.waitForTimeout(150);if(/Torna al campionato/.test(await page.locator('#hPlayT').innerText()))break;}
     const t=await page.locator('#hPlayT').innerText();if(!/Torna al campionato/.test(t))throw new Error('a coppa conclusa il tasto principale dice «'+t+'»');
     if(/nuova stagione/i.test(await page.locator('#hNext').innerText()))throw new Error('a coppa conclusa il cruscotto parla di nuova stagione');
@@ -689,16 +691,11 @@ catch(e){
     if(!/Bonus a tutta la squadra/.test(await page.locator('#eqInfo').innerText()))throw new Error('manca il riepilogo dei bonus');
     await page.click('#eqBack');await vis('#ut');await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
   });
-  await step('allenamento: il tutorial parte e si esce dalla pausa',async()=>{
-    await page.click('#tSchool');await vis('#school');if(await page.locator('.tles [data-step]').count()!==7)throw new Error('mancano le sette lezioni del tutorial');
-    await page.click('#scBox .schrow [data-go="tut"]');await page.waitForTimeout(700);await vis('#coach');
-    await page.click('#bExit');await vis('#pause');await page.click('#paQuit');await page.waitForTimeout(300);await vis('#school');
-  });
-  await step('menu iniziale: Salvataggi, nuova carriera in un altro slot e ritorno, senza passare dalle Opzioni',async()=>{
+  await step('menu iniziale: Carriera apre gli slot, nuova carriera in un altro slot e ritorno, senza passare dalle Opzioni',async()=>{
     await page.click('#tBack').catch(()=>{});
     if(!(await page.locator('#title').isVisible())){await page.goto('file://'+OUT);await page.waitForTimeout(400);}
-    if(!/Salvataggi/.test(await page.locator('#tSlots').innerText()))throw new Error('il tasto degli slot deve chiamarsi «Salvataggi»');
-    await page.click('#tSlots');await vis('#slots');
+    if(await page.locator('#tSlots,#tSchool').count())throw new Error('nel menu iniziale non ci sono piu\' «Salvataggi» (stanno in Carriera) e «Allenamento»');
+    await page.click('#tCareer');await vis('#slots');
     const full=await page.locator('#csBox [data-cgo]').count();if(full<1)throw new Error('la carriera esistente non compare tra gli slot');
     const occupied=page.locator('#csBox .csl:has([data-cgo])').first();
     const oldSlot=await occupied.innerText();
@@ -706,7 +703,7 @@ catch(e){
     await vis('#cfm');await page.click('#cfmOk');await vis('#league');
     await page.click('#lgBack');await vis('#slots');
     if(await occupied.innerText()!==oldSlot)throw new Error('annullare la sostituzione ha cambiato lo slot');
-    await page.reload();await page.click('#tSlots');await vis('#slots');
+    await page.reload();await page.click('#tCareer');await vis('#slots');
     if(await occupied.innerText()!==oldSlot)throw new Error('lo slot precedente non sopravvive alla ricarica');
     await occupied.locator('[data-cgo]').click();await vis('#home');
     await menu('#hOpt');await vis('#opts');
@@ -715,7 +712,7 @@ catch(e){
     await page.locator('#clFile').setInputFiles({name:'carriera-invalida.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(invalid))});
     await page.waitForFunction(()=>document.getElementById('opMsg').textContent.includes('File non valido o incompatibile'));
     if(await page.evaluate(()=>window.testSaves.getItem('ultimate-prototipo-v2'))!==beforeImport)throw new Error('l’importazione invalida ha cambiato il salvataggio');
-    await page.click('#opX');await menu('#hBack');await page.click('#tSlots');await vis('#slots');
+    await page.click('#opX');await menu('#hBack');await page.click('#tCareer');await vis('#slots');
     const empty=await page.locator('#csBox .csl:not(:has([data-cgo])) [data-cnew]').first();
     const k=+(await empty.getAttribute('data-cnew'));await empty.click();await vis('#league');await page.click('#lgBack');await vis('#slots');   // ripensamento: la carriera di prima resta
     if(await page.locator('#csBox [data-cgo]').count()!==full)throw new Error('tornando indietro la carriera di prima e\' sparita');
@@ -724,7 +721,7 @@ catch(e){
     await page.click('#tMode button[data-k="sub"]');await page.click('#tSr button[data-k="B"]');await vis('#tReAcc');await page.click('#tReAlt');await vis('#tReAcc');
     await page.click('#tReAcc');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     if(!/posto/.test(await page.locator('#hInfo').innerText()))throw new Error('il subentro deve mostrare la posizione in classifica');
-    await menu('#hBack');await vis('#title');await page.click('#tSlots');
+    await menu('#hBack');await vis('#title');await page.click('#tCareer');
     if(await page.locator('#csBox [data-cgo]').count()!==full+1)throw new Error('la nuova carriera non e\' nello slot '+k);
     const other=await page.locator('#csBox [data-cgo]:not([data-cgo="'+k+'"])').first();await other.click();await vis('#home');
     await menu('#hBack');await vis('#title');
@@ -803,7 +800,7 @@ catch(e){
     if(await p.locator('#menu').isVisible())await p.click('#bGo');
     await p.waitForSelector('#bExit:not(.hidden)');await p.click('#bExit');await p.waitForSelector('#pause:not(.hidden)');
     await p.click('#paQuit');await p.click('#paQuit');await p.waitForSelector('#quick:not(.hidden)');
-    await p.click('#qBack');await p.click('#tSet');await p.click('#sTabScr');await p.click('#sRot');
+    await p.click('#qBack');await titleMenu(p,'#tSet');await p.click('#sTabScr');await p.click('#sRot');
     if(await p.evaluate(()=>document.documentElement.classList.contains('rotp')))throw new Error('la rotazione non si spegne dalle Impostazioni');
     await p.click('#sRot').catch(()=>{});await ctx.close();
     if(er.length)throw new Error('errore in verticale: '+er[0]);

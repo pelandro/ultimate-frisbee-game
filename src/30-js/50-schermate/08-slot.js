@@ -90,4 +90,3 @@ $('csBox').addEventListener('click',e=>{
   else careerNew(k);
 });
 $('csBack').addEventListener('click',()=>showScreen('title'));
-$('tSlots').addEventListener('click',()=>showScreen('slots'));

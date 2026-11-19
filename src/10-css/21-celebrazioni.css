@@ -9,9 +9,10 @@
   width:min(100%,420px,46vh * 240 / 116);
   height:auto;
   margin:8px auto;
-  border:2px solid #5875a5;
+  border:2px solid #a37a46;
   image-rendering:pixelated;
 }
+#cupPark.europe {border-color:#7f9cc4}
 #cupNext {min-height:44px}
 @media (prefers-reduced-motion:reduce) {
   #cupScene,#cupScene .panel {animation:none;transition:none}
