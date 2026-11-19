@@ -108,7 +108,7 @@ function showOver(){
   $('oGrow').innerHTML=gh;
   $('oMore').innerHTML=`<details class="odet"><summary>Dettagli della partita</summary>${overMoreHTML()}</details>`;   // attacco, difesa, schemi e migliori: si aprono a richiesta
   $('oTitle').textContent=w?'Vittoria!':(G.forfeit?'Sconfitta a tavolino':'Sconfitta');
-  renderTitleCelebration($('oTitle'),title);
+  if(title)$('oTitle').textContent=title.text;
   // TABELLONE: stemmi, nomi e punteggio grande (i numeri contano da zero); sotto il migliore in campo
   const my=G.myName||'Blu',best=overBest()[0];
   $('oScore').innerHTML=`<span class="osb"><span class="ot">${crest(my,34)}<b>${esc(my)}</b></span><em class="${w?'w':''}">0</em><i>–</i><em class="${w?'':'w'}">0</em><span class="ot r"><b>${esc(on)}</b>${crest(on,34)}</span></span>`+
@@ -129,5 +129,14 @@ $('bGo').addEventListener('click',()=>{
   $('menu').classList.add('hidden');G.schemeOpen=false;
   if(G.mode==='ready')placeTeams(G.poss);
 });
-$('bAgain').addEventListener('click',()=>{if(QM.on){exitQuick(quickNext());return;}$('over').classList.add('hidden');G.inMatch=false;showScreen('home');const pc=pressNext;pressNext=null;if(pc)setTimeout(()=>openPress(pc),250);});
-
+$('bAgain').addEventListener('click',()=>{
+  if(QM.on){exitQuick(quickNext());return;}
+  $('over').classList.add('hidden');G.inMatch=false;
+  const after=()=>{
+    showScreen('home');
+    const pc=pressNext;pressNext=null;
+    if(pc)setTimeout(()=>openPress(pc),250);
+  };
+  if(G.finish?.title)openCupScene(G.finish.title,after);
+  else after();
+});

@@ -394,7 +394,7 @@ catch(e){
     await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.euUnlocked=true;d.event='eu';d.eu={round:0,state:'on',s:d.season,opps:['Berlino','Parigi','Madrid']};   // formato vecchio: l'edizione riparte come EUCF
     d.susp=null;window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
     await page.reload();await page.waitForTimeout(500);await careerOpen(page);await vis('#home');
-    for(let i=0;i<12&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim');await vis('#simres');await page.click('#srOk');await page.waitForTimeout(150);if(/Torna al campionato/.test(await page.locator('#hPlayT').innerText()))break;}
+    for(let i=0;i<12&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim');await vis('#simres');await page.click('#srOk');if(await page.locator('#cupNext').isVisible())await page.click('#cupNext');await page.waitForTimeout(150);if(/Torna al campionato/.test(await page.locator('#hPlayT').innerText()))break;}
     const t=await page.locator('#hPlayT').innerText();if(!/Torna al campionato/.test(t))throw new Error('a coppa conclusa il tasto principale dice «'+t+'»');
     if(/nuova stagione/i.test(await page.locator('#hNext').innerText()))throw new Error('a coppa conclusa il cruscotto parla di nuova stagione');
     await page.click('#hEvent');await vis('#event');
@@ -403,7 +403,7 @@ catch(e){
     if(!/Inizia partita/.test(await page.locator('#hPlayT').innerText()))throw new Error('dopo la coppa non si torna al campionato');
   });
   await step('fine stagione: riepilogo in cima, tasto «Inizia la nuova stagione» ben visibile e premi dietro un tasto',async()=>{
-    for(let i=0;i<70&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim',{timeout:4000});await vis('#simres');await page.click('#srOk',{timeout:4000});await page.waitForTimeout(120);}
+    for(let i=0;i<70&&(await page.locator('#hSim').isVisible());i++){await page.click('#hSim',{timeout:4000});await vis('#simres');await page.click('#srOk',{timeout:4000});if(await page.locator('#cupNext').isVisible())await page.click('#cupNext');await page.waitForTimeout(120);}
     await page.click('#hEvent');await vis('#event');
     if(await page.locator('#eCards [data-e="camp"]').count())await page.click('#eCards [data-e="camp"]');   // il passo precedente puo' aver lasciato aperta la coppa
     if(!(await page.locator('#eBody .endc').count()))throw new Error('manca la scheda di fine stagione');
@@ -739,20 +739,31 @@ catch(e){
     const ctx=await browser.newContext({viewport:{width:844,height:390},reducedMotion:'reduce'});
     try{
       const p=await ctx.newPage();
+      await p.addLocatorHandler(p.locator('#press:not(.hidden) #prSkip'),()=>p.click('#prSkip'));
       await p.goto('file://'+testFile);
       const run=code=>p.evaluate(code=>window.testCareer(code),code);
       await run(`(()=>{
         startCareer(SERIES.A[0]);
         for(let i=0;i<30&&!SV.done;i++){
-          const before=SV.done;
-          const msg=recordResult(true,7,0);
-          if(SV.done)showSim(true,'7 – 0',msg,null,careerTitleAfter(before,false));
+          if(SV.po?.kind==='tit'&&SV.po.round===1){
+            SV.help=true;
+            startMatch(true);
+            G.score=[G.target,0];G.mode='over';showOver();
+          }else recordResult(true,7,0);
         }
         if(!SV.next?.qual||newSeason())throw new Error('EUCF aggirabile prima di cominciare');
-        if(!$('srTitle').textContent.includes('Campioni di Serie A'))throw new Error('manca la celebrazione nazionale');
-        $('srOk').click();
-        showScreen('event');
+        if(!$('oTitle').textContent.includes('Campioni di Serie A')||!$('oMoney').textContent.trim())throw new Error('manca il riepilogo della finale');
+        if(!$('cupScene').classList.contains('hidden'))throw new Error('la festa copre il riepilogo');
       })()`);
+      await p.locator('#bAgain').click();
+      if(await p.locator('#cupTitle').textContent()!=='Campioni di Serie A'||!await p.locator('#cupPark').isVisible())throw new Error('manca la scena nazionale');
+      const picture=()=>p.locator('#cupPark').evaluate(el=>el.toDataURL());
+      const still=await picture();
+      await p.waitForTimeout(250);
+      if(still!==await picture())throw new Error('movimento ridotto non rispettato');
+      await p.keyboard.press('Escape');
+      await p.locator('#cupScene').waitFor({state:'hidden'});
+      await run("showScreen('event')");
       await p.locator('#eEurope').click();
       await p.reload();
       await run(`(()=>{
@@ -764,9 +775,16 @@ catch(e){
         if(SV.eu.state!=='champ'||openSeasonEurope())throw new Error('EUCF vinto ripetibile');
       })()`);
       if(await p.locator('#srTitle').textContent()!=='Campioni d’Europa')throw new Error('manca la celebrazione europea');
-      if(await p.locator('.title-fanfare span').evaluate(el=>getComputedStyle(el).animationName)!=='none')throw new Error('movimento ridotto non rispettato');
+      if(await p.locator('#cupScene').isVisible())throw new Error('la festa europea parte prima del riepilogo');
+      await p.emulateMedia({reducedMotion:'no-preference'});
+      await p.locator('#srOk').click();
+      if(await p.locator('#cupTitle').textContent()!=='Campioni d’Europa')throw new Error('manca la scena europea');
+      const start=await picture();
+      await p.waitForTimeout(1350);
+      if(start===await picture())throw new Error('la coppa non si muove');
+      await p.locator('#cupNext').click();
       await run(`(()=>{
-        $('srOk').click();SV.event='camp';showScreen('event');
+        SV.event='camp';showScreen('event');
         if(!$('eReset')||!newSeason()||SV.season!==2||SV.euUnlocked)throw new Error('ripartenza errata dopo il titolo');
         startCareer(SERIES.A[0]);
         for(let i=0;i<30&&!SV.done;i++)recordResult(true,7,0);
