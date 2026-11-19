@@ -5,7 +5,7 @@
    il disco resta l'elemento della pagina: qui lo si sposta (transform) fino alla mano. Le volte dopo la scena e' gia' ferma. */
 const titleBg=()=>!G.inMatch&&!G.drill&&G.mode==='home'&&!$('title').classList.contains('hidden');
 const TD_WHO={t:0,look:{hair:'#2b1b10',skin:'#d9a57c',style:1,hs:1,bw:1,hd:1}};
-const TD_ROT=1.0,TD_LEAP=0.42;   // inclinazione del tuffo (in salita verso il disco) e durata del volo, in secondi
+const TD_ROT=1.0,TD_LEAP=0.5;   // inclinazione del tuffo (in salita verso il disco) e durata del volo, in secondi
 const TDS={t:-1,done:false,from:null,c0:null,key:''};
 // athlete legge la divisa da cine.kits: qui ne serve una sola, la prima del campo
 function tdAthlete(x,gy,hip,pose,rot,tt,hu){
@@ -18,6 +18,7 @@ function tdLines(x,y,len,hu,al){
   for(let i=0;i<5;i++){const yy=ri(y-hu*0.5+i*hu*0.22),l=ri(len*(0.5+((i*37)%10)/14));px(x-l,yy,l,1,'#ffffff');}
   ctx.restore();
 }
+const titleIntro=()=>TDS.t>=0&&!TDS.done&&titleBg();
 const tdDisc=()=>$('title').querySelector('.ttlDisc');
 const tdK=()=>PXS/DPR;   // da pixel del gioco a pixel della pagina
 const tdCtr=el=>{const r=layRect(el);return {x:r.left+r.width/2,y:r.top+r.height/2,w:r.width};};
@@ -54,7 +55,7 @@ function drawTitleDive(dt){
   }
   const F=tdFinal(B),hu=F.hu;
   if(!TDS.done)TDS.t+=Math.min(dt||0,0.05);
-  const xr=F.x-hu*1.7,x0=-hu*1.5,run=clamp((xr-x0)/(VW*0.55),0.7,1.4),t=TDS.t;
+  const xr=F.x-hu*1.7,x0=-hu*1.5,run=clamp((xr-x0)/(VW*0.4),0.9,1.8),t=TDS.t;
   if(TDS.done||t>=run+TD_LEAP){   // fermo: la presa al culmine del tuffo, con la luce dietro
     TDS.done=true;
     const g=ctx.createRadialGradient(F.T.x,F.T.y,4,F.T.x,F.T.y,hu*3.2);g.addColorStop(0,'rgba(255,248,214,.45)');g.addColorStop(1,'rgba(255,248,214,0)');ctx.fillStyle=g;ctx.fillRect(0,0,VW,VH);
@@ -67,8 +68,8 @@ function drawTitleDive(dt){
   const kd=easeIO(clamp(t/(run+TD_LEAP),0,1));tdPlace(el,TDS.from.x+(F.T.x-TDS.from.x)*kd,TDS.from.y+(F.T.y-TDS.from.y)*kd-Math.sin(Math.PI*kd)*hu*0.25,(1-kd)*-6);
   let x,hip,pose,rot;
   if(t<run){const k=t/run;x=x0+(xr-x0)*k;hip=0.92;pose='run';rot=0.15;}
-  else{const k=(t-run)/TD_LEAP,e=easeIO(k);x=xr+(F.x-xr)*e;hip=0.92+(F.hip-0.92)*e+Math.sin(Math.PI*k)*0.25;pose='dive';rot=0.6+(TD_ROT-0.6)*e;
+  else{const k=(t-run)/TD_LEAP,e=easeIO(k);x=xr+(F.x-xr)*e;hip=0.92+(F.hip-0.92)*e+Math.sin(Math.PI*k)*0.06;pose='dive';rot=0.85+(TD_ROT-0.85)*e;   // si butta subito in avanti: in piedi la testa finirebbe sotto l'insegna
     tdLines(x-ri(hu*0.8),F.gy-hip*hu,hu*1.3,hu,0.45);}
   pell(ri(x+hu*0.1),F.gy,ri(hu*(pose==='dive'?1:0.55)),Math.max(2,ri(hu*0.1)),'rgba(20,40,20,.35)');
-  tdAthlete(x,F.gy,hip,pose,rot,t*11,hu);
+  tdAthlete(x,F.gy,hip,pose,rot,t*13,hu);   // passi piu' fitti: la corsa e' piu' lenta ma le gambe non rallentano
 }

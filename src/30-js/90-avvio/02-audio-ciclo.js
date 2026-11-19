@@ -311,7 +311,7 @@ function frame(now){
     }else{
       updateCamera(dt);updateHUD(dt);
       menuDrawElapsed+=dt;
-      if(G.inMatch||G.mode!=='home'||menuDrawElapsed>=1/30){
+      if(G.inMatch||G.mode!=='home'||menuDrawElapsed>=1/30||titleIntro()){   // la corsa del menu iniziale va disegnata a ogni fotogramma, se no scatta
         render(Math.min(menuDrawElapsed,.05));menuDrawElapsed=0;
       }
     }
