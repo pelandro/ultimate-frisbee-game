@@ -414,7 +414,8 @@ catch(e){
     await menu('#hOpt');
     const file=await page.evaluate(()=>localStorage.getItem('ultimate-carriera-1'));
     await page.locator('#clFile').setInputFiles({name:'carriera.json',mimeType:'application/json',buffer:Buffer.from(file)});
-    await vis('#cfm');
+    // FileReader apre l’anteprima dopo la lettura asincrona.
+    await page.locator('#importSlot').waitFor({state:'visible'});
     await page.selectOption('#importSlot','3');
     await page.click('#cfmNo');
     if(await page.evaluate(()=>localStorage.getItem('ultimate-carriera-3')))throw new Error('annullare l’importazione ha alterato lo slot di destinazione');
