@@ -4,8 +4,8 @@ const DR={on:false,kind:'',step:0,cnt:0,score:0,tries:0,ch:null,last:'',lastT:0,
 const TN={on:false};
 const TUT_KEY='ultimate-scuola';
 let SCH={tut:false,best:{}};
-try{const o=JSON.parse(localStorage.getItem(TUT_KEY)||'null');if(o&&typeof o==='object')SCH={tut:!!o.tut,lv:o.lv|0,best:o.best||{}};}catch(e){}   // lv: lezioni del tutorial superate (si riprende da li')
-const schSave=()=>{try{localStorage.setItem(TUT_KEY,JSON.stringify(SCH));}catch(e){}};
+try{const o=JSON.parse(saveStore.getItem(TUT_KEY)||'null');if(o&&typeof o==='object')SCH={tut:!!o.tut,lv:o.lv|0,best:o.best||{}};}catch(e){}   // lv: lezioni del tutorial superate (si riprende da li')
+const schSave=()=>{try{saveStore.setItem(TUT_KEY,JSON.stringify(SCH));}catch(e){}};
 // lezioni del tutorial: ognuna prepara il campo e si supera FACENDO la cosa spiegata
 const TUT_STEPS=[
   {id:'thr',def:'off',x0:14,n:3,t:'1 · Il lancio',x:'Tocca lo schermo, trascina il dito ALL’INDIETRO come una fionda e rilascia: il disco parte nella direzione opposta. Più trascini, più va lontano.',g:'Completa 3 passaggi'},

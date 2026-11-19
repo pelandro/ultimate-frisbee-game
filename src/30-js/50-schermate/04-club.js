@@ -48,7 +48,7 @@ function exportSave(){
   try{
     const extra={},slots={};
     for(const [key] of backupExtras()){
-      const raw=localStorage.getItem(key);
+      const raw=saveStore.getItem(key);
       if(raw!==null)extra[key]=JSON.parse(raw);
     }
     const career={...SV,squad:squadData(),lineup:lineupIds()};
@@ -87,19 +87,11 @@ function readSaveBackup(txt){
 function importSave(txt,destination=SV.slot||1,all=false,withExtras=true){
   const backup=readSaveBackup(txt);
   if(!backup)return 'File non valido o incompatibile con questa versione. Controlla calendario, rosa e versione.';
-  const previous=SV,squad=squadData(),lineup=lineupIds(),written=[];
-  const restore=()=>{
-    restoreCareerState(previous,squad,lineup);
-    for(const [key,raw,attempt] of written.reverse()){
-      try{if(localStorage.getItem(key)===attempt){if(raw===null)localStorage.removeItem(key);else localStorage.setItem(key,raw);}}catch(e){}
-    }
-  };
+  const previous=SV,squad=squadData(),lineup=lineupIds();
+  const pending={};
+  const write=(key,value)=>{pending[key]=JSON.stringify(value);};
   try{
-    const write=(key,value)=>{
-      const raw=localStorage.getItem(key),attempt=JSON.stringify(value);
-      localStorage.setItem(key,attempt);written.push([key,raw,attempt]);
-    };
-    if(careerStorageVersion!==undefined&&localStorage.getItem(SAVE_KEY)!==careerStorageVersion)
+    if(careerStorageVersion!==undefined&&saveStore.getItem(SAVE_KEY)!==careerStorageVersion)
       return 'La carriera è stata aggiornata in un’altra scheda. Ricarica il gioco prima di importare.';
     if(all)destination=backup.career.slot||1;
     const slots=[];
@@ -112,21 +104,21 @@ function importSave(txt,destination=SV.slot||1,all=false,withExtras=true){
     if(previous.team&&(previous.slot||1)!==destination&&!slots.some(([slot])=>slot===(previous.slot||1)))
       write(slotKey(previous.slot||1),{...previous,squad,lineup});
     for(const [slot,save] of slots){
-      const key=slotKey(slot),old=localStorage.getItem(key);
+      const key=slotKey(slot),old=saveStore.getItem(key);
       if(old)write(key+'-bak',JSON.parse(old));
       write(key,save);
     }
     if(withExtras)for(const [key,,value] of backup.extra)write(key,value);
-    if(!persist())throw new Error('Scrittura carriera');
+    if(!persist(pending))throw new Error('Scrittura carriera');
   }catch(e){
-    restore();
+    restoreCareerState(previous,squad,lineup);
     return 'Import non riuscito. Controlla il file, lo spazio disponibile e le altre schede aperte.';
   }
   if(withExtras&&backup.extra.length){
     utLoad();
     try{
-      TOUR=JSON.parse(localStorage.getItem(TN_KEY)||'null');
-      const progress=JSON.parse(localStorage.getItem(TUT_KEY)||'null');
+      TOUR=JSON.parse(saveStore.getItem(TN_KEY)||'null');
+      const progress=JSON.parse(saveStore.getItem(TUT_KEY)||'null');
       if(progress)SCH={tut:!!progress.tut,lv:progress.lv|0,best:progress.best||{}};
     }catch(e){}
   }
@@ -179,7 +171,7 @@ $('clBox').addEventListener('click',e=>{
 $('clExp').addEventListener('click',()=>{$('opMsg').textContent=exportSave();});
 $('clImp').addEventListener('click',()=>{$('clFile').value='';$('clFile').click();});
 $('clBak').addEventListener('click',()=>armed($('clBak'),'Conferma: torna al salvataggio precedente','Ripristina la copia precedente',()=>{
-  let r=null;try{r=localStorage.getItem(slotKey(SV.slot||1)+'-bak');const legacy=localStorage.getItem(SAVE_KEY+'-bak');if(!r&&legacy&&(JSON.parse(legacy).slot||1)===(SV.slot||1))r=legacy;}catch(e2){}
+  let r=null;try{r=saveStore.getItem(slotKey(SV.slot||1)+'-bak');const legacy=saveStore.getItem(SAVE_KEY+'-bak');if(!r&&legacy&&(JSON.parse(legacy).slot||1)===(SV.slot||1))r=legacy;}catch(e2){}
   const error=r?importSave(r):'Nessuna copia precedente disponibile.';
   $('opMsg').textContent=error||'Copia precedente ripristinata.';
   if(!error){renderOpts();renderHome();}

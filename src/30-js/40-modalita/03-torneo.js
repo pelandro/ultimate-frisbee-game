@@ -1,8 +1,8 @@
 /* ===================== TORNEO PERSONALIZZATO: eliminazione diretta a 4, 8 o 16 squadre vere, scelte da te ===================== */
 const TN_KEY='ultimate-torneo';
 const tnOk=n=>!!(TEAM[n]||US_TEAM[n]||LN_BY[n]);   // un club che esiste ancora (italiano, USA o di una lega europea)
-let TOUR=null;try{TOUR=JSON.parse(localStorage.getItem(TN_KEY)||'null');if(TOUR&&(!Array.isArray(TOUR.rounds)||!tnOk(TOUR.team)||TOUR.rounds.some(r=>r.some(n=>!tnOk(n)))))TOUR=null;}catch(e){TOUR=null;}
-const tnSave=()=>{try{if(TOUR)localStorage.setItem(TN_KEY,JSON.stringify(TOUR));else localStorage.removeItem(TN_KEY);}catch(e){}};
+let TOUR=null;try{TOUR=JSON.parse(saveStore.getItem(TN_KEY)||'null');if(TOUR&&(!Array.isArray(TOUR.rounds)||!tnOk(TOUR.team)||TOUR.rounds.some(r=>r.some(n=>!tnOk(n)))))TOUR=null;}catch(e){TOUR=null;}
+const tnSave=()=>{try{if(TOUR)saveStore.setItem(TN_KEY,JSON.stringify(TOUR));else saveStore.removeItem(TN_KEY);}catch(e){}};
 const TN_SET={team:'',size:8,pool:'lg',d:0,len:7};   // pool: 'lg' il campionato della tua squadra, 'grp' la sua serie, 'all' tutti i campionati della divisione
 const tnRoundName=n=>n>=16?'Ottavi di finale':(n>=8?'Quarti di finale':(n>=4?'Semifinale':'Finale'));
 const tnCur=()=>TOUR.rounds[TOUR.rounds.length-1];
