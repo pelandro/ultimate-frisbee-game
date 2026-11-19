@@ -5,6 +5,7 @@ Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattrib
 
 ## Non ancora pubblicato
 - Scelta del campionato: ogni scheda ha i colori sbiaditi della bandiera del paese e mostra solo il nome, le serie (o le Conference) e il numero di squadre, scritti più grandi.
+- Dopo i conti della partita decisiva, premi Continua per vedere la squadra sul podio mentre alza la coppa insieme.
 - Nuova grafica: tutte le schermate passano dal blu notte a un azzurro grigio più chiaro e leggero, con pulsanti dal bordo morbido, angoli netti e sfondo sfumato. Nuova schermata iniziale «Stadio»: il nome in un’insegna in alto, il disco che vola, lo stadio pieno dietro e i quattro pulsanti su due file.
 - Il gioco si chiama Ultimate Pixel (titolo, nome della pagina e dell’icona, cartelloni a bordo campo).
 - Menu iniziale: «Carriera» apre per prima cosa i tre slot (prima c’era il tasto «Salvataggi» a parte); la modalità Allenamento non c’è più. Dietro il menu si vede il campo grande, con lo stadio pieno.
