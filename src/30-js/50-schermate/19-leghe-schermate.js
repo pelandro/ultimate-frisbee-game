@@ -34,8 +34,10 @@ function lnStakes(m){
   if(po&&po.on){
     tag='Fase finale';title=lnLabel();
     const lv=L.F.lv[po.li],b=lv.base;
+    if(lv.m==='k4'){lines.push('Chi perde è eliminato.');if(L.F.rd===L.F.rounds-1)lines.push(b>1?'Chi vince sale in Serie A insieme alla prima del girone.':'Chi vince è campione.');}
+    else{
     lines.push(lv.m==='rr'?'Minigirone per le posizioni '+b+'°-'+(b+lv.T.length-1)+'°: ogni partita conta per il piazzamento.':'Si gioca per il piazzamento: nessuno è eliminato, ma ogni posizione vale premio e punti di reputazione.');
-    if(L.F.rd===L.F.rounds-1&&lv.base===1&&lv.m!=='rr')lines.push(po.k===0?'Chi vince è campione.':'Posizione finale in palio.');
+    if(L.F.rd===L.F.rounds-1&&lv.base===1&&lv.m!=='rr')lines.push(po.k===0?'Chi vince è campione.':'Posizione finale in palio.');}
   }else{
     const names=SV.mem[SV.sr],ord=ranking(SV.tab,names),rk=ord.indexOf(SV.team)+1,last=SV.round===SV.sched.length-1;
     if(m.name===SV.riv){tag='Rivalità';title='Derby';const rr=SV.rivRec||{w:0,l:0};lines.push(`Contro ${m.name} vale di più: incasso, morale e reputazione.${rr.w+rr.l?` Finora ${rr.w} ${rr.w===1?'vinto':'vinti'} e ${rr.l} ${rr.l===1?'perso':'persi'}.`:''}`);}
@@ -59,6 +61,7 @@ function renderTeamsLN(){
 // descrizione breve di un livello: gironi e fasi finali
 function lnFormatTxt(tr){
   const g=tr.pools>1?`${tr.pools} gironi`:'girone unico',m={c8:'tabellone a 8 con tutte le finali di piazzamento',c4:'semifinali e finali',x8:'turno incrociato e finali di piazzamento',p:'finali di piazzamento a coppie',rr:'minigirone'};
+  for(const f of tr.fin)if(f.m==='k4')m.k4=f.f>1?'spareggio promozione tra la 2ª e la 5ª (semifinali e finale), la prima sale direttamente':'playoff scudetto tra le prime 4 (semifinali e finale)';
   const lk=LN_IDS.find(k=>LN_DEF[k].tiers.includes(tr)),tg=lk?lnTierGames(lk,tr):null,legs=tg&&tg.g>tg.one?` (nel gioco più giri: ${tg.g} partite a testa, per arrivare ad almeno ${LN_MIN} in stagione)`:'';
   return `${tr.comps>1?tr.comps+' competizioni, ':''}${g}, tutti contro tutti${legs}${tr.fin.length?', poi '+[...new Set(tr.fin.map(f=>m[f.m]))].join(' e '):''}`;
 }
@@ -70,7 +73,7 @@ function lnPoolView(){
   let h=comp.pools.length>1?`<div class="seg" id="lnPools">${comp.pools.map((p,i)=>`<button type="button" class="sg${lnPoolSel===i?' on':''}" data-lp="${i}">Girone ${'AB'[i]}${i===L.pi?' (tuo)':''}</button>`).join('')}</div>`:'';
   const i=lnPoolSel,names=comp.pools[i],t=lnPoolTab(i),ord=usRanking(t,names),Lg=i!==L.pi&&SV.lg[i];
   h+=`<p class="estat">${esc(SERIES_NAME[SV.sr])}${tr.comps>1?' · gruppo '+esc(comp.id):''}, stagione ${SV.season}${Lg?` · giornata ${Lg.round} di ${Lg.sched.length}`:''}</p>`;
-  if(tr.fin.length)h+=`<div class="legrow"><span class="leg"><i class="g"></i>tabellone</span><span class="leg"><i class="y"></i>finali di piazzamento</span>${infoB('lnleg')}</div>${infoX('lnleg','<p>A parità di vittorie contano gli scontri diretti, poi la differenza mete.</p>')}`;
+  if(tr.fin.length)h+=`<div class="legrow"><span class="leg"><i class="g"></i>${tr.fin[0].m==='k4'?(tr.fin[0].f>1?'spareggio promozione':'playoff'):'tabellone'}</span>${tr.fin[0].m==='k4'?'':'<span class="leg"><i class="y"></i>finali di piazzamento</span>'}${infoB('lnleg')}</div>${infoX('lnleg','<p>A parità di vittorie contano gli scontri diretti, poi la differenza mete.</p>')}`;
   h+=`<div style="overflow-x:auto"><table class="rt">${usHead}${ord.map((nm,k)=>usRow(nm,t[nm],[nm===SV.team?'me':'',lnZone(k+1,tr)].filter(Boolean).join(' '))).join('')}</table></div>`;
   if(Lg&&Lg.last.length)h+=`<h3 class="eh">Ultima giornata</h3><ul class="elist">${Lg.last.map(m=>`<li class="${m[2]>m[3]?'w':'l'}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('')}</ul>`;
   if(i===L.pi){
@@ -86,7 +89,7 @@ function lnPoolView(){
 function lnFinView(){
   const L=SV.ln,tr=lnTierDef();
   if(!tr.fin.length)return `<p class="estat">Nessuna fase finale</p><p class="note">${esc(SERIES_NAME[SV.sr])}: la classifica finale è quella del girone.</p>`;
-  if(!L.F)return `<p class="estat">Fasi finali</p><p class="note">${esc(lnFormatTxt(tr))}. Il tabellone si forma alla fine dei gironi, con la posizione di ognuno: nessuno è eliminato, ogni turno si gioca per il piazzamento.</p>`;
+  if(!L.F)return `<p class="estat">Fasi finali</p><p class="note">${esc(lnFormatTxt(tr))}. Il tabellone si forma alla fine ${tr.fin[0].m==='k4'?'del girone: chi perde è eliminato':'dei gironi, con la posizione di ognuno: nessuno è eliminato, ogni turno si gioca per il piazzamento'}.</p>`;
   const F=L.F;let h=`<p class="estat">Fasi finali · ${esc(SERIES_NAME[SV.sr])}${F.done?' · concluse':''}</p>`;
   F.lv.forEach(lv=>{
     h+=`<h3 class="eh">Posti ${lv.base}°-${lv.base+lv.T.length-1}°</h3>`;
@@ -123,6 +126,13 @@ function renderEventLN(){
   if(lnTabPh!==L.ph){lnTabPh=L.ph;lnTabSel=L.ph==='grp'?'grp':'fin';}
   let body='';
   if(SV.done&&SV.next)body+=endSeasonHTML({});
+  body+=eventPages();
+  if(eventPage!=='table'){
+    const detail=eventPage==='calendar'?eventCalendar():eventPage==='stats'
+      ?(leadersHTML()||'<p class="note">Le statistiche compariranno dopo le prime partite.</p>'):lnFinView();
+    $('eBody').innerHTML=body+detail;
+    return;
+  }
   body+=`<div class="seg" id="lnTabs">${[['grp','Girone'],['fin','Fase finale'],['tiers','Livelli']].map(([k,l])=>`<button type="button" class="sg${lnTabSel===k?' on':''}" data-lt="${k}">${l}</button>`).join('')}</div>`;
   body+=lnTabSel==='fin'?lnFinView():(lnTabSel==='tiers'?lnTiersView():lnPoolView());
   $('eBody').innerHTML=body;

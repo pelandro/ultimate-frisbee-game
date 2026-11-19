@@ -5,8 +5,8 @@
    Il vento in coda o contrario sposta entrambi i limiti (planThrow).
    I compagni lo sanno: un cutter non parte per un taglio lungo se il lanciatore non ci arriva, e piu' ci hanno giocato insieme (intesa, G.duo) o piu' l'IA e' esperta,
    piu' si fidano e partono anche per tagli di 50-60 m. Allo stesso modo la difesa avversaria non protegge il profondo da chi non ha il braccio per sfruttarlo. */
-const throwComf=p=>14+p.s.spa*0.55+VENTO_R*heroWind(p.t);   // heroWind: il signore del vento dei superpoteri (27-superpoteri.js)
-const throwMax=p=>12+p.s.spa*0.88+VENTO_R*heroWind(p.t);
+const throwComf=p=>14+p.s.spa*0.55+heroRange(p.t);   // heroWind: il signore del vento dei superpoteri (27-superpoteri.js)
+const throwMax=p=>12+p.s.spa*0.88+heroRange(p.t);
 // fiducia 0..1 del compagno c nel lanciatore th: la tua squadra la costruisce con l'intesa, l'IA ha una fiducia base che cresce col livello
 function trustOf(c,th){
   if(!c||!th)return 0.5;

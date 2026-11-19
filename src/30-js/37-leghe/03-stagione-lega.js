@@ -130,13 +130,13 @@ function lnLvInit(sp,pools,base){
   const lv={m:sp.m,base,R:[],order:null,rounds:0,T:[].concat(...pools)};
   if(sp.m==='c8'){lv.rounds=3;lv.R[0]=[lnMk(A[0],B[3]),lnMk(A[3],B[0]),lnMk(A[1],B[2]),lnMk(B[1],A[2])];}
   else if(sp.m==='x8'){lv.rounds=2;lv.R[0]=[lnMk(A[0],B[1]),lnMk(B[0],A[1]),lnMk(A[2],B[3]),lnMk(B[2],A[3])];}
-  else if(sp.m==='c4'){lv.rounds=2;lv.R[0]=pools.length>1?[lnMk(A[0],B[1]),lnMk(B[0],A[1])]:[lnMk(A[0],A[3]),lnMk(A[1],A[2])];}
+  else if(sp.m==='c4'||sp.m==='k4'){lv.rounds=2;lv.R[0]=pools.length>1?[lnMk(A[0],B[1]),lnMk(B[0],A[1])]:[lnMk(A[0],A[3]),lnMk(A[1],A[2])];}
   else if(sp.m==='p'){lv.rounds=1;const t=pools[0],R=[];for(let k=0;k<t.length;k+=2)R.push(lnMk(t[k],t[k+1]===undefined?null:t[k+1]));lv.R[0]=R;}
   else{const t=lv.T;lv.sched=roundRobin(t.length);lv.rounds=lv.sched.length;lv.tab=usFreshTab(t);lv.R[0]=lv.sched[0].map(([i,j])=>lnMk(t[i],t[j]));}
   return lv;
 }
 function lnFinBuild(fin,ord){
-  const F={lv:[],rd:0,rounds:0,order:null,done:false};let base=1;
+  const F={lv:[],rd:0,rounds:0,order:null,done:false,f0:fin[0]?fin[0].f:1};let base=F.f0;   // f0: prima posizione che entra nella fase (2 = la prima e' gia' promossa)
   for(const sp of fin){
     const pools=ord.map(o=>o.slice(sp.f-1,sp.t)).filter(p=>p.length);
     if(!pools.length)continue;
@@ -154,6 +154,10 @@ function lnPlay(a,b,rec){
 function lnLvNext(lv,rd){
   const R=lv.R[rd],W=R.map(lnWin),Lo=R.map(lnLos),fl=a=>a.filter(x=>x!==null);
   if(rd+1>=lv.rounds){   // classifica del livello
+    if(lv.m==='k4'){   // finale (vincente e perdente), poi le due perdenti delle semifinali in ordine di classifica
+      const sl=lv.R[0].map(lnLos).filter(x=>x!==null).sort((a,b)=>lv.T.indexOf(a)-lv.T.indexOf(b));
+      lv.order=fl([lnWin(R[0]),lnLos(R[0])]).concat(sl);return;
+    }
     if(lv.m==='c8'||lv.m==='x8'||lv.m==='c4'||lv.m==='p')lv.order=fl([].concat(...R.map(m=>[lnWin(m),lnLos(m)])));
     else lv.order=usRanking(lv.tab,lv.T);
     return;
@@ -163,6 +167,7 @@ function lnLvNext(lv,rd){
     else lv.R[2]=[lnMk(W[0],W[1]),lnMk(Lo[0],Lo[1]),lnMk(W[2],W[3]),lnMk(Lo[2],Lo[3])];
   }else if(lv.m==='x8')lv.R[1]=[lnMk(W[0],W[1]),lnMk(Lo[0],Lo[1]),lnMk(W[2],W[3]),lnMk(Lo[2],Lo[3])];
   else if(lv.m==='c4')lv.R[1]=[lnMk(W[0],W[1]),lnMk(Lo[0],Lo[1])];
+  else if(lv.m==='k4')lv.R[1]=[lnMk(W[0],W[1])];
   else lv.R[rd+1]=lv.sched[rd+1].map(([i,j])=>lnMk(lv.T[i],lv.T[j]));
 }
 // gioca il turno in corso di tutti i livelli: la tua partita (rec) e le altre, simulate
@@ -192,6 +197,7 @@ function lnLvLabel(lv,rd,k){
   if(lv.m==='c8')return rd===0?'Quarti di finale':(rd===1?(k<2?'Semifinale':`Semifinale ${b+4}°-${b+7}° posto`):'Finale '+pl(2*k));
   if(lv.m==='x8')return rd===0?'Turno incrociato':'Finale '+pl(2*k);
   if(lv.m==='c4')return rd===0?'Semifinale':'Finale '+pl(2*k);
+  if(lv.m==='k4')return (b>1?'Spareggio promozione':'Playoff scudetto')+' · '+(rd===0?'Semifinale':'Finale');
   if(lv.m==='p')return 'Finale '+pl(2*k);
   return `Posti ${b}°-${b+lv.T.length-1}° · partita ${rd+1} di ${lv.rounds}`;
 }
@@ -228,7 +234,8 @@ function lnRest(ord,used){   // le squadre fuori dalle fasi finali, per posizion
   return out;
 }
 function lnCompOrder(ord,F){
-  const head=F&&F.order?F.order:[],used=new Set(head);
+  const pre=F&&F.f0>1&&ord.length===1?ord[0].slice(0,F.f0-1):[];   // chi non entra nelle fasi finali perche' gia' sopra (la prima promossa direttamente) sta davanti
+  const head=pre.concat(F&&F.order?F.order:[]),used=new Set(head);
   return head.concat(lnRest(ord,used));
 }
 function lnSimComp(tr,comp){   // simula una competizione intera: gironi, fasi finali, classifica

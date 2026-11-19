@@ -58,7 +58,8 @@ function planThrow(th,ax,ay,style,exec){
   const hw=heroWind(th.t),wn=hw>0?null:windOn(info.skill,dx,dy,dist,Math.max(0.45,dist/sp.v),sp.hi,kind==='scoober');   // vento: deriva, dispersione, gittata (con il signore del vento a favore, niente deriva)
   const comf=throwComf(th)+(wn?wn.along*WIND_RANGE:0);if(dist>comf)k*=1+0.09*(dist-comf);   // gittata comoda: oltre la distanza che il lanciatore regge (dipende dallo Sparo e dal vento) la precisione crolla
   if(wn)k*=wn.k;
-  if(hw)k*=hw>0?VENTO_OK:VENTO_KO;   // signore del vento: a favore lanci piu' dritti, contro sbandano
+  if(hw)k*=hw>0?VENTO_OK:VENTO_KO;
+  k*=heroAimK(th.t);   // signore del tempo del computer in attacco: lanci piu' precisi (27-superpoteri.js)   // signore del vento: a favore lanci piu' dritti, contro sbandano
   k*=WX_SIG[G.wx|0]||1;   // pioggia e neve: lancio meno preciso
   let near=0;for(const q of T[1-th.t])if(q!==mk&&hyp(q.x-th.x,q.y-th.y)<3)near++;
   if(near)k*=1.06;   // un secondo difensore addosso disturba

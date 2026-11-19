@@ -23,6 +23,9 @@ L'indirizzo e la chiave API **non sono segreti**: stanno in ogni sito che usa Fi
 | Profilo del giocatore (nome, punti, vittorie, sconfitte, forza) | `ut/players/<id>` |
 | Squadra (7 titolari e fino a 7 riserve, statistiche per carta) | `ut/teams/<id>` |
 | Identità | utente anonimo di Firebase, salvato nel browser (`ultimate-ut-online`) |
+| Superpoteri: profilo e squadra (come sopra, più l'eroe `h` dei titolari, per esempio `lupo3`) | `uh/players/<id>`, `uh/teams/<id>` (nel browser `ultimate-ut-eroi-online`) |
+
+**Superpoteri** usa la radice `uh`, con regole uguali a `ut` più il campo `h` delle carte. Quando le regole cambiano (come all'arrivo dei Superpoteri), chi possiede il progetto Firebase deve incollare di nuovo [`firebase-rules.json`](firebase-rules.json) in **Realtime Database › Regole** e premere *Pubblica*: finché non lo fa, i Superpoteri rispondono «Il server di Superpoteri ha rifiutato la richiesta» e Real player continua a funzionare come prima. Il nome e l'accesso anonimo sono gli stessi delle due modalità; i punti no.
 
 - **Inizia partita**: il gioco carica la tua squadra, cerca tra i giocatori con punti vicini ai tuoi (prima ±150, poi ±500, poi ±2000, poi il più vicino) e fa giocare l'IA con la squadra scelta. L'ultimo avversario si evita se c'è un'alternativa.
 - **Punti Elo**: si parte da 1000; a ogni partita si guadagna o perde da 1 a 32 punti, secondo la differenza di punti con l'avversario. Cambiano solo i punti di chi gioca.

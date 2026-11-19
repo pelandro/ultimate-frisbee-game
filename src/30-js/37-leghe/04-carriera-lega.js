@@ -7,12 +7,12 @@ function lnStartCareer(name,opt){
   SV.coach=coachNorm(opt.coach);SV.start='cuore';
   SV.ln={tier:B.t,T:null};
   SV.rost={};for(const n of LN_NAMES)if(LN_BY[n].lk===lk&&n!==name)SV.rost[n]=lnRoster(n,SV.seed);
-  setSquad(lnRoster(name,SV.seed+'|user'));   // la tua rosa: quella del club, come per le avversarie
+  setSquad(lnRoster(name,'preview|'+SV.team));   // la tua rosa: quella del club, come per le avversarie
   beginSeason();
   Object.assign(SV,opt.carry||{});
   careerInit();
   news(`Inizia la carriera con ${name} in ${SERIES_NAME[SV.sr]}. In panchina: ${coachName()}.`);
-  persist();
+  if(!opt.deferSave)persist();
 }
 // reputazione di partenza: i club piu' forti del paese partono con piu' reputazione (da 21 a 60)
 const lnRepStart=()=>{const all=LN_NAMES.filter(n=>LN_BY[n].lk===SV.lk).sort((a,b)=>LN_BY[b].p-LN_BY[a].p),i=all.indexOf(SV.team);return Math.round(20+(1-i/Math.max(1,all.length-1))*40);};

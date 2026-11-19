@@ -55,7 +55,9 @@ const DET=()=>{
     try{
       await look('menu iniziale');
       await page.click('#tSet');for(const [t,n] of [['#sTabGame','Impostazioni · Partita'],['#sTabCtl','Impostazioni · Comandi'],['#sTabScr','Impostazioni · Schermo e audio'],['#sGoDiag','Impostazioni · Avanzate']]){await page.click(t);await look(n);}await page.click('#sBack');
-      await page.click('#tQuick');await look('partita veloce');await page.click('#qBack');
+      await page.click('#tQuick');await look('partita veloce');await page.click('#qA');
+      await look('catalogo squadre');await page.click('#qpX');await page.click('#qBack');
+      await page.click('#tTourn');await look('configurazione torneo');await page.click('#tnBack');
       await page.click('#tUT');await page.click('#umCpu');if(await page.locator('#uPack').isVisible()){await page.click('#uPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');}
       await page.click('#uEquip');await look('Ultimate Team · Equipaggiamento');await page.click('#eqBack');await page.click('#uBack');await page.click('#umBack');
       await page.click('#tCareer');await look('scelta del campionato');

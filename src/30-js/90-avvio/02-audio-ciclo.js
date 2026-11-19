@@ -231,7 +231,7 @@ function syncToggles(){   // audio, stacchi, meteo, difesa e suggerimenti si cam
   sw('sRot',rotPref,rotPref?'In verticale il gioco si gira da solo':'In verticale compare «Gira lo schermo»');
   sw('sFs',fs);
   $('paSnd').classList.toggle('off',!on);$('paCine').classList.toggle('off',!c);   // nella pausa l'interruttore mostra anche lo stato con il colore
-  $('paSnd').textContent='Audio: '+(on?'sì':'no');$('paCine').textContent='Salti e tuffi: '+(c?'sì':'no');
+  $('paSnd').textContent='Audio: '+(on?'sì':'no');$('paCine').textContent='Salti, tuffi e replay: '+(c?'sì':'no');
   $('paFs').textContent='Schermo intero: '+(fs?'sì':'no');$('paFs').classList.toggle('off',!fs);
   $('paDef').textContent='Difesa: '+DEF_LBL[G.opt.def].toLowerCase();
   $('sDefS').textContent=DEF_LBL[G.opt.def]+': '+DEF_TXT[G.opt.def];
@@ -244,6 +244,7 @@ function syncCall(){
   if(drag&&G.mode==='play'&&h&&h.t===0&&!G.flight&&G.freeze<=0){const w=toWorld(drag.x,drag.y);updateCall(h,w.x,w.y,G.high);}
   else if(G.call)endCall();
 }
+let simRemainder=0,menuDrawElapsed=0;
 function frame(now){
   const dt=Math.min(0.05,Math.max(0,(now-last)/1000));last=now;
   AUD.sync(G.inMatch&&G.mode!=='over'?'match':'home');
@@ -257,13 +258,30 @@ function frame(now){
     // con il disco in mano e lo zoom che sta cambiando l'azione aspetta: riparte quando lo zoom ha finito
     const zoomWait=G.mode==='play'&&!!G.holder&&!G.pull&&!G.flight&&(cam.zP<1||Math.abs(zoomTarget()-cam.zTo)>0.001);
     G.zoomHold=zoomWait;
-    if(G.paused){}else if(G.mode==='cine')updateCine(dt);else if(!zoomWait)update(dt);
-    rpRecord();rpCheck();rpApply(dt);   // replay: memoria degli ultimi secondi e riproduzione dopo le mete spettacolari
-    updateCamera(dt);
-    updateHUD(dt);
-    render(dt);
+    capturePointCheckpoint();
+    if(G.paused||zoomWait||G.schemeOpen)simRemainder=0;
+    else if(G.mode==='cine'){simRemainder=0;updateCine(dt);}
+    else simRemainder=advanceSimulation(simRemainder,dt,step=>{
+      update(step);
+      return !G.paused&&!G.schemeOpen&&G.mode!=='cine';
+    });
+    if(G.mode==='banner'&&Math.max(...G.score)>=G.target)recordFinishedMatch();
+    rpRecord();rpCheck();
+    const replayFrame=rpApply(dt);
+    if(replayFrame){
+      updateHUD(dt);
+      rpSet(replayFrame);
+      try{updateCamera(dt);render(dt);}
+      finally{rpSet(RP.on.save);}
+    }else{
+      updateCamera(dt);updateHUD(dt);
+      menuDrawElapsed+=dt;
+      if(G.inMatch||G.mode!=='home'||menuDrawElapsed>=1/30){
+        render(Math.min(menuDrawElapsed,.05));menuDrawElapsed=0;
+      }
+    }
     updTest();
-  }
+  }else simRemainder=0;
   requestAnimationFrame(frame);
 }
 window.addEventListener('resize',resize);

@@ -63,6 +63,15 @@ function halfTime(){
 }
 function startSecondHalf(){G.pointNo++;G.dir=[-G.dir[0],-G.dir[1]];startPoint(G.nextRec);HOOKS.menu();}
 const K_DEF=0.85,K_ATT=0.95,K_DEF_AUTO=1.3;   // 1 = velocita' originale: tutto il gioco va al 95% in attacco, all'85% in difesa manuale (serve tempo per reagire) e al 130% in difesa automatica (scorre da sola)
+const SIM_STEP=1/60;
+function advanceSimulation(remainder,elapsed,step){
+  remainder+=elapsed;
+  while(remainder>=SIM_STEP-1e-9){
+    remainder-=SIM_STEP;
+    if(step(SIM_STEP)===false)return 0;
+  }
+  return Math.max(0,remainder);
+}
 function update(dt){
   const dtr=dt;   // tempo reale (il rallentatore agisce solo sul tempo di gioco)
   const kt=G.poss===1&&!G.pull?(G.auto||defMan()?K_DEF:K_DEF_AUTO):K_ATT;G.k=G.k?G.k+(kt-G.k)*(1-Math.exp(-dt*3)):kt;   // il cambio di velocita' e' graduale
@@ -71,7 +80,7 @@ function update(dt){
   const st=G.diveScene?SLOW_K:1;G.slowK=G.slowK===undefined?1:G.slowK+(st-G.slowK)*(1-Math.exp(-dtr*10));
   if(G.diveCool>0)G.diveCool-=dtr;
   for(const t of T)for(const p of t)if(p.dv&&p.dv.end===null&&!(G.dive&&G.dive.p===p))p.dv.end=G.tick||0;   // tuffo rimasto senza proprietario (nessuna chiusura): il giocatore si rialza comunque
-  dt*=G.k*G.slowK;
+  dt*=G.k*G.slowK*heroTimeTick(dtr);   // heroTimeTick: il rallentatore del signore del tempo (27-superpoteri.js)
   if(G.edge){G.edge.t-=dt;if(G.edge.t<=0)G.edge=null;}   // il vantaggio del pull dura pochi secondi di gioco
   if(G.mode==='banner'){
     G.banner.t-=dt;
@@ -110,7 +119,7 @@ function update(dt){
     }
     const waiting=!!G.walk;
     if(waiting){G.think=Math.max(G.think,0.6);G.stallT=0;}
-    if(!waiting&&G.marker&&hyp(G.marker.x-h.x,G.marker.y-h.y)<3.8)G.stallT+=dt*(h.t===0&&G.stallK!=null?G.stallK:1);   // G.stallK: il tutorial in partita rallenta (o ferma) il conteggio mentre impari a lanciare
+    if(!waiting&&G.marker&&hyp(G.marker.x-h.x,G.marker.y-h.y)<3.8)G.stallT+=dt*(h.t===0&&G.stallK!=null?G.stallK:1)*heroStallK(h.t);   // G.stallK: il tutorial in partita rallenta (o ferma) il conteggio mentre impari a lanciare
     if(G.stallT>=10){HOOKS.sfx('whistle');HOOKS.toast('Stall! Disco perso',1-h.t);turnover(1-h.t,h.x,h.y,G.marker,'',1-h.t);return;}
     if(h.t===1&&!G.auto&&defMan()&&!G.skip){   // il cerchio dell'handblock deve sempre partire intero: se il tuo marcatore arriva quando manca poco al lancio, l'avversario aspetta
       const mk=G.marker;
@@ -141,7 +150,7 @@ function diveCandidate(f){
 function diveOffer(dtr){
   const f=G.flight,w=G.diveWin;
   if(w){
-    w.t+=dtr;
+    w.t+=dtr*(G.tmK||1);   // con il signore del tempo il cerchio va piano quanto il gioco
     if(!f||w.t>=w.W+0.2)G.diveWin=null;
     return;
   }

@@ -10,7 +10,7 @@ const REAL={};
 const realOpt=(n,min)=>({min,flavor:flavorOf(n),target:TEAM[n]&&TEAM[n].series!=='C'?TEAM[n].power:undefined});
 const flavorOf=n=>/U17/.test(n)?'u17':(/U20/.test(n)?'u20':(/NewGen|NextGen|Next Gen|Rookies/.test(n)?'newgen':(/Wise/.test(n)?'wise':'')));
 const aiRoster=n=>REAL[n]?realRoster(REAL[n],SV.seed+'|'+n,realOpt(n,7)):makeRoster(TEAM[n].power,SV.seed+'|'+n);
-const userRoster=()=>realRoster(REAL[SV.team]||[],SV.seed+'|user',realOpt(SV.team,9));   // la tua rosa: quella vera, come per le avversarie
+const userRoster=()=>realRoster(REAL[SV.team]||[],'preview|'+SV.team,realOpt(SV.team,9));   // la tua rosa: quella vera, come per le avversarie
 // una sola edizione a stagione (s = stagione dell'edizione): prima il torneo concluso si poteva far ripartire all'infinito, accumulando trofei e incassi.
 // L'EUCF (gironi da 4, prequarti, quarti, semifinali, finale) sta in 36-europa/01-eucf.js
 const newEu=season=>euNew(season);
@@ -49,11 +49,45 @@ function startCareer(name,opt){   // opt: {coach, relief} (24-allenatore.js)
   Object.assign(SV,opt.carry||{});   // se arrivi dal campionato USA: allenatore, storico e traguardi restano tuoi (35-usa/05-lega-incrociata.js)
   careerInit();
   if(opt.relief)reliefStart();else news(`Inizia la carriera con ${name} in ${SERIES_NAME[SV.sr]}. In panchina: ${coachName()}.`);
-  persist();
+  if(!opt.deferSave)persist();
+}
+function careerSaveShape(d){
+  if(!d||typeof d.team!=='string'||!d.team||!Number.isInteger(d.season)||d.season<1)return false;
+  if(d.v!==undefined&&(!Number.isInteger(d.v)||d.v<1||d.v>SAVE_V))return false;
+  if(d.slot!==undefined&&(!Number.isInteger(d.slot)||d.slot<1||d.slot>3))return false;
+  const names=d.mem?.[d.sr];
+  if(!Array.isArray(names)||!names.includes(d.team)||new Set(names).size!==names.length)return false;
+  if(!names.every(n=>typeof n==='string'&&d.tab?.[n]&&['pts','pf','pa'].every(k=>Number.isFinite(d.tab[n][k]))))return false;
+  if(!Array.isArray(d.sched)||!d.sched.length||!Number.isInteger(d.round)||d.round<0||d.round>d.sched.length)return false;
+  if(!d.sched.every(day=>Array.isArray(day)&&day.every(m=>Array.isArray(m)&&m.length===2
+    &&m[0]!==m[1]&&m.every(i=>Number.isInteger(i)&&i>=0&&i<names.length))))return false;
+  const player=p=>p&&typeof p==='object'&&p.s&&typeof p.s==='object'&&!Array.isArray(p.s);
+  if(d.squad!==undefined&&(!Array.isArray(d.squad)||d.squad.length<7||!d.squad.every(player)))return false;
+  return !d.rost||(typeof d.rost==='object'&&Object.values(d.rost).every(r=>Array.isArray(r)&&r.length&&r.every(player)));
 }
 function loadSave(d0){
-  let d=d0||null;
-  if(!d){try{const r=localStorage.getItem(SAVE_KEY);if(r)d=JSON.parse(r);}catch(e){}}
+  let data=d0;
+  if(!data){
+    try{data=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');}catch(e){return false;}
+  }
+  if(!careerSaveShape(data))return false;
+  const previous=SV,squad=squadData(),lineup=lineupIds();
+  try{
+    hydrateCareer(structuredClone(data));
+    if(!SV.done&&SV.event==='camp'&&!nextMatch()?.name)throw new Error('Avversaria mancante');
+    return true;
+  }catch(e){
+    restoreCareerState(previous,squad,lineup);
+    return false;
+  }
+}
+function careerSaveStatus(failed){
+  const el=$('careerSaveStatus');
+  el.classList.toggle('hidden',!failed);
+}
+$('careerSaveStatus').addEventListener('click',()=>persist());
+
+function hydrateCareer(d){
   if(d&&d.team&&d.mem&&d.sched&&d.tab){
     SV=d;if(SV.rost)for(const n in SV.rost)for(const o of SV.rost[n])if(o&&o.s)fillStats(o.s);SV.tTeam=!!SV.tTeam;if(!SV.eu)SV.eu=newEu(SV.season);else if(!SV.eu.nat&&SV.eu.state==='on'&&!SV.eu.rk)SV.eu=Object.assign(newEu(SV.season),{s:SV.eu.s|0});if(!SV.event||(SV.event==='eu'&&!SV.euUnlocked))SV.event='camp';
     const mig=SV.realv===1;   // carriera iniziata con i vecchi roster: la rosa diventa quella ufficiale; gli allenamenti dei giocatori veri restano
@@ -83,7 +117,20 @@ function persist(){
   if(QM.on)return;   // partita veloce: la carriera non si tocca
   SV.v=SAVE_V;SV.squad=squadData();delete SV.players;SV.lineup=lineupIds();SV.savedAt=Date.now();
   if(typeof renderShell==='function'&&!QM.on&&csCur)renderShell();   // crediti e posta nella barra in alto sempre aggiornati
-  try{const prev=localStorage.getItem(SAVE_KEY);if(prev&&prev.length<3e6&&+((prev.match(/"slot":(\d)/)||[0,'1'])[1])===(SV.slot||1))localStorage.setItem(SAVE_KEY+'-bak',prev);localStorage.setItem(SAVE_KEY,JSON.stringify(SV));if(SV.team)localStorage.setItem(slotKey(SV.slot||1),JSON.stringify(SV));}catch(e){}   // la versione precedente resta come copia di sicurezza (solo se e' della stessa carriera, cioe' dello stesso slot)
+  // Il salvataggio attivo è il dato canonico. La copia nello slot viene usata quando si cambia carriera.
+  let data,prev;
+  try{
+    data=JSON.stringify(SV);
+    prev=localStorage.getItem(SAVE_KEY);
+    localStorage.setItem(SAVE_KEY,data);
+  }catch(e){careerSaveStatus(true);return false;}
+  careerSaveStatus(false);
+  try{
+    if(SV.team)localStorage.setItem(slotKey(SV.slot||1),data);
+    if(prev&&prev.length<3e6&&(JSON.parse(prev).slot||1)===(SV.slot||1))
+      localStorage.setItem(slotKey(SV.slot||1)+'-bak',prev);
+  }catch(e){}   // la copia accessoria non invalida la scrittura del salvataggio attivo
+  return true;
 }
 const ranking=(tab,names)=>names.length&&tab[names[0]]&&tab[names[0]].h?usRanking(tab,names):names.slice().sort((a,b)=>tab[b].pts-tab[a].pts||(tab[b].pf-tab[b].pa)-(tab[a].pf-tab[a].pa)||tab[b].pf-tab[a].pf);   // tabelle USA (con gli scontri diretti, h): 35-usa/03-stagione-usa.js
 const myRank=()=>ranking(SV.tab,SV.mem[SV.sr]).indexOf(SV.team)+1;

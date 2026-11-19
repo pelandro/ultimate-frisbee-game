@@ -171,6 +171,13 @@ function renderEventUS(){
   if(usTabPh!==U.ph){usTabPh=U.ph;usTabSel=(U.ph==='nat'||U.ph==='done')?'nat':'conf';}
   let body='';
   if(SV.done&&SV.next)body+=endSeasonHTML({rl:'Conference',awTitle:usConfName(U.cf)});
+  body+=eventPages();
+  if(eventPage!=='table'){
+    const detail=eventPage==='calendar'?eventCalendar():eventPage==='stats'
+      ?(leadersHTML()||'<p class="note">Le statistiche compariranno dopo le prime partite.</p>'):usNatView();
+    $('eBody').innerHTML=body+detail;
+    return;
+  }
   body+=`<div class="seg" id="usTabs">${[['conf','Conference'],['nat','Nationals'],['rank','Ranking']].map(([k,l])=>`<button type="button" class="sg${usTabSel===k?' on':''}" data-ut="${k}">${l}</button>`).join('')}</div>`;
   body+=usTabSel==='nat'?usNatView():(usTabSel==='rank'?usRankView():usConfView());
   if(usTabSel==='nat'&&SV.usAlb&&SV.usAlb.length)body+=`<h3 class="eh">Albo d’oro dei Nationals</h3><ul class="elist">${SV.usAlb.slice(0,6).map(a=>`<li><span>${a.s}: ${esc(a.champ)}</span><span>${a.sc[0]}–${a.sc[1]} su ${esc(a.run)}</span></li>`).join('')}</ul>`;

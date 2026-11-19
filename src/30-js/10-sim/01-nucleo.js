@@ -40,7 +40,7 @@ const ROSTERS=[
   ['Sara','C',56,50,54,82,90,70,64,88,58,72,94,78,23]]}
 ];
 const T=[[],[]],SQ=[];
-const HOOKS={cine:null,toast(){},menu(){},over(){},vibe(){},injury(){},sfx(){},half(){},shake(){},drill(){},hero(){}};
+const HOOKS={cine:null,toast(){},menu(){},over(){},vibe(){},injury(){},sfx(){},half(){},shake(){},drill(){},hero(){},combo(){}};
 const MATCH_TARGET=7,HALF_AT=4,HALF_REST=4;   // la partita arriva a 7 punti; quando una squadra segna il 4° c'e' l'half time, in cui si recupera pochissima energia (+4)
 const G={mode:'menu',xtr:false,hint:false,routes:true,score:[0,0],target:MATCH_TARGET,halfDone:false,startRec:1,pointNo:1,poss:0,nextRec:1,holder:null,flight:null,
   disc:{x:0,y:0,z:1},ref:{x:EZ,y:MID},marker:null,closedSide:1,stallT:0,pz:[],edge:null,freeze:0,think:1,high:false,

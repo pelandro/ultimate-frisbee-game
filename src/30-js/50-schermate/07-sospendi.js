@@ -19,9 +19,20 @@ function suspSnap(){
     my:SQ.map(p=>({f:p.full,st:Math.round(p.st),m:cp(p.m),inj:p.injNew?p.inj:0})),
     op:T[1].map(q=>({ro:OPP.list.indexOf(q.ro),st:Math.round(q.st),m:cp(q.m)})),ol:OPP.list.map(o=>o.st===undefined?100:Math.round(o.st))};
 }
+let pointCheckpoint=null;
+function capturePointCheckpoint(){
+  if(G.mode==='ready'&&pointCheckpoint?.pno!==G.pointNo)
+    pointCheckpoint=suspSnap();
+}
+function suspensionState(){
+  if(!G.inMatch||QM.on||G.drill||G.recorded)return null;
+  if((G.mode==='play'||G.mode==='cine')&&pointCheckpoint?.pno===G.pointNo)
+    return pointCheckpoint;
+  return suspSnap();
+}
 const suspOk=()=>!!(SV&&SV.susp&&nextMatch()&&SV.susp.key===nextMatch().label+'|'+nextMatch().name);
 function suspendMatch(){
-  const s=suspSnap();if(!s)return false;
+  const s=suspensionState();if(!s)return false;
   SV.susp=s;$('pause').classList.add('hidden');$('half').classList.add('hidden');G.paused=false;restoreForm();
   G.schemeOpen=false;G.inMatch=false;$('menu').classList.add('hidden');$('over').classList.add('hidden');
   persist();showScreen('home');return true;
@@ -40,11 +51,16 @@ function resumeMatch(){
   G.injured=[];
   if(s.fresh){const o=Object.assign({},G.opp);startPoint(s.rec);Object.assign(G.opp,o);}   // meta nuova: riposo tra le mete, come sempre (gli schemi dell'avversario restano quelli salvati)
   else{useLines(s.rec);placeTeams(s.rec);}                                                       // meta interrotta: si rigioca da capo, senza recupero
+  pointCheckpoint=suspSnap();
   cam.snap=true;SV.susp=null;persist();
   return true;
 }
 // chiudi o nascondi la pagina durante una partita di carriera: la sospensione si salva da sola
-function autoSusp(){const s=suspSnap();if(s){SV.susp=s;persist();}}
+function autoSusp(){
+  if(G.mode==='banner'&&Math.max(...G.score)>=G.target){recordFinishedMatch();return;}
+  const s=suspensionState();
+  if(s){SV.susp=s;persist();}
+}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)autoSusp();});
 window.addEventListener('pagehide',autoSusp);
 $('paSusp').addEventListener('click',()=>{suspendMatch();});

@@ -2,14 +2,14 @@
    Il motore e' in 10-sim/27-superpoteri.js. Il disegno dell'omino trasformato passa da puppet (02-pixel-art.js): pelle e capelli dell'animale (heroLook) e,
    al posto della testa, HERO_DRAW[eroe] (testa, collo, coda o tentacoli), con gli stessi pixel e lo stesso contorno degli omini. */
 const HERO_LOOK={lupo:{skin:'#6e5f50',hair:'#3f342b',style:4,band:null,beard:0},giraffa:{skin:'#e9b44c',hair:'#9a5a1e',style:4,band:null,beard:0},polpo:{skin:'#b25fe0',hair:'#7a35a8',style:4,band:null,beard:0},tele:{},clone:{},
-  ghiaccio:{skin:'#a9dcff',hair:'#f4f8ff',style:4,band:null,beard:0},mietitore:{skin:'#e9e4d2',hair:'#1e1629',style:4,band:null,beard:0},vento:{hair:'#eef8ff',band:null}};
+  ghiaccio:{skin:'#a9dcff',hair:'#f4f8ff',style:4,band:null,beard:0},mietitore:{skin:'#e9e4d2',hair:'#1e1629',style:4,band:null,beard:0},vento:{hair:'#eef8ff',band:null},tempo:{hair:'#f2f2f2',band:null,beard:0}};
 // la figura cambia solo dopo HERO_HIDE secondi, quando la bomba di fumo e' gia' abbastanza densa da coprire l'omino
-const HERO_HIDE=0.12,heroVis=p=>heroOn(p)&&HERO[p.hero].dur-p.hx>=HERO_HIDE;
+const HERO_HIDE=0.12,heroVis=p=>heroOn(p)&&(p.hxd||HERO[p.hero].dur)-p.hx>=HERO_HIDE;
 function heroLook(p){   // aspetto dell'eroe trasformato; chi e' congelato dallo stregone ha la pelle azzurra
-  const h=heroVis(p)?p.hero:'',fr=p.frz>0;
-  if(!h&&!fr)return lookOf(p);
-  const key=h+(fr?'*':'');
-  if(!p._hl||p._hlk!==key){p._hl=Object.assign({},lookOf(p),h?HERO_LOOK[h]:{},fr?{skin:'#bfe6ff'}:{});p._hlk=key;}
+  const h=heroVis(p)?p.hero:'',fr=p.frz>0||!!p.ice,sh=!!p.shade;   // p.ice, p.shade: la copia del clone nelle combo «Specchio di ghiaccio» e «Ombra»
+  if(!h&&!fr&&!sh)return lookOf(p);
+  const key=h+(fr?'*':'')+(sh?'~':'');
+  if(!p._hl||p._hlk!==key){p._hl=Object.assign({},lookOf(p),h?HERO_LOOK[h]:{},fr?{skin:'#bfe6ff'}:{},sh?{skin:'#4a3d5c',hair:'#1e1629'}:{});p._hlk=key;}
   return p._hl;
 }
 const HERO_DRAW={
@@ -83,6 +83,16 @@ const HERO_DRAW={
     if(view===0)R(f>0?hx0+4:hx0+1,T+2,1,1,PAL.out);else if(view===2){R(hx0+1,T+2,1,1,PAL.out);R(hx0+4,T+2,1,1,PAL.out);}
     for(let i=0;i<3;i++){const a=t*5+i*2.1,px0=Math.round(x+Math.cos(a)*10),py0=Math.round(sy+2+Math.sin(a)*5);R(px0,py0,2,1,'#dff6ff');R(px0+(Math.sin(a)>0?2:-1),py0-1,1,1,'#dff6ff');}   // vortici
   },
+  // signore del tempo: capelli e barba bianchi, un'aureola a forma di quadrante con le lancette che girano dietro la testa, una clessidra in mano
+  tempo(R,o){
+    const {hx0,T,f,view,x,sy,lean}=o,c=o.skin,wh='#f2f2f2',au='#ffd23f',ad='#b8860b',t=G.tick||0,cx=hx0+3,cy=T+2;
+    for(let i=0;i<12;i++){const a=i/12*Math.PI*2;R(Math.round(cx+Math.cos(a)*7),Math.round(cy+Math.sin(a)*6),1,1,i%3?ad:au);}   // il quadrante: dodici tacche
+    for(const [l,v] of [[6,t*1.2],[4,t*0.15]])for(let k=1;k<=l;k++)R(Math.round(cx+Math.cos(v-Math.PI/2)*k),Math.round(cy+Math.sin(v-Math.PI/2)*k*0.9),1,1,au);   // le lancette
+    R(hx0+1,T,4,1,c);R(hx0,T+1,6,4,c);R(hx0+1,T+5,4,1,c);R(hx0,T-1,6,2,wh);
+    if(view===0){R(f>0?hx0:hx0+4,T+1,2,2,wh);R(f>0?hx0+4:hx0+1,T+2,1,1,PAL.out);R(f>0?hx0+2:hx0,T+4,4,3,wh);R(f>0?hx0+3:hx0+1,T+7,2,1,wh);}
+    else if(view===2){R(hx0+1,T+2,1,1,PAL.out);R(hx0+4,T+2,1,1,PAL.out);R(hx0+1,T+4,4,3,wh);R(hx0+2,T+7,2,1,wh);}
+    const gx=x+f*5+lean,gy=sy+1;R(gx-1,gy,3,1,ad);R(gx,gy+1,1,1,'#bfe6ff');R(gx-1,gy+1,1,1,'#bfe6ff');R(gx+1,gy+1,1,1,'#bfe6ff');R(gx,gy+2,1,1,au);R(gx-1,gy+3,3,1,au);R(gx-1,gy+4,3,1,ad);   // la clessidra
+  },
   // telecinetico: un omino con un cervello gigante rosa al posto dei capelli; quando guida il disco, scintille attorno al cervello
   tele(R,o){
     const {hx0,T,f,view}=o,c=o.skin,pk='#f29ac0',pd='#c8608f';
@@ -94,7 +104,7 @@ const HERO_DRAW={
 };
 // trasformazione: nuvola di fumo e scintille, poi la scritta col nome dell'animale
 // BOMBA DI FUMO: la trasformazione avviene dentro una nuvola grigia che copre l'omino, con scintille del colore dell'eroe e un botto; a fine potere uno sbuffo piu' piccolo
-const HERO_COL={lupo:'#c9a27a',giraffa:'#ffd23f',polpo:'#d79bff',tele:'#f29ac0',clone:'#a8ecff',ghiaccio:'#bff0ff',mietitore:'#c45cff',vento:'#bff3ff'};
+const HERO_COL={tempo:'#ffd23f',lupo:'#c9a27a',giraffa:'#ffd23f',polpo:'#d79bff',tele:'#f29ac0',clone:'#a8ecff',ghiaccio:'#bff0ff',mietitore:'#c45cff',vento:'#bff3ff'};
 function heroSmoke(x,y,on,k,vx,vy){
   const n=on?20:8,big=on?1:0.6;vx=(vx||0)*0.7;vy=(vy||0)*0.7;   // il fumo segue un po' chi corre, cosi' lo copre mentre si trasforma
   for(const z of [1.2,3.4,5.4])addFx({t:'smoke',x,y:y+0.05,vx,vy,z:z*big,vz:0.2,life:on?1.1:0.7,max:on?1.1:0.7,r:2*big});   // il nucleo: dai piedi alla testa
@@ -120,28 +130,34 @@ const HERO_ICON={   // 10x8: o contorno, c pelle dell'animale, e occhio giallo, 
   ghiaccio:['....oo....','...oiio...','..oiwiio..','.oiiiiiio.','oooooooooo','..osksko..','..owwwwo..','...owwo...'],
   mietitore:['..oooo.lll','.ovvvvo..l','ovqqqqvo.n','ovxqqxvo.n','ovqqqqvo.n','ovqkkqvo.n','.ovvvvo..n','..oooo...n'],
   vento:  ['.....ggg..','gggggg..g.','.......gg.','..........','.gggggggg.','.........g','ggggggg.g.','.......g..'],
+  tempo:  ['..oooooo..','.oaaaaaao.','oaaawaaaao','oaaawaaaao','oaaawwwaao','oaaaaaaaao','.oaaaaaao.','..oooooo..'],
   tele:   ['..oooooo..','.oppdppdo.','oppdppppdo','opdppdpppo','.oppppdpo.','..osssso..','..okskso..','...oooo...'],
   clone:  ['.ss...gg..','.ss...gg..','uuuu.gggg.','uuuu.gggg.','.uu...gg..','.kk...hh..','.kk...hh..','k..k.h..h.']   // il vero e, accanto, la copia trasparente
 };
 function heroIconSvg(k){
-  const C={g:'#bff3ff',i:'#3d7fd6',v:'#2a1d3a',q:'#e9e4d2',x:'#c45cff',l:'#c9d1db',n:'#7a5634',u:'#2f7bff',g:'#a8ecff',h:'#62bcd8',o:'#0b0d12',c:HERO_LOOK[k].skin,e:k==='lupo'?'#ff3b2f':'#ffd23f',k:'#0b0d12',w:'#ffffff',b:'#c98a3a',p:'#f29ac0',d:'#c8608f',s:'#f0c9a4'};
+  const C={a:'#ffd23f',g:'#bff3ff',i:'#3d7fd6',v:'#2a1d3a',q:'#e9e4d2',x:'#c45cff',l:'#c9d1db',n:'#7a5634',u:'#2f7bff',g:'#a8ecff',h:'#62bcd8',o:'#0b0d12',c:HERO_LOOK[k].skin,e:k==='lupo'?'#ff3b2f':'#ffd23f',k:'#0b0d12',w:'#ffffff',b:'#c98a3a',p:'#f29ac0',d:'#c8608f',s:'#f0c9a4'};
   let s='<svg viewBox="0 0 10 8" shape-rendering="crispEdges" aria-hidden="true">';
   HERO_ICON[k].forEach((row,y)=>{for(let x=0;x<row.length;x++){const c=C[row[x]];if(c)s+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${c}"/>`;}});
   return s+'</svg>';
 }
 (function(){
   const box=$('heroB');if(!box)return;
-  box.addEventListener('pointerdown',e=>{const b=e.target.closest('.hb');if(!b)return;e.preventDefault();e.stopPropagation();heroUse(0,b.dataset.k);});
+  box.addEventListener('pointerdown',e=>{const b=e.target.closest('.hb');if(!b)return;e.preventDefault();e.stopPropagation();
+    const k=b.dataset.k,cb=comboReady(0,k);if(!cb){heroUse(0,k);return;}
+    const ok=cbPhase(b)>=1-CB_WIN;heroUse(0,k,ok);if(!ok)HOOKS.toast&&HOOKS.toast('Combo mancata: tocca quando l’anello arriva sul pulsante');});   // aggancio a tempo
 })();
 function heroHud(){
   const box=$('heroB');if(!box)return;
   const show=!!(G.heroOn&&G.hz&&(G.mode==='play'||G.mode==='ready'||G.mode==='banner'));
   box.classList.toggle('hidden',!show);if(!show)return;
   const ks=(G.hk&&G.hk[0])||HERO_K,id=ks.join();
-  if(box.dataset.ks!==id){box.dataset.ks=id;box.innerHTML=ks.map(k=>`<button type="button" class="hb" data-k="${k}" aria-label="${HERO[k].n}">${heroIconSvg(k)}<i class="hbr"></i><em></em></button>`).join('');}   // un pulsante per ogni eroe scelto
-  for(const b of box.children){
+  if(box.dataset.ks!==id){box.dataset.ks=id;box.innerHTML=ks.map(k=>`<button type="button" class="hb" data-k="${k}" aria-label="${HERO[k].n}">${heroIconSvg(k)}<i class="hbr"></i><i class="hbc"></i><em></em></button>`).join('')+'<div class="hcb" title="Barra combo"><i></i></div>';}   // un pulsante per ogni eroe scelto e la barra delle combo
+  const bar=box.querySelector('.hcb');if(bar){const v=G.cb?G.cb[0]:0;bar.firstChild.style.width=(v*100).toFixed(0)+'%';bar.classList.toggle('full',v>=1);bar.classList.toggle('hidden',!ks.some(k=>ks.some(o=>o!==k&&HERO_COMBO[comboKey(k,o)])));}   // la barra serve solo se tra i tuoi eroi c'e' una combo
+  for(const b of box.querySelectorAll('.hb')){
+    const cr=comboReady(0,b.dataset.k);if(cr&&b._c0===undefined)b._c0=G.gt||0;else if(!cr)b._c0=undefined;
+    b.classList.toggle('cmb',cr);if(cr){const ph=cbPhase(b);b.style.setProperty('--cs',(1.9-0.9*ph).toFixed(3));b.classList.toggle('cok',ph>=1-CB_WIN);}
     const k=b.dataset.k,p=heroOf(0,k),H=HERO[k],left=G.hz[0][k],act=!!(p&&p.hx>0);
-    const fr=act?p.hx/H.dur:(left<=0?1:1-left/(H.dur+H.cd));
+    const fr=act?p.hx/(p.hxd||H.dur):(left<=0?1:1-left/((G.hzm&&G.hzm[0][k])||(H.dur+H.cd)));   // con i livelli di Ultimate Team durata e ricarica cambiano
     b.style.setProperty('--p',(fr*100).toFixed(1)+'%');
     b.classList.toggle('rdy',heroReady(0,k));b.classList.toggle('act',act);b.classList.toggle('off',!p);
     const t=act?Math.ceil(p.hx)+'':(left>0?Math.ceil(left)+'':'');const em=b.lastChild;if(em.textContent!==t)em.textContent=t;
@@ -170,7 +186,7 @@ function heroTkFx(){
   for(const t of [0,1])if(G.mode==='play'&&heroOn(heroOf(t,'vento'),'vento')&&Math.random()<0.5)GU.push({x:dirOf(t)>0?cam.x-4:cam.x+VW/S+4,y:rnd(2,FIELD_W-2),d:dirOf(t),l:rnd(2,5),t0:G.tick||0});
   for(let i=GU.length-1;i>=0;i--){const g=GU[i],a=(G.tick||0)-g.t0;if(a>2.2||a<0){GU.splice(i,1);continue;}const gx=g.x+g.d*a*26,x0=sxw(gx),x1=sxw(gx-g.d*g.l),y=syw(g.y);px(Math.min(x0,x1),y,Math.max(1,Math.abs(x1-x0)),1,a<1.8?'#eef8ff':'#bfe6c8');}
   for(const t of [0,1])if(G.mode==='play'&&heroOn(heroOf(t,'mietitore'),'mietitore'))for(const q of T[1-t])if(Math.random()<0.18)addFx({t:'spark',c:'#d79bff',c2:'#7a35a8',x:q.x+rnd(-0.3,0.3),y:q.y,vx:0,vy:0,z:rnd(0.6,1.4),vz:0.9,life:0.6,max:0.6,r:0.12});
-  heroTkSteer();
+  heroTkSteer();heroComboFx();
 }
 // ghiaccio ai piedi di chi e' congelato: sparisce man mano che il gelo passa
 function heroFrost(p,x,y){
@@ -191,4 +207,22 @@ function heroGhost(x,y,draw){
   GH_X.globalCompositeOperation='source-atop';GH_X.fillStyle='rgba(160,230,255,.5)';GH_X.fillRect(0,0,GH_W,GH_H);GH_X.globalCompositeOperation='source-over';
   ctx.save();ctx.globalAlpha=0.5+0.12*Math.sin((G.tick||0)*9);ctx.drawImage(GH_C,ri(x)-GH_W/2,ri(y)-(GH_H-14));ctx.restore();
   return r;
+}
+// AGGANCIO DELLE COMBO: l'anello attorno al pulsante si stringe in CB_PER secondi di gioco e riparte; la parte finale (CB_WIN) e' quella buona
+const cbPhase=b=>b._c0===undefined?0:(((G.gt||0)-b._c0)%CB_PER)/CB_PER;
+// combo partita: scritta grande al centro con il nome, lampo e scintille dei due eroi
+let CB_FX=null;
+HOOKS.combo=(t,k,p)=>{
+  CB_FX={txt:HERO_COMBO[k].n.toUpperCase()+'!',mine:t===0,t0:G.tick||0};HOOKS.shake&&HOOKS.shake(6);HOOKS.sfx&&HOOKS.sfx('goal');
+  const [a,b]=k.split('+');for(const h of [a,b]){const q=heroOf(t,h)||p;if(q)for(let i=0;i<16;i++){const an=Math.random()*Math.PI*2,v=rnd(2,5);addFx({t:'spark',c:'#ffffff',c2:HERO_COL[h]||'#ffd23f',x:q.x,y:q.y,vx:Math.cos(an)*v,vy:Math.sin(an)*v*0.6,z:rnd(0.5,2.5),vz:rnd(2,5),life:0.9,max:0.9,r:0.15});}}
+};
+function heroComboFx(){
+  // rallentatore del signore del tempo: velo azzurro e un orologio in alto
+  const k=G.tmK===undefined?1:G.tmK;
+  if(G.heroOn&&k<0.97){const a=clamp((1-k)/0.5,0,1);px(0,0,VW,VH,`rgba(40,90,170,${(0.32*a).toFixed(3)})`);
+    const cx=ri(VW/2),cy=BAR+16,t=G.tick||0;pring(cx,cy,8,8,PAL.out,3);pring(cx,cy,8,8,'#ffd23f',1);
+    for(const [l,v] of [[6,t*3],[4,t*0.4]])for(let i=1;i<=l;i++)px(ri(cx+Math.cos(v-Math.PI/2)*i),ri(cy+Math.sin(v-Math.PI/2)*i),1,1,'#ffd23f');}
+  if(!CB_FX)return;const age=(G.tick||0)-CB_FX.t0;if(age>1.8||age<0){CB_FX=null;return;}
+  if(age<0.12)px(0,0,VW,VH,`rgba(255,255,255,${(0.5*(1-age/0.12)).toFixed(3)})`);
+  if(age<1.4||((G.tick*16|0)&1)){const y=ri(VH*0.46);ptext('COMBO',ri(VW/2),y-14,{f:'p',c:CB_FX.mine?'#ffd23f':'#ff8a8a'});ptext(CB_FX.txt,ri(VW/2),y,{f:'P',c:'#ffffff'});}
 }

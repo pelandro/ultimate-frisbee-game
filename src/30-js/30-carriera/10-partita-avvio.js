@@ -1,4 +1,5 @@
-function startMatch(resume){   // resume: ripresa di una partita sospesa (niente presentazione)
+function startMatch(resume){
+  pointCheckpoint=null;   // resume: ripresa di una partita sospesa (niente presentazione)
   const m=nextMatch();if(!m)return;
   applyRoster(m.roster||makeRoster(m.power,SV.seed+'|'+m.name));
   const plus=carDiff().plus;oppBoost(plus);oppLinesSet();   // dal Medio in su: avversarie piu' forti (DIFF_PLUS); due linee anche per loro
@@ -18,15 +19,23 @@ function startMatch(resume){   // resume: ripresa di una partita sospesa (niente
 }
 function quitMatch(){if(!QM.on&&SV&&SV.susp){SV.susp=null;persist();}   // abbandonata: niente da riprendere
   $('half').classList.add('hidden');$('pause').classList.add('hidden');G.paused=false;restoreForm();if(QM.on){exitQuick(quickNext());return;}G.schemeOpen=false;G.inMatch=false;$('menu').classList.add('hidden');$('over').classList.add('hidden');showScreen('home');}
-const SCREENS=['title','slots','quick','home','league','team','coachsel','roster','event','train','market','club','school','tourn','settings','posedit','ut','utPack','utShop','utTeam','utMode','utReal','utBoard','utEquip'];
-function hideScreens(){for(const sc of SCREENS)$(sc).classList.add('hidden');$('cshell').classList.add('hidden');}
+const SCREENS=['title','slots','quick','home','league','team','coachsel','roster','event','train','market','club','school','tourn','settings','posedit','ut','utPack','utShop','utTeam','utMode','utReal','utBoard','utEquip','utHero'];
+let screenTipTimer;
+function clearScreenTip(){
+  clearTimeout(screenTipTimer);
+  $('tip').classList.add('hidden');
+  tipAfter=null;
+}
+function hideScreens(){clearScreenTip();for(const sc of SCREENS)$(sc).classList.add('hidden');$('cshell').classList.add('hidden');}
 function showScreen(id){
+  clearScreenTip();
+  if(id!=='utReal'&&!$('utReal').classList.contains('hidden')&&UO.busy)uoCancelSearch();
   for(const sc of SCREENS)$(sc).classList.toggle('hidden',sc!==id);
   shellShow(id);   // barra in alto e navigazione laterale della carriera (50-schermate/24-guscio-carriera.js)
   G.mode='home';$(id).scrollTop=0;   // si entra in una schermata dall'alto (il browser ricorda lo scorrimento di quelle nascoste)
-  if(['home','roster','market','club','train','event'].includes(id))setTimeout(()=>{if(!$(id).classList.contains('hidden'))tipOnce(id);},350);   // fumetto di primo accesso
+  if(['home','roster','market','club','train','event'].includes(id))screenTipTimer=setTimeout(()=>{if(!$(id).classList.contains('hidden'))tipOnce(id);},350);   // fumetto di primo accesso
   femPass();   // testi al femminile nel campionato Women (20-ui/19-femminile.js)
-  if(id==='title')renderTitle();else if(id==='slots')renderCareers();else if(id==='quick')renderQuick();else if(id==='home')renderHome();else if(id==='league')renderLeagues();else if(id==='team')renderTeams();else if(id==='coachsel')renderCoach();else if(id==='roster'){rosterMsg='';sellArm=null;cardOpen=null;nickEdit=null;renderRoster();}else if(id==='event')renderEvent();else if(id==='settings')setSView('menu');else if(id==='posedit')layoutButtons();else if(id==='ut')renderUT();else if(id==='utMode'){}else if(id==='utReal')renderUtReal();else if(id==='utBoard')renderUtBoard();else if(id==='utPack')renderPack();else if(id==='utShop')renderShop();else if(id==='utTeam')renderTeamUT();else if(id==='utEquip')renderEquip();else if(id==='school')renderSchool();else if(id==='tourn')renderTourn();else if(id==='market'){mkMsg='';mkOpen.clear();if(SV.mkSeen!==SV.mkN){SV.mkSeen=SV.mkN;persist();}renderMarket();}else if(id==='club'){clMsg='';clInfo.clear();renderClub();}else{trainSel.clear();trainRes=null;renderTrain();}   // le «i» del Club si richiudono a ogni ingresso
+  if(id==='title')renderTitle();else if(id==='slots')renderCareers();else if(id==='quick')renderQuick();else if(id==='home')renderHome();else if(id==='league')renderLeagues();else if(id==='team')renderTeams();else if(id==='coachsel')renderCoach();else if(id==='roster'){rosterMsg='';sellArm=null;cardOpen=null;nickEdit=null;renderRoster();}else if(id==='event'){eventPage='table';renderEvent();}else if(id==='settings')setSView('menu');else if(id==='posedit')layoutButtons();else if(id==='ut')renderUT();else if(id==='utMode'){}else if(id==='utReal')renderUtReal();else if(id==='utBoard')renderUtBoard();else if(id==='utPack')renderPack();else if(id==='utShop')renderShop();else if(id==='utTeam')renderTeamUT();else if(id==='utEquip')renderEquip();else if(id==='utHero'){uhSel=null;uhMsg='';renderUtHero();}else if(id==='school')renderSchool();else if(id==='tourn')renderTourn();else if(id==='market'){mkMsg='';mkOpen.clear();if(SV.mkSeen!==SV.mkN){SV.mkSeen=SV.mkN;persist();}renderMarket();}else if(id==='club'){clMsg='';clInfo.clear();renderClub();}else{trainSel.clear();trainRes=null;renderTrain();}   // le «i» del Club si richiudono a ogni ingresso
 }
 const evName=()=>SV.event==='camp'?'Campionato':'Campionato europeo';
 // difficolta' della carriera: ritmo degli allenamenti e forza delle avversarie
@@ -80,7 +89,7 @@ function renderTeamList(){for(const b of $('tSr').children)b.classList.toggle('o
 // ---- menu iniziale e partita veloce ----
 const QM={on:false,bak:null,a:null,b:null,s:1};   // s: la squadra che inizia in attacco (0 = tua/blu, 1 = avversaria/rossa)
 const hasCareer=()=>!!(SV&&SV.team);
-function renderTitle(){$('tSchoolS').textContent=SCH.tut?'Tutorial, pratica e sfide':((SCH.lv|0)?`Tutorial: lezione ${(SCH.lv|0)+1} di ${TUT_STEPS.length}`:'Nuovo? Inizia dal tutorial');$('tCareerS').textContent=hasCareer()?`Continua: ${SV.team}, ${SERIES_NAME[SV.sr]}${SV.susp?' · partita sospesa':''}`:'Scegli la squadra e inizia';const n=[1,2,3].filter(k=>slotInfo(k)).length;$('tSlotsS').textContent=n?`${n} di 3 slot · nuova`:'3 slot liberi';}
+function renderTitle(){$('tCareerT').textContent=hasCareer()?'Continua carriera':'Carriera';$('tSchoolS').textContent=SCH.tut?'Tutorial, pratica e sfide':((SCH.lv|0)?`Tutorial: lezione ${(SCH.lv|0)+1} di ${TUT_STEPS.length}`:'Nuovo? Inizia dal tutorial');$('tCareerS').textContent=hasCareer()?`Continua: ${SV.team}, ${SERIES_NAME[SV.sr]}${SV.susp?' · partita sospesa':''}`:'Scegli la squadra e inizia';const n=[1,2,3].filter(k=>slotInfo(k)).length;$('tSlotsS').textContent=n?`${n} di 3 slot · nuova`:'3 slot liberi';}
 const qPowCache={};
 function qRoster(n,min){if(US_TEAM[n]||LN_BY[n])return foreignRoster(n,'qm|'+n);return REAL[n]?realRoster(REAL[n],'qm|'+n,realOpt(n,min)):makeRoster(TEAM[n].power,'qm|'+n);}
 function qPower(n){if(qPowCache[n]==null)qPowCache[n]=rosterPower(qRoster(n,7));return qPowCache[n];}
@@ -96,27 +105,13 @@ const qDivAll=d=>qLgs(d).flatMap(l=>l.clubs());
 function qDivSet(d){
   QM.div=d;const all=qDivAll(d);
   if(!all.includes(QM.a))QM.a=hasCareer()&&all.includes(SV.team)?SV.team:(d==='w'?all[1]:'Grem');
-  if(!all.includes(QM.b)||QM.b===QM.a)QM.b=d==='w'?all.filter(n=>n!==QM.a).sort((x,y)=>Math.abs(qPower(x)-qPower(QM.a))-Math.abs(qPower(y)-qPower(QM.a)))[0]:(all.find(n=>n!==QM.a&&qLgOf(n)===qLgOf(QM.a)&&qGrp(n)!==qGrp(QM.a))||all.find(n=>n!==QM.a));
+  if(!all.includes(QM.b)||QM.b===QM.a){
+    const power=qPower(QM.a),league=qLgOf(QM.a);
+    const opponents=all.filter(n=>n!==QM.a);
+    const local=opponents.filter(n=>qLgOf(n)===league);
+    QM.b=(local.length?local:opponents).sort((a,b)=>Math.abs(qPower(a)-power)-Math.abs(qPower(b)-power))[0];
+  }
 }
-// MODALITA' SUPERPOTERI (QM.hero, dal menu iniziale): la partita veloce con tre eroi per squadra (10-sim/27-superpoteri.js, 20-ui/20-superpoteri.js).
-// I tuoi tre eroi si scelgono qui (QM.hk, ricordati in ultimate-eroi); il computer ne prende tre a caso
-function heroPicked(){
-  if(!QM.hk){let v=null;try{v=JSON.parse(localStorage.getItem('ultimate-eroi')||'null');}catch(_){}QM.hk=Array.isArray(v)?v.filter(k=>HERO[k]).slice(0,HERO_N):['lupo','giraffa','clone'];}
-  return QM.hk;
-}
-function quickHeroTxt(){
-  const el=$('qHero');if(!el)return;$('qH').textContent=QM.hero?'Superpoteri':'Partita veloce';el.classList.toggle('hidden',!QM.hero);if(!QM.hero)return;
-  const ks=heroPicked(),ro=qRoster(QM.a,9).map(o=>Object.assign({},o)).sort((x,y)=>ovrX(y)-ovrX(x)).slice(0,7);heroAssign(ro,ks);   // copie: l'anteprima non tocca le rose
-  el.innerHTML=`<b>I tuoi eroi · scegline ${HERO_N} (${ks.length}/${HERO_N})</b>`+HERO_K.map(k=>{const on=ks.includes(k),p=on&&ro.find(o=>o.hero===k);return `<button type="button" class="qhe${on?' on':''}" data-k="${k}" aria-pressed="${on}"><i>${heroIconSvg(k)}</i><span><strong>${HERO[k].n}</strong><small>${p?esc(p.label||p.n)+' · ':''}${HERO[k].txt}</small></span></button>`;}).join('')+`<small class="qhn">In partita tocca il pulsante dell’eroe a sinistra quando è pronto: si trasforma per qualche secondo, poi deve ricaricarsi. Gli avversari hanno tre eroi a caso.</small>`;
-  if(ks.length<HERO_N&&QM.a!==QM.b){$('qPlay').disabled=true;$('qPlay').textContent=`Scegli ${HERO_N} eroi`;}
-}
-$('qHero').addEventListener('click',e=>{   // tocco su un eroe: lo aggiunge o lo toglie; con tre gia' scelti, il nuovo prende il posto del primo
-  const b=e.target.closest('.qhe');if(!b)return;
-  const k=b.dataset.k,ks=heroPicked().slice(),i=ks.indexOf(k);
-  if(i>=0)ks.splice(i,1);else{if(ks.length>=HERO_N)ks.shift();ks.push(k);}
-  QM.hk=ks;try{localStorage.setItem('ultimate-eroi',JSON.stringify(ks));}catch(_){}
-  updateQuick();
-});
 function renderQuick(){
   if(!QM.div)QM.div=hasCareer()&&lnWomenNow()?'w':'m';
   qDivSet(QM.div);
@@ -124,7 +119,7 @@ function renderQuick(){
   $('qD').value=QM.d|0;$('qS').value=String(QM.s);$('qL').value=String(lenOk(QM.len|0));updateQuick();
 }
 // selettore delle squadre: le categorie sono linguette e l'elenco della categoria e' gia' aperto
-function openPick(side){QM.side=side;QM.lg=qLgOf(QM[side]).id;QM.tab=qGrp(QM[side]);renderPick();$('qPick').classList.remove('hidden');}
+function openPick(side){$('qpSearch').value='';QM.side=side;QM.lg=qLgOf(QM[side]).id;QM.tab=qGrp(QM[side]);renderPick();$('qPick').classList.remove('hidden');}
 function renderPick(){
   const me=QM[QM.side],other=QM[QM.side==='a'?'b':'a'];
   $('qpT').textContent=QM.side==='a'?'Tua squadra (blu)':'Avversaria (rossa)';
@@ -133,8 +128,16 @@ function renderPick(){
   $('qpLg').innerHTML=ls.map(x=>`<button type="button" data-l="${x.id}" class="${x.id===l.id?'on':''}">${esc(qLgTab(x))}</button>`).join('');
   $('qpTabs').classList.toggle('hidden',gs.length<2);
   $('qpTabs').innerHTML=gs.map(k=>`<button type="button" data-k="${esc(k)}" class="${k===QM.tab?'on':''}">${esc(k)}</button>`).join('');
-  $('qpG').innerHTML=l.clubs().filter(n=>qGrp(n)===QM.tab).map(n=>`<button type="button" data-n="${n.replace(/"/g,'&quot;')}" class="${n===me?'sel':''}${n===other?' off':''}">${crest(n,22)}<span>${n}</span><b>${Math.round(qPower(n))}</b></button>`).join('');
+  renderPickTeams(l,me,other);
 }
+function renderPickTeams(league,me,other){
+  const query=clubSearchText($('qpSearch').value);
+  const matches=query?qDivAll(QM.div).filter(n=>clubSearchText(n).includes(query)):league.clubs().filter(n=>qGrp(n)===QM.tab);
+  $('qpG').innerHTML=matches.length?matches.map(n=>`<button type="button" data-n="${esc(n)}" class="${n===me?'sel':''}${n===other?' off':''}"${n===other?' disabled':''}>${crest(n,22)}<span>${esc(n)}</span><b>${Math.round(qPower(n))}</b></button>`).join(''):'<p role="status">Nessuna squadra trovata.</p>';
+}
+$('qpSearch').addEventListener('input',()=>{
+  renderPickTeams(lgOf(QM.lg),QM[QM.side],QM[QM.side==='a'?'b':'a']);
+});
 function updateQuick(){
   const a=QM.a,b=QM.b;
   const row=n=>`${qSerName(n)} · forza ${Math.round(qPower(n))}`;
@@ -146,18 +149,16 @@ function updateQuick(){
   $('qS').options[0].textContent=a;$('qS').options[1].textContent=b;   // i nomi delle due squadre
   $('qDP').textContent=['L’IA avversaria gioca in modo semplice.','L’IA avversaria sceglie e reagisce un po’ meglio.','L’IA avversaria sceglie e reagisce molto meglio.','Ancora più attenta del Difficile, e la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'][QM.d]+' '+['Le statistiche dei giocatori non cambiano.','Avversari con +2 a tutte le statistiche.','Avversari con +4 a tutte le statistiche.','Avversari con +6 a tutte le statistiche.'][QM.d];
   quickVs();   // confronto tra le due squadre (29-confronto-tabellone.js)
-  quickHeroTxt();
 }
 function startQuick(){
-  const a=QM.a,b=QM.b;if(!a||!b||a===b||(QM.hero&&heroPicked().length<HERO_N))return;
+  const a=QM.a,b=QM.b;if(!a||!b||a===b)return;
   if(hasCareer()){persist();QM.bak=JSON.stringify(SV);}else QM.bak=null;   // la carriera resta com'e': viene rimessa alla fine
   QM.on=true;
   setSquad(qRoster(a,9));applyRoster(qRoster(b,7));oppBoost(DIFF_PLUS[clamp(QM.d|0,0,3)]);
   SQ.forEach(p=>{p.injNew=false;p.inj=0;p.cond=100;});
   G.formB=0;G.lines=null;G.injK=1;applyForm();
-  G.oppName=b;G.myName=a;G.matchLabel=QM.hero?'Superpoteri':'Partita veloce';
+  G.oppName=b;G.myName=a;G.matchLabel='Partita veloce';
   newGame();G.target=lenOk(QM.len|0);rollWind();G.lvl=[0,clamp(QM.d|0,0,3)];G.oppPlus=DIFF_PLUS[clamp(QM.d|0,0,3)];G.idn=[null,teamIdentity(b,T[1])];G.xtr=(QM.d|0)===3;G.hint=(QM.d|0)===0;G.routes=(QM.d|0)<=1;G.inMatch=true;G.recorded=false;
-  if(QM.hero){G.heroOn=true;heroInit(heroPicked().slice(),heroRand());heroAssign(T[0],G.hk[0]);heroAssign(T[1],G.hk[1]);}   // superpoteri: tre eroi per squadra tra chi e' in campo, i tuoi scelti e quelli del computer a caso (27-superpoteri.js)
   G.nextRec=QM.s===0?0:1;G.startRec=G.nextRec;   // chi riceve il primo pull inizia in attacco; l'altra squadra tira il pull (difesa)
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;

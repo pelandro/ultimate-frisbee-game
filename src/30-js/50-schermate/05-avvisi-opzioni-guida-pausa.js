@@ -155,19 +155,18 @@ $('hSim').addEventListener('click',simCareerMatch);
 $('hPlay').addEventListener('click',()=>{if(suspOk())resumeMatch();else if(nextMatch())startMatch();else if(SV.event==='eu'&&!SV.done){SV.event='camp';persist();renderHome();}else{SV.event='camp';showScreen('event');}});
 $('hRoster').addEventListener('click',()=>showScreen('roster'));
 $('tCareer').addEventListener('click',()=>showScreen(hasCareer()?'home':'league'));
-$('tQuick').addEventListener('click',()=>{QM.hero=false;showScreen('quick');});
-$('umHero').addEventListener('click',()=>{QM.hero=true;showScreen('quick');});   // modalita' Superpoteri (dal menu di Ultimate Team): la partita veloce con gli eroi
+$('tQuick').addEventListener('click',()=>showScreen('quick'));
 $('tSet').addEventListener('click',()=>{setFrom='title';showScreen('settings');setSView('game');});
 $('sBack').addEventListener('click',()=>{const to=setFrom;setFrom='title';showScreen(to);});   // le schede non hanno sottolivelli: «Indietro» torna sempre da dove si e' venuti
 $('hBack').addEventListener('click',()=>showScreen('title'));
 $('teamBack').addEventListener('click',()=>{lgKeep=lgDiv==='m';showScreen('league');});   // dal maschile si torna all'elenco dei campionati, dal femminile (un solo campionato) alla scelta della divisione
-$('qBack').addEventListener('click',()=>showScreen(QM.hero?'utMode':'title'));   // dai Superpoteri si torna al menu di Ultimate Team
+$('qBack').addEventListener('click',()=>showScreen('title'));
 $('qL').addEventListener('change',updateQuick);$('qD').addEventListener('change',updateQuick);$('qS').addEventListener('change',updateQuick);
 $('qA').addEventListener('click',()=>openPick('a'));$('qB').addEventListener('click',()=>openPick('b'));
 $('qpX').addEventListener('click',()=>$('qPick').classList.add('hidden'));
 $('qPick').addEventListener('click',e=>{if(e.target===$('qPick'))$('qPick').classList.add('hidden');});
-$('qpTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.tab=b.dataset.k;renderPick();});
-$('qpLg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.lg=b.dataset.l;QM.tab='';renderPick();});
+$('qpTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.tab=b.dataset.k;$('qpSearch').value='';renderPick();});
+$('qpLg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;QM.lg=b.dataset.l;QM.tab='';$('qpSearch').value='';renderPick();});
 $('qpG').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b||b.classList.contains('off'))return;
   QM[QM.side]=b.dataset.n;qGender(QM.side);$('qPick').classList.add('hidden');updateQuick();   // donne solo contro donne
@@ -183,10 +182,12 @@ function armed(btn,label,idle,fn){
   if(!btn.dataset.arm){btn.dataset.arm='1';btn.textContent=label;setTimeout(()=>{delete btn.dataset.arm;btn.textContent=idle;},3000);return;}
   delete btn.dataset.arm;btn.textContent=idle;fn();
 }
-$('hNew').addEventListener('click',()=>armed($('hNew'),'Conferma: cancella la carriera','Nuova carriera',()=>{
-  $('opts').classList.add('hidden');
-  const slot=SV.slot||1;try{localStorage.removeItem(SAVE_KEY);localStorage.removeItem(slotKey(slot));}catch(e){}
-  const help=SV.help;SV={help,slot};showScreen('league');   // la nuova carriera resta nello stesso slot
+$('hNew').addEventListener('click',()=>askConfirm({
+  title:'Sostituire la carriera?',html:'<p>La sostituzione avviene quando inizi e salvi la nuova carriera.</p>',
+  ok:'Scegli la nuova squadra',danger:true,onOk:()=>{
+    $('opts').classList.add('hidden');
+    careerNew(SV.slot||1);
+  }
 }));
 bExit.addEventListener('click',()=>openPause());
 
