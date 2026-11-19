@@ -48,7 +48,7 @@ function progSinglePick(n){
 }
 // esegue il programma (se acceso e se c'e' una sessione disponibile). Ritorna il riepilogo, oppure null
 function autoTrain(){
-  const pr=progOf();if(!pr.on||SV.done||!trainOpen())return null;
+  const pr=progOf();if(!pr.on||(SV.done&&!(SV.event==='eu'&&euActive()))||!trainOpen())return null;
   const left=3-SQ.filter(p=>p.tr).length;if(SV.tTeam&&left<=0)return null;
   const parts=[];let gain=0,hurt=0;
   if(!SV.tTeam){

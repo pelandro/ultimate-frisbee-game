@@ -2,6 +2,16 @@
    Gioca molte stagioni di seguito su una carriera di prova, con partite simulate, allenamenti, strutture e imprevisti, e controlla che nulla
    vada fuori scala (statistiche, condizione, crediti, rosa, strutture, livello del campionato). La carriera vera non viene toccata:
    durante il test QM.on blocca il salvataggio (persist) e alla fine si rimette la carriera com'era. Seme fisso: risultati ripetibili. */
+function finishEuropeForDiagnostics(){
+  for(let edition=0;edition<2&&openSeasonEurope();edition++){
+    while(euActive()){
+      const m=nextMatch();if(!m)throw new Error('Avversaria mancante nell’EUCF');
+      const [su,so]=simPower(SV.team,m.name);
+      recordResult(su>so,su,so);
+    }
+  }
+  SV.event='camp';
+}
 function careerSelfTest(seasons,seed){
   const bak=hasCareer()?(persist(),JSON.stringify(SV)):null,R0=Math.random,q0=QM.on,rows=[],row=(name,val,ok,note)=>({name,val,ok:!!ok,note:note||''});
   Math.random=mulberry32(seed||2026);QM.on=true;talentGrow.n=0;
@@ -65,7 +75,8 @@ function careerSelfTest(seasons,seed){
       // statistiche individuali del girone: le mete dei giocatori di una squadra avversaria devono tornare con quelle in classifica (salvo chi e' stato ceduto durante l'anno)
       {const on=SV.mem[SV.sr].find(n=>n!==SV.team),sg=(SV.rost[on]||[]).reduce((a,o)=>a+(o.ss?o.ss.g:0),0),pf=SV.tab[on].pf;lsChk.push(lsLive()&&sg<=pf&&sg>=pf*0.8);}
       if(s===1)anc0=Object.assign({},SV.anc||{});
-      const n0=SV.news.length;newSeason();hide();seasonsDone++;
+      finishEuropeForDiagnostics();
+      const n0=SV.news.length;if(!newSeason())throw new Error('Nuova stagione bloccata');hide();seasonsDone++;
       {const L=aiMarket.last,al=(SV.alerts||[]).find(x=>x.k==='mkt'&&x.s===SV.season),all=Object.values(SV.rost).filter(r=>r&&r.length).flat();   // mercato tra le squadre del computer (31-mercato-ia.js)
        aimChk.push(!!L&&L.n<=L.cap&&L.per<=AIM.max&&L.perCh<=AIM.chMoves&&L.bud&&(L.n+L.nCh===0||(!!al&&al.data&&al.data.mv.length===Math.min(AIM.show,L.n+L.nCh)))&&L.ros&&new Set(all).size===all.length);aimN.push(L?L.n:-1);}
       keep+=SV.news.filter(x=>/Premi di mantenimento/.test(x.txt)&&x.s===SV.season).length;

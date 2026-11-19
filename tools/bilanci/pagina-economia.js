@@ -21,14 +21,11 @@ for(let s=0;s<P.seasons;s++){
     const m=SV.lastMoney;rev+=m.gate+(m.rent||0)+m.spon+m.wb;staff+=m.stf;net+=m.net;
     mn=Math.min(mn,SV.cash);if(SV.cash<0)red++;if(SV.fired)fired=true;g++;
   };
-  if(contender&&euOn()){
-    SV.event='eu';euEnsure();
-    while(SV.eu.state==='on'&&nextMatch()&&g<14&&!fired)play();
-    SV.event='camp';
-  }
   while(!SV.done&&g<48&&!fired)play();
+  if(!fired&&openSeasonEurope())while(euActive()&&!fired)play();
   ss.push({sr:SV.sr,rank:SV.next?.rank,title:!!SV.next?.tit,c0,c1:SV.cash,min:mn,red,fired,sold,staff,rev:Math.round(rev),net:Math.round(net)});
   if(fired)break;
-  newSeason();hide();evt();
+  if(!newSeason())throw new Error('Nuova stagione bloccata');
+  hide();evt();
 }
 simMatch=original;QM.on=false;return {team:t,mode:P.mode||0,trim:P.trim||0,roster:SQ.length,seasons:ss};})

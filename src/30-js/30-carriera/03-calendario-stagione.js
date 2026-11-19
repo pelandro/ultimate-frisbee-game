@@ -103,7 +103,7 @@ $('careerSaveStatus').addEventListener('click',()=>persist());
 
 function hydrateCareer(d){
   if(d&&d.team&&d.mem&&d.sched&&d.tab){
-    SV=d;if(SV.rost)for(const n in SV.rost)for(const o of SV.rost[n])if(o&&o.s)fillStats(o.s);SV.tTeam=!!SV.tTeam;if(!SV.eu)SV.eu=newEu(SV.season);else if(!SV.eu.nat&&SV.eu.state==='on'&&!SV.eu.rk)SV.eu=Object.assign(newEu(SV.season),{s:SV.eu.s|0});if(!SV.event||(SV.event==='eu'&&!SV.euUnlocked))SV.event='camp';
+    SV=d;if(SV.rost)for(const n in SV.rost)for(const o of SV.rost[n])if(o&&o.s)fillStats(o.s);SV.tTeam=!!SV.tTeam;if(!SV.eu)SV.eu=newEu(SV.season);else if(!SV.eu.nat&&SV.eu.state==='on'&&!SV.eu.rk)SV.eu=Object.assign(newEu(SV.season),{...SV.eu,it:SV.eu.it??null});if(!SV.event||(SV.event==='eu'&&!SV.euUnlocked))SV.event='camp';
     const mig=SV.realv===1;   // carriera iniziata con i vecchi roster: la rosa diventa quella ufficiale; gli allenamenti dei giocatori veri restano
     menNames(SV);
     if(Array.isArray(SV.squad)&&SV.squad.length>=7){for(const o of SV.squad)if(o&&o.s)fillStats(o.s);setSquad(SV.squad);}   // versione 3: la rosa e' salvata per intero (acquisti e cessioni compresi)
@@ -202,7 +202,6 @@ function endSeason(){
   else if(nsr>SV.sr)short=`Retrocessi in ${SERIES_NAME[nsr]}.`;
   else short=`Restate in ${SERIES_NAME[nsr]}.`;
   const qual=SV.sr==='A'&&rank<=3;
-  if(qual)short+=' Per la prossima stagione si sblocca il Campionato europeo.';
   chalEval();   // la sfida della dirigenza si giudica adesso, PRIMA dei premi: «Conti in ordine» guarda il saldo con cui arrivi in fondo, non quello gonfiato dai premi
   SV.done=true;SV.next={euQ:order.A.slice(0,3),mem:nm,sr:nsr,rank,short,qual,tit,champs:{A:champA,B:order.B[0],C:order.C[0]},po:res[SV.sr]||null};
   SV.po=null;SV.poRes=null;
@@ -226,8 +225,9 @@ function agePlayers(){
   for(const p of SQ)agePlayer(p,Math.random);
 }
 function newSeason(){
+  if(!SV.done||!SV.next||euBeforeNewSeason())return false;
   SV.mem=SV.next.mem;SV.sr=SV.next.sr;SV.season++;
-  SV.euUnlocked=!!SV.next.qual;if(SV.euUnlocked)SV.eu=newEu(SV.season);SV.event='camp';   // la stagione nuova riparte sempre dal campionato
+  SV.euUnlocked=false;SV.eu=newEu(SV.season);SV.event='camp';   // l'edizione della stagione conclusa non si riapre
   retireOwn();   // chi aveva annunciato l'addio lascia adesso
   offTrain();    // chi ha finito presto si e' allenato le settimane in cui non ha giocato (28-allenamenti-fuori-stagione.js)
   staffYear();
@@ -244,6 +244,7 @@ function newSeason(){
   wageWarn();         // 16-bilancio.js: se con questa rosa i conti vanno sotto zero, la dirigenza avvisa subito
   retireCheck('start');starsRetire();   // chi comincia a pensare al ritiro lo dice subito
   persist();
+  return true;
 }
 function recordResult(win,su,so){
   SV.susp=null;   // la partita e' finita: niente piu' da riprendere
