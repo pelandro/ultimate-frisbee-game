@@ -5,6 +5,7 @@ Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattrib
 
 ## Non ancora pubblicato
 - Potenziare una struttura dal livello 0 al 5 costa 430 crediti.
+- Chi salta una partita per un impegno viene indicato come indisponibile.
 - In carriera, la parola che indicava la valuta è stata sostituita dalla moneta pixelata in schermate, avvisi e guida.
 - Scelta del campionato: ogni scheda ha i colori sbiaditi della bandiera del paese e mostra solo il nome, le serie (o le Conference) e il numero di squadre, scritti più grandi.
 - La rosa festeggia più unita sul podio, con riserve, salti e bandiere. Ogni struttura costa 600 crediti dal livello 0 al 5. Anche le firme dello staff costano di più, soprattutto ai livelli alti.
