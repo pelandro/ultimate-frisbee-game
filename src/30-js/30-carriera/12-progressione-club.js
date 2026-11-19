@@ -11,7 +11,7 @@ const STAFF={
   ana:{n:'Analista tattico',d:'Sblocca schemi per la carriera',
     steps:['Stack laterale e Zona a coppa','Esagono, Weave e Uomo con aiuti','T1, 1 in 3-4 e un consiglio in Posta per i derby']}
 };
-const STAFF_MAX=3,STAFF_WAGE=[0,24,80,190];
+const STAFF_MAX=3,STAFF_WAGE=[0,24,80,200];
 const staffLv=k=>(SV&&SV.staff&&SV.staff[k])|0;
 const staffCost=k=>stPerson(k)?.x>=2?0:50*(staffLv(k)+1);
 const trCostK=()=> (1-0.04*facLv('camp'))*(1-(SV.tInt===2?[0,0,0.1,0.15][staffLv('fit')]:0)-(hasTr('fit','res')?0.04:0));
