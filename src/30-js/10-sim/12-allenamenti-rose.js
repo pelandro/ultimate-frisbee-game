@@ -11,17 +11,17 @@ const fatShare=(p,tot)=>!p.m?0:(p.m.sh!==undefined?p.m.sh:Math.min(1,(p.m.pts|0)
 const TRAIN_COST=7,TRAIN_COST1=5,REST_GAIN=18;   // condizione persa con l'allenamento di squadra, con quello singolo, e recuperata col Recupero
 function trainGain(t){return t>=90?3:(t>=80?2:1);}
 const TRAIN_K=0.95;   // resa di una seduta rispetto alla taratura iniziale: un po' meno, perche' le rose crescevano troppo in fretta
-function trainCategory(p,c,boost){
+function trainCategory(p,c,boost,random=Math.random){
   // punti: in media 1,6 a seduta per un talento normale a 24-27 anni, di piu' per i giovani e per chi cresce in fretta, quasi nulla vicino al massimo.
   // Tattica e Difesa hanno meno statistiche: meta' dei punti, cosi' nessuna statistica corre piu' delle altre
   const tal=c.keys.reduce((a,k)=>a+talX(p,k),0)/c.keys.length,gained={};
   const sb=specBonus(p,c.keys),sp=p.spec&&SPECS[p.spec]?SPECS[p.spec].keys:null;   // indirizzo personale: piu' punti, e i punti vanno alle sue statistiche
-  let pts=TRAIN_K*(0.8+trainGain(tal)*0.4)*(p.dev||1)*Math.sqrt(ageMul(p.age))*(c.keys.length<3?0.55:1)*(boost||1)*(1+sb),n=Math.floor(pts);if(Math.random()<pts-n)n++;
+  let pts=TRAIN_K*(0.8+trainGain(tal)*0.4)*(p.dev||1)*Math.sqrt(ageMul(p.age))*(c.keys.length<3?0.55:1)*(boost||1)*(1+sb),n=Math.floor(pts);if(random()<pts-n)n++;
   for(let i=0;i<n;i++){
     const el=c.keys.filter(k=>p.s[k]<capX(p,k));if(!el.length)break;
     let t=0;const ws=el.map(k=>{const r=clamp((capX(p,k)-p.s[k])/10,0.08,1)*(sp&&sp.includes(k)?1+2*specRoom(p):1);t+=r;return r;});
-    let r=Math.random()*t,k=el[0];for(let j=0;j<el.length;j++){r-=ws[j];if(r<=0){k=el[j];break;}}
-    if(Math.random()>clamp((capX(p,k)-p.s[k])/6,0.2,1)*lvlF(p.s[k]))continue;   // vicino al massimo il punto puo' non arrivare
+    let r=random()*t,k=el[0];for(let j=0;j<el.length;j++){r-=ws[j];if(r<=0){k=el[j];break;}}
+    if(random()>clamp((capX(p,k)-p.s[k])/6,0.2,1)*lvlF(p.s[k]))continue;   // vicino al massimo il punto puo' non arrivare
     gained[k]=(gained[k]||0)+1;p.s[k]++;
   }
   const changes=Object.keys(gained).map(k=>({k,to:p.s[k],from:p.s[k]-gained[k],gain:gained[k]}));

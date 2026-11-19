@@ -17,9 +17,9 @@ function lnSelfTest(seasons,seed){
     // ---- dati ----
     const all=LN_NAMES.concat(Object.keys(TEAM),US_NAMES,EU_CLUBS.map(x=>x[0]));
     chk('dati',new Set(all).size===all.length,'nomi di club ripetuti tra le leghe');
-    const want={BE:46,FR:54,DE:49,UK:11,IW:17};
+    const want={BE:46,FR:36,DE:49,UK:11,IW:17};
     for(const lk of LN_IDS){
-      chk('dati',LN_CL[lk].length===want[lk],lk+': '+LN_CL[lk].length+' club');
+      chk('dati',lnClubs(lk).length===want[lk],lk+': '+lnClubs(lk).length+' club');
       chk('dati',LN_CL[lk].every(r=>r[3]>=30&&r[3]<=95&&LN_TIER[lnKey(lk,r[1])]),'forza o livello fuori misura in '+lk);
       for(const club in LN_PL[lk])chk('dati',!!LN_BY[club]&&LN_BY[club].lk===lk,'giocatori di un club sconosciuto: '+club);
     }
@@ -54,16 +54,16 @@ function lnSelfTest(seasons,seed){
     chk('eta',nExact>=1,'nessuna eta\' esatta applicata');
     // ---- stagioni: un club forte, uno medio e uno debole per paese ----
     const picks=[];
-    for(const lk of LN_IDS){const pl=lnClubs(lk,true).sort((a,b)=>LN_BY[b].p-LN_BY[a].p);picks.push(pl[0],pl[Math.floor(pl.length/2)],pl[pl.length-1]);}
+    for(const lk of LN_IDS){const pl=lnClubs(lk).sort((a,b)=>LN_BY[b].p-LN_BY[a].p);picks.push(pl[0],pl[Math.floor(pl.length/2)],pl[pl.length-1]);}
     for(const club of picks){
       startCareer(club,{});const lk=SV.lk,t0={};for(const t of lnTiers(lk))t0[t.id]=SV.ln.T[t.id].reduce((a,c)=>a+c.clubs.length,0);
       chk('lega',isLN()&&SV.lk===LN_BY[club].lk&&SV.sr===lnKey(lk,LN_BY[club].t)&&SV.mem[SV.sr].includes(club),'avvio '+club);
-      chk('lega',SQ.length>=14&&Object.keys(SV.rost).length===LN_CL[lk].length-1,'rose di '+club);
+      chk('lega',SQ.length>=14&&Object.keys(SV.rost).length===want[lk]-1,'rose di '+club);
       for(let s=0;s<seasons;s++){
         play();seasonsDone++;
         const N=SV.next;chk('flusso',N&&N.rank>=1&&N.rank<=N.ln.n,'posizione fuori misura '+club);
         const comp=[],sz={};for(const t of lnTiers(lk)){sz[t.id]=SV.ln.nT[t.id].reduce((a,c)=>a+c.clubs.length,0);for(const c of SV.ln.nT[t.id])comp.push(...c.clubs);}
-        chk('promozioni',new Set(comp).size===comp.length&&comp.length===LN_CL[lk].length,'doppioni o club persi dopo le promozioni');
+        chk('promozioni',new Set(comp).size===comp.length&&comp.length===want[lk],'doppioni o club persi dopo le promozioni');
         for(const t in sz)chk('promozioni',sz[t]===t0[t],'dimensione del livello '+t+': '+sz[t]+' invece di '+t0[t]);
         if(N.ln.tier!==N.ln.nTier)moved++;
         titles.add(N.ln.champ);
@@ -89,7 +89,7 @@ function lnSelfTest(seasons,seed){
     startCareer('Mooncatchers',{});let onMk=0;for(let i=0;i<25;i++){buildMarket();for(const m of SV.market)if(m.star){const r=STARS.find(x=>x[0]+' '+x[1]===m.o.full);if(r&&lnStarTaken(r))onMk++;}}
     chk('mercato',onMk===0,'stelle dei club sul mercato: '+onMk);
     // ---- offerte di lavoro e scambi tra tutte le leghe (35-usa/05-lega-incrociata.js): da ognuna delle sei verso le altre cinque ----
-    {const st={IT:SERIES.B[3],US:'Seattle Sockeye',BE:lnClubs('BE',true)[0],FR:lnClubs('FR',true)[0],DE:lnClubs('DE',true)[0],UK:lnClubs('UK',true)[0]},lgs=Object.keys(st);
+    {const st={IT:SERIES.B[3],US:'Seattle Sockeye',BE:lnClubs('BE')[0],FR:lnClubs('FR')[0],DE:lnClubs('DE')[0],UK:lnClubs('UK')[0]},lgs=Object.keys(st);
       for(const a of lgs){
         startCareer(st[a],{});SV.hist=[{obj:1,rank:1}];SV.rep=70;
         chk('offerte',lgNow()===a,'lega di partenza '+a+' letta come '+lgNow());
@@ -133,10 +133,11 @@ function lnSelfTest(seasons,seed){
     chk('italia',!isLN()&&!isUS()&&SV.sr==='C'&&SV.sched.length===15&&Object.keys(SV.mem).join()==='A,B,C'&&!SV.ln,'carriera italiana invariata');
     startCareer('Seattle Sockeye',{});
     chk('usa',isUS()&&SV.sr==='U'&&SV.sched.length===5&&!SV.ln,'carriera USA invariata');
-    {const tot=()=>SQ.reduce((a,p)=>a+KEYS.reduce((x,k)=>x+p.s[k],0),0);   // eliminati presto: le settimane mancanti diventano allenamenti (28-allenamenti-fuori-stagione.js)
-     SV.sgp=SEASON_MIN;let t0=tot();offTrain();chk('fuori',tot()===t0,'allenamenti extra anche con la stagione completa');
-     SV.sgp=5;t0=tot();offTrain();chk('fuori',tot()>t0&&/Allenamenti dopo/.test(SV.news[0].txt),'nessun allenamento dopo 5 partite');
-     chk('fuori',SV.sgp===undefined,'contatore non azzerato');}
+    {const tot=()=>SQ.reduce((a,p)=>a+KEYS.reduce((x,k)=>x+p.s[k],0),0);
+     SV.sgp=regularGames()+T16_MAX_GAMES;SV.played=SV.sgp;
+     let t0=tot();offTrain(offTrainSessions());chk('fuori',tot()===t0,'allenamenti extra anche con la stagione completa');
+     SV.sgp=regularGames();SV.played=SV.sgp;t0=tot();const sessions=offTrainSessions();offTrain(sessions);
+     chk('fuori',sessions>0&&tot()>t0,'nessun allenamento dopo l’eliminazione prima dei Nationals');}
   }catch(e){err=e&&e.message||String(e);rows.push(row('Errore durante il test',err,false));}
   finally{
     Math.random=R0;QM.on=q0;hide();
@@ -144,7 +145,7 @@ function lnSelfTest(seasons,seed){
     G.inMatch=false;
   }
   const r=(name,k,okTxt)=>rows.push(row(name,bad[k]?bad[k].slice(0,2).join('; '):okTxt,!bad[k]));
-  r('Dati: 46 club belgi, 54 francesi, 49 tedeschi, 11 britannici, 17 Women, nomi distinti da Italia, USA ed EUCF, forza e livelli validi','dati','sì');
+  r('Dati: 46 club belgi, 36 francesi, 49 tedeschi, 11 britannici, 17 Women, nomi distinti da Italia, USA ed EUCF, forza e livelli validi','dati','sì');
   r('Campionato Women: solo giocatrici e club femminili (mercato compreso), forza secondo serie e classifica, nessun club femminile nel mondo maschile','women','sì');
   r('Rose di tutti i club: 14-28 giocatori (20 dove non c’è il foglio di revisione 2026), Overall e età nei limiti, forza uguale a quella dei dati (stelle escluse)','rose','sì');
   r('Età esatte dove note e giocatori veri presenti','eta',`sì (${nExact} esatte)`);

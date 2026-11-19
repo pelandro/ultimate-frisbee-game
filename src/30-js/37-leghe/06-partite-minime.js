@@ -29,7 +29,7 @@ function lnGrpSched(n,g){
 const lnCompMin=(tr,comp)=>lnGrpMin(tr,comp.pools.map(p=>p.length));
 // per la scheda del campionato: quante partite di girone si giocano in un livello (dalle dimensioni dei dati)
 function lnTierGames(lk,tr){
-  const rows=LN_CL[lk].filter(r=>r[1]===tr.id).length,ps=Math.ceil(rows/Math.max(1,tr.comps)/Math.max(1,tr.pools));
+  const rows=lnClubRows(lk).filter(r=>r[1]===tr.id).length,ps=Math.ceil(rows/Math.max(1,tr.comps)/Math.max(1,tr.pools));
   const sizes=[...Array(Math.max(1,tr.pools))].map((_,i)=>i?Math.floor(rows/tr.comps/tr.pools):ps);
   return {g:lnGrpMin(tr,sizes),one:Math.max(...sizes)-1};
 }

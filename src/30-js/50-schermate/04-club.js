@@ -25,14 +25,14 @@ function renderClub(){
     h='<div class="cgrid">'+(clTab==='man'?cSoc+cObj+cLed+cGoal+cNews:(clTab==='str'?cStr+cBud:cStf))+'</div>';
   }else if(clTab==='hon'){
     // bacheca: i trofei si accendono quando li vinci
-    const t=SV.troph,tile=(v,l)=>`<div class="trt${v?' on':''}"><b>${v|0}</b><span>${l}</span></div>`;
-    h=`<div class="trgrid">${tile(t.A,'Scudetti<br>Serie A')}${tile(t.B,'Titoli<br>Serie B')}${tile(t.C,'Titoli<br>Serie C')}${tile(t.promo,'Promozioni')}${tile(t.eu,'Titoli<br>europei')}${tile(t.aw,'Premi<br>individuali')}${tile(t.b7,'Presenze in<br>squadra ideale')}</div>`;
-    h+=`<div class="ccard"><h3>Albo d’oro · Serie A</h3>${albHTML()}</div>`;
+    const honour=leagueHonours();
+    h=`<div class="trgrid">${honoursTrophies().map(([k,label])=>`<div class="trt${trophy(k)?' on':''}"><b>${trophy(k)}</b><span>${label}</span></div>`).join('')}</div>`;
+    h+=`<div class="ccard"><h3>Albo d’oro · ${esc(honour.name)}</h3>${albHTML(honour.entries)}</div>`;
     h+=SV.hist.length?SV.hist.map(x=>{
       const aw=(x.aw||[]).map(awRow).join(''),b7=(x.best7||[]).map(q=>`${q.mine?'<b style="color:var(--gold)">':'<b>'}${esc(q.name)}</b> (${q.pos}, ${esc(q.team)})`).join(', ');
-      const ch=x.champs?['A','B','C'].filter(k=>x.champs[k]).map(k=>`Serie ${k}: <b${x.champs[k]===SV.team?' style="color:var(--gold)"':''}>${esc(x.champs[k])}</b>`).join(' · '):'';
-      return `<div class="seas"><h3>Stagione ${x.season} · Serie ${x.sr} · ${x.rank}° posto${x.n?' su '+x.n:''}</h3><p>${x.w} vinte, ${x.l} perse${x.obj?' · bonus dello sponsor':''}${x.short?' · '+esc(x.short):''}</p>${ch?`<p>Campioni: ${ch}</p>`:''}${aw?`<ul class="awl">${aw}</ul>`:''}${b7?`<p>Squadra ideale: ${b7}</p>`:''}${x.mvp?`<p>MVP della tua squadra: <b>${esc(x.mvp)}</b>${x.mvpS?' ('+x.mvpS+')':''}</p>`:''}</div>`;
-    }).join(''):'<p class="note">Qui compariranno, stagione per stagione, la tua posizione, i campioni delle tre serie, i premi del campionato (MVP, attaccante, difensore, capocannoniere, re degli assist, rivelazione, allenatore dell’anno) e la squadra ideale.</p>';
+      const {league,champions}=honoursSeasonNames(x);
+      return `<div class="seas"><h3>Stagione ${x.season} · ${esc(league)} · ${x.rank}° posto${x.n?' su '+x.n:''}</h3><p>${x.w} vinte, ${x.l} perse${x.obj?' · bonus dello sponsor':''}${x.short?' · '+esc(x.short):''}</p>${champions?`<p>Campioni: ${champions}</p>`:''}${aw?`<ul class="awl">${aw}</ul>`:''}${b7?`<p>Squadra ideale: ${b7}</p>`:''}${x.mvp?`<p>MVP della tua squadra: <b>${esc(x.mvp)}</b>${x.mvpS?' ('+x.mvpS+')':''}</p>`:''}</div>`;
+    }).join(''):'<p class="note">Qui vedrai i piazzamenti, i campioni e i premi di ogni stagione.</p>';
   }else if(clTab==='ach'){
     h=achHTML();
   }else{

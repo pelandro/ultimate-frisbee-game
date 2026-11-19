@@ -260,9 +260,15 @@ catch(e){
     if(await page.locator('#tList .prow:not([disabled])').count()>await page.locator('#tList .prow').count()-3)throw new Error('il programma automatico non ha fatto i lavori individuali');
     await page.click('#tTeamBox [data-prog]');await page.click('#hHome');
     await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#hHome');
-    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="man"]');{const t=await page.locator('#clBox').innerText();if(!/Sponsor e obiettivo/i.test(t)||!/a ogni partita/.test(t)||!/Conti delle partite/i.test(t))throw new Error('la scheda Società deve mostrare lo sponsor scelto e i conti delle partite: '+t.replace(/\s+/g,' ').slice(0,900));}await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==3)throw new Error('devono esserci tre strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==3)throw new Error('devono esserci tre figure dello staff');
-    // le altre linguette del Club: traguardi (ventidue schede, percentuale), albo d'oro e Hall of Fame
-    await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="ach"]');if(await page.locator('#clBox .ach').count()!==22||!/%/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi devono essere ventidue, con la percentuale');
+    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="man"]');
+    const sponsor=page.locator('#clBox .ccard').filter({hasText:'Sponsor e obiettivo'}),sponsorText=await sponsor.innerText();
+    if(!/Bonus:\s*\d+ crediti a partita di campionato/.test(sponsorText)||!/Obiettivo del contratto:[^\n]+\(\d+ crediti\)/.test(sponsorText)||/cartelloni/i.test(sponsorText))throw new Error('scheda sponsor non aggiornata: '+sponsorText);
+    if(await sponsor.locator('p').filter({hasText:'Bonus:'}).locator('.coin').count()!==1)throw new Error('manca la moneta accanto al bonus');
+    if(!/Conti delle partite/i.test(await page.locator('#clBox').innerText()))throw new Error('mancano i conti delle partite');
+    await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==3)throw new Error('devono esserci tre strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==3)throw new Error('devono esserci tre figure dello staff');
+    // Carriera italiana Open: venti traguardi, albo d'oro e Hall of Fame.
+    await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="ach"]');
+    if(await page.locator('#clBox .ach').count()!==20||!/su 20 completati/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi dell’Italia Open devono essere venti, con la percentuale');
     await page.click('#clSub [data-k="hon"]');if(await page.locator('#clBox .trt').count()<7)throw new Error('manca la bacheca dei trofei');
     await page.click('#clSub [data-k="rec"]');if(await page.locator('#clBox .hofbox').count()!==1)throw new Error('manca la Hall of Fame');
     await page.click('#clTabs button[data-k="stf"]');
@@ -784,7 +790,11 @@ catch(e){
         for(let i=0;i<30&&!SV.done;i++)recordResult(true,7,0);
         openSeasonEurope();
         for(let i=0;i<3;i++)recordResult(false,0,7);
-        if(SV.eu.state!=='out'||!newSeason())throw new Error('la sconfitta non sblocca la nuova stagione');
+        if(SV.eu.state!=='out'||offTrainSessions()<=0)throw new Error('le gare EUCF mancanti non diventano sedute');
+        const player=SQ[0];player.inj=6;player.injBig=1;player.cond=30;
+        if(!newSeason())throw new Error('la sconfitta non sblocca la nuova stagione');
+        if(SQ.some(p=>p.inj||p.injBig||p.cond!==100))throw new Error('la rosa non riparte in piena forma');
+        if(!SV.alerts.some(a=>a.s===SV.season&&a.txt.startsWith('Preparazione estiva')))throw new Error('manca il riepilogo degli allenamenti in Posta');
       })()`);
     }finally{await ctx.close();}
   });

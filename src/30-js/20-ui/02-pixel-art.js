@@ -200,18 +200,20 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     for(let i=0;i<=n;i++){const u=i/n;R(ri(ax+(bx-ax)*u),ri(ay+(by-ay)*u),2,2,(c2&&u>=cut)?c2:c);}
   };
   const skin=lk.skin,skin2=shade(skin,-0.16),hair=lk.hair,shirt=un.shirt,shirt2=shade(shirt,-0.22),sock2=shade(un.socks,-0.22),shoe2=shade(un.shoe,0.12);
-  const moving=run>0.18,fast=run>0.45,view=moving?(ex.view|0):0,cheer=pose==='cheer',mark=pose==='mark';
+  const cp=pose==='cel'?(ex.cp||{}):null;   // posa delle esultanze (20-ui/27-esultanze.js): mani, gambe, salto, accovacciata e vista date da fuori
+  const moving=!cp&&run>0.18,fast=run>0.45,view=moving?(ex.view|0):(cp?(cp.view|0):0),cheer=pose==='cheer',mark=pose==='mark';
   const fr=moving?((Math.floor(ph/(Math.PI*2)*6)%6)+6)%6:0,half=fr>=3?1:0,RF=RUN_F[fr%3],k=fast?1:0.6;
-  const hop=cheer?(Math.sin(G.tick*12+x*0.7)>0?3:0):(pose==='jump'?ri(6*Math.sin(Math.PI*clamp(arm,0,1))):0);
-  const breathe=!moving&&!cheer&&pose!=='jump'&&Math.sin(G.tick*2.4+x*0.37)>0.55?1:0;   // da fermo il busto respira (un pixel), ognuno col suo tempo
-  const dyB=moving?ri(RF[3]*k):(mark?1:0),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-20+breathe+(pose==='sad'?1:0);
+  const hop=cheer?(Math.sin(G.tick*12+x*0.7)>0?3:0):(pose==='jump'?ri(6*Math.sin(Math.PI*clamp(arm,0,1))):(cp?ri(cp.hop||0):0));
+  const breathe=!moving&&!cheer&&!cp&&pose!=='jump'&&Math.sin(G.tick*2.4+x*0.37)>0.55?1:0;   // da fermo il busto respira (un pixel), ognuno col suo tempo
+  const dyB=moving?ri(RF[3]*k):(mark?1:(cp?ri(cp.crouch||0):0)),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-20+breathe+(pose==='sad'?1:0);
   const caught=ex.ca>=0&&ex.ca<0.3,recoil=caught&&ex.ca>0.08&&ex.ca<0.22?-f:0;   // presa: un pixel di rinculo all'indietro
-  let lean=fast?f:0;if(ex.brk&&moving)lean=-f;if(pose==='aim')lean=-f;lean+=recoil;
+  let lean=fast?f:0;if(ex.brk&&moving)lean=-f;if(pose==='aim')lean=-f;if(cp)lean=ri(cp.lean||0)*f;lean+=recoil;
   // GAMBE: quella lontana (dietro) e' piu' scura, cosi' si capisce quale va avanti
   for(const i of [-1,1]){
     const far=i<0,hx=x-1+(i>0?1:-1),sk=far?skin2:skin,so=far?sock2:un.socks,sh=far?shoe2:un.shoe;
     let dx=0,lift=0;
-    if(moving&&view===0){const planted=(i<0)===(half===0);dx=ri((planted?RF[0]:RF[1])*k)*f;lift=planted?0:ri(RF[2]*(fast?1:0.67));}
+    if(cp&&cp.lg){const L=cp.lg[i<0?0:1];dx=ri(L[0])*(cp.ab?1:f);lift=ri(L[1]);}   // cp.ab: x sullo schermo (vista di fronte), altrimenti in avanti
+    else if(moving&&view===0){const planted=(i<0)===(half===0);dx=ri((planted?RF[0]:RF[1])*k)*f;lift=planted?0:ri(RF[2]*(fast?1:0.67));}
     else if(moving){const planted=(i<0)===(half===0);lift=planted?0:(fr%3===1?3:1);}   // di schiena o di fronte: le gambe salgono e scendono sul posto
     else if(mark)dx=i*2;   // marcatore: gambe larghe e corpo basso
     else dx=i;
@@ -229,6 +231,7 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     return [shx+ri(-ldx*0.8)*f+(fast&&i>0?f:0),sy+5-(fast&&Math.abs(ldx)>1?1:0)];
   };
   const hand=i=>{   // i = 1 braccio vicino, -1 braccio lontano
+    if(cp&&cp.h){const q=cp.h[i>0?0:1];return [shx+ri(q[0])*(cp.ab?1:f),sy+ri(q[1])];}
     if(pose==='aim'){   // caricamento: il braccio va indietro (rovescio: attraverso il corpo; dritto: di lato e basso; hammer: sopra la testa)
       if(kind==='hammer'||kind==='scoober')return i>0?[shx-f*1,sy-6]:[shx+f*3,sy+3];
       if(kind==='forehand')return i>0?[shx-f*4,sy+6]:[shx+f*3,sy+4];
@@ -348,12 +351,14 @@ function nameKey(p){
   return !!(p.cfx&&G.tick<p.cfx.until+0.6);   // chi ha appena preso al volo
 }
 function drawPlayers(dt){
-  const all=T[0].concat(T[1],G.dec?G.dec.filter(Boolean):[]).sort((a,b)=>a.y-b.y),h=PH();   // G.dec: le copie del clone (superpoteri)
+  const cel=celFrame(),cy=p=>{const c=cel&&cel.get(p);return c?c.wy:p.y;};   // esultanze dopo la meta (27-esultanze.js): posizione e posa disegnate
+  const all=T[0].concat(T[1],G.dec?G.dec.filter(Boolean):[]).sort((a,b)=>cy(a)-cy(b)),h=PH();   // G.dec: le copie del clone (superpoteri)
+  if(cel)celGround();
   if(G.flight&&G.flight!==lastFl){lastFl=G.flight;G.flight.thrower.armT=0.3;}
   if(G.pull&&G.pull!==lastPull){lastPull=G.pull;if(G.pull.thrower)G.pull.thrower.armT=0.4;}
   const names=[];
   for(const p of all){
-    const x=sxw(p.x),y=syw(p.y);if(x<-30||x>VW+30)continue;
+    const C=cel&&cel.get(p),x=C?C.x:sxw(p.x),y=C?C.y:syw(p.y);if(x<-30||x>VW+30)continue;
     const ghost=p.fake&&p.t===0;   // la copia del tuo clone la vedi trasparente (heroGhost); quella dell'avversario e' identica al vero
     const sp=hyp(p.vx,p.vy);p.ph=(p.ph||0)+sp*dt*1.9;if(Math.abs(p.vx)>0.6)p.fc=p.vx>0?1:-1;
     p.armT=Math.max(0,(p.armT||0)-dt);
@@ -365,7 +370,7 @@ function drawPlayers(dt){
     }
     p.wasBrk=!!p._brk;p.pv=sp;
     let face=p.fc||dirOf(p.t);
-    const pose=poseOf(p);
+    const pose=C?C.pose:poseOf(p);
     if(pose==='mark'||pose==='hold'){   // il marcatore guarda il portatore; il portatore guarda dove mira (o la meta che attacca)
       if(pose==='mark')face=G.holder.x>=p.x?1:-1;
       else if(drag&&drag.dirOk&&p===G.holder)face=Math.cos(drag.ang)>=0?1:-1;
@@ -373,12 +378,16 @@ function drawPlayers(dt){
       p.fc=face;
     }
     const dvp=diveProg(p),air=p.dv?diveAir(p):0;
-    pell(x+(p.dv?p.dv.dir*5*dvp:0)+1,y,5+ri(5*dvp),1,ghost?'rgba(10,30,10,.12)':'rgba(10,30,10,.28)');   // ombra
+    if(C&&C.dive)pell(x+C.dive.dir*5+1,y,10,1,'rgba(10,30,10,.28)');
+    else pell(x+(p.dv?p.dv.dir*5*dvp:0)+1,y,5+ri(5*dvp),1,ghost?'rgba(10,30,10,.12)':'rgba(10,30,10,.28)');   // ombra
     if(p.hot||p.cold){const c=p.hot?(Math.sin(G.tick*14+p.i)>0?'#ff5a3c':'#ffb03a'):'#7fd8ff';pring(x,y-9,10,12,c,1,2);}
-    if(p===G.holder||p===G.puller){const pu=Math.sin(G.tick*6)>0?1:0;pring(x,y,9+pu,3,PAL.out,3);pring(x,y,9+pu,3,PAL.gold,1);}
+    if(C){}   // chi esulta: niente cerchio del possesso
+    else if(p===G.holder||p===G.puller){const pu=Math.sin(G.tick*6)>0?1:0;pring(x,y,9+pu,3,PAL.out,3);pring(x,y,9+pu,3,PAL.gold,1);}
     else if(p===G.marker&&G.holder)pring(x,y,9,3,G.dmode[p.t]===1?'#ff8a5c':'#ffffff',1,2);   // arancione: marca in anticipo (piu' pressione sul lancio)
     if(p===G.ctrl&&inDefense()){const pu=Math.sin(G.tick*8)>0?1:0;pring(x,y,10+pu,4,PAL.out,3);pring(x,y,10+pu,4,PAL.sky,1);parrow(x,y-h-16-pu,1,PAL.out,5);parrow(x,y-h-15-pu,1,PAL.sky,4);}   // il difensore che stai guidando
-    if(dvp>0.45)puppetDive(x+p.dv.dir*6*dvp,y,UNI[p.t],heroLook(p),p.dv.dir,2+7*air);
+    if(C&&C.dive)puppetDive(x,y,UNI[p.t],heroLook(p),C.dive.dir,C.dive.lift);
+    else if(C){const hp=puppet(x,y,UNI[p.t],heroLook(p),C.f,C.pose,C.ph||0,C.run||0,0,{view:C.view|0,cp:C.cp,ca:-1,hero:heroVis(p)?p.hero:null,sc:heroScale(p)});p._hx=hp[0];p._hy=hp[1];p._ht=G.tick;}
+    else if(dvp>0.45)puppetDive(x+p.dv.dir*6*dvp,y,UNI[p.t],heroLook(p),p.dv.dir,2+7*air);
     else{
       // vista: di schiena se corre verso l'alto dello schermo, di fronte se scende verso la camera, altrimenti di lato
       const view=sp>1.2&&Math.abs(p.vy)>Math.abs(p.vx)*1.3?(p.vy<0?1:2):0;
@@ -396,8 +405,9 @@ function drawPlayers(dt){
     // frenata netta o cambio di direzione (p._brk, dal motore): due sbuffi di polvere ai piedi, una volta per frenata
     if(p._brk&&!p._bd&&G.mode==='play'){p._bd=1;for(let k=0;k<2;k++)addFx({t:'dust',x:p.x,y:p.y,vx:-p.vx*0.12+rnd(-0.6,0.6),vy:-p.vy*0.08+rnd(-0.3,0.3),z:0.2,vz:rnd(0.3,0.9),life:0.45,max:0.45,r:rnd(0.2,0.4)});}
     else if(!p._brk)p._bd=0;
-    if(nameKey(p))names.push(p);
+    if(nameKey(p)&&!C)names.push(p);
   }
+  if(cel)celOverlay();   // stelline e fumetto del grido
   // i giocatori simbolo (stelle internazionali e chi ha vinto premi) hanno il nome dorato
   for(const p of names)ptext(p.name,sxw(p.x),syw(p.y)-Math.round(h*heroScale(p))-10-(p.dv?4:0)-heroTop(p),{f:'t',c:(p.star||(p.aw&&p.aw.length)||(p.ro&&p.ro.star))?PAL.gold:(p.t===0?'#ffffff':'#ffd9d9')});
   // ETICHETTA DELLA SITUAZIONE sopra chi ha il disco, in un riquadro nero come il «2nd & 10» di Retro Bowl: stall da 6, ultimo lancio, universe point (il match point lo annuncia la fascia a inizio punto)
@@ -408,6 +418,7 @@ function drawPlayers(dt){
   }
 }
 function drawDisc(){
+  if(celDisc())return;   // durante un'esultanza il disco lo disegna 27-esultanze.js (in mano, schiacciato a terra, lanciato in alto)
   const d=G.disc,f=G.flight||(G.pull&&!G.pull.landed?G.pull:null);
   if(f){
     const hiF=!!(f.high||f===G.pull),tx=sxw(f.tx),ty=syw(f.ty),c=hiF?PAL.gold:'#ffffff',pu=Math.sin(G.tick*10)>0?1:0;

@@ -29,7 +29,6 @@ const usEventSub=()=>{
   if(SV.done)return 'Stagione conclusa: premi e ripartenza';
   return U.ph==='reg'?usRegSub():(SV.po&&SV.po.on?usShortLabel():US_PHASE_NAME[U.ph]);
 };
-const usObjNow=()=>SV.us.ph==='reg'?(SV.round>0?` · ora ${myRank()}ª`:''):` · fase: ${US_STAGE[SV.us.stage|0]}`;
 // righe del riquadro «classifica» del cruscotto durante Play-in e Nationals
 function usHomeTab(){
   const U=SV.us,row=(t,b,me)=>`<div class="${me?'me':''}"><span>${t}</span><b>${b}</b></div>`;
@@ -180,7 +179,7 @@ function renderEventUS(){
   }
   body+=`<div class="seg" id="usTabs">${[['conf','Conference'],['nat','Nationals'],['rank','Ranking']].map(([k,l])=>`<button type="button" class="sg${usTabSel===k?' on':''}" data-ut="${k}">${l}</button>`).join('')}</div>`;
   body+=usTabSel==='nat'?usNatView():(usTabSel==='rank'?usRankView():usConfView());
-  if(usTabSel==='nat'&&SV.usAlb&&SV.usAlb.length)body+=`<h3 class="eh">Albo d’oro dei Nationals</h3><ul class="elist">${SV.usAlb.slice(0,6).map(a=>`<li><span>${a.s}: ${esc(a.champ)}</span><span>${a.sc[0]}–${a.sc[1]} su ${esc(a.run)}</span></li>`).join('')}</ul>`;
+  if(usTabSel==='nat'&&SV.usAlb?.length)body+=`<h3 class="eh">Albo d’oro dei Nationals</h3>${albHTML(SV.usAlb.slice(0,6))}`;
   $('eBody').innerHTML=body;
 }
 $('eBody').addEventListener('click',e=>{
