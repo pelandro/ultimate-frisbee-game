@@ -4,7 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
-- La rosa festeggia più unita sul podio, con riserve, salti e bandiere. Ogni struttura costa 560 crediti dal livello 0 al 5. Anche le firme dello staff costano di più, soprattutto ai livelli alti.
+- La rosa festeggia più unita sul podio, con riserve, salti e bandiere. Ogni struttura costa 600 crediti dal livello 0 al 5. Anche le firme dello staff costano di più, soprattutto ai livelli alti.
 - Dopo i conti della partita decisiva, premi Continua per vedere la squadra sul podio mentre alza la coppa insieme.
 - Nuova grafica: tutte le schermate passano dal blu notte a un azzurro grigio più chiaro e leggero, con pulsanti dal bordo morbido, angoli netti e sfondo sfumato. Nuova schermata iniziale «Stadio»: il nome in un’insegna in alto, il disco che vola, lo stadio pieno dietro e i quattro pulsanti su due file.
 - Il gioco si chiama Ultimate Pixel (titolo, nome della pagina e dell’icona, cartelloni a bordo campo).

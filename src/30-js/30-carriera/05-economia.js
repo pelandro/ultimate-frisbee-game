@@ -29,7 +29,7 @@ const FAC={
 };
 // Il valore storico serve agli affitti e ai rimborsi dei vecchi salvataggi.
 const FAC_BASE_VALUES=[40,55,75,100,125];
-const FAC_PRICES=[50,75,105,145,185];
+const FAC_PRICES=[60,80,110,150,200];
 const facTotalCost=lv=>FAC_BASE_VALUES.slice(0,lv).reduce((sum,cost)=>sum+cost,0);
 const facLv=k=>(SV.fac&&SV.fac[k])|0;
 const facCost=k=>Object.hasOwn(FAC,k)?FAC_PRICES[facLv(k)]??0:0;
