@@ -21,10 +21,11 @@ function shop(){
 function invest(){
   for(const k of ['camp','viv','stad'])if(SV.cash>facCost(k)+120&&facLv(k)<FAC_MAX){buyFac(k);break;}
   const f=budgetForecast();
-  const fits=(k,lv,c)=>SV.cash>c+150&&f.end-c-staffRemaining(k,lv)+staffRemaining(k)>100;
   for(const k of Object.keys(STAFF)){
-    if(!staffLv(k)||!stPerson(k)){if(fits(k,1,STAFF_HIRE[1])&&staffHire(k,0))break;}
-    else if(staffLv(k)<2&&fits(k,staffLv(k)+1,staffCost(k))&&buyStaff(k))break;
+    const level=staffLv(k)+1;
+    if(level>2)continue;
+    const cost=staffAnnual(k,level),saved=staffRemaining(k);
+    if(SV.cash>cost+150&&f.end-cost+saved>100&&staffHire(k,level-1))break;
   }
 }
 const play=()=>{autoTrain();autoLines();fixLines();mine=true;P.xpOn=true;simCareerMatch();mine=false;P.xpOn=false;hide();evt();};

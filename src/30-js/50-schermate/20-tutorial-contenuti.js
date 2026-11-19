@@ -153,7 +153,7 @@ tip:`Fai Recupero il giorno prima di una partita importante. Punta su 2-3 giovan
 [`<b>Centro sportivo</b>: allena la squadra e falla recuperare.`,
 `<b>Vivaio e osservatori</b>: scopri giovani e osservali spendendo meno.`,
 `<b>Tribune</b>: fai spazio ai tifosi e incassa dagli affitti.`,
-`<b>Staff</b>: il preparatore migliora le sedute, il fisioterapista riduce gli infortuni e l’analista sblocca schemi. Prima di assumere guarda lo stipendio stagionale e la cassa prevista.`]],
+`<b>Staff</b>: il preparatore migliora le sedute, il fisioterapista riduce gli infortuni e l’analista sblocca schemi. Assumere costa quanto una stagione di stipendio. Il contratto resta attivo finché lo rescindi o cambi persona.`]],
 tip:`Se fai spesso il tutto esaurito, valuta di ampliare le Tribune.`},
 {id:'car-soldi',t:'Soldi, tifosi e morale',b:[
 `Ogni partita ha il suo <b>conto</b>, in Società › Conti:`,

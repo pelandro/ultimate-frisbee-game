@@ -29,8 +29,10 @@ function careerSelfTest(seasons,seed){
         }
         for(const k of Object.keys(FAC).sort((x,y)=>facCost(x)-facCost(y)))if(SV.cash>facCost(k)+60&&facLv(k)<FAC_MAX){buyFac(k);break;}
         for(const k of Object.keys(STAFF)){   // staff: si assume il migliore che ci si puo' permettere nei ruoli vacanti, poi si migliora; indirizzi personali: quando c'e' margine
-          if(staffLv(k)<1||!stPerson(k)){if(SV.cash>STAFF_HIRE[1]+90+staffRemaining(k,1)&&staffHire(k,0))break;}
-          else if(staffLv(k)<2&&SV.cash>staffCost(k)+90+staffRemaining(k,staffLv(k)+1)-staffRemaining(k)&&buyStaff(k))break;
+          const level=staffLv(k)+1;
+          if(level>2)continue;
+          const cost=staffAnnual(k,level),saved=staffRemaining(k);
+          if(SV.cash>cost+90-saved&&staffHire(k,level-1))break;
         }
         for(const p of SQ)if(!p.spec&&p.age<=26&&SV.cash>specCost(p)+120){setSpec(p,Object.keys(SPECS)[Math.floor(Math.random()*6)]);spec++;break;}
         duoMax=Math.max(duoMax,...Object.values(SV.duo||{}),0);
@@ -113,16 +115,21 @@ function careerSelfTest(seasons,seed){
      for(const k of Object.keys(STAFF)){const lv=staffLv(k),s=stPerson(k);
        if(lv<1){if(s)bs.push(k+': persona senza livello');continue;}
        if(!s){bs.push(k+': livello senza persona');continue;}
-       if(!s.n||!(s.a>=20&&s.a<STAFF_RETIRE)||s.pot<lv||lv>STAFF_MAX||(s.tr&&(!STAFF_TR[s.tr]||STAFF_TR[s.tr].r!==k))||!s.lk||!s.lk.hair)bs.push(k+': dati non validi');}
-     const cs=staffCands('fit'),csOk=cs.length===3&&cs.every(c=>c.lv>=1&&c.lv<=STAFF_MAX&&c.pot>=c.lv&&c.pot<=STAFF_MAX&&c.n&&c.a>=20&&(!c.tr||STAFF_TR[c.tr].r==='fit'));
+       if(!s.n||!(s.a>=20)||lv>STAFF_MAX||(s.tr&&(!STAFF_TR[s.tr]||STAFF_TR[s.tr].r!==k))||!s.lk||!s.lk.hair)bs.push(k+': dati non validi');}
+     const cs=staffCands('fit'),csOk=cs.length===3&&cs.every(c=>c.lv>=1&&c.lv<=STAFF_MAX&&c.n&&c.a>=20&&(!c.tr||STAFF_TR[c.tr].r==='fit'));
      // salvataggio di prima dell'ondata 3 (senza allenatore e senza persone nello staff): careerInit li ricostruisce, sempre uguali, coi livelli gia' pagati
      let migOk=true;{const lv0=Object.keys(STAFF).map(k=>staffLv(k)).join();SV.coach=undefined;SV.start=undefined;SV.stp=undefined;SV.cand=undefined;SV.candN=undefined;careerInit();const c1=JSON.stringify(SV.coach);SV.coach=undefined;careerInit();   // l'allenatore di default e' sempre lo stesso per la stessa carriera
-       migOk=!!SV.coach&&JSON.stringify(SV.coach)===c1&&SV.start==='cuore'&&Object.keys(STAFF).map(k=>staffLv(k)).join()===lv0&&Object.keys(STAFF).every(k=>staffLv(k)<1?!stPerson(k):(!!stPerson(k)&&stPerson(k).pot>=staffLv(k)&&stPerson(k).a>=34));}
-     // chi se ne va: perde un livello e, se ne resta uno, subentra un assistente; senza livello il posto e' vacante
-     const k0=Object.keys(STAFF).find(k=>staffLv(k)>=1),l0=k0?staffLv(k0):0;let lvOk=true;
-     if(k0){staffLeave(k0);const l1=staffLv(k0);lvOk=l1===l0-1&&(l1>=1?!!stPerson(k0)&&stPerson(k0).pot>=l1:!stPerson(k0));}
-     const hired=Object.keys(STAFF).filter(k=>stPerson(k)).length;
-     rows.push(row('Staff come persone: ruoli e livelli coerenti, candidati validi, chi se ne va viene sostituito, salvataggi vecchi',bs.length||!csOk||!lvOk||!migOk?(bs.slice(0,2).join('; ')||(csOk?'':'candidati non validi')||(lvOk?'salvataggio vecchio non ricostruito bene':'sostituzione non corretta')):`sì (${hired} ruoli su 3 coperti, salvataggi vecchi ricostruiti)`,!bs.length&&csOk&&lvOk&&migOk));}
+       migOk=!!SV.coach&&JSON.stringify(SV.coach)===c1&&SV.start==='cuore'&&Object.keys(STAFF).map(k=>staffLv(k)).join()===lv0&&Object.keys(STAFF).every(k=>staffLv(k)<1?!stPerson(k):(!!stPerson(k)&&stPerson(k).a>=34));}
+     const k0='fit',candidate=staffCands(k0)[0],cash=SV.cash;
+     SV.cash=Math.max(SV.cash,staffAnnual(k0,candidate.lv));
+     const available=SV.cash;
+     const hired=!!staffHire(k0,0)&&stPerson(k0)?.n===candidate.n&&SV.cash===available-staffAnnual(k0,candidate.lv);
+     staffYear();
+     const retained=stPerson(k0)?.n===candidate.n&&staffLv(k0)===candidate.lv;
+     const released=staffLeave(k0)&&staffLv(k0)===0&&!stPerson(k0);
+     SV.cash=cash;
+     rows.push(row('Staff: candidati validi, costo di firma, contratto permanente, rescissione e salvataggi vecchi',
+       bs.join('; ')||`firma ${hired}, continuità ${retained}, rescissione ${released}, salvataggio ${migOk}`,!bs.length&&csOk&&hired&&retained&&released&&migOk));}
     {const bad3=[],c1=coachNorm({n:'  <b>Gi0>  ',s:'De  Santis!!',lk:null}),c2=coachNorm({n:'',s:'',lk:{hair:'#000000',skin:'#f0c9a4',style:2}});
      if(!SV.coach||!SV.coach.n||!SV.coach.s||!SV.coach.lk||!SV.coach.lk.hair)bad3.push('allenatore mancante');
      if(!/^[\p{L}' .-]+$/u.test(c1.n+c1.s)||c1.s!=='De Santis')bad3.push('nome non ripulito: '+c1.n+'|'+c1.s);
