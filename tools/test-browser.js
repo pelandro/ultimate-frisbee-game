@@ -221,8 +221,8 @@ catch(e){
     await page.click('#hCoach');await vis('#coachsel');await page.fill('#coS','Bianchi');await page.click('#coGo');await vis('#home');
     if(!/Bianchi/.test(await page.locator('#hCoach').getAttribute('title')))throw new Error('il cambio di nome non arriva al cruscotto');
     await page.click('#hClub');await vis('#club');
-    await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard.empty').count()!==4)throw new Error('a inizio carriera i quattro ruoli dello staff devono essere vacanti');
-    await page.click('#clBox [data-hire="coach"]');await vis('#hire');
+    await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard.empty').count()!==3)throw new Error('a inizio carriera i tre ruoli dello staff devono essere vacanti');
+    await page.click('#clBox [data-hire="fit"]');await vis('#hire');
     if(await page.locator('#hireList .hcn').count()!==3)throw new Error('i candidati devono essere tre');
     const first=await page.locator('#hireList .hcn .sr').first().innerText();
     await page.click('#hireRenew');if(await page.locator('#hireList .hcn').count()!==3)throw new Error('dopo il rinnovo i candidati devono essere ancora tre');
@@ -260,13 +260,13 @@ catch(e){
     if(await page.locator('#tList .prow:not([disabled])').count()>await page.locator('#tList .prow').count()-3)throw new Error('il programma automatico non ha fatto i lavori individuali');
     await page.click('#tTeamBox [data-prog]');await page.click('#hHome');
     await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#hHome');
-    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="man"]');{const t=await page.locator('#clBox').innerText();if(!/Sponsor e obiettivo/i.test(t)||!/a ogni partita/.test(t)||!/Conti delle partite/i.test(t))throw new Error('la scheda Società deve mostrare lo sponsor scelto e i conti delle partite: '+t.replace(/\s+/g,' ').slice(0,900));}await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==3)throw new Error('devono esserci tre strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==4)throw new Error('devono esserci quattro figure dello staff');
+    await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="man"]');{const t=await page.locator('#clBox').innerText();if(!/Sponsor e obiettivo/i.test(t)||!/a ogni partita/.test(t)||!/Conti delle partite/i.test(t))throw new Error('la scheda Società deve mostrare lo sponsor scelto e i conti delle partite: '+t.replace(/\s+/g,' ').slice(0,900));}await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==3)throw new Error('devono esserci tre strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==3)throw new Error('devono esserci tre figure dello staff');
     // le altre linguette del Club: traguardi (ventidue schede, percentuale), albo d'oro e Hall of Fame
     await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="ach"]');if(await page.locator('#clBox .ach').count()!==22||!/%/.test(await page.locator('#clBox .achbig').innerText()))throw new Error('i traguardi devono essere ventidue, con la percentuale');
     await page.click('#clSub [data-k="hon"]');if(await page.locator('#clBox .trt').count()<7)throw new Error('manca la bacheca dei trofei');
     await page.click('#clSub [data-k="rec"]');if(await page.locator('#clBox .hofbox').count()!==1)throw new Error('manca la Hall of Fame');
     await page.click('#clTabs button[data-k="stf"]');
-    if(await page.locator('#clBox .scard').count()!==4||await page.locator('#clBox [data-hire]').count()<4)throw new Error('le figure dello staff devono essere quattro, ciascuna con «Cambia» o «Scegli chi assumere»');
+    if(await page.locator('#clBox .scard').count()!==3||await page.locator('#clBox [data-hire]').count()<3)throw new Error('le figure dello staff devono essere tre, ciascuna con «Cambia» o «Scegli chi assumere»');
     await page.click('#clTabs [data-k="hon"]');await page.click('#clSub [data-k="rec"]');await page.click('#hHome');
     await page.click('#hEvent');await vis('#event');await page.click('#evTabs [data-sr="A"]');await page.click('#evTabs [data-sr="B"]');await vis('#eBody table.rt');
     const trs=await page.locator('#eBody table.rt tr').count();if(trs<8)throw new Error('classifica di un\'altra serie troppo corta: '+trs);
@@ -726,6 +726,49 @@ catch(e){
     const other=await page.locator('#csBox [data-cgo]:not([data-cgo="'+k+'"])').first();await other.click();await vis('#home');
     await menu('#hBack');await vis('#title');
     if(!(await page.locator('link[rel="icon"]').getAttribute('href')||'').startsWith('data:image/png'))throw new Error('manca l\'icona del gioco');
+  });
+  await step('titoli di campionato ed EUCF, blocco della nuova stagione e ripresa dal salvataggio',async()=>{
+    const testFile=path.join(folder,'fine-campionato.html');
+    fs.writeFileSync(testFile,build().replace('const hasSave=loadSave();','window.testCareer=s=>eval(s);const hasSave=loadSave();'));
+    const ctx=await browser.newContext({viewport:{width:844,height:390},reducedMotion:'reduce'});
+    try{
+      const p=await ctx.newPage();
+      await p.goto('file://'+testFile);
+      const run=code=>p.evaluate(code=>window.testCareer(code),code);
+      await run(`(()=>{
+        startCareer(SERIES.A[0]);
+        for(let i=0;i<30&&!SV.done;i++){
+          const before=SV.done;
+          const msg=recordResult(true,7,0);
+          if(SV.done)showSim(true,'7 – 0',msg,null,careerTitleAfter(before,false));
+        }
+        if(!SV.next?.qual||newSeason())throw new Error('EUCF aggirabile prima di cominciare');
+        if(!$('srTitle').textContent.includes('Campioni di Serie A'))throw new Error('manca la celebrazione nazionale');
+        $('srOk').click();
+        showScreen('event');
+      })()`);
+      await p.locator('#eEurope').click();
+      await p.reload();
+      await run(`(()=>{
+        if(SV.event!=='eu'||!SV.eu.postSeason||!nextMatch()||newSeason())throw new Error('EUCF perso al caricamento');
+        for(let i=0;i<7&&euActive();i++){
+          const msg=recordResult(true,7,0);
+          if(!euActive())showSim(true,'7 – 0',msg,null,careerTitleAfter(true,false));
+        }
+        if(SV.eu.state!=='champ'||openSeasonEurope())throw new Error('EUCF vinto ripetibile');
+      })()`);
+      if(await p.locator('#srTitle').textContent()!=='Campioni d’Europa')throw new Error('manca la celebrazione europea');
+      if(await p.locator('.title-fanfare span').evaluate(el=>getComputedStyle(el).animationName)!=='none')throw new Error('movimento ridotto non rispettato');
+      await run(`(()=>{
+        $('srOk').click();SV.event='camp';showScreen('event');
+        if(!$('eReset')||!newSeason()||SV.season!==2||SV.euUnlocked)throw new Error('ripartenza errata dopo il titolo');
+        startCareer(SERIES.A[0]);
+        for(let i=0;i<30&&!SV.done;i++)recordResult(true,7,0);
+        openSeasonEurope();
+        for(let i=0;i<3;i++)recordResult(false,0,7);
+        if(SV.eu.state!=='out'||!newSeason())throw new Error('la sconfitta non sblocca la nuova stagione');
+      })()`);
+    }finally{await ctx.close();}
   });
   // ROTAZIONE AUTOMATICA: telefono tenuto in verticale. Il gioco si disegna girato, i menu si toccano e una partita si gioca
   await step('telefono in verticale: il gioco si gira da solo e risponde al tocco',async()=>{

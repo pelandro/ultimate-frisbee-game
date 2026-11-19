@@ -20,7 +20,13 @@ function shop(){
 }
 function invest(){
   for(const k of ['camp','viv','stad'])if(SV.cash>facCost(k)+120&&facLv(k)<FAC_MAX){buyFac(k);break;}
-  for(const k of ['coach','men','fit','ana']){if(staffLv(k)<1||!stPerson(k)){const cs=staffCands(k);let b=-1;for(let i=0;i<cs.length;i++)if(SV.cash>STAFF_HIRE[cs[i].lv]+150)b=i;if(b>=0){staffHire(k,b);break;}}else if(SV.cash>staffCost(k)+150&&buyStaff(k))break;}
+  const f=budgetForecast();
+  for(const k of Object.keys(STAFF)){
+    const level=staffLv(k)+1;
+    if(level>2)continue;
+    const cost=staffAnnual(k,level),saved=staffRemaining(k);
+    if(SV.cash>cost+150&&f.end-cost+saved>100&&staffHire(k,level-1))break;
+  }
 }
 const play=()=>{autoTrain();autoLines();fixLines();mine=true;P.xpOn=true;simCareerMatch();mine=false;P.xpOn=false;hide();evt();};
 const C=SERIES.C.slice().sort((a,b)=>TEAM[a].power-TEAM[b].power);
@@ -31,12 +37,13 @@ Math.random=mulberry32(P.seed);QM.on=true;startCareer(P.lk?weakest(P.lk):C[0],{}
 const rows=[];
 for(let s=0;s<P.seasons;s++){
   const sr=SV.sr;shop();
-  if(SV.euUnlocked&&SV.eu&&SV.eu.state==='on'&&!isUS()){SV.event='eu';try{euEnsure();let k=0;while(SV.event==='eu'&&SV.eu.state==='on'&&k++<14){if(!nextMatch())break;play();}}catch(e){}SV.event='camp';}
   let g=0;while(!SV.done&&g<50){if(g%5===0){invest();shop();}play();g++;}
   // la migliore delle altre in tutta la serie (in USA tutta la lega, nelle leghe europee tutto il livello, non solo il tuo girone)
   const x=SV.next,rv=ecoPeers().filter(n=>n!==SV.team&&SV.rost[n]).map(teamPow).sort((a,b)=>b-a);
   rows.push({s:SV.season,sr,top:topTier(),rank:x.rank,tit:!!x.tit,me:+squadPower().toFixed(1),riv:+(rv[0]||0).toFixed(1)});
-  newSeason();hide();evt();
+  if(openSeasonEurope())while(euActive())play();
+  if(!newSeason())throw new Error('Nuova stagione bloccata');
+  hide();evt();
 }
 simMatch=SM;simParts=SP;Math.random=R0;QM.on=false;
 return {seed:P.seed,win:N?W/N:0,rows};})

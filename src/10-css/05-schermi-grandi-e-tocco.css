@@ -202,9 +202,9 @@ html.rotp #rot{display:none!important}
 .scard .spt .sr{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .spav{flex:none;line-height:0;border:2px solid #000;background:#273852}.spav.vac{width:52px;height:52px;border-style:dashed;border-color:#405c82}
 .scard .sl{display:flex;align-items:center;gap:8px}.scard .sd{color:#c5d1df}
-.scard .sb{display:flex;gap:6px;margin-top:auto;align-self:stretch}.scard .sb .sec{margin-top:0;flex:1}
+.scard .sb{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;align-self:stretch}.scard .sb .sec{margin-top:0;flex:1}
 .scard .inf{margin-left:0;flex:none}
-.tk i.pt{background:#547098}.tk i.no{opacity:.3}
+.tk i.no{opacity:.3}
 .trc{align-self:flex-start;font-style:normal;font-family:var(--pfont);font-size:8px;line-height:12px;padding:2px 5px;background:#ffd23f;color:#2e4361;border:2px solid #000}
 .scard.empty{border-style:dashed;border-color:#405c82}
 .hirepanel{max-width:780px;width:94%;max-height:94vh;overflow:auto}.hirepanel h3{margin:0 0 4px;font-family:var(--pfont);font-size:12px;font-weight:400;color:var(--gold);text-transform:uppercase;letter-spacing:0}

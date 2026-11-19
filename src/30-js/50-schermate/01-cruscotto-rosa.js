@@ -1,13 +1,16 @@
 function renderHome(){
-  if(SV.prog&&SV.prog.on&&autoTrain())persist();   // programma di allenamento automatico: parte da solo quando c'e' una sessione disponibile
   const m=nextMatch(),names=SV.mem[SV.sr];
+  const mail=staffScoutMail(m);
+  const trained=SV.prog&&SV.prog.on&&autoTrain();
+  if(mail||trained)persist();
   renderShell();   // stemma, nome, crediti e posta stanno nel guscio (24-guscio-carriera.js)
+  const europe=euBeforeNewSeason();
   let nx;
   if(m){
     const op=Math.round((m.roster?rosterPower(m.roster):m.power-PW_LV)+carDiff().plus),me=Math.round(squadPower()),idn=m.roster?teamIdentity(m.name,bestSeven(m.roster)):null;
     nx=timelineHTML()+`<div class="dvs"><span>${crest(m.name,26)}<b>${esc(m.name)}</b></span><span class="dpw"><i>tu</i> ${me} <i>·</i> ${op} <i>loro</i></span></div>`+(G.opt.wind===false?'':`<small class="dtag dtag1">Meteo: ${esc(meteoTxt(m))}</small>`)+`<small class="dtag dtag1">${crowdTxt(m)}</small>`;   // quanta gente aspettarsi (30-stadi.js)
-  }else if(SV.event==='camp')nx=timelineHTML()+`<div class="dvs"><span><b>${SV.next?esc(SV.next.short):''}</b></span></div><small class="dtag">Premi e riepilogo in Lega: da lì parte la nuova stagione</small>`;
-  else nx=timelineHTML()+`<div class="dvs"><span><b>${euEndTxt()}</b></span></div><small class="dtag">${SV.done?'La prossima edizione, se vi qualificate, è nella nuova stagione':'Si torna al campionato: la prossima edizione è tra una stagione, se vi qualificate'}</small>`;
+  }else if(SV.event==='camp')nx=timelineHTML()+`<div class="dvs"><span><b>${SV.next?esc(SV.next.short.replace(' Per la prossima stagione si sblocca il Campionato europeo.','')):''}</b></span></div><small class="dtag">${europe?'Concludi l’EUCF per iniziare il prossimo campionato.':'Premi e riepilogo in Lega: da lì parte la nuova stagione'}</small>`;
+  else nx=timelineHTML()+`<div class="dvs"><span><b>${euEndTxt()}</b></span></div><small class="dtag">${SV.done?'Torna al riepilogo del campionato in Lega':'Si torna al campionato: la prossima edizione è tra una stagione, se vi qualificate'}</small>`;
   $('hNext').innerHTML=nx;
   let tab;
   if(isUS()&&!SV.done&&SV.us.ph!=='reg')tab=usHomeTab();   // Play-in e Nationals (15-usa-schermate.js)
@@ -26,8 +29,8 @@ function renderHome(){
   const su=suspOk();
   // a competizione conclusa il tasto dice che cosa succede davvero: nuova stagione (se il campionato e' finito) oppure ritorno al campionato (coppa finita)
   const toCamp=!m&&SV.event==='eu'&&!SV.done;
-  $('hPlayT').textContent=su?'Riprendi la partita':(m?'Inizia partita':(toCamp?'Torna al campionato':'Nuova stagione'));
-  $('hPlayS').textContent=su?`Sospesa sul ${SV.susp.score[0]}–${SV.susp.score[1]} contro ${m.name}`:(m?`Contro ${m.name} · ${VENUE_SHORT[venueOf()]} · ${carDiff().name}`:(toCamp?`Giornata ${SV.round+1} di ${totalRounds()}`:'Riepilogo, premi e ripartenza'));
+  $('hPlayT').textContent=su?'Riprendi la partita':(m?'Inizia partita':(toCamp?'Torna al campionato':europe?'Gioca l’EUCF':'Nuova stagione'));
+  $('hPlayS').textContent=su?`Sospesa sul ${SV.susp.score[0]}–${SV.susp.score[1]} contro ${m.name}`:(m?`Contro ${m.name} · ${VENUE_SHORT[venueOf()]} · ${carDiff().name}`:(toCamp?`Giornata ${SV.round+1} di ${totalRounds()}`:europe?'Prima del prossimo campionato':'Riepilogo, premi e ripartenza'));
   $('hSim').classList.toggle('hidden',!m||su);   // una partita sospesa si riprende, non si simula
   const left=3-SQ.filter(p=>p.tr).length,hurt=SQ.filter(p=>p.inj).length,low=SQ.filter(p=>p.cond<50).length;
   $('hTrainS').textContent=!trainOpen()?`Tra ${trainWait()} ${trainWait()>1?'partite':'partita'}`:!SV.tTeam?'Da fare':(left?`Restano ${left} singoli`:'Fatti');   // testi brevi: sul telefono i lunghi venivano troncati
@@ -213,16 +216,45 @@ function eventPages(active=eventPage){
   return `<nav class="seg evpages" aria-label="Viste della lega">${EVENT_PAGES.map(([id,label])=>`<button type="button" class="sg${active===id?' on':''}" data-evpage="${id}"${active===id?' aria-current="page"':''}>${label}</button>`).join('')}</nav>`;
 }
 function eventCalendar(){
-  const mine=SV.res||[],next=nextMatch();
-  const rows=mine.map((r,i)=>`<li class="${r.su>r.so?'w':'l'}"><span>${i+1}. ${esc(r.opp)}</span><strong>${r.su} – ${r.so}</strong></li>`);
-  if(next)rows.push(`<li class="n"><span>${esc(next.label)} · ${esc(next.name)}</span><strong>Prossima</strong></li>`);
-  if(!isUS()&&!isLN()&&!SV.done&&SV.event==='camp'&&!SV.po?.on){
-    const names=SV.mem[SV.sr],mine=names.indexOf(SV.team);
-    SV.sched.slice(SV.round+1).forEach((round,i)=>{
-      const pair=round.find(m=>m.includes(mine));
-      if(pair)rows.push(`<li><span>Giornata ${SV.round+i+2} · ${esc(names[pair.find(n=>n!==mine)])}</span><span>Da giocare</span></li>`);
+  const results=SV.res||[],next=nextMatch(),regular=regularPhase(),rows=[];
+  const add=(label,name,result,pending)=>{
+    if(!name&&!result)return;
+    const status=result?(result.su>result.so?'w':'l'):pending?'n':'';
+    const score=result?`${result.su} – ${result.so}`:pending?'Prossima':'Da giocare';
+    rows.push(`<li class="${status}"><span>${esc(label)} · ${esc(result?.opp||name)}</span><strong>${score}</strong></li>`);
+  };
+  if(isUS()){
+    let round=0,cross=0;
+    US_CAL.forEach((kind,i)=>{
+      const played=i<(SV.us.ci|0);
+      if(!played&&!regular)return;
+      const upcoming=regular&&i===(SV.us.ci|0);
+      if(kind==='c'){
+        const result=results[round];
+        if(!played||result)add(`Giornata ${round+1} di Conference`,oppAt(round),result,upcoming);
+        round++;
+      }else{
+        const result=SV.us.xl?.[cross];
+        if(!played||result)add(`Interregionale ${cross+1}`,usCrossOpp(cross),result,upcoming);
+        cross++;
+      }
     });
+  }else{
+    let played=0,marked=false;
+    for(let round=0;round<SV.sched.length;round++){
+      const name=oppAt(round);
+      if(!name)continue;
+      const label=`Giornata ${round+1}`;
+      if(round<SV.round){
+        const result=results[played++];
+        if(result)add(label,name,result,false);
+      }else if(regular){
+        add(label,name,null,!marked);
+        marked=true;
+      }
+    }
   }
+  if(next&&!regular)add(next.label,next.name,null,true);
   return rows.length?`<ul class="elist">${rows.join('')}</ul>`:'<p class="note">Il calendario comparirà quando inizierà il campionato.</p>';
 }
 $('eBody').addEventListener('click',e=>{
@@ -239,7 +271,7 @@ function renderEvent(){
     `<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>Campionato</strong><small>Serie A, B e C: tutte contro tutte, poi playoff scudetto tra le prime 4 della A; in B e C sale la prima più la vincente degli spareggi tra le squadre dalla 2ª alla 5ª. Scendono le ultime 2. ${cs}.</small></button>`+
     (SV.euUnlocked
       ?`<button type="button" class="ecard${SV.event==='eu'?' on':''}" data-e="eu"><strong>Campionato europeo (EUCF)</strong><small>16 club in 4 gironi da 4, poi prequarti, quarti, semifinali e finale. ${euCardSub()}</small></button>`
-      :`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo</strong><small>Bloccato: serve chiudere la stagione tra le prime 3 della Serie A, e vale per la stagione dopo.</small></button>`);
+      :`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo</strong><small>${euQualifiedPending()?'Qualificati: apri il torneo dal riepilogo.':'Per qualificarti devi chiudere il campionato tra le prime 3 della Serie A.'}</small></button>`);
   let body='';
   if(SV.event==='camp'){
     if(!SV.lg||!SV.lg[evSr])evSr=SV.sr;

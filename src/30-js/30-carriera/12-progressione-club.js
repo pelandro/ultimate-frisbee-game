@@ -4,21 +4,30 @@
 Object.assign(AL_KIND,{goal:['Obiettivo','#7fd8ff']});
 /* ---- STAFF ---- */
 const STAFF={
-  coach:{n:'Allenatore',d:'Gli allenamenti rendono il 5% in più per livello'},
-  fit:{n:'Preparatore atletico',d:'Più recupero (+2 a giornata e +4 col Recupero per livello) e meno infortuni in allenamento (−10% per livello)'},
-  ana:{n:'Analista tattico',d:'+0,5 di forma di squadra per livello e il rapporto sulla prossima avversaria'},
-  men:{n:'Mentore dei giovani',d:'Chi ha fino a 23 anni cresce il 7% in più per livello; gli obiettivi personali pagano di più'}
+  fit:{n:'Preparatore atletico',d:'Fa rendere di più gli allenamenti',
+    steps:['Crescita più rapida','Meno fatica nelle sedute intense','Lavoro individuale più efficace']},
+  fis:{n:'Fisioterapista',d:'Previene gli infortuni e accelera il recupero',
+    steps:['Meno infortuni','Recupero più rapido e stop brevi','Stop più brevi anche negli infortuni seri']},
+  ana:{n:'Analista tattico',d:'Sblocca schemi per la carriera',
+    steps:['Stack laterale e Zona a coppa','Esagono, Weave e Uomo con aiuti','T1, 1 in 3-4 e un consiglio in Posta per i derby']}
 };
-const STAFF_MAX=3,STAFF_WAGE=[0,1,2,3];   // con tutto lo staff al livello 3 si pagavano 16 a partita: insieme alle strutture al massimo, piu' di meta' delle entrate di un club di Serie A   // a partita, per ruolo (era 0,1,3,6: ora pesano gli stipendi dei giocatori, wageOf)
+// Il costo del livello massimo deve pesare sui club senza risultati da vertice.
+const STAFF_MAX=3,STAFF_WAGE=[0,24,80,200];
 const staffLv=k=>(SV&&SV.staff&&SV.staff[k])|0;
-const staffCost=k=>50*(staffLv(k)+1);
-const staffWage=()=>Object.keys(STAFF).reduce((a,k)=>a+STAFF_WAGE[staffLv(k)],0);
-// buyStaff (migliorare chi hai gia'): 25-staff-persone.js
-// Il Centro sportivo riduce la fatica durante le sedute.
-const trCostK=()=>1-0.04*facLv('camp');
-// Centro sportivo, allenatore e mentore migliorano le sedute fino al tetto comune.
+const trCostK=()=> (1-0.04*facLv('camp'))*(1-(SV.tInt===2?[0,0,0.1,0.15][staffLv('fit')]:0)-(hasTr('fit','res')?0.04:0));
 const TRAIN_CAP=1.5;
-const trainMul=p=>carGrowK()*Math.min(TRAIN_CAP,(1+0.05*facLv('camp'))*(1+0.05*staffLv('coach'))*(p.age<=23?1+(0.07+(p.age<=21&&hasTr('men','tal')?0.035:0))*staffLv('men'):1));
+function trainMul(p,single=false){
+  const lv=staffLv('fit'),team=1+0.06*lv,individual=single&&lv===3?1.08:1;
+  const youth=p.age<22&&hasTr('fit','young')?1.08:1;
+  return carGrowK()*Math.min(TRAIN_CAP,(1+0.05*facLv('camp'))*team*individual*youth);
+}
+const physRecovery=()=>[0,0,3,5][staffLv('fis')]+(hasTr('fis','rec')?1:0);
+const staffInjuryK=()=>Math.max(0.45,facInjuryK()*(1-0.1*staffLv('fis')));
+function injuryStop(days){
+  const lv=staffLv('fis');
+  const cut=lv===3&&days>=5?2:lv>=2&&days>=2?1:0;
+  return Math.max(1,days-cut-(days>=3&&hasTr('fis','fis')?1:0),Math.ceil(days/2));
+}
 /* ---- SPECIALIZZAZIONI (le regole stanno in 10-sim/11b-specializzazioni.js) ---- */
 const specCost=p=>Math.round((40+2*Math.max(0,ovrX(p)-50))*(p.spec?1.5:1));
 function setSpec(p,id){
@@ -68,7 +77,7 @@ function goalsAssign(){
   const pick=SQ.filter(p=>!p.inj&&p.ret!==1).sort((a,b)=>ovrX(b)-ovrX(a));
   const chosen=pick.slice(0,2);const young=pick.find(p=>p.age<=22&&!chosen.includes(p));if(young)chosen.push(young);
   const lines=[];
-  for(const p of chosen){const g=goalFor(p);g.s=SV.season;g.rw=Math.round(6*SR_K[SV.sr])+3*staffLv('men');p.goal=g;lines.push(pname(p)+' vuole '+GOALS[g.id].txt(g));}
+  for(const p of chosen){const g=goalFor(p);g.s=SV.season;g.rw=Math.round(6*SR_K[SV.sr]);p.goal=g;lines.push(pname(p)+' vuole '+GOALS[g.id].txt(g));}
   if(lines.length)alertAdd('goal','Obiettivi personali di questa stagione: '+lines.join('; ')+'. Se li raggiungono sono più motivati; se restano delusi più volte, chiederanno di andare via.');
 }
 const goalOk=p=>!!(p.goal&&GOALS[p.goal.id]&&GOALS[p.goal.id].cur(p)>=p.goal.tgt);
@@ -78,7 +87,7 @@ function goalsEnd(){   // fine stagione: premio o delusione
     const g=p.goal;if(!g||g.done)continue;
     g.done=1;
     if(goalOk(p)){
-      p.sad=0;p.dev=Math.min(1.5,(p.dev||1)+0.04+0.02*staffLv('men'));SV.cash+=g.rw;SV.mor=clamp(SV.mor+2,0,100);ok.push(pname(p));
+      p.sad=0;p.dev=Math.min(1.5,(p.dev||1)+0.04);SV.cash+=g.rw;SV.mor=clamp(SV.mor+2,0,100);ok.push(pname(p));
       alertAdd('up',pname(p)+' ha raggiunto il suo obiettivo ('+GOALS[g.id].txt(g)+'): più motivat'+oa(p)+' e +'+g.rw+' crediti di premio. La sua crescita ne beneficerà.',{full:p.full,seen:1});
     }else{
       p.sad=(p.sad|0)+1;ko.push(pname(p));

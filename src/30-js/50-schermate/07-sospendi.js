@@ -44,7 +44,7 @@ function resumeMatch(){
   G.tmo=Array.isArray(s.tmo)?s.tmo.slice():[0,0];   // il timeout gia' usato resta usato
   G.target=lenOk(s.tg|0);   // la partita sospesa finisce al punteggio con cui era cominciata, anche se nel frattempo hai cambiato la durata
   G.score=s.score.slice();G.pointNo=s.pno;G.halfDone=s.half;G.startRec=s.startRec;G.nextRec=s.rec;G.dir=s.dir.slice();
-  G.st=s.st;G.seen=s.seen;G.rep=s.rep||[{k:'',n:0},{k:'',n:0}];G.adw=s.adw||{k:'',n:0};G.obs=s.obs;G.aiRec=s.aiRec;Object.assign(G.sch,s.sch);Object.assign(G.opp,s.opp);G.dmode=s.dmode.slice();
+  G.st=s.st;G.seen=s.seen;G.rep=s.rep||[{k:'',n:0},{k:'',n:0}];G.adw=s.adw||{k:'',n:0};G.obs=s.obs;G.aiRec=s.aiRec;G.sch=useCareerSchemes(s.sch);Object.assign(G.opp,s.opp);G.dmode=s.dmode.slice();
   for(const x of s.my){const p=byFull(x.f);if(!p)continue;p.st=x.st;p.m=x.m;if(x.inj&&!p.inj){p.inj=x.inj;}if(x.inj)p.injNew=true;}
   s.ol.forEach((v,i)=>{if(OPP.list[i])OPP.list[i].st=v;});
   s.op.forEach((x,i)=>{const q=T[1][i],o=OPP.list[x.ro];if(!q)return;if(o&&q.ro!==o)loadOpp(q,o,true);q.st=x.st;q.m=x.m;});

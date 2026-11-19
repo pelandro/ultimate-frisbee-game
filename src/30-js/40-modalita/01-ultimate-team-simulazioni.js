@@ -210,8 +210,8 @@ $('tmBack').addEventListener('click',()=>showScreen(utTeamBack));
 // ---- SIMULA PARTITA (carriera, torneo, Ultimate Team): il risultato dipende dalla forza delle due squadre e dalla difficolta' dell'IA,
 //  con la scala misurata sulle partite giocate (simPointP e SIM_DIFF in 10-sim/13-partite-simulate.js). Si gioca ai 7 punti, come la partita vera.
 let simAfter=null;
-function showSim(win,score,msg,after){
-  $('srMoney').innerHTML='';$('srTitle').textContent=win?'Vittoria!':'Sconfitta';$('srScore').textContent=score;$('srEvent').textContent=msg;simAfter=after;$('simres').classList.remove('hidden');
+function showSim(win,score,msg,after,title){
+  $('srMoney').innerHTML='';$('srTitle').textContent=win?'Vittoria!':'Sconfitta';$('srScore').textContent=score;$('srEvent').textContent=msg;simAfter=after;renderTitleCelebration($('srTitle'),title);$('simres').classList.remove('hidden');
 }
 $('srOk').addEventListener('click',()=>{$('simres').classList.add('hidden');const f=simAfter;simAfter=null;if(f)f();});
 function simCareerMatch(){
@@ -221,16 +221,17 @@ function simCareerMatch(){
   const lo=matchLine('lineO').map(id=>SQ[id]),ld=matchLine('lineD').map(id=>SQ[id]);
   // potenza di oggi della tua squadra con la formula unica (myPow, 10-partita-avvio.js): infortunati fuori, DBL_PEN per chi sta in entrambe le linee e condizione
   // fisica, con gli stessi effetti di una partita giocata; poi affiatamento e morale. L'avversario: la potenza della sua rosa (il livello statico, se non ce l'ha, va portato alla stessa scala)
-  const opp=(m.roster?rosterPower(m.roster):m.power-PW_LV)+carDiff().plus,my=myPow(true)+teamFormB()*0.8;
+  const opp=(m.roster?rosterPower(m.roster):m.power-PW_LV)+carDiff().plus,my=myPow(true)+teamFormB()*0.8+tacticPlan(m).edge;
   const r=simMatch(my,opp,carDiff().ai|0,carLen()),w=r.a>r.b;   // la difficolta' scelta vale anche qui: l'IA migliore vale qualche punto di forza in piu'
   // una partita simulata vale come una giocata: stessa esperienza media, statistiche personali, fatica e (ora) anche gli infortuni
   const on=new Set(matchLine('lineO').concat(matchLine('lineD')));
   const gk=carGrowK();   // crescita secondo la serie e il distacco (29-potenziali.js), come nelle partite giocate
   for(const p of SQ){p.m=newCounters();if(on.has(p.id)&&!p.inj){p.m.pts=1;p.m.sh=((lo.includes(p)?1:0)+(ld.includes(p)?1:0))/2;growBy(p,simParts(p,1),XP_ROLE[posOf(p)]*gk);}}   // sh: quota di mete giocate (fatShare)
   simMatchStats(r.a);
-  simInjuries([...on].map(id=>SQ[id]).filter(Boolean),facInjuryK());   // dopo la crescita: chi si fa male in partita la partita l'ha giocata
+  simInjuries([...on].map(id=>SQ[id]).filter(Boolean),staffInjuryK());
+  const wasDone=SV.done,wasEuropeanChampion=SV.eu?.state==='champ';
   const msg=recordResult(w,r.a,r.b);
-  showSim(w,`${SV.team} ${r.a} – ${r.b} ${m.name}`,msg,()=>renderHome());$('srMoney').innerHTML=moneyHTML(SV.lastMoney);
+  showSim(w,`${SV.team} ${r.a} – ${r.b} ${m.name}`,msg,()=>renderHome(),careerTitleAfter(wasDone,wasEuropeanChampion));$('srMoney').innerHTML=moneyHTML(SV.lastMoney);
 }
 function simUTMatch(){
   if(UT.sel.length!==7||UT.st!=='play'||UT.packs.length)return;
