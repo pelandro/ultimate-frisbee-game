@@ -20,6 +20,6 @@ function endSeasonHTML(o){
     :`<button type="button" class="go endgo" id="eReset">Inizia la nuova stagione</button><p class="endn">Tutti invecchiano di un anno ${infoB('endnew')}</p>`;
   return `<section class="endc${nx.tit?' tit':''}"><div class="endm"><small>Stagione ${SV.season} conclusa · ${esc(o.awTitle||SERIES_NAME[SV.sr])}</small><h2>${esc(title)}</h2>${pills?`<ul class="endp">${pills}</ul>`:''}</div>`
     +`<div class="endg">${action}</div></section>`
-    +(europe?'':infoX('endnew','<p>Con la nuova stagione tutti invecchiano di un anno, i veterani possono ritirarsi, le altre squadre cambiano e il mercato si rinnova.</p>'))
+    +(europe?'':infoX('endnew','<p>La rosa torna in piena forma. Le giornate senza partita diventano allenamenti e in Posta trovi i maggiori progressi dell’estate.</p><p>Tutti invecchiano di un anno e il mercato si rinnova.</p>'))
     +(aw?`<button type="button" class="endtog${INFO_ON.has('endaw')?' on':''}" data-info="endaw" aria-expanded="${INFO_ON.has('endaw')}">Premi e squadra ideale</button>${infoX('endaw',aw)}`:'');
 }
