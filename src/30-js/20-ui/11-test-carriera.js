@@ -176,7 +176,7 @@ function careerSelfTest(seasons,seed){
       let dn=0,up=0,lost=0;const N=1500;
       for(let i=0;i<N;i++){const o=genPlayer(50,17,'sorp|'+i,potB(70));const s0=KEYS.reduce((a,k)=>a+o.s[k],0),t0=o.tl+o.tf+o.tv;for(let y=0;y<6;y++){o.pvx=0;const b=KEYS.reduce((a,k)=>a+o.s[k],0);o.age++;potSurprise(o);if(KEYS.reduce((a,k)=>a+o.s[k],0)<b)lost++;}const t1=o.tl+o.tf+o.tv;if(t1<t0)dn++;else if(t1>t0)up++;}
       {const mk=(ov,age)=>{const o=genPlayer(ov,age,'wg|'+ov+'|'+age,potB(ov+2));return o;},lo=mk(50,26),hi=mk(85,26),f0=SV.fac?SV.fac.viv:0;
-       const w1=wageOf(lo),w2=wageOf(hi),s1=scoutCost(lo),s2=scoutCost(hi);if(SV.fac)SV.fac.viv=3;const s3=scoutCost(hi);if(SV.fac)SV.fac.viv=f0;
+       const w1=wageOf(lo),w2=wageOf(hi);if(SV.fac)SV.fac.viv=0;const s1=scoutCost(lo),s2=scoutCost(hi);if(SV.fac)SV.fac.viv=3;const s3=scoutCost(hi);if(SV.fac)SV.fac.viv=f0;
        rows.push(row('Stipendi, osservazioni e premio promozione: lo stipendio sale con l\'Overall, osservare costa di più chi vale di più, gli Osservatori fanno risparmiare, la promozione in A paga più di quella in B',
          `stipendio ${w1.toFixed(1)} e ${w2.toFixed(1)} a stagione, osservare ${s1} e ${s2} (${s3} con Osservatori 3), promozione ${promoPrize('B')} e ${promoPrize('A')}`,
          w2>w1*4&&w1>=5&&s2>s1&&s3<s2&&promoPrize('A')>promoPrize('B')));}
