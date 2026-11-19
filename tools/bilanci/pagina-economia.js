@@ -1,6 +1,6 @@
 /* Eseguito DENTRO la pagina del gioco (tools/test-bilanci.js): una carriera economica, stagione per stagione, senza spendere.
    P = {team, mode: 0 (niente) | 'max' (club al vertice, tutto al massimo) | 'stress' (tutto al massimo, senza vantaggio in campo), trim, seasons, seed}.
-   Restituisce per ogni stagione: cassa all'inizio (dopo le vendite) e alla fine, minimo, giornate in rosso, esonero, vendite, entrate e saldo delle partite. */
+   Restituisce per ogni stagione: cassa all'inizio (dopo le vendite) e alla fine, qualificazione all'EUCF, minimo, giornate in rosso, esonero, vendite, entrate e saldo delle partite. */
 (P=>{const hide=()=>{for(const id of ['simres','alerts','evt','fired'])$(id)&&$(id).classList.add('hidden');};
 const contender=P.mode==='max',full=contender||P.mode==='stress';
 const evt=()=>{let k=0;while(SV.evt&&k++<3){try{evtAnswer(SV.evt.id==='spons'?(contender?2:1):0);}catch(e){SV.evt=null;}}};
@@ -22,8 +22,9 @@ for(let s=0;s<P.seasons;s++){
     mn=Math.min(mn,SV.cash);if(SV.cash<0)red++;if(SV.fired)fired=true;g++;
   };
   while(!SV.done&&g<48&&!fired)play();
+  const eu=!!SV.next?.qual;   // qualificato all'EUCF (per E2b: chi ci va non e' un club di meta' classifica)
   if(!fired&&openSeasonEurope())while(euActive()&&!fired)play();
-  ss.push({sr:SV.sr,rank:SV.next?.rank,title:!!SV.next?.tit,c0,c1:SV.cash,min:mn,red,fired,sold,staff,rev:Math.round(rev),net:Math.round(net)});
+  ss.push({sr:SV.sr,rank:SV.next?.rank,title:!!SV.next?.tit,eu,c0,c1:SV.cash,min:mn,red,fired,sold,staff,rev:Math.round(rev),net:Math.round(net)});
   if(fired)break;
   if(!newSeason())throw new Error('Nuova stagione bloccata');
   hide();evt();

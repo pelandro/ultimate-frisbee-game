@@ -10,8 +10,8 @@ function matchStakes(m){
   }else if(isLN()&&SV.event==='camp'){
     const u=lnStakes(m);tag=u.tag;title=u.title;lines.push(...u.lines);   // leghe europee: 19-leghe-schermate.js
   }else if(SV.po&&SV.po.on&&SV.event==='camp'){
-    tag=PO_NAME[SV.po.kind];title=SV.po.round===0?'Semifinale':'Finale';
-    lines.push(SV.po.kind==='tit'?(SV.po.round?'Chi vince è campione d’Italia: trofeo e reputazione.':'Chi vince va in finale per lo scudetto: partita secca.'):(SV.po.round?'Chi vince sale di categoria insieme alla prima della classe.':'Chi vince va alla finale per la seconda promozione: partita secca.'));
+    tag=PO_NAME[SV.po.kind];title=PO_RD[SV.po.round];
+    lines.push(SV.po.round===2?'Chi vince è terza e va all’EUCF.':SV.po.kind==='tit'?(SV.po.round?'Chi vince è campione d’Italia: trofeo e reputazione.':'Chi vince va in finale per lo scudetto: partita secca.'):(SV.po.round?'Chi vince sale di categoria insieme alla prima della classe.':'Chi vince va alla finale per la seconda promozione: partita secca.'));
   }else if(SV.event==='eu'){
     const u=euStakes();tag=u.tag;title=u.title;lines.push(...u.lines);   // EUCF: 18-eucf-schermate.js
   }else{

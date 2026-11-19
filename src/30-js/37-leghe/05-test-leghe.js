@@ -76,12 +76,29 @@ function lnSelfTest(seasons,seed){
         }else if(s<seasons-1)newSeason();
       }
     }
+    // ---- gironi: ogni avversaria si incontra lo stesso numero di volte (solo giri completi) ----
+    for(const lk of LN_IDS){const T=lnBuildT(lk);lnPools(T,lk,true);
+      for(const tr of LN_DEF[lk].tiers)for(const c of T[tr.id]){const g=lnCompMin(tr,c);
+        for(const p of c.pools){const n=p.length,cnt={},gm=Array(n).fill(0);for(const R of lnGrpSched(n,g))for(const [a,b] of R){const k=Math.min(a,b)+'-'+Math.max(a,b);cnt[k]=(cnt[k]|0)+1;gm[a]++;gm[b]++;}
+          const v=[];for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)v.push(cnt[i+'-'+j]|0);
+          chk('giri',Math.min(...v)===Math.max(...v)&&Math.min(...gm)===Math.max(...gm),lk+' '+tr.id+': incontri da '+Math.min(...v)+' a '+Math.max(...v));
+          chk('minime',g+lnFinR(tr,c.pools.map(x=>x.length))>=LN_MIN||!tr.fin.length&&g>=LN_MIN||tr.fin[0]&&tr.fin[0].f>1&&g>=LN_MIN,lk+' '+tr.id+': '+g+' partite di girone');}}}
+    // ---- salvataggio con il formato vecchio (Belgio a 6 livelli): la stagione finisce con le regole vecchie, poi si passa ai 3 livelli ----
+    {const club=lnClubs('BE').find(n=>LN_CL.BE.find(r=>r[0]===n)[1]==='N4');startCareer(club,{});
+     const T={};for(const t of LN_OLD.BE.tiers){const rows=LN_CL.BE.filter(r=>r[1]===t.id);T[t.id]=[{id:'',clubs:rows.map(r=>r[0]),g:Object.fromEntries(rows.map(r=>[r[0],r[2]]))}];}
+     SV.ln.T=T;lnPools(T,'BE',true);const at=lnLocate(SV.team);SV.ln.tier=at.tier;SV.ln.ci=at.ci;SV.ln.pi=at.pi;SV.sr=lnKey('BE',at.tier);SV.mem={[SV.sr]:T[at.tier][0].pools[at.pi].slice()};
+     SV.tab=usFreshTab(SV.mem[SV.sr]);SV.res=[];leagueBegin();
+     chk('vecchi',lnTiers().length===6&&SV.ln.tier==='N4','il salvataggio vecchio deve giocare la stagione con i 6 livelli');
+     play();newSeason();
+     const sz=lnTiers().map(t=>SV.ln.T[t.id][0].clubs.length).join(',');
+     chk('vecchi',lnTiers().map(t=>t.id).join()==='N1,N2,N3'&&sz==='15,16,15'&&['BE.N2','BE.N1','BE.N3'].includes(SV.sr)&&SV.mem[SV.sr].includes(SV.team),'dopo il cambio di formato: livelli '+lnTiers().map(t=>t.id)+', squadre '+sz+', tu in '+SV.sr);}
     // ---- coppa europea con i club dei nuovi paesi ----
     for(const club of [LN_NAMES.filter(n=>LN_BY[n].lk==='BE').sort((a,b)=>LN_BY[b].p-LN_BY[a].p)[0],'Grem']){
       startCareer(club,{});SV.euUnlocked=true;SV.eu=newEu(SV.season);SV.eu.it=null;SV.event='eu';const N=euEnsure(),teams=N.pools.flat();
       const cc={};for(const t of teams)cc[euCountry(t)]=(cc[euCountry(t)]|0)+1;
       chk('eucf',teams.length===16&&new Set(teams).size===16&&teams.includes(SV.team),'campo della coppa europea');
-      chk('eucf',['ITA','BEL','FRA','GBR','GER'].every(c=>cc[c]===EU_SLOTS[{ITA:'IT',BEL:'BE',FRA:'FR',GBR:'UK',GER:'DE'}[c]]),'club per paese: '+JSON.stringify(cc));
+      const cs=['ITA','BEL','FRA','GBR','GER'];
+      chk('eucf',cs.every(c=>cc[c]===3||cc[c]===4)&&cs.reduce((x,c)=>x+(cc[c]|0),0)===16&&cs.filter(c=>cc[c]===4).length===1&&!teams.some(t=>EU_BY[t]),'club per paese: '+JSON.stringify(cc));
       let k=0;while(SV.event==='eu'&&SV.eu.state==='on'&&k++<12){const m=nextMatch();if(!m)break;const r=simPower(SV.team,m.name);recordResult(r[0]>r[1],r[0],r[1]);hide();}
       chk('eucf',SV.eu.state!=='on','coppa non conclusa');
     }
@@ -157,10 +174,12 @@ function lnSelfTest(seasons,seed){
   r('Classifica: Girone, Fase finale e Livelli si aprono in ogni fase della stagione','viste','sì');
   r('Salvataggio: ricarica a metà stagione','salvataggio','sì');
   r('Avvio carriera: livello e girone giusti, rose di tutti i club','lega','sì');
-  r('Campionato europeo: 16 club con 3 italiani, 3 belgi, 2 francesi, 2 britannici e 1 tedesco, in gironi','eucf','sì');
+  r('Campionato europeo: 16 club veri, 3 per paese più la quarta più forte, in gironi','eucf','sì');
+  r('Gironi a giri completi: ogni avversaria si incontra lo stesso numero di volte','giri','sì');
+  r('Salvataggio con il formato vecchio: la stagione finisce come prima, poi si passa al formato nuovo','vecchi','sì');
   r('Mercato: le stelle che giocano nei club della lega non sono in vendita','mercato','sì');
   r('Offerte tra tutte le leghe: lavoro e scambi da ognuna delle sei verso le altre cinque (gli scambi anche dalla stessa lega), con allenatore, storico e trofei conservati','offerte','sì');
-  r('Almeno 11 partite per chi arriva in fondo in ogni livello europeo (più giri nei gironi solo dove servono)','minime','sì');
+  r('Almeno 11 partite per chi arriva in fondo in ogni livello europeo','minime','sì');
   r('Eliminati presto (USA): le settimane senza partite diventano allenamenti, una volta sola','fuori','sì');
   r('Campionato italiano invariato','italia','sì');r('Campionato USA invariato','usa','sì');
   return rows;
