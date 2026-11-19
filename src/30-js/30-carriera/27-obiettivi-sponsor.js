@@ -24,7 +24,7 @@ const euStageNow=()=>SV.eu&&SV.eu.nat?(SV.eu.stage|0):-1;   // 0 girone, 1 prequ
 // com'e' fatta la divisione in cui giochi: quante squadre, chi sale, chi scende, quanti posti per l'Europa
 function objCtx(){
   if(isLN()){
-    const comp=lnComp(),D=LN_DEF[SV.lk],tiers=lnTiers(),ti=tiers.findIndex(t=>t.id===SV.ln.tier),n=comp.clubs.length,down=ti<tiers.length-1?D.mv[ti]:0,up=ti>0?D.mv[ti-1]:0;
+    const comp=lnComp(),D=lnSeasonDef(SV.lk,SV.ln.T),tiers=D.tiers,ti=tiers.findIndex(t=>t.id===SV.ln.tier),n=comp.clubs.length,down=ti<tiers.length-1?D.mv[ti]:0,up=ti>0?D.mv[ti-1]:0;
     return {names:comp.clubs,n,cat:x=>LN_BY[x]?LN_BY[x].p:NaN,pow:lnP,up,safe:n-(down||1),
       title:ti===0?`Titolo ${D.de}`:`Primo posto in ${tiers[ti].name}`,upTxt:ti>0?`Promozione in ${tiers[ti-1].name}`:'',eu:ti===0?D.eu:0,
       low:t=>down?`Salvezza (non tra le ultime ${down})`:'Non chiudere ultimi'};

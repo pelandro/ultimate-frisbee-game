@@ -10,7 +10,7 @@ const LEAGUES=[
   {id:'US',name:'USA Men’s Club',sub:'48 club · 8 Conference',txt:'I club veri della divisione Men’s di USA Ultimate: 8 Conference (le regioni vere) da 6, Play-in e Nationals a 16 squadre. Niente promozioni né retrocessioni.',
     clubs:()=>US_NAMES,roster:n=>usRoster(n,'preview|'+n),sub2:n=>`${US_TEAM[n].city} · ${usConfName(US_TEAM[n].conf)}`}
 ].concat(LN_IDS.map(lk=>({id:lk,name:LN_DEF[lk].name,sub:LN_DEF[lk].sub,txt:LN_DEF[lk].txt,
-    clubs:()=>lnClubs(lk,true),roster:n=>lnRoster(n,'preview|'+n),sub2:n=>`${LN_DEF[lk].cc} · ${LN_DEF[LN_BY[n].lk].tiers.find(t=>t.id===LN_BY[n].t).name}`})));   // leghe europee (37-leghe/): una scheda per paese
+    clubs:()=>lnClubs(lk),roster:n=>lnRoster(n,'preview|'+n),sub2:n=>`${LN_DEF[lk].cc} · ${LN_TIER[lnKey(lk,LN_BY[n].t)].name}`})));   // leghe europee (37-leghe/): una scheda per paese
 const lgOf=id=>LEAGUES.find(l=>l.id===(id||teamLg))||LEAGUES[0];
 const FAV_KEY='ultimate-cuore';
 function favAll(){try{return JSON.parse(localStorage.getItem(FAV_KEY)||'{}')||{};}catch(e){return {};}}

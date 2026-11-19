@@ -10,11 +10,11 @@
 const clubLega=n=>US_TEAM[n]?'US':(LN_BY[n]?LN_BY[n].lk:'IT');   // lega di un club
 const lgNow=()=>isUS()?'US':(isLN()?SV.lk:'IT');
 const lgName=lk=>lk==='US'?'Men’s Club USA':(LN_DEF[lk]?'campionato '+LN_DEF[lk].de:'campionato italiano');
-const lnPlayable=n=>LN_TIER[lnKey(LN_BY[n].lk,LN_BY[n].t)].play!==false;   // i livelli di cui le fonti hanno solo una parte dei club non sono ammessi
+const lnPlayable=n=>{const {lk,t}=LN_BY[n];return LN_DEF[lk].tiers.some(tr=>tr.id===t);};
 let lnLvlMap=null;
 function lnLvl(n){   // posizione del club nella forza dei club del suo paese (tutti i livelli), da 1 (il piu' forte) a 0
-  if(!lnLvlMap){lnLvlMap={};for(const lk of LN_IDS){const all=LN_CL[lk].map(r=>r[0]).sort((a,b)=>LN_BY[b].p-LN_BY[a].p);all.forEach((c,i)=>{lnLvlMap[c]=1-i/Math.max(1,all.length-1);});}}
-  return lnLvlMap[n];
+  if(!lnLvlMap){lnLvlMap={};for(const lk of LN_IDS){const all=lnClubs(lk).sort((a,b)=>LN_BY[b].p-LN_BY[a].p);all.forEach((c,i)=>{lnLvlMap[c]=1-i/Math.max(1,all.length-1);});}}
+  return lnLvlMap[n]??0;
 }
 const clubLvl=n=>US_TEAM[n]?1-(US_TEAM[n].rank-1)/(US_NAMES.length-1):(LN_BY[n]?lnLvl(n):(TEAM[n]?1-(TEAM[n].rank-1)/45:0.5));   // 0..1: quanto e' prestigioso il club nella sua lega
 const allClubs=()=>{const w=lnWomenNow();return w?LN_NAMES.filter(n=>isWomenClub(n)&&lnPlayable(n)):[].concat(SERIES.A,SERIES.B,SERIES.C).filter(n=>REAL[n]).concat(US_NAMES,LN_NAMES.filter(n=>lnPlayable(n)&&!isWomenClub(n)));};   // ogni club da cui si puo' partire: le squadre femminili stanno in un mondo a parte (37-leghe/07-women.js)
@@ -37,10 +37,19 @@ function crossLgOffer(){
 // ---- scambio di giocatori ----
 function crossLgTrade(){
   if(SV.trade||SV.job||SV.event!=='camp'||SV.done||SQ.length<=SQ_MIN+1)return;
-  const mine=SQ.filter(p=>!p.inj&&p.ret!==1&&p.age<=33&&ovr(p)>=squadLevel()-14).sort(()=>Math.random()-0.5)[0];if(!mine)return;
-  const clubs=tradeClubs().sort(()=>Math.random()-0.5);
+  // Uno scambio usa un solo tiro della carriera, anche quando cambia il numero di club.
+  const random=mulberry32(Math.floor(Math.random()*0x100000000));
+  const pick=list=>list[Math.floor(random()*list.length)];
+  const mine=pick(SQ.filter(p=>!p.inj&&p.ret!==1&&p.age<=33&&ovr(p)>=squadLevel()-14));
+  if(!mine)return;
+  const clubs=tradeClubs();
+  for(let i=clubs.length-1;i>0;i--){
+    const j=Math.floor(random()*(i+1));
+    [clubs[i],clubs[j]]=[clubs[j],clubs[i]];
+  }
   for(const club of clubs.slice(0,6)){
-    const ro=tradeRoster(club,SV.seed+'|x|'+SV.season+'|'+(SV.played|0)),cand=ro.filter(o=>Math.abs(ovrX(o)-ovr(mine))<=4&&!SQ.some(p=>p.full===o.full)).sort(()=>Math.random()-0.5)[0];
+    const ro=tradeRoster(club,SV.seed+'|x|'+SV.season+'|'+(SV.played|0));
+    const cand=pick(ro.filter(o=>Math.abs(ovrX(o)-ovr(mine))<=4&&!SQ.some(p=>p.full===o.full)));
     if(!cand)continue;
     SV.trade={club,mine:mine.full,theirs:cand,season:SV.season,round:SV.round|0};
     alertAdd('club',`${club} (${clubLeagueTxt(club)}) propone uno scambio: ${cand.label||cand.n} (${cand.age} anni, Overall ${Math.round(ovrX(cand))}, ${POS_NAME[posOf(cand)]}) per ${pname(mine)} (Overall ${ovr(mine)}). L’offerta vale fino alla prossima partita.`,{act:'trade',full:mine.full});

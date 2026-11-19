@@ -58,6 +58,5 @@ function usMigrate(){
   news('Il campionato USA è cresciuto: 48 club in 8 Conference da 6. La stagione riparte nel nuovo formato.');
   return true;
 }
-ACH.push(['usa','Campioni d’America','Vinci i Nationals USA',1,100,()=>SV.troph.U|0]);
 // fase che ci si aspetta di raggiungere con la posizione di adesso (stima per il bilancio previsionale): 1ª Nationals, 2ª-3ª Play-in, poi fuori
 const usExpectStage=rank=>rank===1?3:(rank<=3?1:0);

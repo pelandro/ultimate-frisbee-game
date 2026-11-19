@@ -26,7 +26,7 @@ function freshTab(names){const t={};for(const n of names)t[n]={pts:0,w:0,l:0,pf:
 function beginSeason(){
   if(isLN())lnPrepSeason();   // leghe europee: promozioni e retrocessioni, gironi, il tuo girone (37-leghe/)
   const names=SV.mem[SV.sr];
-  SV.sched=roundRobin(names.length);SV.round=0;SV.tab=isUS()||isLN()?usFreshTab(names):freshTab(names);SV.res=[];SV.done=false;SV.next=null;SV.sgp=0;SV.sellN=0;   // giornate di campionato giocate in questa stagione (28-allenamenti-fuori-stagione.js)
+  SV.sched=roundRobin(names.length);SV.round=0;SV.tab=isUS()||isLN()?usFreshTab(names):freshTab(names);SV.res=[];SV.done=false;SV.next=null;SV.sgp=0;SV.seu=0;SV.sellN=0;   // partite giocate in questa stagione, campionato ed EUCF
   leagueBegin();   // le altre due serie hanno ora un calendario vero
   if(SV.rost)lsSeasonStart();   // statistiche individuali del girone: la stagione scorsa passa alla carriera, il contatore riparte
   if(SV.rost)SV.expOrd=names.slice().sort((a,b)=>teamPow(b)-teamPow(a));   // gerarchie a inizio stagione: servono al premio per l'allenatore dell'anno
@@ -226,21 +226,27 @@ function agePlayers(){
 }
 function newSeason(){
   if(!SV.done||!SV.next||euBeforeNewSeason())return false;
-  SV.mem=SV.next.mem;SV.sr=SV.next.sr;SV.season++;
-  SV.euUnlocked=false;SV.eu=newEu(SV.season);SV.event='camp';   // l'edizione della stagione conclusa non si riapre
+  const sessions=offTrainSessions();
+  SV.season++;
   retireOwn();   // chi aveva annunciato l'addio lascia adesso
-  offTrain();    // chi ha finito presto si e' allenato le settimane in cui non ha giocato (28-allenamenti-fuori-stagione.js)
+  seasonReady();
+  const beforeSummer=new Map(SQ.map(p=>[p.full,ovrX(p)]));
+  offTrain(sessions);
+  if(isLN())lnUpgradeFormat();
+  SV.mem=SV.next.mem;SV.sr=SV.next.sr;
+  SV.euUnlocked=false;SV.eu=newEu(SV.season);SV.event='camp';   // l'edizione della stagione conclusa non si riapre
   staffYear();
   achCheck();    // (Hall of Fame)
   for(const p of SQ){p.hist=p.hist||[];p.hist.push([SV.season-1,ovr(p)]);if(p.hist.length>14)p.hist.shift();}   // storico dei progressi: l'Overall con cui ha chiuso la stagione
   const was=new Map(SQ.map(p=>[p.full,ovr(p)]));
   agePlayers();faYear();   // anche gli svincolati invecchiano; chi e' libero da troppo smette (33-mercato-veri.js)
   potNews();   // 29-potenziali.js: chi si e' fermato e chi ha scoperto piu' margine
-  for(const p of SQ){p.sk=Math.min(3,(p.sk|0)+1);p.cond=100;}   // un anno insieme: conosci meglio il potenziale dei tuoi
+  for(const p of SQ)p.sk=Math.min(3,(p.sk|0)+1);   // un anno insieme: conosci meglio il potenziale dei tuoi
   summerChanges(was);evolveLeague();const aim=aiMarket();   // mercato tra le squadre del computer (31-mercato-ia.js), prima del tuo
   SV.chem=clamp(50+(SV.chem-50)*0.6,0,100);SV.mor=clamp(60+(SV.mor-60)*0.5,0,100);   // estate: l'intesa si allenta un poco, l'umore torna verso la norma
   beginSeason();buildMarket();pickRival();aiMarketNews(aim);   // la notizia dopo la scelta della rivale: la segna nei colpi che la riguardano
   seasonStartDyn();   // premi di mantenimento e nuova sfida
+  offTrainMail(beforeSummer,sessions);
   wageWarn();         // 16-bilancio.js: se con questa rosa i conti vanno sotto zero, la dirigenza avvisa subito
   retireCheck('start');starsRetire();   // chi comincia a pensare al ritiro lo dice subito
   persist();
@@ -251,6 +257,7 @@ function recordResult(win,su,so){
   let msg='';SV.played=(SV.played||0)+1;
   const incPre=matchMoney(win);   // prima di avanzare il calendario: casa e trasferta, tifosi e affitti sono quelli di questa partita
   if(SV.event==='camp')SV.sgp=(SV.sgp|0)+1;
+  else if(SV.event==='eu')SV.seu=euGamesPlayed()+1;
   const xm=!!(isUS()&&SV.event==='camp'&&usCrossPending());   // interregionale USA: una partita come le altre (conti, allenamento, eventi), ma non conta per la classifica della Conference e non fa girare il mercato
   if(isUS()&&SV.event==='camp'){
     fansBump(win,win?1:0);msg=usRecord(win,su,so);   // campionato USA: stagione regolare, Play-in, Nationals (35-usa/03-stagione-usa.js)

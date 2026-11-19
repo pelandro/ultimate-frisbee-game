@@ -119,8 +119,8 @@ function careerSelfTest(seasons,seed){
     rows.push(row('Sfida «Conti in ordine» giudicata prima dei premi',chalWhen.length?(chalWhen.every(x=>x==='prima')?'sì':'no')+' ('+chalWhen.length+' volte)':'mai capitata',chalWhen.length>0&&chalWhen.every(x=>x==='prima')));
     rows.push(row('Mercato tra le squadre del computer: poche mosse a estate, budget rispettati, rose valide, notizia nella Posta',aimN.length?aimN.join(', ')+' operazioni':'nessuna estate',aimN.length>0&&aimChk.every(Boolean)&&aimN.some(x=>x>0),'al massimo '+AIM.max+' per squadra e una ogni '+AIM.cap+' squadre'));
     rows.push(row('Playoff: squadre sempre complete dopo promozioni e retrocessioni, albo d\u2019oro aggiornato',sizeBad.length?'problemi: '+sizeBad.join(', '):`sì (${poDays} partite di playoff giocate dalla tua squadra, ${(SV.alb||[]).length} edizioni nell\u2019albo)`,!sizeBad.length&&(SV.alb||[]).length>=Math.min(seasonsDone,60)));
-    {const c0=SV.cash,n0=Object.keys(SV.ach||{}).length;achCheck();achCheck();const g=achPct(),pg=ACH.map(achState),html=achHTML()+albHTML()+hofHTML()+(SV.hof||[]).slice(0,12).map(hofCard).join('');
-     const okA=SV.cash===c0&&Object.keys(SV.ach).length===n0&&g.n===ACH.filter(a=>SV.ach[a[0]]).length&&pg.every(a=>a.pct>=0&&a.pct<=100&&(a.done?a.pct===100:a.pct<100))&&!/undefined|NaN|null/.test(html)&&roman(14)==='XIV'&&roman(1994)==='MCMXCIV';
+    {const c0=SV.cash,n0=Object.keys(SV.ach||{}).length;achCheck();achCheck();const list=achList(),g=achPct(),pg=list.map(achState),html=achHTML()+albHTML()+hofHTML()+(SV.hof||[]).slice(0,12).map(hofCard).join('');
+     const okA=SV.cash===c0&&Object.keys(SV.ach).length===n0&&g.n===list.filter(a=>SV.ach[a[0]]).length&&pg.every(a=>a.pct>=0&&a.pct<=100&&(a.done?a.pct===100:a.pct<100))&&!/undefined|NaN|null/.test(html)&&roman(14)==='XIV'&&roman(1994)==='MCMXCIV';
      rows.push(row('Traguardi, albo d\u2019oro e Hall of Fame: percentuali giuste, premi dati una sola volta, schede complete',okA?`sì (${g.n} traguardi su ${g.tot}, ${(SV.hof||[]).length} nella Hall of Fame)`:'problemi',okA));}
     {const bs=[];
      for(const k of Object.keys(STAFF)){const lv=staffLv(k),s=stPerson(k);
