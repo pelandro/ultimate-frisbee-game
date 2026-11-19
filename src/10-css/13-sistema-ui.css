@@ -36,7 +36,7 @@
 .ali.new p::before{content:'';display:inline-block;width:8px;height:8px;margin:0 6px 2px 0;background:var(--gold);border:2px solid #000;vertical-align:middle}
 
 /* Squadra: riepilogo delle linee (lineSum) */
-.lsum{display:inline-flex;align-items:center;flex-wrap:wrap;gap:2px 6px;padding:2px 8px;background:#0b0f22;border:2px solid #000}
+.lsum{display:inline-flex;align-items:center;flex-wrap:wrap;gap:2px 6px;padding:2px 8px;background:#1d293c;border:2px solid #000}
 .lsum i{width:10px;height:10px;border:2px solid #000;background:var(--good)}
 .lsum.warn i{background:#ffb83f}.lsum.bad i{background:var(--bad)}
 .lsum small{font-size:13px;color:#ffb83f}.lsum.bad small{color:#ff9a8a}
@@ -80,7 +80,7 @@ html[data-eh="s"] #rail .rb strong{font-size:11px}
 #menu .mf .note{margin-right:auto!important}
 #menu #bGo{min-width:150px;min-height:44px}
 /* Mercato: lo stipendio a partita accanto al prezzo (prima si scopriva solo dopo l'acquisto) */
-.mwg{font-size:13px;color:#9fb0de}
+.mwg{font-size:13px;color:#d1deec}
 
 /* larghezza utile molto stretta: il titolo del menu iniziale e la griglia delle squadre non devono allargare la pagina
    (con caratteri appena piu' larghi, come quelli di Linux, scorrevano di lato di qualche pixel) */

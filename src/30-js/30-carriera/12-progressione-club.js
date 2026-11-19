@@ -114,7 +114,7 @@ function progSeasonStart(){duoDecay();goalsAssign();}
 function goalsHTML(){
   const L=SQ.filter(p=>p.goal&&p.goal.s===SV.season);
   if(!L.length)return '<h3>Obiettivi dei giocatori</h3><p>Nessun obiettivo in questa stagione.</p>';
-  return `<h3>Obiettivi dei giocatori</h3><ul class="nlist">${L.map(p=>{const g=p.goal,cur=Math.round(GOALS[g.id].cur(p)),ok=goalOk(p);return `<li><i style="color:${g.done?(ok?'var(--good)':'var(--bad)'):'#c2cbe6'}">${g.done?(ok?'OK':'NO'):cur+'/'+g.tgt}</i>${esc(pname(p))}: ${GOALS[g.id].txt(g)}${p.sad?` · deluso ${p.sad} volt${p.sad>1?'e':'a'}`:''}</li>`;}).join('')}</ul>`;
+  return `<h3>Obiettivi dei giocatori</h3><ul class="nlist">${L.map(p=>{const g=p.goal,cur=Math.round(GOALS[g.id].cur(p)),ok=goalOk(p);return `<li><i style="color:${g.done?(ok?'var(--good)':'var(--bad)'):'#dde6f1'}">${g.done?(ok?'OK':'NO'):cur+'/'+g.tgt}</i>${esc(pname(p))}: ${GOALS[g.id].txt(g)}${p.sad?` · deluso ${p.sad} volt${p.sad>1?'e':'a'}`:''}</li>`;}).join('')}</ul>`;
 }
 function specHTML(p){
   const S=p.spec?SPECS[p.spec]:null,c=specCost(p),room=Math.round(specRoom(p)*100);
