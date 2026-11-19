@@ -1,7 +1,7 @@
 /* TEMA AZZURRO GRIGIO (Ultimate Pixel): i blu dell'interfaccia sono gia' rimappati nei file di prima (via di mezzo tra ardesia e cielo,
    piu' chiaro del blu notte ma con il contrasto che serve ai testi, controllato dalla prova di impaginazione).
    Qui: accento, pulsanti piu' leggeri (bordo del colore del tema al posto del nero, luce in alto, spessore corto), sfondo sfumato,
-   angoli arrotondati e la schermata iniziale «Stadio» (insegna in alto, campo grande dietro, quattro pulsanti su due file).
+   angoli netti e la schermata iniziale «Stadio» (insegna in alto, campo grande dietro, quattro pulsanti su due file).
    --E = colore dei bordi e degli spessori. */
 :root,:root[data-theme="dark"],:root:not([data-theme="light"]){--gold:#ffd23f;--accent:#ffd23f;--accent-ink:#1a1c2c;--E:#1b283b}
 .screen::before{background:repeating-linear-gradient(0deg,rgba(0,0,0,.06) 0 2px,transparent 2px 4px)!important}
@@ -12,8 +12,9 @@
 .hbtn.hp,.go,.ecard.on,.sg.on,.qtabs button.on,.lu button.sel{color:#1a1c2c!important}
 .panel{border-color:rgba(255,255,255,.85)!important;box-shadow:0 0 0 3px var(--E),8px 8px 0 3px rgba(0,0,0,.28)!important}
 .shead h2,.htitle,.panel h1{text-shadow:3px 3px 0 var(--E)!important}
-/* angoli arrotondati e bordi sottili */
-.hbtn,.tteam,.ecard,.ttype,.go,.sec,.back,.qswap,.sg,.opt,select.qs,.qtabs button,.qpg button,.lu button,.prow,.umode button,#mkTabs button,#rail button,.ibtn,.tbar button,.mcard,.panel,.pcard,.ucard,.urow,#ctop button,.rbar,.mst span{border-radius:12px!important}
+/* angoli netti dappertutto: pulsanti, schede e pannelli (niente angoli smussati); bordi sottili */
+.screen button,.overlay button,#cshell button,#ctop button,#rail button,.tbar button,.tmenu button,select.qs,.prow,.mcard,.panel,.ccard,.lgcard,.ucard,.urow,.pcard,.rbar,.swr,#title .hl.ttl,#title .hr{border-radius:0!important}
+
 .hbtn,.tteam,.ecard,.ttype,.sec,.back,.qswap,select.qs{border-width:2px!important}
 .mcard,.panel{border-width:2px!important}
 /* ---- schermata iniziale: Stadio ---- */
