@@ -106,7 +106,7 @@ function simPoint(){
   try{while(n++<24000&&(G.mode==='ready'||G.mode==='play')&&G.score[0]+G.score[1]===tot)update(1/60);}
   finally{Object.assign(HOOKS,H0);G.opt.cine=c0;G.auto=false;}
   G.diveWin=null;G.slowTail=0;G.hold=false;G.sprint=null;G.ctrl=null;cam.snap=true;
-  if(G.mode==='banner'&&G.banner)HOOKS.sfx('goal',G.banner.team);
+  if(G.mode==='banner'&&G.banner){G.banner.sim=1;HOOKS.sfx('goal',G.banner.team);}   // sim: meta simulata, niente esultanza (27-esultanze.js)
   return true;
 }
 $('bSimPt').addEventListener('click',()=>{if(G.mode==='ready')simPoint();});

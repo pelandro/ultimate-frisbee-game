@@ -21,7 +21,7 @@ function staffQuoteHTML(k,level,cost){
   const f=budgetForecast();
   const delta=cost-staffRemaining(k);
   const row=(label,value)=>`<tr><td>${label}</td><td${value<0?' class="bad"':''}>${value} crediti</td></tr>`;
-  return `<table class="cfmt">${cost?row('Costo subito',cost):''}${row('Stipendio a stagione',staffAnnual(k,level))}${f.left?row('Cassa prevista prima dei premi',f.end-delta)+row('Cassa prevista dopo i premi',f.after-delta):row('Cassa dopo la firma',SV.cash-cost)}</table>`;
+  return `<table class="cfmt">${cost?row('Costo della firma',cost):''}${row('Stipendio a stagione',staffAnnual(k,level))}${f.left?row('Cassa prevista prima dei premi',f.end-delta)+row('Cassa prevista dopo i premi',f.after-delta):row('Cassa dopo la firma',SV.cash-cost)}</table>`;
 }
 /* ---- finestra dei candidati ---- */
 function openHire(k){hireK=k;hireMsg='';renderHire();$('hire').classList.remove('hidden');}
@@ -32,7 +32,7 @@ function renderHire(){
   $('hireT').textContent='Assumi: '+STAFF[k].n;
   $('hireSub').textContent=(old&&staffLv(k)>=1?`Chi assumi prende il posto di ${old.n}. `:'')+STAFF[k].d+'.';
   $('hireList').innerHTML=staffCands(k).map((c,i)=>{
-    const cost=staffAnnual(k,c.lv),tr=STAFF_TR[c.tr];
+    const cost=staffHireCost(k,c.lv),tr=STAFF_TR[c.tr];
     return `<div class="hcn"><span class="spav">${avatar({look:c.lk,full:c.n,gen:true,t:0},48)}</span><b class="sr">${esc(c.n)}</b><small>${c.a} anni</small>${stTicks(c.lv)}<small>Livello ${c.lv}</small><small>${STAFF[k].steps[c.lv-1]}.</small>${habHTML(tr)}<small>${staffAnnual(k,c.lv)} crediti a stagione</small><button type="button" class="go sm" data-hirei="${i}"${SV.cash<cost?' disabled':''}>Assumi · ${cost}</button></div>`;
   }).join('');
   $('hireMsg').textContent=hireMsg||`Hai ${SV.cash} crediti.`;
@@ -40,7 +40,7 @@ function renderHire(){
 }
 $('hireList').addEventListener('click',e=>{
   const b=e.target.closest('[data-hirei]');if(!b||!hireK)return;
-  const k=hireK,i=+b.dataset.hirei,c=staffCands(k)[i];if(!c)return;const cost=staffAnnual(k,c.lv);
+  const k=hireK,i=+b.dataset.hirei,c=staffCands(k)[i];if(!c)return;const cost=staffHireCost(k,c.lv);
   askConfirm({title:'Assumere '+c.n+'?',html:`<p>Livello ${c.lv} · ${STAFF[k].steps[c.lv-1]}.</p>`+staffQuoteHTML(k,c.lv,cost)+
     (staffLv(k)?'<p>Chi ricopre ora il ruolo lascia il posto.</p>':''),ok:'Assumi per '+cost,onOk:()=>{
     const t=staffHire(k,i);if(!t){hireMsg='Servono più crediti.';renderHire();return;}
