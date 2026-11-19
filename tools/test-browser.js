@@ -203,7 +203,7 @@ catch(e){
     if(!/Giulia Rossi/i.test(await page.locator('#coName').innerText()))throw new Error('l\'anteprima non segue il nome');
     await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     if(!(await page.locator('#hCoach svg.av').count()))throw new Error('manca il volto dell\'allenatore nel cruscotto');
-    if(!(await page.locator('#ctop .ctcash .coin').count()))throw new Error('manca la moneta di fianco ai crediti nella barra in alto');   // i crediti stanno nella barra in alto (sul cruscotto erano un doppione)
+    if(!(await page.locator('#ctop .ctcash .coin').count()))throw new Error('manca la moneta nella barra in alto');if(/\bcrediti?\b/i.test(await page.locator('#cshell').innerText()))throw new Error('la parola della valuta compare ancora nella carriera');
   });
   await step('tutorial completo dal cruscotto: il fumetto della schermata Partita viene prima di sponsor e Posta, «Scopri di più» e tasto Tutorial',async()=>{
     // carriera appena iniziata: si apre per primo il fumetto della schermata Partita; sponsor e Posta aspettano che si chiuda
@@ -262,7 +262,7 @@ catch(e){
     await page.click('#hMarket');await vis('#market');await page.click('[data-rp] >> nth=0');await vis('#mkBox .scr');await page.click('#mkTabs [data-k="int"]');await page.click('#hHome');
     await page.click('#hClub');await vis('#club');await page.click('#clTabs [data-k="man"]');
     const sponsor=page.locator('#clBox .ccard').filter({hasText:'Sponsor e obiettivo'}),sponsorText=await sponsor.innerText();
-    if(!/Bonus:\s*\d+ crediti a partita di campionato/.test(sponsorText)||!/Obiettivo del contratto:[^\n]+\(\d+ crediti\)/.test(sponsorText)||/cartelloni/i.test(sponsorText))throw new Error('scheda sponsor non aggiornata: '+sponsorText);
+    if(!/Bonus:\s*\d+\s*a partita di campionato/.test(sponsorText)||!/Obiettivo del contratto:[^\n]+\(\d+\s*\)/.test(sponsorText)||/cartelloni|\bcrediti?\b/i.test(sponsorText))throw new Error('scheda sponsor non aggiornata: '+sponsorText);
     if(await sponsor.locator('p').filter({hasText:'Bonus:'}).locator('.coin').count()!==1)throw new Error('manca la moneta accanto al bonus');
     if(!/Conti delle partite/i.test(await page.locator('#clBox').innerText()))throw new Error('mancano i conti delle partite');
     await page.click('#clTabs [data-k="str"]');if(await page.locator('#clBox .bgr').count()<6)throw new Error('manca il bilancio previsionale');if(await page.locator('#clBox .fbar').count()!==3)throw new Error('devono esserci tre strutture');await page.click('#clTabs [data-k="stf"]');if(await page.locator('#clBox .scard').count()!==3)throw new Error('devono esserci tre figure dello staff');
