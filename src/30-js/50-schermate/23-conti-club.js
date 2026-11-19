@@ -2,7 +2,8 @@
 function sponsorCardHTML(){
   const d=SV.sp,o=SV.obj;
   const where=SV.event==='camp'&&SV.round>0?(isUS()?usObjNow():isLN()?lnObjNow():` · ora ${myRank()}ª`):'';
-  const sp=d&&d.k?`<p>${spStripHTML(d.name)}</p><p class="sub">Contratto ${SP_KIND[d.k].n.toLowerCase()} · ${d.fix} crediti a ogni partita · bonus ${o?o.reward:0} a fine stagione · il marchio è sui cartelloni del tuo campo</p>`:'<p>Sponsor da scegliere: si decide all’inizio della stagione.</p>';
+  const choose=d?.off&&!SV.evt;
+  const sp=d&&d.k?`<p>${spStripHTML(d.name)}</p><p class="sub">Contratto ${SP_KIND[d.k].n.toLowerCase()} · ${d.fix} crediti a ogni partita · bonus ${o?o.reward:0} a fine stagione · il marchio è sui cartelloni del tuo campo</p>`:`<p>Sponsor da scegliere.</p>${choose?'<button type="button" class="go" data-cl-sponsor>Scegli lo sponsor</button>':'<p class="sub">'+(d?.off?'Completa prima la decisione in sospeso.':'Le offerte arrivano a inizio stagione.')+'</p>'}`;
   const ob=o?`<p>Obiettivo del contratto: <b>${esc(o.txt)}</b></p><p class="sub">Il bonus arriva solo se lo raggiungi${where}</p>`:'<p>Nessun obiettivo.</p>';
   const ch=SV.chal?`<h3 style="margin-top:8px">Sfida della dirigenza</h3><p><b>${esc(chalTxt())}</b></p><p class="sub">${SV.chal.done?(SV.chal.won?'Riuscita: premio incassato.':'Non riuscita in questa stagione.'):'Facoltativa: '+SV.chal.reward+' crediti e reputazione se riesce, niente se non riesce.'}</p>`:'';
   return `<div class="ccard"><h3>Sponsor e obiettivo</h3>${sp}${ob}${ch}</div>`;
@@ -16,5 +17,7 @@ function ledgerHTML(){
 function redNoteHTML(){
   if(SV.cash>=0)return '';
   const n=(SV.red&&SV.red.n)|0,lim=redLimit();
-  return `<p class="bad">Conti in rosso da ${n} ${n===1?'partita':'partite'}: mercato, strutture e staff fermi, morale in calo. Se non rientri la dirigenza ti esonera (limite: ${lim} partite).</p>`;
+  const remaining=Math.max(0,lim-n);
+  const timing=remaining===0?'La dirigenza può intervenire alla prossima verifica.':remaining===1?'Resta una partita prima dell’esonero.':`Restano ${remaining} partite prima dell’esonero.`;
+  return `<p class="bad">Saldo in rosso di ${Math.abs(SV.cash)} crediti. ${timing}</p><p class="sub">Per rientrare puoi cedere dalla rosa o incassare con le prossime partite.</p><button type="button" class="sec" data-cl-roster>Apri la rosa</button>`;
 }

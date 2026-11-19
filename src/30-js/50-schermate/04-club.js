@@ -14,7 +14,7 @@ function renderClub(){
     const cObj=sponsorCardHTML(),cLed=ledgerHTML();
     const cBud=budgetHTML();
     const cStr=`<div class="ccard"><h3>Strutture</h3>${Object.keys(FAC).map(k=>{const lv=facLv(k),c=facCost(k),dd=(SV.facDays&&SV.facDays[k])|0,rn=SV.facRnd|0,pb=budgetPayback(k);return `<div class="fbar"><span class="fn">${FAC[k][0]}${inf('f'+k,`${FAC[k][1]}.${pb?(pb.n?` Il prossimo livello rende circa ${pb.gain.toFixed(1).replace('.',',')} crediti a partita: si ripaga in ${pb.n} partite.`:' Al prossimo livello la manutenzione in più supera l’incasso in più.'):''} Premio estivo (livello ${KEEP_LV}+ per almeno metà stagione): ${FAC_KEEP[k]}.${rn?` Finora ${dd} giornate su ${rn}.`:''}`)}</span>${tick(lv,FAC_MAX)}<button type="button" class="sec" data-fac="${k}"${lv>=FAC_MAX||SV.cash<c?' disabled':''} title="${lv>=FAC_MAX?'Livello massimo':(SV.cash<c?'Servono '+c+' crediti':'Migliora per '+c+' crediti')}">${lv>=FAC_MAX?'Massimo':'Migliora · '+c}</button></div>`;}).join('')}<p class="sub">Manutenzione ${facUpkeep()} a partita. D’estate una struttura avanzata può perdere un livello.</p></div>`;
-    const cStf=staffHTML(inf),cGoal=`<div class="ccard">${goalsHTML()}</div>`;
+    const cStf=clTab==='stf'?staffHTML(inf):'',cGoal=`<div class="ccard">${goalsHTML()}</div>`;
     const cNews=`<div class="ccard" style="grid-column:1/-1"><h3>Notizie</h3>${SV.news.length?`<ul class="nlist">${SV.news.slice(0,8).map(n=>`<li><i>S${n.s}·G${n.r}</i>${esc(n.txt)}</li>`).join('')}</ul>`:'<p>Nessuna notizia.</p>'}</div>`;
     h='<div class="cgrid">'+(clTab==='man'?cSoc+cObj+cLed+cGoal+cNews:(clTab==='str'?cStr+cBud:cStf))+'</div>';
   }else if(clTab==='hon'){
@@ -154,14 +154,26 @@ function previewSaveImport(txt,message,onSuccess){
     }});
 }
 $('clBox').addEventListener('click',e=>{
+  if(e.target.closest('[data-cl-sponsor]')){
+    if(SV.sp?.off&&!SV.evt){SV.evt={id:'spons',a:{}};openEvt();}
+    return;
+  }
+  if(e.target.closest('[data-cl-roster]')){showScreen('roster');return;}
   const sb=e.target.closest('#clSub [data-k]');if(sb){clTab=sb.dataset.k;renderClub();return;}
   const ib=e.target.closest('[data-inf]');if(ib){const k=ib.dataset.inf;if(clInfo.has(k))clInfo.delete(k);else clInfo.add(k);renderClub();return;}
   const f=e.target.closest('[data-fac]');
   if(f){const k=f.dataset.fac,c=facCost(k),lv=facLv(k);if(lv>=FAC_MAX||SV.cash<c){renderClub();return;}
-    askConfirm({title:'Migliorare '+FAC[k][0]+'?',html:`<p>${esc(FAC[k][1])}.</p><table class="cfmt"><tr><td>Livello</td><td>${lv} → ${lv+1} su ${FAC_MAX}</td></tr><tr><td>Costo</td><td>${c} crediti</td></tr><tr><td>Crediti dopo</td><td${SV.cash-c<30?' class="bad"':''}>${SV.cash-c} crediti</td></tr></table><p>Ogni livello ha anche una manutenzione a ogni partita.</p>`,ok:'Migliora per '+c,onOk:()=>{if(buyFac(k)){clMsg='';persist();}renderClub();}});
+    const levels=Object.keys(FAC).reduce((sum,key)=>sum+facLv(key),0),upkeep=Math.round((levels+1)*.2);
+    askConfirm({title:'Migliorare '+FAC[k][0]+'?',html:`<p>${esc(FAC[k][1])}.</p><table class="cfmt"><tr><td>Livello</td><td>${lv} → ${lv+1} su ${FAC_MAX}</td></tr><tr><td>Costo</td><td>${c} crediti</td></tr><tr><td>Crediti dopo</td><td${SV.cash-c<30?' class="bad"':''}>${SV.cash-c} crediti</td></tr></table><p>Manutenzione totale per partita: ${facUpkeep()} → ${upkeep} crediti.</p>`,ok:'Migliora per '+c,onOk:()=>{if(buyFac(k)){clMsg='';persist();}renderClub();}});
     return;}
   const sf=e.target.closest('[data-staff]');
-  if(sf){if(buyStaff(sf.dataset.staff)){clMsg='';persist();}renderClub();return;}
+  if(sf){
+    const k=sf.dataset.staff,lv=staffLv(k),cost=staffCost(k);
+    askConfirm({title:'Migliorare '+STAFF[k].n.toLowerCase()+'?',ok:'Migliora',html:
+      `<p>${STAFF[k].d}.</p><p>Livello ${lv} → ${lv+1} · costo ${cost} crediti · stipendio ${STAFF_WAGE[lv+1]} a partita.</p><p>Saldo dopo l’operazione: ${SV.cash-cost} crediti.</p>`,
+      onOk:()=>{if(buyStaff(k))persist();renderClub();$('clBox').querySelector('[data-staff="'+k+'"]:not([disabled])')?.focus();}});
+    return;
+  }
   const hb=e.target.closest('[data-hire]');if(hb){openHire(hb.dataset.hire);return;}
 });
 $('clExp').addEventListener('click',()=>{$('opMsg').textContent=exportSave();});

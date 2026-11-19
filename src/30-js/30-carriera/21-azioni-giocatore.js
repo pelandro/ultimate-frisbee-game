@@ -6,7 +6,7 @@
    Anche qui: p.lm = mete, assist e difese dell'ultima partita (colonna «Partita» della scheda), p.ti = titoli di campionato vinti. */
 const RIPOSO_COND=25,TALK_COST=4,NICK_MAX=10;
 function restPlayer(p){
-  if(p.inj)return p.abs?`${pname(p)} è già a riposo per la prossima partita.`:`${pname(p)} è infortunat${oa(p)}: il Recupero negli Allenamenti lo aiuta, il riposo non serve.`;
+  if(p.inj)return p.abs?`${pname(p)} è già a riposo per la prossima partita.`:`${pname(p)} è infortunat${oa(p)}: usa Recupero in Allenamenti per ridurre lo stop.`;
   if(p.cond>=95)return `${pname(p)} è in piena forma: non serve riposo.`;
   p.inj=1;p.abs=1;p.cond=clamp(p.cond+RIPOSO_COND,0,100);fixLines();
   return `${pname(p)} salta la prossima partita e recupera condizione (${Math.round(p.cond)}).`;
