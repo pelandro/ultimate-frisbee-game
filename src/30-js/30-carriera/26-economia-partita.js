@@ -73,7 +73,7 @@ function phaseImp(){
 const oppPowOf=n=>{const t=teamPower(n);if(t!=null)return t;if(typeof euPowOf==='function'){const e=euPowOf(n);if(e)return e;}return TEAM[n]?TEAM[n].power-PW_LV:squadPower();};
 // ---------- spettatori ----------
 // Nella stessa serie i campi partono piccoli. Solo chi porta più tifosi beneficia dei posti in più.
-const STAD_SEATS=[400,440,480,520,560,600];
+const STAD_SEATS=[450,490,530,570,610,650];
 const stadCap=(lv=facLv('stad'))=>Math.round(STAD_SEATS[lv]*Math.sqrt(ECO.K()));
 const stadRentYear=(lv=facLv('stad'))=>Math.round(0.52*facTotalCost(lv));
 function regularGames(){
