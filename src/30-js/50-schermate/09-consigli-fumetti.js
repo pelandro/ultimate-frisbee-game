@@ -35,7 +35,7 @@ function timelineHTML(){
 // consigli: [testo, urgenza] ; i piu' urgenti prima
 function adviceList(){
   const L=[],hurt=SQ.filter(p=>p.inj&&!p.abs),low=SQ.filter(p=>p.cond<50&&!p.inj),lineBad=SV.lineO.length<7||SV.lineD.length<7||SQ.some(p=>p.inj&&(SV.lineO.includes(p.full)||SV.lineD.includes(p.full)));
-  if(lineBad)L.push(['Una linea è incompleta o ha un infortunato: sistema le linee in Squadra (o «Linee consigliate»).',9]);
+  if(lineBad)L.push(['Una linea è incompleta o ha un giocatore indisponibile: sistema le linee in Squadra (o «Linee consigliate»).',9]);
   if(SV.cash<0)L.push(['Conti in rosso: mercato fermo e morale in calo; se dura la dirigenza ti esonera. Vendi una riserva o punta sulle partite in casa.',9]);
   if(low.length>=2)L.push([`${low.length} giocatori sono scarichi: un Recupero negli Allenamenti o un Riposo dalla scheda li rimette in forma.`,7]);
   if(trainOpen()&&!SV.tTeam)L.push(['C’è una sessione di allenamento da fare: la squadra cresce solo se la usi (o accendi il Programma automatico).',6]);
