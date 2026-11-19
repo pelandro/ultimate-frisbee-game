@@ -70,7 +70,7 @@ function lifeAfterMatch(){   // dopo ogni partita: minutaggio e umore, offerte
     if(p.inj)continue;
     p.idle=(p.idle|0)+1;
     if(!(ovrX(p)>=ref-5&&p.age<34&&p.ret!==1))continue;   // si lamenta solo chi meriterebbe di giocare
-    if(p.idle>=6&&!p.mood){p.mood=1;alertAdd('mood',`${pname(p)} (Overall ${ovr(p)}) non gioca da ${p.idle} partite ed è scontent${oa(p)}: trovagli posto in una linea, o finirà per chiedere la cessione.`,{full:p.full});}
+    if(p.idle>=6&&!p.mood){p.mood=1;alertAdd('mood',`${pname(p)} (Overall ${ovr(p)}) non gioca da ${p.idle} partite ed è scontent${oa(p)}: inserisci il nome in una linea o finirà per chiedere la cessione.`,{full:p.full});}
     else if(p.idle>=10&&p.mood===1){
       if(p.prom&&SQ.length-gone.length>SQ_MIN)gone.push(p);
       else if(!p.prom){p.mood=2;alertAdd('mood',`${pname(p)} chiede di essere cedut${oa(p)}: non gioca da ${p.idle} partite.`,{full:p.full,act:'unhappy'});}

@@ -88,7 +88,7 @@ let rosterMsg='',sellArm=null;
 function lineToggle(p,k){
   const L=SV[k],i=L.indexOf(p.full);
   if(i>=0){L.splice(i,1);return '';}
-  if(p.inj)return 'Un infortunato non può entrare in linea.';
+  if(p.inj)return 'La convocazione è bloccata fino al rientro dall’infortunio.';
   if(L.length>=7)return (k==='lineO'?'La linea d’attacco':'La linea di difesa')+' ha già 7 giocatori: togline uno prima di aggiungerne un altro.';
   L.push(p.full);return '';
 }
@@ -171,7 +171,7 @@ function renderRoster(){
   const head='<tr><th>Giocatore</th><th>OVR</th><th>POT</th><th>Cond</th><th>Linee</th><th></th></tr>';
   const row=p=>{
     const op=openDet.has(p.id),v=ovr(p);
-    return `<tr class="pl" data-id="${p.id}"><td><span class="rn">${avatar(p,30)}<span>${moodFace(moodKey(p))} ${esc(p.label||p.name)}${p.nick?` <small class="nk">«${esc(p.nick)}»</small>`:''}${p.star?'<span class="stb">★</span>':''}${traitBadge(p)}${p.ret===1?'<span class="tg r">ultima stagione</span>':''}${p.mood===2?'<span class="tg m">chiede la cessione</span>':(p.mood===1?`<span class="tg m">scontent${oa(p)}</span>`:'')}<small class="rl${p.inj?' bad':''}">${p.age} anni · ${POS_NAME[posOf(p)]}${p.aw&&p.aw.length?' · '+p.aw.length+(p.aw.length>1?' premi':' premio'):''}${p.inj?` · infortunato ${p.inj} ${p.inj>1?'partite':'partita'}`:''}</small></span></span></td><td><b class="ov ${ovrCls(v)}">${v}</b></td><td class="pot">${potTxt(p)}</td><td>${condBar(p.cond)}</td><td class="lnb"><button type="button" class="lb${inO.has(p.full)?' on':''}" data-line="lineO" data-id="${p.id}">ATT</button><button type="button" class="lb d${inD.has(p.full)?' on':''}" data-line="lineD" data-id="${p.id}">DIF</button></td><td><button type="button" class="dbtn" data-d="${p.id}" aria-expanded="${op}" aria-label="Scheda di ${esc(p.label||p.name)}">${op?'▴':'▾'}</button></td></tr>`+(op?`<tr class="dt"><td colspan="6">${detailHTML(p)}</td></tr>`:'');
+    return `<tr class="pl" data-id="${p.id}"><td><span class="rn">${avatar(p,30)}<span>${moodFace(moodKey(p))} ${esc(p.label||p.name)}${p.nick?` <small class="nk">«${esc(p.nick)}»</small>`:''}${p.star?'<span class="stb">★</span>':''}${traitBadge(p)}${p.ret===1?'<span class="tg r">ultima stagione</span>':''}${p.mood===2?'<span class="tg m">chiede la cessione</span>':(p.mood===1?`<span class="tg m">scontent${oa(p)}</span>`:'')}<small class="rl${p.inj?' bad':''}">${p.age} anni · ${POS_NAME[posOf(p)]}${p.aw&&p.aw.length?' · '+p.aw.length+(p.aw.length>1?' premi':' premio'):''}${p.inj?` · infortunat${oa(p)} ${p.inj} ${p.inj>1?'partite':'partita'}`:''}</small></span></span></td><td><b class="ov ${ovrCls(v)}">${v}</b></td><td class="pot">${potTxt(p)}</td><td>${condBar(p.cond)}</td><td class="lnb"><button type="button" class="lb${inO.has(p.full)?' on':''}" data-line="lineO" data-id="${p.id}">ATT</button><button type="button" class="lb d${inD.has(p.full)?' on':''}" data-line="lineD" data-id="${p.id}">DIF</button></td><td><button type="button" class="dbtn" data-d="${p.id}" aria-expanded="${op}" aria-label="Scheda di ${esc(p.label||p.name)}">${op?'▴':'▾'}</button></td></tr>`+(op?`<tr class="dt"><td colspan="6">${detailHTML(p)}</td></tr>`:'');
   };
   const warn=(SV.lineO.length<7||SV.lineD.length<7)?'Una linea ha meno di 7 giocatori: alla partita verrà completata con i migliori disponibili.':(SQ.some(p=>p.inj&&(inO.has(p.full)||inD.has(p.full)))?'Un giocatore in linea è infortunato: finché non guarisce gioca al suo posto il migliore disponibile dello stesso ruolo.':(SV.lineO.some(n=>inD.has(n))?`${SV.lineO.filter(n=>inD.has(n)).length===1?'Un giocatore è':SV.lineO.filter(n=>inD.has(n)).length+' giocatori sono'} in entrambe le linee: in partita ${SV.lineO.filter(n=>inD.has(n)).length===1?'rende':'rendono'} ${DBL_PEN} punti in meno e si ${SV.lineO.filter(n=>inD.has(n)).length===1?'stanca':'stancano'} il doppio.`:''));
   $('rBox').innerHTML=`${infoX('rost',ROST_INFO)}${(rosterMsg&&!(rView==='c'&&cardOpen!==null))||warn?`<p class="rmsg">${(rView==='c'&&cardOpen!==null)?warn:(rosterMsg||warn)}</p>`:''}${bar}${ord.length?(rView==='c'?`<div class="pgrid">${ord.map(cardHTML).join('')}</div>`:`<div class="roster-table" tabindex="0" role="region" aria-label="Tabella della rosa, scorrevole orizzontalmente"><table class="rt">${head}${ord.map(row).join('')}</table></div>`):'<p class="note">Nessun giocatore con questo filtro.</p>'}${rView==='c'&&cardOpen!==null&&SQ[cardOpen]?cardPanel(SQ[cardOpen]):''}`;
@@ -182,7 +182,7 @@ let forcedSubs=false;
 function selBanner(){
   if(swapSel===null)return '';
   const p=SQ[swapSel],inL=T[0].some(q=>q.id===swapSel);
-  return `<div class="selbar"><b>${p.name}</b> selezionato: scegli con chi scambiarlo</div>`;
+  return `<div class="selbar"><b>${esc(p.name)}</b> · scegli chi inserire al suo posto</div>`;
 }
 const swapRole=id=>{   // 'sel' selezionato, 'tgt' puo' essere scambiato con lui, 'dim' non c'entra
   if(swapSel===null)return '';
@@ -193,7 +193,7 @@ const swapRole=id=>{   // 'sel' selezionato, 'tgt' puo' essere scambiato con lui
 function renderLineupBox(){
   // l'Overall accanto al nome: senza, per scegliere chi entra bisognava ricordarsi la rosa a memoria; e' quello vero (ovrB), non quello della forma del giorno
   const on=new Set(T[0].map(p=>p.id));
-  const chip=p=>`<button type="button" class="${on.has(p.id)?'on':''} ${swapRole(p.id)}${p.inj?' inj':''}" data-id="${p.id}"><span class="rn">${avatar(p,26)}<span>${p.name}<small>${p.inj?`infortunato, ${p.inj} ${p.inj>1?'partite':'partita'}`:(p.role==='H'?'handler':'cutter')}</small></span><b class="ov luov ${ovrCls(ovrB(p))}">${ovrB(p)}</b></span><span class="eb"><i style="width:${Math.round(p.st)}%;background:${barColor(p.st)}"></i></span></button>`;
+  const chip=p=>`<button type="button" class="${on.has(p.id)?'on':''} ${swapRole(p.id)}${p.inj?' inj':''}" data-id="${p.id}"><span class="rn">${avatar(p,26)}<span>${p.name}<small>${p.inj?`infortunat${oa(p)}, ${p.inj} ${p.inj>1?'partite':'partita'}`:(p.role==='H'?'handler':'cutter')}</small></span><b class="ov luov ${ovrCls(ovrB(p))}">${ovrB(p)}</b></span><span class="eb"><i style="width:${Math.round(p.st)}%;background:${barColor(p.st)}"></i></span></button>`;
   $('subBox').innerHTML=`${selBanner()}<p class="lu-h lu-hr">In campo${blockIds(blockDef())?`<button type="button" class="sec lu-all" data-all="1" title="Fa entrare i 7 migliori della panchina al posto di tutti quelli in campo">Cambia tutti e 7</button>`:''}</p><div class="lu">${T[0].map(chip).join('')}</div><p class="lu-h">Panchina</p><div class="lu">${SQ.filter(p=>!on.has(p.id)).map(chip).join('')}</div>`;
   $('bSubGo').disabled=mustSub();$('bSubAuto').classList.toggle('hidden',!T[0].some(p=>p.inj));
 }

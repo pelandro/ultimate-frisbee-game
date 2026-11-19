@@ -130,8 +130,19 @@ catch(e){
     await page.click('#lgBack');await page.click('#lgBack');await vis('#title');
     await page.click('#tQuick');await vis('#quick');await page.click('#qDiv [data-v="w"]');
     if(!/Women/.test(await page.locator('#qAP').innerText())||!/Women/.test(await page.locator('#qBP').innerText()))throw new Error('partita veloce femminile con una squadra maschile');
+    await page.evaluate(()=>{
+      const sample=document.createElement('p');sample.id='women-copy-test';
+      sample.textContent='I titolari · il difensore · giocatori infortunati';
+      sample.setAttribute('aria-label','Ricevitore selezionato');
+      document.getElementById('quick').append(sample);
+    });
+    await page.waitForFunction(()=>document.getElementById('women-copy-test').textContent==='Le titolari · la difensora · giocatrici infortunate');
+    if(await page.locator('#women-copy-test').getAttribute('aria-label')!=='Ricevitrice selezionata')throw new Error('Etichetta accessibile Women non aggiornata');
     await page.click('#qA');const tb=await page.locator('#qpTabs button').count();await page.click('#qpX');if(tb!==2)throw new Error('nel femminile le linguette sono Serie A e Serie B');
     await page.click('#qDiv [data-v="m"]');if(/Women/.test(await page.locator('#qAP').innerText())||/giocatrici/.test(await page.locator('#qDP').innerText()))throw new Error('tornando al maschile resta qualcosa del femminile');
+    await page.waitForFunction(()=>document.getElementById('women-copy-test').textContent==='I titolari · il difensore · giocatori infortunati');
+    if(await page.locator('#women-copy-test').getAttribute('aria-label')!=='Ricevitore selezionato')throw new Error('Etichetta accessibile originale non ripristinata');
+    await page.evaluate(()=>document.getElementById('women-copy-test').remove());
     await page.click('#qBack');await vis('#title');
   });
   await step('carriera USA dall\'interfaccia: Italia/USA, Conference, club, allenatore, Classifica a tre viste, partita simulata',async()=>{

@@ -32,7 +32,7 @@ $('mkBox').addEventListener('click',e=>{
   const rp=e.target.closest('[data-rp]');if(rp){const m=SV.market[+rp.dataset.rp],k=m&&(m.o.full||m.o.n);if(k){if(mkOpen.has(k))mkOpen.delete(k);else mkOpen.add(k);}renderMarket();return;}
   const sc=e.target.closest('[data-sc]'),by=e.target.closest('[data-buy]');
   if(sc){const m=SV.market[+sc.dataset.sc];if(m&&scoutPlayer(m.o)){mkMsg=`Osservato ${m.o.label||m.o.n}: potenziale ${potTxt(m.o)}.`;persist();}renderMarket();}
-  else if(by){const i=+by.dataset.buy,m=SV.market[i];if(m&&!canSign(m))askConfirm(mkBuySummary(m,()=>{const k=SV.market.indexOf(m),nm=m.o.label||m.o.n;if(k>=0&&signPlayer(k)){mkMsg=`${nm} è un nuovo giocatore della squadra. Mettilo in una linea da Squadra.`;persist();}renderMarket();}));}
+  else if(by){const i=+by.dataset.buy,m=SV.market[i];if(m&&!canSign(m))askConfirm(mkBuySummary(m,()=>{const k=SV.market.indexOf(m),nm=m.o.label||m.o.n;if(k>=0&&signPlayer(k)){mkMsg=`${esc(nm)} entra in rosa. Assegna una linea da Squadra.`;persist();}renderMarket();}));}
 });
 // riepilogo prima di comprare: prezzo, crediti che restano, stipendio in piu' a ogni partita, posto in rosa e chi sostituirebbe nel suo ruolo
 function mkBuySummary(m,onOk){
