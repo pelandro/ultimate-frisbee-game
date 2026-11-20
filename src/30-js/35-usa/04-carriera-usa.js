@@ -1,40 +1,40 @@
-/* ===================== USA MEN'S CLUB: CARRIERA =====================
+/* ===================== USA CLUB: CARRIERA =====================
    Avvio, obiettivi della dirigenza, fine stagione e offerte per la carriera USA. Per il resto (rosa, mercato, allenamenti, economia, staff, progressione)
    la carriera USA usa le stesse funzioni di quella italiana. */
 // Il titolo aiuta a sostenere strutture e staff al massimo anche dopo l'aggiornamento delle rose USA.
 const US_PRIZE=[3,6,10,15,20,27,35,68];   // premi per i traguardi di US_STAGE, prima del moltiplicatore SR_K.U
 function usStartCareer(name,opt){
   const help=!!SV.help,slot=SV.slot||1,s0=opt.season||1;
-  SV={v:SAVE_V,team:name,seed:Math.floor(Math.random()*1e9),sr:'U',lk:'US',season:s0,event:'camp',eu:newEu(s0),help,mem:{},realAB:1,rv:3,realv:2,realAI:1,slot};
+  SV={v:SAVE_V,team:name,seed:Math.floor(Math.random()*1e9),sr:US_TEAM[name].series,lk:clubLega(name),season:s0,event:'camp',eu:newEu(s0),help,mem:{},realAB:1,rv:3,realv:2,realAI:1,slot};
   SV.coach=coachNorm(opt.coach);SV.start='cuore';
   usInit(name);
-  SV.rost={};for(const n of US_NAMES)if(n!==name)SV.rost[n]=usRoster(n,SV.seed);
+  SV.rost={};for(const n of usClubs())if(n!==name)SV.rost[n]=usRoster(n,SV.seed);
   setSquad(usRoster(name,'preview|'+SV.team));   // la tua rosa: quella del club, come per le avversarie
   beginSeason();
   Object.assign(SV,opt.carry||{});   // se arrivi dall'Italia: allenatore, storico e traguardi restano tuoi
   careerInit();
-  news(`Inizia la carriera con ${name} nella ${usConfName(SV.us.cf)} dei Men’s Club USA. In panchina: ${coachName()}.`);
+  news(`Inizia la carriera con ${name} nella ${usConfName(SV.us.cf)} di ${usLeagueName(SV.lk)}. In panchina: ${coachName()}.`);
   if(!opt.deferSave)persist();
 }
-const usRepStart=()=>Math.round(20+(US_NAMES.length-US_TEAM[SV.team].rank)/(US_NAMES.length-1)*40);   // i club piu' prestigiosi partono con piu' reputazione (da 21 a 60)
+const usRepStart=()=>Math.round(20+(usClubs().length-US_TEAM[SV.team].rank)/(usClubs().length-1)*40);   // i club piu' prestigiosi partono con piu' reputazione (da 21 a 60)
 // ---- obiettivi della dirigenza: secondo il livello del club tra i 48 (la scala US_RUNG e' in 30-carriera/27-obiettivi-sponsor.js) ----
-function usObjective(){SV.obj=usObjFor('bal',objExp(US_NAMES,n=>-US_TEAM[n].rank));}
+function usObjective(){SV.obj=usObjFor('bal',objExp(usClubs(),n=>-US_TEAM[n].rank));}
 const usObjOk=rank=>!!(SV.obj&&(SV.us.stage|0)>=SV.obj.lvl&&(!SV.obj.cr||rank<=SV.obj.cr));
 // ---- fine stagione (chiamata da endSeason quando i Nationals sono finiti) ----
 function usEndSeason(){
-  const U=SV.us,rank=ranking(SV.tab,SV.mem.U).indexOf(SV.team)+1,st=U.stage|0,champ=U.nat&&U.nat.champ?U.nat.champ:null,tit=champ===SV.team;
+  const U=SV.us,rank=ranking(SV.tab,SV.mem[SV.sr]).indexOf(SV.team)+1,st=U.stage|0,champ=U.nat&&U.nat.champ?U.nat.champ:null,tit=champ===SV.team;
   chalEval();   // la sfida della dirigenza si giudica prima dei premi
   let short;
-  if(tit)short='Siete campioni degli Stati Uniti!';
+  if(tit)short=lnWomenNow()?'Siete campionesse dei Nationals!':'Siete campioni degli Stati Uniti!';
   else if(st===0)short=`Fuori dai Play-in (${rank}° nella ${usConfName(U.cf)}).`;
   else short=({1:'Eliminati ai Play-in.',2:'Eliminati nel girone dei Nationals.',3:'Eliminati ai prequarti dei Nationals.',4:'Eliminati ai quarti dei Nationals.',5:'Eliminati in semifinale ai Nationals.',6:'Finale dei Nationals persa.'})[st];
-  const prize=Math.round(US_PRIZE[st]*SR_K.U),ok=usObjOk(rank);SV.cash+=prize;
+  const prize=Math.round(US_PRIZE[st]*SR_K[SV.sr]),ok=usObjOk(rank);SV.cash+=prize;
   const objPay=spPayout(ok,tit);SV.cash+=objPay;
   if(SV.obj){if(ok||objPay){SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,st-SV.obj.lvl)),0,100);}else SV.rep=clamp(SV.rep-4,0,100);}
   if(tit)SV.rep=clamp(SV.rep+6,0,100);
   SV.fans=clamp(fansOf()+[-3,-1,0,1,2,3,4,6][st],0,100);
   SV.done=true;SV.po=null;SV.poRes=null;
-  SV.next={mem:SV.mem,sr:'U',rank,short,qual:false,tit,champs:{U:champ},po:null,prize,objOk:!!objPay,objPay,us:{stage:st,champ,conf:U.cf,pos:usPos(SV.team)}};
+  SV.next={mem:SV.mem,sr:SV.sr,rank,short,qual:false,tit,champs:{[SV.sr]:champ},po:null,prize,objOk:!!objPay,objPay,us:{stage:st,champ,conf:U.cf,pos:usPos(SV.team)}};
   if(champ&&U.nat){const fin=U.nat.ko[3]&&U.nat.ko[3][0];if(fin)SV.usAlb=[{s:SV.season,champ,run:fin[0]===champ?fin[1]:fin[0],sc:[Math.max(fin[2],fin[3]),Math.min(fin[2],fin[3])]}].concat(SV.usAlb||[]).slice(0,60);}
   seasonEndDyn(rank);   // sfida della dirigenza e obiettivi personali
   seasonAwards(rank,null);
@@ -45,14 +45,14 @@ function usEndSeason(){
 // ---- offerte per i tuoi giocatori: dai club della stessa lega piu' forti del tuo ----
 function usOfferTeams(){
   const me=US_TEAM[SV.team].rank;
-  const up=US_NAMES.filter(n=>n!==SV.team&&US_TEAM[n].rank<me&&SV.rost[n]&&SV.rost[n].length<22);
-  return up.length?up:US_NAMES.filter(n=>n!==SV.team&&SV.rost[n]&&SV.rost[n].length<22);
+  const up=usClubs().filter(n=>n!==SV.team&&US_TEAM[n].rank<me&&SV.rost[n]&&SV.rost[n].length<22);
+  return up.length?up:usClubs().filter(n=>n!==SV.team&&SV.rost[n]&&SV.rost[n].length<22);
 }
 // salvataggi della prima versione (32 club, Conference E/W/C/S): la stagione riparte nel nuovo formato (48 club, 8 Conference da 6), con le stesse rose e la stessa storia
 function usMigrate(){
-  if(!isUS()||!SV.us||!SV.us.conf||SV.us.conf.NE)return false;
+  if(SV.lk!=='US'||!SV.us||!SV.us.conf||SV.us.conf.NE)return false;
   SV.rost=SV.rost||{};
-  for(const n of US_NAMES)if(n!==SV.team&&!SV.rost[n])SV.rost[n]=usRoster(n,SV.seed);
+  for(const n of usClubs())if(n!==SV.team&&!SV.rost[n])SV.rost[n]=usRoster(n,SV.seed);
   for(const n in SV.rost)if(!US_TEAM[n])delete SV.rost[n];
   usInit(SV.team);SV.po=null;SV.done=false;SV.next=null;SV.anc=null;
   beginSeason();

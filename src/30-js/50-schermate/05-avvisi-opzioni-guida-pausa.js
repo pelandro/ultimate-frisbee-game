@@ -160,7 +160,7 @@ $('tQuick').addEventListener('click',()=>showScreen('quick'));
 $('tSet').addEventListener('click',()=>{setFrom='title';showScreen('settings');setSView('game');});
 $('sBack').addEventListener('click',()=>{const to=setFrom;setFrom='title';showScreen(to);});   // le schede non hanno sottolivelli: «Indietro» torna sempre da dove si e' venuti
 $('hBack').addEventListener('click',()=>showScreen('title'));
-$('teamBack').addEventListener('click',()=>{lgKeep=lgDiv==='m';showScreen('league');});   // dal maschile si torna all'elenco dei campionati, dal femminile (un solo campionato) alla scelta della divisione
+$('teamBack').addEventListener('click',()=>{lgKeep=LEAGUES.filter(l=>lgW(l)===(lgDiv==='w')).length>1;showScreen('league');});
 $('qBack').addEventListener('click',()=>showScreen('title'));
 $('qL').addEventListener('change',updateQuick);$('qD').addEventListener('change',updateQuick);$('qS').addEventListener('change',updateQuick);
 $('qA').addEventListener('click',()=>openPick('a'));$('qB').addEventListener('click',()=>openPick('b'));

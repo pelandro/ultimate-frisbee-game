@@ -15,7 +15,7 @@ function lnSelfTest(seasons,seed){
     if(SV.done&&SV.next&&SV.next.rank===1)chk('minime',(SV.sgp|0)>=LN_MIN,`${SV.sr}: la vincitrice ha giocato ${SV.sgp|0} partite`);};
   try{
     // ---- dati ----
-    const all=LN_NAMES.concat(Object.keys(TEAM),US_NAMES,EU_CLUBS.map(x=>x[0]));
+    const all=LN_NAMES.concat(Object.keys(TEAM),US_NAMES,UW_NAMES,EU_CLUBS.map(x=>x[0]));
     chk('dati',new Set(all).size===all.length,'nomi di club ripetuti tra le leghe');
     const want={BE:46,FR:36,DE:49,UK:11,IW:17};
     for(const lk of LN_IDS){
@@ -151,7 +151,7 @@ function lnSelfTest(seasons,seed){
     }
     // ---- campionato Women (07-women.js): un mondo a parte, solo giocatrici ----
     {const S0=SV;SV={};chk('women',!allClubs().some(isWomenClub),'club femminili tra quelli maschili (mercato, offerte, carte)');
-     startCareer('Tequila Boom Boom',{});chk('women',allClubs().length===LN_CL.IW.length&&allClubs().every(isWomenClub)&&!foreignClubs().length,'nella carriera Women ci sono club maschili');
+     startCareer('Tequila Boom Boom',{});chk('women',allClubs().length===LN_CL.IW.length+UW_NAMES.length&&allClubs().every(isWomenClub)&&foreignClubs().length===UW_NAMES.length&&foreignClubs().every(n=>clubLega(n)==='UW'),'nella carriera Women ci sono club maschili');
      chk('women',SQ.every(p=>p.f)&&Object.values(SV.rost).every(r=>r.every(o=>o.f)),'giocatori maschi nel campionato Women');
      buildMarket();chk('women',SV.market.every(m=>m.o.f),'mercato del campionato Women con giocatori maschi');
      const pw=t=>LN_CL.IW.filter(r=>r[1]===t).map(r=>rosterPower(lnRoster(r[0],'t')));

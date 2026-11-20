@@ -1,0 +1,1146 @@
+confidence,club,name,status,overall,prior,roster_source,history_offset,history_basis,history_supported,nationals,opponent,wucc,floor,references,role,role_basis,age,age_exact,age_source,sources
+bassa,Agency,Adrienne Goldstein,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Agency,Alice Emch,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Agency,Andrea Jones,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Agency,Anna Yuan,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Agency,Annie Mei,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+media,Agency,Avery DeOcampo,in rosa,78,76.59,usau-event-roster-agency,1,USA U24 2027 invito,False,0,0,0,78,PUL 2026,D,statistiche,22,False,stima giovanile,pul-2026-dc | u24inv27
+bassa,Agency,Catalina Bennhold-Samaan,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,Agency,Diana Mazid,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Agency,Emma Harbourne,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Agency,Florence Brooks,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Agency,Hanna Finigan,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Agency,Heather Jentilet,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Agency,Jasmine Xie,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Agency,Karen Shim,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Agency,Krista Schumm,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Agency,Lauren Kuhlman,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Agency,Norah Curry,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,Agency,RT Kan,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Agency,Rose Bruns,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+bassa,Agency,Sarah Grace Spurgin,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Agency,Sarah King,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Agency,Selena Qian,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Agency,Taylor Coursey,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Agency,Ya Chih Cheng,in rosa,77,76.59,usau-event-roster-agency,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Atlanta Ozone,Aili Francois,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+media,Atlanta Ozone,Allison Murphy,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,76,PUL 2026,H,profilo di gioco,23,False,stima di gioco,pul-2026-atlanta
+bassa,Atlanta Ozone,Ari Key,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+media,Atlanta Ozone,Caitlin Aycock,in rosa,78,77.22,usau-event-roster-ozone,0,,False,0,0,0,78,PUL 2026,B,profilo di gioco,32,False,stima di gioco,pul-2026-atlanta
+bassa,Atlanta Ozone,Cate Boezi,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,H,profilo di gioco,24,False,stima di gioco,
+bassa,Atlanta Ozone,Cecilia Pardo,in rosa,78,77.22,usau-event-roster-ozone,1,USA U20 2024 invito,False,0,0,0,0,,B,profilo di gioco,21,False,stima giovanile,u20inv24
+media,Atlanta Ozone,Charlotte Doran,in rosa,82,77.22,usau-event-roster-ozone,0,,False,0,0,0,82,PUL 2026 | PUL All-Star,D,statistiche,31,False,guida-2021,guida-2021 | pul-2026-atlanta | pul-wul-as
+media,Atlanta Ozone,Chloe Greene,in rosa,78,77.22,usau-event-roster-ozone,0,,False,0,0,0,78,PUL 2026,H,profilo di gioco,20,False,stima di gioco,pul-2026-atlanta
+bassa,Atlanta Ozone,Claire Todaro,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Atlanta Ozone,Daniela Ortiz,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Atlanta Ozone,Elise Erickson,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,H,profilo di gioco,26,False,stima di gioco,
+media,Atlanta Ozone,Emma Jaschke,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,77,PUL 2026,H,profilo di gioco,32,False,stima di gioco,pul-2026-atlanta
+media,Atlanta Ozone,Jemia Johnson,in rosa,79,77.22,usau-event-roster-ozone,2,USA U24 2027 invito | club 2026 profilo individuale,True,0,0,0,0,,B,profilo di gioco,22,False,stima giovanile,clubpreview26 | u24inv27
+bassa,Atlanta Ozone,Jovan Downs,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Atlanta Ozone,Katherine Sanders,in rosa,78,77.22,usau-event-roster-ozone,1,USA U20 2024 invito | USA U24 2027 invito,False,0,0,0,0,,B,profilo di gioco,21,False,stima giovanile,u20inv24 | u24inv27
+bassa,Atlanta Ozone,Krystle Jiang,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Atlanta Ozone,Lillian Ponitz,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+media,Atlanta Ozone,Lizzie Madden,in rosa,79,77.22,usau-event-roster-ozone,2,club 2026 profilo individuale,True,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,clubpreview26
+bassa,Atlanta Ozone,Maggie Miller,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Atlanta Ozone,Makenna Persaud,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Atlanta Ozone,Marion Wood,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Atlanta Ozone,Marissa Land,in rosa,77,77.22,usau-event-roster-ozone,0,USA U24 2018 invito,False,0,0,0,0,,B,profilo di gioco,26,False,stima giovanile,u24inv18
+media,Atlanta Ozone,Martha Wilber,in rosa,81,77.22,usau-event-roster-ozone,3,club 2026 profilo di punta,True,0,0,0,81,PUL 2026,B,profilo di gioco,19,False,stima di gioco,clubpreview26 | pul-2026-atlanta
+bassa,Atlanta Ozone,Meredith Leahy,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Atlanta Ozone,Ruthie Williams,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+bassa,Atlanta Ozone,Soju Hokari,in rosa,77,77.22,usau-event-roster-ozone,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+media,Austin Vengeance,Agatha Scales,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,78,PUL 2026,B,profilo di gioco,26,False,stima di gioco,pul-2026-austin
+bassa,Austin Vengeance,Allegra Donadio,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,pul-2026-austin
+bassa,Austin Vengeance,Amy Broome,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,H,profilo di gioco,21,False,stima di gioco,
+bassa,Austin Vengeance,Claire LeJeune,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Austin Vengeance,Elise Keeney,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,H,profilo di gioco,29,False,stima di gioco,
+bassa,Austin Vengeance,Elyse Hall,in rosa,79,78.21,usau-event-roster-vengeance,1,USA U24 2025 invito,False,0,0,0,0,,B,profilo di gioco,24,False,stima giovanile,u24inv25
+bassa,Austin Vengeance,Emma Britt,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,H,profilo di gioco,29,False,stima di gioco,
+bassa,Austin Vengeance,Gabrielle Nguyen,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+media,Austin Vengeance,Gaby Cuina,in rosa,79,78.21,usau-event-roster-vengeance,1,USA U24 2019 invito | club 2024 profilo individuale,True,0,0,0,77,PUL 2026,B,profilo di gioco,22,False,stima giovanile,clubpreview24 | pul-2026-austin | u24inv19
+bassa,Austin Vengeance,Hallie Criste,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Austin Vengeance,Harper Hall,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Austin Vengeance,Isabella Harker,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Austin Vengeance,Karina Kumar,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Austin Vengeance,Laura Landis,in rosa,78,78.21,usau-event-roster-vengeance,0,USA U24 2018 invito,False,0,0,0,0,,B,profilo di gioco,31,False,stima giovanile,u24inv18
+media,Austin Vengeance,Madelyn Easton,in rosa,79,78.21,usau-event-roster-vengeance,0,,False,0,0,0,79,PUL 2026,B,profilo di gioco,20,False,stima di gioco,pul-2026-austin
+media,Austin Vengeance,Maggie Rowell,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,78,PUL 2026,C,statistiche,30,False,guida-2021,guida-2021 | pul-2026-austin
+media,Austin Vengeance,Meg Duffy,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,77,PUL 2026,H,profilo di gioco,27,False,stima di gioco,pul-2026-raleigh
+media,Austin Vengeance,Mindy Radike,in rosa,79,78.21,usau-event-roster-vengeance,0,,False,0,0,0,79,PUL 2026,H,statistiche,29,False,stima di gioco,pul-2026-austin
+media,Austin Vengeance,Olympia Walker,in rosa,79,78.21,usau-event-roster-vengeance,0,,False,0,0,0,79,PUL 2026,C,statistiche,32,False,stima di gioco,pul-2026-austin
+media,Austin Vengeance,Sanja Royall,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,78,PUL 2026,H,profilo di gioco,29,False,stima di gioco,pul-2026-austin
+bassa,Austin Vengeance,Sierra Feller,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Austin Vengeance,Sophie Tao,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+media,Austin Vengeance,Summer Wilson,in rosa,79,78.21,usau-event-roster-vengeance,0,,False,0,0,0,79,PUL 2026,D,statistiche,25,False,stima di gioco,pul-2026-austin
+bassa,Austin Vengeance,Tori Stoehr,in rosa,78,78.21,usau-event-roster-vengeance,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+alta,Boston Brute Squad,Angela Zhu,in rosa,90,87.16,usau-nationals-roster-03,0,,False,1.3,0.57,0,90,Top 25 #9 | WUC 2024 Women,H,statistiche,30,False,guida-2021,guida-2021 | ultiworld-top25 | usa24 | wucc-brute-squad
+alta,Boston Brute Squad,Annabel White,in rosa,92,87.16,usau-nationals-roster-03,0,,False,2.67,0.44,1.54,0,,D,statistiche,27,False,stima di gioco,wucc-brute-squad
+alta,Boston Brute Squad,Anouchka Beaudry,in rosa,91,87.16,usau-nationals-roster-03,0,,False,3.2,0.77,0,90,World Games 2025 Mixed,H,statistiche,28,True,wg-libro,wg-libro
+media,Boston Brute Squad,Becky Malinowski,in rosa,89,87.16,usau-nationals-roster-03,0,,False,1.77,0.1,0,0,,D,statistiche,37,False,guida-2021,guida-2021 | wucc-brute-squad
+bassa,Boston Brute Squad,Charlotte Koerner,in rosa,87,87.16,usau-nationals-roster-03,0,,False,0,0.0,0,0,,B,profilo di gioco,34,False,guida-2021,guida-2021 | wucc-brute-squad
+alta,Boston Brute Squad,Claire Revere,in rosa,87,87.16,usau-nationals-roster-03,0,,False,-0.37,0.54,0,80,PUL 2026,C,statistiche,31,False,guida-2021,guida-2021 | pul-2026-raleigh | wucc-brute-squad
+media,Boston Brute Squad,Colette Pellegrini,in rosa,87,87.16,usau-nationals-roster-03,0,,False,-0.17,0.1,0,0,,B,profilo di gioco,21,False,stima di gioco,wucc-brute-squad
+alta,Boston Brute Squad,Edi Lam,in rosa,86,87.16,usau-nationals-roster-03,0,,False,-1.27,0.27,0,79,PUL 2026,C,statistiche,21,False,stima di gioco,pul-2026-new | wucc-brute-squad
+bassa,Boston Brute Squad,Elana Schwam,in rosa,87,87.16,usau-nationals-roster-03,0,,False,0,0.0,0,0,,B,profilo di gioco,22,False,stima di gioco,wucc-brute-squad
+alta,Boston Brute Squad,Elise Freedman,in rosa,93,87.16,usau-nationals-roster-03,0,,False,4.07,0.97,0.83,80,PUL 2026 | WU24 2025 Mixed,C,statistiche,24,False,stima giovanile,pul-2026-new | usa-u24-25 | wucc-brute-squad
+alta,Boston Brute Squad,Emily Kemp,in rosa,87,87.16,usau-nationals-roster-03,0,,False,-0.27,0.2,0,80,WU24 2025 Women,C,statistiche,19,False,stima giovanile,usa-u24-25 | wucc-brute-squad
+alta,Boston Brute Squad,Erin McCann,in rosa,87,87.16,usau-nationals-roster-03,0,,False,-0.93,0.0,0.62,0,,B,profilo di gioco,27,False,guida-2021,guida-2021 | wucc-brute-squad
+alta,Boston Brute Squad,Grace Conerly,in rosa,86,87.16,usau-nationals-roster-03,0,,False,-1.5,0.0,0,84,PUL 2026 | PUL All-Star,H,statistiche,25,False,guida-2021,guida-2021 | pul-2026-new | pul-wul-as | wucc-brute-squad
+alta,Boston Brute Squad,Jackie Wang,in rosa,85,87.16,usau-nationals-roster-03,0,,False,-1.67,0.0,0,82,PUL 2026 | PUL All-Star,H,statistiche,19,False,stima di gioco,pul-2026-dc | pul-wul-as | wucc-brute-squad
+alta,Boston Brute Squad,Kate Gearing,in rosa,88,87.16,usau-nationals-roster-03,0,,False,0.2,0.34,0.31,0,,C,statistiche,26,False,stima di gioco,wucc-brute-squad
+alta,Boston Brute Squad,Katya Piksun,in rosa,85,87.16,usau-nationals-roster-03,0,,False,-2,0.0,0,80,WU24 2025 Mixed,B,profilo di gioco,24,False,stima giovanile,usa-u24-25
+alta,Boston Brute Squad,Kelly Hyland,in rosa,92,87.16,usau-nationals-roster-03,0,,False,1.97,0.74,2.31,0,,C,statistiche,31,False,stima di gioco,wucc-brute-squad
+alta,Boston Brute Squad,Laura Ospina Gómez,in rosa,91,87.16,usau-nationals-roster-03,0,,False,1.3,0.57,2.46,90,World Games 2025 Mixed,B,profilo di gioco,32,True,wg-libro,wg-libro | wucc-brute-squad
+alta,Boston Brute Squad,Levke Walczak,in rosa,95,87.16,usau-nationals-roster-03,0,,False,4.3,0.97,2.31,95,All-Club First Team | Player of the Year | Top 25 #4 | World Games 2025 Mixed,C,statistiche,30,True,wg-libro,ultiworld-all1 | ultiworld-poty | ultiworld-top25 | wg-libro | wg25-can-wfdf | wucc-brute-squad
+alta,Boston Brute Squad,Lia Schwartz,in rosa,91,87.16,usau-nationals-roster-03,0,,False,1.97,0.74,0.83,80,WU24 2025 Women,H,statistiche,24,False,stima giovanile,usa-u24-25 | wucc-brute-squad
+alta,Boston Brute Squad,Liên Hoffmann,in rosa,86,87.16,usau-nationals-roster-03,0,,False,-0.93,0.0,0.17,0,,H,statistiche,35,False,guida-2021,guida-2021 | wucc-brute-squad
+alta,Boston Brute Squad,María Angélica Forero Becerra,in rosa,91,87.16,usau-nationals-roster-03,0,,False,2.3,0.1,1.85,90,World Games 2025 Mixed,H,statistiche,34,True,wg-libro,wg-libro | wucc-brute-squad
+media,Boston Brute Squad,Mina Brown,in rosa,87,87.16,usau-nationals-roster-03,0,,False,-0.17,0.0,0,0,,C,statistiche,20,False,stima di gioco,wucc-brute-squad
+alta,Boston Brute Squad,Olivia Player,in rosa,93,87.16,usau-nationals-roster-03,0,,False,6.9,1.04,2.31,93,All-Club First Team | Offensive Player of the Year #3 | World Games 2025 Mixed,H,statistiche,20,False,stima di gioco,ultiworld-all1 | ultiworld-off | usa25 | wucc-brute-squad
+media,Boston Brute Squad,Tulsa Douglas,in rosa,88,87.16,usau-nationals-roster-03,0,,False,0.3,0.1,0,0,,H,statistiche,30,False,guida-2021,guida-2021
+alta,Boston Brute Squad,Ximena Montaña,in rosa,89,87.16,usau-nationals-roster-03,0,,False,1.97,0.3,0,83,PUL 2026,H,statistiche,34,False,guida-2021,guida-2021 | pul-2026-atlanta
+bassa,Calypso,Adelaide Oman,in rosa,78,76.51,usau-event-roster-calypso,1,USA U24 2027 invito,False,0,0,0,0,,H,profilo di gioco,20,False,stima giovanile,u24inv27
+bassa,Calypso,Amanda Rogas,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Calypso,Amy Godshall,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Calypso,Ava DuBose,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Calypso,Charlotte King,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Calypso,Faith Gonzalez,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,H,profilo di gioco,26,False,stima di gioco,
+bassa,Calypso,Georgia Sullivan,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Calypso,Haley Bushman,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Calypso,Heather Hansen,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Calypso,Jia Johnson,in rosa,78,76.51,usau-event-roster-calypso,1,USA U24 2025 invito,False,0,0,0,0,,B,profilo di gioco,24,False,stima giovanile,u24inv25
+bassa,Calypso,Jordan Harrow,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Calypso,Rachael Thompson,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Calypso,Rhianna Seferian,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,Calypso,Roxane Van Horn,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+bassa,Calypso,Sara Hostelley,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Calypso,Skyler Cripps,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Calypso,Sonya Harding,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Calypso,Sydney Hostelley,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Calypso,Tyana Ruiz,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,H,profilo di gioco,26,False,stima di gioco,
+bassa,Calypso,loni Hagen,in rosa,77,76.51,usau-event-roster-calypso,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+media,Chicago Nemesis,Alex Ballinger,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,78,PUL 2026,B,profilo di gioco,22,False,stima di gioco,pul-2026-milwaukee
+bassa,Chicago Nemesis,Anna Thorn,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,B,profilo di gioco,34,False,guida-2021,guida-2021 | pul-2026-milwaukee
+media,Chicago Nemesis,Annie Phan,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,77,PUL 2026,B,profilo di gioco,31,False,stima di gioco,pul-2026-milwaukee
+bassa,Chicago Nemesis,Arabella Pearson,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Chicago Nemesis,Charlotte Andreasen,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+media,Chicago Nemesis,Claire Schmitt,in rosa,82,79.96,usau-event-roster-nemesis,2,club 2024 profilo individuale | club 2026 profilo individuale,True,0,0,0,0,,H,profilo di gioco,25,False,guida-2021,clubpreview24 | clubpreview26 | guida-2021
+media,Chicago Nemesis,Connie Chan,in rosa,81,79.96,usau-event-roster-nemesis,1,club 2023 profilo individuale,True,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,club23
+media,Chicago Nemesis,Dana Demmert,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,79,PUL 2026,D,statistiche,32,False,stima di gioco,pul-2026-milwaukee
+bassa,Chicago Nemesis,Dora Henry,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Chicago Nemesis,Eva Verner,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Chicago Nemesis,Gwen Johnson,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+media,Chicago Nemesis,Hannah Cheng,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,76,PUL 2026,B,profilo di gioco,20,False,stima di gioco,pul-2026-indy
+bassa,Chicago Nemesis,Hindeke Tewodros,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+media,Chicago Nemesis,Jacqueline Jarik,in rosa,83,79.96,usau-event-roster-nemesis,3,USA beach senior 2025 invito | USA senior 2020 invito | club 2026 profilo di punta,True,0,0,0,82,PUL 2026 | USA beach senior 2025 invito,D,statistiche,34,False,guida-2021,beachinv25 | clubpreview26 | guida-2021 | pul-2026-milwaukee | wuc20inv
+bassa,Chicago Nemesis,Jade Hostein,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,Chicago Nemesis,Jessica Wan,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Chicago Nemesis,Julia Richardson,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+media,Chicago Nemesis,Kailyn Lowder,in rosa,83,79.96,usau-event-roster-nemesis,3,USA U24 2023 invito | USA U24 2023 rosa annunciata | club 2026 profilo individuale,True,0,0,0,80,USA U24 2023 rosa annunciata,D,profilo pubblicato,21,False,stima giovanile,clubpreview26 | u24inv23 | u24usa23
+bassa,Chicago Nemesis,Kendra Griesman,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+media,Chicago Nemesis,Kylie Chesner,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,77,PUL 2026,H,profilo di gioco,31,False,stima di gioco,pul-2026-milwaukee
+bassa,Chicago Nemesis,Lucy Petersen,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Chicago Nemesis,Luisa Fernanda Sánchez,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+media,Chicago Nemesis,Madison Lang,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,77,PUL 2026,H,profilo di gioco,23,False,stima di gioco,pul-2026-milwaukee
+bassa,Chicago Nemesis,Miki Ling,in rosa,81,79.96,usau-event-roster-nemesis,1,USA U24 2027 invito,False,0,0,0,0,,H,profilo di gioco,22,False,stima giovanile,u24inv27
+bassa,Chicago Nemesis,Sasha Baumann,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,0,,H,profilo di gioco,21,False,stima di gioco,
+media,Chicago Nemesis,Zasha Medina,in rosa,80,79.96,usau-event-roster-nemesis,0,,False,0,0,0,77,PUL 2026,B,profilo di gioco,25,False,stima di gioco,pul-2026-milwaukee
+bassa,Colorado Kelp,Adair Andre,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Colorado Kelp,Allison Hahn,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+media,Colorado Kelp,Arisa Gilbert,in rosa,82,79.86,usau-event-roster-colorado-kelp,2,USA U20 2026 invito | USA U20 2026 rosa annunciata | USA U24 2027 invito,True,0,0,0,75,USA U20 2026 rosa annunciata | WJUC 2026 Mixed,B,profilo di gioco,19,False,stima giovanile,u20inv26 | u20usa26 | u24inv27 | usa26
+bassa,Colorado Kelp,Carolyn Vlach,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Colorado Kelp,Charlotte Sue,in rosa,81,79.86,usau-event-roster-colorado-kelp,1,USA U24 2023 invito,False,0,0,0,0,,H,profilo di gioco,26,False,stima giovanile,u24inv23
+bassa,Colorado Kelp,Dani Tran,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+media,Colorado Kelp,Elleythea Smith,in rosa,82,79.86,usau-event-roster-colorado-kelp,2,college 2026 D-III All-American Second Team,True,0,0,0,77,PUL 2026,H,profilo di gioco,23,False,stima di gioco,aa26 | pul-2026-indy
+bassa,Colorado Kelp,Emma Boyd,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Colorado Kelp,Emma Massey,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Colorado Kelp,Emma Smith,in rosa,81,79.86,usau-event-roster-colorado-kelp,1,USA U24 2025 invito | USA U24 2027 invito,False,0,0,0,0,,H,profilo di gioco,20,False,stima giovanile,u24inv25 | u24inv27
+bassa,Colorado Kelp,Hayley Banas,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Colorado Kelp,Jada Abdalati,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+media,Colorado Kelp,Kennedy McCarthy,in rosa,85,79.86,usau-event-roster-colorado-kelp,3,USA U24 2023 invito | USA U24 2023 rosa annunciata | USA beach senior 2025 invito,True,0,0,0,85,All-WUL Second Team | USA U24 2023 rosa annunciata | USA beach senior 2025 invito | WUL All-Star | WUL Breakout,B,profilo di gioco,25,False,guida-2021,beachinv25 | guida-2021 | pro-premi | pul-wul-as | u24inv23 | u24usa23 | wul-all | wul-profili-second
+media,Colorado Kelp,Maggie O'Connor,in rosa,81,79.86,usau-event-roster-colorado-kelp,1,club 2023 profilo individuale,True,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,club23
+bassa,Colorado Kelp,Maia Nguyen,identità da verificare,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Colorado Kelp,Max Tsui,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+media,Colorado Kelp,Mei Hecht,in rosa,81,79.86,usau-event-roster-colorado-kelp,1,club 2025 profilo individuale,True,0,0,0,0,,H,profilo di gioco,26,False,guida-2021,clubpreview25 | guida-2021
+bassa,Colorado Kelp,Paulina Pelaez,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,H,profilo di gioco,21,False,stima di gioco,
+bassa,Colorado Kelp,Rachel Stockdale,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+media,Colorado Kelp,Rena Kawabata,in rosa,82,79.86,usau-event-roster-colorado-kelp,2,USA beach senior 2025 invito | club 2024 profilo individuale | club 2025 profilo individuale,True,0,0,0,82,USA beach senior 2025 invito,B,profilo di gioco,36,False,guida-2021,beachinv25 | clubpreview24 | clubpreview25 | guida-2021
+bassa,Colorado Kelp,Rose Bransford,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Colorado Kelp,Stephanie Piperno,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Colorado Kelp,Taylor Smith,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Colorado Kelp,Zoe Posner,in rosa,80,79.86,usau-event-roster-colorado-kelp,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Compact Disc,Abby Shimek,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Compact Disc,Abra Arora,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Compact Disc,Alex Boyd,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,H,profilo di gioco,26,False,stima di gioco,
+bassa,Compact Disc,Althea Lasseter,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Compact Disc,Anna Poi,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Compact Disc,Annie Dreyfuss,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,Compact Disc,Charlotte Lane,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Compact Disc,Ellie Lin,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Compact Disc,Emma Boehm,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Compact Disc,Erin Marshall,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Compact Disc,Hannah Slind,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Compact Disc,Helen Walz,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Compact Disc,Isabelle Bialek,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Compact Disc,Josie Mackenthun,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Compact Disc,Lauren Hagen,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Compact Disc,Lucy Manalang,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Compact Disc,Maeve Monahan,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,H,profilo di gioco,21,False,stima di gioco,
+bassa,Compact Disc,Monarch Kelly,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Compact Disc,Naomi Clear,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Compact Disc,Nora Meyer,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Compact Disc,Olivia Lagos,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Compact Disc,Olivia Walsh,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+bassa,Compact Disc,Samantha Casper-Mensing,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,Compact Disc,Taylor Kondes,in rosa,72,71.81,usau-event-roster-compact-disc,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+media,Dallas Dimes,Allison Chang,in rosa,81,80.43,usau-nationals-roster-10,0,,False,0.38,0.1,0,0,,H,statistiche,23,False,stima di gioco,
+media,Dallas Dimes,Anna Highsmith,in rosa,80,80.43,usau-nationals-roster-10,0,,False,-0.61,0.1,0,0,,H,statistiche,27,False,stima di gioco,
+media,Dallas Dimes,Bethani Eberhart,in rosa,80,80.43,usau-nationals-roster-10,0,,False,-0.61,0.0,0,0,,H,profilo pubblicato,27,False,stima di gioco,anteprima-nationals
+media,Dallas Dimes,Brianne Welkener,in rosa,80,80.43,usau-nationals-roster-10,0,,False,-0.61,0.0,0,0,,C,statistiche,20,False,stima di gioco,
+media,Dallas Dimes,Charli Armstrong,in rosa,79,80.43,usau-nationals-roster-10,0,,False,-1.12,0.0,0,0,,C,statistiche,20,False,stima di gioco,
+media,Dallas Dimes,Elissa Balke,in rosa,83,80.43,usau-nationals-roster-10,0,,False,2.36,0.1,0,0,,D,statistiche,32,False,stima di gioco,
+media,Dallas Dimes,Elizabeth McCullagh,in rosa,79,80.43,usau-nationals-roster-10,0,,False,-1.81,0.0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+media,Dallas Dimes,Elyssa Ducret,in rosa,80,80.43,usau-nationals-roster-10,0,,False,-0.1,0.0,0,0,,C,statistiche,26,False,stima di gioco,
+media,Dallas Dimes,Emma Ackels,in rosa,80,80.43,usau-nationals-roster-10,0,,False,-0.83,0.1,0,0,,C,statistiche,31,False,stima di gioco,
+media,Dallas Dimes,Emma Erickson,in rosa,80,80.43,usau-nationals-roster-10,0,,False,-0.1,0.0,0,0,,C,statistiche,25,False,stima di gioco,
+media,Dallas Dimes,Hani Pajela,in rosa,79,80.43,usau-nationals-roster-10,0,,False,-1.3,0.0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+media,Dallas Dimes,Jenna Bigbie,in rosa,81,80.43,usau-nationals-roster-10,0,,False,0.08,0.0,0,0,,C,profilo pubblicato,32,False,stima di gioco,anteprima-nationals
+media,Dallas Dimes,Katie Metzler,in rosa,84,80.43,usau-nationals-roster-10,0,,False,2.89,0.2,0,0,,H,statistiche,25,False,stima di gioco,
+media,Dallas Dimes,Kimmy Wilson,in rosa,81,80.43,usau-nationals-roster-10,0,,False,0.5,0.0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+media,Dallas Dimes,Kristina Engelhardt,in rosa,79,80.43,usau-nationals-roster-10,0,,False,-1.3,0.0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+media,Dallas Dimes,Laura Brewer,in rosa,81,80.43,usau-nationals-roster-10,0,,False,0.38,0.0,0,0,,H,statistiche,25,False,stima di gioco,
+media,Dallas Dimes,Lauren Anne Nicolas,in rosa,78,80.43,usau-nationals-roster-10,0,,False,-2,0.0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+media,Dallas Dimes,Macy Lang,in rosa,81,80.43,usau-nationals-roster-10,0,,False,0.8,0.0,0,0,,B,profilo pubblicato,20,False,stima di gioco,anteprima-nationals
+media,Dallas Dimes,Maria Charlotte Kruger,in rosa,79,80.43,usau-nationals-roster-10,0,,False,-1.0,0.0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+media,Dallas Dimes,Maricar Lafita Navarro,in rosa,80,80.43,usau-nationals-roster-10,0,,False,-0.83,0.0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+media,Dallas Dimes,Megan Tormey,in rosa,80,80.43,usau-nationals-roster-10,0,,False,-0.5,0.0,0,0,,C,statistiche,30,False,stima di gioco,
+media,Dallas Dimes,Meredith McGee,in rosa,80,80.43,usau-nationals-roster-10,0,,False,-1.0,0.1,0,0,,B,profilo di gioco,25,False,stima di gioco,
+media,Dallas Dimes,Stephanie Hockett,in rosa,81,80.43,usau-nationals-roster-10,0,,False,0.92,0.1,0,0,,D,statistiche,29,False,stima di gioco,
+media,Dallas Dimes,Tricia Smit,in rosa,79,80.43,usau-nationals-roster-10,0,,False,-1.52,0.0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+media,Dallas Dimes,Victoria Walters,in rosa,80,80.43,usau-nationals-roster-10,0,,False,-0.4,0.0,0,0,,H,statistiche,22,False,stima di gioco,
+bassa,Dark Sky,Abigail Tauraa,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Dark Sky,Aimee Gerold,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Dark Sky,Brittany McCready,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Dark Sky,Claire Schwyhart,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Dark Sky,Eden Ogren,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Dark Sky,Elise Francis,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Dark Sky,Gabrielle Aufderheide,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,H,profilo di gioco,29,False,stima di gioco,
+bassa,Dark Sky,Janae Snyder,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Dark Sky,Jasmine Bowman,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Dark Sky,Kellie Koester,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Dark Sky,Lily Nygard,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+media,Dark Sky,Lily Terpstra,in rosa,82,75.19,usau-event-roster-dark-sky,3,USA U24 2025 invito | USA U24 2025 rosa annunciata | USA U24 2027 invito,True,0,0,0,82,USA U24 2025 rosa annunciata | WU24 2025 Women | WUL All-Star,H,profilo di gioco,22,False,stima giovanile,pul-wul-as | u24inv25 | u24inv27 | u24usa25 | usa-u24-25
+bassa,Dark Sky,Madison Robinson,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Dark Sky,Margaret Davis,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,H,profilo di gioco,21,False,stima di gioco,
+bassa,Dark Sky,Megan Blommel,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Dark Sky,Meghan Campano,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Dark Sky,Miriam Baird,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Dark Sky,Rachel Argyle,in rosa,76,75.19,usau-event-roster-dark-sky,1,USA U20 2026 invito,False,0,0,0,0,,H,profilo di gioco,19,False,stima giovanile,u20inv26
+media,Dark Sky,Sailor Ong,in rosa,76,75.19,usau-event-roster-dark-sky,1,club 2024 profilo individuale,True,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,clubpreview24
+bassa,Dark Sky,Samantha Jensen,in rosa,76,75.19,usau-event-roster-dark-sky,1,USA U20 2026 invito,False,0,0,0,0,,B,profilo di gioco,19,False,stima giovanile,u20inv26
+bassa,Dark Sky,Spencer Ewing,in rosa,75,75.19,usau-event-roster-dark-sky,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+media,Denver Molly Brown,Akane Kleinkopf,in rosa,86,85.03,usau-nationals-roster-04,0,,False,1.03,0.1,0,0,,H,statistiche,19,False,stima di gioco,
+media,Denver Molly Brown,Alexandra Guy,in rosa,85,85.03,usau-nationals-roster-04,0,,False,-0.21,0.37,0,0,,C,statistiche,20,False,stima di gioco,
+media,Denver Molly Brown,Alika Johnston,in rosa,87,85.03,usau-nationals-roster-04,0,,False,1.71,0.0,0,0,,D,statistiche,32,False,guida-2021,guida-2021
+alta,Denver Molly Brown,Alyssa Perez,in rosa,87,85.03,usau-nationals-roster-04,0,,False,0.17,0.0,0,87,WUC 2024 Women,H,statistiche,23,False,stima di gioco,usa24
+media,Denver Molly Brown,Aurora Lesnik,in rosa,87,85.03,usau-nationals-roster-04,0,,False,1.82,0.17,0,0,,C,statistiche,22,False,stima di gioco,
+alta,Denver Molly Brown,Carmen La Gala,in rosa,93,85.03,usau-nationals-roster-04,0,,False,6.81,0.3,0,93,All-Club First Team | Offensive Player of the Year #2,B,profilo di gioco,26,False,stima di gioco,ultiworld-all1 | ultiworld-off
+alta,Denver Molly Brown,Claire Chastain,in rosa,90,85.03,usau-nationals-roster-04,0,,False,3.81,0.2,0,90,WUC 2024 Women | World Games 2025 Mixed,H,statistiche,36,True,wg-libro,guida-2021 | usa24 | usa25 | wg-libro
+media,Denver Molly Brown,Ellie Cubrilovic,in rosa,83,85.03,usau-nationals-roster-04,0,,False,-1.71,0.0,0,0,,B,profilo di gioco,25,False,guida-2021,guida-2021
+media,Denver Molly Brown,Ellie Hasenohr,in rosa,85,85.03,usau-nationals-roster-04,0,,False,-0.58,0.17,0,0,,C,statistiche,30,False,stima di gioco,
+media,Denver Molly Brown,Ellie Kowalski,in rosa,84,85.03,usau-nationals-roster-04,0,,False,-0.58,0.0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Denver Molly Brown,Emma Capra,in rosa,85,85.03,usau-nationals-roster-04,0,,False,0,0.0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+media,Denver Molly Brown,Emma Williamson,in rosa,85,85.03,usau-nationals-roster-04,0,,False,0,0.0,0,80,WU24 2025 Women,H,profilo di gioco,24,False,stima giovanile,usa-u24-25
+alta,Denver Molly Brown,Faye Burdick,in rosa,85,85.03,usau-nationals-roster-04,0,,False,-0.32,0.17,0,80,WU24 2025 Women,B,profilo di gioco,22,False,stima giovanile,usa-u24-25
+media,Denver Molly Brown,Fiona Cashin,in rosa,86,85.03,usau-nationals-roster-04,0,,False,0.43,0.1,0,0,,C,statistiche,24,False,stima di gioco,
+media,Denver Molly Brown,Julia Lober,in rosa,84,85.03,usau-nationals-roster-04,0,,False,-0.96,0.0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+media,Denver Molly Brown,Kendra Mitchell,in rosa,85,85.03,usau-nationals-roster-04,0,,False,-0.58,0.17,0,0,,H,statistiche,23,False,stima di gioco,
+media,Denver Molly Brown,Liana Bradley,in rosa,83,85.03,usau-nationals-roster-04,0,,False,-1.59,0.0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+alta,Denver Molly Brown,Lisa Pitcaithley,in rosa,87,85.03,usau-nationals-roster-04,0,,False,0.81,0.0,0,87,WUC 2024 Women,C,statistiche,34,False,guida-2021,guida-2021 | usa24
+alta,Denver Molly Brown,Manuela Cárdenas,in rosa,92,85.03,usau-nationals-roster-04,0,,False,4.44,0.3,0,92,Top 25 #3 | World Games 2025 Mixed,H,statistiche,27,True,wg-libro,guida-2021 | ultiworld-top25 | wg-libro | wg25-can-wfdf
+bassa,Denver Molly Brown,Mary Andrews,in rosa,85,85.03,usau-nationals-roster-04,0,,False,0,0.0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Denver Molly Brown,Megan Henderson,in rosa,85,85.03,usau-nationals-roster-04,0,,False,0,0.0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+media,Denver Molly Brown,Sam Cortright,in rosa,84,85.03,usau-nationals-roster-04,0,,False,-1.22,0.1,0,0,,C,statistiche,23,False,stima di gioco,
+media,Denver Molly Brown,Sara Taggart,in rosa,86,85.03,usau-nationals-roster-04,0,,False,0.66,0.1,0,0,,H,statistiche,34,False,guida-2021,guida-2021
+media,Denver Molly Brown,Simone Pierotti,in rosa,88,85.03,usau-nationals-roster-04,0,,False,2.46,0.17,0,0,,D,statistiche,21,False,guida-2021,guida-2021
+alta,Denver Molly Brown,Valeria Cárdenas,in rosa,93,85.03,usau-nationals-roster-04,0,,False,3.92,0.3,0,93,All-Club First Team | Top 25 #1 | World Games 2025 Mixed,H,statistiche,27,True,wg-libro,guida-2021 | ultiworld-all1 | ultiworld-top25 | wg-libro | wg25-can-wfdf
+alta,Denver Molly Brown,Veronica Eder,in rosa,87,85.03,usau-nationals-roster-04,0,,False,0.17,0.27,0,87,WUC 2024 Women,C,statistiche,33,False,guida-2021,eder-denver | guida-2021 | usa24
+media,Dolly For President,Abby Faulhaber,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,75,PUL 2026,B,profilo di gioco,21,False,stima di gioco,pul-2026-nashville
+bassa,Dolly For President,Alexandra Harvey,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Dolly For President,Amanda Davis,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Dolly For President,Andrea Mantel,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Dolly For President,Bethany Summers,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Dolly For President,Cait Hamilton,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Dolly For President,Caroline Helms,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,H,profilo di gioco,26,False,stima di gioco,
+media,Dolly For President,Emma Patterson,in rosa,78,75.3,usau-event-roster-dolly-for-president,3,club 2026 profilo di punta,True,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,clubpreview26
+bassa,Dolly For President,Hanna McClain,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Dolly For President,Jessica Vance,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Dolly For President,Jordyn Dezago,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Dolly For President,Kayla Kornfeld,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Dolly For President,Lilly-Grace Bolton,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Dolly For President,Lucia Constantine,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+media,Dolly For President,Madison Oakman,in rosa,76,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,76,PUL 2026,H,profilo di gioco,31,False,stima di gioco,pul-2026-nashville
+bassa,Dolly For President,Mary Scott,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Dolly For President,Melissa Gronske,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Dolly For President,Micaiah Roberts,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Dolly For President,Michelle Van Guilder,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Dolly For President,Morgan Butts,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,H,profilo di gioco,26,False,stima di gioco,
+bassa,Dolly For President,Natalie Provence,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Dolly For President,Rachel Sproles,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Dolly For President,Rachel Winner,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+media,Dolly For President,Rebecca Fagan,in rosa,84,75.3,usau-event-roster-dolly-for-president,2,USA U24 2019 invito | club 2026 profilo individuale,True,0,0,0,84,PUL 2026,H,profilo di gioco,28,False,guida-2021,clubpreview26 | guida-2021 | pul-2026-nashville | u24inv19
+bassa,Dolly For President,Sarah Hunter,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Dolly For President,Xena Jaffe,in rosa,75,75.3,usau-event-roster-dolly-for-president,0,,False,0,0,0,0,,H,profilo di gioco,26,False,stima di gioco,
+bassa,Drift,AT Turner,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Drift,Abigail Grunenberg,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Drift,Alicia Hu,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,H,profilo di gioco,21,False,stima di gioco,
+bassa,Drift,Amelia Keenan,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Drift,Annie Wang,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Drift,Audrey Nichols,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Drift,Bernice Xiao,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Drift,Clodagh Keely,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Drift,Courtney Ng,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,H,profilo di gioco,24,False,stima di gioco,
+bassa,Drift,Emma Young,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Drift,Janelle Siwa,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Drift,Jenna Mcdonald,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Drift,Jun Fu (Michelle) Yang,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Drift,Kate Feldstein,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Drift,Katherine Greene,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,Drift,Khrystianne Peralta,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Drift,Kimberly Ng,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Drift,Kiyah Cho,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Drift,Maya Kasubuchi,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Drift,Minjoo Koo,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Drift,Theresa Xiao,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,Drift,Wendy Ma,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Drift,Xiaoyu Feng,in rosa,77,76.93,usau-event-roster-drift,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,FAB,Allegra Mayer,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,FAB,Allyson Lutz,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,FAB,Anya Prabowo,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,FAB,Ari Gonzalez,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,H,profilo di gioco,21,False,stima di gioco,
+bassa,FAB,Ava Bandel,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+bassa,FAB,Charissa Doerr,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,FAB,Charlie Tsunoda,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,FAB,Ella Marden,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,FAB,Gleymi Hernandez,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,FAB,Jade Gregory,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,FAB,Lily Hue,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,FAB,Lydia Yiu,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,FAB,Lyra D'Souza,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,FAB,Mack Chao,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,FAB,Megan Lee,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,FAB,Melissa Steller,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,FAB,Mia Kanzawa,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+media,FAB,Natalie Wilson,in rosa,77,74.98,usau-event-roster-fab,0,,False,0,0,0,77,PUL 2026,B,profilo di gioco,23,False,stima di gioco,pul-2026-raleigh
+bassa,FAB,Sienna Weinstein,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,FAB,Sophia Sordilla,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,FAB,Sophie Nadler,in rosa,75,74.98,usau-event-roster-fab,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Indy Rogue,Addisyn Hill,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Indy Rogue,Alicia Freel,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Indy Rogue,Ariel Choi,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Indy Rogue,Avery Hayes,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Indy Rogue,Bailey Perkins,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,H,profilo di gioco,21,False,stima di gioco,
+bassa,Indy Rogue,Briana Burriss,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,pul-2026-indy
+bassa,Indy Rogue,Catherine Soto Lozada,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Indy Rogue,Claire Perkins,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,Indy Rogue,Daniela Escalante,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,H,profilo di gioco,19,False,stima di gioco,
+bassa,Indy Rogue,Elissa Hall,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Indy Rogue,Emily Wyckoff,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,pul-2026-indy
+bassa,Indy Rogue,Erin Schmeltz,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Indy Rogue,Hallie Schmucker,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Indy Rogue,Jacqueline Lai,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Indy Rogue,Jamie Smets,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Indy Rogue,Kelly Vogeler,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,H,profilo di gioco,29,False,stima di gioco,
+bassa,Indy Rogue,Kristen Kaweck,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Indy Rogue,Lauren Kitten,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,Indy Rogue,Maria Janina Sarol,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Indy Rogue,Molly Beatty,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Indy Rogue,Natalie Stephan,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Indy Rogue,Phebe Kemmer,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Indy Rogue,Sarah Christie,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Indy Rogue,Sarah Haynie,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Indy Rogue,Shannon Jones,in rosa,75,75.06,usau-event-roster-indy-rogue,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Komodos,Adeline Hui,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Komodos,Charisse Aquino,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Komodos,Daphne Bell,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,H,profilo di gioco,29,False,stima di gioco,
+bassa,Komodos,Emily Ma,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Komodos,Grace Paley,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Komodos,Isabella Lin,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+media,Komodos,Julia Zhou,in rosa,87,76.97,usau-event-roster-komodos,4,Canada senior 2024 presenza WFDF,True,0,0,0,87,Canada senior 2024 presenza WFDF,H,profilo di gioco,20,False,stima di gioco,wuccan24x
+bassa,Komodos,Julianna Tan,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Komodos,Kathy Huang,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Komodos,Liza Ng,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Komodos,Makenzi Basas Harris,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+media,Komodos,Mijoo Lee,in rosa,80,76.97,usau-event-roster-komodos,3,Canada U24 2025 rosa annunciata,True,0,0,0,80,Canada U24 2025 rosa annunciata,B,profilo di gioco,24,False,stima giovanile,can25ann
+bassa,Komodos,Noor Al-Tabbaa,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Komodos,Phoebe Chen,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Komodos,Suki Liang,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Komodos,Tallulah Chan,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,H,profilo di gioco,19,False,stima di gioco,
+bassa,Komodos,Tessa Bell,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,H,profilo di gioco,24,False,stima di gioco,
+bassa,Komodos,Zee He,in rosa,77,76.97,usau-event-roster-komodos,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+media,Komodos,Zellema Mot,in rosa,87,76.97,usau-event-roster-komodos,4,Canada senior 2024 presenza WFDF,True,0,0,0,87,Canada senior 2024 presenza WFDF,H,profilo di gioco,29,False,stima di gioco,wuccan24x
+media,Madison Heist,Allie Mueting,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,79,PUL 2026,C,statistiche,30,False,stima di gioco,pul-2026-milwaukee
+bassa,Madison Heist,Amber Heffernan,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,pul-2026-minnesota
+media,Madison Heist,Anneke Vermaak,in rosa,81,79.73,usau-event-roster-heist,1,"USA U24 2018 invito | college 2017 candidatura Callahan, Wisconsin",True,0,0,0,78,PUL 2026,D,statistiche,31,False,guida16,anneke17 | guida16 | pul-2026-milwaukee | u24inv18
+bassa,Madison Heist,Audrey Williams,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Madison Heist,Caroline Bantug,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+media,Madison Heist,Cassandra Doody,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,79,PUL 2026,B,profilo di gioco,19,False,stima di gioco,pul-2026-milwaukee
+bassa,Madison Heist,Elizabeth Innes,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+media,Madison Heist,Emily Xu,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,77,PUL 2026,B,profilo di gioco,28,False,stima di gioco,pul-2026-milwaukee
+media,Madison Heist,Erynn Schroeder,in rosa,84,79.73,usau-event-roster-heist,3,USA beach senior 2025 invito | USA beach senior 2025 rosa annunciata | USA senior 2020 invito | USA senior 2020 rosa annunciata | USA senior 2024 invito | club 2024 profilo individuale | club 2025 profilo individuale | club 2026 profilo di punta,True,0,0,0,84,PUL 2026 | USA beach senior 2025 invito | USA beach senior 2025 rosa annunciata | USA senior 2020 rosa annunciata | USA senior 2024 invito,H,profilo pubblicato,19,False,stima di gioco,beachinv25 | beachusa25 | clubpreview24 | clubpreview25 | clubpreview26 | pul-2026-milwaukee | wuc20 | wuc20inv | wucinv24
+bassa,Madison Heist,Genevieve Dockry,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+bassa,Madison Heist,Heather Schmitt,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Madison Heist,Heidi Umhoefer,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Madison Heist,Helen Murphy,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Madison Heist,Ivy Fan,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Madison Heist,Lexi Menendez,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+media,Madison Heist,Lulu Nicks,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,77,PUL 2026,H,profilo di gioco,20,False,stima di gioco,pul-2026-milwaukee
+bassa,Madison Heist,Mika Stockner,in rosa,81,79.73,usau-event-roster-heist,1,USA U20 2026 invito,False,0,0,0,0,,B,profilo di gioco,19,False,stima giovanile,u20inv26
+bassa,Madison Heist,Orbit Molter,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,H,profilo di gioco,29,False,stima di gioco,
+media,Madison Heist,Rachael Kern,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,80,PUL 2026,H,statistiche,23,False,stima di gioco,pul-2026-milwaukee
+bassa,Madison Heist,Regina Barcio,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+media,Madison Heist,Rose Glinka,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,77,PUL 2026,H,statistiche,22,False,stima di gioco,pul-2026-milwaukee
+media,Madison Heist,Sadie Reding,in rosa,82,79.73,usau-event-roster-heist,0,,False,0,0,0,82,PUL 2026,C,statistiche,22,False,stima di gioco,pul-2026-milwaukee
+bassa,Madison Heist,Sammi Wong,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,B,profilo di gioco,34,False,guida-2021,guida-2021
+bassa,Madison Heist,Sara Stuedemann,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Madison Heist,Sarah Johnson,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Madison Heist,Stefanie Bugasch,in rosa,80,79.73,usau-event-roster-heist,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+media,Magma,Adriana Oceguera,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,75,PUL 2026,H,profilo di gioco,23,False,stima di gioco,pul-2026-nashville
+bassa,Magma,Alexis Puckett,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Magma,Amanda Manausa,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Magma,Angelicia Franklin,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Magma,Celine Charitat,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Magma,Charlene Hawkins,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+media,Magma,Ellie Thomson,in rosa,80,76.45,usau-event-roster-magma,0,,False,0,0,0,80,PUL 2026,C,statistiche,28,False,stima di gioco,pul-2026-atlanta
+bassa,Magma,Esme Ruengvivatpant,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+bassa,Magma,Hailey Gassiot,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Magma,Jennifer Gold,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+bassa,Magma,Juliann Pham,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Magma,Kallie Monroe,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Magma,Katherine Mittleider,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+bassa,Magma,Katie Hitt,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Magma,Kylie Mink,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Magma,Madeleine Frey,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Magma,Mary Smith,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+media,Magma,Melanie Thomas,in rosa,79,76.45,usau-event-roster-magma,0,,False,0,0,0,79,PUL 2026,B,profilo di gioco,25,False,stima di gioco,pul-2026-nashville
+bassa,Magma,Rachel Burzynski,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Magma,Samantha Jones,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Magma,Sarah Keane,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Magma,Sarai Colorado-landero,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Magma,Shayda Torab,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Magma,Tristan Thompson,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Magma,Valerie Sandoval,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Magma,Vanessa Bensch,in rosa,76,76.45,usau-event-roster-magma,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+media,Minneapolis Pop,Abigail Keuhn,in rosa,80,80.83,usau-nationals-roster-13,0,,False,-0.95,0.0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+media,Minneapolis Pop,Aiva Zoldan,in rosa,80,80.83,usau-nationals-roster-13,0,,False,-1.3,0.0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+media,Minneapolis Pop,Alyssa Wehrman,in rosa,82,80.83,usau-nationals-roster-13,0,,False,1.48,0.0,0,0,,D,statistiche,27,False,stima di gioco,
+media,Minneapolis Pop,Amelia Zdechlik,in rosa,83,80.83,usau-nationals-roster-13,0,,False,1.7,0.0,0,0,,C,statistiche,31,False,stima di gioco,
+alta,Minneapolis Pop,Anik Regan,in rosa,81,80.83,usau-nationals-roster-13,0,,False,0.38,0.1,0,79,PUL 2026,C,statistiche,21,False,stima di gioco,pul-2026-minnesota
+media,Minneapolis Pop,Carly Eckstrom,in rosa,81,80.83,usau-nationals-roster-13,0,,False,0,0.0,0,76,PUL 2026,B,profilo di gioco,28,False,stima di gioco,pul-2026-minnesota
+media,Minneapolis Pop,Clara Gale,in rosa,79,80.83,usau-nationals-roster-13,0,,False,-1.52,0.0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+media,Minneapolis Pop,Ella Mullin,in rosa,79,80.83,usau-nationals-roster-13,0,,False,-1.52,0.0,0,0,,B,profilo di gioco,30,False,stima di gioco,pul-2026-minnesota
+media,Minneapolis Pop,Emily Mulhern,in rosa,79,80.83,usau-nationals-roster-13,0,,False,-2,0.0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+alta,Minneapolis Pop,Eva Fischer,in rosa,80,80.83,usau-nationals-roster-13,0,,False,-1.18,0.1,0,77,PUL 2026,D,statistiche,28,False,stima di gioco,pul-2026-minnesota
+alta,Minneapolis Pop,Frankie Saraniti,in rosa,80,80.83,usau-nationals-roster-13,0,,False,-2,0.0,0,80,PUL 2026,D,statistiche,20,False,stima di gioco,pul-2026-minnesota
+media,Minneapolis Pop,Greta Friedrichs,in rosa,79,80.83,usau-nationals-roster-13,0,,False,-2,0.1,0,0,,H,profilo di gioco,32,False,stima di gioco,pul-2026-minnesota
+alta,Minneapolis Pop,Haley Challgren,in rosa,81,80.83,usau-nationals-roster-13,0,,False,0.38,0.0,0,80,PUL 2026,C,statistiche,25,False,stima di gioco,pul-2026-minnesota
+media,Minneapolis Pop,Isabel Demo,in rosa,82,80.83,usau-nationals-roster-13,0,,False,0.92,0.0,0,0,,D,statistiche,25,False,guida-2021,guida-2021
+alta,Minneapolis Pop,Jessica Hendrickson,in rosa,82,80.83,usau-nationals-roster-13,0,,False,1.22,0.0,0,78,PUL 2026,D,statistiche,25,False,stima di gioco,pul-2026-minnesota
+alta,Minneapolis Pop,Julia Hill,in rosa,80,80.83,usau-nationals-roster-13,0,,False,-0.77,0.0,0,75,PUL 2026,H,profilo di gioco,26,False,stima di gioco,pul-2026-minnesota
+alta,Minneapolis Pop,Kayla Blanek,in rosa,90,80.83,usau-nationals-roster-13,0,,False,7,0.27,0,90,All-Club Second Team,D,statistiche,20,False,stima di gioco,ultiworld-all2
+alta,Minneapolis Pop,Madelyn Lander,in rosa,84,80.83,usau-nationals-roster-13,0,,False,2.96,0.0,0,77,PUL 2026,D,statistiche,32,False,stima di gioco,pul-2026-dc
+alta,Minneapolis Pop,Makella Daley,in rosa,84,80.83,usau-nationals-roster-13,0,,False,2.89,0.1,0,79,PUL 2026,H,statistiche,31,False,guida-2021,guida-2021 | pul-2026-minnesota
+alta,Minneapolis Pop,Mia Beeman-Weber,in rosa,88,80.83,usau-nationals-roster-13,0,,False,3.58,0.0,0,88,PUL 2026,H,statistiche,29,False,stima di gioco,pul-2026-minnesota
+media,Minneapolis Pop,Pilar Abele,in rosa,79,80.83,usau-nationals-roster-13,0,,False,-2,0.0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Minneapolis Pop,Shelby Meyer,in rosa,81,80.83,usau-nationals-roster-13,0,,False,0,0.0,0,0,,H,profilo di gioco,22,False,stima di gioco,pul-2026-minnesota
+media,Minneapolis Pop,Stellah Marienthal-Legendre,in rosa,80,80.83,usau-nationals-roster-13,0,,False,-0.92,0.0,0,0,,C,statistiche,32,False,stima di gioco,pul-2026-minnesota
+alta,Minneapolis Pop,Stephanie Wood,in rosa,85,80.83,usau-nationals-roster-13,0,,False,4.01,0.27,0,81,PUL 2026,H,statistiche,26,False,stima di gioco,pul-2026-minnesota
+alta,New York BENT,Abby Hecko,in rosa,90,83.13,usau-nationals-roster-09,0,,False,4.99,0.67,0,90,All-Club Second Team | PUL 2026 | WUC 2024 Women,C,statistiche,22,False,stima di gioco,pul-2026-new | ultiworld-all2 | usa24
+media,New York BENT,Amanda Dobbyn,in rosa,84,83.13,usau-nationals-roster-09,0,,False,1.0,0.2,0,0,,C,statistiche,33,False,guida-2021,guida-2021
+media,New York BENT,Amy Zhou,in rosa,88,83.13,usau-nationals-roster-09,0,,False,3.92,0.47,0,0,,H,statistiche,34,False,guida-2021,guida-2021
+media,New York BENT,Anna Wysen,in rosa,82,83.13,usau-nationals-roster-09,0,,False,-1.36,0.0,0,0,,B,profilo di gioco,29,False,guida-2021,guida-2021
+alta,New York BENT,Ashley Wright,in rosa,83,83.13,usau-nationals-roster-09,0,,False,0.1,0.0,0,76,PUL 2026,C,statistiche,24,False,stima di gioco,pul-2026-new
+media,New York BENT,Caitlyn Tien,in rosa,86,83.13,usau-nationals-roster-09,0,,False,2.03,0.37,0,0,,D,statistiche,27,False,guida-2021,guida-2021
+alta,New York BENT,Cassie Brown,in rosa,84,83.13,usau-nationals-roster-09,0,,False,0.5,0.0,0,77,PUL 2026,H,statistiche,27,False,guida-2021,guida-2021 | pul-2026-new
+media,New York BENT,Donnya Ajdari,in rosa,82,83.13,usau-nationals-roster-09,0,,False,-1.12,0.2,0,0,,C,statistiche,33,False,guida-2021,guida-2021
+media,New York BENT,Ella Juengst,in rosa,86,83.13,usau-nationals-roster-09,0,,False,2.68,0.57,0,0,,C,statistiche,26,False,guida-2021,guida-2021
+media,New York BENT,Genny De Jesus,in rosa,84,83.13,usau-nationals-roster-09,0,,False,0.5,0.4,0,0,,B,profilo di gioco,27,False,stima di gioco,pul-2026-new
+bassa,New York BENT,Ivy Tsang,in rosa,83,83.13,usau-nationals-roster-09,0,,False,0,0.0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+media,New York BENT,Jane Frankel,in rosa,84,83.13,usau-nationals-roster-09,0,,False,0.88,0.2,0,0,,C,statistiche,23,False,stima di gioco,pul-2026-new
+media,New York BENT,Jessica McDonnell,in rosa,86,83.13,usau-nationals-roster-09,0,,False,2.54,0.1,0,0,,D,statistiche,25,False,stima di gioco,
+media,New York BENT,Julie Xia,in rosa,82,83.13,usau-nationals-roster-09,0,,False,-0.92,0.2,0,0,,H,statistiche,31,False,guida-2021,guida-2021
+media,New York BENT,Kerianne Coulon,in rosa,84,83.13,usau-nationals-roster-09,0,,False,0.38,0.3,0,0,,C,statistiche,24,False,stima di gioco,
+alta,New York BENT,Maggie Fan,in rosa,82,83.13,usau-nationals-roster-09,0,,False,-1.0,0.17,0,75,PUL 2026,H,profilo di gioco,32,False,stima di gioco,pul-2026-new
+alta,New York BENT,Marié Weverka,in rosa,82,83.13,usau-nationals-roster-09,0,,False,-1.0,0.0,0,77,PUL 2026,C,statistiche,31,False,guida-2021,guida-2021 | pul-2026-new
+alta,New York BENT,Rani Shah,in rosa,85,83.13,usau-nationals-roster-09,0,,False,1.42,0.17,0,81,PUL 2026,D,statistiche,20,False,stima di gioco,pul-2026-new
+media,New York BENT,Rylie Shaeffer,in rosa,85,83.13,usau-nationals-roster-09,0,,False,1.72,0.17,0,0,,D,statistiche,28,False,stima di gioco,
+media,New York BENT,Sage McGinley-Smith,in rosa,87,83.13,usau-nationals-roster-09,0,,False,2.78,0.7,0,0,,B,profilo di gioco,24,False,stima di gioco,
+media,New York BENT,Samantha Loop,in rosa,83,83.13,usau-nationals-roster-09,0,,False,-0.4,0.0,0,0,,H,statistiche,30,False,stima di gioco,
+media,New York BENT,Tracey Lum,in rosa,83,83.13,usau-nationals-roster-09,0,,False,-0.46,0.0,0,0,,H,statistiche,31,False,guida-2021,guida-2021
+alta,New York BENT,Yina Cartagena,in rosa,90,83.13,usau-nationals-roster-09,0,,False,2.47,0.5,0,90,PUL 2026 | World Games 2025 Mixed,H,statistiche,36,True,wg-libro,guida-2021 | pul-2026-new | wg-libro
+media,New York BENT,Zella Sahar,in rosa,81,83.13,usau-nationals-roster-09,0,,False,-1.81,0.0,0,0,,H,profilo di gioco,25,False,guida-2021,guida-2021 | pul-2026-new
+media,New York BENT,Zoe Hecht,in rosa,81,83.13,usau-nationals-roster-09,0,,False,-2,0.0,0,0,,B,profilo di gioco,27,False,guida-2021,guida-2021
+media,Northampton Starling,Adrienne Wells,in rosa,83,80.81,usau-nationals-roster-14,0,,False,1.82,0.17,0,0,,D,statistiche,32,False,stima di gioco,
+media,Northampton Starling,Anne Silver,in rosa,80,80.81,usau-nationals-roster-14,0,,False,-0.61,0.1,0,0,,C,statistiche,24,False,stima di gioco,
+media,Northampton Starling,Caitlyn Hauswirth-Varis,in rosa,80,80.81,usau-nationals-roster-14,0,,False,-0.77,0.17,0,0,,H,statistiche,31,False,stima di gioco,
+bassa,Northampton Starling,Carys Shepard,in rosa,81,80.81,usau-nationals-roster-14,0,,False,0,0.0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+media,Northampton Starling,Christine Georgakakos,in rosa,79,80.81,usau-nationals-roster-14,0,,False,-2,0.0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+media,Northampton Starling,Danica Vasa,in rosa,84,80.81,usau-nationals-roster-14,0,,False,3.31,0.1,0,0,,D,statistiche,20,False,stima di gioco,
+media,Northampton Starling,Emma Rundio,in rosa,88,80.81,usau-nationals-roster-14,0,,False,6.74,0.1,0,0,,D,statistiche,19,False,stima di gioco,
+media,Northampton Starling,Faith Summers,in rosa,80,80.81,usau-nationals-roster-14,0,,False,-0.61,0.0,0,0,,C,statistiche,26,False,stima di gioco,
+media,Northampton Starling,Hannah Chang,in rosa,80,80.81,usau-nationals-roster-14,0,,False,-1.3,0.0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+media,Northampton Starling,Isla Cusick,in rosa,83,80.81,usau-nationals-roster-14,0,,False,1.91,0.0,0,0,,H,statistiche,20,False,stima di gioco,
+media,Northampton Starling,Jean Tuvilla-Roberts,in rosa,85,80.81,usau-nationals-roster-14,0,,False,4.46,0.0,0,0,,D,statistiche,32,False,stima di gioco,
+media,Northampton Starling,Joanie Cha,in rosa,81,80.81,usau-nationals-roster-14,0,,False,0.62,0.0,0,0,,D,statistiche,27,False,stima di gioco,
+media,Northampton Starling,Lindsay Ork,in rosa,82,80.81,usau-nationals-roster-14,0,,False,1.0,0.1,0,0,,B,profilo di gioco,30,False,stima di gioco,
+media,Northampton Starling,Maia Donald,in rosa,79,80.81,usau-nationals-roster-14,0,,False,-2,0.0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+media,Northampton Starling,Marissa Aldieri,in rosa,81,80.81,usau-nationals-roster-14,0,,False,0.58,0.0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+media,Northampton Starling,Meta Learey,in rosa,79,80.81,usau-nationals-roster-14,0,,False,-1.42,0.1,0,0,,C,statistiche,22,False,stima di gioco,
+media,Northampton Starling,Mickie Webbeking,in rosa,79,80.81,usau-nationals-roster-14,0,,False,-1.81,0.27,0,0,,B,profilo di gioco,19,False,stima di gioco,
+media,Northampton Starling,Miriam Marino,in rosa,80,80.81,usau-nationals-roster-14,0,,False,-0.61,0.27,0,0,,H,statistiche,29,False,stima di gioco,
+media,Northampton Starling,Mo Dougherty,in rosa,83,80.81,usau-nationals-roster-14,0,,False,2.29,0.1,0,0,,H,statistiche,28,False,stima di gioco,
+media,Northampton Starling,Paige Howell,in rosa,80,80.81,usau-nationals-roster-14,0,,False,-0.52,0.0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+media,Northampton Starling,Rebecca Foster,in rosa,79,80.81,usau-nationals-roster-14,0,,False,-2,0.0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+media,Northampton Starling,Ruthie Tabatchnick,in rosa,79,80.81,usau-nationals-roster-14,0,,False,-1.52,0.0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+media,Northampton Starling,Sarah Thomann,in rosa,85,80.81,usau-nationals-roster-14,0,,False,3.79,0.0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+media,Northampton Starling,Sterling Morrone,in rosa,81,80.81,usau-nationals-roster-14,0,,False,0.65,0.0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Northampton Starling,Taylor Simpson,in rosa,81,80.81,usau-nationals-roster-14,0,,False,0,0.0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+bassa,Oakland LOL,Alden Fletcher,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Oakland LOL,Alexandra Stambaugh,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Oakland LOL,Alicia Dantzker,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Oakland LOL,Amanda Leahy,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Oakland LOL,Andrea Romano,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Oakland LOL,Audrey Wei,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Oakland LOL,Aviva Weinbaum,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,H,profilo di gioco,19,False,stima di gioco,
+bassa,Oakland LOL,Bryn Levitan,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Oakland LOL,Caitlin Rugg,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Oakland LOL,Candice Tse,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Oakland LOL,Chip Chang,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Oakland LOL,Darragh Kawaoka,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Oakland LOL,Deanna Bjorkquist,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Oakland LOL,Emily Tucci,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+bassa,Oakland LOL,Heather Waugh,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Oakland LOL,Iris Leung,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,39,False,guida-2021,guida-2021
+bassa,Oakland LOL,Jessica O'Connor,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Oakland LOL,Kira Lou,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,34,False,guida-2021,guida-2021
+bassa,Oakland LOL,Marlena Hartman-Filson,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+media,Oakland LOL,Meeri Chang,in rosa,81,79.03,usau-event-roster-lol,2,club 2025 profilo individuale | club 2026 profilo individuale,True,0,0,0,0,,B,profilo di gioco,34,False,guida-2021,clubpreview25 | clubpreview26 | guida-2021
+bassa,Oakland LOL,Megan Molteni,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,H,profilo di gioco,19,False,stima di gioco,
+media,Oakland LOL,Ness Fajardo,in rosa,80,79.03,usau-event-roster-lol,1,club 2025 profilo individuale,True,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,clubpreview25
+media,Oakland LOL,Paige Applegate,in rosa,81,79.03,usau-event-roster-lol,2,USA senior 2020 invito | club 2026 profilo individuale,True,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,clubpreview26 | wuc20inv
+bassa,Oakland LOL,Rachel Habbert,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,Oakland LOL,Sarah Carnahan,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Oakland LOL,Sayako Uchida,in rosa,79,79.03,usau-event-roster-lol,0,,False,0,0,0,0,,H,profilo di gioco,26,False,stima di gioco,
+bassa,Omega Continuum,Alex Wilker,in rosa,75,75.04,usau-event-roster-omega-continuum,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Omega Continuum,Anna Hoffmann,in rosa,75,75.04,usau-event-roster-omega-continuum,0,,False,0,0,0,0,,H,profilo di gioco,24,False,stima di gioco,
+bassa,Omega Continuum,Emily Diehl,in rosa,75,75.04,usau-event-roster-omega-continuum,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Omega Continuum,Genevieve Regala,in rosa,75,75.04,usau-event-roster-omega-continuum,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Omega Continuum,Jaden Schlosser,in rosa,75,75.04,usau-event-roster-omega-continuum,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Omega Continuum,Joy Jeffries,in rosa,75,75.04,usau-event-roster-omega-continuum,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Omega Continuum,Lucy Bort,in rosa,75,75.04,usau-event-roster-omega-continuum,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Omega Continuum,Magdalene Hoffmann,in rosa,75,75.04,usau-event-roster-omega-continuum,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Omega Continuum,Ruth Findley,in rosa,75,75.04,usau-event-roster-omega-continuum,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Omega Continuum,Sarah Hale,in rosa,75,75.04,usau-event-roster-omega-continuum,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+bassa,Ottawa Stella,Abby Millar,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Ottawa Stella,Alexandra Wardill,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,H,profilo di gioco,29,False,stima di gioco,
+bassa,Ottawa Stella,Anna Manuel,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Ottawa Stella,Brittney Cooke,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Ottawa Stella,Cassandra Jaffray,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,Ottawa Stella,Chloe Rosenbloom,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Ottawa Stella,Christina Bortnowschi,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Ottawa Stella,Claire Renaud,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Ottawa Stella,Clara Goulet,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+media,Ottawa Stella,Emilie Beausoleil,in rosa,83,79.67,usau-event-roster-stella,3,Canada U24 2025 presenza WFDF,True,0,0,0,80,Canada U24 2025 presenza WFDF,H,profilo di gioco,20,False,stima giovanile,u24can25w
+media,Ottawa Stella,Emma Beaulieu,in rosa,83,79.67,usau-event-roster-stella,3,Canada U24 2025 presenza WFDF,True,0,0,0,80,Canada U24 2025 presenza WFDF,B,profilo di gioco,24,False,stima giovanile,u24can25w
+bassa,Ottawa Stella,Emma Plant,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,H,profilo di gioco,24,False,stima di gioco,
+media,Ottawa Stella,Georgia Cameron,in rosa,83,79.67,usau-event-roster-stella,3,Canada U24 2025 presenza WFDF,True,0,0,0,80,Canada U24 2025 presenza WFDF,B,profilo di gioco,24,False,stima giovanile,u24can25w
+bassa,Ottawa Stella,Hannah Griezic,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Ottawa Stella,Kate Clement,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Ottawa Stella,Katie Sciborski,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Ottawa Stella,Keira Kennedy,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Ottawa Stella,Laiza Robert,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+media,Ottawa Stella,Lana Ramic,in rosa,87,79.67,usau-event-roster-stella,4,Canada senior 2024 presenza WFDF,True,0,0,0,87,Canada senior 2024 presenza WFDF,B,profilo di gioco,32,False,stima di gioco,wuccan24x
+media,Ottawa Stella,Lilianne Shannon,in rosa,83,79.67,usau-event-roster-stella,3,Canada U24 2025 presenza WFDF,True,0,0,0,80,Canada U24 2025 presenza WFDF,H,profilo di gioco,24,False,stima giovanile,u24can25w
+bassa,Ottawa Stella,Marie-Christine Jacques,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Ottawa Stella,Rebecca Mooder,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Ottawa Stella,Samantha Green,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Ottawa Stella,Sasha Palmert,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Ottawa Stella,Taylor Simard,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Ottawa Stella,Vivianne Fortin,in rosa,80,79.67,usau-event-roster-stella,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+media,Philadelphia Flight,Abigail Smith,in rosa,83,82.27,usau-nationals-roster-11,0,,False,1.1,0.0,0,0,,C,statistiche,25,False,stima di gioco,
+alta,Philadelphia Flight,Alice Rieger,in rosa,86,82.27,usau-nationals-roster-11,0,,False,3.22,0.1,0,75,WJUC 2026 Women,D,statistiche,19,False,stima giovanile,usa26
+media,Philadelphia Flight,Belle Sullivan,in rosa,81,82.27,usau-nationals-roster-11,0,,False,-1.21,0.0,0,0,,C,statistiche,21,False,stima di gioco,
+alta,Philadelphia Flight,Emilie Mohler,in rosa,87,82.27,usau-nationals-roster-11,0,,False,4.91,0.1,0,83,PUL 2026,H,statistiche,23,False,stima di gioco,pul-2026-philadelphia
+alta,Philadelphia Flight,Emily Heyman,in rosa,81,82.27,usau-nationals-roster-11,0,,False,-1.0,0.0,0,78,PUL 2026,B,profilo di gioco,28,False,stima di gioco,pul-2026-philadelphia
+media,Philadelphia Flight,Emma Hamilton,in rosa,81,82.27,usau-nationals-roster-11,0,,False,-1.42,0.0,0,0,,H,profilo di gioco,26,False,stima di gioco,
+alta,Philadelphia Flight,Erica Collin,in rosa,80,82.27,usau-nationals-roster-11,0,,False,-2,0.0,0,78,PUL 2026,B,profilo di gioco,22,False,stima di gioco,pul-2026-philadelphia
+alta,Philadelphia Flight,Fay Epstein,in rosa,89,82.27,usau-nationals-roster-11,0,,False,6.44,0.0,0,86,PUL 2026 | PUL All-Star,D,statistiche,19,False,stima di gioco,pul-2026-philadelphia | pul-wul-as
+media,Philadelphia Flight,Guinevere Rauch,in rosa,81,82.27,usau-nationals-roster-11,0,,False,-1.4,0.0,0,0,,C,statistiche,31,False,stima di gioco,
+media,Philadelphia Flight,Gwen Evans,in rosa,83,82.27,usau-nationals-roster-11,0,,False,0.62,0.0,0,0,,D,statistiche,28,False,stima di gioco,
+media,Philadelphia Flight,Jocelyn Corey,in rosa,81,82.27,usau-nationals-roster-11,0,,False,-1.1,0.0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,Philadelphia Flight,Juna Saito,in rosa,82,82.27,usau-nationals-roster-11,0,,False,0,0.0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Philadelphia Flight,Karen Minecci,in rosa,82,82.27,usau-nationals-roster-11,0,,False,0,0.0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+media,Philadelphia Flight,Kelsey Turner,in rosa,81,82.27,usau-nationals-roster-11,0,,False,-1.72,0.0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+media,Philadelphia Flight,Kristin Thomas,in rosa,80,82.27,usau-nationals-roster-11,0,,False,-2,0.0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+media,Philadelphia Flight,Laine Cravotta,in rosa,81,82.27,usau-nationals-roster-11,0,,False,-1.52,0.0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+media,Philadelphia Flight,Marta Lynch,in rosa,81,82.27,usau-nationals-roster-11,0,,False,-1.21,0.0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+alta,Philadelphia Flight,Melinda Alvey,in rosa,81,82.27,usau-nationals-roster-11,0,,False,-1.81,0.1,0,77,PUL 2026,B,profilo di gioco,33,False,guida-2021,guida-2021 | pul-2026-philadelphia
+bassa,Philadelphia Flight,Nelly Fickett,in rosa,82,82.27,usau-nationals-roster-11,0,,False,0,0.0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+media,Philadelphia Flight,Olivia Davis,in rosa,83,82.27,usau-nationals-roster-11,0,,False,0.58,0.1,0,0,,C,statistiche,32,False,stima di gioco,
+alta,Philadelphia Flight,Poppy Wagner,in rosa,82,82.27,usau-nationals-roster-11,0,,False,-0.08,0.0,0,82,PUL 2026,H,statistiche,25,False,stima di gioco,pul-2026-philadelphia
+alta,Philadelphia Flight,Quincy Booth,in rosa,94,82.27,usau-nationals-roster-11,0,,False,7,0.1,0,94,All-Club First Team | Offensive Player of the Year #1 | PUL 2026 | PUL All-Star,H,statistiche,29,False,stima di gioco,pul-2026-atlanta | pul-wul-as | ultiworld-all1 | ultiworld-off
+media,Philadelphia Flight,Ruby Ginsburg,in rosa,81,82.27,usau-nationals-roster-11,0,,False,-1.42,0.0,0,0,,C,statistiche,22,False,stima di gioco,
+alta,Philadelphia Flight,Sabrina Bonaci,in rosa,87,82.27,usau-nationals-roster-11,0,,False,4.3,0.1,0,76,PUL 2026,C,statistiche,24,False,stima di gioco,pul-2026-philadelphia
+alta,Philadelphia Flight,Veronica Kolegue-Spalaris,in rosa,84,82.27,usau-nationals-roster-11,0,,False,2.21,0.0,0,84,PUL 2026,H,statistiche,19,False,stima di gioco,pul-2026-philadelphia
+media,Philadelphia Flight,Zoe Lewis,in rosa,81,82.27,usau-nationals-roster-11,0,,False,-1.52,0.0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+media,Pittsburgh Parcha,Allison Milligan,in rosa,81,81.1,usau-nationals-roster-15,0,,False,0.1,0.17,0,0,,H,statistiche,25,False,stima di gioco,
+alta,Pittsburgh Parcha,Carolyn Normile,in rosa,90,81.1,usau-nationals-roster-15,0,,False,6.86,0.1,0,90,All-Club Second Team | PUL 2026 | World Games 2022 Mixed,H,profilo pubblicato,31,False,guida-2021,anteprima-nationals | guida-2021 | pul-2026-philadelphia | ultiworld-all2 | usa-wg-22
+media,Pittsburgh Parcha,Celeste Picone,in rosa,80,81.1,usau-nationals-roster-15,0,,False,-0.83,0.0,0,0,,H,statistiche,27,False,guida-2021,guida-2021
+media,Pittsburgh Parcha,Celina Zhao,in rosa,80,81.1,usau-nationals-roster-15,0,,False,-1.21,0.27,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Pittsburgh Parcha,Claire Stout,in rosa,81,81.1,usau-nationals-roster-15,0,,False,0,0.0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+media,Pittsburgh Parcha,Domenica Sutherland,in rosa,80,81.1,usau-nationals-roster-15,0,,False,-1.04,0.0,0,0,,H,statistiche,30,False,guida-2021,guida-2021
+media,Pittsburgh Parcha,Hannah Boyd,in rosa,81,81.1,usau-nationals-roster-15,0,,False,-0.58,0.17,0,0,,D,statistiche,24,False,stima di gioco,
+media,Pittsburgh Parcha,Jessie Chan,in rosa,82,81.1,usau-nationals-roster-15,0,,False,0.88,0.2,0,0,,C,statistiche,31,False,stima di gioco,
+media,Pittsburgh Parcha,Kayla Emrick,in rosa,79,81.1,usau-nationals-roster-15,0,,False,-2,0.0,0,0,,B,profilo di gioco,35,False,guida-2021,guida-2021
+media,Pittsburgh Parcha,Linn Bjanes,in rosa,81,81.1,usau-nationals-roster-15,0,,False,0.08,0.0,0,0,,B,profilo di gioco,30,False,guida-2021,guida-2021
+media,Pittsburgh Parcha,Madison Pisone,in rosa,82,81.1,usau-nationals-roster-15,0,,False,0.4,0.0,0,0,,C,statistiche,27,False,guida-2021,guida-2021
+media,Pittsburgh Parcha,Makenzie Priest,in rosa,83,81.1,usau-nationals-roster-15,0,,False,2.08,0.1,0,0,,H,statistiche,29,False,guida-2021,guida-2021
+media,Pittsburgh Parcha,Maria Stang,in rosa,80,81.1,usau-nationals-roster-15,0,,False,-1.52,0.0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+alta,Pittsburgh Parcha,Miya Liang,in rosa,90,81.1,usau-nationals-roster-15,0,,False,6.52,0.2,0,90,Breakout Player of the Year #1,C,statistiche,24,False,stima di gioco,ultiworld-break
+bassa,Pittsburgh Parcha,Morgan Johnson,in rosa,81,81.1,usau-nationals-roster-15,0,,False,0,0.0,0,0,,B,profilo di gioco,28,False,guida-2021,guida-2021
+media,Pittsburgh Parcha,Natalie Barnhart,in rosa,80,81.1,usau-nationals-roster-15,0,,False,-1.21,0.0,0,0,,B,profilo di gioco,34,False,guida-2021,guida-2021
+media,Pittsburgh Parcha,Rachel Hidek,in rosa,82,81.1,usau-nationals-roster-15,0,,False,0.5,0.1,0,0,,B,profilo di gioco,31,False,stima di gioco,
+media,Pittsburgh Parcha,Rosanna Vitiello,in rosa,80,81.1,usau-nationals-roster-15,0,,False,-1.3,0.0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+alta,Pittsburgh Parcha,Sara Liang,in rosa,84,81.1,usau-nationals-roster-15,0,,False,3.19,0.17,0,78,PUL 2026,C,statistiche,25,False,guida-2021,guida-2021 | pul-2026-philadelphia
+media,Pittsburgh Parcha,Sofia Dillon,in rosa,79,81.1,usau-nationals-roster-15,0,,False,-2,0.0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Pittsburgh Parcha,Stephanie Le,in rosa,81,81.1,usau-nationals-roster-15,0,,False,0,0.0,0,0,,H,profilo di gioco,24,False,stima di gioco,
+alta,Pittsburgh Parcha,Taylor Conroy,in rosa,81,81.1,usau-nationals-roster-15,0,,False,0.32,0.0,0,78,PUL 2026,D,statistiche,31,False,stima di gioco,pul-2026-philadelphia
+bassa,Portland Schwa,Abbe Domenick,in rosa,81,81.27,usau-nationals-roster-12,0,,False,0,0.0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+media,Portland Schwa,Anna Reed,in rosa,83,81.27,usau-nationals-roster-12,0,,False,1.64,0.1,0,0,,H,statistiche,35,False,guida-2021,guida-2021
+bassa,Portland Schwa,Ava Peterson,in rosa,81,81.27,usau-nationals-roster-12,0,,False,0,0.0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+media,Portland Schwa,Brenna Bailey,in rosa,82,81.27,usau-nationals-roster-12,0,,False,1.1,0.0,0,0,,B,profilo di gioco,32,False,guida-2021,guida-2021
+bassa,Portland Schwa,Chloe Yamasaki-Liske,in rosa,81,81.27,usau-nationals-roster-12,0,,False,0,0.0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+media,Portland Schwa,Claire Sharman,in rosa,83,81.27,usau-nationals-roster-12,0,,False,1.93,0.1,0,0,,D,statistiche,28,False,stima di gioco,
+media,Portland Schwa,Emily Pozzy,in rosa,81,81.27,usau-nationals-roster-12,0,,False,-0.68,0.1,0,0,,H,statistiche,20,False,stima di gioco,
+media,Portland Schwa,Emma Bartlett,in rosa,82,81.27,usau-nationals-roster-12,0,,False,0.92,0.0,0,0,,D,statistiche,21,False,stima di gioco,
+media,Portland Schwa,Ezra Weybright,in rosa,88,81.27,usau-nationals-roster-12,0,,False,7,0.0,0,0,,H,statistiche,27,False,stima di gioco,
+media,Portland Schwa,Jesse Shofner,in rosa,85,81.27,usau-nationals-roster-12,0,,False,3.44,0.0,0,0,,D,statistiche,29,False,stima di gioco,
+media,Portland Schwa,Julianna Galian,in rosa,80,81.27,usau-nationals-roster-12,0,,False,-1.72,0.0,0,0,,C,statistiche,30,False,stima di gioco,
+media,Portland Schwa,Leana Girton,in rosa,79,81.27,usau-nationals-roster-12,0,,False,-2,0.0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Portland Schwa,Luna Wagner,in rosa,81,81.27,usau-nationals-roster-12,0,,False,0,0.0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+alta,Portland Schwa,Mara Hindery-Glasinovic,in rosa,86,81.27,usau-nationals-roster-12,0,,False,3.92,0.1,0,86,Breakout Player of the Year #3,C,statistiche,29,False,stima di gioco,ultiworld-break
+media,Portland Schwa,Morgan Caldwell,in rosa,80,81.27,usau-nationals-roster-12,0,,False,-0.92,0.1,0,0,,B,profilo di gioco,30,False,guida-2021,guida-2021
+media,Portland Schwa,Natalie Hancock,in rosa,82,81.27,usau-nationals-roster-12,0,,False,0.2,0.1,0,0,,B,profilo di gioco,37,False,guida-2021,guida-2021
+media,Portland Schwa,Noelle Takahashi,in rosa,84,81.27,usau-nationals-roster-12,0,,False,2.51,0.1,0,0,,B,profilo di gioco,33,False,guida-2021,guida-2021
+alta,Portland Schwa,Rachel Egan,in rosa,88,81.27,usau-nationals-roster-12,0,,False,0.1,0.27,0,88,All-WUL First Team,C,statistiche,30,False,guida-2021,guida-2021 | wul-all | wul-profili-first
+media,Portland Schwa,Rachel Hess,in rosa,86,81.27,usau-nationals-roster-12,0,,False,4.28,0.2,0,0,,H,statistiche,31,False,stima di gioco,
+media,Portland Schwa,Ren Fraser,in rosa,80,81.27,usau-nationals-roster-12,0,,False,-1.0,0.0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+media,Portland Schwa,Samaya Madrone,in rosa,80,81.27,usau-nationals-roster-12,0,,False,-1.6,0.0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+media,Portland Schwa,Shea Brennan,in rosa,81,81.27,usau-nationals-roster-12,0,,False,-0.1,0.2,0,0,,H,statistiche,28,False,stima di gioco,
+bassa,Portland Schwa,Solène Curren,in rosa,81,81.27,usau-nationals-roster-12,0,,False,0,0.0,0,0,,H,profilo di gioco,26,False,stima di gioco,
+media,Portland Schwa,Zoe Luke,in rosa,84,81.27,usau-nationals-roster-12,0,,False,2.33,0.17,0,0,,D,statistiche,28,False,stima di gioco,
+media,Quebec Iris,Alessia Vinet,in rosa,82,80.88,usau-event-roster-iris,0,,False,0,0,1.0,0,,H,statistiche,19,False,stima di gioco,wucc-game-nlsu-yaka-iris-1343 | wucc-iris
+bassa,Quebec Iris,Amelia Rae,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Quebec Iris,Anne Lefebvre,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0,0,,C,statistiche,32,False,stima di gioco,wucc-iris
+bassa,Quebec Iris,Camille Leblanc,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,wucc-iris
+bassa,Quebec Iris,Camille Tremblay,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+media,Quebec Iris,Charlotte Christin,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0.14,0,,C,statistiche,28,False,stima di gioco,wucc-game-nlsu-yaka-iris-1343 | wucc-iris
+bassa,Quebec Iris,Elsa Gagliardi,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+media,Quebec Iris,Emma Urness,in rosa,85,80.88,usau-event-roster-iris,4,Canada U24 2025 presenza WFDF,True,0,0,1.86,81,Canada U24 2025 presenza WFDF,C,statistiche,24,False,stima giovanile,u24can25w | wucc-game-nlsu-yaka-iris-1343 | wucc-iris
+media,Quebec Iris,Florence Toews,in rosa,82,80.88,usau-event-roster-iris,0,,False,0,0,0.71,0,,H,statistiche,21,False,stima di gioco,wucc-game-nlsu-yaka-iris-1343 | wucc-iris
+media,Quebec Iris,Joy Zhou,in rosa,83,80.88,usau-event-roster-iris,0,,False,0,0,2.0,0,,H,statistiche,31,False,stima di gioco,wucc-iris
+media,Quebec Iris,Julia Topart,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0.14,0,,B,profilo di gioco,20,False,stima di gioco,wucc-iris
+bassa,Quebec Iris,Lianne Campbell,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0,0,,H,profilo di gioco,20,False,stima di gioco,wucc-iris
+media,Quebec Iris,Léa Morneau,in rosa,84,80.88,usau-event-roster-iris,3,Canada U24 2025 presenza WFDF,True,0,0,0,80,Canada U24 2025 presenza WFDF,C,statistiche,20,False,stima giovanile,u24can25w | wucc-iris
+bassa,Quebec Iris,Maia List,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+media,Quebec Iris,Marianne Fortier,in rosa,84,80.88,usau-event-roster-iris,3,Canada U24 2025 presenza WFDF,True,0,0,0,80,Canada U24 2025 presenza WFDF,H,profilo di gioco,19,False,stima giovanile,u24can25x
+media,Quebec Iris,Marie Levesque,in rosa,82,80.88,usau-event-roster-iris,0,,False,0,0,0.86,0,,H,profilo di gioco,26,False,stima di gioco,wucc-iris
+bassa,Quebec Iris,Mathilde Laforce,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,wucc-iris
+media,Quebec Iris,Maélys Lechasseur,in rosa,84,80.88,usau-event-roster-iris,3,Canada U24 2025 presenza WFDF | club 2026 profilo individuale,True,0,0,1.14,80,Canada U24 2025 presenza WFDF,C,statistiche,24,False,stima giovanile,clubpreview26 | u24can25x | wucc-game-nlsu-yaka-iris-1343 | wucc-iris
+media,Quebec Iris,Mia-Catherine Lussier,in rosa,84,80.88,usau-event-roster-iris,3,Canada U24 2025 presenza WFDF,True,0,0,0,80,Canada U24 2025 presenza WFDF,B,profilo di gioco,24,False,stima giovanile,u24can25x | wucc-iris
+media,Quebec Iris,Nina Heloir,in rosa,85,80.88,usau-event-roster-iris,4,Canada U24 2025 presenza WFDF,True,0,0,0.14,81,Canada U24 2025 presenza WFDF,H,profilo di gioco,24,False,stima giovanile,u24can25w | wucc-game-nlsu-yaka-iris-1343 | wucc-iris
+bassa,Quebec Iris,Sophie Belanger,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,wucc-iris
+media,Quebec Iris,Sophie Lyonnais,in rosa,84,80.88,usau-event-roster-iris,3,Canada U24 2025 presenza WFDF,True,0,0,0.57,80,Canada U24 2025 presenza WFDF,H,statistiche,24,False,stima giovanile,u24can25w | wucc-game-nlsu-yaka-iris-1343 | wucc-iris
+media,Quebec Iris,Virginie Côté,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0.43,0,,B,profilo di gioco,24,False,stima di gioco,wucc-iris
+media,Quebec Iris,Virginie Maltais,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0.14,0,,C,statistiche,22,False,stima di gioco,wucc-iris
+bassa,Quebec Iris,Éva Manzi,in rosa,81,80.88,usau-event-roster-iris,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+media,Raleigh Phoenix,Abigail Stevens,in rosa,80,81.34,usau-nationals-roster-16,0,,False,-1.81,0.1,0,0,,H,profilo di gioco,31,False,stima di gioco,
+media,Raleigh Phoenix,Anna Routh,in rosa,80,81.34,usau-nationals-roster-16,0,,False,-1.3,0.0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+media,Raleigh Phoenix,Anna Tortorici,in rosa,80,81.34,usau-nationals-roster-16,0,,False,-1.52,0.0,0,0,,B,profilo di gioco,25,False,stima di gioco,pul-2026-raleigh
+media,Raleigh Phoenix,Brianna Kuo,in rosa,80,81.34,usau-nationals-roster-16,0,,False,-1.0,0.1,0,0,,B,profilo di gioco,27,False,stima di gioco,
+media,Raleigh Phoenix,Bridget Mizener,in rosa,89,81.34,usau-nationals-roster-16,0,,False,6.82,0.54,0,0,,H,statistiche,28,False,guida-2021,guida-2021
+media,Raleigh Phoenix,Caroleen DeWolf,in rosa,80,81.34,usau-nationals-roster-16,0,,False,-1.52,0.0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+media,Raleigh Phoenix,Caroline Spencer,in rosa,80,81.34,usau-nationals-roster-16,0,,False,-1.12,0.2,0,0,,C,statistiche,25,False,stima di gioco,
+media,Raleigh Phoenix,Catherine Fradenburg,in rosa,85,81.34,usau-nationals-roster-16,0,,False,3.73,0.1,0,0,,D,statistiche,28,False,stima di gioco,
+alta,Raleigh Phoenix,Claire Hackl,in rosa,82,81.34,usau-nationals-roster-16,0,,False,0.88,0.1,0,78,PUL 2026,C,statistiche,29,False,stima di gioco,pul-2026-raleigh
+alta,Raleigh Phoenix,Elise Hetland,in rosa,87,81.34,usau-nationals-roster-16,0,,False,4.72,0.57,0,75,WJUC 2026 Mixed,D,statistiche,19,False,stima giovanile,usa26
+media,Raleigh Phoenix,Elle Christakos,in rosa,80,81.34,usau-nationals-roster-16,0,,False,-1.52,0.0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+alta,Raleigh Phoenix,Ellen Yu,in rosa,82,81.34,usau-nationals-roster-16,0,,False,0.28,0.0,0,81,PUL 2026,H,statistiche,29,False,stima di gioco,pul-2026-raleigh
+alta,Raleigh Phoenix,Emily Przykucki,in rosa,83,81.34,usau-nationals-roster-16,0,,False,1.66,0.2,0,81,PUL 2026,H,statistiche,26,False,stima di gioco,pul-2026-raleigh
+alta,Raleigh Phoenix,Emma Cole,in rosa,83,81.34,usau-nationals-roster-16,0,,False,1.52,0.17,0,76,PUL 2026,D,statistiche,30,False,stima di gioco,pul-2026-raleigh
+media,Raleigh Phoenix,Grace McDaniel,in rosa,80,81.34,usau-nationals-roster-16,0,,False,-1.6,0.0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+alta,Raleigh Phoenix,Jessica Wu,in rosa,83,81.34,usau-nationals-roster-16,0,,False,1.82,0.27,0,76,PUL 2026,D,statistiche,27,False,stima di gioco,pul-2026-raleigh
+alta,Raleigh Phoenix,Lily Brooks,in rosa,84,81.34,usau-nationals-roster-16,0,,False,2.42,0.3,0,75,WJUC 2026 Women,D,statistiche,19,False,stima giovanile,usa26
+media,Raleigh Phoenix,Lily Talerman,in rosa,80,81.34,usau-nationals-roster-16,0,,False,-1.21,0.0,0,0,,C,statistiche,28,False,stima di gioco,
+media,Raleigh Phoenix,Lisa Wei,in rosa,80,81.34,usau-nationals-roster-16,0,,False,-0.92,0.0,0,0,,C,statistiche,30,False,stima di gioco,
+alta,Raleigh Phoenix,Macy Hudson,in rosa,86,81.34,usau-nationals-roster-16,0,,False,4.39,0.3,0,77,PUL 2026,H,statistiche,20,False,stima di gioco,pul-2026-raleigh
+media,Raleigh Phoenix,Megan Buchsbaum,in rosa,82,81.34,usau-nationals-roster-16,0,,False,0.4,0.17,0,0,,C,statistiche,20,False,stima di gioco,
+alta,Raleigh Phoenix,Naomi Anderson,in rosa,83,81.34,usau-nationals-roster-16,0,,False,1.0,0.17,0,80,PUL 2026,D,statistiche,22,False,stima di gioco,pul-2026-raleigh
+alta,Raleigh Phoenix,Natalie Baumgarten,in rosa,84,81.34,usau-nationals-roster-16,0,,False,1.52,0.74,0,77,PUL 2026,D,statistiche,31,False,stima di gioco,pul-2026-raleigh
+media,Raleigh Phoenix,Sarah McKee,in rosa,82,81.34,usau-nationals-roster-16,0,,False,0.32,0.0,0,0,,D,statistiche,26,False,stima di gioco,pul-2026-raleigh
+bassa,River Monsters,Ale Coronado,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,River Monsters,Anna Finwall,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,River Monsters,Audrey Pohl,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,River Monsters,Elliana Wanless,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,River Monsters,Esther Gendler,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,River Monsters,Eudora Day,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,River Monsters,Hannah Kummrow,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,River Monsters,Hattie Tschida,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,River Monsters,Iris Flink,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,River Monsters,Julia Melcher,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,River Monsters,Kiersten Lee,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,River Monsters,Madison Kutzke,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,River Monsters,Megan Nguyen,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,River Monsters,Morgan Sweeney,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,River Monsters,Sadie Haas,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,River Monsters,Sophia Pung,in rosa,71,71.34,usau-event-roster-river-monsters,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,San Antonio Problems,Alexandra White,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,San Antonio Problems,Allison Waters,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,San Antonio Problems,Ashley Abrigo,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,San Antonio Problems,Ashley Gans,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+bassa,San Antonio Problems,Brittany Wheaton,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,San Antonio Problems,Corrina Azarcon,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,San Antonio Problems,Jiayin Li,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+bassa,San Antonio Problems,Julia Riley,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,San Antonio Problems,Kelsey Hu,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,San Antonio Problems,Kinsey Neas,in rosa,76,74.94,usau-event-roster-san-antonio-problems,1,USA U24 2025 invito,False,0,0,0,0,,B,profilo di gioco,24,False,stima giovanile,u24inv25
+media,San Antonio Problems,Lauren Ma,in rosa,77,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,77,PUL 2026,B,profilo di gioco,23,False,stima di gioco,pul-2026-austin
+bassa,San Antonio Problems,Lily Jimenez,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,San Antonio Problems,Maddie Morales,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,San Antonio Problems,Mia Loseff,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,H,profilo di gioco,21,False,stima di gioco,
+bassa,San Antonio Problems,Olivia Walshak,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,San Antonio Problems,Sarah Lindsay,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,H,profilo di gioco,24,False,stima di gioco,
+bassa,San Antonio Problems,Stephanie Clary,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,San Antonio Problems,Stephanie Vu,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,San Antonio Problems,Stephanie Wachs,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,San Antonio Problems,Sutton Ballard,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,San Antonio Problems,Sydney Herczeg,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,San Antonio Problems,Trinity Riley,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,San Antonio Problems,Tyler Boston,in rosa,75,74.94,usau-event-roster-san-antonio-problems,0,,False,0,0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+alta,San Diego Flipside,Abbi Shilts,in rosa,85,82.57,usau-nationals-roster-08,0,,False,1.3,0.17,0,85,All-WUL Second Team | WU24 2025 Mixed,H,statistiche,24,False,guida-2021,guida-2021 | usa-u24-25 | wul-all | wul-profili-second
+media,San Diego Flipside,Anna Sivinski,in rosa,83,82.57,usau-nationals-roster-08,0,,False,0.5,0.2,0,0,,B,profilo di gioco,24,False,stima di gioco,
+alta,San Diego Flipside,Chip Yen,in rosa,88,82.57,usau-nationals-roster-08,0,,False,-0.92,0.0,0,88,All-WUL First Team | WUL All-Star,C,statistiche,28,False,stima di gioco,pul-wul-as | wul-all | wul-profili-first
+media,San Diego Flipside,Delilah Masket,in rosa,81,82.57,usau-nationals-roster-08,0,,False,-2,0.0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+media,San Diego Flipside,Janet Wan,in rosa,81,82.57,usau-nationals-roster-08,0,,False,-2,0.0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+media,San Diego Flipside,Jennifer Gobin,in rosa,83,82.57,usau-nationals-roster-08,0,,False,0.28,0.1,0,0,,H,profilo di gioco,27,False,stima di gioco,
+media,San Diego Flipside,Julia Peden,in rosa,81,82.57,usau-nationals-roster-08,0,,False,-1.52,0.17,0,0,,B,profilo di gioco,32,False,stima di gioco,
+alta,San Diego Flipside,Kaela Helton,in rosa,90,82.57,usau-nationals-roster-08,0,,False,0.28,0.0,0,90,Top 25 #10 | WUL All-Star | World Games 2025 Mixed,H,statistiche,39,True,wg-libro,guida-2021 | pul-wul-as | ultiworld-top25 | usa25 | wg-libro
+alta,San Diego Flipside,Kaitlyn Weaver,in rosa,90,82.57,usau-nationals-roster-08,0,,False,5.89,0.0,0,90,All-Club Second Team | WUL All-Star,H,profilo di gioco,23,False,stima di gioco,pul-wul-as | ultiworld-all2
+media,San Diego Flipside,Leah Forester,in rosa,82,82.57,usau-nationals-roster-08,0,,False,-0.7,0.17,0,0,,B,profilo di gioco,32,False,stima di gioco,
+media,San Diego Flipside,Madeleine Shade,in rosa,82,82.57,usau-nationals-roster-08,0,,False,-0.5,0.0,0,0,,C,statistiche,25,False,stima di gioco,
+media,San Diego Flipside,Malia Smith,in rosa,82,82.57,usau-nationals-roster-08,0,,False,-0.1,0.0,0,0,,C,statistiche,24,False,stima di gioco,
+media,San Diego Flipside,Margot Nissen,in rosa,84,82.57,usau-nationals-roster-08,0,,False,1.42,0.0,0,0,,D,statistiche,29,False,stima di gioco,
+media,San Diego Flipside,Martina Kmecová,in BFD Shout,89,82.57,usau-nationals-roster-08,0,,False,1.3,0.0,0,0,,C,statistiche,21,False,stima di gioco,
+media,San Diego Flipside,Megan Maxfield,in rosa,86,82.57,usau-nationals-roster-08,0,,False,3.13,0.0,0,0,,D,statistiche,23,False,stima di gioco,
+media,San Diego Flipside,Merideth Byl,in rosa,86,82.57,usau-nationals-roster-08,0,,False,2.96,0.0,0,0,,D,statistiche,26,False,stima di gioco,
+media,San Diego Flipside,Mika Leslie,in rosa,83,82.57,usau-nationals-roster-08,0,,False,0.32,0.0,0,0,,D,statistiche,20,False,stima di gioco,
+media,San Diego Flipside,Monica O’Brien Saez,in rosa,84,82.57,usau-nationals-roster-08,0,,False,1.58,0.0,0,0,,C,statistiche,30,False,stima di gioco,
+media,San Diego Flipside,Rebeca Ellis,in rosa,86,82.57,usau-nationals-roster-08,0,,False,3.19,0.2,0,0,,B,profilo di gioco,29,False,stima di gioco,
+media,San Diego Flipside,Sabrina Belkin,in rosa,88,82.57,usau-nationals-roster-08,0,,False,4.91,0.37,0,0,,H,statistiche,25,False,stima di gioco,
+media,San Diego Flipside,Sanam Rozycki-Shah,in rosa,86,82.57,usau-nationals-roster-08,0,,False,3.11,0.1,0,0,,B,profilo di gioco,31,False,stima di gioco,
+media,San Diego Flipside,Sarah Levinn,in rosa,81,82.57,usau-nationals-roster-08,0,,False,-1.81,0.0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+alta,San Diego Flipside,Tori Gray,in rosa,81,82.57,usau-nationals-roster-08,0,,False,-1.15,0.0,0,80,WU24 2025 Mixed,H,statistiche,24,False,stima giovanile,usa-u24-25
+media,San Francisco Fury,Ailita Eddy,in rosa,87,86.93,usau-nationals-roster-02,0,,False,-0.32,0.0,0,0,,B,profilo di gioco,20,False,stima di gioco,wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Alexandra Barnett,in rosa,88,86.93,usau-nationals-roster-02,0,,False,-0.58,0.0,0,88,All-WUL First Team | WUC 2024 Women,B,profilo di gioco,27,False,guida-2021,guida-2021 | usa24 | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633 | wul-all | wul-profili-first
+media,San Francisco Fury,Allie Tsuji,in rosa,88,86.93,usau-nationals-roster-02,0,,False,0.96,0.34,0,0,,D,statistiche,20,False,stima di gioco,wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Anna Nazarov,in rosa,87,86.93,usau-nationals-roster-02,0,,False,-0.09,0.0,0,87,WUC 2024 Women,B,profilo di gioco,41,False,guida-2021,guida-2021 | usa24 | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Anna Thompson,in rosa,92,86.93,usau-nationals-roster-02,0,,False,2.79,0.37,1.67,92,All-Club Second Team | Top 25 #5 | World Games 2025 Mixed,H,profilo di gioco,29,True,wg-libro,guida-2021 | ultiworld-all2 | ultiworld-top25 | usa25 | wg-libro | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+media,San Francisco Fury,Calise Cardenas,in rosa,87,86.93,usau-nationals-roster-02,0,,False,0.17,0.1,0,0,,C,statistiche,39,False,guida-2021,guida-2021 | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Carolyn Finney,in rosa,90,86.93,usau-nationals-roster-02,0,,False,0.28,0.1,0,90,World Games 2025 Mixed,H,statistiche,38,True,wg-libro,guida-2021 | usa25 | wg-libro | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Dawn Culton,in rosa,90,86.93,usau-nationals-roster-02,0,,False,2.68,0.1,0.33,90,Top 25 #7 | WUC 2024 Women | World Games 2025 Mixed,C,statistiche,26,True,wg-libro,guida-2021 | ultiworld-top25 | usa24 | usa25 | wg-libro | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Dena Elimelech,in rosa,91,86.93,usau-nationals-roster-02,0,,False,2.57,0.47,1.0,90,PUL 2026 | PUL All-Star | Top 25 #6,H,statistiche,30,False,guida-2021,guida-2021 | pul-2026-atlanta | pul-wul-as | ultiworld-top25 | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+media,San Francisco Fury,Esther Filipek,in rosa,87,86.93,usau-nationals-roster-02,0,,False,-0.21,0.0,0,0,,H,statistiche,31,False,stima di gioco,wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Han Chen,in rosa,87,86.93,usau-nationals-roster-02,0,,False,-0.21,0.1,0.67,0,,H,statistiche,20,False,stima di gioco,wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+media,San Francisco Fury,Irene Scazzieri,in BFD Shout,93,86.93,usau-nationals-roster-02,0,,False,0.81,0.1,0,0,,C,statistiche,27,False,stima di gioco,wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Julianna Werffeli,in rosa,87,86.93,usau-nationals-roster-02,0,,False,-0.96,0.1,0,87,WUC 2024 Women,B,profilo di gioco,30,False,guida-2021,guida-2021 | usa24 | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Kaitlynne Roling,in rosa,88,86.93,usau-nationals-roster-02,0,,False,0.92,0.0,0,82,WUL All-Star,C,statistiche,23,False,stima di gioco,pul-wul-as | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Kanari Imanishi,in rosa,89,86.93,usau-nationals-roster-02,0,,False,0.66,0.3,0.67,0,,C,statistiche,28,False,stima di gioco,wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Kirstin Johnson,in rosa,91,86.93,usau-nationals-roster-02,0,,False,3.69,0.47,0.33,90,All-Club Second Team | Defensive Player of the Year #3 | World Games 2025 Mixed,D,profilo pubblicato,32,False,guida-2021,guida-2021 | ultiworld-all2 | ultiworld-def | usa25 | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+media,San Francisco Fury,Maggie Ruden,in rosa,87,86.93,usau-nationals-roster-02,0,,False,0.17,0.2,0,0,,C,statistiche,37,False,guida-2021,guida-2021 | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+media,San Francisco Fury,Magon Liu,in rosa,87,86.93,usau-nationals-roster-02,0,,False,0.54,0.0,0,0,,H,statistiche,35,False,guida-2021,guida-2021 | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+media,San Francisco Fury,McKinley McQuaide,in rosa,89,86.93,usau-nationals-roster-02,0,,False,1.71,0.0,0,0,,D,statistiche,29,False,stima di gioco,wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+media,San Francisco Fury,Nicki Yang,in rosa,87,86.93,usau-nationals-roster-02,0,,False,0.06,0.0,0,0,,B,profilo di gioco,29,False,stima di gioco,wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Olivia Goss,in rosa,88,86.93,usau-nationals-roster-02,0,,False,1.07,0.27,0,82,WUL All-Star,C,statistiche,25,False,stima di gioco,pul-wul-as | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Rachel Chang,in rosa,88,86.93,usau-nationals-roster-02,0,,False,-0.09,0.3,1.33,0,,H,statistiche,27,False,stima di gioco,wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+media,San Francisco Fury,Sarah VonDoepp,in rosa,87,86.93,usau-nationals-roster-02,0,,False,-0.21,0.0,0,0,,H,profilo di gioco,19,False,stima di gioco,wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Sharon Lin,in rosa,87,86.93,usau-nationals-roster-02,0,,False,0.54,0.0,0,87,WUC 2024 Women,B,profilo di gioco,33,False,guida-2021,guida-2021 | usa24 | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+alta,San Francisco Fury,Shayla Harris,in rosa,93,86.93,usau-nationals-roster-02,0,,False,5.76,0.88,0,92,Defensive Player of the Year #2 | WUC 2024 Women,D,profilo pubblicato,30,False,guida-2021,guida-2021 | ultiworld-def | usa24 | wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+media,San Francisco Fury,Sonja Johanson,in rosa,88,86.93,usau-nationals-roster-02,0,,False,0.69,0.0,0,0,,C,statistiche,29,False,stima di gioco,wucc-game-scandal-fury-1625 | wucc-game-tokyo-mavericks-fury-1633
+media,San Francisco Nightlock,Amy Lu,in rosa,81,83.2,usau-nationals-roster-07,0,,False,-2,0.1,0,0,,B,profilo di gioco,21,False,stima di gioco,
+media,San Francisco Nightlock,Angela Aie,in rosa,81,83.2,usau-nationals-roster-07,0,,False,-2,0.0,0,0,,B,profilo di gioco,32,False,guida-2021,guida-2021
+media,San Francisco Nightlock,Audrey Sheehy,in rosa,81,83.2,usau-nationals-roster-07,0,,False,-2,0.0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+media,San Francisco Nightlock,Cassidy Gilmore,in rosa,84,83.2,usau-nationals-roster-07,0,,False,0.8,0.1,0,0,,C,statistiche,29,False,stima di gioco,
+media,San Francisco Nightlock,Claire Leichter,in rosa,83,83.2,usau-nationals-roster-07,0,,False,-0.22,0.0,0,0,,C,statistiche,34,False,guida-2021,guida-2021
+media,San Francisco Nightlock,Connor Stuart-Paul,in rosa,90,83.2,usau-nationals-roster-07,0,,False,6.01,0.57,0,0,,H,profilo pubblicato,21,False,stima di gioco,anteprima-nationals
+alta,San Francisco Nightlock,Elly Fireside-Ostergaard,in rosa,83,83.2,usau-nationals-roster-07,0,,False,-0.22,0.1,0,80,PUL 2026,C,statistiche,32,False,guida-2021,guida-2021 | pul-2026-minnesota
+media,San Francisco Nightlock,Goodness Nwakudu,in rosa,83,83.2,usau-nationals-roster-07,0,,False,-0.7,0.1,0,0,,H,statistiche,32,False,stima di gioco,
+media,San Francisco Nightlock,Jackelyne Nguyen,in rosa,83,83.2,usau-nationals-roster-07,0,,False,0.28,0.0,0,0,,C,statistiche,30,False,guida-2021,guida-2021
+media,San Francisco Nightlock,Janelle Lee,in rosa,82,83.2,usau-nationals-roster-07,0,,False,-1.72,0.1,0,0,,B,profilo di gioco,24,False,stima di gioco,
+media,San Francisco Nightlock,Jessalyn Siu,in rosa,82,83.2,usau-nationals-roster-07,0,,False,-1.21,0.0,0,0,,H,profilo di gioco,31,False,guida-2021,guida-2021
+media,San Francisco Nightlock,Jin-Mi Matsunaga,in rosa,83,83.2,usau-nationals-roster-07,0,,False,-0.61,0.1,0,0,,C,statistiche,25,False,stima di gioco,
+alta,San Francisco Nightlock,Julia Segre,in rosa,82,83.2,usau-nationals-roster-07,0,,False,-1.12,0.0,0,75,WJUC 2026 Women,C,statistiche,19,False,stima giovanile,usa26
+alta,San Francisco Nightlock,Kai Agueros,in rosa,94,83.2,usau-nationals-roster-07,0,,False,7,0.1,0,94,Defensive Player of the Year #1,D,profilo pubblicato,19,False,stima di gioco,anteprima-nationals | ultiworld-def
+media,San Francisco Nightlock,Lauren Yamasaki-Liske,in rosa,83,83.2,usau-nationals-roster-07,0,,False,-0.31,0.1,0,0,,C,statistiche,30,False,stima di gioco,
+media,San Francisco Nightlock,Lia Romeo,in rosa,85,83.2,usau-nationals-roster-07,0,,False,1.7,0.2,0,0,,H,statistiche,26,False,stima di gioco,
+media,San Francisco Nightlock,Marisa Rafter,in rosa,83,83.2,usau-nationals-roster-07,0,,False,-0.5,0.0,0,0,,B,profilo di gioco,33,False,guida-2021,guida-2021
+media,San Francisco Nightlock,Mars Bau,in rosa,84,83.2,usau-nationals-roster-07,0,,False,1.0,0.0,0,0,,D,profilo pubblicato,25,False,stima di gioco,anteprima-nationals
+media,San Francisco Nightlock,Nicole Canning,in rosa,86,83.2,usau-nationals-roster-07,0,,False,2.51,0.17,0,0,,C,statistiche,34,False,guida-2021,guida-2021
+media,San Francisco Nightlock,Reeve Grobecker,in rosa,83,83.2,usau-nationals-roster-07,0,,False,-0.1,0.1,0,0,,C,statistiche,31,False,stima di gioco,
+media,San Francisco Nightlock,Thalia Ward,in rosa,85,83.2,usau-nationals-roster-07,0,,False,1.4,0.1,0,0,,H,profilo pubblicato,31,False,stima di gioco,anteprima-nationals
+media,San Francisco Nightlock,Viola Deszily,in rosa,83,83.2,usau-nationals-roster-07,0,,False,-0.22,0.2,0,0,,C,statistiche,27,False,stima di gioco,
+alta,San Francisco Nightlock,Violet Yap,in rosa,88,83.2,usau-nationals-roster-07,0,,False,4.84,0.27,0,88,Breakout Player of the Year #2 | WJUC 2026 Women,D,statistiche,19,False,stima giovanile,ultiworld-break | usa26
+media,San Francisco Nightlock,Xinzhi Zou,in rosa,82,83.2,usau-nationals-roster-07,0,,False,-0.92,0.0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+media,San Francisco Nightlock,Zane Bird Smith,in rosa,88,83.2,usau-nationals-roster-07,0,,False,4.72,0.1,0,0,,D,statistiche,23,False,stima di gioco,
+media,San Francisco Nightlock,Ziyue Chen,in rosa,81,83.2,usau-nationals-roster-07,0,,False,-2,0.0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+media,Seattle Riot,Bailey Shigley,in rosa,81,83.26,usau-nationals-roster-05,0,,False,-2,0.0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+media,Seattle Riot,Carly Campana,in rosa,85,83.26,usau-nationals-roster-05,0,,False,1.52,0.2,0,0,,D,statistiche,20,False,stima di gioco,
+media,Seattle Riot,Charlie Eide,in rosa,81,83.26,usau-nationals-roster-05,0,,False,-2,0.0,0,0,,H,profilo di gioco,38,False,guida-2021,guida-2021
+alta,Seattle Riot,Chloe Hakimi,in rosa,88,83.26,usau-nationals-roster-05,0,,False,4.63,0.57,0,80,WU24 2025 Mixed,D,statistiche,24,False,stima giovanile,usa-u24-25
+alta,Seattle Riot,Ella Bolan,in rosa,82,83.26,usau-nationals-roster-05,0,,False,-1.12,0.0,0,80,WU24 2025 Women,H,statistiche,24,False,stima giovanile,usa-u24-25
+media,Seattle Riot,Emily Decker,in rosa,82,83.26,usau-nationals-roster-05,0,,False,-1.78,0.1,0,0,,B,profilo di gioco,23,False,stima di gioco,
+media,Seattle Riot,Frances Gellert,in rosa,82,83.26,usau-nationals-roster-05,0,,False,-0.92,0.0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+media,Seattle Riot,Hana Kawai,in rosa,84,83.26,usau-nationals-roster-05,0,,False,0.62,0.1,0,0,,H,statistiche,29,False,stima di gioco,
+media,Seattle Riot,Jamie Eriksson,in rosa,84,83.26,usau-nationals-roster-05,0,,False,0.8,0.2,0,0,,C,statistiche,32,False,stima di gioco,
+media,Seattle Riot,Josie Gillett,in rosa,85,83.26,usau-nationals-roster-05,0,,False,1.6,0.1,0,0,,H,statistiche,30,False,stima di gioco,
+media,Seattle Riot,Julia Snyder,in rosa,82,83.26,usau-nationals-roster-05,0,,False,-1.42,0.0,0,0,,H,statistiche,34,False,guida-2021,guida-2021
+media,Seattle Riot,Karen Ehrhardt,in rosa,83,83.26,usau-nationals-roster-05,0,,False,-0.31,0.1,0,0,,C,statistiche,27,False,guida-2021,guida-2021
+media,Seattle Riot,Kate Lanier,in rosa,84,83.26,usau-nationals-roster-05,0,,False,0.52,0.1,0,0,,D,statistiche,21,False,stima di gioco,
+media,Seattle Riot,Kelly Tam,in rosa,83,83.26,usau-nationals-roster-05,0,,False,0,0.0,0,80,WU24 2025 Women,B,profilo di gioco,23,False,stima giovanile,usa-u24-25
+alta,Seattle Riot,Lauren Goddu,in rosa,89,83.26,usau-nationals-roster-05,0,,False,4.63,0.71,0,80,WU24 2025 Women,D,statistiche,21,False,guida-2021,guida-2021 | usa-u24-25
+media,Seattle Riot,Lauren Page,in rosa,85,83.26,usau-nationals-roster-05,0,,False,1.0,0.54,0,0,,B,profilo di gioco,19,False,stima di gioco,
+alta,Seattle Riot,Meg Manning,in rosa,86,83.26,usau-nationals-roster-05,0,,False,2.71,0.37,0,85,All-WUL Second Team,D,statistiche,23,False,stima di gioco,wul-all | wul-profili-second
+media,Seattle Riot,Nada Tramonte,in rosa,81,83.26,usau-nationals-roster-05,0,,False,-2,0.0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+alta,Seattle Riot,Nina Finley,in rosa,83,83.26,usau-nationals-roster-05,0,,False,-0.52,0.1,0,82,WUL All-Star,H,profilo di gioco,27,False,stima di gioco,pul-wul-as
+alta,Seattle Riot,Nor Luloff,in rosa,84,83.26,usau-nationals-roster-05,0,,False,0.4,0.34,0,75,WJUC 2026 Women,C,statistiche,19,False,stima giovanile,usa26
+media,Seattle Riot,Ollie Bunson,in rosa,86,83.26,usau-nationals-roster-05,0,,False,3.02,0.2,0,0,,D,statistiche,27,False,stima di gioco,
+media,Seattle Riot,Samiya Ismail,in rosa,83,83.26,usau-nationals-roster-05,0,,False,-0.1,0.0,0,0,,H,statistiche,29,False,guida-2021,guida-2021
+media,Seattle Riot,Savanna Tucker,in rosa,82,83.26,usau-nationals-roster-05,0,,False,-1.0,0.0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+media,Seattle Riot,Shira Stern,in rosa,84,83.26,usau-nationals-roster-05,0,,False,0.5,0.0,0,0,,B,profilo di gioco,34,False,guida-2021,guida-2021
+media,Seattle Riot,Steph Phillips,in rosa,86,83.26,usau-nationals-roster-05,0,,False,2.29,0.1,0,0,,H,statistiche,26,False,guida-2021,guida-2021
+media,Seattle Riot,Yeh-Sun Lee,in rosa,82,83.26,usau-nationals-roster-05,0,,False,-1.21,0.1,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Solstice,Alexa Fischer,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Solstice,Allison Collins,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+bassa,Solstice,Anna Goulson,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Solstice,Anna Hetzel,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Solstice,Anne Knellinger,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Solstice,Autumn Moser,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Solstice,Ava Merrifield,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Solstice,Brigid Hayes,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,H,profilo di gioco,19,False,stima di gioco,
+bassa,Solstice,Brynn Devine,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Solstice,Celeste Padula,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Solstice,Chelsea Baker,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Solstice,Christine Laritz,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Solstice,Ellie Holmgren,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Solstice,Evelyn Minton,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Solstice,Jessica Carr,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Solstice,Julia Nielsen,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+bassa,Solstice,Katie Shipman,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Solstice,Laura Polanka,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Solstice,Maddy Wilson,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+bassa,Solstice,Magalie Chapman,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Solstice,Mariam Massoud,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Solstice,Molly Cropsey,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Solstice,Nina LeBlanc,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Solstice,Precious Mirembe,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Solstice,Sabrina Kelley,in rosa,72,71.98,usau-event-roster-solstice,0,,False,0,0,0,0,,H,profilo di gioco,29,False,stima di gioco,
+bassa,St. Louis Stellar,Allison Faerber,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+media,St. Louis Stellar,Anat Gross,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,76,PUL 2026,H,profilo di gioco,29,False,stima di gioco,pul-2026-nashville
+bassa,St. Louis Stellar,Anna Cochran,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,St. Louis Stellar,Cassia Williams-Rogers,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,H,profilo di gioco,19,False,stima di gioco,
+bassa,St. Louis Stellar,Demi White,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,St. Louis Stellar,Elise Gadson,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,St. Louis Stellar,Ella Yang,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,St. Louis Stellar,Emily Timm,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,St. Louis Stellar,Erin Pollack,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,St. Louis Stellar,Ivanka Huynh,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,St. Louis Stellar,Janie Dubberke,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,St. Louis Stellar,Jennifer May,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,St. Louis Stellar,Jiwei Wu,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+bassa,St. Louis Stellar,Julia Chapman,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+bassa,St. Louis Stellar,Lucy Wei,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,St. Louis Stellar,Mary Orlando,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,H,profilo di gioco,24,False,stima di gioco,
+media,St. Louis Stellar,Mary Otten,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,76,PUL 2026,H,profilo di gioco,19,False,stima di gioco,pul-2026-nashville
+media,St. Louis Stellar,Nina Laser,in rosa,77,76.4,usau-event-roster-stellar,1,USA U24 2027 invito,False,0,0,0,76,PUL 2026,B,profilo di gioco,22,False,stima giovanile,pul-2026-indy | u24inv27
+bassa,St. Louis Stellar,Rachel Byerly,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,St. Louis Stellar,Talia Horn,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,St. Louis Stellar,Yaning Lu,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,St. Louis Stellar,Zirui Zhou,in rosa,76,76.4,usau-event-roster-stellar,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Sureshot,Abigail Pettinger,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+bassa,Sureshot,Alex Easterday,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Sureshot,Amelia Kennedy,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Sureshot,Emilee Armbruster,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,H,profilo di gioco,19,False,stima di gioco,
+bassa,Sureshot,Holly Kallmeyer,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Sureshot,Jackie Sapienza,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Sureshot,Josie Early,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Sureshot,Julia Lindenschmidt,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Sureshot,Julie Sebastian,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Sureshot,Kimberly Cooper,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Sureshot,Kristen Wentzel,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Sureshot,Laura Madigan,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Sureshot,Liz Anderson,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Sureshot,Lucy Michel,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+bassa,Sureshot,Mary Timmons,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Sureshot,Meredith Eichenlaub,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Sureshot,Sara Kula,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Sureshot,Sarah Carter,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Sureshot,Stephanie Kramer,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Sureshot,Yelenis Rivera,in rosa,73,73.17,usau-event-roster-sureshot,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Takedown,Alexandra Magid,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Takedown,Amanda Aversa,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Takedown,Amy Gilbert,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,H,profilo di gioco,24,False,stima di gioco,
+bassa,Takedown,Ashley King,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Takedown,Ashley Whaley,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Takedown,Asia Johnson,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Takedown,Briana Campbell,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Takedown,Callie Auman,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Takedown,Connie Cui,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Takedown,Erin Weeks,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Takedown,Grace Buelow,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Takedown,Harper Green,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Takedown,Jocelyn Keung,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Takedown,Jordan George,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,H,profilo di gioco,24,False,stima di gioco,
+bassa,Takedown,Kathryn West,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Takedown,Kitty Cheung,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Takedown,Laura Honeycutt,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Takedown,Marja Grillo,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Takedown,Matilda Silvestri,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Takedown,Natasha Bedoya-Ross,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Takedown,Olivia De Lorenzo,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Takedown,Rhoxie Booth,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Takedown,Shauna Gross,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Takedown,Sydney Gelhorn,in rosa,77,76.64,usau-event-roster-takedown,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+alta,Toronto 6ixers,Alicia Zhang,in rosa,86,83.5,usau-nationals-roster-06,0,,False,2.0,0.3,0.31,0,,C,statistiche,21,False,stima di gioco,wucc-6ixers
+alta,Toronto 6ixers,Alyssa Mason,in rosa,92,83.5,usau-nationals-roster-06,0,,False,4.61,0.5,3.23,0,,C,statistiche,26,False,stima di gioco,wucc-6ixers
+media,Toronto 6ixers,Bei Ouyang,in rosa,85,83.5,usau-nationals-roster-06,0,,False,0.92,0.17,0,0,,D,statistiche,26,False,stima di gioco,
+alta,Toronto 6ixers,Brittney Dos Santos,in rosa,92,83.5,usau-nationals-roster-06,0,,False,5.51,0.64,2.83,90,World Games 2025 Mixed,H,profilo pubblicato,27,True,wg-libro,anteprima-nationals | wg-libro | wg25-can-wfdf | wucc-6ixers
+media,Toronto 6ixers,Hannah Dawson,in rosa,82,83.5,usau-nationals-roster-06,0,,False,-2,0.1,0,0,,H,profilo di gioco,21,False,stima di gioco,
+media,Toronto 6ixers,Jade Huangfu,in rosa,82,83.5,usau-nationals-roster-06,0,,False,-1.81,0.0,0,0,,H,profilo di gioco,24,False,stima di gioco,wucc-6ixers
+media,Toronto 6ixers,Jazmin Ulalan,in rosa,82,83.5,usau-nationals-roster-06,0,,False,-2,0.0,0,0,,B,profilo di gioco,30,False,stima di gioco,wucc-6ixers
+bassa,Toronto 6ixers,Jessica Gao,in rosa,84,83.5,usau-nationals-roster-06,0,,False,0,0.0,0,0,,H,profilo di gioco,19,False,stima di gioco,wucc-6ixers
+media,Toronto 6ixers,Jessica Hou,in rosa,83,83.5,usau-nationals-roster-06,0,,False,-0.08,0.0,0,0,,D,statistiche,22,False,stima di gioco,wucc-6ixers
+media,Toronto 6ixers,Jessie Tsang,in rosa,82,83.5,usau-nationals-roster-06,0,,False,-1.12,0.1,0,0,,C,statistiche,32,False,stima di gioco,wucc-6ixers
+alta,Toronto 6ixers,Joely Valencerina,in rosa,88,83.5,usau-nationals-roster-06,0,,False,2.59,0.4,1.23,0,,H,statistiche,19,False,stima di gioco,wucc-6ixers
+media,Toronto 6ixers,Joyce Lei,in rosa,82,83.5,usau-nationals-roster-06,0,,False,-2,0.0,0,0,,B,profilo di gioco,23,False,stima di gioco,wucc-6ixers
+alta,Toronto 6ixers,Krystal Dos Santos,in rosa,88,83.5,usau-nationals-roster-06,0,,False,3.82,0.37,0.77,0,,D,statistiche,21,False,stima di gioco,wucc-6ixers
+bassa,Toronto 6ixers,Makayla Power,in rosa,84,83.5,usau-nationals-roster-06,0,,False,0,0.0,0,0,,B,profilo di gioco,28,False,stima di gioco,wucc-6ixers
+media,Toronto 6ixers,Michal Lewis,in rosa,89,83.5,usau-nationals-roster-06,0,,False,4.63,0.44,0,0,,D,statistiche,30,False,stima di gioco,
+alta,Toronto 6ixers,Mika Kurahashi,in rosa,90,83.5,usau-nationals-roster-06,0,,False,-0.92,0.0,0,90,Top 25 #8 | World Games 2025 Mixed,C,profilo pubblicato,24,True,wg-libro,anteprima-nationals | ultiworld-top25 | wg-libro | wg25-can-wfdf
+media,Toronto 6ixers,Rachel Cooc,in rosa,84,83.5,usau-nationals-roster-06,0,,False,0.2,0.1,0,0,,B,profilo di gioco,29,False,stima di gioco,
+media,Toronto 6ixers,Reve Chan,in rosa,85,83.5,usau-nationals-roster-06,0,,False,1.52,0.27,0,0,,D,statistiche,29,False,stima di gioco,wucc-6ixers
+media,Toronto 6ixers,Sabrina Trung,in rosa,82,83.5,usau-nationals-roster-06,0,,False,-1.81,0.0,0,0,,B,profilo di gioco,31,False,stima di gioco,wucc-6ixers
+media,Toronto 6ixers,Sara Mar,in rosa,83,83.5,usau-nationals-roster-06,0,,False,-0.02,0.0,0,0,,H,statistiche,32,False,stima di gioco,wucc-6ixers
+alta,Toronto 6ixers,Sarah Jacobsohn,in rosa,90,83.5,usau-nationals-roster-06,0,,False,3.53,0.3,1.85,90,World Games 2025 Mixed,C,profilo pubblicato,25,True,wg-libro,anteprima-nationals | wg-libro | wucc-6ixers
+media,Toronto 6ixers,Sarah Lam,in rosa,82,83.5,usau-nationals-roster-06,0,,False,-1.72,0.0,0,0,,H,profilo di gioco,21,False,stima di gioco,wucc-6ixers
+media,Toronto 6ixers,Tiffany Zhang,in rosa,84,83.5,usau-nationals-roster-06,0,,False,0.2,0.44,0,0,,H,statistiche,32,False,stima di gioco,
+media,Toronto 6ixers,Tyama Lyall,in rosa,82,83.5,usau-nationals-roster-06,0,,False,-2,0.0,0,0,,B,profilo di gioco,23,False,stima di gioco,wucc-6ixers
+alta,Toronto 6ixers,Zi Cen (Monica) Wang,in rosa,86,83.5,usau-nationals-roster-06,0,,False,2.17,0.4,0.15,0,,C,statistiche,27,False,stima di gioco,wucc-6ixers
+bassa,Trainwreck,Abby Beasinger,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Trainwreck,Alexa Michael,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Trainwreck,Annie Bricker,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,H,profilo di gioco,21,False,stima di gioco,
+bassa,Trainwreck,Beatrice Bugos,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Trainwreck,Cailin Kennedy,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Trainwreck,Carli Standen,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Trainwreck,Colleen Amori,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Trainwreck,Danielle Woods,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Trainwreck,Guancheng Liu,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Trainwreck,Jolien Munsterhuis,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,Trainwreck,Julie Fast,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Trainwreck,Kathryn Moore,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Trainwreck,Katie Sheridan,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,Trainwreck,Libby Cravens,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+bassa,Trainwreck,Linnea Fraser,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Trainwreck,Malindi Chesnut-Tangerman,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Trainwreck,Margaret Bruckner,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Trainwreck,Marie Haas,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Trainwreck,Miranda Jaster,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Trainwreck,Rachel Ericson,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Trainwreck,Rachel Street,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,H,profilo di gioco,19,False,stima di gioco,
+bassa,Trainwreck,Rebecca Everette,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Trainwreck,Sacha Cameron,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Trainwreck,Simone Saldanha,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Trainwreck,Stephanie Freier,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Trainwreck,Vanessa Aschmann,in rosa,71,71.17,usau-event-roster-trainwreck,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+media,Vancouver Traffic,Brianne Wager,in rosa,87,80.75,usau-event-roster-traffic,4,Canada senior 2024 presenza WFDF,True,0,0,0,87,Canada senior 2024 presenza WFDF,B,profilo di gioco,31,False,guida-2021,guida-2021 | wuccan24w
+bassa,Vancouver Traffic,Brynn Freeland,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Vancouver Traffic,Carolyn Churchland,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,H,profilo di gioco,19,False,stima di gioco,
+media,Vancouver Traffic,Catherine Menzies,in rosa,88,80.75,usau-event-roster-traffic,5,Canada senior 2024 presenza WFDF | club 2024 profilo individuale | club 2025 profilo individuale,True,0,0,0,88,Canada senior 2024 presenza WFDF,H,profilo di gioco,36,False,guida-2021,clubpreview24 | clubpreview25 | guida-2021 | wuccan24w
+bassa,Vancouver Traffic,Christine Vuong,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Vancouver Traffic,Claire McJannet,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Vancouver Traffic,Dahlia Quinn,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+media,Vancouver Traffic,Ericka Edgell,in rosa,85,80.75,usau-event-roster-traffic,4,Canada U24 2025 presenza WFDF,True,0,0,0,81,Canada U24 2025 presenza WFDF,B,profilo di gioco,24,False,stima giovanile,u24can25w
+media,Vancouver Traffic,Grace Liu,in rosa,84,80.75,usau-event-roster-traffic,3,Canada U24 2025 presenza WFDF,True,0,0,0,80,Canada U24 2025 presenza WFDF,B,profilo di gioco,24,False,stima giovanile,u24can25w
+bassa,Vancouver Traffic,Helen Thompson,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Vancouver Traffic,Jaime Ovstaas,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Vancouver Traffic,Janny Chan,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+media,Vancouver Traffic,Jessica Rockliff,in rosa,87,80.75,usau-event-roster-traffic,4,Canada senior 2024 presenza WFDF,True,0,0,0,87,Canada senior 2024 presenza WFDF,B,profilo di gioco,40,False,guida-2021,guida-2021 | wuccan24w
+bassa,Vancouver Traffic,Jessie Chen,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Vancouver Traffic,Jessie Tai,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,B,profilo di gioco,30,False,guida-2021,guida-2021
+bassa,Vancouver Traffic,Katie Wong,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+media,Vancouver Traffic,Mari Nielsen,in rosa,84,80.75,usau-event-roster-traffic,3,Canada U24 2025 presenza WFDF,True,0,0,0,80,Canada U24 2025 presenza WFDF,B,profilo di gioco,22,False,stima giovanile,u24can25x
+media,Vancouver Traffic,Marie-Ève Beauchemin,in rosa,87,80.75,usau-event-roster-traffic,4,Canada senior 2024 presenza WFDF | club 2024 profilo individuale | club 2025 profilo individuale,True,0,0,0,87,Canada senior 2024 presenza WFDF,H,profilo di gioco,37,False,guida-2021,clubpreview24 | clubpreview25 | guida-2021 | wuccan24w
+bassa,Vancouver Traffic,Megan Schroeder,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Vancouver Traffic,Rvee Brillantes,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+media,Vancouver Traffic,Sarah Norton,in rosa,87,80.75,usau-event-roster-traffic,4,Canada senior 2024 presenza WFDF | club 2025 profilo individuale,True,0,0,0,87,Canada senior 2024 presenza WFDF,B,profilo di gioco,32,False,guida-2021,clubpreview25 | guida-2021 | wuccan24w
+bassa,Vancouver Traffic,Sarah O'Reilly,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Vancouver Traffic,Selina Liang,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+media,Vancouver Traffic,Sophia Chan,in rosa,87,80.75,usau-event-roster-traffic,4,Canada senior 2024 presenza WFDF,True,0,0,0,87,Canada senior 2024 presenza WFDF,H,profilo di gioco,29,False,stima di gioco,wuccan24w
+bassa,Vancouver Traffic,Tina Wang,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Vancouver Traffic,Victoria Li,in rosa,81,80.75,usau-event-roster-traffic,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,Vice,Aliza Cotton,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Vice,Anna Arpaci-Dusseau,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,Vice,Claire Dutton,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Vice,Emily Matthews,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Vice,Emma Ellefson-Frank,in rosa,78,76.52,usau-event-roster-vice,1,USA U24 2025 invito,False,0,0,0,0,,B,profilo di gioco,24,False,stima giovanile,u24inv25
+bassa,Vice,Eva Arfa,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+bassa,Vice,Hannah Broos,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Vice,Ina Wolovitz,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Vice,Jaquille Jones,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Vice,Jillian Stark,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Vice,Karina Palos,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Vice,Katelyn Abellera,in rosa,78,76.52,usau-event-roster-vice,1,USA U24 2027 invito,False,0,0,0,0,,B,profilo di gioco,20,False,stima giovanile,u24inv27
+bassa,Vice,Katherine Lew,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Vice,Lucy Grossbard,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Vice,Max Rachmuth,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Vice,Meadbh Koenigsberg,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Vice,Megan Gillen,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Vice,Megan Mathieu,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Vice,Phoebe McMahon,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Vice,Ryanne Barrett,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Vice,Sarah Capute,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+bassa,Vice,Sophie Hankin,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Vice,Sophie Taylor,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,Vice,Theresa Cloutier,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,H,profilo di gioco,23,False,stima di gioco,
+bassa,Vice,Veronika Pister,in rosa,77,76.52,usau-event-roster-vice,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Vice,Veronika Tio,in rosa,78,76.52,usau-event-roster-vice,1,USA U20 2026 invito,False,0,0,0,0,,B,profilo di gioco,19,False,stima giovanile,u20inv26
+bassa,Washington Grit,Abigail Freund,in rosa,79,77.78,usau-event-roster-grit,1,USA U20 2024 invito,False,0,0,0,0,,B,profilo di gioco,21,False,stima giovanile,u20inv24
+media,Washington Grit,Adilina Malave,in rosa,82,77.78,usau-event-roster-grit,2,USA beach senior 2025 invito,False,0,0,0,82,USA beach senior 2025 invito,B,profilo di gioco,29,False,stima di gioco,beachinv25
+bassa,Washington Grit,Alexandra Greer,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Washington Grit,Carolyn Clendenin,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+media,Washington Grit,Chloe Wade,in rosa,82,77.78,usau-event-roster-grit,2,USA beach senior 2025 invito,False,0,0,0,82,USA beach senior 2025 invito,H,profilo di gioco,19,False,stima di gioco,beachinv25
+bassa,Washington Grit,Claudia Wang,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Washington Grit,Emma Vorathiankul,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Washington Grit,Genevieve Leo,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Washington Grit,Grace Stephan,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Washington Grit,Hana Choi,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,Washington Grit,Isabella DiFulvio,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+media,Washington Grit,Juliette Warga,in rosa,79,77.78,usau-event-roster-grit,1,USA U24 2027 invito,False,0,0,0,75,PUL 2026,H,profilo di gioco,22,False,stima giovanile,pul-2026-dc | u24inv27
+bassa,Washington Grit,Kate Trenerry,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Washington Grit,Keisha Enriquez,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Washington Grit,Kinsey Miller,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,30,False,guida-2021,guida-2021
+bassa,Washington Grit,Lucie Warga,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Washington Grit,Madalyn Sica,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Washington Grit,Mariska Bogaard,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Washington Grit,Megan Kennedy,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Washington Grit,Meghan Bartlett,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Washington Grit,Michelle Cabahug,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Washington Grit,Molly Barlow,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,H,profilo di gioco,21,False,stima di gioco,
+bassa,Washington Grit,Paige Nelson,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,22,False,stima di gioco,
+bassa,Washington Grit,Sarah Badawi,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,H,profilo di gioco,27,False,stima di gioco,
+bassa,Washington Grit,Sophie Westen,in rosa,78,77.78,usau-event-roster-grit,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+media,Washington Grit,Sydney Mannion,in rosa,80,77.78,usau-event-roster-grit,2,USA U20 2022 rosa annunciata | USA U24 2023 invito | USA U24 2025 invito,True,0,0,0,75,USA U20 2022 rosa annunciata,H,profilo di gioco,19,False,stima giovanile,u20usa22 | u24inv23 | u24inv25
+alta,Washington Scandal,Allie Wallace,in rosa,92,87.61,usau-nationals-roster-01,0,,False,2.4,0.77,1.5,78,PUL 2026,B,profilo di gioco,25,False,stima di gioco,pul-2026-dc | wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625 | wucc-game-wakanda-scandal-1300
+media,Washington Scandal,Amanda Murphy,in rosa,88,87.61,usau-nationals-roster-01,0,,False,0,0.0,0.86,81,PUL 2026,D,statistiche,23,False,stima di gioco,pul-2026-dc | wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625
+media,Washington Scandal,Anna Cauchy,in rosa,91,87.61,usau-nationals-roster-01,0,,False,3.13,0.61,0,0,,D,statistiche,27,False,stima di gioco,wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625
+alta,Washington Scandal,Ashleigh Jentilet,in rosa,88,87.61,usau-nationals-roster-01,0,,False,0.53,0.2,0,84,PUL 2026,C,statistiche,29,False,stima di gioco,pul-2026-dc | wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625
+media,Washington Scandal,Becca Arbacher,in rosa,87,87.61,usau-nationals-roster-01,0,,False,-0.6,0.0,0,0,,C,statistiche,22,False,stima di gioco,wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625
+alta,Washington Scandal,Claire Trop,in rosa,93,87.61,usau-nationals-roster-01,0,,False,7,0.67,0.29,93,All-Club First Team | Top 25 #2 | WUC 2024 Women | World Games 2025 Mixed,H,statistiche,27,True,wg-libro,guida-2021 | ultiworld-all1 | ultiworld-top25 | usa24 | usa25 | wg-libro | wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625
+alta,Washington Scandal,Erica Birdsong,in rosa,90,87.61,usau-nationals-roster-01,0,,False,1.2,0.44,0.5,83,PUL 2026 | WU24 2025 Mixed,H,statistiche,22,False,stima giovanile,pul-2026-raleigh | usa-u24-25 | wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625 | wucc-game-wakanda-scandal-1300
+alta,Washington Scandal,Graham Cunningham,in rosa,86,87.61,usau-nationals-roster-01,0,,False,-1.27,0.0,0,80,PUL 2026 | WU24 2025 Mixed,H,statistiche,24,False,stima giovanile,pul-2026-philadelphia | usa-u24-25 | wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625 | wucc-game-wakanda-scandal-1300
+media,Washington Scandal,Jessica Oh,in rosa,87,87.61,usau-nationals-roster-01,0,,False,-0.6,0.2,0,0,,H,statistiche,26,False,stima di gioco,
+media,Washington Scandal,Jordan Sorensen,in rosa,90,87.61,usau-nationals-roster-01,0,,False,2.2,0.37,0,0,,B,profilo di gioco,21,False,stima di gioco,pul-2026-dc | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625 | wucc-game-wakanda-scandal-1300
+alta,Washington Scandal,Kameryn Groom,in rosa,93,87.61,usau-nationals-roster-01,0,,False,7,1.41,0.75,93,All-Club First Team | WUC 2024 Women | World Games 2025 Mixed,C,statistiche,36,True,wg-libro,guida-2021 | ultiworld-all1 | usa24 | usa25 | wg-libro | wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625 | wucc-game-wakanda-scandal-1300
+media,Washington Scandal,Kathryn Ritzmann,in rosa,88,87.61,usau-nationals-roster-01,0,,False,-0.03,0.2,0,0,,C,statistiche,26,False,stima di gioco,wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625
+alta,Washington Scandal,Katrina McGuire,in rosa,91,87.61,usau-nationals-roster-01,0,,False,0.3,0.17,3.0,80,PUL 2026,C,statistiche,31,False,stima di gioco,pul-2026-dc | wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625 | wucc-game-wakanda-scandal-1300
+alta,Washington Scandal,Kira Flores,in rosa,89,87.61,usau-nationals-roster-01,0,,False,-0.27,0.1,1.14,85,PUL 2026,H,statistiche,24,False,stima di gioco,pul-2026-dc | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625 | wucc-game-wakanda-scandal-1300
+alta,Washington Scandal,Lily Johnson,in rosa,93,87.61,usau-nationals-roster-01,0,,False,4.7,0.71,0,85,PUL 2026,D,statistiche,30,False,stima di gioco,pul-2026-dc
+media,Washington Scandal,Lisi Lohre,in rosa,89,87.61,usau-nationals-roster-01,0,,False,1.2,0.54,0,0,,H,statistiche,30,False,stima di gioco,wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625 | wucc-game-wakanda-scandal-1300
+media,Washington Scandal,Maddy Boyle,in rosa,88,87.61,usau-nationals-roster-01,0,,False,0.63,0.0,0,0,,C,statistiche,23,False,stima di gioco,wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625 | wucc-game-wakanda-scandal-1300
+alta,Washington Scandal,Malisa Dang,in rosa,89,87.61,usau-nationals-roster-01,0,,False,0.4,0.47,0.57,0,,H,statistiche,31,False,stima di gioco,wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625
+media,Washington Scandal,Margaret Walker,in rosa,90,87.61,usau-nationals-roster-01,0,,False,2.2,0.37,0,0,,H,statistiche,31,False,stima di gioco,wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625
+alta,Washington Scandal,Marie Perivier,in rosa,90,87.61,usau-nationals-roster-01,0,,False,1.4,0.67,0,85,PUL 2026,C,statistiche,27,False,stima di gioco,pul-2026-atlanta
+alta,Washington Scandal,Marika Korpinen,in rosa,86,87.61,usau-nationals-roster-01,0,,False,-2,0.0,0.25,83,PUL 2026,D,statistiche,26,False,stima di gioco,pul-2026-dc | wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625 | wucc-game-wakanda-scandal-1300
+alta,Washington Scandal,Mary Rippe,in rosa,86,87.61,usau-nationals-roster-01,0,,False,-2,0.1,0,79,PUL 2026,C,statistiche,30,False,guida-2021,guida-2021 | pul-2026-raleigh | wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625 | wucc-game-wakanda-scandal-1300
+media,Washington Scandal,Michiko Ishii-Magnant,in rosa,86,87.61,usau-nationals-roster-01,0,,False,-1.83,0.0,0,0,,B,profilo di gioco,27,False,stima di gioco,
+alta,Washington Scandal,Sami Smalling,in rosa,91,87.61,usau-nationals-roster-01,0,,False,2.3,0.4,1.14,90,All-Club Second Team | PUL 2026,H,statistiche,19,False,stima di gioco,pul-2026-dc | ultiworld-all2 | wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625
+media,Washington Scandal,Tyler Smith,in rosa,90,87.61,usau-nationals-roster-01,0,,False,0,0.0,2.29,81,PUL 2026,H,statistiche,28,False,guida-2021,guida-2021 | pul-2026-dc | wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625
+media,Washington Scandal,Verena Woloson,in rosa,88,87.61,usau-nationals-roster-01,0,,False,0.4,0.2,0,0,,C,statistiche,30,False,stima di gioco,wucc-game-bfd-shout-scandal-1325 | wucc-game-ellipsis-scandal-1614 | wucc-game-scandal-fury-1625 | wucc-game-wakanda-scandal-1300
+bassa,Wicked,Abby Acker,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Wicked,Amanda Borders,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Wicked,Carly Cameron,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Wicked,Catherine Mittlieder,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,H,profilo di gioco,28,False,stima di gioco,
+bassa,Wicked,Electa Ward,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Wicked,Emily Tucker,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+bassa,Wicked,Emma Lien,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+bassa,Wicked,Georgia Hansen,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+bassa,Wicked,Haylie Shoemaker,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Wicked,Heather Fielding Gebhardt,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Wicked,Jessica Smith,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Wicked,Jessica Tiller,in rosa,75,75.44,usau-event-roster-wicked,0,club 2024 affiliazione precedente,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,clubpreview24
+bassa,Wicked,Jordan Warren,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Wicked,Karissa Jenesse,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Wicked,Katie Bruggeman,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Wicked,Kayla Gerlt,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Wicked,Liz Walters,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Wicked,Mei Lin Branit,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Wicked,Moriah Becquer,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Wicked,Nadine Rowen,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,H,profilo di gioco,26,False,stima di gioco,
+bassa,Wicked,REMY NIMAN,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Wicked,Rebekah Seyfert,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Wicked,Stephanie Rupp,in rosa,75,75.44,usau-event-roster-wicked,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Wildfire,Ananya Shaligram,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Wildfire,Audrey Schneider,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Wildfire,Cindy Yang,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Wildfire,Cora Reese,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Wildfire,Cynthia Ju,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Wildfire,Daisy Cuthbert,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,Wildfire,Danielle Weatherwax,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,20,False,stima di gioco,
+bassa,Wildfire,Dylan Mullaney,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Wildfire,Fabiola Lopez,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,H,profilo di gioco,29,False,stima di gioco,
+bassa,Wildfire,Felicia Cruz,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,26,False,stima di gioco,
+bassa,Wildfire,Gabby Wang,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,H,profilo di gioco,24,False,stima di gioco,
+bassa,Wildfire,Katherine Li,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Wildfire,Kayla Keegan,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,H,profilo di gioco,32,False,stima di gioco,
+bassa,Wildfire,Morgan Eng,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Wildfire,Nicole Moran,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+bassa,Wildfire,Nicole Patterson,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,31,False,stima di gioco,
+bassa,Wildfire,Parissa Teli,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,H,profilo di gioco,30,False,stima di gioco,
+bassa,Wildfire,Sam Medina,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Wildfire,Sophia Fitch,in rosa,76,75.85,usau-event-roster-wildfire,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+media,Wildfire,Teresa Feng,in rosa,77,75.85,usau-event-roster-wildfire,1,club 2024 profilo individuale,True,0,0,0,0,,B,profilo di gioco,37,False,guida-2021,clubpreview24 | guida-2021
+media,Wildfire,Vivi Stevens,in rosa,77,75.85,usau-event-roster-wildfire,1,club 2024 profilo individuale | club 2025 profilo individuale,True,0,0,0,0,,H,profilo di gioco,43,False,guida-2021,clubpreview24 | clubpreview25 | guida-2021
+bassa,Zephyr,Alexis Patterson,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Zephyr,Anna Bingham,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Zephyr,Anya Rainwater,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Zephyr,Ashika Mani,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,32,False,stima di gioco,
+bassa,Zephyr,Caitlin Gee,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,H,profilo di gioco,21,False,stima di gioco,
+bassa,Zephyr,Celia Nicholson,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Zephyr,Clara Morton,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+bassa,Zephyr,Dalia Weinstein,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,23,False,stima di gioco,
+bassa,Zephyr,Devin Feigelson,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Zephyr,Ella Kesler,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,24,False,stima di gioco,
+bassa,Zephyr,Emily Fridberg,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,H,profilo di gioco,22,False,stima di gioco,
+bassa,Zephyr,Hannah Aaron,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,30,False,stima di gioco,
+bassa,Zephyr,Hannah Short,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Zephyr,Izzy Heal,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,H,profilo di gioco,20,False,stima di gioco,
+bassa,Zephyr,Jenna Borges,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,21,False,stima di gioco,
+bassa,Zephyr,Julia Larson,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,28,False,stima di gioco,
+bassa,Zephyr,Jy Link Francis,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Zephyr,Kai Inoki,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,25,False,stima di gioco,
+bassa,Zephyr,Maia Nguyen,identità da verificare,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,19,False,stima di gioco,
+bassa,Zephyr,Meghan Wadlinger,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Zephyr,Olivia Fox,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Zephyr,Rachel Rivera,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,H,profilo di gioco,25,False,stima di gioco,
+bassa,Zephyr,Sharon Chen,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,H,profilo di gioco,31,False,stima di gioco,
+bassa,Zephyr,Sonia Nicholson,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,H,profilo di gioco,26,False,stima di gioco,
+bassa,Zephyr,Victoria Wischerth,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,B,profilo di gioco,29,False,stima di gioco,
+bassa,Zephyr,Violet Abrahamsson,in rosa,76,75.91,usau-event-roster-zephyr,0,,False,0,0,0,0,,H,profilo di gioco,19,False,stima di gioco,

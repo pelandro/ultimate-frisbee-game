@@ -8,7 +8,7 @@ const teamLevel=n=>n===SV.team?squadLevel():(SV.rost[n]?rosterLevel(SV.rost[n]):
 // giocatore generato (giovane del vivaio, svincolato, rincalzo di una squadra): livello ed eta' richiesti, potenziale variabile
 function genPlayer(level,age,seedStr,potB){
   const rng=mulberry32(hashStr(seedStr)),R=(a,b)=>a+rng()*(b-a);
-  const NP=isUS()?US_FN:(isLN()?LN_POOL[SV.lk].f:NAME_POOL),SP=isUS()?US_LN:(isLN()?LN_POOL[SV.lk].l:SURN),nm=NP[Math.floor(rng()*NP.length)],sur=SP[Math.floor(rng()*SP.length)],full=sur+' '+nm+' '+String.fromCharCode(65+hashStr(seedStr)%26)+(hashStr(seedStr+'x')%90+10);
+  const NP=isUS()?(lnWomenNow()?UW_FN:US_FN):(isLN()?LN_POOL[SV.lk].f:NAME_POOL),SP=isUS()?US_LN:(isLN()?LN_POOL[SV.lk].l:SURN),nm=NP[Math.floor(rng()*NP.length)],sur=SP[Math.floor(rng()*SP.length)],full=sur+' '+nm+' '+String.fromCharCode(65+hashStr(seedStr)%26)+(hashStr(seedStr+'x')%90+10);
   const role=rng()<0.45?'H':'C',d=role==='H'?0.5:-0.5,pb0=potB===undefined?level+R(5,24):potB,pb=pb0>90?90+(pb0-90)*0.45:pb0;
   const tg=x=>clamp(Math.round(pb+x+R(-4,4)),45,99),tl=tg(4*d),tf=tg(-4*d),tv=tg(0),st={};
   KEYS.forEach(k=>{const g=(k==='lan'||k==='buc'||k==='spa')?'L':(k==='vis'?'V':'F'),off=g==='L'?9*d:(g==='V'?3*d:-7*d);st[k]=clamp(Math.round(level+off+R(-5,5)),25,capVal(full,k,g==='L'?tl:(g==='V'?tv:tf)));});
@@ -64,7 +64,7 @@ function menNames(d){
 }
 function careerInit(){   // campi nuovi della carriera (anche per i salvataggi piu' vecchi)
   if(SV.cash===undefined)SV.cash=Math.max(Math.round(70*SR_K[SV.sr]),wageBill()*4);   // in cassa almeno quattro partite di stipendi: le rose lunghe di USA ed Europa altrimenti partivano in rosso
-  if(SV.rep===undefined)SV.rep=SV.sr==='U'?usRepStart():(isLN()?lnRepStart():(SV.sr==='A'?60:(SV.sr==='B'?40:20)));
+  if(SV.rep===undefined)SV.rep=isUS()?usRepStart():(isLN()?lnRepStart():(SV.sr==='A'?60:(SV.sr==='B'?40:20)));
   migrateFacilities();
   if(!SV.staff)SV.staff={};if(!SV.duo)SV.duo={};if(SV.tInt===undefined)SV.tInt=1;if(!SV.facKeep)SV.facKeep={};if(SV.dom===undefined)SV.dom=0;if(SV.facRnd===undefined){SV.facRnd=SV.event==='camp'?(SV.round|0):0;SV.facDays={};for(const k in (SV.fac||{}))if((SV.fac[k]|0)>=3)SV.facDays[k]=SV.facRnd;}   // salvataggi di prima: le strutture gia' al livello 3 contano come mantenute da inizio stagione   // carriera dinamica: intensita' normale, nessun premio di mantenimento maturato, nessun dominio
   if(SV.fans===undefined)SV.fans=SV.rep;

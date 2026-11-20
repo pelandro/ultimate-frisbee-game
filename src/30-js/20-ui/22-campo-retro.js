@@ -19,6 +19,7 @@ function vnLand(V){
     else if(typeof SV!=='undefined'&&SV&&SV.lk)l=SV.lk;
   }catch(e){}
   if(l==='IW')l='IT';
+  if(l==='UW')l='US';
   V.land=l;return l;
 }
 // ---------- colori ----------
