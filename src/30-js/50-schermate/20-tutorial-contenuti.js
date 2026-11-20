@@ -177,7 +177,7 @@ tip:`Nei playoff ogni partita conta: giocale tu.`},
 tip:`Un buon giocatore in panchina troppo a lungo ti lascia: ruotalo oppure promettigli spazio.`}
 ]});
 
-TUT.push({id:'lega',t:'I campionati',sub:'Italia, USA Men’s Club, Belgio, Francia, Germania, Regno Unito, Campionato europeo.',
+TUT.push({id:'lega',t:'I campionati',sub:'Italia, USA Men’s e Women’s Club, Belgio, Francia, Germania, Regno Unito, Campionato europeo.',
 intro:'Ogni campionato ha il suo formato, ricostruito su quello vero. Leggi solo quello che giochi.',
 les:[
 {id:'lega-it',t:'Italia: Serie A, B e C',b:[
@@ -186,12 +186,12 @@ les:[
 `<b>Serie B e C</b>: 1ª promossa, 2ª-5ª spareggio per la promozione.`,
 `Prime 3 della Serie A dopo i playoff al <b>Campionato europeo (EUCF)</b>, che si gioca prima del prossimo campionato.`]],
 tip:`Dopo uno scudetto le rivali di Serie A si rinforzano: investi in rosa e strutture per difendere il titolo.`},
-{id:'lega-usa',t:'USA Men’s Club',b:[
-`<b>48 club</b> veri in <b>8 Conference</b> da 6. Niente promozioni né retrocessioni.`,
+{id:'lega-usa',t:'USA Men’s e Women’s Club',b:[
+`<b>48 club</b> veri in <b>8 Conference</b> da 6 per divisione. Niente promozioni né retrocessioni.`,
 [`<b>Stagione</b>: 5 giornate nella tua Conference e 7 <b>partite interregionali</b>, una contro ciascuna delle altre Conference. Le interregionali non contano per la classifica ma per il ranking.`,
 `<b>Ranking</b>: sale con le vittorie (di più contro avversarie forti e con margini larghi). Decide quanti posti ai Nationals ha ogni regione.`,
 `<b>Posti</b>: ogni Conference ha 1 posto diretto; altri 8 vanno alle regioni per ranking. Chi non è diretto può giocare il <b>Play-in</b>: gara secca, chi vince va ai Nationals.`,
-`<b>Nationals</b>: 16 squadre in 4 gironi da 4; poi quarti, semifinali e finale.`],
+`<b>Nationals</b>: 16 squadre in 4 gironi da 4. Le prime vanno ai quarti, seconde e terze ai prequarti. Seguono semifinali e finale.`],
 `In Classifica: verde = Nationals diretti, giallo = Play-in, rosso = fuori.`],
 tip:`Con solo 5 turni di Conference ogni partita pesa: gioca tu quelle contro le rivali dirette.`},
 {id:'lega-eu',t:'Europa: campionati nazionali ed EUCF',b:[

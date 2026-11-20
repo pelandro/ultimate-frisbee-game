@@ -12,7 +12,7 @@
 /* Germania: tre bande orizzontali */
 #lgList .lgflag[data-lg="DE"]{--flag:linear-gradient(#111 0 33.4%,#dd0000 33.4% 66.6%,#ffce00 66.6%)}
 /* USA: il riquadro blu in alto a sinistra sopra le tredici strisce */
-#lgList .lgflag[data-lg="US"]{--flag:linear-gradient(#3c3b6e,#3c3b6e) 0 0/40% 53.9% no-repeat,repeating-linear-gradient(#b22234 0 7.69%,#f4f5f0 7.69% 15.38%)}
+#lgList .lgflag[data-lg="US"],#lgList .lgflag[data-lg="UW"]{--flag:linear-gradient(#3c3b6e,#3c3b6e) 0 0/40% 53.9% no-repeat,repeating-linear-gradient(#b22234 0 7.69%,#f4f5f0 7.69% 15.38%)}
 /* Regno Unito: croce rossa su croce bianca, diagonali, fondo blu (gli angoli «to top right» seguono le diagonali della scheda) */
 #lgList .lgflag[data-lg="UK"]{--flag:
   linear-gradient(90deg,transparent calc(50% - 7px),#c8102e calc(50% - 7px) calc(50% + 7px),transparent calc(50% + 7px)),

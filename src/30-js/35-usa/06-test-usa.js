@@ -102,6 +102,20 @@ function usaSelfTest(seasons,seed){
     chk('lega',!isUS()&&SV.sr==='A'&&SV.troph===t1&&!!SV.coach,'da USA a Italia');
     SV.job={club:'Seattle Sockeye',lk:'US',season:SV.season,round:0};crossLgAnswer({act:'job'},'yes');
     chk('lega',isUS()&&SV.team==='Seattle Sockeye','da Italia a USA');
+    // Dieci atlete a SCINNY: anche la distinta più corta può finire una stagione.
+    startCareer('Omega Continuum',{});
+    chk('women',SV.sr==='UW'&&SQ.length===10&&SQ.every(p=>p.f)&&foreignClubs().every(n=>clubLega(n)==='IW'),'avvio o mercato Women');
+    for(let g=0;!SV.done&&g<24;g++){
+      const m=nextMatch();
+      chk('women',m&&UW_ROSTERS[m.name],'avversaria in carriera Women');
+      const [a,b]=simPower(SV.team,m.name);recordResult(a>b,a,b);hide();
+      if(g===2){
+        const snap=Object.assign({},SV,{squad:squadData(),lineup:lineupIds()});
+        chk('women',loadSave(snap)&&SV.lk==='UW'&&SQ.length===10,'ricarica Women');
+      }
+    }
+    chk('women',SV.done&&SV.us.q.length===16&&SV.us.q.every(n=>UW_ROSTERS[n])&&SV.next.champs.UW===SV.us.nat.champ,'Nationals Women');
+    chk('women',newSeason()&&SV.sr==='UW'&&usRankList().length===48&&SV.market.every(m=>m.o.f),'seconda stagione Women');
     // l'Italia e' com'era
     startCareer(SERIES.C[2],{});
     chk('italia',!isUS()&&SV.sr==='C'&&SV.sched.length===15&&Object.keys(SV.mem).join()==='A,B,C'&&!SV.us,'carriera italiana invariata');
@@ -133,6 +147,7 @@ function usaSelfTest(seasons,seed){
   r('Internazionali del mercato: provenienza solo da club dei Nationals/europei o paese (mai squadre UFA), senza doppioni, Overall coerente con i premi','stelle',`sì (${STARS.length} giocatori)`);
   r('Classifica USA: le viste Conference, Nationals (gironi e tabellone) e Ranking si aprono in ogni fase della stagione','viste','sì');
   r('Cambio di lega Italia ↔ USA: allenatore e trofei restano','lega','sì');
+  r('USA Women: rosa corta, mercato, salvataggio, Nationals e stagione successiva','women','sì');
   r('Campionato italiano invariato','italia','sì');
   return rows;
 }
@@ -141,7 +156,7 @@ function runUsaDiag(){
   $('dgOut').innerHTML='';$('dgState').textContent='Carriere USA di prova…';
   setTimeout(()=>{
     const rows=usaSelfTest(6,2026),ok=rows.filter(r=>r.ok).length;diagBusy=false;
-    $('dgOut').innerHTML=`<div class="ccard" style="margin-bottom:6px"><h3>Campionato USA: 4 carriere da 6 stagioni</h3><ul class="nlist">${rows.map(r=>`<li><i style="color:${r.ok?'var(--good)':'var(--bad)'}">${r.ok?'OK':'NO'}</i> ${esc(r.name)}: <b>${esc(r.val)}</b></li>`).join('')}</ul></div>`;
+    $('dgOut').innerHTML=`<div class="ccard" style="margin-bottom:6px"><h3>Campionato USA: carriere Men’s e Women’s</h3><ul class="nlist">${rows.map(r=>`<li><i style="color:${r.ok?'var(--good)':'var(--bad)'}">${r.ok?'OK':'NO'}</i> ${esc(r.name)}: <b>${esc(r.val)}</b></li>`).join('')}</ul></div>`;
     $('dgState').textContent=`Finito: ${ok} controlli superati su ${rows.length}.`;
   },60);
 }

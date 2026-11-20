@@ -13,7 +13,7 @@
 // le entrate non dipendono dalla tua rosa. La curva passa per i valori dell'Italia (Serie C 1, B 1,3, A 1,65), che restano come prima.
 const ECO_REF=[[84,1],[253,1.3],[511,1.65]],ECO_RS=16,ECO_OWN=0.8;
 function ecoPeers(){
-  if(isUS())return US_NAMES;
+  if(isUS())return usClubs();
   if(isLN()&&SV.ln&&SV.ln.T&&SV.ln.T[SV.ln.tier])return SV.ln.T[SV.ln.tier].flatMap(c=>c.pools?c.pools.flat():(c.clubs||[]));
   return (SV.mem&&SV.mem[SV.sr])||[];
 }
