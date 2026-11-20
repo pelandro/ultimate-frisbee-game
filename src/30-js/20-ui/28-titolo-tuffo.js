@@ -6,6 +6,27 @@
 const titleBg=()=>!G.inMatch&&!G.drill&&G.mode==='home'&&!$('title').classList.contains('hidden');
 const TD_WHO={t:0,look:{hair:'#2b1b10',skin:'#d9a57c',style:1,hs:1,bw:1,hd:1}};
 const TD_ROT=1.0,TD_LEAP=0.5,TD_TILT=-6;   // TD_TILT: il disco resta inclinato verso l'alto, come quando fluttua sotto l'insegna   // inclinazione del tuffo (in salita verso il disco) e durata del volo, in secondi
+let TDL='sopra';   // prova: 'sopra' = il giocatore sopra il velo del menu (come il disco), 'sotto' = il disco disegnato nel campo, sotto il velo
+// tela sopra il velo del menu: tra lo sfondo di #title e i suoi contenuti, alla stessa scala del campo
+let tdCv=null;
+function tdOnTop(fn){
+  if(TDL!=='sopra'){if(tdCv)tdCv.style.display='none';return fn();}
+  if(!tdCv){tdCv=document.createElement('canvas');tdCv.id='tdCv';tdCv.setAttribute('aria-hidden','true');$('title').prepend(tdCv);}
+  const k=tdK();if(tdCv.width!==VW||tdCv.height!==VH){tdCv.width=VW;tdCv.height=VH;}
+  tdCv.style.display='';tdCv.style.width=VW*k+'px';tdCv.style.height=VH*k+'px';
+  const keep=ctx;ctx=tdCv.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,VW,VH);
+  try{fn();}finally{ctx=keep;}
+}
+// il disco dell'insegna come immagine (senza la sua ombra), per disegnarlo nel campo
+let tdImg=null;
+function tdDiscImg(el){
+  if(!tdImg){
+    const s=el.cloneNode(true);s.querySelector('.fbShadow')?.remove();s.removeAttribute('class');s.removeAttribute('style');s.removeAttribute('data-tdt');
+    s.setAttribute('xmlns','http://www.w3.org/2000/svg');s.setAttribute('width','240');s.setAttribute('height','84');
+    tdImg=new Image();tdImg.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s.outerHTML);
+  }
+  return tdImg.complete&&tdImg.naturalWidth?tdImg:null;
+}
 const TDS={t:-1,done:false,from:null,c0:null,key:''};
 // athlete legge la divisa da cine.kits: qui ne serve una sola, la prima del campo
 function tdAthlete(x,gy,hip,pose,rot,tt,hu){
@@ -56,20 +77,26 @@ function drawTitleDive(dt){
   const F=tdFinal(B),hu=F.hu;
   if(!TDS.done)TDS.t+=Math.min(dt||0,0.05);
   const xr=F.x-hu*1.7,x0=-hu*1.5,run=clamp((xr-x0)/(VW*0.4),0.9,1.8),t=TDS.t;
-  if(TDS.done||t>=run+TD_LEAP){   // fermo: la presa al culmine del tuffo, con la luce dietro
-    TDS.done=true;
+  if(t>=run+TD_LEAP)TDS.done=true;
+  let x,hip,pose,rot,dx,dy,lines=false;
+  if(TDS.done){x=F.x;hip=F.hip;pose='dive';rot=TD_ROT;dx=F.T.x;dy=F.T.y;   // fermo: la presa al culmine del tuffo, con la luce dietro
     const g=ctx.createRadialGradient(F.T.x,F.T.y,4,F.T.x,F.T.y,hu*3.2);g.addColorStop(0,'rgba(255,248,214,.45)');g.addColorStop(1,'rgba(255,248,214,0)');ctx.fillStyle=g;ctx.fillRect(0,0,VW,VH);
-    pell(ri(F.x+hu*0.1),F.gy,ri(hu*1.1),Math.max(2,ri(hu*0.1)),'rgba(20,40,20,.35)');
-    tdAthlete(F.x,F.gy,F.hip,'dive',TD_ROT,0,hu);
-    tdPlace(el,F.T.x,F.T.y,TD_TILT);
-    return;
+  }else{
+    // il disco va dal punto in cui fluttuava fino alla mano, in tempo per la presa
+    const kd=easeIO(clamp(t/(run+TD_LEAP),0,1));dx=TDS.from.x+(F.T.x-TDS.from.x)*kd;dy=TDS.from.y+(F.T.y-TDS.from.y)*kd-Math.sin(Math.PI*kd)*hu*0.25;
+    if(t<run){const k=t/run;x=x0+(xr-x0)*k;hip=0.92;pose='run';rot=0.15;}
+    else{const k=(t-run)/TD_LEAP,e=easeIO(k);x=xr+(F.x-xr)*e;hip=0.92+(F.hip-0.92)*e+Math.sin(Math.PI*k)*0.06;pose='dive';rot=0.85+(TD_ROT-0.85)*e;lines=true;}   // si butta subito in avanti: in piedi la testa finirebbe sotto l'insegna
   }
-  // il disco va dal punto in cui fluttuava fino alla mano, in tempo per la presa
-  const kd=easeIO(clamp(t/(run+TD_LEAP),0,1));tdPlace(el,TDS.from.x+(F.T.x-TDS.from.x)*kd,TDS.from.y+(F.T.y-TDS.from.y)*kd-Math.sin(Math.PI*kd)*hu*0.25,TD_TILT);
-  let x,hip,pose,rot;
-  if(t<run){const k=t/run;x=x0+(xr-x0)*k;hip=0.92;pose='run';rot=0.15;}
-  else{const k=(t-run)/TD_LEAP,e=easeIO(k);x=xr+(F.x-xr)*e;hip=0.92+(F.hip-0.92)*e+Math.sin(Math.PI*k)*0.06;pose='dive';rot=0.85+(TD_ROT-0.85)*e;   // si butta subito in avanti: in piedi la testa finirebbe sotto l'insegna
-    tdLines(x-ri(hu*0.8),F.gy-hip*hu,hu*1.3,hu,0.45);}
-  pell(ri(x+hu*0.1),F.gy,ri(hu*(pose==='dive'?1:0.55)),Math.max(2,ri(hu*0.1)),'rgba(20,40,20,.35)');
-  tdAthlete(x,F.gy,hip,pose,rot,t*13,hu);   // passi piu' fitti: la corsa e' piu' lenta ma le gambe non rallentano
+  pell(ri(x+hu*0.1),F.gy,ri(hu*(pose==='dive'?(TDS.done?1.1:1):0.55)),Math.max(2,ri(hu*0.1)),'rgba(20,40,20,.35)');   // l'ombra resta sul prato, sotto il velo
+  tdOnTop(()=>{
+    if(lines)tdLines(x-ri(hu*0.8),F.gy-hip*hu,hu*1.3,hu,0.45);
+    tdAthlete(x,F.gy,hip,pose,rot,TDS.done?0:t*13,hu);   // passi piu' fitti: la corsa e' piu' lenta ma le gambe non rallentano
+  });
+  tdPlace(el,dx,dy,TD_TILT);
+  const img=TDL==='sotto'?tdDiscImg(el):null;
+  el.style.visibility=img?'hidden':'';
+  if(img){   // il disco disegnato nel campo, sotto il velo come il giocatore: stessa grandezza e inclinazione dell'elemento dell'insegna
+    const w=TDS.c0.w/tdK(),h=w*84/240;
+    ctx.save();ctx.translate(ri(dx),ri(dy));ctx.rotate(TD_TILT*Math.PI/180);ctx.imageSmoothingEnabled=false;ctx.drawImage(img,-ri(w/2),-ri(h/2),ri(w),ri(h));ctx.restore();
+  }
 }
