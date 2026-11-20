@@ -5,14 +5,14 @@
    il disco resta l'elemento della pagina: qui lo si sposta (transform) fino alla mano. Le volte dopo la scena e' gia' ferma. */
 const titleBg=()=>!G.inMatch&&!G.drill&&G.mode==='home'&&!$('title').classList.contains('hidden');
 const TD_WHO={t:0,look:{hair:'#2b1b10',skin:'#d9a57c',style:1,hs:1,bw:1,hd:1}};
-const TD_ROT=1.0,TD_LEAP=0.5,TD_TILT=-6;   // TD_TILT: il disco resta inclinato verso l'alto, come quando fluttua sotto l'insegna   // inclinazione del tuffo (in salita verso il disco) e durata del volo, in secondi
+const TD_MINH=40,TD_ROT=1.0,TD_LEAP=0.5,TD_TILT=-6;   // TD_TILT: il disco resta inclinato verso l'alto, come quando fluttua sotto l'insegna   // inclinazione del tuffo (in salita verso il disco) e durata del volo, in secondi
 let TDL='sopra';   // prova: 'sopra' = il giocatore sopra il velo del menu (come il disco), 'sotto' = il disco disegnato nel campo, sotto il velo
 // tela sopra il velo del menu: tra lo sfondo di #title e i suoi contenuti, alla stessa scala del campo
 let tdCv=null;
 function tdOnTop(fn){
   if(TDL!=='sopra'){if(tdCv)tdCv.style.display='none';return fn();}
   if(!tdCv){tdCv=document.createElement('canvas');tdCv.id='tdCv';tdCv.setAttribute('aria-hidden','true');$('title').prepend(tdCv);}
-  const k=tdK();if(tdCv.width!==VW||tdCv.height!==VH){tdCv.width=VW;tdCv.height=VH;}
+  const k=tdK()/tdZ();if(tdCv.width!==VW||tdCv.height!==VH){tdCv.width=VW;tdCv.height=VH;}
   tdCv.style.display='';tdCv.style.width=VW*k+'px';tdCv.style.height=VH*k+'px';
   const keep=ctx;ctx=tdCv.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,VW,VH);
   try{fn();}finally{ctx=keep;}
@@ -42,6 +42,8 @@ function tdLines(x,y,len,hu,al){
 const titleIntro=()=>TDS.t>=0&&!TDS.done&&titleBg();
 const tdDisc=()=>$('title').querySelector('.ttlDisc');
 const tdK=()=>PXS/DPR;   // da pixel del gioco a pixel della pagina
+// ingrandimento dell'interfaccia (zoom:var(--ui) sulle schermate): dentro #title spostamenti e misure in CSS vengono moltiplicati per questo
+const tdZ=()=>{const t=$('title'),w=t.clientWidth;return w?layRect(t).width/w:1;};
 const tdCtr=el=>{const r=layRect(el);return {x:r.left+r.width/2,y:r.top+r.height/2,w:r.width};};
 // centro del disco senza spostamenti, in pixel della pagina (l'animazione del CSS e' !important: anche questi lo sono)
 function tdRest(el){
@@ -49,15 +51,15 @@ function tdRest(el){
   return tdCtr(el);
 }
 function tdPlace(el,x,y,deg){   // x, y: centro del disco in pixel del gioco
-  const k=tdK(),s=`translate(${(x*k-TDS.c0.x).toFixed(1)}px,${(y*k-TDS.c0.y).toFixed(1)}px) rotate(${deg.toFixed(1)}deg)`;
+  const k=tdK(),z=tdZ(),s=`translate(${((x*k-TDS.c0.x)/z).toFixed(1)}px,${((y*k-TDS.c0.y)/z).toFixed(1)}px) rotate(${deg.toFixed(1)}deg)`;
   if(el.dataset.tdt!==s){el.dataset.tdt=s;el.style.setProperty('transform',s,'important');}
 }
 // lo spazio libero tra l'insegna e i pulsanti, in pixel del gioco
 function titleBand(){
   const k=1/tdK(),a=$('title').querySelector('.hl'),b=$('title').querySelector('.hr');
-  let y0=VH*0.33,y1=VH*0.66;
-  if(a&&b){const ra=layRect(a),rb=layRect(b);if(rb.top>ra.bottom+20){y0=ra.bottom*k;y1=rb.top*k;}}
-  return {y0,y1,h:y1-y0};
+  if(!a||!b)return null;
+  const ra=layRect(a),rb=layRect(b),y0=ra.bottom*k,y1=rb.top*k;
+  return y1-y0>=TD_MINH?{y0,y1,h:y1-y0}:null;   // con l'interfaccia molto grande i pulsanti stanno subito sotto l'insegna: niente scena
 }
 // posa finale: la mano sul bordo del disco, che sta poco a destra del suo posto sotto l'insegna; il resto del corpo scende verso sinistra
 function tdFinal(B){
@@ -69,7 +71,13 @@ function tdFinal(B){
 }
 function drawTitleDive(dt){
   const el=tdDisc();if(!el)return;
-  const B=titleBand(),key=[ri(B.y0),ri(B.y1),VW,VH].join('|');
+  const B=titleBand();
+  if(!B){   // non c'e' spazio: il disco torna a fluttuare sotto l'insegna come prima
+    if(el.classList.contains('tdHold')){el.classList.remove('tdHold');el.style.removeProperty('animation');el.style.removeProperty('transform');el.style.visibility='';el.dataset.tdt='';TDS.key='';}
+    if(tdCv)tdCv.style.display='none';
+    return;
+  }
+  const key=[ri(B.y0),ri(B.y1),VW,VH].join('|');
   if(TDS.t<0||key!==TDS.key){   // primo disegno o schermo cambiato: rilegge dove sta il disco
     const now=tdCtr(el);TDS.c0=tdRest(el);TDS.key=key;el.dataset.tdt='';el.classList.add('tdHold');
     if(TDS.t<0){TDS.t=0;TDS.done=!!reduceMotion;const k=1/tdK();TDS.from={x:now.x*k,y:now.y*k};}
