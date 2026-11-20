@@ -32,6 +32,8 @@ function lnSelfTest(seasons,seed){
          chk('minime',g+lnFinR(tr,sz)>=LN_MIN,`${lk} ${tr.id}${c.id}: la vincitrice gioca ${g}+${lnFinR(tr,sz)}`);
          if(Math.max(...sz)-1+lnFinR(tr,sz)>=LN_MIN)chk('minime',g===Math.max(...sz)-1,`${lk} ${tr.id}: giri aggiunti senza bisogno`);}}
      SV=S0;}
+    // Le integrazioni belghe devono occupare i posti liberi anche quando si applica il foglio Overall.
+    const beReal=new Set();
     // ---- rose: ogni club, con la forza dei dati ----
     for(const n of LN_NAMES){
       const ro=lnRoster(n,'t'),pw=rosterLevel(ro),sv=ro.some(o=>o.star);
@@ -40,6 +42,15 @@ function lnSelfTest(seasons,seed){
       chk('rose',new Set(ro.map(o=>usNameKey(o.label||o.n))).size===ro.length,'giocatore ripetuto in '+n);
       chk('rose',ro.every(o=>ovr(o)>=36&&ovr(o)<=99&&o.age>=(women?14:16)&&(women||o.age<=45)),'giocatore fuori misura in '+n);
       chk('rose',Math.abs(pw-LN_BY[n].p)<=(sv?7:2),'forza di '+n+': '+pw.toFixed(1)+' contro '+LN_BY[n].p);
+      if(LN_BY[n].lk==='BE'){
+        const real=new Map(ro.filter(o=>!o.gen).map(o=>[usNameKey(o.label||o.n),o]));
+        for(const [sur,nm] of LN_BE_ADD[n]||[])chk('rose',real.has(usNameKey(nm+' '+sur)),n+': manca '+nm+' '+sur);
+        for(const [k,o] of real){
+          chk('doppioni',!beReal.has(k),o.label+' in più club belgi');beReal.add(k);
+          const range=LN_BE_AGE[k];
+          if(range&&o.ae)chk('eta',o.age>=range[0]&&(!range[1]||o.age<=range[1]),o.label+': stima fuori dall’intervallo documentato');
+        }
+      }
       for(const o of ro){nAll++;if(!o.gen){nReal++;if(!o.ae)nExact++;}}   // eta' esatta: le stelle del mercato e le poche schede pubbliche
     }
     // forza dei giocatori coerente con quella del club: dentro ogni livello, chi ha un club piu' forte ha giocatori piu' forti (anche in fondo alla rosa)
