@@ -96,8 +96,9 @@ const skOf=(pose,tt)=>typeof pose==='object'?pose:skelOf(pose,tt);
 // il movimento del tuffo nel tempo v dallo stacco (v<0: corsa): carica (0-0,12 s), spinta (fino a 0,24), volo fino alla presa (DV_CT) e caduta in scivolata.
 // xs: dove corre; xc: dove sta l'anca nell'istante della presa; tt: fase della corsa. Tutto continuo (posizione, anca, inclinazione e pose)
 const SK_FLYD={...SK_FLY,dv:true};
-// stesso volo con la presa della mano lontana: il braccio vicino resta piegato sotto e non copre la faccia (menu iniziale)
-const SK_FLY2={...SK_FLY,A:[[[-0.08,-0.48],[-0.04,-0.95],[0,-1.42]],[[0.08,-0.48],[0.24,-0.62],[0.42,-0.82]]],ch:0},SK_FLY2D={...SK_FLY2,dv:true};
+// stesso volo con la presa della mano lontana (la sinistra, piu' lunga: il disco resta lontano dalla testa); la destra, vicina, scende piegata
+// e staccata dal corpo, senza coprire la faccia (menu iniziale)
+const SK_FLY2={...SK_FLY,A:[[[-0.08,-0.48],[-0.04,-1.04],[0,-1.6]],[[0.08,-0.48],[0.36,-0.56],[0.6,-0.74]]],ch:0},SK_FLY2D={...SK_FLY2,dv:true};
 const DV_CT=0.45,DV_LOAD=0.12,DV_PUSH=0.24,DV_ROT=1.47,DV_HIP=0.86;
 function diveMo(v,xs,xc,u,tt){
   if(v<=0)return {dx:xs,hip:0.9,rot:0,pose:'run',tt};
