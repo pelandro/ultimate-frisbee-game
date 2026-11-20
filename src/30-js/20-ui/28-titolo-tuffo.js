@@ -8,7 +8,7 @@ const titleBg=()=>!G.inMatch&&!G.drill&&G.mode==='home'&&!$('title').classList.c
 const TD_WHO={t:0,look:{hair:'#2b1b10',skin:'#d9a57c',style:1,hs:1,bw:1,hd:1}};
 // spazio minimo tra insegna e pulsanti (pixel del gioco), inclinazione del tuffo (in salita verso il disco), durata del volo in secondi,
 // inclinazione del disco (resta verso l'alto, come quando fluttua sotto l'insegna)
-const TD_MINH=40,TD_ROT=1.0,TD_LEAP=0.5,TD_TILT=-6;
+const TD_MINH=40,TD_ROT=1.0,TD_LEAP=0.62,TD_TILT=-6;
 // tela sopra il velo del menu (sfumatura e righe di #title), sotto l'insegna, il disco e i pulsanti, alla stessa scala del campo:
 // disegnato nel campo, sotto il velo, il giocatore sembrava piu' lontano del disco, che sta sopra
 let tdCv=null;
@@ -98,7 +98,7 @@ function drawTitleDive(dt){
   }
   const F=tdFinal(B),hu=F.hu;
   if(!TDS.done)TDS.t+=Math.min(dt||0,0.05);
-  const xr=F.x-hu*1.7,x0=-hu*1.5,run=clamp((xr-x0)/(VW*0.4),0.9,1.8),t=TDS.t;
+  const xr=F.x-hu*1.7,x0=-hu*1.5,run=clamp((xr-x0)/(VW*0.36),1,2),t=TDS.t;
   if(t>=run+TD_LEAP&&!TDS.done){TDS.done=true;TDS.dt=0;}
   if(TDS.done)TDS.dt=(TDS.dt||0)+Math.min(dt||0,0.05);
   const stk=TDS.done?(reduceMotion||TDS.t<0.01?1:clamp(TDS.dt/0.18,0,1)):0;   // l'adesivo arriva con la presa, in un attimo
