@@ -66,12 +66,19 @@ function lnAgeOf(full,age,hi){
   return [h<99&&est>h?ageCap(h,hh):est,false];
 }
 function lnClubAge(club,full,ag){
-  if(ag[1]||LN_BY[club]?.lk!=='BE')return ag;
-  const range=LN_BE_AGE[usNameKey(full)];
+  if(ag[1])return ag;
+  const lk=LN_BY[club]?.lk,ages=lnRosterSources(lk)?.ages;
+  const range=ages?.[usNameKey(full)];
   if(!range)return ag;
   const [lo,hi]=range;
   const age=hi&&ag[0]>hi?ageCap(hi,hashStr('ln|'+full)):ag[0];
   return [Math.max(lo,age),false];
+}
+// Le integrazioni conservano la distribuzione dei ruoli e dell'Overall della rosa di partenza.
+function lnRosterSources(lk){
+  if(lk==='BE')return {names:LN_BE_ADD,ages:LN_BE_AGE};
+  if(lk==='DE')return {names:LN_DE_ADD,ages:LN_DE_AGE};
+  return null;
 }
 // forma della rosa: il giocatore al posto j (0 = il migliore) sta a P + lnShape(j). I primi 7 hanno media 0, cosi' la forza della rosa e' quella del club; il fondo scende piano.
 // I giocatori fissi (stelle del mercato e doppioni) tengono il loro Overall e occupano meta' dei posti in alto: chi gioca con loro non scende sotto il livello del club.
@@ -94,7 +101,7 @@ function lnRoster(club,seedStr,opt){
   });
   real.sort((a,b)=>(b.fx>0?100:b.base)-(a.fx>0?100:a.base)).slice(0,Math.max(0,20-specs.length)).forEach(s=>specs.push(s));   // una rosa ha al massimo 20 giocatori
   const N=Math.min(20,Math.max(opt.n||16,specs.length)),used=new Set(specs.map(s=>s.row[0]+s.row[1])),pool=LN_POOL[B.lk];
-  const extras=LN_BE_ADD[club]||[],have=new Set(extras.length?specs.map(({row:[sur,nm]})=>usNameKey(nm+' '+sur)):[]);
+  const extras=lnRosterSources(B.lk)?.names[club]||[],have=new Set(extras.length?specs.map(({row:[sur,nm]})=>usNameKey(nm+' '+sur)):[]);
   const additions=extras.filter(([sur,nm])=>{
     const k=usNameKey(nm+' '+sur);
     if(have.has(k)||gone.has(k)||LN_OUT.has(k))return false;
