@@ -173,7 +173,7 @@ function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
   seg(sh,[sh[0]+0.03,sh[1]-0.14],0.08,0.08,PXM.SK);   // collo
   // capelli lunghi dietro le spalle
   // testa: sprite ruotato con la figura (vicino al pixel), centro sopra la spalla
-  const dk=pose==='dive'||pose.dv?clamp(rot/1.25,0,1):0,hrot=rot*(1-0.75*dk),hcr=Math.cos(hrot),hsr=Math.sin(hrot);   // tuffo: testa alzata sopra le braccia, sguardo avanti verso il disco
+  const dk=pose==='dive'||pose.dv?clamp(rot/1.25,0,1):0,hrot=hk<0.8?0:rot*(1-0.75*dk),hcr=Math.cos(hrot),hsr=Math.sin(hrot);   // tuffo: testa alzata sopra le braccia, sguardo avanti verso il disco; la testa piccola dei pixel grossi resta dritta (ruotata faceva spuntare pixel isolati)
   const hc=T([sh[0]+0.04-0.26*dk,sh[1]-0.36*PX_OPT.hk+0.06*dk]),sm=hk<0.8,HD=sm?PX_HEAD_S:PX_HEAD[(lk.style|0)%PX_HEAD.length],hd=HD[0],hq=sm?hk*1.5:hk,hw=hd[0].length,hh=hd.length,hcx=HD[1],hcy=HD[2];
   const hmap={S:PXM.HSK,s:PXM.SKD,H:PXM.HR,h:PXM.HD,E:PXM.EYE,M:PXM.MO,W:PXM.WH};
   for(let j=Math.floor(hc[1]-24*hq);j<=Math.ceil(hc[1]+24*hq);j++)for(let i=Math.floor(hc[0]-24*hq);i<=Math.ceil(hc[0]+24*hq);i++){
