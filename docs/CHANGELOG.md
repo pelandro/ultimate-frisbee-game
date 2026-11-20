@@ -4,6 +4,8 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Difesa più attenta al lungo: chi aiuta resta dalla parte della meta e chi marca segue subito lo scatto in profondità. Lo Sparo conta molto di più: con un braccio normale il lancio lungo sbanda, i grandi lanciatori servono tutto il campo.
+- Vicino alla meta i compagni attaccano davvero: lo stack si accorcia dentro la meta, i tagli finiscono oltre la linea e, se tieni il disco a lungo, nessuno resta fermo ad aspettare. Dopo un turnover vicino alla meta parte subito l’attacco in meta.
 - Nomi nelle mete: restano dipinti a terra. Si ingrandiscono e si rimpiccioliscono con il campo (stesso a capo e stesso carattere a ogni zoom) e restano sempre dentro la meta, centrati.
 - Cruscotto della carriera più leggero: «Questa settimana» e il consiglio non stanno più in pagina, sono due pulsanti che aprono una finestra. Il pulsante di «Questa settimana» mostra quante cose ci sono, nel colore della più urgente.
 - Menu iniziale: il giocatore è disegnato a pixel grossi, con la testa più piccola e la faccia visibile; prende il disco con la mano sinistra e, a presa fatta, lui e il disco diventano un adesivo con il bordo bianco e l’ombra. Il disco è più sottile, con pixel grandi come quelli del giocatore. Corsa un po’ più lenta e tuffo più lungo.

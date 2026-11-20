@@ -70,7 +70,10 @@ function pbPos(pb,team,u,y,m){const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ;
   const uu=m==='a'?u:(m==='h'?pb.hu+u:u+pb.shift),yy=m==='h'?pb.hy+y:y;
   return {x:clamp(own+d*uu,1,FIELD_L-1),y:clamp(yy,2.5,FIELD_W-2.5)};}
 function startPlay(team,force){   // force: avvia uno schema preciso (l'attacco in meta) invece di quello scelto
-  const sch=force||(team===0?G.sch.att:G.opp.att),bk=pbBook(sch),book=PLAYBOOK[bk];
+  const sch=force||(team===0?G.sch.att:G.opp.att),h0=G.holder,near=!force&&h0&&h0.t===team&&(h0.x-(dirOf(team)>0?EZ:FIELD_L-EZ))*dirOf(team)>EZ_LINE-EZ_NEAR;
+  // ripresa vicino alla meta (turnover, brick): si gioca subito l'attacco in meta. Prima partiva lo schema solito, che non si sposta oltre 30 m:
+  // lo stack restava fuori dalla meta, a volte dietro a chi aveva il disco
+  const bk=near?'ez':pbBook(sch),book=PLAYBOOK[bk];
   if(!force){if(!G.ezUsed)G.ezUsed=[false,false];G.ezUsed[team]=false;
     if(G.schR){const R=team===0?G.schR:G.defR,k=team===0?G.sch.att:G.sch.def;(R[k]||(R[k]=[0,0]))[0]++;}
     const rp=G.rep||(G.rep=[{k:'',n:0},{k:'',n:0}]),rr=rp[team];if(rr.k===sch)rr.n++;else{rr.k=sch;rr.n=1;}}   // possessi di fila con lo stesso schema: la difesa avversaria si adatta (adaptOf)   // per il riepilogo: possessi per schema (tuo attacco, tua difesa)   // nuovo possesso: l'attacco in meta si puo' usare di nuovo
@@ -82,7 +85,8 @@ function startPlay(team,force){   // force: avvia uno schema preciso (l'attacco 
   // Se chi ha il disco e' lontano dal centro (dopo il pull o un turnover) un altro handler va al centro e riceve il primo passaggio (pb.prep)
   const pb={id:bk,phase:0,stage:'set',stageT:0,shift:clamp(uh,-2,30)-0.6,hu:uh,hy:h.y,follow:{},role:{},rp:{},wp:{},post:{},active:true,ready:false,prep:false};
   const others=T[team].filter(p=>p!==h),setPos={},S0=book.phases[0].set||{};
-  const cspot={x:h.x,y:MID},cen=sch!=='ez'&&Math.abs(h.y-MID)>PB_CENTER?others.filter(p=>p.role==='H').sort((a,b)=>hyp(a.x-cspot.x,a.y-cspot.y)-hyp(b.x-cspot.x,b.y-cspot.y))[0]:null;
+  if(near){if(!G.ezUsed)G.ezUsed=[false,false];G.ezUsed[team]=true;G.st.ez[team]++;}
+  const cspot={x:h.x,y:MID},cen=bk!=='ez'&&Math.abs(h.y-MID)>PB_CENTER?others.filter(p=>p.role==='H').sort((a,b)=>hyp(a.x-cspot.x,a.y-cspot.y)-hyp(b.x-cspot.x,b.y-cspot.y))[0]:null;
   let hr='H1';
   if(cen){const sy=r=>S0[r]?S0[r][1]:(r==='H2'?MID-10:MID+10);hr=Math.abs(sy('H2')-h.y)<=Math.abs(sy('H3')-h.y)?'H2':'H3';pb.prep=true;pb.cspot=cspot;pb.role[cen.id]='H1';pb.rp.H1=cen;}   // chi ha il disco fa da handler di lato, dal suo lato
   pb.role[h.id]=hr;pb.rp[hr]=h;
@@ -99,7 +103,7 @@ function pbTarget(team,p){
   const pb=G.pb&&G.pb[team];if(!pb||!pb.active||!pb.follow[p.id])return null;
   const r=pb.role[p.id],ph=PLAYBOOK[pb.id].phases[pb.phase];if(!r)return null;
   if(pb.prep&&r==='H1')return {x:pb.cspot.x,y:pb.cspot.y,am:1,vm:1};   // l'handler centrale va al centro a prendere il primo passaggio
-  if(pb.phase===0&&pb.stage==='set'){const sp=ph.set[r];if(!sp)return {hold:true};const t=pbPos(pb,team,sp[0],sp[1],sp[2]);return {x:t.x,y:t.y,am:1,vm:0.9};}
+  if(pb.phase===0&&pb.stage==='set'){const sp=ph.set[r];if(!sp)return {hold:true};const t=pbPos(pb,team,sp[0],sp[1],sp[2]),far=hyp(p.x-t.x,p.y-t.y)>10;return {x:t.x,y:t.y,am:far?1.15:1,vm:far?1.05:0.9};}   // chi e' rimasto indietro (dopo un lancio lungo) corre al suo posto
   const way=ph.go[r];if(!way){if(!pb.post[p.id]){const sp=pb.phase===0&&ph.set&&ph.set[r];pb.post[p.id]=sp?pbPos(pb,team,sp[0],sp[1],sp[2]):{x:p.x,y:p.y};}return {free:true,post:pb.post[p.id]};}   // handler dietro: vanno al loro posto e li' cercano di liberarsi
   if(pb.wp[p.id]===undefined){const t0=pbPos(pb,team,way[0][0],way[0][1],way[0][2]);pb.wp[p.id]=(way.length>1&&hyp(p.x-t0.x,p.y-t0.y)>12)?1:0;}   // se parte lontano dal punto della finta, va direttamente al taglio
   let i=pb.wp[p.id],tg=pbPos(pb,team,way[i][0],way[i][1],way[i][2]);
@@ -110,13 +114,14 @@ function updatePlay(dt){
   for(const team of [0,1]){
     const pb=G.pb&&G.pb[team];if(!pb||!pb.active)continue;
     if(G.poss!==team){pb.active=false;continue;}   // possesso perso: finito
+    if(G.holder&&G.holder.t===team&&!G.flight&&G.stallT>(pb.prep?PB_PREP_STALL:pbStall(pb)+PB_END)){pb.active=false;continue;}   // chi ha il disco non ha passato in tempo (succede a chi gioca, che mira con calma): si torna al gioco libero, dove si continua a tagliare; prima i compagni restavano fermi in fondo al loro movimento
     pb.stageT+=dt;
     const book=PLAYBOOK[pb.id],ph=book.phases[pb.phase];
     if(pb.stage==='set'){
       if(G.walk||G.pull||pb.prep)continue;   // finche' il disco non e' all'handler centrale nessuno taglia
       let ok=true;
       for(const p of T[team]){if(!pb.follow[p.id]||p===G.holder)continue;const sp=ph.set[pb.role[p.id]];if(sp){const t=pbPos(pb,team,sp[0],sp[1],sp[2]);if(hyp(p.x-t.x,p.y-t.y)>3.5)ok=false;}}
-      if(ok||pb.stageT>1.2){pb.stage='go';pb.stageT=0;}
+      if(ok||pb.stageT>(book.setT||1.2)){pb.stage='go';pb.stageT=0;}   // setT: quanto si aspetta chi e' in ritardo (l'attacco in meta parte spesso con i compagni lontani)
     }else if(ph.ready){
       const rp=pb.rp[ph.ready];
       if(!rp||!pb.follow[rp.id])pb.ready=true;
@@ -126,7 +131,7 @@ function updatePlay(dt){
   }
 }
 // il portatore aspetta che lo schema sia pronto, ma non oltre lo stall 3: da li' lo schema si abbandona e si gioca libero (PB_STALL)
-const PB_STALL=3,PB_CENTER=6,PB_PREP_STALL=6;   // PB_CENTER: oltre questi metri dal centro chi ha il disco passa prima all'handler centrale; PB_PREP_STALL: fino a quando lo aspetta
+const PB_STALL=3,PB_END=1,PB_CENTER=6,PB_PREP_STALL=6;   // PB_END: secondi dopo lo stall massimo in cui lo schema finisce da solo   // PB_CENTER: oltre questi metri dal centro chi ha il disco passa prima all'handler centrale; PB_PREP_STALL: fino a quando lo aspetta
 const PB_FREE=3.5,PB_FREE_D=2.7;   // distanza minima di un difensore dal ricevitore previsto perche' sia «libero»: 3,5 m con Visione bassa, 0,8 m con Visione alta (da 80)
 const pbStall=pb=>PLAYBOOK[pb.id].stall||PB_STALL;   // gli schemi con piu' tagli di fila (1 in 3-4) aspettano un po' di piu'
 const pbWait=h=>{const pb=G.pb&&G.pb[h.t];if(!pb||!pb.active||!pb.follow[h.id])return false;
@@ -166,9 +171,13 @@ function brickSet(){
     q.x=clamp(m.x+d*(m===H?2.6:2.2),1,FIELD_L-1);q.y=q.mark?m.y:clamp(H.y+(i-3)*4,2.5,FIELD_W-2.5);q.vx=q.vy=0;q.fl=null;q.flD=0;q.boost=0;
   });
 }
+// vicino alla meta la formazione si accorcia: i posti davanti al disco si stringono tra il portatore e RZ_BACK metri dalla linea di fondo,
+// cosi' lo stack sta dentro la meta (prima restava a 13-31 m dal disco e finiva schiacciato contro la linea di fondo)
+const RZ_BACK=3;
 function anchor(sch,slot,H,d,side){
-  const s=SLOTS[sch][slot];
-  return {x:clamp(H.x+d*s[0],1,FIELD_L-1),y:clamp(s[1]==='a'?s[2]:H.y+side*s[2],2.5,FIELD_W-2.5)};
+  const S=SLOTS[sch],s=S[slot];let f=s[0];
+  if(f>0){const top=Math.max(...S.map(q=>q[0])),room=((d>0?FIELD_L-RZ_BACK:RZ_BACK)-H.x)*d;if(room<top)f*=Math.max(room,0)/top;}
+  return {x:clamp(H.x+d*f,1,FIELD_L-1),y:clamp(s[1]==='a'?s[2]:H.y+side*s[2],2.5,FIELD_W-2.5)};
 }
 function assignMarks(){
   const atk=T[G.poss],def=T[1-G.poss],pairs=[];
