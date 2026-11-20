@@ -5,6 +5,7 @@ Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattrib
 
 ## Non ancora pubblicato
 - Cruscotto della carriera più leggero: «Questa settimana» e il consiglio non stanno più in pagina, sono due pulsanti che aprono una finestra. Il pulsante di «Questa settimana» mostra quante cose ci sono, nel colore della più urgente.
+- Dalla schermata delle carriere puoi eliminare uno slot: una conferma rimuove il salvataggio e la sua copia precedente.
 - Nelle nuove carriere in Germania trovi più giocatori reali nelle rose e stime d’età aggiornate dove ci sono riscontri pubblici.
 - Nelle nuove carriere in Belgio trovi più giocatori veri nelle rose e stime d’età aggiornate con i riscontri delle competizioni giovanili e Masters.
 - Primo piano del tuffo rifatto: chi si tuffa piega il ginocchio per caricarsi, si distende con la spinta e vola in orizzontale, poi prende il disco a una mano, con un movimento più fluido. Nel menu iniziale il disco sotto l’insegna è disegnato a pixel grossi e il giocatore lo prende a una mano, con la stessa carica.
