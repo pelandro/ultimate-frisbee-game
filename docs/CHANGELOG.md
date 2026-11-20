@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Nella schermata delle carriere «Nuova carriera» ha un colore diverso da «Elimina carriera»; il tasto per eliminare appare solo negli slot occupati e la conferma mantiene il testo bianco.
 - Dalla schermata delle carriere puoi eliminare uno slot: una conferma rimuove il salvataggio e la sua copia precedente.
 - Nelle nuove carriere in Germania trovi più giocatori reali nelle rose e stime d’età aggiornate dove ci sono riscontri pubblici.
 - Nelle nuove carriere in Belgio trovi più giocatori veri nelle rose e stime d’età aggiornate con i riscontri delle competizioni giovanili e Masters.

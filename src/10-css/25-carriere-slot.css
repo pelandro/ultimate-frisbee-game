@@ -1,0 +1,2 @@
+/* Il tema azzurro scurisce i testi dei pulsanti principali; la conferma rossa deve restare leggibile. */
+#cfmOk.go.danger{color:#fff!important}
