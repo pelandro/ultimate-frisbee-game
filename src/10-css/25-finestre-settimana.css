@@ -18,3 +18,5 @@ html[data-ew="xs"] #home .hpops{grid-template-columns:1fr}
 /* senza l'elenco in pagina la colonna dei pulsanti resta corta: sta centrata in altezza accanto alle informazioni (non su una sola colonna) */
 html:not([data-ew="xs"]) #home .hdash .hr{justify-content:center}
 html:not([data-ew="xs"]) #home .hdash{align-items:stretch}
+/* colonna dei pulsanti piu' stretta: piu' spazio alle informazioni a sinistra (prima i nomi si tagliavano); oltre 1,3 i testi dei pulsanti andavano a capo */
+html:not([data-ew="xs"]) #home .hdash{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)!important}
