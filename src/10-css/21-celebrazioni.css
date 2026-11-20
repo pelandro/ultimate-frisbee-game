@@ -1,19 +1,13 @@
-/* La risoluzione interna del disegno resta bassa per conservare i pixel del campo. */
-#cupScene {z-index:65;text-align:center}
-.cup-panel {width:min(500px,100%);padding:12px}
-.cup-panel h1 {line-height:1.35}
-#cupPark {
-  position:static;
-  display:block;
-  pointer-events:none;
-  width:min(100%,420px,46vh * 240 / 116);
-  height:auto;
-  margin:8px auto;
-  border:2px solid #a37a46;
-  image-rendering:pixelated;
-}
-#cupPark.europe {border-color:#7f9cc4}
-#cupNext {min-height:44px}
+/* ---- FESTA DEL TITOLO (32-alza-coppa.js) ----
+   La scena riempie la finestra: il disegno resta a bassa risoluzione (pixel netti) e la sua larghezza segue la forma dello schermo.
+   Titolo sopra il cielo dello stadio, «Continua» in basso a destra (al centro c'e' il capitano), dentro i margini sicuri. */
+#cupScene {z-index:65;display:block;background:#0b1430;overflow:hidden}
+#cupPark {position:absolute;inset:0;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;pointer-events:none}
+.cup-head {position:absolute;left:0;right:0;top:max(8px,var(--sat));padding:0 max(14px,var(--sar)) 0 max(14px,var(--sal));text-align:center;pointer-events:none}
+#cupTitle {margin:0;font-family:var(--pfont);font-weight:400;text-transform:uppercase;letter-spacing:0;color:var(--gold);font-size:clamp(14px,5.4vh,28px);line-height:1.25;
+  text-shadow:2px 0 0 #000,-2px 0 0 #000,0 2px 0 #000,0 -2px 0 #000,3px 3px 0 #000}
+#cupTeam {margin:5px 0 0;font-family:var(--pfont);font-size:clamp(9px,2.8vh,14px);color:#fff;text-shadow:1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,2px 2px 0 #000}
+#cupNext {position:absolute;right:max(14px,var(--sar));bottom:max(10px,var(--sab));min-height:44px;min-width:150px}
 @media (prefers-reduced-motion:reduce) {
-  #cupScene,#cupScene .panel {animation:none;transition:none}
+  #cupScene {animation:none;transition:none}
 }
