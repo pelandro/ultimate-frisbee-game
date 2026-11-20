@@ -2,30 +2,22 @@
    Dietro il menu iniziale si vede lo stadio grande (venueNow fuori partita) senza le squadre in campo e senza i nomi nelle mete.
    Quando il gioco si apre un giocatore entra di corsa da sinistra, si tuffa in salita e prende al volo il disco sotto l'insegna (.ttlDisc),
    poi resta fermo in quella posa, come un manifesto. Il giocatore e' disegnato come nelle scene laterali (athlete, 03-stacchi.js);
-   il disco resta l'elemento della pagina: qui lo si sposta (transform) fino alla mano. Le volte dopo la scena e' gia' ferma. */
+   il disco resta l'elemento della pagina: qui lo si sposta (transform) fino alla mano. Le volte dopo la scena e' gia' ferma.
+   Il giocatore sta su una tela sopra il velo del menu (tdOnTop); l'ombra e la luce restano nel campo, sotto il velo. */
 const titleBg=()=>!G.inMatch&&!G.drill&&G.mode==='home'&&!$('title').classList.contains('hidden');
 const TD_WHO={t:0,look:{hair:'#2b1b10',skin:'#d9a57c',style:1,hs:1,bw:1,hd:1}};
-const TD_MINH=40,TD_ROT=1.0,TD_LEAP=0.5,TD_TILT=-6;   // TD_TILT: il disco resta inclinato verso l'alto, come quando fluttua sotto l'insegna   // inclinazione del tuffo (in salita verso il disco) e durata del volo, in secondi
-let TDL='sopra';   // prova: 'sopra' = il giocatore sopra il velo del menu (come il disco), 'sotto' = il disco disegnato nel campo, sotto il velo
-// tela sopra il velo del menu: tra lo sfondo di #title e i suoi contenuti, alla stessa scala del campo
+// spazio minimo tra insegna e pulsanti (pixel del gioco), inclinazione del tuffo (in salita verso il disco), durata del volo in secondi,
+// inclinazione del disco (resta verso l'alto, come quando fluttua sotto l'insegna)
+const TD_MINH=40,TD_ROT=1.0,TD_LEAP=0.5,TD_TILT=-6;
+// tela sopra il velo del menu (sfumatura e righe di #title), sotto l'insegna, il disco e i pulsanti, alla stessa scala del campo:
+// disegnato nel campo, sotto il velo, il giocatore sembrava piu' lontano del disco, che sta sopra
 let tdCv=null;
 function tdOnTop(fn){
-  if(TDL!=='sopra'){if(tdCv)tdCv.style.display='none';return fn();}
   if(!tdCv){tdCv=document.createElement('canvas');tdCv.id='tdCv';tdCv.setAttribute('aria-hidden','true');$('title').prepend(tdCv);}
   const k=tdK()/tdZ();if(tdCv.width!==VW||tdCv.height!==VH){tdCv.width=VW;tdCv.height=VH;}
   tdCv.style.display='';tdCv.style.width=VW*k+'px';tdCv.style.height=VH*k+'px';
   const keep=ctx;ctx=tdCv.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,VW,VH);
   try{fn();}finally{ctx=keep;}
-}
-// il disco dell'insegna come immagine (senza la sua ombra), per disegnarlo nel campo
-let tdImg=null;
-function tdDiscImg(el){
-  if(!tdImg){
-    const s=el.cloneNode(true);s.querySelector('.fbShadow')?.remove();s.removeAttribute('class');s.removeAttribute('style');s.removeAttribute('data-tdt');
-    s.setAttribute('xmlns','http://www.w3.org/2000/svg');s.setAttribute('width','240');s.setAttribute('height','84');
-    tdImg=new Image();tdImg.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s.outerHTML);
-  }
-  return tdImg.complete&&tdImg.naturalWidth?tdImg:null;
 }
 const TDS={t:-1,done:false,from:null,c0:null,key:''};
 // athlete legge la divisa da cine.kits: qui ne serve una sola, la prima del campo
@@ -73,7 +65,7 @@ function drawTitleDive(dt){
   const el=tdDisc();if(!el)return;
   const B=titleBand();
   if(!B){   // non c'e' spazio: il disco torna a fluttuare sotto l'insegna come prima
-    if(el.classList.contains('tdHold')){el.classList.remove('tdHold');el.style.removeProperty('animation');el.style.removeProperty('transform');el.style.visibility='';el.dataset.tdt='';TDS.key='';}
+    if(el.classList.contains('tdHold')){el.classList.remove('tdHold');el.style.removeProperty('animation');el.style.removeProperty('transform');el.dataset.tdt='';TDS.key='';}
     if(tdCv)tdCv.style.display='none';
     return;
   }
@@ -101,10 +93,4 @@ function drawTitleDive(dt){
     tdAthlete(x,F.gy,hip,pose,rot,TDS.done?0:t*13,hu);   // passi piu' fitti: la corsa e' piu' lenta ma le gambe non rallentano
   });
   tdPlace(el,dx,dy,TD_TILT);
-  const img=TDL==='sotto'?tdDiscImg(el):null;
-  el.style.visibility=img?'hidden':'';
-  if(img){   // il disco disegnato nel campo, sotto il velo come il giocatore: stessa grandezza e inclinazione dell'elemento dell'insegna
-    const w=TDS.c0.w/tdK(),h=w*84/240;
-    ctx.save();ctx.translate(ri(dx),ri(dy));ctx.rotate(TD_TILT*Math.PI/180);ctx.imageSmoothingEnabled=false;ctx.drawImage(img,-ri(w/2),-ri(h/2),ri(w),ri(h));ctx.restore();
-  }
 }
