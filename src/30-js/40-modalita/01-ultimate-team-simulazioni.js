@@ -250,6 +250,7 @@ function startUT(){
   G.formB=0;G.lines=null;G.injK=1;
   G.oppName=opp.name;G.myName='Ultimate Team';G.matchLabel='Ultimate Team · '+UT_ROUNDS[r];
   newGame();rollWind();G.lvl=[0,clamp(UT.d|0,0,3)];G.oppPlus=DIFF_PLUS[clamp(UT.d|0,0,3)];G.idn=[null,teamIdentity(opp.name,T[1])];G.xtr=(UT.d|0)===3;G.hint=(UT.d|0)===0;G.routes=(UT.d|0)<=1;G.inMatch=true;G.recorded=false;   // difficolta': IA come in partita veloce, Estrema = traiettoria nascosta
+  flowAll();   // pavimento del gioco di squadra (10-sim/28-pavimento.js): le carte basse non fanno inceppare il gioco
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
 }
