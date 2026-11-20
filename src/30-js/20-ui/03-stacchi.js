@@ -91,11 +91,13 @@ const SK_LOAD={L:[[[-0.04,0],[-0.2,0.42],[-0.55,0.66]],[[0.06,0],[0.4,0.34],[0.1
 const SK_PUSH={L:[[[-0.04,0],[0.36,0.26],[0.2,0.68]],[[0.04,0],[-0.03,0.5],[-0.08,0.97]]],A:[[[-0.08,-0.48],[0.2,-0.72],[0.38,-0.98]],[[0.08,-0.48],[0.16,-0.92],[0.24,-1.34]]],sh:[0.03,-0.52]};
 const SK_FLY={L:[[[-0.03,0],[-0.05,0.5],[-0.02,0.97]],[[0.04,0],[0.11,0.5],[0.26,0.9]]],A:[[[-0.08,-0.48],[0.2,-0.66],[0.38,-0.88]],[[0.08,-0.48],[0.1,-0.95],[0.11,-1.42]]],sh:[0,-0.52]};
 const skMix=(a,b,k)=>{const m=(p,q)=>[p[0]+(q[0]-p[0])*k,p[1]+(q[1]-p[1])*k];
-  return {L:a.L.map((l,i)=>l.map((p,j)=>m(p,b.L[i][j]))),A:a.A.map((l,i)=>l.map((p,j)=>m(p,b.A[i][j]))),sh:m(a.sh,b.sh),dv:true};};
+  return {L:a.L.map((l,i)=>l.map((p,j)=>m(p,b.L[i][j]))),A:a.A.map((l,i)=>l.map((p,j)=>m(p,b.A[i][j]))),sh:m(a.sh,b.sh),dv:true,ch:b.ch};};
 const skOf=(pose,tt)=>typeof pose==='object'?pose:skelOf(pose,tt);
 // il movimento del tuffo nel tempo v dallo stacco (v<0: corsa): carica (0-0,12 s), spinta (fino a 0,24), volo fino alla presa (DV_CT) e caduta in scivolata.
 // xs: dove corre; xc: dove sta l'anca nell'istante della presa; tt: fase della corsa. Tutto continuo (posizione, anca, inclinazione e pose)
 const SK_FLYD={...SK_FLY,dv:true};
+// stesso volo con la presa della mano lontana: il braccio vicino resta piegato sotto e non copre la faccia (menu iniziale)
+const SK_FLY2={...SK_FLY,A:[[[-0.08,-0.48],[-0.04,-0.95],[0,-1.42]],[[0.08,-0.48],[0.24,-0.62],[0.42,-0.82]]],ch:0},SK_FLY2D={...SK_FLY2,dv:true};
 const DV_CT=0.45,DV_LOAD=0.12,DV_PUSH=0.24,DV_ROT=1.47,DV_HIP=0.86;
 function diveMo(v,xs,xc,u,tt){
   if(v<=0)return {dx:xs,hip:0.9,rot:0,pose:'run',tt};
@@ -120,8 +122,8 @@ const PX_BUF=Array.from({length:2},()=>({
 }));
 // stile del disegno (prove del menu iniziale): z = grandezza fissa del pixel dell'omino, hk = testa piu' grande, flat = colori piatti senza luce e ombra
 const PX_OPT={z:0,hk:1,flat:false,noSh:false};
-// testa piccola (8x8) per i pixel grossi: rimpicciolire quella da 12 pixel la spezzava
-const PX_HEAD_S=[["..HHHH..",".HHHHHHH","hHHHSSSH","hHHSSSES","hHSSSSSS",".hsSSSSM","..sSSSS.","...sss.."],4,3];
+// testa piccola (7x7, disegnata 1:1) per i pixel grossi: rimpicciolire quella da 12 pixel la spezzava. h sopra l'occhio = sopracciglio
+const PX_HEAD_S=[["..HHHH.",".HHHHHH","hHHHHhH","hHSSSES","hSSSSSS",".sSSSM.","..ss..."],3,3];
 function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
   const Z=PX_OPT.z||OZ(hu),hs=hu/Z,hk=OZ(hu)/Z*PX_OPT.hk,R=Math.ceil(1.85*hs),n=2*R+2,c0=R+1;
   if(!ghost&&!PX_OPT.noSh){   // ombra a pixel sul prato
@@ -174,7 +176,7 @@ function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
   // capelli lunghi dietro le spalle
   // testa: sprite ruotato con la figura (vicino al pixel), centro sopra la spalla
   const dk=pose==='dive'||pose.dv?clamp(rot/1.25,0,1):0,hrot=hk<0.8?0:rot*(1-0.75*dk),hcr=Math.cos(hrot),hsr=Math.sin(hrot);   // tuffo: testa alzata sopra le braccia, sguardo avanti verso il disco; la testa piccola dei pixel grossi resta dritta (ruotata faceva spuntare pixel isolati)
-  const hc=T([sh[0]+0.04-0.26*dk,sh[1]-0.36*PX_OPT.hk+0.06*dk]),sm=hk<0.8,HD=sm?PX_HEAD_S:PX_HEAD[(lk.style|0)%PX_HEAD.length],hd=HD[0],hq=sm?hk*1.5:hk,hw=hd[0].length,hh=hd.length,hcx=HD[1],hcy=HD[2];
+  const hc=T([sh[0]+0.04-0.26*dk,sh[1]-0.36*PX_OPT.hk+0.06*dk]),sm=hk<0.8,HD=sm?PX_HEAD_S:PX_HEAD[(lk.style|0)%PX_HEAD.length],hd=HD[0],hq=sm?PX_OPT.hk:hk,hw=hd[0].length,hh=hd.length,hcx=HD[1],hcy=HD[2];
   const hmap={S:PXM.HSK,s:PXM.SKD,H:PXM.HR,h:PXM.HD,E:PXM.EYE,M:PXM.MO,W:PXM.WH};
   for(let j=Math.floor(hc[1]-24*hq);j<=Math.ceil(hc[1]+24*hq);j++)for(let i=Math.floor(hc[0]-24*hq);i<=Math.ceil(hc[0]+24*hq);i++){
     if(i<0||j<0||i>=n||j>=n)continue;
@@ -213,7 +215,7 @@ function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
 }
 // la mano vicina (quella che prende) nella posa: stesso scheletro e stessa rotazione di athlete, in pixel del gioco
 const handPos=(x,gy,hipH,face,rot,hu,pose)=>{
-  const h=skOf(pose||'dive',0).A[1][2],cr=Math.cos(rot),sr=Math.sin(rot);
+  const S=skOf(pose||'dive',0),h=S.A[S.ch===0?0:1][2],cr=Math.cos(rot),sr=Math.sin(rot);   // ch: la mano che prende (0 = quella lontana)
   return {x:Math.round(x)+face*(cr*h[0]-sr*h[1])*hu,y:Math.round(gy-hipH*hu)+(sr*h[0]+cr*h[1])*hu};
 };
 // disco preso. PX_GRIP 'rim': la mano lo stringe dal bordo (il disco sta oltre la mano, lungo il braccio, e la mano si vede sopra il bordo);
