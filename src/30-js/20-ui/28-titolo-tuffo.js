@@ -8,7 +8,7 @@ const titleBg=()=>!G.inMatch&&!G.drill&&G.mode==='home'&&!$('title').classList.c
 const TD_WHO={t:0,look:{hair:'#2b1b10',skin:'#d9a57c',style:1,hs:1,bw:1,hd:1}};
 // spazio minimo tra insegna e pulsanti (pixel del gioco), inclinazione del tuffo (in salita verso il disco), durata del volo in secondi,
 // inclinazione del disco (resta verso l'alto, come quando fluttua sotto l'insegna)
-const TD_MINH=40,TD_ROT=1.0,TD_LEAP=0.5,TD_TILT=-6;
+const TD_MINH=40,TD_ROT=1.0,TD_LEAP=0.62,TD_TILT=-6;
 // tela sopra il velo del menu (sfumatura e righe di #title), sotto l'insegna, il disco e i pulsanti, alla stessa scala del campo:
 // disegnato nel campo, sotto il velo, il giocatore sembrava piu' lontano del disco, che sta sopra
 let tdCv=null;
@@ -21,9 +21,25 @@ function tdOnTop(fn){
 }
 const TDS={t:-1,done:false,from:null,c0:null,key:''};
 // athlete legge la divisa da cine.kits: qui ne serve una sola, la prima del campo
-function tdAthlete(x,gy,hip,pose,rot,tt,hu){
-  const keep=cine;cine={kits:UNI.map(k=>({...k}))};
-  try{athlete(x,gy,hip,1,pose,rot,tt,hu,undefined,false,TD_WHO);}finally{cine=keep;}
+// stile del giocatore: pixel grossi (4 pixel del gioco l'uno, come il disco: tdDiscSize) e, a presa fatta, il bordo bianco da adesivo con l'ombra
+const TD_STK=2,TD_Z=4,TD_HK=1,TD_DISC=10;   // TD_DISC: larghezza del disco in pixel grossi (la sua griglia in 02-menu-impostazioni.html)
+let tdTmp=null;
+function tdAthlete(x,gy,hip,pose,rot,tt,hu,stk){
+  const keep=cine,o={...PX_OPT};cine={kits:UNI.map(k=>({...k}))};
+  Object.assign(PX_OPT,{z:TD_Z,hk:TD_HK,flat:false,noSh:stk>0});
+  const draw=()=>athlete(x,gy,hip,1,pose,rot,tt,hu,undefined,false,TD_WHO);
+  try{
+    if(!(stk>0))draw();
+    else{   // adesivo: l'omino su una tela a parte, poi ricomposto con il bordo bianco (cresce in un attimo: stk 0-1) e l'ombra spostata
+      if(!tdTmp)tdTmp=document.createElement('canvas');if(tdTmp.width!==VW||tdTmp.height!==VH){tdTmp.width=VW;tdTmp.height=VH;}
+      const k0=ctx,tc=tdTmp.getContext('2d');tc.clearRect(0,0,VW,VH);ctx=tc;try{draw();}finally{ctx=k0;}
+      const tint=c=>{const t=document.createElement('canvas');t.width=VW;t.height=VH;const g=t.getContext('2d');g.drawImage(tdTmp,0,0);g.globalCompositeOperation='source-in';g.fillStyle=c;g.fillRect(0,0,VW,VH);return t;};
+      const r=Math.max(1,ri(TD_STK*stk)),wh=tint('#ffffff'),sd=tint('rgba(10,20,40,.45)');
+      ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(sd,r+2,r+2);
+      for(let a=-r;a<=r;a++)for(let b=-r;b<=r;b++)if((a||b)&&a*a+b*b<=r*r+1)ctx.drawImage(wh,a,b);
+      ctx.drawImage(tdTmp,0,0);ctx.restore();
+    }
+  }finally{cine=keep;Object.assign(PX_OPT,o);}
 }
 // linee di velocita' dietro al giocatore
 function tdLines(x,y,len,hu,al){
@@ -42,6 +58,12 @@ function tdRest(el){
   el.style.setProperty('animation','none','important');el.style.setProperty('transform','none','important');
   return tdCtr(el);
 }
+// il disco ha i pixel grandi come quelli dell'omino (TD_Z pixel del gioco), su ogni schermo
+function tdDiscSize(el){el.style.setProperty('width',(TD_DISC*TD_Z*tdK()/tdZ()).toFixed(2)+'px','important');}
+function tdStk(el,k){   // bordo da adesivo anche sul disco, dello stesso spessore di quello dell'omino
+  if(k<=0){el.classList.remove('tdStk');return;}
+  el.classList.add('tdStk');el.style.setProperty('--tdo',(Math.max(1,ri(TD_STK*k))*tdK()/tdZ()).toFixed(2)+'px');el.style.setProperty('--tds',((Math.max(1,ri(TD_STK*k))+2)*tdK()/tdZ()).toFixed(2)+'px');
+}
 function tdPlace(el,x,y,deg){   // x, y: centro del disco in pixel del gioco
   const k=tdK(),z=tdZ(),s=`translate(${((x*k-TDS.c0.x)/z).toFixed(1)}px,${((y*k-TDS.c0.y)/z).toFixed(1)}px) rotate(${deg.toFixed(1)}deg)`;
   if(el.dataset.tdt!==s){el.dataset.tdt=s;el.style.setProperty('transform',s,'important');}
@@ -57,7 +79,7 @@ function titleBand(){
 function tdFinal(B){
   const hu=ri(clamp(B.h*0.46,24,52)),k=1/tdK(),w=TDS.c0.w*k/2;
   const T={x:TDS.c0.x*k+w*0.4,y:TDS.c0.y*k};
-  const h=handPos(0,0,0,1,TD_ROT,hu,SK_FLY),ax=Math.sin(TD_ROT),ay=-Math.cos(TD_ROT),e=0.8/Math.hypot(ax/w,ay/(w*0.33));   // dal centro del disco al bordo, lungo il braccio
+  const h=handPos(0,0,0,1,TD_ROT,hu,SK_FLY2),ax=Math.sin(TD_ROT),ay=-Math.cos(TD_ROT),e=1.0/Math.hypot(ax/w,ay/(w*0.4));   // dal centro del disco al bordo, lungo il braccio
   const P={x:T.x-h.x-ax*e,y:T.y-h.y-ay*e},gy=ri(B.y1-2);
   return {hu,T,x:P.x,gy,hip:(gy-P.y)/hu};
 }
@@ -65,21 +87,23 @@ function drawTitleDive(dt){
   const el=tdDisc();if(!el)return;
   const B=titleBand();
   if(!B){   // non c'e' spazio: il disco torna a fluttuare sotto l'insegna come prima
-    if(el.classList.contains('tdHold')){el.classList.remove('tdHold');el.style.removeProperty('animation');el.style.removeProperty('transform');el.dataset.tdt='';TDS.key='';}
+    if(el.classList.contains('tdHold')){el.classList.remove('tdHold','tdStk');el.style.removeProperty('width');el.style.removeProperty('animation');el.style.removeProperty('transform');el.dataset.tdt='';TDS.key='';}
     if(tdCv)tdCv.style.display='none';
     return;
   }
   const key=[ri(B.y0),ri(B.y1),VW,VH].join('|');
   if(TDS.t<0||key!==TDS.key){   // primo disegno o schermo cambiato: rilegge dove sta il disco
-    const now=tdCtr(el);TDS.c0=tdRest(el);TDS.key=key;el.dataset.tdt='';el.classList.add('tdHold');
+    tdDiscSize(el);const now=tdCtr(el);TDS.c0=tdRest(el);TDS.key=key;el.dataset.tdt='';el.classList.add('tdHold');
     if(TDS.t<0){TDS.t=0;TDS.done=!!reduceMotion;const k=1/tdK();TDS.from={x:now.x*k,y:now.y*k};}
   }
   const F=tdFinal(B),hu=F.hu;
   if(!TDS.done)TDS.t+=Math.min(dt||0,0.05);
-  const xr=F.x-hu*1.7,x0=-hu*1.5,run=clamp((xr-x0)/(VW*0.4),0.9,1.8),t=TDS.t;
-  if(t>=run+TD_LEAP)TDS.done=true;
+  const xr=F.x-hu*1.7,x0=-hu*1.5,run=clamp((xr-x0)/(VW*0.36),1,2),t=TDS.t;
+  if(t>=run+TD_LEAP&&!TDS.done){TDS.done=true;TDS.dt=0;}
+  if(TDS.done)TDS.dt=(TDS.dt||0)+Math.min(dt||0,0.05);
+  const stk=TDS.done?(reduceMotion||TDS.t<0.01?1:clamp(TDS.dt/0.18,0,1)):0;   // l'adesivo arriva con la presa, in un attimo
   let x,hip,pose,rot,dx,dy,lines=false;
-  if(TDS.done){x=F.x;hip=F.hip;pose=SK_FLYD;rot=TD_ROT;dx=F.T.x;dy=F.T.y;   // fermo: la presa a una mano al culmine del tuffo, con la luce dietro
+  if(TDS.done){x=F.x;hip=F.hip;pose=SK_FLY2D;rot=TD_ROT;dx=F.T.x;dy=F.T.y;   // fermo: la presa a una mano al culmine del tuffo, con la luce dietro
     const g=ctx.createRadialGradient(F.T.x,F.T.y,4,F.T.x,F.T.y,hu*3.2);g.addColorStop(0,'rgba(255,248,214,.45)');g.addColorStop(1,'rgba(255,248,214,0)');ctx.fillStyle=g;ctx.fillRect(0,0,VW,VH);
   }else{
     // il disco va dal punto in cui fluttuava fino alla mano, in tempo per la presa
@@ -89,13 +113,13 @@ function drawTitleDive(dt){
       const v=t-run,kx=clamp(v/TD_LEAP,0,1);x=xr+(F.x-xr)*(1-(1-kx)*(1-kx));
       if(v<DV_LOAD){const e=easeIO(v/DV_LOAD);pose=skMix(skelOf('run',t*13),SK_LOAD,e);hip=0.92-0.24*e;rot=0.15+0.17*e;}
       else if(v<DV_PUSH){const e=easeIO((v-DV_LOAD)/(DV_PUSH-DV_LOAD));pose=skMix(SK_LOAD,SK_PUSH,e);hip=0.68+0.12*e;rot=0.32+0.5*e;}
-      else{const e=easeIO(clamp((v-DV_PUSH)/(TD_LEAP-DV_PUSH),0,1));pose=skMix(SK_PUSH,SK_FLY,e);hip=0.8+(F.hip-0.8)*e;rot=0.82+(TD_ROT-0.82)*e;lines=true;}
+      else{const e=easeIO(clamp((v-DV_PUSH)/(TD_LEAP-DV_PUSH),0,1));pose=skMix(SK_PUSH,SK_FLY2,e);hip=0.8+(F.hip-0.8)*e;rot=0.82+(TD_ROT-0.82)*e;lines=true;}
     }
   }
   pell(ri(x+hu*0.1),F.gy,ri(hu*(pose==='run'?0.55:(TDS.done?1.1:1))),Math.max(2,ri(hu*0.1)),'rgba(20,40,20,.35)');   // l'ombra resta sul prato, sotto il velo
   tdOnTop(()=>{
     if(lines)tdLines(x-ri(hu*0.8),F.gy-hip*hu,hu*1.3,hu,0.45);
-    tdAthlete(x,F.gy,hip,pose,rot,TDS.done?0:t*13,hu);   // passi piu' fitti: la corsa e' piu' lenta ma le gambe non rallentano
+    tdAthlete(x,F.gy,hip,pose,rot,TDS.done?0:t*13,hu,stk);   // passi piu' fitti: la corsa e' piu' lenta ma le gambe non rallentano
   });
-  tdPlace(el,dx,dy,TD_TILT);
+  tdPlace(el,dx,dy,TD_TILT);tdStk(el,stk);
 }
