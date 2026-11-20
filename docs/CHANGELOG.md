@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Dopo un turnover o un timeout vicino alla meta i compagni non si mettono più in fila fuori dalla meta, dietro a chi ha il disco: si dispongono dentro la meta attorno al punto da cui si riparte.
 - Difesa più attenta al lungo: chi aiuta resta dalla parte della meta e chi marca segue subito lo scatto in profondità. Lo Sparo conta molto di più: con un braccio normale il lancio lungo sbanda, i grandi lanciatori servono tutto il campo.
 - Vicino alla meta i compagni attaccano davvero: lo stack si accorcia dentro la meta, i tagli finiscono oltre la linea e, se tieni il disco a lungo, nessuno resta fermo ad aspettare. Dopo un turnover vicino alla meta parte subito l’attacco in meta.
 - Nomi nelle mete: restano dipinti a terra. Si ingrandiscono e si rimpiccioliscono con il campo (stesso a capo e stesso carattere a ogni zoom) e restano sempre dentro la meta, centrati.
