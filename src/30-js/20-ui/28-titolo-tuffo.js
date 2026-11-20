@@ -5,13 +5,6 @@
    il disco resta l'elemento della pagina: qui lo si sposta (transform) fino alla mano. Le volte dopo la scena e' gia' ferma.
    Il giocatore sta su una tela sopra il velo del menu (tdOnTop); l'ombra e la luce restano nel campo, sotto il velo. */
 const titleBg=()=>!G.inMatch&&!G.drill&&G.mode==='home'&&!$('title').classList.contains('hidden');
-// prove di aspetto: divisa e volto del giocatore del menu (TDV sceglie)
-const TD_LOOKS=[
-  {kit:null,look:{hair:'#2b1b10',skin:'#d9a57c',style:1}},   // divisa blu del campo
-  {kit:{shirt:'#ffd23f',shorts:'#1e2a3d',socks:'#ffd23f',shoe:'#18202e'},look:{hair:'#e3c06a',skin:'#f0c9a4',style:0}},   // oro come «PIXEL»
-  {kit:{shirt:'#f2f5fa',shorts:'#3d5779',socks:'#f2f5fa',shoe:'#18202e'},look:{hair:'#5a3a22',skin:'#e8b892',style:2}},   // bianca e azzurra
-  {kit:{shirt:'#ff6b4a',shorts:'#1f2740',socks:'#ff6b4a',shoe:'#f2f5fa'},look:{hair:'#1a1210',skin:'#8d5a3b',style:3}}];   // corallo
-let TDV=0;
 const TD_WHO={t:0,look:{hair:'#2b1b10',skin:'#d9a57c',style:1,hs:1,bw:1,hd:1}};
 // spazio minimo tra insegna e pulsanti (pixel del gioco), inclinazione del tuffo (in salita verso il disco), durata del volo in secondi,
 // inclinazione del disco (resta verso l'alto, come quando fluttua sotto l'insegna)
@@ -29,7 +22,7 @@ function tdOnTop(fn){
 const TDS={t:-1,done:false,from:null,c0:null,key:''};
 // athlete legge la divisa da cine.kits: qui ne serve una sola, la prima del campo
 function tdAthlete(x,gy,hip,pose,rot,tt,hu){
-  const V=TD_LOOKS[TDV]||TD_LOOKS[0],keep=cine;Object.assign(TD_WHO.look,V.look);cine={kits:UNI.map((k,i)=>({...k,...(i===0&&V.kit?{pat:'',...V.kit}:{})}))};
+  const keep=cine;cine={kits:UNI.map(k=>({...k}))};
   try{athlete(x,gy,hip,1,pose,rot,tt,hu,undefined,false,TD_WHO);}finally{cine=keep;}
 }
 // linee di velocita' dietro al giocatore
