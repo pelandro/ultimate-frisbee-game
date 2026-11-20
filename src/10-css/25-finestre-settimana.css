@@ -15,3 +15,6 @@
 #todoW #hTodo{margin-bottom:10px;gap:6px}
 #todoW .tdok{font-size:17px;color:#d1deec;padding:4px 0}
 html[data-ew="xs"] #home .hpops{grid-template-columns:1fr}
+/* senza l'elenco in pagina la colonna dei pulsanti resta corta: sta centrata in altezza accanto alle informazioni (non su una sola colonna) */
+html:not([data-ew="xs"]) #home .hdash .hr{justify-content:center}
+html:not([data-ew="xs"]) #home .hdash{align-items:stretch}
