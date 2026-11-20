@@ -1,7 +1,8 @@
 /* ===================== USA MEN'S CLUB: CARRIERA =====================
    Avvio, obiettivi della dirigenza, fine stagione e offerte per la carriera USA. Per il resto (rosa, mercato, allenamenti, economia, staff, progressione)
    la carriera USA usa le stesse funzioni di quella italiana. */
-const US_PRIZE=[3,6,10,15,20,27,35,48];   // premio di fine stagione (crediti, prima di SR_K.U) secondo il punto piu' lontano raggiunto (US_STAGE)
+// Il titolo aiuta a sostenere strutture e staff al massimo anche dopo l'aggiornamento delle rose USA.
+const US_PRIZE=[3,6,10,15,20,27,35,68];   // premi per i traguardi di US_STAGE, prima del moltiplicatore SR_K.U
 function usStartCareer(name,opt){
   const help=!!SV.help,slot=SV.slot||1,s0=opt.season||1;
   SV={v:SAVE_V,team:name,seed:Math.floor(Math.random()*1e9),sr:'U',lk:'US',season:s0,event:'camp',eu:newEu(s0),help,mem:{},realAB:1,rv:3,realv:2,realAI:1,slot};
