@@ -103,7 +103,7 @@ function oppBoost(plus){G.oppPlus=plus||0;if(plus)for(const q of T[1])for(const 
 function loadOpp(p,o,sub){
   p.name=o.n;p.look=makeLook(o.full||o.n,o.f);p.age=o.age;p.role=o.r;p.tl=o.tl;p.tf=o.tf;p.tv=o.tv;p.tal=Math.round((o.tl+o.tf+o.tv)/3);p.ro=o;p.trait=o.trait!==undefined?o.trait:traitFor(o.full||o.n,o.s,o.r);
   const dp=sub&&OPP.ln&&OPP.ln.dbl.has(o)?DBL_PEN:0;   // in entrambe le linee (21-due-linee.js): non riposa mai
-  for(const k of KEYS)p.s[k]=sub?clamp(o.s[k]+(G.oppPlus||0)-dp,1,99):o.s[k];
+  for(const k of KEYS)p.s[k]=sub?flowFloor(k,clamp(o.s[k]+(G.oppPlus||0)-dp,1,99)):o.s[k];   // chi entra a partita in corso: anche lui con il pavimento (28-pavimento.js)
   if(sub){p.b=Object.assign({},p.s);p.st=o.st===undefined?100:o.st;p.run=0;p.miss=0;p.hot=p.cold=false;}
 }
 function applyRoster(list){
@@ -298,7 +298,7 @@ function applyForm(dbl){   // dbl: id dei tuoi giocatori in entrambe le linee (s
     // affiatamento e morale (solo carriera, G.formB da -1,5 a +1,5) spostano di poco la forma del giorno della tua squadra
     // chi arriva scarico (condizione bassa, solo in carriera) rende meno, come nelle partite simulate
     const fb=p.t===0?(G.formB||0)-(p.cond!==undefined?COND_PEN*(100-p.cond):0)-(dbl&&dbl.has(p.id)?DBL_PEN:0):0;
-    for(const k of KEYS)p.s[k]=clamp(p.b[k]+formDev(talOf(p,k))+(fb?Math.trunc(fb)+(Math.random()<Math.abs(fb%1)?Math.sign(fb):0):0),1,Math.max(p.b[k],Math.min(99,capOf(p,k))));
+    for(const k of KEYS)p.s[k]=flowFloor(k,clamp(p.b[k]+formDev(talOf(p,k))+(fb?Math.trunc(fb)+(Math.random()<Math.abs(fb%1)?Math.sign(fb):0):0),1,Math.max(p.b[k],Math.min(99,capOf(p,k)))));   // pavimento del gioco di squadra (28-pavimento.js)
   }
 }
 function restoreForm(){poserReset();heroReset();for(const p of SQ.concat(T[1]))if(p.b){p.s=p.b;p.b=null;}}
