@@ -10,7 +10,8 @@
      Allarga la zona e la batte sui lati; contro l'anticipo a uomo i tagli sotto sono contesi.
    - Weave: i tre handler si passano il disco correndosi davanti a vicenda; i cutter restano larghi e lontani.
      Guadagna metri con passaggi corti contro la marcatura aggressiva e gli aiuti; tanti passaggi = piu' handblock e piu' tempo.
-   - Attacco in meta (scatta da solo ricevendo a 2-20 m dalla linea): stack orizzontale dentro la meta e tagli a L (incontro, poi via).
+   - Attacco in meta (scatta da solo ricevendo a 2-20 m dalla linea con almeno 3 compagni vicini, e a ogni ripresa entro EZ_NEAR m): stack orizzontale
+     dentro la meta e tagli a L (incontro, poi via); i cutter esterni vanno all'angolo davanti e in fondo.
      Toglie il gioco ammassato davanti alla linea; contro la zona il primo taglio viene spesso chiuso. */
 PLAYBOOK.vert={phases:[
   {pass:['C2','C4'],ready:'C2',
@@ -38,16 +39,18 @@ PLAYBOOK.weave={phases:[   // passaggi diagonali in avanti di circa 10 m: chi pa
 SLOTS.weave=[[-6,'r',0],[2,'r',-10],[-2,'r',10],[16,'a',5],[22,'a',14],[28,'a',23],[34,'a',32]];   // gioco libero: tre handler sfalsati, cutter larghi e lontani
 const EZ_LINE=FIELD_L-2*EZ;   // la linea di meta che si attacca, in metri dalla propria (64)
 PLAYBOOK.ez={phases:[
-  {pass:['C2','C3'],ready:'C2',
+  {pass:['C2','C3','C1','C4'],ready:'C2',   // anche i cutter esterni si muovono: uno all'angolo davanti, l'altro in fondo (prima restavano fermi ai lati)
    set:{H2:[-4,8,'h'],H3:[-4,-8,'h'],C1:[EZ_LINE+6,6,'a'],C2:[EZ_LINE+6,14,'a'],C3:[EZ_LINE+6,23,'a'],C4:[EZ_LINE+6,31,'a']},
-   go:{C2:[[EZ_LINE-4,MID-2,'a'],[EZ_LINE+9,8,'a']],C3:[[EZ_LINE+2,MID+2,'a'],[EZ_LINE+10,30,'a']]}}
+   go:{C2:[[EZ_LINE-4,MID-2,'a'],[EZ_LINE+9,8,'a']],C3:[[EZ_LINE+2,MID+2,'a'],[EZ_LINE+10,30,'a']],C1:[[EZ_LINE+2,4,'a']],C4:[[EZ_LINE+13,33,'a']]}}
 ]};
-// dopo una presa vicino alla meta: una volta per possesso si chiama l'attacco in meta (se lo schema in corso e' finito)
+// dopo una presa vicino alla meta: una volta per possesso si chiama l'attacco in meta (se lo schema in corso e' finito e almeno 3 compagni sono vicini)
+const EZ_NEAR=22;
 function ezCheck(team,p){
   if(!G.ezUsed)G.ezUsed=[false,false];
   const pb=G.pb&&G.pb[team];if(G.ezUsed[team]||(pb&&pb.active)||inEZ(p,team))return;
   const u=(p.x-(dirOf(team)>0?EZ:FIELD_L-EZ))*dirOf(team);
   if(u<EZ_LINE-20||u>EZ_LINE-2)return;
+  if(T[team].filter(q=>q!==p&&hyp(q.x-p.x,q.y-p.y)<EZ_NEAR).length<3)return;   // compagni ancora lontani (lancio lungo): si gioca libero e si chiama alla presa dopo
   G.ezUsed[team]=true;startPlay(team,'ez');
   const nb=G.pb&&G.pb[team];if(nb){nb.stage='set';G.st.ez[team]++;}
 }
