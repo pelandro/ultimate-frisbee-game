@@ -31,7 +31,7 @@ const aimTop=n=>(SV.cyc&&SV.cyc[n]||0)>=1||clubLvl(n)>=0.8;   // punta al vertic
 const aimReb=n=>(SV.cyc&&SV.cyc[n]||0)<=-1.5;                  // in ricostruzione: vende volentieri i veterani
 // i club della serie piu' alta del tuo campionato (in Italia la Serie A, negli USA tutta la lega, nelle leghe europee il primo livello)
 function aimTopTier(){
-  if(isUS())return US_NAMES.slice();
+  if(isUS())return usClubs().slice();
   if(isLN()){const t=SV.ln&&SV.ln.T&&SV.ln.T[LN_DEF[SV.lk].tiers[0].id];return t?t.flatMap(c=>c.pools?c.pools.flat():(c.clubs||[])):[];}
   return (SV.mem&&SV.mem.A)||SERIES.A.slice();
 }

@@ -9,6 +9,12 @@ const OVR_OUT={
   'NLSU':['Filipo Lipari'],            // resta ai Donkey Divers (Serie A)
   'UFO (A)':['David Barzasi'],         // gioca nei Mooncatchers
   'Jetset Open':['Emiel De Rieck'],    // per il foglio gioca nei Gentle Open
+  'Blackbirds Open 1':['Jeroen Peeters','Thomas Bos'],   // iscritti ad Antwerp: https://ultie.org/buoc-2026-adult/teams/4894/roster
+  // Il numero 91 del Gentle ha due grafie. In campionato è iscritto nei Gentle Open Too.
+  // https://eucs-schedule.ultimatefederation.eu/?game=4530&view=gameplay
+  // https://ultie.org/buoc-2026-adult/teams/5132/roster
+  'Gentle Open':['Stan Declerck'],
+  'Eulchtimate Open 2':['Tim Tim'],   // l'iscrizione con un nome ripetuto non identifica un giocatore
   'Éclipse Solaire':['Louis Dawans'],  // ... nei Mooncatchers
   'Magic Disc':['Léo Stanguennec','Enzo Stanguennec'],   // ... nel Tchac
   'Philadelphia Pacmen':['Sam Hill']   // non fa piu' parte della rosa

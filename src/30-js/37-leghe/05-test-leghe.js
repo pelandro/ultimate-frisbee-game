@@ -15,7 +15,7 @@ function lnSelfTest(seasons,seed){
     if(SV.done&&SV.next&&SV.next.rank===1)chk('minime',(SV.sgp|0)>=LN_MIN,`${SV.sr}: la vincitrice ha giocato ${SV.sgp|0} partite`);};
   try{
     // ---- dati ----
-    const all=LN_NAMES.concat(Object.keys(TEAM),US_NAMES,EU_CLUBS.map(x=>x[0]));
+    const all=LN_NAMES.concat(Object.keys(TEAM),US_NAMES,UW_NAMES,EU_CLUBS.map(x=>x[0]));
     chk('dati',new Set(all).size===all.length,'nomi di club ripetuti tra le leghe');
     const want={BE:46,FR:36,DE:49,UK:11,IW:17};
     for(const lk of LN_IDS){
@@ -32,6 +32,8 @@ function lnSelfTest(seasons,seed){
          chk('minime',g+lnFinR(tr,sz)>=LN_MIN,`${lk} ${tr.id}${c.id}: la vincitrice gioca ${g}+${lnFinR(tr,sz)}`);
          if(Math.max(...sz)-1+lnFinR(tr,sz)>=LN_MIN)chk('minime',g===Math.max(...sz)-1,`${lk} ${tr.id}: giri aggiunti senza bisogno`);}}
      SV=S0;}
+    // Le integrazioni devono occupare i posti liberi anche quando si applica il foglio Overall.
+    const leagueReal={BE:new Set(),DE:new Set()};
     // ---- rose: ogni club, con la forza dei dati ----
     for(const n of LN_NAMES){
       const ro=lnRoster(n,'t'),pw=rosterLevel(ro),sv=ro.some(o=>o.star);
@@ -40,6 +42,16 @@ function lnSelfTest(seasons,seed){
       chk('rose',new Set(ro.map(o=>usNameKey(o.label||o.n))).size===ro.length,'giocatore ripetuto in '+n);
       chk('rose',ro.every(o=>ovr(o)>=36&&ovr(o)<=99&&o.age>=(women?14:16)&&(women||o.age<=45)),'giocatore fuori misura in '+n);
       chk('rose',Math.abs(pw-LN_BY[n].p)<=(sv?7:2),'forza di '+n+': '+pw.toFixed(1)+' contro '+LN_BY[n].p);
+      const lk=LN_BY[n].lk,sources=lnRosterSources(lk);
+      if(sources){
+        const real=new Map(ro.filter(o=>!o.gen).map(o=>[usNameKey(o.label||o.n),o]));
+        for(const [sur,nm] of sources.names[n]||[])chk('rose',real.has(usNameKey(nm+' '+sur)),n+': manca '+nm+' '+sur);
+        for(const [k,o] of real){
+          chk('doppioni',!leagueReal[lk].has(k),o.label+' in più club di '+lk);leagueReal[lk].add(k);
+          const range=sources.ages[k];
+          if(range&&o.ae)chk('eta',o.age>=range[0]&&(!range[1]||o.age<=range[1]),o.label+': stima fuori dall’intervallo documentato');
+        }
+      }
       for(const o of ro){nAll++;if(!o.gen){nReal++;if(!o.ae)nExact++;}}   // eta' esatta: le stelle del mercato e le poche schede pubbliche
     }
     // forza dei giocatori coerente con quella del club: dentro ogni livello, chi ha un club piu' forte ha giocatori piu' forti (anche in fondo alla rosa)
@@ -139,7 +151,7 @@ function lnSelfTest(seasons,seed){
     }
     // ---- campionato Women (07-women.js): un mondo a parte, solo giocatrici ----
     {const S0=SV;SV={};chk('women',!allClubs().some(isWomenClub),'club femminili tra quelli maschili (mercato, offerte, carte)');
-     startCareer('Tequila Boom Boom',{});chk('women',allClubs().length===LN_CL.IW.length&&allClubs().every(isWomenClub)&&!foreignClubs().length,'nella carriera Women ci sono club maschili');
+     startCareer('Tequila Boom Boom',{});chk('women',allClubs().length===LN_CL.IW.length+UW_NAMES.length&&allClubs().every(isWomenClub)&&foreignClubs().length===UW_NAMES.length&&foreignClubs().every(n=>clubLega(n)==='UW'),'nella carriera Women ci sono club maschili');
      chk('women',SQ.every(p=>p.f)&&Object.values(SV.rost).every(r=>r.every(o=>o.f)),'giocatori maschi nel campionato Women');
      buildMarket();chk('women',SV.market.every(m=>m.o.f),'mercato del campionato Women con giocatori maschi');
      const pw=t=>LN_CL.IW.filter(r=>r[1]===t).map(r=>rosterPower(lnRoster(r[0],'t')));

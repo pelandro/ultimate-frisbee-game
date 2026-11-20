@@ -1,18 +1,18 @@
-/* ===================== USA MEN'S CLUB: LA STAGIONE =====================
+/* ===================== USA CLUB: LA STAGIONE =====================
    Regole del campionato USA, separate da quelle italiane. Le funzioni italiane (beginSeason, recordResult, endSeason, nextMatch...) chiamano questo modulo solo
-   quando SV.lk==='US'; tutto il resto del gioco (partita, rosa, mercato, allenamenti, economia) e' lo stesso.
-   1) STAGIONE REGOLARE: 5 giornate nella propria Conference (6 club, sola andata). Classifica: vittorie, scontri diretti, differenza mete.
-   2) PLAY-IN: la 1ª di ogni Conference va ai Nationals; la 2ª e la 3ª si sfidano in gara secca e la vincitrice va ai Nationals; dalla 4ª alla 6ª sono fuori.
+   nelle divisioni US e UW; tutto il resto del gioco (partita, rosa, mercato, allenamenti, economia) e' lo stesso.
+   1) STAGIONE REGOLARE: 5 giornate nella propria Conference (6 club, sola andata) e 7 partite interregionali. Classifica: vittorie, scontri diretti, differenza mete.
+   2) PLAY-IN: da 1 a 4 posti per regione secondo il ranking, con accessi diretti e spareggi secondo usBidSplit.
    3) NATIONALS: 16 club in 4 gironi da 4 (fasce del ranking nazionale, club della stessa Conference in gironi diversi quando si puo'). Le prime vanno ai quarti,
       le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono fuori. Poi quarti, semifinali e finale.
    4) RANKING NAZIONALE (SV.us.pr): punteggio Elo aggiornato dopo ogni partita ufficiale, contro la forza dell'avversario e col margine di mete.
    5) PARTITE INTERREGIONALI: oltre alle 5 della propria Conference ogni club gioca una partita contro un club di ciascuna delle altre 7 Conference (12 partite in tutto, in
       US_CAL: c = giornata di Conference, x = interregionale). Servono a legare le Conference nel ranking: un Elo aggiornato solo dentro la Conference ne conserva la somma e i
-      posti per regione non reagirebbero ai risultati. Le interregionali contano solo per il ranking (non per la classifica, le statistiche, gli incassi e gli eventi) e le giochi
+      posti per regione non reagirebbero ai risultati. Le interregionali contano solo per il ranking (non per la classifica regionale) e le giochi
       o simuli come le altre. Si giocano 7 «strati» (usCrossPlan, a coppie di Conference con il metodo del cerchio): in ogni strato tutti i club giocano una partita, accoppiati per
       forza; gli altri club le giocano quando le giochi tu. Dopo ogni partita i posti ai Nationals di ogni regione si ricalcolano dal ranking (usBids): sono definitivi alla fine
       della stagione regolare, ma si muovono partita dopo partita (SV.us.bq = prima dell'ultima partita).
-   Stato: SV.us={cf, conf, ph, pr, pr0, fin, pin, bids, q, nat, stage, ci, xn, xp, xl, lp, bq, pl}. SV.sr==='U', SV.mem.U = i club della tua Conference, SV.lg = le altre tre Conference.
+   Stato: SV.us={cf, conf, ph, pr, pr0, fin, pin, bids, q, nat, stage, ci, xn, xp, xl, lp, bq, pl}. SV.sr = U o UW, SV.mem[SV.sr] = i club della tua Conference, SV.lg = le altre sette Conference.
    nat={pools, tabs, sched, pg, rd, ord, ko, champ, out}: rd = turno in corso (0-2 gironi, 3 prequarti, 4 quarti, 5 semifinali, 6 finale, 7 concluso);
    ko[0..3] = prequarti, quarti, semifinali, finale: ogni partita e' [a,b,punti a,punti b,vincitrice]. */
 Object.assign(PO_NAME,{pin:'Play-in',nat:'Nationals'});
@@ -40,20 +40,20 @@ function usRate(a,b,sa,sb){   // dopo ogni partita ufficiale: conta chi hai batt
   const e=1/(1+Math.pow(10,(P[b]-P[a])/400)),w=sa>sb?1:0,k=(SV.us.ph==='reg'?32:22)*(1+Math.min(10,Math.abs(sa-sb))/10);
   P[a]+=k*(w-e);P[b]-=k*(w-e);
 }
-const usRankList=()=>US_NAMES.slice().sort((a,b)=>SV.us.pr[b]-SV.us.pr[a]||(a<b?-1:1));
+const usRankList=()=>usClubs().slice().sort((a,b)=>SV.us.pr[b]-SV.us.pr[a]||(a<b?-1:1));
 const usPos=n=>usRankList().indexOf(n)+1;
 function usOfficial(a,b){const [sa,sb]=simPower(a,b);usRate(a,b,sa,sb);return [a,b,sa,sb,sa>sb?a:b];}
 // ---- inizio carriera e inizio stagione ----
 function usInit(club){
-  const conf={};for(const c of US_CK)conf[c]=US_BYCONF[c].slice();
-  const pr={};for(const n of US_NAMES)pr[n]=1500+(US_TEAM[n].power-82)*18;
+  const conf={};for(const c of US_CK)conf[c]=usGroups(SV.lk)[c].slice();
+  const pr={};for(const n of usClubs())pr[n]=SV.lk==='UW'?1500+(US_TEAM[n].rating-1350)*.18:1500+(US_TEAM[n].power-82)*18;
   SV.us={cf:US_TEAM[club].conf,conf,ph:'reg',pr,pr0:Object.assign({},pr),fin:null,pin:null,q:null,nat:null,stage:0};
-  SV.mem={U:conf[SV.us.cf].slice()};
+  SV.mem={[SV.sr]:conf[SV.us.cf].slice()};
 }
 function usLeagueBegin(){   // chiamata da leagueBegin() a ogni inizio stagione
   const U=SV.us;SV.lg={};
   for(const c of US_CK)if(c!==U.cf){const n=U.conf[c];SV.lg[c]={sched:roundRobin(n.length),round:0,tab:usFreshTab(n),last:[],streak:{}};}
-  if(SV.season>1)for(const n of US_NAMES)U.pr[n]=0.5*U.pr[n]+0.5*usBaseRating(n);   // d'estate il ranking si riavvicina alla forza delle rose
+  if(SV.season>1)for(const n of usClubs())U.pr[n]=0.5*U.pr[n]+0.5*usBaseRating(n);   // d'estate il ranking si riavvicina alla forza delle rose
   U.ph='reg';U.pin=null;U.q=null;U.nat=null;U.fin=null;U.bids=null;U.stage=0;U.pr0=Object.assign({},U.pr);
   U.ci=0;U.xn=0;U.xl=[];U.lp='';U.xp=usCrossPlan();U.bq=usBids();U.pl=usPosMap();   // calendario: partita di adesso, strati interregionali giocati e loro accoppiamenti, tue interregionali
 }
@@ -141,7 +141,7 @@ function usRecord(win,su,so){
   return usNatRecord(win,su,so);
 }
 function usRegRecord(win,su,so){
-  const names=SV.mem.U,ui=names.indexOf(SV.team);let opp0='';
+  const names=SV.mem[SV.sr],ui=names.indexOf(SV.team);let opp0='';
   SV.us.bq=usBids();SV.us.pl=usPosMap();   // posti e posizioni prima di questa giornata: servono per mostrare cosa cambia
   for(const [i,j] of SV.sched[SV.round]){
     const a=names[i],b=names[j];

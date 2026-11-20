@@ -12,7 +12,7 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
 (async()=>{
   let h=build();const i=h.lastIndexOf('})();');
   // solo per la prova: espone le funzioni del gioco (che vive in un ambito unico, senza moduli)
-  h=h.slice(0,i)+';window.__OVR=()=>({OVR_2026,OVR_OUT,OVR_FORCE,OVR_ADD,OVR_PART,ovrPart,OVR_DUAL_US,OVR_POW:typeof OVR_POW!=="undefined"?OVR_POW:{},ovrEntries,ovrKey,foreignRoster,allClubs,rosterPower,powerOfVals,rosterLevel,ovr,SQ_MIN,SQ_MAX,usRoster,lnRoster,realRoster,REAL,realOpt,US_TEAM,LN_BY,LN_CL,LN_PL,lnBasePower,qRoster});'+h.slice(i);
+  h=h.slice(0,i)+';window.__OVR=()=>({UW_ROSTERS,UW_CLUBS,OVR_2026,OVR_OUT,OVR_FORCE,OVR_ADD,OVR_PART,ovrPart,OVR_DUAL_US,OVR_POW:typeof OVR_POW!=="undefined"?OVR_POW:{},ovrEntries,ovrKey,foreignRoster,allClubs,rosterPower,powerOfVals,rosterLevel,ovr,SQ_MIN,SQ_MAX,usRoster,lnRoster,realRoster,REAL,realOpt,US_TEAM,LN_BY,LN_CL,LN_PL,lnBasePower,qRoster});'+h.slice(i);
   fs.writeFileSync(OUT,h);
   const browser=await chromium.launch(),page=await browser.newPage(),errs=[];
   page.on('pageerror',e=>errs.push('errore JavaScript: '+e.message));
@@ -79,6 +79,21 @@ const OUT=path.join(os.tmpdir(),'ultimate-ovr-'+process.pid+'.html'),calcola=pro
       if(Math.abs(p-X.lnBasePower(c))>0.2||Math.abs(X.rosterLevel(ro)-level)>0.3)bad.push('potenza o livello Women incoerenti: '+c);
     }
     if(Math.min(...womenPowers.A)<=Math.max(...womenPowers.B))bad.push('gerarchia della Serie A Women rispetto alla B');
+    for(const [c,,,level] of X.UW_CLUBS){
+      const rows=X.UW_ROSTERS[c],variants=[club(c),X.usRoster(c,'preview|'+c),X.qRoster(c)];
+      if(rows.length<7||rows.length>X.SQ_MAX||variants.some(ro=>ro.length!==rows.length))bad.push('dimensione USA Women: '+c);
+      for(const [i,[name,role,ov,age]] of rows.entries()){
+        const k=X.ovrKey(name);
+        if(womenNames.has(k))bad.push('giocatrice in più rose: '+name);
+        womenNames.add(k);
+        for(const ro of variants){
+          const o=ro[i];
+          if(!o||o.label!==name||!o.f||o.gen||X.ovr(o)!==ov||o.age!==Math.abs(age)||!!o.ae!==(age<0)
+            ||o.r!==(role==='H'?'H':'C')||(role==='D'&&o.pos!=='D'))bad.push('scheda USA Women: '+c+' / '+name);
+        }
+      }
+      if(Math.abs(X.rosterLevel(variants[0])-level)>.3)bad.push('livello titolari USA Women: '+c);
+    }
     return {bad,pow,tot,cut,mine,women:womenNames.size,declared:X.OVR_POW};
   });
   await browser.close();try{fs.unlinkSync(OUT);}catch(e){}

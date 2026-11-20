@@ -184,6 +184,7 @@ function usFFskew(club){
 // la rosa di un club: giocatori internazionali del mercato che ci giocano, giocatori veri e riempimento generato, poi si sposta il livello di tutti tranne le stelle
 // finche' la media dei 7 migliori e' quella del club (power). opt.n: giocatori in rosa. La tua rosa e' la stessa delle avversarie: nessun abbassamento di partenza
 function usRoster(club,seedStr,opt){
+  if(UW_ROSTERS[club])return uwRoster(club,seedStr);
   opt=opt||{};const P=US_TEAM[club].power,rg=mulberry32(hashStr(seedStr+'|usr|'+club));
   const specs=[];
   // le stelle del mercato che hanno i dati Fantasy (k:'sf') prendono livello e ruolo dal rendimento come gli altri, ma restano loro (tratto, aspetto, eta');
