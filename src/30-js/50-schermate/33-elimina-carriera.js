@@ -4,7 +4,9 @@ renderCareers=function(){
   renderCareersBeforeDelete();
   $('csBox').querySelectorAll('.ccard').forEach(card=>{
     const create=card.querySelector('[data-cnew]'),row=create&&create.parentElement;
-    if(!row||row.querySelector('[data-cdelete]'))return;
+    if(!create||!row)return;
+    create.className='sec';
+    if(!slotData(+create.dataset.cnew)||row.querySelector('[data-cdelete]'))return;
     const button=document.createElement('button');
     button.type='button';button.className='sec danger';button.dataset.cdelete=create.dataset.cnew;
     button.textContent='Elimina carriera';row.append(button);
