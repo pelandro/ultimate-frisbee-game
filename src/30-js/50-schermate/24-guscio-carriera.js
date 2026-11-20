@@ -53,8 +53,20 @@ function todoItems(){
 function renderTodo(){
   const L=todoItems(),m=nextMatch();
   $('hTodo').innerHTML=L.length?L.map(([c,t,g])=>`<li><button type="button" class="tdi ${c}" data-go="${g}"><i></i><span>${esc(t)}</span></button></li>`).join(''):`<li class="tdok">${m?'Tutto in ordine: puoi giocare.':'Niente da sistemare per ora.'}</li>`;
+  // il pulsante in pagina: quante cose ci sono e il colore della piu' urgente
+  const lv=L.some(x=>x[0]==='bad')?'bad':(L.some(x=>x[0]==='warn')?'warn':(L.length?'ok':''));
+  $('hTodoN').textContent=L.length||'';$('hTodoN').className='hpn '+lv;
+  $('hTodoS').textContent=L.length?(L.length>1?L.length+' cose da vedere':'1 cosa da vedere'):'Tutto in ordine';
 }
-$('hTodo').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;const g=b.dataset.go;if(g==='alerts')openAlerts();else if(g==='sponsor'){SV.evt=SV.evt||{id:'spons',a:{}};openEvt();}else showScreen(g);});
+const popOpen=id=>{$(id).classList.remove('hidden');};
+const popClose=id=>{$(id).classList.add('hidden');};
+$('hTodoB').addEventListener('click',()=>{renderTodo();popOpen('todoW');});
+$('todoX').addEventListener('click',()=>popClose('todoW'));
+$('hTipB').addEventListener('click',()=>{renderTicker();popOpen('tipW');});
+$('tipWNext').addEventListener('click',()=>{tipSkip++;renderTicker();});
+$('tipWX').addEventListener('click',()=>popClose('tipW'));
+for(const id of ['todoW','tipW'])$(id).addEventListener('click',e=>{if(e.target.id===id)popClose(id);});   // un tocco fuori dal riquadro chiude
+$('hTodo').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;popClose('todoW');const g=b.dataset.go;if(g==='alerts')openAlerts();else if(g==='sponsor'){SV.evt=SV.evt||{id:'spons',a:{}};openEvt();}else showScreen(g);});
 
 // ---- informazioni a scomparsa: le spiegazioni lunghe stanno dietro un pulsante «i» (chiuse all'apertura della pagina), cosi' si vede subito cio' che serve ----
 // infoB(k) = il pulsante, infoX(k,html) = il riquadro che si apre sotto; lo stato (aperto/chiuso) resta anche quando la schermata si ridisegna

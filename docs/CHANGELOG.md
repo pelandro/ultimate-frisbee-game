@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Cruscotto della carriera più leggero: «Questa settimana» e il consiglio non stanno più in pagina, sono due pulsanti che aprono una finestra. Il pulsante di «Questa settimana» mostra quante cose ci sono, nel colore della più urgente.
 - Menu iniziale: il giocatore è disegnato a pixel grossi, con la testa più piccola e la faccia visibile; prende il disco con la mano sinistra e, a presa fatta, lui e il disco diventano un adesivo con il bordo bianco e l’ombra. Il disco è più sottile, con pixel grandi come quelli del giocatore. Corsa un po’ più lenta e tuffo più lungo.
 - Nella schermata delle carriere «Nuova carriera» ha un colore diverso da «Elimina carriera»; il tasto per eliminare appare solo negli slot occupati e la conferma mantiene il testo bianco.
 - Dalla schermata delle carriere puoi eliminare uno slot: una conferma rimuove il salvataggio e la sua copia precedente.
