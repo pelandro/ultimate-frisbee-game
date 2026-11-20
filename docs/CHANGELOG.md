@@ -5,6 +5,7 @@ Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattrib
 
 ## Non ancora pubblicato
 - Menu iniziale: il giocatore è disegnato a pixel grossi, con la testa più piccola e la faccia visibile; prende il disco con la mano sinistra e, a presa fatta, lui e il disco diventano un adesivo con il bordo bianco e l’ombra. Il disco è più sottile, con pixel grandi come quelli del giocatore. Corsa un po’ più lenta e tuffo più lungo.
+- Nella schermata delle carriere «Nuova carriera» ha un colore diverso da «Elimina carriera»; il tasto per eliminare appare solo negli slot occupati e la conferma mantiene il testo bianco.
 - Dalla schermata delle carriere puoi eliminare uno slot: una conferma rimuove il salvataggio e la sua copia precedente.
 - Nelle nuove carriere in Germania trovi più giocatori reali nelle rose e stime d’età aggiornate dove ci sono riscontri pubblici.
 - Nelle nuove carriere in Belgio trovi più giocatori veri nelle rose e stime d’età aggiornate con i riscontri delle competizioni giovanili e Masters.
