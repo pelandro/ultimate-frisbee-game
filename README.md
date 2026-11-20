@@ -42,3 +42,9 @@ npm test
 ```
 
 Controlli statici, test del motore di gioco (partite simulate con seme fisso) e prova nel browser.
+
+## Copyright e licenza
+
+© 2026 pelandro. Tutti i diritti riservati.
+
+Il gioco e il suo codice sono protetti da copyright. Puoi giocarci, scaricarlo e copiarlo per uso personale, ma **non puoi distribuirlo** né pubblicarlo altrove, in forma originale o modificata, senza autorizzazione. I nomi di persone e squadre reali, gli stemmi e i marchi appartengono ai rispettivi titolari. Il testo completo è nel file [`LICENSE`](LICENSE).
