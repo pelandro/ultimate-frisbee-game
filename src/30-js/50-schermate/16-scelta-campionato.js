@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 1700)
-Total output lines: 59
-
 /* ===================== SCELTA DEL CAMPIONATO, ROSTER DEI CLUB E SQUADRA DEL CUORE =====================
    Nuova carriera: schermata «Scegli il campionato» (una scheda per lega, in LEAGUES), poi «Scegli la tua squadra» solo con i club di quella lega. Toccando un club
    si apre il suo roster (la rosa con cui partiresti) con i tasti «Squadra del cuore» e «Allena questa squadra». Per aggiungere un campionato: una voce in
@@ -13,7 +10,37 @@ const LEAGUES=[
   {id:'US',name:'USA Men’s Club',sub:'48 club · 8 Conference',ser:()=>US_CK.length+' Conference',txt:'I club veri della divisione Men’s di USA Ultimate: 8 Conference (le regioni vere) da 6, Play-in e Nationals a 16 squadre. Niente promozioni né retrocessioni.',
     clubs:()=>US_NAMES,roster:n=>usRoster(n,'preview|'+n),sub2:n=>`${US_TEAM[n].city} · ${usConfName(US_TEAM[n].conf)}`}
 ].concat(LN_IDS.map(lk=>({id:lk,name:LN_DEF[lk].name,sub:LN_DEF[lk].sub,txt:LN_DEF[lk].txt,ser:()=>LN_DEF[lk].tiers.map(t=>t.name).join(' · '),
-    clubs:()=>lnClubs(lk),roster:n=>lnRoster(n,'preview|'+n),sub2:n=>`${LN_DEF[lk].cc} · ${LN_TIER[lnKey(lk,LN_BY[n].t)].name}`})));   // leghe europee (37-leghe/): una …700 tokens truncated…ass();return;}
+    clubs:()=>lnClubs(lk),roster:n=>lnRoster(n,'preview|'+n),sub2:n=>`${LN_DEF[lk].cc} · ${LN_TIER[lnKey(lk,LN_BY[n].t)].name}`})));   // leghe europee (37-leghe/): una scheda per paese
+LEAGUES.push({id:'UW',name:SERIES_NAME.UW,sub:'48 club · 8 Conference',ser:()=>'8 Conference',
+  txt:'Divisione femminile per club di USA Ultimate 2026. Le otto regioni portano 16 squadre ai Nationals.',
+  clubs:()=>UW_NAMES,roster:n=>usRoster(n,'preview|'+n),sub2:n=>usConfName(usConfOf(n))});
+const lgOf=id=>LEAGUES.find(l=>l.id===(id||teamLg))||LEAGUES[0];
+const FAV_KEY='ultimate-cuore';
+function favAll(){try{return JSON.parse(localStorage.getItem(FAV_KEY)||'{}')||{};}catch(e){return {};}}
+const favGet=lg=>{const n=favAll()[lg||teamLg];return n&&lgOf(lg).clubs().includes(n)?n:'';};
+function favSet(lg,n){const f=favAll();if(n)f[lg]=n;else delete f[lg];try{localStorage.setItem(FAV_KEY,JSON.stringify(f));}catch(e){}}
+const favMark=n=>n===favGet()?'★ ':'';
+const favFirst=(a,b)=>(b===favGet())-(a===favGet());   // la squadra del cuore sta in cima
+// prima si sceglie la divisione (maschile o femminile), poi il campionato: le due divisioni non si mescolano (37-leghe/07-women.js).
+// Con un solo campionato nella divisione si va subito alla scelta della squadra
+let lgDiv='',lgKeep=false;
+const lgW=l=>lnWomen(l.id);
+const LG_NOTE='Dove vuoi allenare? Poi scegli la squadra: prima di sceglierla puoi vederne il roster. Più avanti puoi ricevere offerte anche dagli altri campionati.';
+function renderLeagues(){if(!lgKeep)lgDiv='';lgKeep=false;drawLeagues();}
+function drawLeagues(){
+  if(!lgDiv){
+    $('lgH').textContent='Scegli la divisione';$('lgNote').textContent='Vuoi allenare una squadra maschile o femminile? Le due divisioni sono separate: le squadre femminili giocano solo tra loro.';
+    const n=w=>LEAGUES.filter(l=>lgW(l)===w);
+    $('lgList').innerHTML=[['m','Maschile',n(false)],['w','Femminile',n(true)]].map(([k,t,ls])=>`<button type="button" class="ecard lgcard" data-div="${k}"><strong>${t}</strong><small>${ls.length===1?'1 campionato':ls.length+' campionati'}</small><span class="lgtxt">${esc(ls.map(l=>l.name).join(' · '))}</span></button>`).join('');
+    return;
+  }
+  $('lgH').textContent='Scegli il campionato';$('lgNote').textContent=LG_NOTE;
+  // scheda essenziale sui colori della bandiera (23-bandiere-campionati.css): nome, serie e squadre; i dettagli stanno nella guida
+  $('lgList').innerHTML=LEAGUES.filter(l=>lgW(l)===(lgDiv==='w')).map(l=>`<button type="button" class="ecard lgcard lgflag" data-lg="${l.id}"><strong>${esc(l.name)}</strong><span class="lgser">${esc(l.ser())}</span><span class="lgnt">${l.clubs().length} squadre</span></button>`).join('');
+}
+$('lgList').addEventListener('click',e=>{
+  const d=e.target.closest('[data-div]');
+  if(d){lgDiv=d.dataset.div;const ls=LEAGUES.filter(l=>lgW(l)===(lgDiv==='w'));if(ls.length===1){teamLg=ls[0].id;teamMode='cuore';reliefName=null;showScreen('team');return;}drawLeagues();femPass();return;}
   const b=e.target.closest('[data-lg]');if(!b)return;teamLg=b.dataset.lg;teamMode='cuore';reliefName=null;showScreen('team');});
 $('lgBack').addEventListener('click',()=>{if(lgDiv){lgDiv='';drawLeagues();femPass();}else teamBack();});
 // ---- roster del club, prima di sceglierlo ----
