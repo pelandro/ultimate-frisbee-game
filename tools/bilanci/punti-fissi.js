@@ -13,6 +13,7 @@ module.exports={
       {team:'Boston DiG',kind:'top'},{team:'Denver Johnny Bravo',kind:'mid'},
       {team:'Mooncatchers',kind:'top'},{team:'Wall City',kind:'top'},{team:'Clapham Ultimate',kind:'top'},
       {team:'BFD La Fotta Offence',kind:'top',mode:'max'},{team:'Boston DiG',kind:'top',mode:'max'},{team:'Clapham Ultimate',kind:'top',mode:'max'},
+      // stress = tutto al massimo senza vantaggio in campo (E2b): se con le strutture al massimo il club arriva all'EUCF non conta, non e' piu' di meta' classifica
       {team:'midA',kind:'mid',mode:'stress'},{team:'Denver Johnny Bravo',kind:'mid',mode:'stress'},
       {team:'Clapham Ultimate',kind:'top',trim:16},{team:'Wall City',kind:'top',trim:16}
     ],

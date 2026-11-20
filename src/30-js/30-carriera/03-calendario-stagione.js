@@ -201,9 +201,11 @@ function endSeason(){
   else if(nsr<SV.sr)short=`Promossi in ${SERIES_NAME[nsr]}!`;
   else if(nsr>SV.sr)short=`Retrocessi in ${SERIES_NAME[nsr]}.`;
   else short=`Restate in ${SERIES_NAME[nsr]}.`;
-  const qual=SV.sr==='A'&&rank<=3;
+  // EUCF: le prime 3 dopo i playoff (campione, finalista, vincitrice della finale per il 3° posto); la quarta puo' prendere il sedicesimo posto (euField)
+  const tA=res.A&&res.A.third,poA=res.A?[res.A.win,res.A.runner].concat(tA?[tA[4],poLoser(tA)]:[]):[],ordA=poA.concat(order.A.filter(t=>!poA.includes(t)));
+  const euQ=SV.sr==='A'?euField('IT',ordA.slice(0,3),ordA[3]):[],qual=euQ.includes(SV.team);
   chalEval();   // la sfida della dirigenza si giudica adesso, PRIMA dei premi: «Conti in ordine» guarda il saldo con cui arrivi in fondo, non quello gonfiato dai premi
-  SV.done=true;SV.next={euQ:order.A.slice(0,3),mem:nm,sr:nsr,rank,short,qual,tit,champs:{A:champA,B:order.B[0],C:order.C[0]},po:res[SV.sr]||null};
+  SV.done=true;SV.next={euQ,mem:nm,sr:nsr,rank,short,qual,tit,champs:{A:champA,B:order.B[0],C:order.C[0]},po:res[SV.sr]||null};
   SV.po=null;SV.poRes=null;
   // premi di fine stagione: classifica, obiettivo, reputazione, premi individuali
   const n=SV.mem[SV.sr].length,prize=Math.round((n-rank+1)*3*SR_K[SV.sr]);SV.cash+=prize;

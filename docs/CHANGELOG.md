@@ -5,6 +5,9 @@ Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattrib
 
 ## Non ancora pubblicato
 - Nelle nuove carriere USA trovi molte più squadre con giocatori veri. Le età sono aggiornate dove ci sono fonti pubbliche. Il titolo ai Nationals vale 112 crediti.
+- Nuovi formati dei campionati: ogni avversaria del girone si incontra lo stesso numero di volte. Belgio su 3 livelli (N1, N2, N3) a girone unico con playoff e spareggi come in Italia; Francia con la N1 a girone unico e tabellone a 6, la N2 in due gironi geografici con semifinali e finale per la promozione; Germania a girone unico in tutte le leghe (playoff in 1. Liga; in 2. Liga salgono 2 e scendono 3, in 3. Liga salgono 3); Regno Unito a girone unico con il tabellone dai quarti; Serie B Women con andata e ritorno. Le carriere in corso finiscono la stagione con il formato vecchio.
+- Playoff scudetto (Italia, Belgio, Germania, Francia): chi perde la semifinale gioca la finale per il 3° posto.
+- EUCF con 16 club veri: le prime 3 dopo i playoff di Italia, Belgio, Francia, Germania e Regno Unito, più la quarta classificata più forte di questi campionati.
 - Nuova festa del titolo, a tutto schermo nello stadio di sera, con una canzoncina tutta sua: rullo di tamburi, colpo pieno quando il capitano alza la coppa, poi la squadra balla a tempo e ogni due battute salta gridando «Ehi!». Agli EUCF i compagni portano il capitano in spalla con la coppa d’argento, ai Nationals festeggiano petto contro petto sotto i fuochi d’artificio.
 - Potenziare una struttura dal livello 0 al 5 costa 430 crediti.
 - Chi salta una partita per un impegno viene indicato come indisponibile.

@@ -4,6 +4,10 @@
    La stessa schermata serve per cambiare allenatore dopo (tocco sul volto, in alto a destra nel cruscotto). Le regole stanno in 24-allenatore.js. */
 let teamMode='cuore',reliefName=null;
 const TSR_IT=$('tSr').innerHTML;   // le linguette Serie A/B/C: tornano quando dal campionato USA si ripassa all'Italia
+// formato di ogni serie italiana, nella scelta della squadra (stessa forma delle leghe europee: lnFormatTxt/lnMoveTxt)
+const IT_FMT={A:'Serie A: girone unico, sola andata (15 partite); playoff fra le prime 4. Retrocedono le ultime 2. Prime 3 all’EUCF.',
+  B:'Serie B: girone unico, sola andata (13 partite); 1ª promossa, 2ª-5ª spareggio per la promozione. Retrocedono le ultime 2.',
+  C:'Serie C: girone unico, sola andata (15 partite); 1ª promossa, 2ª-5ª spareggio per la promozione.'};
 function renderTeams(){
   $('tLgName').textContent=lgOf().name;
   if(teamLg==='US')return renderTeamsUS();   // campionato USA: 15-usa-schermate.js
@@ -12,7 +16,7 @@ function renderTeams(){
   for(const b of $('tMode').children)b.classList.toggle('on',b.dataset.k===teamMode);
   const sub=teamMode==='sub';
   $('tTeams').classList.toggle('hidden',sub);$('tRelief').classList.toggle('hidden',!sub);
-  if(!sub){$('tNote').textContent='Tocca una squadra per vederne la rosa, poi decidi. Dalla Serie C si sale; in A le avversarie sono più forti. Il numero accanto al nome è la forza della squadra (contano soprattutto i 7 migliori, poi la panchina).';renderTeamList();return;}
+  if(!sub){$('tNote').textContent=(IT_FMT[teamTab]||'')+' Tocca una squadra per vederne la rosa. Il numero accanto al nome è la forza della squadra (contano soprattutto i 7 migliori, poi la panchina).';renderTeamList();return;}
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamTab);
   $('tNote').textContent='Scegli la serie: una squadra in crisi ti chiama a una giornata dalla fine. Hai una sola partita per salvarla; poi comincia l’estate.';
   if(!reliefName||!TEAM[reliefName]||TEAM[reliefName].series!==teamTab)reliefName=reliefOffer(teamTab);

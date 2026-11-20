@@ -22,7 +22,7 @@ function timelineHTML(){
     if(SV.po&&SV.po.on){   // playoff: l'ultima partita, il turno di adesso e quello dopo
       const l=SV.po.last,r0=SV.res[SV.res.length-1];
       const prev=l?node(l.win?'w':'l',(l.win?'V ':'S ')+l.su+'–'+l.so,l.label+' · '+shortN(l.opp)):(r0?node(r0.su>r0.so?'w':'l',(r0.su>r0.so?'V ':'S ')+r0.su+'–'+r0.so,'G'+SV.res.length+' · '+shortN(r0.opp)):node('f','Giornate','finite'));
-      return `<div class="tline">${[prev,node('n',SV.po.round===0?'Semifinale':'Finale',shortN(SV.po.opp)),SV.po.round===0?node('f','Finale',SV.po.kind==='tit'?'scudetto':'promozione'):node('f','Fine','stagione')].join('')}</div>`;
+      return `<div class="tline">${[prev,node('n',SV.po.round===2?'3° posto':PO_RD[SV.po.round],shortN(SV.po.opp)),SV.po.round===0&&SV.po.kind!=='tit'?node('f','Finale','promozione'):SV.po.round===0?node('f','Finale','scudetto o 3° posto'):node('f','Fine','stagione')].join('')}</div>`;
     }
     const R=SV.sched.length,last=SV.res[SV.res.length-1],lastN=SV.res.length;
     const prev=last?node(last.su>last.so?'w':'l',(last.su>last.so?'V ':'S ')+last.su+'–'+last.so,'G'+lastN+' · '+shortN(last.opp)):node('f','Inizio','stagione '+SV.season);
