@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Nelle nuove carriere USA trovi molte più squadre con giocatori veri. Le età sono aggiornate dove ci sono fonti pubbliche.
 - Nuova festa del titolo, a tutto schermo nello stadio di sera, con una canzoncina tutta sua: rullo di tamburi, colpo pieno quando il capitano alza la coppa, poi la squadra balla a tempo e ogni due battute salta gridando «Ehi!». Agli EUCF i compagni portano il capitano in spalla con la coppa d’argento, ai Nationals festeggiano petto contro petto sotto i fuochi d’artificio.
 - Potenziare una struttura dal livello 0 al 5 costa 430 crediti.
 - Chi salta una partita per un impegno viene indicato come indisponibile.
