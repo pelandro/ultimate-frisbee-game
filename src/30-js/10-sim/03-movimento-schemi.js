@@ -70,9 +70,12 @@ function pbPos(pb,team,u,y,m){const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ;
   const uu=m==='a'?u:(m==='h'?pb.hu+u:u+pb.shift),yy=m==='h'?pb.hy+y:y;
   return {x:clamp(own+d*uu,1,FIELD_L-1),y:clamp(yy,2.5,FIELD_W-2.5)};}
 function startPlay(team,force){   // force: avvia uno schema preciso (l'attacco in meta) invece di quello scelto
-  const sch=force||(team===0?G.sch.att:G.opp.att),h0=G.holder,near=!force&&h0&&h0.t===team&&(h0.x-(dirOf(team)>0?EZ:FIELD_L-EZ))*dirOf(team)>EZ_LINE-EZ_NEAR;
-  // ripresa vicino alla meta (turnover, brick): si gioca subito l'attacco in meta. Prima partiva lo schema solito, che non si sposta oltre 30 m:
-  // lo stack restava fuori dalla meta, a volte dietro a chi aveva il disco
+  // rs: il punto da cui si riparte. Dopo un turnover chi raccoglie sta ancora correndo verso il disco (G.walk): la formazione si dispone attorno al disco
+  // (o al punto della linea di meta dove lo porta), non attorno a dove si trova lui in quel momento, a volte 20-30 m piu' indietro
+  const sch=force||(team===0?G.sch.att:G.opp.att),h0=G.holder,rs=h0&&G.walk?(G.walk.line||G.walk.pick):h0;
+  // ripresa vicino alla meta (turnover, brick, timeout): si gioca subito l'attacco in meta. Prima partiva lo schema solito, che non si sposta oltre 30 m:
+  // lo stack restava fuori dalla meta, dietro a chi aveva il disco
+  const near=force!=='ez'&&h0&&h0.t===team&&(rs.x-(dirOf(team)>0?EZ:FIELD_L-EZ))*dirOf(team)>EZ_LINE-EZ_NEAR;
   const bk=near?'ez':pbBook(sch),book=PLAYBOOK[bk];
   if(!force){if(!G.ezUsed)G.ezUsed=[false,false];G.ezUsed[team]=false;
     if(G.schR){const R=team===0?G.schR:G.defR,k=team===0?G.sch.att:G.sch.def;(R[k]||(R[k]=[0,0]))[0]++;}
@@ -80,15 +83,15 @@ function startPlay(team,force){   // force: avvia uno schema preciso (l'attacco 
   if(!G.pb)G.pb=[null,null];
   const h=G.holder;
   if(!book||!h||h.t!==team){G.pb[team]=null;return;}
-  const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ,uh=(h.x-own)*d;   // dove parte il portatore: la formazione si muove con lui
+  const d=dirOf(team),own=d>0?EZ:FIELD_L-EZ,uh=(rs.x-own)*d;   // da dove si riparte: la formazione si muove con il disco
   // PARTENZA DAL CENTRO: tutti vanno prima nella formazione dello schema ('set') e i tagli partono solo con il disco in mano all'handler centrale (H1).
   // Se chi ha il disco e' lontano dal centro (dopo il pull o un turnover) un altro handler va al centro e riceve il primo passaggio (pb.prep)
-  const pb={id:bk,phase:0,stage:'set',stageT:0,shift:clamp(uh,-2,30)-0.6,hu:uh,hy:h.y,follow:{},role:{},rp:{},wp:{},post:{},active:true,ready:false,prep:false};
+  const pb={id:bk,phase:0,stage:'set',stageT:0,shift:clamp(uh,-2,30)-0.6,hu:uh,hy:rs.y,follow:{},role:{},rp:{},wp:{},post:{},active:true,ready:false,prep:false};
   const others=T[team].filter(p=>p!==h),setPos={},S0=book.phases[0].set||{};
   if(near){if(!G.ezUsed)G.ezUsed=[false,false];G.ezUsed[team]=true;G.st.ez[team]++;}
-  const cspot={x:h.x,y:MID},cen=bk!=='ez'&&Math.abs(h.y-MID)>PB_CENTER?others.filter(p=>p.role==='H').sort((a,b)=>hyp(a.x-cspot.x,a.y-cspot.y)-hyp(b.x-cspot.x,b.y-cspot.y))[0]:null;
+  const cspot={x:rs.x,y:MID},cen=bk!=='ez'&&Math.abs(rs.y-MID)>PB_CENTER?others.filter(p=>p.role==='H').sort((a,b)=>hyp(a.x-cspot.x,a.y-cspot.y)-hyp(b.x-cspot.x,b.y-cspot.y))[0]:null;
   let hr='H1';
-  if(cen){const sy=r=>S0[r]?S0[r][1]:(r==='H2'?MID-10:MID+10);hr=Math.abs(sy('H2')-h.y)<=Math.abs(sy('H3')-h.y)?'H2':'H3';pb.prep=true;pb.cspot=cspot;pb.role[cen.id]='H1';pb.rp.H1=cen;}   // chi ha il disco fa da handler di lato, dal suo lato
+  if(cen){const sy=r=>S0[r]?S0[r][1]:(r==='H2'?MID-10:MID+10);hr=Math.abs(sy('H2')-rs.y)<=Math.abs(sy('H3')-rs.y)?'H2':'H3';pb.prep=true;pb.cspot=cspot;pb.role[cen.id]='H1';pb.rp.H1=cen;}   // chi ha il disco fa da handler di lato, dal suo lato
   pb.role[h.id]=hr;pb.rp[hr]=h;
   const roles=PB_ROLES.filter(r=>!pb.rp[r]),rest=others.filter(p=>p!==cen);
   for(const r of roles){const sp=S0[r];setPos[r]=sp?pbPos(pb,team,sp[0],sp[1],sp[2]):{x:h.x,y:h.y};}
