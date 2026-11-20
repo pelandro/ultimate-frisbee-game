@@ -130,8 +130,10 @@ function drawField(){
   // Se e' lunga va a capo (fino a tre righe) e passa al carattere piccolo: resta sempre dentro la meta, centrata (ezNameFit, 22-campo-retro.js)
   const nmB=G.inMatch&&G.myName?G.myName:'BLU',nmR=G.inMatch&&G.oppName?G.oppName:'ROSSI',paint=wx===2?'rgba(255,255,255,.7)':cMix('#ffffff',PAL.grass,0.12+0.3*fw);
   if(!titleBg())for(const z of [[EZ/2,blueRight?nmR:nmB,-1],[FIELD_L-EZ/2,blueRight?nmB:nmR,1]]){   // nel menu iniziale le mete restano senza scritte
-    const nm=String(z[1]).replace(/ \([ABC]\)$/,'').toUpperCase(),fit=ezNameFit(nm,FIELD_W*S*0.88,EZ*S*0.82),tot=(fit.ls.length-1)*fit.lh+fit.gh;
-    ctx.save();ctx.translate(sxw(z[0]),syw(MID));ctx.rotate(z[2]*Math.PI/2);
+    // la scritta si impagina una volta sola a una scala di riferimento (EZ_REF pixel per metro) e poi si disegna in scala con il campo: resta dipinta a terra,
+    // della stessa misura rispetto alla meta a qualsiasi zoom, senza cambiare carattere o andare a capo in modo diverso
+    const nm=String(z[1]).replace(/ \([ABC]\)$/,'').toUpperCase(),fit=ezNameFit(nm,FIELD_W*EZ_REF*0.88,EZ*EZ_REF*0.82,true),tot=(fit.ls.length-1)*fit.lh+fit.gh;
+    ctx.save();ctx.translate(sxw(z[0]),syw(MID));ctx.rotate(z[2]*Math.PI/2);ctx.scale(S/EZ_REF,S/EZ_REF);
     for(let i=0;i<fit.ls.length;i++)ptext(fit.ls[i],0,-ri(tot/2)+i*fit.lh,{f:fit.f,c:paint,sh:1,o:'rgba(8,14,36,.32)'});
     ctx.restore();
   }
