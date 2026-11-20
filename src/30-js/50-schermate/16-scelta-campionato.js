@@ -5,7 +5,7 @@
    La squadra del cuore (una per campionato) e' una preferenza del dispositivo, non della carriera: chiave «ultimate-cuore» = {IT:nome, US:nome}.
    Compare per prima nell'elenco, con una stella. */
 const LEAGUES=[
-  {id:'IT',name:'Campionato italiano',sub:'Serie A, B e C · 46 squadre',ser:()=>'Serie A · Serie B · Serie C',txt:'Le squadre vere dei Campionati Italiani Ultimate Open 2026. Si sale e si scende, con playoff scudetto e Campionato europeo (EUCF); si può anche subentrare a una squadra in crisi.',
+  {id:'IT',name:'Campionato italiano',sub:'Serie A, B e C · 46 squadre',ser:()=>'Serie A · Serie B · Serie C',txt:'Le squadre vere dei Campionati Italiani Ultimate Open 2026. Serie A, B e C a girone unico di sola andata: playoff in A, spareggi per la promozione in B e C, prime 3 all’EUCF. Si può anche subentrare a una squadra in crisi.',
     clubs:()=>[].concat(SERIES.A,SERIES.B,SERIES.C),roster:n=>realRoster(REAL[n]||[],'preview|'+n,realOpt(n,9)),sub2:n=>SERIES_NAME[TEAM[n].series]},
   {id:'US',name:'USA Men’s Club',sub:'48 club · 8 Conference',ser:()=>US_CK.length+' Conference',txt:'I club veri della divisione Men’s di USA Ultimate: 8 Conference (le regioni vere) da 6, Play-in e Nationals a 16 squadre. Niente promozioni né retrocessioni.',
     clubs:()=>US_NAMES,roster:n=>usRoster(n,'preview|'+n),sub2:n=>`${US_TEAM[n].city} · ${usConfName(US_TEAM[n].conf)}`}
