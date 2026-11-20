@@ -5,6 +5,8 @@ Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattrib
 
 ## Non ancora pubblicato
 - Menu iniziale: il giocatore è disegnato a pixel grossi, con la testa più piccola e la faccia visibile; prende il disco con la mano sinistra e, a presa fatta, lui e il disco diventano un adesivo con il bordo bianco e l’ombra. Il disco è più sottile, con pixel grandi come quelli del giocatore. Corsa un po’ più lenta e tuffo più lungo.
+- Nelle nuove carriere in Germania trovi più giocatori reali nelle rose e stime d’età aggiornate dove ci sono riscontri pubblici.
+- Nelle nuove carriere in Belgio trovi più giocatori veri nelle rose e stime d’età aggiornate con i riscontri delle competizioni giovanili e Masters.
 - Primo piano del tuffo rifatto: chi si tuffa piega il ginocchio per caricarsi, si distende con la spinta e vola in orizzontale, poi prende il disco a una mano, con un movimento più fluido. Nel menu iniziale il disco sotto l’insegna è disegnato a pixel grossi e il giocatore lo prende a una mano, con la stessa carica.
 - Nelle nuove carriere USA trovi molte più squadre con giocatori veri. Le età sono aggiornate dove ci sono fonti pubbliche. Il titolo ai Nationals vale 112 crediti.
 - Menu iniziale: dietro i pulsanti lo stadio è vuoto, senza squadre in campo né nomi nelle mete. All’apertura del gioco un giocatore entra di corsa, prende in tuffo il disco sotto l’insegna e resta fermo in quella posa.
