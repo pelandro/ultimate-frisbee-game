@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Cruscotto della carriera più leggero: «Questa settimana» e il consiglio non stanno più in pagina, sono due pulsanti che aprono una finestra. Il pulsante di «Questa settimana» mostra quante cose ci sono, nel colore della più urgente.
 - Primo piano del tuffo rifatto: chi si tuffa piega il ginocchio per caricarsi, si distende con la spinta e vola in orizzontale, poi prende il disco a una mano, con un movimento più fluido. Nel menu iniziale il disco sotto l’insegna è disegnato a pixel grossi e il giocatore lo prende a una mano, con la stessa carica.
 - Nelle nuove carriere USA trovi molte più squadre con giocatori veri. Le età sono aggiornate dove ci sono fonti pubbliche. Il titolo ai Nationals vale 112 crediti.
 - Menu iniziale: dietro i pulsanti lo stadio è vuoto, senza squadre in campo né nomi nelle mete. All’apertura del gioco un giocatore entra di corsa, prende in tuffo il disco sotto l’insegna e resta fermo in quella posa.

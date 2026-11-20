@@ -7,12 +7,14 @@
     </div>
     <div class="hr">
       <div class="hrow"><button class="hbtn hp" id="hPlay" type="button"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><ellipse cx="16" cy="16" rx="13" ry="6.5"/><ellipse cx="16" cy="16" rx="6" ry="2.8"/></svg><span><strong id="hPlayT">Inizia partita</strong><small id="hPlayS"></small></span></button><button class="hbtn hsim" id="hSim" type="button" aria-label="Simula partita"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l9 8-9 8zM17 8l9 8-9 8z"/></svg><span><strong>Simula</strong><small>partita</small></span></button></div>
-      <div class="dcard todo" id="hTodoBox"><h3>Questa settimana</h3><ul id="hTodo"></ul></div>
-      <div class="dtick" id="hTick"><span></span></div>
+      <!-- «Questa settimana» e il consiglio si aprono in una finestra: in pagina restano solo due pulsanti (24-guscio-carriera.js) -->
+      <div class="hpops"><button class="hbtn hpop" id="hTodoB" type="button" aria-haspopup="dialog"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><rect x="6" y="5" width="20" height="23"/><path d="M11 12h10M11 17h10M11 22h6"/></svg><span><strong>Questa settimana</strong><small id="hTodoS"></small></span><b class="hpn" id="hTodoN"></b></button><button class="hbtn hpop" id="hTipB" type="button" aria-haspopup="dialog"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M16 4a8 8 0 0 0-5 14v4h10v-4a8 8 0 0 0-5-14zM12 26h8"/></svg><span><strong>Consiglio</strong><small>Un suggerimento</small></span></button></div>
     </div>
   </div>
 </div>
 <div id="hire" class="overlay hidden"><div class="panel hirepanel"><h3 id="hireT"></h3><p class="note" id="hireSub"></p><div class="hirelist" id="hireList"></div><p class="note" id="hireMsg"></p><div class="schrow"><button id="hireRenew" class="sec" type="button"></button><button id="hireX" class="sec" type="button">Chiudi</button></div></div></div>
+<div id="todoW" class="overlay hidden"><div class="panel popw todo"><h3>Questa settimana</h3><ul id="hTodo"></ul><div class="schrow"><button id="todoX" class="go" type="button">Chiudi</button></div></div></div>
+<div id="tipW" class="overlay hidden"><div class="panel popw todo"><h3>Consiglio</h3><p id="hTick"></p><div class="schrow"><button id="tipWNext" class="sec" type="button">Un altro</button><button id="tipWX" class="go" type="button">OK</button></div></div></div>
 <div id="tip" class="overlay hidden"><div class="panel tippanel"><p id="tipTxt"></p><div class="schrow"><button id="tipMore" class="sec" type="button">Scopri di più</button><button id="tipOk" class="go" type="button">OK</button></div></div></div>
 <div id="press" class="overlay hidden"><div class="panel presspanel"><h3>Conferenza stampa</h3><p id="prQ"></p><div id="prOpts" class="prOpts"></div><p id="prRes" class="prRes hidden"></p><div class="schrow"><button id="prSkip" class="sec" type="button">Salta</button></div></div></div>
 <div id="slots" class="screen hidden"><div class="spanel">

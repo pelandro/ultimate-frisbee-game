@@ -1,0 +1,17 @@
+/* cruscotto della carriera: «Questa settimana» e il consiglio sono due pulsanti che aprono una finestra (24-guscio-carriera.js) */
+#home .hpops{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#home .hpop{position:relative;min-height:0;padding:8px 10px}
+#home .hpop svg{width:26px;height:26px;flex:none}
+#home .hpop strong{font-size:17px;line-height:1.15}
+#home .hpop small{font-size:14px}
+/* quante cose ci sono, nel colore della piu' urgente */
+.hpn{position:absolute;top:-8px;right:-8px;min-width:24px;height:24px;padding:0 5px;display:flex;align-items:center;justify-content:center;font-family:var(--pfont);font-weight:400;font-size:10px;color:#10131f;background:#d1deec;border:2px solid #000}
+.hpn:empty{display:none}
+.hpn.bad{background:#ff8a8a}.hpn.warn{background:#ffb83f}.hpn.ok{background:#6dff9e}
+/* le due finestre */
+.popw{max-width:560px;width:94%;max-height:90vh;overflow:auto}
+.popw h3{margin:0 0 8px;font-family:var(--pfont);font-size:12px;font-weight:400;color:var(--gold);text-transform:uppercase;letter-spacing:0}
+#hTick{margin:0 0 10px;font-size:18px;line-height:1.35;color:#fff}
+#todoW #hTodo{margin-bottom:10px;gap:6px}
+#todoW .tdok{font-size:17px;color:#d1deec;padding:4px 0}
+html[data-ew="xs"] #home .hpops{grid-template-columns:1fr}
