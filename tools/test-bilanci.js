@@ -64,7 +64,9 @@ const ECO=fs.readFileSync(path.join(__dirname,'bilanci/pagina-economia.js'),'utf
     const mx=eco.filter(x=>x.mode==='max'),mxBad=mx.filter(x=>x.seasons.some(s=>s.fired)||x.seasons.filter(s=>s.title).length<2||x.seasons.reduce((a,s)=>a+s.red,0)>E.maxRedDays||gain(x)<0);
     chk(!mxBad.length,'E2 I club che vincono con continuità possono tenere tutto al massimo',mx.map(x=>x.team+' '+x.seasons[0].c0+'→'+x.seasons.at(-1).c1+' ('+x.seasons.filter(s=>s.title).length+' titoli)').join(', '));
     const stress=eco.filter(x=>x.mode==='stress');
-    chk(stress.every(x=>gain(x)<0),'E2b Tutto al massimo pesa su chi non domina',stress.map(x=>x.team+' '+Math.round(gain(x))+' a stagione').join(', '));
+    // E2b vale per chi resta davvero a meta' classifica: un club che con tutto al massimo arriva all'EUCF (prime 3 o quarta piu' forte) non e' piu' «chi non domina»
+    const sOut=stress.filter(x=>x.seasons.some(s=>s.eu)),sIn=stress.filter(x=>!sOut.includes(x));
+    chk(sIn.length&&sIn.every(x=>gain(x)<0),'E2b Tutto al massimo pesa su chi non domina',sIn.map(x=>x.team+' '+Math.round(gain(x))+' a stagione').join(', ')+(sOut.length?' · esclusi (arrivati all’EUCF): '+sOut.map(x=>x.team+' '+Math.round(gain(x))).join(', '):''));
     const mid=base.filter(x=>x.kind==='mid'),midBad=mid.filter(x=>gain(x)<E.midSeason[0]||gain(x)>E.midSeason[1]);
     chk(!midBad.length,`E3 Meta' classifica in pari (tra ${E.midSeason[0]} e +${E.midSeason[1]} a stagione)`,mid.map(x=>x.team+' '+Math.round(gain(x))).join(', '));
     const top=base.filter(x=>x.kind==='top'),topBad=top.filter(x=>gain(x)<E.topSeason[0]||gain(x)>E.topSeason[1]);

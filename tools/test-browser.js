@@ -180,15 +180,15 @@ catch(e){
   });
   await step('carriera in Belgio dall\'interfaccia: paese, livello, club, roster, allenatore, Classifica a tre viste, partita simulata',async()=>{
     await careerOpen(page);await vis('#league');await page.click('#lgList [data-div="m"]');if(await page.locator('#lgList .lgcard').count()<6)throw new Error('servono le schede dei sei campionati');await page.click('#lgList [data-lg="BE"]');await vis('#team');
-    if(await page.locator('#tSr button').count()!==6)throw new Error('servono i 6 livelli belgi');
+    if(await page.locator('#tSr button').count()!==3)throw new Error('servono i 3 livelli belgi');
     await page.click('#tSr button[data-k="N1"]');
-    if(await page.locator('.tteam').count()!==8)throw new Error('la N1 belga ha 8 club');
+    if(await page.locator('.tteam').count()!==15)throw new Error('la N1 belga ha 15 club');
     await page.click('.tteam >> nth=0');await vis('#rpv');
     if(await page.locator('#rpBody tr').count()<15)throw new Error('il roster del club deve elencare i giocatori');
     await page.click('#rpGo');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     if(!/Belgio/.test(await page.locator('#hInfo').innerText()))throw new Error('il cruscotto non mostra il campionato');
     await page.click('#hEvent');await vis('#event');
-    if(await page.locator('#eBody .rt tr.up').count()!==4)throw new Error('il girone da 4 deve avere tutte le squadre nella zona del tabellone');
+    if(await page.locator('#eBody .rt tr.up').count()!==4||await page.locator('#eBody .rt tr.dn').count()!==2)throw new Error('in N1 servono 4 squadre nella zona playoff e 2 in quella retrocessione');
     for(const k of ['fin','tiers','grp'])await page.click('#lnTabs [data-lt="'+k+'"]');
     await page.click('#hHome');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
     await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');window.testSaves.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])window.testSaves.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
