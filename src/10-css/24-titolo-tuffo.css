@@ -3,3 +3,4 @@
 /* il giocatore del menu iniziale sopra il velo dello sfondo, sotto l'insegna, il disco e i pulsanti */
 #tdCv{position:absolute;left:0;top:0;pointer-events:none;image-rendering:pixelated}
 #title .hwrap{position:relative;z-index:1}
+.ttlDisc .fbBody{transform-origin:120px 48px}.ttlDisc .fbShadow{transform-origin:120px 102px}   /* disco a pixel grossi (viewBox 240x108): le origini seguono la nuova altezza */
