@@ -5,7 +5,7 @@ function careerTitleAfter(wasDone,wasEuropeanChampion){
     return {text:'Campioni d’Europa',europe:true,kind:'eu'};
   }
   if(SV.event!=='camp'||wasDone||!SV.done||!SV.next?.tit)return null;
-  if(isUS())return {text:'Campioni dei Nationals',kind:'us'};
+  if(isUS())return {text:lnWomenNow()?'Campionesse dei Nationals':'Campioni dei Nationals',kind:'us'};
   const title=SV.lk==='IW'?'Campionesse':'Campioni';
   return {text:title+(isLN()?' · ':' di ')+SERIES_NAME[SV.sr],kind:'camp'};
 }

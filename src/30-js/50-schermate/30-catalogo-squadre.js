@@ -9,7 +9,7 @@ const qClubOk=n=>!!qCatMap()[n];
 const qLgs=d=>LEAGUES.filter(l=>lgW(l)===(d==='w'));   // campionati della divisione
 const qDivOf=n=>lgW(qLgOf(n))?'w':'m';
 const qGrp=n=>{const t=clubLeagueTxt(n),i=Math.max(t.lastIndexOf(', ')+2,t.lastIndexOf(' · ')+3);return i>2?t.slice(i):t;};   // «Serie A», «N1», «Northeast Conference»
-const qLgTab=l=>l.id==='IT'?'Italia':(l.id==='US'?'USA':(LN_DEF[l.id]?LN_DEF[l.id].cc:l.name));
+const qLgTab=l=>({IT:'Italia',US:'USA',UW:'USA Women'}[l.id]||LN_DEF[l.id]?.cc||l.name);
 function qGrps(l){const g=[];for(const n of l.clubs()){const k=qGrp(n);if(!g.includes(k))g.push(k);}return g;}
 
 function catalogClubs({division='',league='',group='',search=''}={}){

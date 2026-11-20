@@ -1,7 +1,7 @@
 /* ===================== USA MEN'S CLUB: SCHERMATE =====================
    Tutto cio' che l'interfaccia mostra solo nella carriera USA: scelta del campionato (Italia / USA) e della Conference, cruscotto, linea delle giornate,
    presentazione delle partite che contano e la schermata Classifica con tre viste: Conference (tabelle e Play-in), Nationals (gironi e tabellone) e Ranking
-   nazionale. Le regole stanno in 35-usa/. Le schermate italiane le chiamano con una sola riga quando SV.lk==='US'. */
+   nazionale. Le regole stanno in 35-usa/. Le schermate italiane le chiamano con una sola riga per le carriere US e UW. */
 let usTabSel='conf',usConfSel='',usTabPh='';
 const US_PHASE_NAME={reg:'Stagione regolare',pin:'Play-in',nat:'Nationals',done:'Stagione conclusa'};
 function usShortLabel(){   // etichetta breve della partita di adesso
@@ -71,7 +71,7 @@ function usStakes(m){
   }else if(usCrossPending()){
     tag='Interregionale';title=`Contro ${m.name} (${usConfName(usConfOf(m.name))})`;lines.push('Conta solo per il ranking nazionale: i risultati contro club di altre Conference decidono quanti posti ai Nationals ha ogni regione.');
   }else{
-    const names=SV.mem.U,ord=ranking(SV.tab,names),rk=ord.indexOf(SV.team)+1,last=SV.round===SV.sched.length-1;
+    const names=SV.mem[SV.sr],ord=ranking(SV.tab,names),rk=ord.indexOf(SV.team)+1,last=SV.round===SV.sched.length-1;
     if(m.name===SV.riv){tag='Rivalità';title='Derby';const rr=SV.rivRec||{w:0,l:0};lines.push(`Contro ${m.name} vale di più: incasso, morale e reputazione.${rr.w+rr.l?` Finora ${rr.w} ${rr.w===1?'vinto':'vinti'} e ${rr.l} ${rr.l===1?'perso':'persi'}.`:''}`);}
     if(last){tag=tag||'Ultima giornata';title=title||(rk===1?'Ai Nationals senza Play-in':(rk<=3?'Play-in in palio':'Ultima chiamata'));lines.push(rk===1?'Siete primi: una vittoria blinda la qualificazione diretta ai Nationals.':(rk<=3?'Siete in zona Play-in: una vittoria può valere il 1º posto, la sconfitta il 3º.':'Siete fuori dai Play-in: serve vincere e sperare.'));}
   }
@@ -84,8 +84,8 @@ function renderTeamsUS(){
   $('tMode').classList.add('hidden');$('tRelief').classList.add('hidden');$('tTeams').classList.remove('hidden');
   $('tSr').innerHTML=US_CK.map(c=>`<button type="button" data-k="${c}">${US_CONF[c]}</button>`).join('');
   for(const b of $('tSr').children)b.classList.toggle('on',b.dataset.k===teamCf);
-  $('tNote').textContent='Men’s Club USA: 48 club veri in 8 Conference da 6. Giochi 5 partite nella tua Conference e 7 contro le altre (interregionali), poi Play-in e Nationals. Niente promozioni né retrocessioni. Il numero accanto al nome è la forza del club.';
-  $('tTeams').innerHTML=US_BYCONF[teamCf].slice().sort((a,b)=>favFirst(a,b)||US_TEAM[a].rank-US_TEAM[b].rank).map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${favMark(n)}${esc(n)}<small class="tcity">${esc(US_TEAM[n].city)} · n° ${US_TEAM[n].rank}</small></span></span><b class="tp">${usPreview(n)}</b></button>`).join('');
+  $('tNote').textContent=usLeagueName(teamLg)+' · 48 club veri in 8 Conference da 6. Giochi 5 partite nella tua Conference e 7 contro le altre (interregionali), poi Play-in e Nationals. Niente promozioni né retrocessioni. Il numero accanto al nome è la forza del club.';
+  $('tTeams').innerHTML=usGroups(teamLg)[teamCf].slice().sort((a,b)=>favFirst(a,b)||US_TEAM[a].rank-US_TEAM[b].rank).map(n=>`<button type="button" class="tteam" data-n="${n.replace(/"/g,'&quot;')}"><span class="tn">${crest(n,22)}<span>${favMark(n)}${esc(n)}<small class="tcity">${US_TEAM[n].city?esc(US_TEAM[n].city)+' · ':''}n° ${US_TEAM[n].rank}</small></span></span><b class="tp">${usPreview(n)}</b></button>`).join('');
 }
 // ---- Classifica ----
 const usRow=(nm,t,cls)=>`<tr${cls?` class="${cls}"`:''}><td>${crest(nm,15)} ${esc(nm)}<span class="tp">${Math.round(teamPower(nm)||(typeof euPowOf==='function'?euPowOf(nm):0)||0)}</span></td><td>${t.w+t.l}</td><td>${t.w}</td><td>${t.l}</td><td>${t.pf-t.pa>0?'+':''}${t.pf-t.pa}</td></tr>`;
@@ -158,7 +158,7 @@ function usNatView(){
   return h;
 }
 function usRankView(){
-  const U=SV.us,pos0={};US_NAMES.slice().sort((a,b)=>U.pr0[b]-U.pr0[a]||(a<b?-1:1)).forEach((n,i)=>{pos0[n]=i+1;});
+  const U=SV.us,pos0={};usClubs().slice().sort((a,b)=>U.pr0[b]-U.pr0[a]||(a<b?-1:1)).forEach((n,i)=>{pos0[n]=i+1;});
   const arr=d=>`<td style="color:${d>0?'#4fe58f':(d<0?'#ff7b80':'inherit')}">${d>0?'▲'+d:(d<0?'▼'+(-d):'–')}</td>`,pl=U.ph==='reg'?U.pl:null;
   const rows=usRankList().map((n,i)=>{const d=pos0[n]-(i+1),cf=usConfOf(n),dl=pl&&pl[n]?pl[n]-(i+1):0;
     return `<tr class="${n===SV.team?'me':''}"><td>${i+1}. ${crest(n,15)} ${esc(n)}</td><td>${cf}</td><td>${Math.round(U.pr[n])}</td>${arr(dl)}${arr(d)}</tr>`;}).join('');
@@ -166,7 +166,7 @@ function usRankView(){
 }
 function renderEventUS(){
   const U=SV.us,sub=SV.done?'Stagione conclusa.':(U.ph==='reg'?usRegSub()+'.':US_PHASE_NAME[U.ph]+'.');
-  $('eCards').innerHTML=`<button type="button" class="ecard on" data-e="camp"><strong>Men’s Club USA</strong><small>48 club, 8 Conference da 6: 5 giornate di Conference + 7 interregionali, Play-in e Nationals a 16 squadre. ${sub}</small></button>`;
+  $('eCards').innerHTML=`<button type="button" class="ecard on" data-e="camp"><strong>${usLeagueName(SV.lk)}</strong><small>48 club, 8 Conference da 6: 5 giornate di Conference + 7 interregionali, Play-in e Nationals a 16 squadre. ${sub}</small></button>`;
   if(usTabPh!==U.ph){usTabPh=U.ph;usTabSel=(U.ph==='nat'||U.ph==='done')?'nat':'conf';}
   let body='';
   if(SV.done&&SV.next)body+=endSeasonHTML({rl:'Conference',awTitle:usConfName(U.cf)});
