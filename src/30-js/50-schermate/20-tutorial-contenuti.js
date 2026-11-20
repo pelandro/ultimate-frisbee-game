@@ -60,7 +60,7 @@ tip:`Lancia dove il compagno sta correndo, non dove si trova. Prima di rilasciar
 `Se miri su una <b>zona libera</b>, ci corre il compagno che arriva prima. Più alta è la Visione di chi lancia, più lontano può essere.`],
 tip:`Isola il tuo cutter più veloce contro il marcatore più lento: è il modo più facile di creare un vantaggio.`},
 {id:'att-sparo',t:'Lanci lunghi, scatto e prese',b:[
-[`<b>Sparo</b>: oltre 30 m. Quanto lontano arriva dipende dalla statistica Sparo (con 20 circa 30 m, con 99 tutto il campo).`,
+[`<b>Sparo</b>: oltre 30 m. Fin dove è preciso e quanto lontano arriva dipende dalla statistica Sparo: con 60 circa 40 m precisi, con 75 circa 55, con 99 tutto il campo.`,
 `<b>Scatto</b>: sui lanci lunghi tieni premuto lo schermo (o il fulmine in basso a destra) per far scattare chi corre al disco. Va più veloce ma consuma energia.`,
 `<b>Prese</b>: riescono quasi sempre, ma sono difficili al limite della portata, in corsa, con un difensore addosso o da stanchi. Conta la Presa di chi riceve.`,
 `<b>Duelli e tuffi</b>: contano salto e posizione. Nei duelli in aria e nei tuffi <b>tocca quando l’indicatore è nel verde</b> per un bonus.`]],
