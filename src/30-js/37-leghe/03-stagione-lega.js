@@ -11,7 +11,7 @@
 Object.assign(PO_NAME,{ln:'Fase finale'});
 const lnP=n=>(SV.rost&&SV.rost[n])||n===SV.team?teamPow(n):lnBasePower(n);
 function lnBasePower(club){
-  if(isWomenClub(club))return powerOfVals(LN_PL.IW[club].map(r=>r[5]));
+  if(LN_PL.IW[club])return powerOfVals(LN_PL.IW[club].map(r=>r[5]));
   return LN_BY[club]?LN_BY[club].p-PW_LV:50;
 }
 function lnSnake(clubs,k){   // k gironi con le teste di serie a serpentina secondo la forza
@@ -33,6 +33,7 @@ function lnBuildT(lk){
 function lnPools(T,lk,real){   // gironi: i veri dove si conoscono (prima stagione), altrimenti a serpentina
   for(const tr of lnSeasonDef(lk,T).tiers)for(const c of T[tr.id]){
     if(tr.pools<=1){c.pools=[c.clubs.slice().sort((a,b)=>lnP(b)-lnP(a)||(a<b?-1:1))];continue;}
+    if(tr.geo){const o=c.clubs.slice().sort((a,b)=>lnGeoX(a)-lnGeoX(b)||(a<b?-1:1)),h=Math.ceil(o.length/2);c.pools=[o.slice(0,h),o.slice(h)];continue;}   // da ovest a est
     const A=c.g&&real?c.clubs.filter(n=>c.g[n]==='A'):[],B=c.g&&real?c.clubs.filter(n=>c.g[n]==='B'):[];
     c.pools=A.length&&B.length&&A.length+B.length===c.clubs.length?[A,B]:lnSnake(c.clubs,tr.pools);
   }
@@ -53,24 +54,28 @@ function lnPrepSeason(){
   const at=lnLocate(SV.team);L.tier=at.tier;L.ci=at.ci;L.pi=at.pi;
   SV.sr=lnKey(SV.lk,L.tier);SV.mem={[SV.sr]:L.T[L.tier][L.ci].pools[L.pi].slice()};
 }
+// a inizio stagione: se la composizione del salvataggio e' nel formato vecchio (LN_OLD), passa a quello nuovo. I club tengono il livello dove li hanno
+// portati promozioni e retrocessioni dell'ultima stagione, tradotto con map (N1+N2 belghe = N1 nuova...); i gironi si rifanno da soli (lnPools).
+// Il livello piu' vecchio (extra) si chiude come nel cambio precedente: l'Open Tour britannico entra nei Nationals, la N3 francese esce dal gioco.
 function lnUpgradeFormat(){
   const L=SV.ln,lk=SV.lk,old=LN_OLD[lk],T=L?.nT;
-  if(!old||!T?.[old.extra.id])return;
-  if(lk==='UK'){
-    T.N1[0].clubs.push(...T.N2.flatMap(c=>c.clubs));
-    L.nTier='N1';
-  }else if(L.nTier==='N3'){
-    // Il club allenato resta giocabile insieme ai club già ammessi in N1 o N2.
-    const group=T.N2.reduce((a,b)=>a.clubs.length<=b.clubs.length?a:b);
-    group.clubs.push(SV.team);
-    L.nTier='N2';
+  if(!old||!T||!lnIsOld(lk,T))return;
+  const d=LN_DEF[lk],nT={};for(const t of d.tiers)nT[t.id]=[{id:'',clubs:[]}];
+  for(const [id,cs] of Object.entries(T)){
+    const to=old.map[id];
+    if(to)nT[to][0].clubs.push(...cs.flatMap(c=>c.clubs));
+    else if(lk==='UK')nT.N1[0].clubs.push(...cs.flatMap(c=>c.clubs));
   }
-  delete T[old.extra.id];
-  const active=new Set(Object.values(T).flatMap(cs=>cs.flatMap(c=>c.clubs)));
+  let nTier=old.map[L.nTier]||(lk==='UK'?'N1':null);
+  if(!nTier){   // eri nel livello che sparisce: il tuo club passa al livello piu' basso rimasto
+    nTier=d.tiers[d.tiers.length-1].id;nT[nTier][0].clubs.push(SV.team);
+  }
+  L.nT=nT;L.nTier=nTier;
+  const active=new Set(Object.values(nT).flatMap(cs=>cs.flatMap(c=>c.clubs)));
   for(const club of Object.keys(SV.rost))if(!active.has(club))delete SV.rost[club];
-  SV.next.sr=lnKey(lk,L.nTier);
+  SV.next.sr=lnKey(lk,nTier);
   SV.next.mem={[SV.next.sr]:[]};
-  news(lk==='UK'?'I Nationals ora riuniscono tutti gli 11 club britannici.':'Il campionato francese riparte con due livelli, N1 e N2.');
+  news(`Nuovo formato del campionato ${d.de}: ${d.txt}`);
 }
 function lnLeagueBegin(){   // chiamata da leagueBegin() a ogni inizio stagione
   const L=SV.ln,comp=lnComp(),g=lnCompMin(lnTierDef(),comp);SV.lg={};
@@ -98,7 +103,7 @@ function lnLeagueAdvance(){   // gli altri gironi della tua competizione giocano
 const lnPoolTab=i=>i===SV.ln.pi?SV.tab:(SV.lg&&SV.lg[i]?SV.lg[i].tab:null);
 function lnHalf(){
   const comp=lnComp(),L=SV.ln;
-  comp.pools.forEach((p,i)=>{const t=lnPoolTab(i);if(!t)return;const o=usRanking(t,p);story(`Giro di boa${comp.pools.length>1?' nel girone '+'AB'[i]:''}: capolista ${o[0]} (${t[o[0]].w}–${t[o[0]].l}), ultima ${o[o.length-1]}.`,false);});
+  comp.pools.forEach((p,i)=>{const t=lnPoolTab(i);if(!t)return;const o=usRanking(t,p);story(`Giro di boa${comp.pools.length>1?' nel girone '+lnPoolName(lnTierDef(),i):''}: capolista ${o[0]} (${t[o[0]].w}–${t[o[0]].l}), ultima ${o[o.length-1]}.`,false);});
 }
 // gironi con numero dispari di squadre: nei turni di riposo si gioca solo il resto del girone
 function lnSkipBye(){
@@ -137,30 +142,34 @@ function lnGrpEnd(dby){
   L.ord=comp.pools.map((p,i)=>usRanking(lnPoolTab(i),p));
   const r=L.ord[L.pi].indexOf(SV.team)+1;
   if(!tr.fin.length)return lnClose(`Girone concluso al ${r}° posto.`+dby);
-  L.ph='fin';L.F=lnFinBuild(tr.fin,L.ord);
+  L.ph='fin';L.F=lnFinBuild(tr.fin,L.ord,lnFinTag(tr));
   const t=lnFinNext();
-  return `Gironi conclusi: ${r}° posto${comp.pools.length>1?' nel girone '+'AB'[L.pi]:''}. ${t}`+dby;
+  return `Gironi conclusi: ${r}° posto${comp.pools.length>1?' nel girone '+lnPoolName(tr,L.pi):''}. ${t}`+dby;
 }
 // ---- fasi finali: tabelloni con classifica completa ----
+const lnFinTag=tr=>lnTiers()[0].id===tr.id?'Playoff':'Promozione';
 const lnMk=(a,b)=>a===null&&b===null?[null,null,null,null,null]:(a===null||b===null?[a,b,null,null,a===null?b:a]:[a,b,null,null,null]);   // una squadra sola: passa il turno
 const lnWin=m=>m[4],lnLos=m=>m[4]===null||m[0]===null||m[1]===null?null:(m[4]===m[0]?m[1]:m[0]);
 const lnPad=(a,n)=>[...Array(n)].map((_,i)=>a[i]===undefined?null:a[i]);
 function lnLvInit(sp,pools,base){
-  const A=lnPad(pools[0]||[],sp.m==='c8'||sp.m==='x8'?4:Math.max(2,pools[0].length)),B=pools[1]?lnPad(pools[1],A.length):lnPad([],A.length);
+  const A=lnPad(pools[0]||[],(sp.m==='c8'||sp.m==='x8')&&pools.length>1?4:Math.max(2,pools[0].length)),B=pools[1]?lnPad(pools[1],A.length):lnPad([],A.length);
   const lv={m:sp.m,base,R:[],order:null,rounds:0,T:[].concat(...pools)};
-  if(sp.m==='c8'){lv.rounds=3;lv.R[0]=[lnMk(A[0],B[3]),lnMk(A[3],B[0]),lnMk(A[1],B[2]),lnMk(B[1],A[2])];}
+  if(sp.m==='c8'&&pools.length===1){const S=lnPad(pools[0],8);lv.rounds=3;lv.R[0]=[lnMk(S[0],S[7]),lnMk(S[3],S[4]),lnMk(S[1],S[6]),lnMk(S[2],S[5])];}   // girone unico: 1ª-8ª, 4ª-5ª, 2ª-7ª, 3ª-6ª
+  else if(sp.m==='b6'){const S=lnPad(pools[0],6);lv.rounds=3;lv.R[0]=[lnMk(S[0],null),lnMk(S[1],null),lnMk(S[2],S[5]),lnMk(S[3],S[4])];}   // 1ª e 2ª dirette in semifinale
+  else if(sp.m==='c8'){lv.rounds=3;lv.R[0]=[lnMk(A[0],B[3]),lnMk(A[3],B[0]),lnMk(A[1],B[2]),lnMk(B[1],A[2])];}
   else if(sp.m==='x8'){lv.rounds=2;lv.R[0]=[lnMk(A[0],B[1]),lnMk(B[0],A[1]),lnMk(A[2],B[3]),lnMk(B[2],A[3])];}
   else if(sp.m==='c4'||sp.m==='k4'){lv.rounds=2;lv.R[0]=pools.length>1?[lnMk(A[0],B[1]),lnMk(B[0],A[1])]:[lnMk(A[0],A[3]),lnMk(A[1],A[2])];}
   else if(sp.m==='p'){lv.rounds=1;const t=pools[0],R=[];for(let k=0;k<t.length;k+=2)R.push(lnMk(t[k],t[k+1]===undefined?null:t[k+1]));lv.R[0]=R;}
   else{const t=lv.T;lv.sched=roundRobin(t.length);lv.rounds=lv.sched.length;lv.tab=usFreshTab(t);lv.R[0]=lv.sched[0].map(([i,j])=>lnMk(t[i],t[j]));}
   return lv;
 }
-function lnFinBuild(fin,ord){
+function lnFinBuild(fin,ord,tag){
   const F={lv:[],rd:0,rounds:0,order:null,done:false,f0:fin[0]?fin[0].f:1};let base=F.f0;   // f0: prima posizione che entra nella fase (2 = la prima e' gia' promossa)
   for(const sp of fin){
     const pools=ord.map(o=>o.slice(sp.f-1,sp.t)).filter(p=>p.length);
     if(!pools.length)continue;
     const lv=lnLvInit(sp,sp.m==='p'?[ord[0].slice(sp.f-1,sp.t)]:pools,base);
+    if(tag&&base===1&&(sp.m==='c4'||sp.m==='b6'))lv.tag=tag;
     F.lv.push(lv);base+=pools.reduce((a,p)=>a+p.length,0);
   }
   F.rounds=Math.max(0,...F.lv.map(l=>l.rounds));
@@ -178,6 +187,9 @@ function lnLvNext(lv,rd){
       const sl=lv.R[0].map(lnLos).filter(x=>x!==null).sort((a,b)=>lv.T.indexOf(a)-lv.T.indexOf(b));
       lv.order=fl([lnWin(R[0]),lnLos(R[0])]).concat(sl);return;
     }
+    if(lv.m==='b6'){   // finale, finale per il 3° posto, poi chi ha perso i quarti in ordine di classifica
+      lv.order=fl([lnWin(R[0]),lnLos(R[0]),lnWin(R[1]),lnLos(R[1])]).concat(lv.R[0].slice(2).map(lnLos).filter(x=>x!==null).sort((a,b)=>lv.T.indexOf(a)-lv.T.indexOf(b)));return;
+    }
     if(lv.m==='c8'||lv.m==='x8'||lv.m==='c4'||lv.m==='p')lv.order=fl([].concat(...R.map(m=>[lnWin(m),lnLos(m)])));
     else lv.order=usRanking(lv.tab,lv.T);
     return;
@@ -185,6 +197,9 @@ function lnLvNext(lv,rd){
   if(lv.m==='c8'){
     if(rd===0)lv.R[1]=[lnMk(W[0],W[3]),lnMk(W[1],W[2]),lnMk(Lo[0],Lo[3]),lnMk(Lo[1],Lo[2])];
     else lv.R[2]=[lnMk(W[0],W[1]),lnMk(Lo[0],Lo[1]),lnMk(W[2],W[3]),lnMk(Lo[2],Lo[3])];
+  }else if(lv.m==='b6'){
+    if(rd===0)lv.R[1]=[lnMk(W[0],W[3]),lnMk(W[1],W[2])];
+    else lv.R[2]=[lnMk(W[0],W[1]),lnMk(Lo[0],Lo[1])];
   }else if(lv.m==='x8')lv.R[1]=[lnMk(W[0],W[1]),lnMk(Lo[0],Lo[1]),lnMk(W[2],W[3]),lnMk(Lo[2],Lo[3])];
   else if(lv.m==='c4')lv.R[1]=[lnMk(W[0],W[1]),lnMk(Lo[0],Lo[1])];
   else if(lv.m==='k4')lv.R[1]=[lnMk(W[0],W[1])];
@@ -216,7 +231,9 @@ function lnLvLabel(lv,rd,k){
   const b=lv.base,pl=j=>`${b+j}°-${b+j+1}° posto`;
   if(lv.m==='c8')return rd===0?'Quarti di finale':(rd===1?(k<2?'Semifinale':`Semifinale ${b+4}°-${b+7}° posto`):'Finale '+pl(2*k));
   if(lv.m==='x8')return rd===0?'Turno incrociato':'Finale '+pl(2*k);
-  if(lv.m==='c4')return rd===0?'Semifinale':'Finale '+pl(2*k);
+  const tg=lv.tag?lv.tag+' · ':'';   // Playoff (livello piu' alto) o Promozione
+  if(lv.m==='b6')return tg+(rd===0?'Quarti di finale':(rd===1?'Semifinale':(k?'Finale per il 3° posto':'Finale')));
+  if(lv.m==='c4')return tg+(rd===0?'Semifinale':(k?'Finale per il 3° posto':'Finale'));
   if(lv.m==='k4')return (b>1?'Spareggio promozione':'Playoff scudetto')+' · '+(rd===0?'Semifinale':'Finale');
   if(lv.m==='p')return 'Finale '+pl(2*k);
   return `Posti ${b}°-${b+lv.T.length-1}° · partita ${rd+1} di ${lv.rounds}`;
@@ -262,7 +279,7 @@ function lnSimComp(tr,comp){   // simula una competizione intera: gironi, fasi f
   const g=lnCompMin(tr,comp);
   const ord=comp.pools.map(p=>{const t=usFreshTab(p);for(const R of lnGrpSched(p.length,g))for(const [i,j] of R){const [sa,sb]=simPower(p[i],p[j]);usAddRes(t,p[i],p[j],sa,sb);}return usRanking(t,p);});
   let F=null;
-  if(tr.fin.length){F=lnFinBuild(tr.fin,ord);while(!F.done&&F.rd<F.rounds)lnFinRoundF(F,null);}
+  if(tr.fin.length){F=lnFinBuild(tr.fin,ord,lnFinTag(tr));while(!F.done&&F.rd<F.rounds)lnFinRoundF(F,null);}
   return {ord,F,order:lnCompOrder(ord,F)};
 }
 function lnTierOrder(tr,orders){   // un solo elenco per livello: le prime di ogni competizione per prime, a parita' la piu' forte
@@ -273,7 +290,8 @@ function lnTierOrder(tr,orders){   // un solo elenco per livello: le prime di og
 }
 // nuova composizione: le ultime n di un livello scambiano con le prime n del successivo
 function lnMoves(lk,tierOrders){
-  const {tiers,mv}=lnSeasonDef(lk,tierOrders),nm={};for(const t of tiers)nm[t.id]=tierOrders[t.id].slice();
+  // il formato della stagione che finisce (tierOrders ha solo le classifiche)
+  const {tiers,mv}=lnSeasonDef(lk,SV.ln?SV.ln.T:null),nm={};for(const t of tiers)nm[t.id]=tierOrders[t.id].slice();
   for(let i=0;i<tiers.length-1;i++){
     const n=Math.min(mv[i],Math.floor(tierOrders[tiers[i].id].length/2),Math.floor(tierOrders[tiers[i+1].id].length/2)),hi=tiers[i].id,lo=tiers[i+1].id;
     const down=tierOrders[hi].slice(-n),up=tierOrders[lo].slice(0,n);
@@ -328,7 +346,7 @@ function lnEndSeason(){
   if(ni<ci){SV.rep=clamp(SV.rep+6,0,100);const nk=lnKey(lk,nTier),pp=promoPrize(nk);SV.cash+=pp;news('Premio della lega per la promozione: +'+pp+' crediti per rinforzarvi in '+tiers[ni].name+'.');}else if(ni>ci)SV.rep=clamp(SV.rep-8,0,100);   // premio della lega: 30-carriera/05-economia.js
   if(tit)SV.rep=clamp(SV.rep+6,0,100);
   fansSeason(rank,nTier,L.tier);if(tit)SV.fans=clamp(fansOf()+6,0,100);
-  const eu=LN_DEF[lk].eu,euQ=L.tier===top?mine.slice(0,eu):[],qual=L.tier===top&&rank<=eu;
+  const eu=LN_DEF[lk].eu,euQ=L.tier===top&&eu?euField(lk,mine.slice(0,eu),mine[eu]):[],qual=euQ.includes(SV.team);   // le prime eu dopo le fasi finali; la successiva puo' prendere il sedicesimo posto
   SV.done=true;SV.po=null;SV.poRes=null;
   SV.next={mem:{[lnKey(lk,nTier)]:[]},sr:lnKey(lk,nTier),rank,short,qual,euQ,tit,champs:{[lk]:champ},po:null,prize,objOk:!!objPay,objPay,ln:{tier:L.tier,n,champ,nTier}};
   seasonEndDyn(rank);   // sfida della dirigenza e obiettivi personali

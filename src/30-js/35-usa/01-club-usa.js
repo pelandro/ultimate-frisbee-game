@@ -1,4 +1,6 @@
-/* ===================== USA MEN'S CLUB: i 48 club, le 8 Conference e le costanti =====================
+/* ===================== USA CLUB: 48 club per divisione, 8 Conference =====================
+   La divisione Women usa UW come lega e serie. UW_CLUBS raccoglie gli otto gruppi dai dati di ricerca.
+   I dati maschili US_RAW qui sotto seguono il criterio storico:
    Seconda competizione della carriera, alternativa al campionato italiano (che resta com'e'): SV.lk==='US', SV.sr==='U'.
    I club sono quelli veri della divisione Men's del circuito USA Ultimate (non UFA; Toronto GOAT, Vancouver Furious George e Montréal Mephisto sono canadesi ma giocano nei campionati di USA Ultimate),
    con il rating dei Postseason Rankings USAU 2026 finali (dopo i Nationals). Le 8 Conference sono le regioni vere di USA Ultimate (Northeast, Mid-Atlantic, Southeast, Great Lakes, North Central,
@@ -33,7 +35,20 @@ US_ORD.forEach(([n,city,cf,rt],i)=>{   // forza di partenza dal rating: dal 94 d
 for(const [n,,cf] of US_RAW){US_BYCONF[cf].push(n);US_NAMES.push(n);}   // l'ordine delle Conference resta quello dell'elenco
 // la Serie italiana e' 'A'|'B'|'C'; per il campionato USA la serie del giocatore e' 'U' (un solo livello, le Conference non si sale e non si scende)
 SERIES_NAME.U='USA Men’s Club';SR_K.U=1.65;
-const isUS=()=>!!(SV&&SV.lk==='US');
+// Gli indici per nome sono comuni, calendari e rose sono separati per divisione.
+const UW_NAMES=[],UW_BYCONF=Object.fromEntries(US_CK.map(c=>[c,[]]));
+UW_CLUBS.forEach(([name,conf,rating,power],i)=>{
+  US_TEAM[name]={series:'UW',conf,rank:i+1,rating,power};
+  UW_NAMES.push(name);
+  UW_BYCONF[conf].push(name);
+});
+SERIES_NAME.UW='USA Women’s Club';
+SR_K.UW=SR_K.U;
+const usLeague=lk=>lk==='US'||lk==='UW';
+const isUS=()=>!!SV&&usLeague(SV.lk);
+const usClubs=(lk=SV.lk)=>lk==='UW'?UW_NAMES:US_NAMES;
+const usGroups=lk=>lk==='UW'?UW_BYCONF:US_BYCONF;
+const usLeagueName=lk=>lk==='UW'?SERIES_NAME.UW:SERIES_NAME.U;
 const usConfOf=n=>US_TEAM[n]?US_TEAM[n].conf:null;
 const usConfName=c=>US_CONF[c]+' Conference';
 // fasi della stagione USA (SV.us.ph): reg = stagione regolare, pin = Play-in, nat = Nationals, done = stagione conclusa

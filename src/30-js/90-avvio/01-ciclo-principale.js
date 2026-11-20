@@ -8,6 +8,7 @@ HOOKS.shake=a=>{if(!reduceMotion){shake.a=Math.max(shake.a*shake.t/0.3,a);shake.
 function render(dt){
   ctx.clearRect(0,0,VW,VH);
   if(G.mode==='cine'&&cine){drawCine();blit();return;}
+  if(titleBg()){drawField();drawTitleDive(dt);blit();return;}   // menu iniziale: lo stadio vuoto con un solo giocatore in tuffo (28-titolo-tuffo.js)
   let sh=false;
   if(shake.t>0){shake.t=Math.max(0,shake.t-dt);const k=shake.t/0.3,m=shake.a*0.45*k*k;ctx.save();ctx.translate(Math.round((Math.random()-0.5)*2*m),Math.round((Math.random()-0.5)*2*m));sh=true;}
   drawField();drawRoutes();drawPlayers(dt);drawDisc();heroTkFx();updateFx(dt);drawFx();drawWeather();drawAim();if(ddrag&&ddrag.mv&&inDefense())drawSling(ddrag.ox,ddrag.oy,ddrag.fx,ddrag.fy,false);drawSprint();drawHb();drawDiveWin();drawPull();drawWind();drawToasts(dt);drawBanner(dt);drawReplay();

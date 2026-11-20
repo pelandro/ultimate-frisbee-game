@@ -8,13 +8,14 @@ const it=literal('src/30-js/30-carriera/01-salvataggio-squadre.js','SERIES_RAW')
 for(const ns of Object.values(it))for(const n of ns)count[norm(n)]=(count[norm(n)]||0)+1;
 const names=[];for(const [sr,ns] of Object.entries(it))for(const n of ns)names.push(n.trim()+(count[norm(n)]>1?' ('+sr+')':''));
 const women=new Function('const LN_CL={};'+read('src/30-js/37-leghe/00-dati-women.js').split('LN_PL.IW=')[0]+'return LN_CL.IW;')();
-for(const [n] of women)names.push(n);
+const usWomen=literal('src/30-js/35-usa/00-dati-women.js','UW_CLUBS');
+for(const [n] of women.concat(usWomen))names.push(n);
 for(const ns of Object.values(eu))for(const [n] of ns)names.push(n);for(const [n] of us)names.push(n);
 assert.deepEqual(rows.map(r=>r.name).sort(),names.sort(),'il censimento delle sigle deve coprire i club reali di tutte le categorie');
 const box={ctx};vm.createContext(box);
 vm.runInContext(read('src/30-js/20-ui/02a-stemmi-dati.js')+read('src/30-js/20-ui/02b-identita-club.js')+'\nthis.api={clubKey,clubAbbr,clubIcon,clubSVG,clubCrest,clubDraw,CLUB_MARK,CLUB_ART};',box);
 const a=box.api;let n=0;
-assert.equal(rows.length,271);const seen={};
+assert.equal(rows.length,319);const seen={};
 for(const r of rows){
  assert.equal(a.clubAbbr(r.name),r.abbr);assert.match(r.abbr,/^[A-Z0-9]{2,4}$/);
  const set=seen[r.country]||(seen[r.country]=new Set());assert(!set.has(r.abbr),`${r.country}: doppia sigla ${r.abbr}`);set.add(r.abbr);

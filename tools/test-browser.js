@@ -123,13 +123,18 @@ catch(e){
     await careerOpen(page);await vis('#league');
     if(await page.locator('#lgList [data-div]').count()!==2)throw new Error('prima del campionato si sceglie la divisione (maschile o femminile)');
     if(await page.locator('#lgList [data-lg="IW"]').count())throw new Error('il campionato femminile non deve stare tra i campionati maschili');
-    await page.click('#lgList [data-div="w"]');await vis('#team');
+    await page.click('#lgList [data-div="w"]');await vis('#lgList [data-lg="UW"]');
+    await page.click('#lgList [data-lg="UW"]');await vis('#team');
+    await page.click('#tSr [data-k="SW"]');await page.click('#tTeams [data-n="San Francisco Fury"]');
+    await vis('#rpv');if(!/giocatrici/.test(await page.locator('#rpS').innerText()))throw new Error('rosa USA Women');
+    await page.click('#rpX');await page.click('#teamBack');await page.click('#lgList [data-lg="IW"]');await vis('#team');
     const tn=await page.locator('#tTeams .tteam').allInnerTexts();if(!tn.length||!tn.some(t=>/Tequila Boom Boom/.test(t))||tn.some(t=>/La Fotta/.test(t)))throw new Error('squadre femminili sbagliate: '+tn.slice(0,3).join(' | '));
     await page.click('#tTeams .tteam >> nth=0');await vis('#rpv');if(!/giocatrici/.test(await page.locator('#rpS').innerText()))throw new Error('nella rosa femminile si parla di giocatrici');
     await page.keyboard.press('Tab');
     if(!await page.evaluate(()=>!!document.activeElement.closest('#rpv')))throw new Error('il focus è uscito dalla rosa');
     await page.keyboard.press('Escape');await page.locator('#rpv').waitFor({state:'hidden'});
     await page.click('#teamBack');await vis('#league');
+    await page.click('#lgBack');
     if(!/divisione/i.test(await page.locator('#lgH').innerText()))throw new Error('dal femminile «Indietro» torna alla scelta della divisione');
     await page.click('#lgList [data-div="m"]');if(!(await page.locator('#lgList [data-lg="IT"]').count()))throw new Error('manca il campionato italiano maschile');
     await page.click('#lgBack');await page.click('#lgBack');await vis('#title');
@@ -180,15 +185,15 @@ catch(e){
   });
   await step('carriera in Belgio dall\'interfaccia: paese, livello, club, roster, allenatore, Classifica a tre viste, partita simulata',async()=>{
     await careerOpen(page);await vis('#league');await page.click('#lgList [data-div="m"]');if(await page.locator('#lgList .lgcard').count()<6)throw new Error('servono le schede dei sei campionati');await page.click('#lgList [data-lg="BE"]');await vis('#team');
-    if(await page.locator('#tSr button').count()!==6)throw new Error('servono i 6 livelli belgi');
+    if(await page.locator('#tSr button').count()!==3)throw new Error('servono i 3 livelli belgi');
     await page.click('#tSr button[data-k="N1"]');
-    if(await page.locator('.tteam').count()!==8)throw new Error('la N1 belga ha 8 club');
+    if(await page.locator('.tteam').count()!==15)throw new Error('la N1 belga ha 15 club');
     await page.click('.tteam >> nth=0');await vis('#rpv');
     if(await page.locator('#rpBody tr').count()<15)throw new Error('il roster del club deve elencare i giocatori');
     await page.click('#rpGo');await vis('#coachsel');await page.click('#coGo');await page.waitForTimeout(300);await vis('#home');
     if(!/Belgio/.test(await page.locator('#hInfo').innerText()))throw new Error('il cruscotto non mostra il campionato');
     await page.click('#hEvent');await vis('#event');
-    if(await page.locator('#eBody .rt tr.up').count()!==4)throw new Error('il girone da 4 deve avere tutte le squadre nella zona del tabellone');
+    if(await page.locator('#eBody .rt tr.up').count()!==4||await page.locator('#eBody .rt tr.dn').count()!==2)throw new Error('in N1 servono 4 squadre nella zona playoff e 2 in quella retrocessione');
     for(const k of ['fin','tiers','grp'])await page.click('#lnTabs [data-lt="'+k+'"]');
     await page.click('#hHome');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
     await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');window.testSaves.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])window.testSaves.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);

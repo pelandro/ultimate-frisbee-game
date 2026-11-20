@@ -83,6 +83,36 @@ function skelOf(pose,tt){
   }
   return {L,A,sh};
 }
+// TUFFO IN ORIZZONTALE, presa a una mano: tre pose chiave (sempre in hu dall'anca, profilo verso destra) che si fondono tra loro (skMix)
+// per un movimento continuo: CARICA (ginocchio piegato, busto avanti, braccia indietro), SPINTA (la gamba d'appoggio si distende, l'altra
+// porta avanti il ginocchio, le braccia salgono) e VOLO (corpo disteso; il braccio vicino tende la mano al disco, l'altro resta piegato sotto).
+// Una posa-oggetto {L,A,sh,dv} va bene ovunque vada il nome di una posa (athlete, handPos, heldAt): dv alza la testa come nel tuffo.
+const SK_LOAD={L:[[[-0.04,0],[-0.2,0.42],[-0.55,0.66]],[[0.06,0],[0.4,0.34],[0.12,0.8]]],A:[[[-0.08,-0.48],[-0.3,-0.28],[-0.5,-0.12]],[[0.08,-0.48],[-0.14,-0.26],[-0.36,-0.08]]],sh:[0.06,-0.52]};
+const SK_PUSH={L:[[[-0.04,0],[0.36,0.26],[0.2,0.68]],[[0.04,0],[-0.03,0.5],[-0.08,0.97]]],A:[[[-0.08,-0.48],[0.2,-0.72],[0.38,-0.98]],[[0.08,-0.48],[0.16,-0.92],[0.24,-1.34]]],sh:[0.03,-0.52]};
+const SK_FLY={L:[[[-0.03,0],[-0.05,0.5],[-0.02,0.97]],[[0.04,0],[0.11,0.5],[0.26,0.9]]],A:[[[-0.08,-0.48],[0.2,-0.66],[0.38,-0.88]],[[0.08,-0.48],[0.1,-0.95],[0.11,-1.42]]],sh:[0,-0.52]};
+const skMix=(a,b,k)=>{const m=(p,q)=>[p[0]+(q[0]-p[0])*k,p[1]+(q[1]-p[1])*k];
+  return {L:a.L.map((l,i)=>l.map((p,j)=>m(p,b.L[i][j]))),A:a.A.map((l,i)=>l.map((p,j)=>m(p,b.A[i][j]))),sh:m(a.sh,b.sh),dv:true,ch:b.ch};};
+const skOf=(pose,tt)=>typeof pose==='object'?pose:skelOf(pose,tt);
+// il movimento del tuffo nel tempo v dallo stacco (v<0: corsa): carica (0-0,12 s), spinta (fino a 0,24), volo fino alla presa (DV_CT) e caduta in scivolata.
+// xs: dove corre; xc: dove sta l'anca nell'istante della presa; tt: fase della corsa. Tutto continuo (posizione, anca, inclinazione e pose)
+const SK_FLYD={...SK_FLY,dv:true};
+// stesso volo con la presa della mano lontana (la sinistra, piu' lunga: il disco resta lontano dalla testa); la destra, vicina, scende piegata
+// e staccata dal corpo, senza coprire la faccia (menu iniziale)
+const SK_FLY2={...SK_FLY,A:[[[-0.08,-0.48],[-0.04,-1.04],[0,-1.6]],[[0.08,-0.48],[0.36,-0.56],[0.6,-0.74]]],ch:0},SK_FLY2D={...SK_FLY2,dv:true};
+const DV_CT=0.45,DV_LOAD=0.12,DV_PUSH=0.24,DV_ROT=1.47,DV_HIP=0.86;
+function diveMo(v,xs,xc,u,tt){
+  if(v<=0)return {dx:xs,hip:0.9,rot:0,pose:'run',tt};
+  const k=Math.min(v,DV_CT)/DV_CT,s=k*k*(2-k);   // parte da fermo e arriva alla presa ancora in corsa
+  let dx=xs+(xc-xs)*s,hip,rot,pose;
+  if(v<DV_LOAD){const e=easeIO(v/DV_LOAD);pose=skMix(skelOf('run',tt),SK_LOAD,e);hip=0.9-0.22*e;rot=0.32*e;}
+  else if(v<DV_PUSH){const e=easeIO((v-DV_LOAD)/(DV_PUSH-DV_LOAD));pose=skMix(SK_LOAD,SK_PUSH,e);hip=0.68+0.12*e;rot=0.32+0.53*e;}
+  else if(v<DV_CT){const q=(v-DV_PUSH)/(DV_CT-DV_PUSH),e=easeIO(q);pose=skMix(SK_PUSH,SK_FLY,e);hip=0.8+(DV_HIP-0.8)*e+0.06*Math.sin(Math.PI*q);rot=0.85+(DV_ROT-0.85)*e;}
+  else{const q=v-DV_CT,f=clamp(q/0.32,0,1);pose=SK_FLYD;
+    dx=xc+(xc-xs)/DV_CT*0.42*(1-Math.exp(-q/0.42));hip=DV_HIP-(DV_HIP-0.27)*f*f-0.03*clamp((q-0.32)/0.5,0,1);rot=DV_ROT+0.06*f;}
+  return {dx,hip,rot,pose,tt};
+}
+// dove sta l'anca perche' la mano della presa arrivi in (tx, ty) nell'istante della presa
+const diveAt=(tx,u)=>{const h=handPos(0,0,DV_HIP,1,DV_ROT,u,SK_FLY);return tx-h.x;};
 // materiali: indice nella tavolozza dell'omino
 const PXM={SK:1,SKF:2,HR:3,SH:4,PT:5,PTF:6,SO:7,SHO:8,SOL:9,HD:10,SKD:11,EYE:12,MO:13,WH:14,HSK:15};   // HSK: pelle del viso, coi toni disegnati a mano (senza ombre automatiche)
 const PXM_LN=new Set([PXM.SK,PXM.SKF,PXM.SH,PXM.PT,PXM.PTF,PXM.SO,PXM.SHO]);   // materiali che fanno la linea scura dove finiscono su un altro
@@ -91,14 +121,18 @@ const PX_BUF=Array.from({length:2},()=>({
   body:document.createElement('canvas'),
   ghost:document.createElement('canvas')
 }));
+// stile del disegno (prove del menu iniziale): z = grandezza fissa del pixel dell'omino, hk = testa piu' grande, flat = colori piatti senza luce e ombra
+const PX_OPT={z:0,hk:1,flat:false,noSh:false};
+// testa piccola (7x7, disegnata 1:1) per i pixel grossi: rimpicciolire quella da 12 pixel la spezzava. h sopra l'occhio = sopracciglio
+const PX_HEAD_S=[["..HHHH.",".HHHHHH","hHHHHhH","hHSSSES","hSSSSSS",".sSSSM.","..ss..."],3,3];
 function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
-  const Z=OZ(hu),hs=hu/Z,R=Math.ceil(1.85*hs),n=2*R+2,c0=R+1;
-  if(!ghost){   // ombra a pixel sul prato
+  const Z=PX_OPT.z||OZ(hu),hs=hu/Z,hk=OZ(hu)/Z*PX_OPT.hk,R=Math.ceil(1.85*hs),n=2*R+2,c0=R+1;
+  if(!ghost&&!PX_OPT.noSh){   // ombra a pixel sul prato
     const k=clamp(1-(hipH-0.9)*0.25,0.45,1);
     pell(x,gy+hu*0.04,Math.round(hu*0.6*k),Math.max(2,Math.round(hu*0.1*k)),'rgba(40,70,30,.38)');
   }
   const side=who.t,lk=who.look||DEF_LOOK,un=cine.kits[side],bw=lk.bw||1;
-  const {L,A,sh}=skelOf(pose,tt),cr=Math.cos(rot),sr=Math.sin(rot);
+  const {L,A,sh}=skOf(pose,tt),cr=Math.cos(rot),sr=Math.sin(rot);
   const T=p=>{const X=cr*p[0]-sr*p[1],Y=sr*p[0]+cr*p[1];return [c0+face*X*hs,c0+Y*hs];};   // da hu (figura) a pixel dell'omino
   const id=new Uint8Array(n*n);
   const seg=(a,b,r0,r1,m)=>{   // segmento rastremato a bordi netti (raggi in hu)
@@ -142,12 +176,12 @@ function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
   seg(sh,[sh[0]+0.03,sh[1]-0.14],0.08,0.08,PXM.SK);   // collo
   // capelli lunghi dietro le spalle
   // testa: sprite ruotato con la figura (vicino al pixel), centro sopra la spalla
-  const dk=pose==='dive'?clamp(rot/1.25,0,1):0,hrot=rot*(1-0.75*dk),hcr=Math.cos(hrot),hsr=Math.sin(hrot);   // tuffo: testa alzata sopra le braccia, sguardo avanti verso il disco
-  const hc=T([sh[0]+0.04-0.26*dk,sh[1]-0.36+0.06*dk]),HD=PX_HEAD[(lk.style|0)%PX_HEAD.length],hd=HD[0],hw=hd[0].length,hh=hd.length,hcx=HD[1],hcy=HD[2];
+  const dk=pose==='dive'||pose.dv?clamp(rot/1.25,0,1):0,hrot=hk<0.8?0:rot*(1-0.75*dk),hcr=Math.cos(hrot),hsr=Math.sin(hrot);   // tuffo: testa alzata sopra le braccia, sguardo avanti verso il disco; la testa piccola dei pixel grossi resta dritta (ruotata faceva spuntare pixel isolati)
+  const hc=T([sh[0]+0.04-0.26*dk,sh[1]-0.36*PX_OPT.hk+0.06*dk]),sm=hk<0.8,HD=sm?PX_HEAD_S:PX_HEAD[(lk.style|0)%PX_HEAD.length],hd=HD[0],hq=sm?PX_OPT.hk:hk,hw=hd[0].length,hh=hd.length,hcx=HD[1],hcy=HD[2];
   const hmap={S:PXM.HSK,s:PXM.SKD,H:PXM.HR,h:PXM.HD,E:PXM.EYE,M:PXM.MO,W:PXM.WH};
-  for(let j=Math.floor(hc[1]-24);j<=Math.ceil(hc[1]+24);j++)for(let i=Math.floor(hc[0]-24);i<=Math.ceil(hc[0]+24);i++){
+  for(let j=Math.floor(hc[1]-24*hq);j<=Math.ceil(hc[1]+24*hq);j++)for(let i=Math.floor(hc[0]-24*hq);i<=Math.ceil(hc[0]+24*hq);i++){
     if(i<0||j<0||i>=n||j>=n)continue;
-    const dx=(i+0.5-hc[0])*face,dy=j+0.5-hc[1],qx=Math.floor(hcr*dx+hsr*dy+hcx),qy=Math.floor(-hsr*dx+hcr*dy+hcy);
+    const dx=(i+0.5-hc[0])*face/hq,dy=(j+0.5-hc[1])/hq,qx=Math.floor(hcr*dx+hsr*dy+hcx),qy=Math.floor(-hsr*dx+hcr*dy+hcy);
     if(qx<0||qy<0||qx>=hw||qy>=hh)continue;const ch=hd[qy][qx];if(ch!=='.')id[j*n+i]=hmap[ch];
   }
   arm(A[1],PXM.SK);   // davanti: braccio vicino
@@ -168,7 +202,7 @@ function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
     else if(k){
       const dn=at(i,j+1),bk=at(i-fr,j);
       if(PXM_LN.has(k)&&((dn&&dn!==k&&PXM_LN.has(dn)&&!(k===PXM.SO||dn===PXM.SO))||(bk&&bk!==k&&PXM_LN.has(bk)&&!(k===PXM.SO||bk===PXM.SO))))c=OUTRGB;
-      else if(auto.has(k)){
+      else if(auto.has(k)&&!PX_OPT.flat){
         const b=pat&&k===PXM.SH&&patAt(i,j)?csB:base[k],up=at(i,j-1),fw=at(i+fr,j),lit=(up!==k||fw!==k)&&dn===k,thick=at(i+fr,j)===k&&at(i+2*fr,j)===k&&at(i+3*fr,j)===k,dark=dn!==k||bk!==k||(thick&&(at(i-2*fr,j)!==k||at(i-3*fr,j)!==k));   // nelle parti larghe l'ombra dietro e' di 3 pixel
         c=lit?pxTone(b,0.22):(dark?pxTone(b,-0.3):b);
       }else c=base[k];
@@ -182,7 +216,7 @@ function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
 }
 // la mano vicina (quella che prende) nella posa: stesso scheletro e stessa rotazione di athlete, in pixel del gioco
 const handPos=(x,gy,hipH,face,rot,hu,pose)=>{
-  const h=skelOf(pose||'dive',0).A[1][2],cr=Math.cos(rot),sr=Math.sin(rot);
+  const S=skOf(pose||'dive',0),h=S.A[S.ch===0?0:1][2],cr=Math.cos(rot),sr=Math.sin(rot);   // ch: la mano che prende (0 = quella lontana)
   return {x:Math.round(x)+face*(cr*h[0]-sr*h[1])*hu,y:Math.round(gy-hipH*hu)+(sr*h[0]+cr*h[1])*hu};
 };
 // disco preso. PX_GRIP 'rim': la mano lo stringe dal bordo (il disco sta oltre la mano, lungo il braccio, e la mano si vede sopra il bordo);
@@ -318,17 +352,11 @@ function drawCine(){
     const Aa=sp.a,Dd=sp.d,out=c.out,win=out==='att'?Aa:(out==='def'?Dd:null),Tt={x:cx+0.9*u,y:gy-0.88*u};
     const P0={x:cx-W*0.42,y:gy-3.6*u},P1={x:cx-W*0.1,y:gy-3.4*u};
     const gyOf=who=>who===Aa?gy:gy+ri(0.5*u),huOf=who=>who===Aa?u:u*1.06;
-    const dpose=(who,v)=>{
-      const xs=cx-(who===Aa?2.5:2.8)*u,end=(win?(who===win?1.31:2.2):1.85)*u;
-      let dx=xs,hip=0.9,rot=0,pose='run';
-      if(v>0){
-        const du=clamp(v/0.45,0,1),e=easeIO(du);
-        dx=lerp(xs,Tt.x-end,e);hip=0.9-0.45*e+0.35*Math.sin(Math.PI*du);rot=1.25*e;pose='dive';
-        if(v>0.45){const qq=clamp((v-0.45)/0.6,0,1);dx+=qq*(who===win?0.9:0.6)*u;hip=0.45-0.2*qq;}
-      }
-      return {dx,hip,rot,pose};
+    const dpose=(who,v)=>{   // chi arriva tardi resta piu' indietro (end: quanto manca alla presa, in u)
+      const xs=cx-(who===Aa?2.5:2.8)*u,end=(win?(who===win?0:0.9):0.54)*u;
+      return diveMo(v,xs,diveAt(Tt.x,huOf(who))-end,huOf(who),SD*11+(who===Aa?0:1.3));
     };
-    const Ce=win?(()=>{const z=dpose(win,0.45);return heldAt(z.dx,gyOf(win),z.hip,1,z.rot,huOf(win),'dive');})():Tt;   // punto della presa: la mano di chi arriva prima
+    const Ce=win?(()=>{const z=dpose(win,DV_CT);return heldAt(z.dx,gyOf(win),z.hip,1,z.rot,huOf(win),z.pose);})():Tt;   // punto della presa: la mano di chi arriva prima
     const dps={a:dpose(Aa,aim?-1:vt),d:dpose(Dd,aim?-1:vt)};
     for(const who of [Aa,Dd]){   // prima tutte le scie, poi i corpi: le scie di uno non coprono l'altro
       const dz=who===Aa?dps.a:dps.d,hu=huOf(who),gyw=gyOf(who);
@@ -355,16 +383,8 @@ function drawCine(){
   }else{
     const dv=sp.diver,ok=c.out===true,xs=cx-2.6*u,Tt={x:cx+0.9*u,y:gy-0.88*u};
     let E=ok?Tt:{x:Tt.x+1.5*u,y:Tt.y+0.25*u};const P0={x:cx-W*0.42,y:gy-3.6*u},P1={x:cx-W*0.1,y:gy-3.4*u};
-    const dpose=v=>{
-      let dx=xs,hip=0.9,rot=0,pose='run';
-      if(v>0){
-        const du=clamp(v/0.45,0,1),e=easeIO(du);
-        dx=lerp(xs,Tt.x-1.31*u,e);hip=0.9-0.45*e+0.35*Math.sin(Math.PI*du);rot=1.25*e;pose='dive';
-        if(v>0.45){const qq=clamp((v-0.45)/0.6,0,1);dx+=qq*0.9*u;hip=0.45-0.2*qq;}
-      }
-      return {dx,hip,rot,pose};
-    };
-    if(ok){const z=dpose(0.45);E=heldAt(z.dx,gy,z.hip,1,z.rot,u,'dive');}   // presa: il disco arriva nella mano
+    const dpose=v=>diveMo(v,xs,diveAt(Tt.x,u),u,SD*11);
+    if(ok){const z=dpose(DV_CT);E=heldAt(z.dx,gy,z.hip,1,z.rot,u,z.pose);}   // presa: il disco arriva nella mano
     const dpz=dpose(aim?-1:vt);
     if(!aim&&vt<0.75){
       for(const gk of [3,2,1]){const qq=dpose(vt-gk*0.04);if(vt-gk*0.04<=0)continue;athlete(qq.dx,gy,qq.hip,1,qq.pose,qq.rot,c.t,u,0.1+(3-gk)*0.07,true,dv);}

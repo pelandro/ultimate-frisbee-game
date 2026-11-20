@@ -268,10 +268,10 @@ function renderEvent(){
   if(isLN())return renderEventLN();   // Classifica delle leghe europee: 19-leghe-schermate.js
   const cs=SV.done?`${SERIES_NAME[SV.sr]}, stagione conclusa`:(SV.po&&SV.po.on?`${SERIES_NAME[SV.sr]}, ${PO_NAME[SV.po.kind].toLowerCase()}`:`${SERIES_NAME[SV.sr]}, giornata ${SV.round+1} di ${totalRounds()}`);
   $('eCards').innerHTML=
-    `<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>Campionato</strong><small>Serie A, B e C: tutte contro tutte, poi playoff scudetto tra le prime 4 della A; in B e C sale la prima più la vincente degli spareggi tra le squadre dalla 2ª alla 5ª. Scendono le ultime 2. ${cs}.</small></button>`+
+    `<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>Campionato</strong><small>Serie A, B e C, girone unico di sola andata. A: playoff fra le prime 4, prime 3 all’EUCF. B e C: 1ª promossa, 2ª-5ª spareggio per la promozione. Retrocedono le ultime 2. ${cs}.</small></button>`+
     (SV.euUnlocked
-      ?`<button type="button" class="ecard${SV.event==='eu'?' on':''}" data-e="eu"><strong>Campionato europeo (EUCF)</strong><small>16 club in 4 gironi da 4, poi prequarti, quarti, semifinali e finale. ${euCardSub()}</small></button>`
-      :`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo</strong><small>${euQualifiedPending()?'Qualificati: apri il torneo dal riepilogo.':'Per qualificarti devi chiudere il campionato tra le prime 3 della Serie A.'}</small></button>`);
+      ?`<button type="button" class="ecard${SV.event==='eu'?' on':''}" data-e="eu"><strong>Campionato europeo (EUCF)</strong><small>${EU_FIELD_TXT} ${euCardSub()}</small></button>`
+      :`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo</strong><small>${euQualifiedPending()?'Qualificati: apri il torneo dal riepilogo.':'Per qualificarti: prime 3 della Serie A dopo i playoff, o quarta più forte fra i campionati.'}</small></button>`);
   let body='';
   if(SV.event==='camp'){
     if(!SV.lg||!SV.lg[evSr])evSr=SV.sr;

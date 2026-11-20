@@ -1,12 +1,14 @@
 /* ---- GITTATA DEL LANCIATORE e FIDUCIA DEI COMPAGNI ----
    Lo Sparo decide quanto lontano si puo' lanciare davvero:
    - throwComf: fino a questa distanza il lancio e' preciso come al solito; oltre, la precisione crolla (vedi planThrow);
-   - throwMax: oltre questa distanza il disco non arriva: cade corto. Sparo 20 -> 30 m, Sparo 60 -> 65 m, Sparo 99 -> tutto il campo.
+   - throwMax: oltre questa distanza il disco non arriva: cade corto.
+   Gittata comoda / massima: Sparo 50 -> 33 / 49 m, 58 -> 40 / 58 m, 74 -> 55 / 75 m, 90 -> 69 / 93 m. Prima la comoda era 41-55 m per quasi tutti
+   (14 + Sparo x 0,55): con un braccio normale il lancio lungo riusciva quanto un passaggio di 20 m e lo Sparo contava poco.
    Il vento in coda o contrario sposta entrambi i limiti (planThrow).
    I compagni lo sanno: un cutter non parte per un taglio lungo se il lanciatore non ci arriva, e piu' ci hanno giocato insieme (intesa, G.duo) o piu' l'IA e' esperta,
    piu' si fidano e partono anche per tagli di 50-60 m. Allo stesso modo la difesa avversaria non protegge il profondo da chi non ha il braccio per sfruttarlo. */
-const throwComf=p=>14+p.s.spa*0.55+heroRange(p.t);   // heroWind: il signore del vento dei superpoteri (27-superpoteri.js)
-const throwMax=p=>12+p.s.spa*0.88+heroRange(p.t);
+const throwComf=p=>Math.max(20,p.s.spa*0.9-12)+heroRange(p.t);   // heroRange: il signore del vento dei superpoteri (27-superpoteri.js)
+const throwMax=p=>Math.max(26,p.s.spa*1.1-6)+heroRange(p.t);
 // fiducia 0..1 del compagno c nel lanciatore th: la tua squadra la costruisce con l'intesa, l'IA ha una fiducia base che cresce col livello
 function trustOf(c,th){
   if(!c||!th)return 0.5;

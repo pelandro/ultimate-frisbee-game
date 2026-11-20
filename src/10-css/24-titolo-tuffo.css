@@ -1,0 +1,12 @@
+/* menu iniziale: il disco preso dal giocatore (28-titolo-tuffo.js) smette di ondeggiare, se no in mano trema */
+.ttlDisc.tdHold .fbBody,.ttlDisc.tdHold .fbShadow{animation:none!important}
+/* il giocatore del menu iniziale sopra il velo dello sfondo, sotto l'insegna, il disco e i pulsanti */
+#tdCv{position:absolute;left:0;top:0;pointer-events:none;image-rendering:pixelated}
+#title .hwrap{position:relative;z-index:1}
+/* disco a pixel grossi (griglia 10x5, viewBox 240x120): ondeggia di un pixel intero */
+.ttlDisc .fbBody{transform-origin:120px 48px}.ttlDisc .fbShadow{transform-origin:120px 108px}
+#title .ttlDisc .fbBody{animation-name:fbRockP}
+@keyframes fbRockP{0%,100%{transform:translateY(0)}50%{transform:translateY(-24px)}}
+/* presa fatta: il disco diventa un adesivo come l'omino (bordo bianco e ombra, spessori da 28-titolo-tuffo.js) */
+.ttlDisc.tdStk .fbShadow{display:none}
+.ttlDisc.tdStk{filter:drop-shadow(var(--tdo) 0 0 #fff) drop-shadow(calc(-1*var(--tdo)) 0 0 #fff) drop-shadow(0 var(--tdo) 0 #fff) drop-shadow(0 calc(-1*var(--tdo)) 0 #fff) drop-shadow(var(--tds) var(--tds) 0 rgba(10,20,40,.45))}

@@ -1,17 +1,18 @@
 /* ===================== EUCF: IL CAMPIONATO EUROPEO PER CLUB =====================
-   Format dei veri European Ultimate Club Finals (Open): 16 squadre in 4 gironi da 4 formati con le fasce del ranking, 3 partite a girone, le prime ai quarti,
-   le seconde e le terze a un turno di prequarti (2ª contro 3ª di un altro girone) per trovare gli avversari delle prime, poi quarti, semifinali e finale. Le quarte
-   sono fuori dalla corsa al titolo. E' lo stesso motore dei Nationals USA (34-torneo16/).
-   Chi partecipa: il campo dell'EUCF Open 2026, 16 club: 3 italiani, 3 belgi, 2 francesi, 2 britannici e 1 tedesco (club veri dei campionati del gioco, i piu' forti di
-   ogni paese con un po' di caso) piu' 5 club europei INVENTATI (EU_CLUBS: Spagna, Paesi Bassi, Cechia, Svizzera, Irlanda). I club del tuo paese sono i primi classificati
-   dell'anno prima (SV.eu.it, scelti a fine stagione: Serie A in Italia, livello piu' alto in Belgio, Francia, Germania e Regno Unito); la forza di quelli che non
-   giochi cambia da un'edizione all'altra (SV.eup). Si sblocca chiudendo il campionato tra i primi posti qualificanti e si gioca prima di avviare il campionato successivo (SV.eu.s). Stato: SV.eu={s, state:'on'|'out'|'champ', it, nat (stato del torneo, vedi 01-torneo16.js), rk (ranking), cur, stage, cash}.
-   Salvataggi vecchi (coppa a 3 turni, senza nat): l'edizione riparte nel nuovo formato. */
-// [nome, paese, forza]: club inventati, non corrispondono a squadre vere
+   16 club in 4 gironi da 4 formati con le fasce del ranking, 3 partite a girone, le prime ai quarti, le seconde e le terze a un turno di prequarti (2ª contro 3ª di
+   un altro girone) per trovare gli avversari delle prime, poi quarti, semifinali e finale. Le quarte sono fuori dalla corsa al titolo. E' lo stesso motore dei
+   Nationals USA (34-torneo16/).
+   Chi partecipa (euField, deciso alla fine del campionato): le prime 3 dopo i playoff di Italia, Belgio, Francia, Germania e Regno Unito (15 club) e, come
+   sedicesima, la quarta classificata piu' forte (potenza di squadra) di quei cinque campionati. Il tuo campionato usa la classifica vera; per gli altri, che il
+   gioco non simula, contano i club piu' forti del livello piu' alto, con un po' di caso (euPick). La forza dei club che non giochi cambia da un'edizione all'altra
+   (SV.eup). Il torneo si sblocca chiudendo il campionato tra i qualificati e si gioca prima di avviare il campionato successivo (SV.eu.s).
+   Stato: SV.eu={s, state:'on'|'out'|'champ', it (i 16 club), nat (stato del torneo, vedi 01-torneo16.js), rk (ranking), cur, stage, cash, lastRes}.
+   Salvataggi vecchi: con `it` di 3 club (il vecchio campo con i club inventati) il campo si completa con la regola nuova; un'edizione gia' sorteggiata resta com'e'. */
+// [nome, paese, forza]: club inventati del vecchio campo (fino al 2026), servono solo alle edizioni gia' sorteggiate nei salvataggi
 const EU_CLUBS=[['Madrid Toros','ESP',91],['Amsterdam Windmills','NED',88],['Prague Golems','CZE',87],['Barcelona Mar','ESP',85],['Zurich Alpentraum','SUI',83],['Dublin Shamrocks','IRL',78]];
 const EU_BY={};for(const [n,c,p] of EU_CLUBS)EU_BY[n]={c,p};
-// campo reale: quanti club per paese (Italia, Belgio, Francia, Regno Unito, Germania) e codice usato per tenere i connazionali in gironi diversi
-const EU_SLOTS={IT:3,BE:3,FR:2,UK:2,DE:1},EU_CC={IT:'ITA',BE:'BEL',FR:'FRA',UK:'GBR',DE:'GER'},EU_INV=['ESP','NED','CZE','SUI','IRL'];
+// quanti club per paese vanno all'EUCF (piu' la sedicesima, la quarta piu' forte) e codice usato per tenere i connazionali in gironi diversi
+const EU_SLOTS={IT:3,BE:3,FR:3,UK:3,DE:3},EU_CC={IT:'ITA',BE:'BEL',FR:'FRA',UK:'GBR',DE:'GER'};
 const EU_PRIZE=[12,16,22,34,60];   // crediti (per il coefficiente della Serie A): qualificazione ai quarti o ai prequarti, poi prequarti, quarti, semifinale, finale vinti
 const euNew=season=>({s:season|0,state:'on',nat:null,it:(SV&&SV.next&&SV.next.euQ)||null,cash:0});   // la lista dei club si costruisce al primo uso (euEnsure)
 const euCountry=n=>LN_BY[n]?EU_CC[LN_BY[n].lk]:(EU_BY[n]?EU_BY[n].c:'ITA');
@@ -28,21 +29,35 @@ function euPick(lk,k,R){
   const pool=lk==='IT'?SERIES.A.map(n=>[n,TEAM[n].power]):lnClubRows(lk).filter(r=>r[1]===LN_DEF[lk].tiers[0].id).map(r=>[r[0],r[3]]);
   return pool.map(([n,p])=>{const v=clamp((SV.eup[n]===undefined?p:SV.eup[n])+R()*5-2.5,50,96);SV.eup[n]=v;return [n,v+R()*4-2];}).sort((a,b)=>b[1]-a[1]).slice(0,k).map(x=>x[0]);
 }
+// il campo dell'EUCF alla fine del campionato: le prime 3 di ogni paese (top/fourth = classifica vera del tuo campionato) e la quarta piu' forte
+const EU_LK=['IT','BE','FR','DE','UK'];
+const EU_WHO_TXT='Prime 3 dopo i playoff di Italia, Belgio, Francia, Germania e Regno Unito, più la quarta più forte fra questi campionati.';
+const EU_FIELD_TXT='16 club: prime 3 di Italia, Belgio, Francia, Germania e Regno Unito, più la quarta più forte. Gironi da 4, poi playoff.';
+function euField(lk,top,fourth){
+  if(!SV.eup)SV.eup={};
+  const R=mulberry32(hashStr(SV.seed+'|euf|'+SV.season)),teams=[],cand=[];
+  for(const c of EU_LK){
+    const p=c===lk?top.slice(0,3).concat(fourth?[fourth]:[]):euPick(c,4,R);
+    teams.push(...p.slice(0,3));if(p[3])cand.push(p[3]);
+  }
+  const ex=cand.filter(n=>!teams.includes(n)).sort((a,b)=>euPowOf(b)-euPowOf(a))[0];
+  if(ex)teams.push(ex);
+  return teams;
+}
 // costruisce l'edizione al primo uso: i club del tuo paese (qualificati), quelli degli altri paesi e 5 europei inventati, sorteggio dei gironi
 function euEnsure(){
   const E=SV.eu;if(E.nat)return E.nat;
   const old=E.state!=='on'?{state:E.state,cash:E.cash|0}:null;   // salvataggio vecchio con coppa gia' conclusa: si conserva l'esito
   if(!SV.eup)SV.eup={};
-  const lk=isLN()?SV.lk:'IT',slots=EU_SLOTS[lk],R=mulberry32(hashStr(SV.seed+'|eu|'+(E.s|0)));
-  let ita=(E.it||[]).filter(n=>n===SV.team||(SV.rost&&SV.rost[n])).slice(0,slots);
-  if(!ita.includes(SV.team)){ita=ita.slice(0,slots-1);ita.push(SV.team);}
-  if(ita.length<slots){
-    const pool=isLN()?lnClubs(lk).filter(n=>LN_BY[n].t===LN_DEF[lk].tiers[0].id):(SV.mem&&SV.mem.A)||[];
-    for(const n of pool.slice().sort((a,b)=>teamPow(b)-teamPow(a)))if(ita.length<slots&&!ita.includes(n)&&SV.rost&&SV.rost[n])ita.push(n);
+  const lk=isLN()?SV.lk:'IT';
+  let teams=(E.it||[]).slice(0,16);
+  if(teams.length<16){   // salvataggio vecchio: i club del tuo paese c'erano gia', il resto con la regola nuova
+    const pool=(isLN()?lnClubs(lk).filter(n=>LN_BY[n].t===LN_DEF[lk].tiers[0].id):(SV.mem&&SV.mem.A)||[]).filter(n=>n===SV.team||(SV.rost&&SV.rost[n]));
+    const mine=teams.concat(pool.filter(n=>!teams.includes(n)).sort((a,b)=>teamPow(b)-teamPow(a)));
+    teams=euField(lk,mine.slice(0,3),mine[3]);
   }
-  const others=Object.keys(EU_SLOTS).filter(x=>x!==lk).reduce((a,x)=>a.concat(euPick(x,EU_SLOTS[x],R)),[]);
-  const inv=EU_INV.map(c=>EU_CLUBS.filter(x=>x[1]===c).map(([n,cc,p])=>{const v=clamp((SV.eup[n]===undefined?p:SV.eup[n])+R()*5-2.5,66,96);SV.eup[n]=v;return [n,v+R()*6-3];}).sort((a,b)=>b[1]-a[1])[0][0]);
-  const teams=ita.concat(others,inv);E.rk={};for(const t of teams)E.rk[t]=1500+(euPowOf(t)-82)*18;
+  if(!teams.includes(SV.team))teams[teams.length-1]=SV.team;
+  E.rk={};for(const t of teams)E.rk[t]=1500+(euPowOf(t)-82)*18;
   E.nat=t16Begin(euCtx(),teams,SV.team);E.stage=0;E.cur=null;
   if(old){E.state=old.state;E.cash=old.cash;E.nat.rd=7;}
   else{news(`EUCF: sorteggio fatto, siete nel girone ${US_POOL[t16Pool(E.nat,SV.team)]}.`);euAdvance();}

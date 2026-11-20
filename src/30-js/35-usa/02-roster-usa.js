@@ -1,7 +1,7 @@
 /* ===================== USA MEN'S CLUB: ROSTER =====================
    Giocatori veri della stagione 2026, da due tabelle ricevute: i roster dei Nationals 2026 (16 club, circa 25 giocatori ciascuno, con mete, assist, difese) e
-   i giocatori identificati nelle fonti pubbliche per gli altri club. Non sono roster ufficiali completi: 8 club hanno pochi nomi o nessuno. Dove manca, la rosa
-   e' completata con giocatori generati (gen:true, nomi americani), tarati sulla forza del club. Una rosa ha al massimo 20 giocatori (i primi per rendimento).
+   i giocatori identificati nelle fonti pubbliche per gli altri club. Le iscrizioni raccolte in 07-dati-rose.js coprono i posti della rosa rimasti liberi;
+   dove i nomi non bastano, si usano giocatori generati (gen:true, nomi americani), tarati sulla forza del club. Prima di applicare il foglio Overall il limite è 20 giocatori.
    Eta' e ruolo dei giocatori di US_CORE sono stime (l'età è segnata come tale nei dati; il ruolo e' handler se hanno piu' assist che mete); il quinto numero e' il bonus di
    livello rispetto al club (da -4 a +6) in base al rendimento ai Nationals 2026 (mete + assist + 1,5 difese). Per i 16 club dei Nationals prevalgono pero' i dati
    di Fantasy Ultimate (00-fantasy.js): livello assoluto (usFFabs, da punti a partita, costo e, per le stelle, fama di mercato) e ruolo (usFFrole, dai punteggi per ruolo) valgono anche per le stelle del
@@ -25,7 +25,7 @@ const US_CORE={
   'Bay Area Wavestorms':[['Shargel','Bodie',26,'H',0],['Warren','Toby',24,'H',0]],
   'Chicago Machine':[['Hawkins','Elliot',31,'H',6],['Bartlett','Aaron',32,'C',5],['Smith','Rutledge',29,'H',5],['Arters','Paul',26,'H',5],['Bansfield','Johnny',26,'H',4],['Thoreson','Zeke',28,'C',4],['McGuckin','Samuel',30,'C',3],['Gao','Jeffrey',30,'H',2],['Schoch','Timothy',31,'D',2],['Matthews','Wilson',25,'C',2],['Rutledge','Kyle',27,'C',1],['Astrom','Nathaniel',32,'H',1],['Stautberg','Adam',26,'D',1],['North','Keegan',29,'C',1],['Artemakis','Eli',28,'H',1],['Steslicki','Jake',28,'H',0]],
   'Minneapolis Sub Zero':[['De Morgan','Nathan',31,'H',6],['Davis','Micah',28,'H',3],['Mans','Peter',25,'H',2],['Morton','Zach',23,'C',2],['duSaire','Ryan',29,'D',1],['Shope','Thomas',26,'H',1],['Sovell-Fernandez','Leo',29,'H',0],['Crosby Lehmann','Eric',28,'H',0],['King','Austin',32,'H',-1],['Casperson','Will',24,'C',-1],['Farley','Leo',26,'C',-1],['Lomen','Aiden',23,'H',-2],['Brauer','Sebastian',29,'H',-2],['Krapfl','Blake',32,'H',-3],['Hobday','Danny',23,'C',-3],['Ode','Ethan',23,'H',-3],['Hanscom','Max',24,'C',-3]],
-  'Madison Mad Men':[['Carne','Arthur',27,'C',0],['Sjostrom','Eric',27,'C',0],['Ranhabat','Nico',23,'C',0]],
+  'Madison Mad Men':[['Carne','Arthur',27,'C',0],['Sjostrom','Eric',27,'C',0],['Ranabhat','Nico',23,'C',0]],
   'Chicago Haymaker':[['Cercello','Joe',25,'C',0]],
   'Toronto GOAT':[['MacKenzie','Michael',27,'C',6],['Gallant','Martin',29,'H',6],['Podnar','Justin',29,'H',5],['Lewis','James',27,'H',5],['Sehgal','Araav',28,'H',5],['Stonehouse','Oscar',29,'H',4],['Pettenuzzo','Max',26,'H',3],['Ancelin','Gaël',24,'H',2],['McRae','Keith',31,'C',2],['Turner','Philip',30,'C',2],['Turcotte','Adam',30,'H',0],['Hsieh','Nathan',23,'H',0],['Miller','John',25,'C',-1],['Zlatic','Marijo',30,'H',-1],['McHale','Connor',30,'C',-1],['Robinson','Owen',30,'H',-1],['O’Donnell','Adam',25,'H',-1],['Comire','Luc',32,'C',-2],['Ayad','Maxime',32,'H',-2],['Zhuang','Eric',23,'C',-2]],
   'Vancouver Furious George':[['Auger-Semmar','Malik',25,'H',6],['Debroux','Neo',26,'H',4],['Yuen','Rex',24,'H',4],['Underhill','Kevin',28,'H',4],['Lebbell','Nyle',31,'C',4],['Bulloch','Vincent',28,'C',4],['O’Donnell','Kai',31,'C',3],['Mcleod','Richard',28,'D',3],['Snider','Quinn',27,'H',2],['Ramirez Ortiz','Simon',24,'H',2],['Tran','Ricky',32,'C',2],['Tsang','Tim',32,'H',2],['Bringeland-Powell','Devon',31,'D',1],['Lavoie','Landon',26,'H',1],['McColl','Bryn',25,'C',0],['Yu','Peter',27,'H',0],['Bryson','Malcolm',31,'H',-1],['McGregor','Jordan',23,'H',-1],['van den Driesen','Andrew',24,'H',-2],['Ponton','Jack',28,'H',-2]],
@@ -93,6 +93,12 @@ const US_STAR_CLUB={
   'Selfridge|Will':'Atlanta Chain Lightning',
   'Henke|Mark':'Austin Doublewide',
   'Laviolette|Allan':'Raleigh-Durham United',
+  'Wellers|John':'Virginia Vault',
+  'Gutowsky|Anthony':'Madison Mad Men',
+  'Marks|Luke':'Madison Mad Men',
+  'Vordick|Gabe':'Madison Mad Men',
+  'Fitzpatrick|Langley':'SOUF',
+  'Dunn|Travis':'Arizona Nighthawk',
   'Guay|Charles':'Montréal Mephisto',
   'Tremblay-Joncas|Christophe':'Montréal Mephisto'
 };
@@ -138,7 +144,8 @@ const usFFabs=(f,m,aw)=>{const a=62+30*usFFval(f);return clamp(Math.max(a,m?m-3:
 // eta' nel 2026: esatta se e' nelle schede UFA, altrimenti il limite delle convocazioni giovanili quando la stima lo supera, altrimenti la stima. Ritorna [eta', esatta?]
 function usAgeOf(sur,nm,def,exact=false){
   const k=usNameKey(nm+' '+sur),h0=lnHiOf(k),h=Math.min(US_AGE_HI[k]||99,h0||99);   // anche i limiti delle convocazioni giovanili europee (37-leghe/)
-  if(US_AGE[k])return [US_AGE[k],true];
+  const verified=US_ROSTER_AGE[k]||US_AGE[k];
+  if(verified)return [verified,true];
   if(exact)return [def,true];
   if(ROSTER_AGE_EST_2026[k])return [ROSTER_AGE_EST_2026[k],false];
   return h<99&&def>h?[ageCap(h,hashStr('hi|'+k)),false]:[def,false];
@@ -177,6 +184,7 @@ function usFFskew(club){
 // la rosa di un club: giocatori internazionali del mercato che ci giocano, giocatori veri e riempimento generato, poi si sposta il livello di tutti tranne le stelle
 // finche' la media dei 7 migliori e' quella del club (power). opt.n: giocatori in rosa. La tua rosa e' la stessa delle avversarie: nessun abbassamento di partenza
 function usRoster(club,seedStr,opt){
+  if(UW_ROSTERS[club])return uwRoster(club,seedStr);
   opt=opt||{};const P=US_TEAM[club].power,rg=mulberry32(hashStr(seedStr+'|usr|'+club));
   const specs=[];
   // le stelle del mercato che hanno i dati Fantasy (k:'sf') prendono livello e ruolo dal rendimento come gli altri, ma restano loro (tratto, aspetto, eta');
@@ -191,11 +199,24 @@ function usRoster(club,seedStr,opt){
   const key=s=>s.ab!=null?Math.max(s.ab,s.fl||0):P+s.base;
   real.sort((a,b)=>key(b)-key(a)).slice(0,Math.max(0,20-specs.length)).forEach(s=>specs.push(s));
   const N=Math.min(20,Math.max(opt.n||16,specs.length));
+  const have=new Set(specs.map(({row:[sur,nm]})=>usNameKey(nm+' '+sur)));
+  const additions=(US_ROSTER_ADD[club]||[]).filter(name=>{
+    const k=usNameKey(name);
+    if(have.has(k)||US_OUT.has(k)||gone.has(ovrKey(name)))return false;
+    have.add(k);return true;
+  });
   const used=new Set(specs.map(s=>s.row[0]+s.row[1]));
-  for(let i=0;specs.length<N;i++){   // riempimento: nomi americani, ruoli bilanciati (almeno 6 handler), livello decrescente
-    let sur,nm;do{sur=US_LN[Math.floor(rg()*US_LN.length)];nm=US_FN[Math.floor(rg()*US_FN.length)];}while(used.has(sur+nm));used.add(sur+nm);
+  for(let i=0;specs.length<N;i++){
+    const name=additions[i];
+    let sur,nm;do{sur=US_LN[Math.floor(rg()*US_LN.length)];nm=US_FN[Math.floor(rg()*US_FN.length)];}while(used.has(sur+nm)||(!name&&have.has(usNameKey(nm+' '+sur))));used.add(sur+nm);
     const h=specs.filter(s=>s.row[3]==='H').length,role=h<6?'H':(rg()<0.2?'D':'C');
-    specs.push({k:'g',row:[sur,nm,19+Math.floor(rg()*13),role],base:-2-i*1.3-rg()*3});
+    const age=19+Math.floor(rg()*13),base=-2-i*1.3-rg()*3;
+    if(!name){specs.push({k:'g',row:[sur,nm,age,role],base});continue;}
+    // Le iscrizioni documentano chi gioca. Il profilo del posto in rosa conserva gli equilibri
+    // quando il club non ha dati sul rendimento dei singoli.
+    const slotSeed=sur+nm;[sur,nm]=usFFsplit(name);
+    const [a,ex]=usAgeOf(sur,nm,age);
+    specs.push({k:'r',row:[sur,nm,a,role],base,ex,slotSeed});
   }
   // obiettivo del club: la sua forza (power) spostata di meta' verso il talento vero dei suoi migliori 7 (al massimo 4 punti, vedi usFFskew): una squadra
   // con campioni e' un po' piu' forte del suo rating, una con pochi un po' piu' debole. Il resto della differenza resta nel rating.
@@ -205,8 +226,8 @@ function usRoster(club,seedStr,opt){
   const lv=(s,off)=>Math.min(usCapOf(s.row[0],s.row[1]),lv0(s,off));   // US_CAP (03-reputazione.js)
   let off=0,out=[];
   for(let it=0;it<7;it++){
-    out=specs.map((s,j)=>{
-      const [sur,nm,age,role]=s.row,rng=mulberry32(hashStr(seedStr+'|'+club+'|'+sur+nm));
+    out=specs.map(s=>{
+      const [sur,nm,age,role]=s.row,rng=mulberry32(hashStr(seedStr+'|'+club+'|'+(s.slotSeed||sur+nm)));
       if(s.k==='s'||s.k==='sf'){const row=s.k==='sf'?s.row.slice():s.row;if(s.k==='sf'){row[3]=s.role||row[3];row[4]=Math.round(lv(s,off));}const o=starPlayer(row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
       return usCard(sur,nm,age,role,lv(s,off),rng,s.k==='g'?{gen:true}:(s.ex?{}:{ae:1}));
     });

@@ -80,7 +80,12 @@ function usaSelfTest(seasons,seed){
     // eta' e fama dai dati pubblici UFA: l'eta' delle tabelle arriva in rosa, i convocati giovanili non superano il limite, i premiati All-UFA non restano in fondo
     let agN=0,awN=0;
     for(const c of US_NAMES){const ros=usRoster(c,'t'),ord=ros.map(ovr).sort((x,y)=>y-x),med=ord[Math.floor(ord.length/2)];
-      for(const o of ros){if(o.gen)continue;const k=usNameKey(o.label||o.n),ex=US_AGE[k],hi=US_AGE_HI[k];   // i riempimenti generati possono avere il nome di un giocatore vero: non contano
+      if(US_ROSTER_ADD[c]){
+        const names=new Set(ros.filter(o=>!o.gen).map(o=>usNameKey(o.label||o.n)));
+        chk('roster',names.size===ros.length,'nomi generati o ripetuti in '+c);
+        for(const name of US_ROSTER_ADD[c])chk('roster',names.has(usNameKey(name)),name+' manca in '+c);
+      }
+      for(const o of ros){if(o.gen)continue;const k=usNameKey(o.label||o.n),ex=US_ROSTER_AGE[k]||US_AGE[k],hi=US_AGE_HI[k];   // i riempimenti generati possono avere il nome di un giocatore vero: non contano
         if(ex){agN++;chk('eta',o.age===ex,'eta\' diversa dalla scheda: '+o.label);chk('eta',!o.ae,'eta\' esatta segnata come stima: '+o.label);}
         else if(hi)chk('eta',o.age<=hi,'oltre il limite giovanile: '+o.label+' '+o.age+'>'+hi);
         if(US_UFA_AWARD[k]){awN++;chk('premi',ovr(o)>=med-8,'premiato All-UFA molto sotto la mediana: '+o.label);}}}
@@ -97,6 +102,20 @@ function usaSelfTest(seasons,seed){
     chk('lega',!isUS()&&SV.sr==='A'&&SV.troph===t1&&!!SV.coach,'da USA a Italia');
     SV.job={club:'Seattle Sockeye',lk:'US',season:SV.season,round:0};crossLgAnswer({act:'job'},'yes');
     chk('lega',isUS()&&SV.team==='Seattle Sockeye','da Italia a USA');
+    // Dieci atlete a SCINNY: anche la distinta più corta può finire una stagione.
+    startCareer('Omega Continuum',{});
+    chk('women',SV.sr==='UW'&&SQ.length===10&&SQ.every(p=>p.f)&&foreignClubs().every(n=>clubLega(n)==='IW'),'avvio o mercato Women');
+    for(let g=0;!SV.done&&g<24;g++){
+      const m=nextMatch();
+      chk('women',m&&UW_ROSTERS[m.name],'avversaria in carriera Women');
+      const [a,b]=simPower(SV.team,m.name);recordResult(a>b,a,b);hide();
+      if(g===2){
+        const snap=Object.assign({},SV,{squad:squadData(),lineup:lineupIds()});
+        chk('women',loadSave(snap)&&SV.lk==='UW'&&SQ.length===10,'ricarica Women');
+      }
+    }
+    chk('women',SV.done&&SV.us.q.length===16&&SV.us.q.every(n=>UW_ROSTERS[n])&&SV.next.champs.UW===SV.us.nat.champ,'Nationals Women');
+    chk('women',newSeason()&&SV.sr==='UW'&&usRankList().length===48&&SV.market.every(m=>m.o.f),'seconda stagione Women');
     // l'Italia e' com'era
     startCareer(SERIES.C[2],{});
     chk('italia',!isUS()&&SV.sr==='C'&&SV.sched.length===15&&Object.keys(SV.mem).join()==='A,B,C'&&!SV.us,'carriera italiana invariata');
@@ -122,11 +141,13 @@ function usaSelfTest(seasons,seed){
   r('Salvataggio: ricarica a metà stagione','salvataggio','sì');
   r('Stelle del mercato presenti nei club USA: nel club, non sul mercato','stelle','sì');
   r('Overall dai dati Fantasy dei Nationals: il migliore di ogni club sta tra i primi 5, i giocatori di rendimento sono in rosa, le stelle non scendono sotto la fama, rose da 20 (fino a 28 dove il foglio di revisione ha più giocatori)','fantasy','sì');
+  r('I giocatori delle iscrizioni USA Ultimate entrano nelle rose dei club senza dati Fantasy','roster','sì');
   r('Età dalle schede pubbliche UFA e dai limiti delle convocazioni giovanili U20/U24: in rosa, esatte dove note, mai oltre il limite','eta','sì');
   r('Premiati All-UFA 2026 almeno a metà della propria rosa','premi','sì');
   r('Internazionali del mercato: provenienza solo da club dei Nationals/europei o paese (mai squadre UFA), senza doppioni, Overall coerente con i premi','stelle',`sì (${STARS.length} giocatori)`);
   r('Classifica USA: le viste Conference, Nationals (gironi e tabellone) e Ranking si aprono in ogni fase della stagione','viste','sì');
   r('Cambio di lega Italia ↔ USA: allenatore e trofei restano','lega','sì');
+  r('USA Women: rosa corta, mercato, salvataggio, Nationals e stagione successiva','women','sì');
   r('Campionato italiano invariato','italia','sì');
   return rows;
 }
@@ -135,7 +156,7 @@ function runUsaDiag(){
   $('dgOut').innerHTML='';$('dgState').textContent='Carriere USA di prova…';
   setTimeout(()=>{
     const rows=usaSelfTest(6,2026),ok=rows.filter(r=>r.ok).length;diagBusy=false;
-    $('dgOut').innerHTML=`<div class="ccard" style="margin-bottom:6px"><h3>Campionato USA: 4 carriere da 6 stagioni</h3><ul class="nlist">${rows.map(r=>`<li><i style="color:${r.ok?'var(--good)':'var(--bad)'}">${r.ok?'OK':'NO'}</i> ${esc(r.name)}: <b>${esc(r.val)}</b></li>`).join('')}</ul></div>`;
+    $('dgOut').innerHTML=`<div class="ccard" style="margin-bottom:6px"><h3>Campionato USA: carriere Men’s e Women’s</h3><ul class="nlist">${rows.map(r=>`<li><i style="color:${r.ok?'var(--good)':'var(--bad)'}">${r.ok?'OK':'NO'}</i> ${esc(r.name)}: <b>${esc(r.val)}</b></li>`).join('')}</ul></div>`;
     $('dgState').textContent=`Finito: ${ok} controlli superati su ${rows.length}.`;
   },60);
 }

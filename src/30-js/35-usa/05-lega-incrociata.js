@@ -7,22 +7,22 @@
    Le offerte arrivano come Avvisi (act 'job' / 'trade') e scadono alla prossima partita. Il prestigio di un club (clubLvl, da 0 a 1) e' la sua posizione nella forza
    della propria lega: cosi' un club di vertice riceve offerte da club di vertice di un altro paese e uno di bassa classifica da club di livello simile.
    Un campionato nuovo entra da solo se e' coperto da clubLega(), allClubs(), clubLvl(), foreignRoster(), clubLeagueTxt() e lgName(). */
-const clubLega=n=>US_TEAM[n]?'US':(LN_BY[n]?LN_BY[n].lk:'IT');   // lega di un club
-const lgNow=()=>isUS()?'US':(isLN()?SV.lk:'IT');
-const lgName=lk=>lk==='US'?'Men’s Club USA':(LN_DEF[lk]?'campionato '+LN_DEF[lk].de:'campionato italiano');
+const clubLega=n=>US_TEAM[n]?(US_TEAM[n].series==='UW'?'UW':'US'):(LN_BY[n]?LN_BY[n].lk:'IT');   // lega di un club
+const lgNow=()=>isUS()?SV.lk:(isLN()?SV.lk:'IT');
+const lgName=lk=>usLeague(lk)?usLeagueName(lk):(LN_DEF[lk]?'campionato '+LN_DEF[lk].de:'campionato italiano');
 const lnPlayable=n=>{const {lk,t}=LN_BY[n];return LN_DEF[lk].tiers.some(tr=>tr.id===t);};
 let lnLvlMap=null;
 function lnLvl(n){   // posizione del club nella forza dei club del suo paese (tutti i livelli), da 1 (il piu' forte) a 0
   if(!lnLvlMap){lnLvlMap={};for(const lk of LN_IDS){const all=lnClubs(lk).sort((a,b)=>LN_BY[b].p-LN_BY[a].p);all.forEach((c,i)=>{lnLvlMap[c]=1-i/Math.max(1,all.length-1);});}}
   return lnLvlMap[n]??0;
 }
-const clubLvl=n=>US_TEAM[n]?1-(US_TEAM[n].rank-1)/(US_NAMES.length-1):(LN_BY[n]?lnLvl(n):(TEAM[n]?1-(TEAM[n].rank-1)/45:0.5));   // 0..1: quanto e' prestigioso il club nella sua lega
-const allClubs=()=>{const w=lnWomenNow();return w?LN_NAMES.filter(n=>isWomenClub(n)&&lnPlayable(n)):[].concat(SERIES.A,SERIES.B,SERIES.C).filter(n=>REAL[n]).concat(US_NAMES,LN_NAMES.filter(n=>lnPlayable(n)&&!isWomenClub(n)));};   // ogni club da cui si puo' partire: le squadre femminili stanno in un mondo a parte (37-leghe/07-women.js)
+const clubLvl=n=>US_TEAM[n]?1-(US_TEAM[n].rank-1)/(usClubs(clubLega(n)).length-1):(LN_BY[n]?lnLvl(n):(TEAM[n]?1-(TEAM[n].rank-1)/45:0.5));   // 0..1: quanto e' prestigioso il club nella sua lega
+const allClubs=()=>{const w=lnWomenNow();return w?UW_NAMES.concat(LN_NAMES.filter(n=>isWomenClub(n)&&lnPlayable(n))):[].concat(SERIES.A,SERIES.B,SERIES.C).filter(n=>REAL[n]).concat(US_NAMES,LN_NAMES.filter(n=>lnPlayable(n)&&!isWomenClub(n)));};   // ogni club da cui si puo' partire: le squadre femminili stanno in un mondo a parte (37-leghe/07-women.js)
 const foreignClubs=()=>{const me=lgNow();return allClubs().filter(n=>clubLega(n)!==me&&n!==SV.team);};   // i club di tutte le altre leghe
 const tradeClubs=()=>foreignClubs().concat(Object.keys(SV.rost||{}).filter(n=>n!==SV.team&&SV.rost[n]&&SV.rost[n].length>=8));   // altre leghe e club della tua lega (le loro rose sono quelle di adesso)
-const tradeRoster=(n,seed)=>clubLega(n)===lgNow()&&SV.rost[n]?SV.rost[n].filter(o=>!o.inj&&o.ret!==1):foreignRoster(n,seed);
+const tradeRoster=(n,seed)=>clubLega(n)===lgNow()&&SV.rost[n]?SV.rost[n].filter(o=>!o.inj&&o.ret!==1):abroadDrop(foreignRoster(n,seed));
 const foreignRoster=(n,seed)=>US_TEAM[n]?usRoster(n,seed):(LN_BY[n]?lnRoster(n,seed):realRoster(REAL[n],seed+'|'+n,realOpt(n,9)));
-const clubLeagueTxt=n=>US_TEAM[n]?`Men’s Club USA, ${usConfName(US_TEAM[n].conf)}`:(LN_BY[n]?SERIES_NAME[lnKey(LN_BY[n].lk,LN_BY[n].t)]:SERIES_NAME[TEAM[n].series]);
+const clubLeagueTxt=n=>US_TEAM[n]?`${usLeagueName(clubLega(n))}, ${usConfName(US_TEAM[n].conf)}`:(LN_BY[n]?SERIES_NAME[lnKey(LN_BY[n].lk,LN_BY[n].t)]:SERIES_NAME[TEAM[n].series]);
 // ---- offerta di lavoro, a inizio stagione ----
 function crossLgOffer(){
   if(!SV.hist||SV.hist.length<1||SV.job||(SV.jobLast&&SV.season-SV.jobLast<3))return;
@@ -79,6 +79,7 @@ function crossLgAnswer(a,d){
   keepFormer(p);
   const mine=squadData().find(o=>o.full===p.full),rec=Object.assign({},t.theirs,{sk:1,cond:100,car:null,ss:undefined,cs:undefined}),list=squadData().filter(o=>o.full!==p.full);list.push(rec);
   if(own){Object.assign(mine,{car:null,ret:undefined,mood:undefined,idle:undefined,prom:undefined});SV.rost[t.club].splice(SV.rost[t.club].indexOf(ex),1,mine);}   // il tuo giocatore passa nella loro rosa: lo ritroverai da avversario
+  if(!own)abroadAdd(rec);
   const lO=SV.lineO,lD=SV.lineD;setSquad(list);SV.lineO=lO;SV.lineD=lD;fixLines();SV.chem=Math.max(0,SV.chem-3);
   news(`Scambio con ${t.club}: ${pname(p)} parte, arriva ${rec.label||rec.n}.`);
   return `Scambio fatto: ${pname(p)} passa a ${t.club}, arriva ${rec.label||rec.n}.`;

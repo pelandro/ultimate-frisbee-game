@@ -11,8 +11,11 @@ function pickCut(p,H,d,sch,w){
   if(Math.random()<deepP){deep=true;const dm=deepRun(p,th);tx=H.x+d*rnd(Math.min(24,dm*0.8),Math.max(24,dm));ty=rnd(4,FIELD_W-4);}
   else{const dx=hand?rnd(-6,4):rnd(8,14),sg=p.cSide=(p.cSide&&Math.random()<0.68)?p.cSide:-(p.cSide||(Math.random()<0.5?1:-1));   // il lato dei tagli successivi resta lo stesso piu' spesso: meno andirivieni da un lato all'altro
     tx=H.x+d*dx;ty=H.y+sg*rnd(hand?5:4,hand?10:12);}
+  const gl=d>0?FIELD_L-EZ:EZ;
+  if(!hand&&(gl-H.x)*d<RZ_CUT)tx=deep?gl+d*rnd(9,EZ-RZ_BACK):(d>0?Math.max(tx,gl+1.5):Math.min(tx,gl-1.5));   // vicino alla meta i tagli finiscono dentro la meta: il corto appena oltre la linea, il lungo verso il fondo senza uscire (prima i corti si fermavano fuori e i lunghi andavano sulla linea di fondo)
   return {x:clamp(tx,1,FIELD_L-1),y:clamp(ty,2.5,FIELD_W-2.5),deep};
 }
+const RZ_CUT=22;   // da quanti metri dalla linea di meta i tagli dei cutter vanno dentro la meta
 // quanti tagli possono essere in corso insieme: visione alta 2, altrimenti 3 (prima senza limite sotto Visione 70: tutti partivano insieme verso il portatore)
 const CUT_CAP=[2,3];
 const cutCap=v=>v>0.7?CUT_CAP[0]:CUT_CAP[1];

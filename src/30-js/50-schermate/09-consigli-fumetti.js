@@ -22,7 +22,7 @@ function timelineHTML(){
     if(SV.po&&SV.po.on){   // playoff: l'ultima partita, il turno di adesso e quello dopo
       const l=SV.po.last,r0=SV.res[SV.res.length-1];
       const prev=l?node(l.win?'w':'l',(l.win?'V ':'S ')+l.su+'–'+l.so,l.label+' · '+shortN(l.opp)):(r0?node(r0.su>r0.so?'w':'l',(r0.su>r0.so?'V ':'S ')+r0.su+'–'+r0.so,'G'+SV.res.length+' · '+shortN(r0.opp)):node('f','Giornate','finite'));
-      return `<div class="tline">${[prev,node('n',SV.po.round===0?'Semifinale':'Finale',shortN(SV.po.opp)),SV.po.round===0?node('f','Finale',SV.po.kind==='tit'?'scudetto':'promozione'):node('f','Fine','stagione')].join('')}</div>`;
+      return `<div class="tline">${[prev,node('n',SV.po.round===2?'3° posto':PO_RD[SV.po.round],shortN(SV.po.opp)),SV.po.round===0&&SV.po.kind!=='tit'?node('f','Finale','promozione'):SV.po.round===0?node('f','Finale','scudetto o 3° posto'):node('f','Fine','stagione')].join('')}</div>`;
     }
     const R=SV.sched.length,last=SV.res[SV.res.length-1],lastN=SV.res.length;
     const prev=last?node(last.su>last.so?'w':'l',(last.su>last.so?'V ':'S ')+last.su+'–'+last.so,'G'+lastN+' · '+shortN(last.opp)):node('f','Inizio','stagione '+SV.season);
@@ -50,18 +50,13 @@ function adviceList(){
   base.forEach(t=>L.push([t,0]));
   return L;
 }
+let tipSkip=0;   // «Un altro» nella finestra del consiglio: passa al seguente
 function adviceText(){
   const L=adviceList(),urgent=L.filter(x=>x[1]>=3).sort((a,b)=>b[1]-a[1]),rest=L.filter(x=>x[1]<3);
   const pool=urgent.length?urgent.concat(rest.filter(x=>x[1]===2),rest.slice(0,2)):rest.filter(x=>x[1]===2).concat(rest);
-  return pool[((SV.round|0)+(SV.season|0))%pool.length][0];
+  return pool[((SV.round|0)+(SV.season|0)+tipSkip)%pool.length][0];
 }
-function renderTicker(){
-  const un=(SV.alerts||[]).filter(a=>!a.seen&&!(AL_URGENT[a.k]||a.act)),el=$('hTick'),sp=el.firstElementChild;
-  // le novita' stanno gia' in «Questa settimana» (riga della Posta) e sulla campanella: qui resta solo il consiglio, senza doppioni
-  const txt='Consiglio: '+adviceText();
-  if(sp.dataset.t!==txt){sp.dataset.t=txt;sp.textContent=txt;sp.style.animationDuration=Math.max(14,txt.length*0.2)+'s';}
-  el.classList.toggle('nw',false);void un;
-}
+function renderTicker(){$('hTick').textContent=adviceText();}   // il testo della finestra «Consiglio» (le novita' stanno in «Questa settimana» e sulla campanella)
 /* ---- fumetti ---- */
 const TIPS={
   home:'Benvenuto! Da qui parte ogni giornata: «Inizia partita» (tasto giallo) la giochi tu, «Simula» la gioca il computer. «Questa settimana» ti dice cosa sistemare prima di partire. La colonna a lato porta alle altre sezioni.',
@@ -74,7 +69,7 @@ const TIPS={
 const tipsOn=()=>{try{return localStorage.getItem('ultimate-suggerimenti')!=='0';}catch(e){return true;}};
 let tipAfter=null,tipKey='';   // tipKey: quale fumetto e' aperto (per «Scopri di più», 21-tutorial.js)
 // un fumetto non copre mai un altro riquadro (avvisi, imprevisti, risultati, pausa): se ce n'e' uno aperto aspetta la prossima volta
-const overlayBusy=()=>['cfm','alerts','evt','simres','over','cupScene','pause','opts','guide','tut','intro','press','hire','pp'].some(id=>{const e=$(id);return e&&!e.classList.contains('hidden');});
+const overlayBusy=()=>['todoW','tipW','cfm','alerts','evt','simres','over','cupScene','pause','opts','guide','tut','intro','press','hire','pp'].some(id=>{const e=$(id);return e&&!e.classList.contains('hidden');});
 function tipOnce(key,after){
   if(!tipsOn()||!SV||!SV.team||QM.on||!TIPS[key]||(SV.tips&&SV.tips[key])||overlayBusy())return false;
   if(!SV.tips)SV.tips={};SV.tips[key]=1;persist();

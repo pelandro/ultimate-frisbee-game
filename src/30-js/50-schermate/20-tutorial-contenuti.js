@@ -60,7 +60,7 @@ tip:`Lancia dove il compagno sta correndo, non dove si trova. Prima di rilasciar
 `Se miri su una <b>zona libera</b>, ci corre il compagno che arriva prima. Più alta è la Visione di chi lancia, più lontano può essere.`],
 tip:`Isola il tuo cutter più veloce contro il marcatore più lento: è il modo più facile di creare un vantaggio.`},
 {id:'att-sparo',t:'Lanci lunghi, scatto e prese',b:[
-[`<b>Sparo</b>: oltre 30 m. Quanto lontano arriva dipende dalla statistica Sparo (con 20 circa 30 m, con 99 tutto il campo).`,
+[`<b>Sparo</b>: oltre 30 m. Fin dove è preciso e quanto lontano arriva dipende dalla statistica Sparo: con 60 circa 40 m precisi, con 75 circa 55, con 99 tutto il campo.`,
 `<b>Scatto</b>: sui lanci lunghi tieni premuto lo schermo (o il fulmine in basso a destra) per far scattare chi corre al disco. Va più veloce ma consuma energia.`,
 `<b>Prese</b>: riescono quasi sempre, ma sono difficili al limite della portata, in corsa, con un difensore addosso o da stanchi. Conta la Presa di chi riceve.`,
 `<b>Duelli e tuffi</b>: contano salto e posizione. Nei duelli in aria e nei tuffi <b>tocca quando l’indicatore è nel verde</b> per un bonus.`]],
@@ -177,28 +177,30 @@ tip:`Nei playoff ogni partita conta: giocale tu.`},
 tip:`Un buon giocatore in panchina troppo a lungo ti lascia: ruotalo oppure promettigli spazio.`}
 ]});
 
-TUT.push({id:'lega',t:'I campionati',sub:'Italia, USA Men’s Club, Belgio, Francia, Germania, Regno Unito, Campionato europeo.',
+TUT.push({id:'lega',t:'I campionati',sub:'Italia, USA Men’s e Women’s Club, Belgio, Francia, Germania, Regno Unito, Campionato europeo.',
 intro:'Ogni campionato ha il suo formato, ricostruito su quello vero. Leggi solo quello che giochi.',
 les:[
 {id:'lega-it',t:'Italia: Serie A, B e C',b:[
-`Tre serie con le squadre e le rose dei <b>Campionati Italiani Ultimate Open 2026</b>, 15 giornate ciascuna. Salgono due squadre e ne scendono due.`,
-[`<b>Serie A</b>: le prime 4 giocano semifinali e finale per lo scudetto.`,
-`<b>Serie B e C</b>: la prima sale direttamente; dal 2° al 5° posto c’è lo spareggio per la seconda promozione.`,
-`Le prime 3 della Serie A giocano il <b>Campionato europeo (EUCF)</b> prima di iniziare il prossimo campionato.`]],
+`Tre serie con le squadre e le rose dei <b>Campionati Italiani Ultimate Open 2026</b>, a girone unico di sola andata. Salgono due squadre e ne scendono due.`,
+[`<b>Serie A</b>: playoff fra le prime 4.`,
+`<b>Serie B e C</b>: 1ª promossa, 2ª-5ª spareggio per la promozione.`,
+`Prime 3 della Serie A dopo i playoff al <b>Campionato europeo (EUCF)</b>, che si gioca prima del prossimo campionato.`]],
 tip:`Dopo uno scudetto le rivali di Serie A si rinforzano: investi in rosa e strutture per difendere il titolo.`},
-{id:'lega-usa',t:'USA Men’s Club',b:[
-`<b>48 club</b> veri in <b>8 Conference</b> da 6. Niente promozioni né retrocessioni.`,
+{id:'lega-usa',t:'USA Men’s e Women’s Club',b:[
+`<b>48 club</b> veri in <b>8 Conference</b> da 6 per divisione. Niente promozioni né retrocessioni.`,
 [`<b>Stagione</b>: 5 giornate nella tua Conference e 7 <b>partite interregionali</b>, una contro ciascuna delle altre Conference. Le interregionali non contano per la classifica ma per il ranking.`,
 `<b>Ranking</b>: sale con le vittorie (di più contro avversarie forti e con margini larghi). Decide quanti posti ai Nationals ha ogni regione.`,
 `<b>Posti</b>: ogni Conference ha 1 posto diretto; altri 8 vanno alle regioni per ranking. Chi non è diretto può giocare il <b>Play-in</b>: gara secca, chi vince va ai Nationals.`,
-`<b>Nationals</b>: 16 squadre in 4 gironi da 4; poi quarti, semifinali e finale.`],
+`<b>Nationals</b>: 16 squadre in 4 gironi da 4. Le prime vanno ai quarti, seconde e terze ai prequarti. Seguono semifinali e finale.`],
 `In Classifica: verde = Nationals diretti, giallo = Play-in, rosso = fuori.`],
 tip:`Con solo 5 turni di Conference ogni partita pesa: gioca tu quelle contro le rivali dirette.`},
 {id:'lega-eu',t:'Europa: campionati nazionali ed EUCF',b:[
-`<b>Belgio, Francia, Germania e Regno Unito</b>: club Open del 2026, con formati adattati al gioco. Le finali decidono i piazzamenti. Nei campionati con più livelli ci sono promozioni e retrocessioni.`,
-[`<b>Belgio</b>: 46 squadre su 6 livelli. <b>Francia</b>: 36 squadre tra N1 e N2. <b>Germania</b>: la 1. Liga ha 16 squadre in due gironi. <b>Regno Unito</b>: 11 club in due gironi e finali di piazzamento.`,
-`Chi arriva fino in fondo gioca almeno <b>11 partite</b> a stagione.`],
-`Il <b>Campionato europeo (EUCF)</b> si sblocca chiudendo il campionato tra i posti qualificanti (prime 3 in Serie A e Belgio, prime 2 in Francia e Regno Unito, prima in Germania) e si conclude prima del prossimo campionato: 16 club in gironi, poi quarti, semifinali e finale. Ogni turno superato porta <b>crediti</b>.`],
+`<b>Belgio, Francia, Germania e Regno Unito</b>: club Open del 2026, con formati adattati al gioco. Ogni livello è un girone di sola andata; chi arriva in fondo gioca almeno <b>11 partite</b>.`,
+[`<b>Belgio</b>: N1, N2 e N3 (15-16 squadre). N1: playoff fra le prime 4. N2 e N3: 1ª promossa, 2ª-5ª spareggio per la promozione.`,
+`<b>Francia</b>: N1 da 12, playoff fra le prime 6. N2 in due gironi geografici da 12, playoff promozione fra le prime 2 di ogni girone.`,
+`<b>Germania</b>: 1. Liga da 16, playoff fra le prime 4. 2. Liga: promosse le prime 2, retrocedono le ultime 3. 3. Liga: promosse le prime 3.`,
+`<b>Regno Unito</b>: 11 club, playoff fra le prime 8.`],
+`Il <b>Campionato europeo (EUCF)</b> si conclude prima del prossimo campionato: 16 club: prime 3 dopo i playoff di Italia, Belgio, Francia, Germania e Regno Unito, più la quarta più forte. Ogni turno superato porta <b>crediti</b>.`],
 tip:`In Europa le avversarie sono forti: arriva con la rosa fresca.`}
 ]});
 

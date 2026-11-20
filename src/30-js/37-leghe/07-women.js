@@ -4,9 +4,9 @@
      Ultimate Team) solo quelli maschili. Cosi' mercato, scambi e offerte di lavoro non attraversano mai il confine.
    - la partita veloce ha le sue linguette Women e abbina una squadra femminile solo a un'altra femminile (qWomen, 30-carriera/10-partita-avvio.js).
    - le rose iniziali del CIU sono quelle documentate, con Overall assegnati come per i club Open revisionati. */
-const lnWomen=lk=>!!(LN_DEF[lk]&&LN_DEF[lk].w);
+const lnWomen=lk=>lk==='UW'||!!(LN_DEF[lk]&&LN_DEF[lk].w);
 const lnWomenNow=()=>!!(SV&&SV.lk&&lnWomen(SV.lk));
-const isWomenClub=n=>!!(LN_BY[n]&&lnWomen(LN_BY[n].lk));
+const isWomenClub=n=>!!UW_ROSTERS[n]||!!(LN_BY[n]&&lnWomen(LN_BY[n].lk));
 function womenRoster(club,seedStr){
   const out=LN_PL.IW[club].slice(0,SQ_MAX).map(([sur,nm,age,hi,role,level])=>{
     const name=nm+' '+sur,rng=mulberry32(hashStr(seedStr+'|women|'+club+'|'+name));

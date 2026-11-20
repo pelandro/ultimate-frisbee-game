@@ -43,11 +43,14 @@ function playRead(dTeam){
   return m.size?m:null;
 }
 // filtro sul punto da raggiungere di un marcatore: un salto grande (cambio di uomo, nuova meta) lo porta subito, i piccoli spostamenti lo fanno scorrere
-function markTgt(q,x,y,dt){
+// fast: l'attaccante scatta verso la meta. Allora il filtro e' molto piu' rapido: con quello lento (0,4 s) il difensore restava 2-3 m dietro a chi andava lungo
+function markTgt(q,x,y,dt,fast){
   if(q.mx===undefined||hyp(q.mx-x,q.my-y)>9||q.mkA!==q.mark){q.mx=x;q.my=y;q.mkA=q.mark;}
-  else{const k=1-Math.exp(-dt*2.6);q.mx+=(x-q.mx)*k;q.my+=(y-q.my)*k;}
+  else{const k=1-Math.exp(-dt*(fast?DEEP_FILT:2.6));q.mx+=(x-q.mx)*k;q.my+=(y-q.my)*k;}
   return {x:q.mx,y:q.my};
 }
+// contro il taglio lungo: da quale velocita' verso la meta (m/s) il difensore lo tratta come uno scatto in profondita', quanto si tiene dalla parte della meta (m) e quanto e' rapido il filtro
+const DEEP_RUN=4,DEEP_CUSH=1.6,DEEP_FILT=9,HELP_GS=1;   // HELP_GS: metri dalla parte della meta che tiene chi aiuta
 function updateDefenders(dt){
   const P=G.poss,dT=T[1-P],aT=T[P],d=dirOf(P),Hh=G.holder;
   const sch=P===0?G.opp.def:G.sch.def;
@@ -110,12 +113,15 @@ function updateDefenders(dt){
       else if(a===deepA&&Hd&&(a.x-Hd.x)*d<thR+3)px+=d*1.6;   // contenimento: chi marca l'attaccante piu' avanzato tiene un passo in piu' verso la meta (copre il profondo)
       if(pf>0&&Hd&&a.cs!=='cut'&&!a.cmd&&!a.fl){   // AIUTO: se il suo uomo e' lontano dal disco e fermo, scala verso la linea di passaggio; appena l'uomo taglia torna su di lui
         const far=hyp(a.x-Hd.x,a.y-Hd.y);
-        if(far>20){const k=Math.min(1,clamp((far-20)/18,0,1)*0.42*pf*(far>thR+4?1.6:1));px=lerp(px,Hd.x+(a.x-Hd.x)*0.6,k);py=lerp(py,Hd.y+(a.y-Hd.y)*0.6,k);}
+        if(far>20){const k=Math.min(1,clamp((far-20)/18,0,1)*0.42*pf*(far>thR+4?1.6:1));px=lerp(px,Hd.x+(a.x-Hd.x)*0.6,k);py=lerp(py,Hd.y+(a.y-Hd.y)*0.6,k);
+          if((a.x-Hd.x)*d<thR+4&&(a.x-px)*d>-HELP_GS)px=a.x+d*HELP_GS;}   // se il lanciatore puo' servirlo lungo, l'aiuto si sposta di lato ma resta dalla parte della meta: prima scendeva sotto l'uomo e gli lasciava la profondita'
       }
       if(ak>0&&Hd&&a.cs==='cut'&&a.tx!==undefined&&!(rd&&rd.has(a))){px=lerp(px,a.tx,ADAPT_CUT*ak);py=lerp(py,a.ty,ADAPT_CUT*ak);}   // conosce lo schema: si sposta gia' verso dove l'attaccante sta tagliando
       if(rd&&rd.has(a)&&Hd){const e=rd.get(a),w=0.45+0.3*ak;px=lerp(px,e.x,w);py=lerp(py,e.y,w);}   // ha riconosciuto lo schema: si mette sulla traiettoria del taglio previsto
+      const run=Hd&&!front&&a.vx*d>DEEP_RUN&&(a.x-Hd.x)*d>4;   // scatta verso la meta davanti al disco: il difensore gli resta dalla parte della meta
+      if(run)px+=d*DEEP_CUSH*(0.6+0.4*q.s.vis/100);
       const close=hyp(q.x-a.x,q.y-a.y)<8;
-      const mt0=Hd?awayFrom(Hd,px,py,MIN_DEF):{x:px,y:py},mt=markTgt(q,mt0.x,mt0.y,dt);   // il punto del marcatore scorre piano (filtro), cosi' non scatta a ogni cambio dell'attaccante
+      const mt0=Hd?awayFrom(Hd,px,py,MIN_DEF):{x:px,y:py},mt=markTgt(q,mt0.x,mt0.y,dt,run);   // il punto del marcatore scorre piano (filtro), cosi' non scatta a ogni cambio dell'attaccante
       moveTo(q,mt.x,mt.y,dt,Hd&&hyp(q.x-Hd.x,q.y-Hd.y)<MIN_DEF?1.7:(close?0.85+q.s.dif/180:1));
     }
   }

@@ -19,6 +19,7 @@ function vnLand(V){
     else if(typeof SV!=='undefined'&&SV&&SV.lk)l=SV.lk;
   }catch(e){}
   if(l==='IW')l='IT';
+  if(l==='UW')l='US';
   V.land=l;return l;
 }
 // ---------- colori ----------
@@ -126,9 +127,10 @@ function ezSplit(w,n,f,len){   // le parole in n righe, la divisione con la riga
   };
   rec(0,n,[]);return best;
 }
-function ezNameFit(nm,len,wid){
-  const key=nm+'|'+ri(len)+'|'+ri(wid)+'|'+(S>5.4?1:0);let r=ezFitMemo.get(key);if(r)return r;
-  const w=nm.split(' ').filter(Boolean),fonts=S>5.4?['P','p']:['p'];
+const EZ_REF=6;   // scala di riferimento (pixel per metro) a cui si impagina il nome nella meta; poi si disegna in scala con lo zoom
+function ezNameFit(nm,len,wid,ref){   // ref: impaginazione a scala fissa (solo carattere piccolo), indipendente dallo zoom
+  const key=nm+'|'+ri(len)+'|'+ri(wid)+'|'+(ref?2:S>5.4?1:0);let r=ezFitMemo.get(key);if(r)return r;
+  const w=nm.split(' ').filter(Boolean),fonts=ref?['p']:S>5.4?['P','p']:['p'];
   for(const f of fonts){
     const gh=f==='P'?16:8,lh=gh+2;
     for(let n=1;n<=3&&!r;n++){const ls=ezSplit(w,n,f,len);if(ls&&(n-1)*lh+gh<=wid)r={f,ls,lh,gh};}

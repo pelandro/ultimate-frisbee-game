@@ -18,7 +18,7 @@ $('cfmOk').addEventListener('click',()=>closeConfirm(true));
 $('cfmNo').addEventListener('click',()=>closeConfirm(false));
 $('cfm').addEventListener('click',e=>{if(e.target===$('cfm'))closeConfirm(false);});
 // Esc chiude la finestra in primo piano (conferma, Posta, Opzioni, Guida) come il suo pulsante «Chiudi»
-const ESC_CLOSE=[['cfm',()=>closeConfirm(false)],['alerts',()=>$('alX').click()],['opts',()=>$('opX').click()],['guide',()=>$('gdX').click()]];
+const ESC_CLOSE=[['todoW',()=>$('todoX').click()],['tipW',()=>$('tipWX').click()],['cfm',()=>closeConfirm(false)],['alerts',()=>$('alX').click()],['opts',()=>$('opX').click()],['guide',()=>$('gdX').click()]];
 window.addEventListener('keydown',e=>{
   if(e.defaultPrevented||e.code!=='Escape')return;
   for(const [id,fn] of ESC_CLOSE){const el=$(id);if(el&&activeWindow()===el){e.preventDefault();e.stopImmediatePropagation();fn();return;}}

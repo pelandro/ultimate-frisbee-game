@@ -65,6 +65,21 @@ function lnAgeOf(full,age,hi){
   const hh=hashStr('ln|'+full),est=lnUsAge[k]||20+hh%5+Math.floor(hh/5)%5+Math.floor(hh/25)%5+Math.floor(hh/125)%4,h=Math.min(hi>0?hi:99,US_AGE_HI[k]||99,lnHiOf(k)||99);   // 20-35 anni, con la media intorno ai 27
   return [h<99&&est>h?ageCap(h,hh):est,false];
 }
+function lnClubAge(club,full,ag){
+  if(ag[1])return ag;
+  const lk=LN_BY[club]?.lk,ages=lnRosterSources(lk)?.ages;
+  const range=ages?.[usNameKey(full)];
+  if(!range)return ag;
+  const [lo,hi]=range;
+  const age=hi&&ag[0]>hi?ageCap(hi,hashStr('ln|'+full)):ag[0];
+  return [Math.max(lo,age),false];
+}
+// Le integrazioni conservano la distribuzione dei ruoli e dell'Overall della rosa di partenza.
+function lnRosterSources(lk){
+  if(lk==='BE')return {names:LN_BE_ADD,ages:LN_BE_AGE};
+  if(lk==='DE')return {names:LN_DE_ADD,ages:LN_DE_AGE};
+  return null;
+}
 // forma della rosa: il giocatore al posto j (0 = il migliore) sta a P + lnShape(j). I primi 7 hanno media 0, cosi' la forza della rosa e' quella del club; il fondo scende piano.
 // I giocatori fissi (stelle del mercato e doppioni) tengono il loro Overall e occupano meta' dei posti in alto: chi gioca con loro non scende sotto il livello del club.
 // rinforzi a mano: i migliori giocatori di un club prendono qualche punto in piu' sul loro posto (per scelta del progetto: i Freezzz Beezzz, 13ª all'EUCF 2026 ma con campioni piu' forti di quanto dicano i dati)
@@ -76,13 +91,32 @@ function lnRoster(club,seedStr,opt){
   const P=opt.p!==undefined?opt.p:B.p,rg=mulberry32(hashStr(seedStr+'|lnr|'+club)),specs=[];
   for(const r of STARS)if(LN_STAR_CLUB[usStarKey(r)]===club)specs.push({k:'s',row:r});
   const star=new Set(specs.map(s=>usNameKey(s.row[1]+' '+s.row[0])));   // chi e' gia' una stella non si ripete dalle tabelle
-  const gone=ovrOutSet(club),real=(LN_PL[B.lk][club]||[]).filter(r=>{const k=usNameKey(r[1]+' '+r[0]);return !star.has(k)&&!LN_OUT.has(k)&&!gone.has(k);}).map(r=>{const ag=lnAgeOf(r[1]+' '+r[0],r[2],r[3]);const bf=(LN_BONUS_FIX[club]||{})[r[1]+' '+r[0]];return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+(bf!==undefined?bf:r[5]),fx:lnDual(r[0],r[1])};});
+  const gone=ovrOutSet(club);
+  const real=(LN_PL[B.lk][club]||[]).filter(r=>{
+    const k=usNameKey(r[1]+' '+r[0]);
+    return !star.has(k)&&!LN_OUT.has(k)&&!gone.has(k);
+  }).map(r=>{
+    const full=r[1]+' '+r[0],ag=lnClubAge(club,full,lnAgeOf(full,r[2],r[3])),bf=(LN_BONUS_FIX[club]||{})[full];
+    return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+(bf!==undefined?bf:r[5]),fx:lnDual(r[0],r[1])};
+  });
   real.sort((a,b)=>(b.fx>0?100:b.base)-(a.fx>0?100:a.base)).slice(0,Math.max(0,20-specs.length)).forEach(s=>specs.push(s));   // una rosa ha al massimo 20 giocatori
   const N=Math.min(20,Math.max(opt.n||16,specs.length)),used=new Set(specs.map(s=>s.row[0]+s.row[1])),pool=LN_POOL[B.lk];
+  const extras=lnRosterSources(B.lk)?.names[club]||[],have=new Set(extras.length?specs.map(({row:[sur,nm]})=>usNameKey(nm+' '+sur)):[]);
+  const additions=extras.filter(([sur,nm])=>{
+    const k=usNameKey(nm+' '+sur);
+    if(have.has(k)||gone.has(k)||LN_OUT.has(k))return false;
+    have.add(k);return true;
+  });
   for(let i=0;specs.length<N;i++){   // riempimento: nomi del paese, ruoli bilanciati (almeno 6 handler), livello decrescente
-    let sur,nm;do{sur=pool.l[Math.floor(rg()*pool.l.length)];nm=pool.f[Math.floor(rg()*pool.f.length)];}while(used.has(sur+nm));used.add(sur+nm);
+    const name=additions[i];
+    let sur,nm;do{sur=pool.l[Math.floor(rg()*pool.l.length)];nm=pool.f[Math.floor(rg()*pool.f.length)];}while(used.has(sur+nm)||(!name&&additions.length&&have.has(usNameKey(nm+' '+sur))));used.add(sur+nm);
     const h=specs.filter(s=>s.row[3]==='H').length,role=h<6?'H':(rg()<0.2?'D':'C');
-    specs.push({k:'g',row:[sur,nm,19+Math.floor(rg()*5)+Math.floor(rg()*5)+Math.floor(rg()*5)+Math.floor(rg()*4),role],base:-2-i*1.3-rg()*3});   // eta' 19-34 a campana (media 27)
+    const age=19+Math.floor(rg()*5)+Math.floor(rg()*5)+Math.floor(rg()*5)+Math.floor(rg()*4),base=-2-i*1.3-rg()*3;
+    if(!name){specs.push({k:'g',row:[sur,nm,age,role],base});continue;}
+    // L'iscrizione conferma il nome. Il posto in rosa conserva il profilo di gioco quando mancano dati sul rendimento.
+    const slotSeed=sur+nm;[sur,nm]=name;
+    const full=nm+' '+sur,ag=lnClubAge(club,full,lnAgeOf(full,0,0));
+    specs.push({k:'g',row:[sur,nm,ag[0],role],base,ex:ag[1],slotSeed});
   }
   // posti: i fissi (stelle e doppioni) tengono il loro livello; gli altri si ordinano per rendimento (base) e prendono il livello del loro posto, a partire da meta' dei fissi
   // Senza statistiche (bonus sotto -3: niente mete ne' assist nei dati) l'ordine non dice nulla: le differenze si accorciano e l'ordine e' sorteggiato dal nome; i
@@ -97,11 +131,11 @@ function lnRoster(club,seedStr,opt){
   let off=0,out=[];
   for(let it=0;it<7;it++){
     out=specs.map(s=>{
-      const [sur,nm,age,role]=s.row,rng=mulberry32(hashStr(seedStr+'|'+club+'|'+sur+nm));
+      const [sur,nm,age,role]=s.row,rng=mulberry32(hashStr(seedStr+'|'+club+'|'+(s.slotSeed||sur+nm)));
       // una stella tiene l'Overall del mercato, ma in un club forte non sta sotto la media dei compagni (a Elliot Bonnet un torneo storto in America non toglie il ruolo di leader in Francia)
       if(s.k==='s'){const row=s.row.slice();row[4]=Math.max(Math.round(row[4]),Math.min(95,Math.round(P+1)));const o=starPlayer(row,rng);o.nat=club;o.n=o.sur;return o;}   // in partita si legge il cognome
       if(s.fx>0)return usCard(sur,nm,age,role,s.fx,rng,s.ex?{}:{ae:1});
-      return usCard(sur,nm,age,role,Math.min(capFree,Math.max(clamp(P+s.lv+off,36,95),usAward(sur,nm))),rng,s.k==='g'?{gen:true}:(s.ex?{}:{ae:1}));
+      return usCard(sur,nm,age,role,Math.min(capFree,Math.max(clamp(P+s.lv+off,36,95),usAward(sur,nm))),rng,s.k==='g'&&!s.slotSeed?{gen:true}:(s.ex?{}:{ae:1}));
     });
     const d=P-rosterLevel(out);if(Math.abs(d)<0.35)break;
     off=nFix?clamp(off+d,0,4):clamp(off+d,-8,8);   // con i fissi si puo' solo alzare (se i fissi portano la rosa sopra il club, resta sopra)

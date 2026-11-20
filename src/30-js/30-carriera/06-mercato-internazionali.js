@@ -8,7 +8,7 @@ const STARS=[
   ['De Marrée','Daan',25,'C',97,'Mooncatchers','sky',1],['Decraene','Tobe',23,'C',93,'Boston DiG','explosive',1],['Babbitt','Jeff',32,'D',92,'Boston DiG','sky'],
   ['Laviolette','Allan',35,'H',91,'Raleigh-Durham United','general'],['Frankenberg','Walker',24,'C',90,'San Francisco Revolver','deep'],['Randolph','John',25,'C',90,'New York PoNY',null],
   ['Taylor','Austin',32,'H',90,'USA','break'],['Jagt','Ben',33,'C',90,'New York PoNY','deep'],['Williams','Jack',31,'H',89,'USA','break'],
-  ['Mickle','Jimmy',35,'H',89,'New York PoNY','general'],['Gutowsky','Anthony',27,'C',89,'USA','deep'],['Dunn','Travis',35,'H',89,'USA','general'],
+  ['Mickle','Jimmy',35,'H',89,'New York PoNY','general'],['Gutowsky','Anthony',27,'C',89,'Madison Mad Men','deep'],['Dunn','Travis',35,'H',89,'Arizona Nighthawk','general'],
   ['Johnson-Go','Tannor',29,'D',89,'USA','sky'],['Schlör','Conrad',27,'C',89,'Wall City','sky'],['Kerr','Jordan',30,'H',88,'Denver Johnny Bravo','break'],
   ['Yorgason','Chad',27,'H',88,'USA',null],['Hulsmeyer','Brett',31,'C',88,'San Francisco Revolver','lock'],['Abeltins','Toms',27,'C',87,'Mooncatchers','lock'],
   ['Osgar','Ryan',32,'H',87,'USA',null],['Freechild','Dylan',34,'H',87,'Portland Rhino Slam!','break'],['Miller','Adam',27,'H',87,'Atlanta Chain Lightning',null],
@@ -35,7 +35,7 @@ const STARS=[
   ['Holland','Troy',29,'D',82,'Seattle Sockeye',null],['Ing','Michael',27,'C',82,'San Francisco Revolver',null],['Kerns','Elijah',27,'D',82,'San Francisco Revolver',null],
   ['Mieser','Jibran',26,'D',82,'USA',null],['Wariner','Cameron',29,'D',82,'New York PoNY',null],['Kocher','Chris',37,'C',82,'New York PoNY',null],
   ['Janas','Pawel',32,'H',82,'Boston DiG','break'],['Guay','Charles',27,'D',82,'Montréal Mephisto',null],['Little','Nate',28,'D',82,'Philadelphia Pacmen',null],
-  ['Marks','Luke',26,'D',82,'USA',null],['Ritthaler','Daniel',28,'D',82,'San Francisco Revolver',null],['Gordon','Leo',23,'H',82,'San Francisco Revolver',null],
+  ['Marks','Luke',26,'D',82,'Madison Mad Men',null],['Ritthaler','Daniel',28,'D',82,'San Francisco Revolver',null],['Gordon','Leo',23,'H',82,'San Francisco Revolver',null],
   ['Karklins','Arvids',24,'H',82,'Mooncatchers',null],['McDougall','Sean',30,'C',82,'USA','sky'],['Langdon','Jeremy',31,'C',82,'USA',null],
   ['Bonnet','Elliot',23,'C',82,'Tchac','explosive'],['Derks','Jelte',22,'C',81,'Paesi Bassi',null],['Lankford','Carter',23,'D',81,'San Francisco Revolver',null],
   ['Randall','Tyler',28,'D',81,'Atlanta Chain Lightning',null],['Grossberg','Sam',23,'C',81,'Philadelphia Pacmen',null],['Sheppard','Max',31,'C',81,'USA',null],
@@ -46,13 +46,13 @@ const STARS=[
   ['McCarthy','Mitchell',31,'D',81,'USA',null,1],
   ['Lacy','Cameron',23,'D',80,'USA',null,1],
   ['Rubin-Miller','Jake',27,'D',81,'USA',null,1],
-  ['Wellers','John',24,'D',80,'USA',null],
+  ['Wellers','John',24,'D',80,'Virginia Vault',null],
   ['Dean','Jasper',24,'C',80,'USA',null],
   ['Robert','Pieran',24,'C',79,'USA',null],
-  ['Vordick','Gabe',24,'C',81,'USA','deep'],
+  ['Vordick','Gabe',24,'C',81,'Madison Mad Men','deep'],
   ['Wolf','Aaron',24,'H',84,'Germania',null],
   ['Chan','Tyler',26,'D',79,'USA',null],
-  ['Fitzpatrick','Langley',23,'D',81,'USA',null],
+  ['Fitzpatrick','Langley',23,'D',81,'SOUF',null],
   ['Pew','Sam',23,'D',79,'USA',null],
   ['Turner','Phil',31,'D',79,'Nord America',null,1],
   ['Van de Moortele','Tristan',31,'C',80,'USA',null,1],
@@ -75,7 +75,7 @@ function buildMarket(){
   // da club alla tua portata, circa 3 dall'estero (stelle di STARS e giocatori dei club stranieri: di piu' con la reputazione), fino a 3 svincolati veri,
   // il resto dalle altre squadre del tuo campionato attorno al livello degli adulti. I campioni restano rari: le stelle solo se alla portata del tuo livello.
   const lv=squadLevel(),sd=SV.seed+'|mk|'+SV.season+'|'+(SV.mkN=(SV.mkN||0)+1),R=mulberry32(hashStr(sd)),out=[],viv=SV.fac.viv|0,nY=4+Math.min(viv,2),nSale=3,
-    women=lnWomenNow(),nAb=women?0:3+(SV.rep>=70&&R()<0.4?1:0),nStar=women?0:Math.min(nAb,1+(SV.rep>=40?1:0)),nFree=3;
+    women=lnWomenNow(),nAb=3+(SV.rep>=70&&R()<0.4?1:0),nStar=women?0:Math.min(nAb,1+(SV.rep>=40?1:0)),nFree=3;
   const ry=potRef('mkt'),la=potRef('adult'),readyBonus=Math.min(3,viv),pool=mkClubPool(),add=(x,kind)=>{if(x.o.sk===undefined)x.o.sk=0;out.push({o:x.o,kind,from:x.n});};
   // giovani: i ragazzi delle rose attorno al livello dei giovani della tua serie (il loro potenziale e' quello che hanno)
   for(let i=0;i<nY;i++){const x=mkTakeR(pool,ry-8+R()*5+readyBonus,R,y=>y.o.age<=MK_YOUNG,9);if(x)add(x,'Giovane promessa');}
