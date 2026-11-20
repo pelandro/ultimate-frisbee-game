@@ -5,6 +5,7 @@ Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattrib
 
 ## Non ancora pubblicato
 - Menu iniziale: dietro i pulsanti lo stadio è vuoto, senza squadre in campo né nomi nelle mete. All’apertura del gioco un giocatore entra di corsa, prende in tuffo il disco sotto l’insegna e resta fermo in quella posa.
+- Nuova festa del titolo, a tutto schermo nello stadio di sera, con una canzoncina tutta sua: rullo di tamburi, colpo pieno quando il capitano alza la coppa, poi la squadra balla a tempo e ogni due battute salta gridando «Ehi!». Agli EUCF i compagni portano il capitano in spalla con la coppa d’argento, ai Nationals festeggiano petto contro petto sotto i fuochi d’artificio.
 - Potenziare una struttura dal livello 0 al 5 costa 430 crediti.
 - Chi salta una partita per un impegno viene indicato come indisponibile.
 - In carriera, la parola che indicava la valuta è stata sostituita dalla moneta pixelata in schermate, avvisi e guida.
