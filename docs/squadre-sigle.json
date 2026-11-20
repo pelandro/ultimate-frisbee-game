@@ -1895,5 +1895,341 @@
     "tier": "B",
     "abbr": "BOR",
     "mark": "italia-z51"
+  },
+  {
+    "name": "Washington Scandal",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "SCA",
+    "mark": null
+  },
+  {
+    "name": "Boston Brute Squad",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "BRUT",
+    "mark": null
+  },
+  {
+    "name": "San Francisco Fury",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "FURY",
+    "mark": null
+  },
+  {
+    "name": "Denver Molly Brown",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "MB",
+    "mark": null
+  },
+  {
+    "name": "Toronto 6ixers",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "6IX",
+    "mark": null
+  },
+  {
+    "name": "Seattle Riot",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "RIOT",
+    "mark": null
+  },
+  {
+    "name": "New York BENT",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "BENT",
+    "mark": null
+  },
+  {
+    "name": "San Francisco Nightlock",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "NLK",
+    "mark": null
+  },
+  {
+    "name": "San Diego Flipside",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "FLIP",
+    "mark": null
+  },
+  {
+    "name": "Philadelphia Flight",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "FLT",
+    "mark": null
+  },
+  {
+    "name": "Portland Schwa",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "SCH",
+    "mark": null
+  },
+  {
+    "name": "Pittsburgh Parcha",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "PAR",
+    "mark": null
+  },
+  {
+    "name": "Raleigh Phoenix",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "PHX",
+    "mark": null
+  },
+  {
+    "name": "Northampton Starling",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "STAR",
+    "mark": null
+  },
+  {
+    "name": "Minneapolis Pop",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "POP",
+    "mark": null
+  },
+  {
+    "name": "Quebec Iris",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "IRIS",
+    "mark": null
+  },
+  {
+    "name": "Vancouver Traffic",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "TRA",
+    "mark": null
+  },
+  {
+    "name": "Dallas Dimes",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "DIM",
+    "mark": null
+  },
+  {
+    "name": "Colorado Kelp",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "KELP",
+    "mark": null
+  },
+  {
+    "name": "Chicago Nemesis",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "NEM",
+    "mark": null
+  },
+  {
+    "name": "Madison Heist",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "HEI",
+    "mark": null
+  },
+  {
+    "name": "Ottawa Stella",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "STL",
+    "mark": null
+  },
+  {
+    "name": "Oakland LOL",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "LOL",
+    "mark": null
+  },
+  {
+    "name": "Austin Vengeance",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "VEN",
+    "mark": null
+  },
+  {
+    "name": "Washington Grit",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "GRIT",
+    "mark": null
+  },
+  {
+    "name": "Atlanta Ozone",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "OZO",
+    "mark": null
+  },
+  {
+    "name": "Komodos",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "KOM",
+    "mark": null
+  },
+  {
+    "name": "Drift",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "DRFT",
+    "mark": null
+  },
+  {
+    "name": "Agency",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "AGY",
+    "mark": null
+  },
+  {
+    "name": "Vice",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "VICE",
+    "mark": null
+  },
+  {
+    "name": "Takedown",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "TKD",
+    "mark": null
+  },
+  {
+    "name": "Calypso",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "CAL",
+    "mark": null
+  },
+  {
+    "name": "Magma",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "MAG",
+    "mark": null
+  },
+  {
+    "name": "St. Louis Stellar",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "STLR",
+    "mark": null
+  },
+  {
+    "name": "Zephyr",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "ZEP",
+    "mark": null
+  },
+  {
+    "name": "Wildfire",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "WILD",
+    "mark": null
+  },
+  {
+    "name": "Wicked",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "WICK",
+    "mark": null
+  },
+  {
+    "name": "Dolly For President",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "DFP",
+    "mark": null
+  },
+  {
+    "name": "Dark Sky",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "DSK",
+    "mark": null
+  },
+  {
+    "name": "Omega Continuum",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "OMC",
+    "mark": null
+  },
+  {
+    "name": "Indy Rogue",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "ROG",
+    "mark": null
+  },
+  {
+    "name": "FAB",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "FAB",
+    "mark": null
+  },
+  {
+    "name": "San Antonio Problems",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "PROB",
+    "mark": null
+  },
+  {
+    "name": "Sureshot",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "SURE",
+    "mark": null
+  },
+  {
+    "name": "Solstice",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "SOL",
+    "mark": null
+  },
+  {
+    "name": "Compact Disc",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "CD",
+    "mark": null
+  },
+  {
+    "name": "Trainwreck",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "TRN",
+    "mark": null
+  },
+  {
+    "name": "River Monsters",
+    "country": "UW",
+    "tier": "UW",
+    "abbr": "RM",
+    "mark": null
   }
 ]

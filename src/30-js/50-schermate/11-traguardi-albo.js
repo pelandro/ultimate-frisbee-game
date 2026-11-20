@@ -25,7 +25,7 @@ function albHTML(entries=leagueHonours().entries){
 }
 function honoursTrophies(){
   let titles;
-  if(isUS())titles=[['U','Nationals USA']];
+  if(isUS())titles=[[SV.sr,'Nationals USA']];
   else if(isLN())titles=[[nationalKey(SV.lk),lnWomenNow()?'Scudetti Women':SV.lk==='UK'?'Nationals britannici':'Titoli '+LN_DEF[SV.lk].de]];
   else titles=[['A','Scudetti<br>Serie A'],['B','Titoli<br>Serie B'],['C','Titoli<br>Serie C']];
   if(leagueHasPromotion())titles.push(['promo','Promozioni']);
@@ -34,11 +34,12 @@ function honoursTrophies(){
 }
 function honoursSeasonNames(x){
   const lk=LN_TIER[x.sr]?.lk;
-  const league=x.sr==='U'?(x.us?.conf?usConfName(x.us.conf):'Men’s Club USA')
+  const usa=x.sr==='U'||x.sr==='UW';
+  const league=usa?(x.us?.conf?usConfName(x.us.conf):SERIES_NAME[x.sr])
     :(SERIES_NAME[x.sr]||x.sr);
-  const keys=x.sr==='U'?['U']:lk?[lk]:['A','B','C'];
+  const keys=usa?[x.sr]:lk?[lk]:['A','B','C'];
   const champions=keys.filter(k=>x.champs?.[k]).map(k=>{
-    const champ=x.champs[k],name=k==='U'?'Nationals USA':lk?SERIES_NAME[nationalKey(lk)]:SERIES_NAME[k];
+    const champ=x.champs[k],name=usa?'Nationals USA':lk?SERIES_NAME[nationalKey(lk)]:SERIES_NAME[k];
     return `${esc(name)}: <b${champ===SV.team?' style="color:var(--gold)"':''}>${esc(champ)}</b>`;
   }).join(' · ');
   return {league,champions};

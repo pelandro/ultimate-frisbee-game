@@ -5,6 +5,7 @@ Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattrib
 
 ## Non ancora pubblicato
 - Menu iniziale: il giocatore è disegnato a pixel grossi, con la testa più piccola e la faccia visibile; prende il disco con la mano sinistra e, a presa fatta, lui e il disco diventano un adesivo con il bordo bianco e l’ombra. Il disco è più sottile, con pixel grandi come quelli del giocatore. Corsa un po’ più lenta e tuffo più lungo.
+- Dalla schermata delle carriere puoi eliminare uno slot: una conferma rimuove il salvataggio e la sua copia precedente.
 - Nelle nuove carriere in Germania trovi più giocatori reali nelle rose e stime d’età aggiornate dove ci sono riscontri pubblici.
 - Nelle nuove carriere in Belgio trovi più giocatori veri nelle rose e stime d’età aggiornate con i riscontri delle competizioni giovanili e Masters.
 - Primo piano del tuffo rifatto: chi si tuffa piega il ginocchio per caricarsi, si distende con la spinta e vola in orizzontale, poi prende il disco a una mano, con un movimento più fluido. Nel menu iniziale il disco sotto l’insegna è disegnato a pixel grossi e il giocatore lo prende a una mano, con la stessa carica.
@@ -14,6 +15,8 @@ Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattrib
 - Playoff scudetto (Italia, Belgio, Germania, Francia): chi perde la semifinale gioca la finale per il 3° posto.
 - EUCF con 16 club veri: le prime 3 dopo i playoff di Italia, Belgio, Francia, Germania e Regno Unito, più la quarta classificata più forte di questi campionati.
 - Nuova festa del titolo, a tutto schermo nello stadio di sera, con una canzoncina tutta sua: rullo di tamburi, colpo pieno quando il capitano alza la coppa, poi la squadra balla a tempo e ogni due battute salta gridando «Ehi!». Agli EUCF i compagni portano il capitano in spalla con la coppa d’argento, ai Nationals festeggiano petto contro petto sotto i fuochi d’artificio.
+- Rivisti gli Overall di 65 giocatrici dei club USA Women con i risultati di altre stagioni, le selezioni nazionali e i raduni giovanili.
+- In Carriera, Partita veloce e Torneo puoi scegliere 48 club della divisione Women di USA Ultimate 2026. In carriera contendi i 16 posti ai Nationals e puoi passare tra i club femminili USA e italiani.
 - Potenziare una struttura dal livello 0 al 5 costa 430 crediti.
 - Chi salta una partita per un impegno viene indicato come indisponibile.
 - In carriera, la parola che indicava la valuta è stata sostituita dalla moneta pixelata in schermate, avvisi e guida.

@@ -7,7 +7,7 @@ const winsTot=()=>{let n=0;for(const x of SV.hist||[])n+=x.w|0;const t=SV.tab&&S
 const trophy=k=>(SV.troph?.[k]|0);
 const italianTitles=()=>['A','B','C'].reduce((total,k)=>total+trophy(k),0);
 const nationalKey=lk=>lnKey(lk,LN_DEF[lk].tiers[0].id);
-const trTot=()=>italianTitles()+trophy('U')+LN_IDS.reduce((total,lk)=>total+trophy(nationalKey(lk)),0);
+const trTot=()=>italianTitles()+trophy('U')+trophy('UW')+LN_IDS.reduce((total,lk)=>total+trophy(nationalKey(lk)),0);
 const leagueHasEurope=(lk=lgNow())=>lk==='IT'||!!LN_DEF[lk]?.eu;
 const leagueHasPromotion=(lk=lgNow())=>lk==='IT'||!!LN_DEF[lk]?.mv.length;
 const ACH=[
@@ -39,6 +39,7 @@ function achList(){
   const lk=lgNow(),out=ACH.slice();
   if(leagueHasPromotion(lk))out.push(...ACH_PROMO);
   if(lk==='IT')out.push(...ACH_IT);
+  else if(lk==='UW')out.push(['usa:UW','Campionesse d’America','Vinci i Nationals USA Women',1,100,()=>trophy('UW')]);
   else if(lk==='US')out.push(['usa','Campioni d’America','Vinci i Nationals USA',1,100,()=>trophy('U')]);
   else if(lk==='UK')out.push(['ln:UK','Campioni del Regno Unito','Vinci i Nationals britannici',1,100,()=>trophy(nationalKey(lk))]);
   else if(lk==='IW')out.push(['ln:IW','Scudetto Women','Vinci lo scudetto in Serie A Women',1,100,()=>trophy(nationalKey(lk))]);
