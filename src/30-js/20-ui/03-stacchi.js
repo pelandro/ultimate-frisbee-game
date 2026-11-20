@@ -118,9 +118,13 @@ const PX_BUF=Array.from({length:2},()=>({
   body:document.createElement('canvas'),
   ghost:document.createElement('canvas')
 }));
+// stile del disegno (prove del menu iniziale): z = grandezza fissa del pixel dell'omino, hk = testa piu' grande, flat = colori piatti senza luce e ombra
+const PX_OPT={z:0,hk:1,flat:false,noSh:false};
+// testa piccola (8x8) per i pixel grossi: rimpicciolire quella da 12 pixel la spezzava
+const PX_HEAD_S=[["..HHHH..",".HHHHHHH","hHHHSSSH","hHHSSSES","hHSSSSSS",".hsSSSSM","..sSSSS.","...sss.."],4,3];
 function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
-  const Z=OZ(hu),hs=hu/Z,R=Math.ceil(1.85*hs),n=2*R+2,c0=R+1;
-  if(!ghost){   // ombra a pixel sul prato
+  const Z=PX_OPT.z||OZ(hu),hs=hu/Z,hk=OZ(hu)/Z*PX_OPT.hk,R=Math.ceil(1.85*hs),n=2*R+2,c0=R+1;
+  if(!ghost&&!PX_OPT.noSh){   // ombra a pixel sul prato
     const k=clamp(1-(hipH-0.9)*0.25,0.45,1);
     pell(x,gy+hu*0.04,Math.round(hu*0.6*k),Math.max(2,Math.round(hu*0.1*k)),'rgba(40,70,30,.38)');
   }
@@ -170,11 +174,11 @@ function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
   // capelli lunghi dietro le spalle
   // testa: sprite ruotato con la figura (vicino al pixel), centro sopra la spalla
   const dk=pose==='dive'||pose.dv?clamp(rot/1.25,0,1):0,hrot=rot*(1-0.75*dk),hcr=Math.cos(hrot),hsr=Math.sin(hrot);   // tuffo: testa alzata sopra le braccia, sguardo avanti verso il disco
-  const hc=T([sh[0]+0.04-0.26*dk,sh[1]-0.36+0.06*dk]),HD=PX_HEAD[(lk.style|0)%PX_HEAD.length],hd=HD[0],hw=hd[0].length,hh=hd.length,hcx=HD[1],hcy=HD[2];
+  const hc=T([sh[0]+0.04-0.26*dk,sh[1]-0.36*PX_OPT.hk+0.06*dk]),sm=hk<0.8,HD=sm?PX_HEAD_S:PX_HEAD[(lk.style|0)%PX_HEAD.length],hd=HD[0],hq=sm?hk*1.5:hk,hw=hd[0].length,hh=hd.length,hcx=HD[1],hcy=HD[2];
   const hmap={S:PXM.HSK,s:PXM.SKD,H:PXM.HR,h:PXM.HD,E:PXM.EYE,M:PXM.MO,W:PXM.WH};
-  for(let j=Math.floor(hc[1]-24);j<=Math.ceil(hc[1]+24);j++)for(let i=Math.floor(hc[0]-24);i<=Math.ceil(hc[0]+24);i++){
+  for(let j=Math.floor(hc[1]-24*hq);j<=Math.ceil(hc[1]+24*hq);j++)for(let i=Math.floor(hc[0]-24*hq);i<=Math.ceil(hc[0]+24*hq);i++){
     if(i<0||j<0||i>=n||j>=n)continue;
-    const dx=(i+0.5-hc[0])*face,dy=j+0.5-hc[1],qx=Math.floor(hcr*dx+hsr*dy+hcx),qy=Math.floor(-hsr*dx+hcr*dy+hcy);
+    const dx=(i+0.5-hc[0])*face/hq,dy=(j+0.5-hc[1])/hq,qx=Math.floor(hcr*dx+hsr*dy+hcx),qy=Math.floor(-hsr*dx+hcr*dy+hcy);
     if(qx<0||qy<0||qx>=hw||qy>=hh)continue;const ch=hd[qy][qx];if(ch!=='.')id[j*n+i]=hmap[ch];
   }
   arm(A[1],PXM.SK);   // davanti: braccio vicino
@@ -195,7 +199,7 @@ function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
     else if(k){
       const dn=at(i,j+1),bk=at(i-fr,j);
       if(PXM_LN.has(k)&&((dn&&dn!==k&&PXM_LN.has(dn)&&!(k===PXM.SO||dn===PXM.SO))||(bk&&bk!==k&&PXM_LN.has(bk)&&!(k===PXM.SO||bk===PXM.SO))))c=OUTRGB;
-      else if(auto.has(k)){
+      else if(auto.has(k)&&!PX_OPT.flat){
         const b=pat&&k===PXM.SH&&patAt(i,j)?csB:base[k],up=at(i,j-1),fw=at(i+fr,j),lit=(up!==k||fw!==k)&&dn===k,thick=at(i+fr,j)===k&&at(i+2*fr,j)===k&&at(i+3*fr,j)===k,dark=dn!==k||bk!==k||(thick&&(at(i-2*fr,j)!==k||at(i-3*fr,j)!==k));   // nelle parti larghe l'ombra dietro e' di 3 pixel
         c=lit?pxTone(b,0.22):(dark?pxTone(b,-0.3):b);
       }else c=base[k];

@@ -21,9 +21,25 @@ function tdOnTop(fn){
 }
 const TDS={t:-1,done:false,from:null,c0:null,key:''};
 // athlete legge la divisa da cine.kits: qui ne serve una sola, la prima del campo
+// prove di stile (TDV): 0 attuale, 1 meno pixel, 2 piu' pixel, 3 alla Retro Bowl (pixel grossi, testa grande, colori piatti), 4 controluce, 5 adesivo
+const TD_STY=[{},{z:4,hk:1.33},{z:1},{z:4,hk:1.4,flat:true},{sil:true},{stk:true}];
+let TDV=0,tdTmp=null;
 function tdAthlete(x,gy,hip,pose,rot,tt,hu){
-  const keep=cine;cine={kits:UNI.map(k=>({...k}))};
-  try{athlete(x,gy,hip,1,pose,rot,tt,hu,undefined,false,TD_WHO);}finally{cine=keep;}
+  const st=TD_STY[TDV]||{},keep=cine,o={...PX_OPT};cine={kits:UNI.map(k=>({...k}))};
+  Object.assign(PX_OPT,{z:st.z||0,hk:st.hk||1,flat:!!st.flat,noSh:!!(st.sil||st.stk)});
+  const draw=()=>athlete(x,gy,hip,1,pose,rot,tt,hu,undefined,false,TD_WHO);
+  try{
+    if(!st.sil&&!st.stk)draw();
+    else{   // l'omino su una tela a parte, poi ricomposto: sagoma scura con il bordo dorato, oppure adesivo con il bordo bianco e l'ombra
+      if(!tdTmp)tdTmp=document.createElement('canvas');if(tdTmp.width!==VW||tdTmp.height!==VH){tdTmp.width=VW;tdTmp.height=VH;}
+      const k0=ctx,tc=tdTmp.getContext('2d');tc.clearRect(0,0,VW,VH);ctx=tc;try{draw();}finally{ctx=k0;}
+      const tint=c=>{const t=document.createElement('canvas');t.width=VW;t.height=VH;const g=t.getContext('2d');g.drawImage(tdTmp,0,0);g.globalCompositeOperation='source-in';g.fillStyle=c;g.fillRect(0,0,VW,VH);return t;};
+      ctx.save();ctx.imageSmoothingEnabled=false;
+      if(st.sil){const rim=tint('#ffd23f'),dk=tint('#1b2536');for(const [a,b] of [[0,-2],[1,-2],[2,-1],[2,0]])ctx.drawImage(rim,a,b);ctx.drawImage(dk,0,0);}
+      else{const wh=tint('#ffffff'),sd=tint('rgba(10,20,40,.45)');ctx.drawImage(sd,4,4);for(let a=-2;a<=2;a++)for(let b=-2;b<=2;b++)if(a||b)ctx.drawImage(wh,a,b);ctx.drawImage(tdTmp,0,0);}
+      ctx.restore();
+    }
+  }finally{cine=keep;Object.assign(PX_OPT,o);}
 }
 // linee di velocita' dietro al giocatore
 function tdLines(x,y,len,hu,al){
