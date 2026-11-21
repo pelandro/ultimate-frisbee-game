@@ -3,7 +3,7 @@
    ambizioso = fare meglio di quanto ci si aspetta, equilibrato = vicino alla posizione attesa, sicuro = alla portata ma mai banale
    (per un club di meta' classifica non e' la sola salvezza). Il club che ha il Campionato europeo da giocare, nel contratto ambizioso ha anche il risultato europeo.
    La posizione attesa mescola la forza vera della rosa e l'ordine che si vede nella scelta della squadra: il secondo pesa sempre meno, perche' dopo qualche anno
-   conta solo la rosa che hai costruito. Il giudizio a fine stagione e' qui (objMet), usato da Italia, leghe europee e bilancio previsionale. */
+   conta solo la rosa che hai costruito. Dalla seconda stagione si sposta anche verso il piazzamento dell'ultimo campionato (objLast). Il giudizio a fine stagione e' qui (objMet), usato da Italia, leghe europee e bilancio previsionale. */
 function objExp(names,cat,pow){
   const w=Math.max(0,0.5-0.1*((SV.season|0)-1)),P=pow||teamPow;
   const zf=f=>{const v=names.map(f),m=v.reduce((a,b)=>a+b,0)/v.length,s=Math.sqrt(v.reduce((a,b)=>a+(b-m)*(b-m),0)/v.length)||1;return n=>(f(n)-m)/s;};
@@ -52,9 +52,19 @@ function objFor(k,exp){
   const c=objCtx(),T=objTargets(exp,c.n,c.safe);
   return objMk(T[k],c,exp,k);
 }
+// l'ultimo campionato conta: se l'hai giocato nella stessa divisione (SV.lastRk, scritto da endSeason, lnEndSeason e usEndSeason), la posizione attesa si sposta
+// verso dove sei arrivato. Chi vince con una rosa normale riceve comunque obiettivi ambiziosi; dopo una stagione storta lo sponsor e' piu' cauto,
+// ma ricorda la rosa che hai (verso il basso si sposta di meno). Dopo una promozione, una retrocessione o un cambio di club conta solo la rosa.
+const OBJ_LAST_UP=0.65,OBJ_LAST_DN=0.35;
+function objLast(exp,n){
+  const L=SV.lastRk;
+  if(!L||L.s!==(SV.season|0)-1||L.t!==SV.team||L.lk!==SV.lk||L.sr!==SV.sr||!(L.n>1))return exp;
+  const r=clamp(Math.round(1+(L.rank-1)*(n-1)/(L.n-1)),1,n);   // se il numero di squadre e' cambiato, la stessa posizione in proporzione
+  return clamp(Math.round(exp+(r-exp)*(r<exp?OBJ_LAST_UP:OBJ_LAST_DN)),1,n);
+}
 // l'obiettivo "della dirigenza" = quello equilibrato; gli altri due si ricavano dalla stessa posizione attesa
 function objBase(){
-  const c=objCtx(),exp=objExp(c.names,c.cat,c.pow);
+  const c=objCtx(),exp=objLast(objExp(c.names,c.cat,c.pow),c.n);
   SV.obj=objFor('bal',exp);
 }
 // raggiunto? (fine stagione, o stima nel bilancio). x.promoted: salito di serie; x.tit: campione (in Serie A lo decidono i playoff)

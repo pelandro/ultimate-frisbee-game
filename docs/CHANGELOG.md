@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Obiettivi dello sponsor più giusti: dalla seconda stagione non guardano solo la forza della rosa ma anche come è finito l’ultimo campionato nella stessa serie. Se vinci molto con una rosa normale, i contratti chiedono di più; dopo una stagione storta chiedono un po’ meno. Dopo una promozione o una retrocessione, o con un club nuovo, conta solo la rosa. Vale in tutti i campionati, anche negli USA.
 - Partite tra squadre deboli più giocabili: in partita Lancio, Buco, Sparo, Visione e Resistenza bassi si avvicinano a 60, così in Serie C e in Ultimate Team con carte basse le mete non durano più un minuto. Negli uno contro uno contano sempre le statistiche vere.
 - Dopo un turnover o un timeout vicino alla meta i compagni non si mettono più in fila fuori dalla meta, dietro a chi ha il disco: si dispongono dentro la meta attorno al punto da cui si riparte.
 - Difesa più attenta al lungo: chi aiuta resta dalla parte della meta e chi marca segue subito lo scatto in profondità. Lo Sparo conta molto di più: con un braccio normale il lancio lungo sbanda, i grandi lanciatori servono tutto il campo.

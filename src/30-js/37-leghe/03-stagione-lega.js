@@ -342,6 +342,7 @@ function lnEndSeason(){
   // premio, obiettivo, reputazione e tifosi
   const prize=Math.round(LN_PRIZE(Math.max(1,n-rank+1)*3)*SR_K[SV.sr]),ok=objMet(rank,{promoted:ni<ci,tit});SV.cash+=prize;
   const objPay=spPayout(ok,tit&&L.tier===top);SV.cash+=objPay;
+  SV.lastRk={s:SV.season,t:SV.team,lk:SV.lk,sr:SV.sr,rank:tit?1:rank,n};   // per gli obiettivi della stagione dopo (objLast)
   if(SV.obj){if(ok||objPay){SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}
   if(ni<ci){SV.rep=clamp(SV.rep+6,0,100);const nk=lnKey(lk,nTier),pp=promoPrize(nk);SV.cash+=pp;news('Premio della lega per la promozione: +'+pp+' crediti per rinforzarvi in '+tiers[ni].name+'.');}else if(ni>ci)SV.rep=clamp(SV.rep-8,0,100);   // premio della lega: 30-carriera/05-economia.js
   if(tit)SV.rep=clamp(SV.rep+6,0,100);
