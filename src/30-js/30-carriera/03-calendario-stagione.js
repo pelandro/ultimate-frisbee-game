@@ -209,6 +209,7 @@ function endSeason(){
   SV.po=null;SV.poRes=null;
   // premi di fine stagione: classifica, obiettivo, reputazione, premi individuali
   const n=SV.mem[SV.sr].length,prize=Math.round((n-rank+1)*3*SR_K[SV.sr]);SV.cash+=prize;
+  SV.lastRk={s:SV.season,t:SV.team,lk:SV.lk,sr:SV.sr,rank:tit?1:rank,n};   // per gli obiettivi della stagione dopo (objLast): in Serie A chi vince i playoff conta come primo
   const ok=objMet(rank,{promoted:nsr<SV.sr,tit});
   const objPay=spPayout(ok,tit);SV.cash+=objPay;
   if(SV.obj){if(ok||objPay){SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,SV.obj.tgt-rank)*0.5),0,100);}else SV.rep=clamp(SV.rep-5,0,100);}

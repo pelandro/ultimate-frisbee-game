@@ -18,7 +18,7 @@ function usStartCareer(name,opt){
 }
 const usRepStart=()=>Math.round(20+(usClubs().length-US_TEAM[SV.team].rank)/(usClubs().length-1)*40);   // i club piu' prestigiosi partono con piu' reputazione (da 21 a 60)
 // ---- obiettivi della dirigenza: secondo il livello del club tra i 48 (la scala US_RUNG e' in 30-carriera/27-obiettivi-sponsor.js) ----
-function usObjective(){SV.obj=usObjFor('bal',objExp(usClubs(),n=>-US_TEAM[n].rank));}
+function usObjective(){const cl=usClubs();SV.obj=usObjFor('bal',objLast(objExp(cl,n=>-US_TEAM[n].rank),cl.length));}   // objLast: il piazzamento nazionale dell'anno prima
 const usObjOk=rank=>!!(SV.obj&&(SV.us.stage|0)>=SV.obj.lvl&&(!SV.obj.cr||rank<=SV.obj.cr));
 // ---- fine stagione (chiamata da endSeason quando i Nationals sono finiti) ----
 function usEndSeason(){
@@ -30,6 +30,7 @@ function usEndSeason(){
   else short=({1:'Eliminati ai Play-in.',2:'Eliminati nel girone dei Nationals.',3:'Eliminati ai prequarti dei Nationals.',4:'Eliminati ai quarti dei Nationals.',5:'Eliminati in semifinale ai Nationals.',6:'Finale dei Nationals persa.'})[st];
   const prize=Math.round(US_PRIZE[st]*SR_K[SV.sr]),ok=usObjOk(rank);SV.cash+=prize;
   const objPay=spPayout(ok,tit);SV.cash+=objPay;
+  SV.lastRk={s:SV.season,t:SV.team,lk:SV.lk,sr:SV.sr,rank:tit?1:usPos(SV.team),n:usClubs().length};   // per gli obiettivi della stagione dopo (objLast): posizione nel ranking nazionale, il campione e' primo
   if(SV.obj){if(ok||objPay){SV.rep=clamp(SV.rep+3+Math.min(4,Math.max(0,st-SV.obj.lvl)),0,100);}else SV.rep=clamp(SV.rep-4,0,100);}
   if(tit)SV.rep=clamp(SV.rep+6,0,100);
   SV.fans=clamp(fansOf()+[-3,-1,0,1,2,3,4,6][st],0,100);
