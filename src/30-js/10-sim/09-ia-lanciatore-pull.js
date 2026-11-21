@@ -86,6 +86,11 @@ function aiThrow(th){
 
 /* ---- pull ---- */
 const PULL_TH=0.88,PULL_SPEED=1.12;   // PULL_SPEED: velocita' del disco in volo al pull (1 = com'era)
+/* Un buon pull e un gran pull devono costare fatica: PULL_ERR moltiplica l'errore del colpo (anche con il tempismo perfetto il disco non cade sempre dove
+   si e' mirato) e il gran pull vuole di piu': PULL_GD metri dentro la meta di chi riceve (prima 7) e PULL_GM metri dalla linea laterale (prima 4).
+   Misurato con lo stesso errore di tempo di 70 ms (Sparo e Lancio a 90): Gran pull dal 75% al 51%. L'IA mira a PULL_AIM metri dentro la meta, cioe' un
+   poco oltre la soglia del gran pull, cosi' resta brava come prima. Se li tocchi, rimisura con node tools/test-sim.js (gruppo «Pull e difesa automatica»). */
+const PULL_ERR=1.3,PULL_GD=9,PULL_GM=5.5,PULL_AIM=10;
 /* PULL A TEMPO: il pull e' un gesto difficile, non un lancio qualsiasi. Si decide in due tocchi su due indicatori che oscillano:
    1) POTENZA: la zona verde (da PULL_G0 alla tacca PULL_TH) manda il disco nella meta avversaria; prima e' corto, oltre la tacca rischia di uscire dal fondo;
    2) DIREZIONE: l'ago spazza il campo da una linea laterale all'altra e oltre (PULL_SW radianti per parte); solo la parte centrale resta in campo.
@@ -106,10 +111,10 @@ function pullPlan(p,team,charge,ang){
   const c=clamp(charge,0,1),over=clamp((c-PULL_TH)/(1-PULL_TH),0,1);
   const W=G.wind,wk=1+0.15*W.lv;   // il vento sposta il punto d'arrivo (wx, wy) e rende il pull un po' meno preciso
   return {c,over,dist:20+58*Math.min(c,PULL_TH)/PULL_TH+7*over,a:pullAngle(team,ang),wx:W.x*PULL_WK,wy:W.y*PULL_WK,
-    sa:(0.6+(100-pullSkill(p))*0.06)*(1+2.2*over*over)*wk*Math.PI/180,sd:(0.7+(100-pullSkill(p))*0.09)*(1+2*over)*wk};
+    sa:(0.6+(100-pullSkill(p))*0.06)*(1+2.2*over*over)*wk*PULL_ERR*Math.PI/180,sd:(0.7+(100-pullSkill(p))*0.09)*(1+2*over)*wk*PULL_ERR};
 }
 /* QUALITA' DEL PULL: dove cade rispetto alla meta di chi riceve. Un buon pull da' un vantaggio vero a chi lo tira (cioe' alla difesa):
-   3 GRAN PULL: in campo, a 7 m o piu' dentro la meta di chi riceve e lontano dalla linea laterale;  2 BUON PULL: in campo, dentro la meta;
+   3 GRAN PULL: in campo, a PULL_GD m o piu' dentro la meta di chi riceve e ad almeno PULL_GM m dalla linea laterale;  2 BUON PULL: in campo, dentro la meta;
    1 CORTO: cade prima della meta, fino a 20 m;  0 BRICK: fuori dal campo oppure cortissimo (oltre 20 m prima della meta).
    Alla presa, per ciascun livello (PULL_EDGE): stall di partenza di chi riceve (la difesa e' gia' addosso), quanto aspettano i tagliatori prima di partire
    (moltiplicatore) e, per qualche secondo (PULL_EDGE_T), +k alla velocita' dei difensori (k > 0) oppure dei ricevitori (k < 0) e thr punti in piu' (o in meno)
@@ -120,7 +125,7 @@ function pullQuality(oob,spot,rec){
   if(oob)return 0;
   const dr=dirOf(rec),dep=((dr>0?EZ:FIELD_L-EZ)-spot.x)*dr;
   if(dep<-20)return 0;if(dep<0)return 1;
-  return dep>=7&&Math.min(spot.y,FIELD_W-spot.y)>=4?3:2;
+  return dep>=PULL_GD&&Math.min(spot.y,FIELD_W-spot.y)>=PULL_GM?3:2;
 }
 function doPull(charge,ang){
   const pt=G.pullTeam,p=G.puller,d=dirOf(pt),rec=G.poss,pp=pullPlan(p,pt,charge,ang);
@@ -150,8 +155,8 @@ function doPull(charge,ang){
 function aiPull(){
   // l'IA mira al centro della zona verde e al centro del campo, ma sbaglia come sbaglierebbe una persona: chi ha Sparo e Lancio bassi
   // tira piu' spesso corto, lungo o fuori di lato (in media un pull su cinque finisce in brick, uno su dieci per i migliori)
-  // Il punto ideale e' 8 m dentro la meta avversaria, al centro; il vento lo corregge per due terzi.
-  const p=G.puller,d=dirOf(G.pullTeam),W=G.wind,need=Math.abs((d>0?FIELD_L-EZ+8:EZ-8)-p.x)-W.x*PULL_WK*d*0.67;
+  // Il punto ideale e' PULL_AIM m dentro la meta avversaria, al centro; il vento lo corregge per due terzi.
+  const p=G.puller,d=dirOf(G.pullTeam),W=G.wind,need=Math.abs((d>0?FIELD_L-EZ+PULL_AIM:EZ-PULL_AIM)-p.x)-W.x*PULL_WK*d*0.67;
   const c0=clamp((need-20)/58*PULL_TH,0.5,PULL_TH-0.03),rel0=-Math.asin(clamp(W.y*PULL_WK*0.67/Math.max(30,need),-0.4,0.4))*d;
   const ps=pullSkill(p);
   doPull(clamp(c0+randn()*(0.06+(100-ps)*0.0021),0.35,0.99),(d>0?0:Math.PI)+rel0+randn()*(0.08+(100-p.s.lan)*0.0023));

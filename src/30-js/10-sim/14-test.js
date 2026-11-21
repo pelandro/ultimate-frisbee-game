@@ -351,15 +351,18 @@ function selfTestPlan(opt){
       if(good)ok++;else bad+=' ['+c.x+','+c.y+'→'+c.tx+','+c.ty+': '+(pt?pt.x.toFixed(1)+','+pt.y.toFixed(1):'nulla')+(w&&w.line?' poi linea':'')+(G.score.join('-')!==sc?' meta':'')+']';
     }
     // pull: corto e fuori di lato (si riparte da dove e' uscito, molto piu' avanti del brick) e lunghissimo fuori dal fondo (brick)
-    let pS=0,pB=0,pN=0,pL=0;
-    for(let i=0;i<8;i++){
-      fresh();placeTeams(1);const pt=G.pullTeam,f0=dirOf(pt)>0?0:Math.PI;doPull(i<4?0.3:1,i<4?f0+(i%2?1.3:-1.3):f0);
-      if(!G.pull||!G.pull.oob)continue;pN++;if(i>=4)pL++;const rec=G.poss,br=(dirOf(rec)>0?EZ:FIELD_L-EZ)+dirOf(rec)*18;
+    // la regola, per ogni pull uscito: brick se il punto d'uscita (portato nella zona centrale) non fa guadagnare almeno PULL_OOB_GAIN metri, altrimenti quello
+    let pS=0,pB=0,pN=0,pW=0;
+    for(let i=0;i<10;i++){
+      fresh();placeTeams(1);const pt=G.pullTeam,f0=dirOf(pt)>0?0:Math.PI;doPull(i<5?0.3:1,i<5?f0+(i%2?1.3:-1.3):f0);
+      const pu=G.pull;if(!pu||!pu.oob)continue;pN++;const rec=G.poss,dr=dirOf(rec),br={x:(dr>0?EZ:FIELD_L-EZ)+dr*18,y:MID};
+      let lo=0,hi=1;for(let k=0;k<20;k++){const m=(lo+hi)/2;if(inField({x:lerp(pu.sx,pu.tx,m),y:lerp(pu.sy,pu.ty,m)}))lo=m;else hi=m;}
+      const ex=outRestart({x:lerp(pu.sx,pu.tx,lo),y:lerp(pu.sy,pu.ty,lo)}),wantB=(ex.x-br.x)*dr<PULL_OOB_GAIN,want=wantB?br:ex;
       tick(60*12,()=>!G.pull&&!!G.holder);if(!G.holder)continue;
-      const gain=(G.holder.x-br)*dirOf(rec);if(i<4&&gain>=PULL_OOB_GAIN)pS++;if(i>=4&&Math.abs(gain)<0.01&&Math.abs(G.holder.y-MID)<0.01)pB++;
+      if(hyp(G.holder.x-want.x,G.holder.y-want.y)>1.6)pW++;else if(wantB)pB++;else pS++;   // chi prende al volo puo' stare fino a 1,5 m dal segno; brick e punto d'uscita distano almeno 6 m
     }
     return [row('Disco fuori: si riparte dalla linea di meta all’altezza dell’uscita (o dal punto d’uscita sul lato), niente tuffi oltre la linea',ok+' casi su '+cases.length+bad,ok===cases.length),
-      row('Pull fuori: dal punto d’uscita se conviene, altrimenti dal brick',pS+' corti di lato su 4, '+pB+' lunghi su '+pL,pN-pL===4&&pS===4&&pL>=2&&pB===pL)];
+      row('Pull fuori: dal punto d’uscita se conviene, altrimenti dal brick',pS+' dal punto d’uscita, '+pB+' dal brick, '+pW+' sbagliati su '+pN+' fuori',pW===0&&pS>=3&&pB>=2)];
   }]);
   S.steps.push(['Mira e chiamate',()=>{
     // il giocatore mira una zona libera con il dito che trema (e ogni tanto sfiora un compagno): il compagno chiamato deve correrci senza ripensamenti
