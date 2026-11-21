@@ -61,7 +61,7 @@ function pullTap(){
     return true;
   }
   const c=pm.c,a=(dirOf(0)>0?0:Math.PI)+pmVal()*PULL_SW;pm=null;
-  doPull(c,a);return true;
+  doPull(c,a,PULL_HUM);return true;
 }
 // dove cadrebbe il pull con questa potenza e questo angolo (vento compreso, senza l'errore casuale) e che cosa vale:
 // 3 fuori, 2 nella meta avversaria, 1 a meno di 10 m dalla linea di meta, 0 corto
