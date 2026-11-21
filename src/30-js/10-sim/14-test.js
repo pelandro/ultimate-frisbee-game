@@ -144,6 +144,8 @@ function selfTestPlan(opt){
       G.mode='play';
     }
     G.opt.def=d0;
+    // Soglia del Gran pull: +20 punti (prima 25). Il pull di chi gioca e' stato reso piu' difficile su richiesta (zona verde piu' stretta, barre piu' veloci):
+    // il Gran pull e' raro per tutti e il divario assoluto tra bravi e deboli si riduce, ma restano il divario nei fuori e la barra piu' lenta.
     // 4) la bravura conta: con Sparo e Lancio alti il pull riesce meglio (e le barre vanno piu' piano); un buon pull vale davvero per chi lo tira
     const humanQ=ps=>{   // chi gioca ferma le barre con un errore di tempo di 70 ms: qualita' del pull (0 fuori, 1 corto, 2 buono, 3 gran pull)
       const cnt=[0,0,0,0],kk=Math.max(1200,n*100);
@@ -167,7 +169,7 @@ function selfTestPlan(opt){
       row('Possessi avversari saltati che arrivano in fondo',(m-stuck)+' su '+m,stuck===0),
       row('Mete avversarie per possesso saltato',pc(goals/m),goals/m>=0.02&&goals/m<=0.85,'attesa tra 2% e 85%: né muro né colabrodo'),
       row('Difesa automatica senza difensore guidato né cerchio dell\u2019handblock',ctrl+hbw===0?'sì':'no',ctrl+hbw===0),
-      row('Pull: con Sparo e Lancio alti riesce meglio (Gran pull / fuori, con Sparo e Lancio a 30 e a 90)',pc(lo[3])+' / '+pc(lo[0])+' e '+pc(hi[3])+' / '+pc(hi[0])+'; barra a '+per30.toFixed(1)+' s e '+per90.toFixed(1)+' s',hi[3]-lo[3]>=0.25&&lo[0]-hi[0]>=0.1&&per90>=per30*1.6,'+25 punti di Gran pull, 10 punti di fuori in meno, barra almeno 1,6 volte piu\u2019 lenta'),
+      row('Pull: con Sparo e Lancio alti riesce meglio (Gran pull / fuori, con Sparo e Lancio a 30 e a 90)',pc(lo[3])+' / '+pc(lo[0])+' e '+pc(hi[3])+' / '+pc(hi[0])+'; barra a '+per30.toFixed(1)+' s e '+per90.toFixed(1)+' s',hi[3]-lo[3]>=0.20&&lo[0]-hi[0]>=0.1&&per90>=per30*1.6,'+20 punti di Gran pull, 10 punti di fuori in meno, barra almeno 1,6 volte piu\u2019 lenta'),
       row('Un buon pull vale: mete di chi riceve dopo un Gran pull, un pull corto e un brick',pc(gGran)+', '+pc(gShort)+' e '+pc(gBrick),gGran<=gShort*0.85&&gGran<gBrick,'dopo un Gran pull segna almeno il 15% in meno che dopo un pull corto')];
   }]);
   S.steps.push(['Durata della partita',()=>{

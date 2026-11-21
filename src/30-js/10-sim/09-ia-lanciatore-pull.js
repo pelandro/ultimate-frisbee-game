@@ -95,7 +95,11 @@ const PULL_ERR=1.3,PULL_GD=9,PULL_GM=5.5,PULL_AIM=10;
    (PULL_HUM = [moltiplicatore, metri minimi, gradi minimi]: i minimi pesano poco per chi ha Sparo e Lancio bassi, che sbaglia gia' molto, e tanto per chi e'
    bravo, che altrimenti non sbaglia mai). Misurato con un errore di tempo di 70 ms: con Sparo e Lancio a 90 il Gran pull passa dal 52% al 37% e i pull fuori o
    corti dal 2% al 20%; a 60 il Gran pull dal 38% al 19% e i fuori dal 10% al 29%. Se li tocchi, rimisura (gruppo «Pull e difesa automatica»). */
-const PULL_PER=0.65,PULL_HUM=[1.5,2,1];
+const PULL_PER=0.5,PULL_HUM=[1.5,2,1];
+/* La zona verde di chi gioca e' piu' stretta (l'IA no): PULL_HQ = [metri minimi dentro la meta per un Buon pull, metri minimi dalla linea laterale per un Buon pull,
+   metri minimi dalla linea laterale per un Gran pull]. Sulle barre il verde passa dal 21% al 15% della potenza e dal 61% al 44% della direzione. Chi cade in meta
+   ma troppo vicino alla meta (o alla laterale) fa un pull «corto» (o «di lato»): vale come il corto di prima. */
+const PULL_HQ=[4,5,7];
 /* PULL A TEMPO: il pull e' un gesto difficile, non un lancio qualsiasi. Si decide in due tocchi su due indicatori che oscillano:
    1) POTENZA: la zona verde (da PULL_G0 alla tacca PULL_TH) manda il disco nella meta avversaria; prima e' corto, oltre la tacca rischia di uscire dal fondo;
    2) DIREZIONE: l'ago spazza il campo da una linea laterale all'altra e oltre (PULL_SW radianti per parte); solo la parte centrale resta in campo.
@@ -126,11 +130,12 @@ function pullPlan(p,team,charge,ang){
    ai lanci di chi riceve: sotto pressione sbaglia di piu', con via libera molto meno. In piu' c'e' la posizione stessa: piu' il disco cade in fondo, piu' strada devono fare per segnare. */
 const PULL_EDGE_T=6,PULL_OOB_GAIN=6;
 const PULL_EDGE=[{stall:0,cut:0.6,k:-0.05,thr:6},{stall:0,cut:0.8,k:-0.03,thr:3.5},{stall:1.5,cut:1.15,k:0.03,thr:-3},{stall:3,cut:1.7,k:0.07,thr:-12}];   // thr: punti di Lancio/Sparo in piu' (o in meno) ai lanci di chi riceve
-function pullQuality(oob,spot,rec){
+function pullQuality(oob,spot,rec,h){   // h: pull di chi gioca (zona verde piu' stretta, PULL_HQ)
   if(oob)return 0;
   const dr=dirOf(rec),dep=((dr>0?EZ:FIELD_L-EZ)-spot.x)*dr;
-  if(dep<-20)return 0;if(dep<0)return 1;
-  return dep>=PULL_GD&&Math.min(spot.y,FIELD_W-spot.y)>=PULL_GM?3:2;
+  const sd=Math.min(spot.y,FIELD_W-spot.y),bd=h?PULL_HQ[0]:0,bm=h?PULL_HQ[1]:0;
+  if(dep<-20)return 0;if(dep<bd||sd<bm)return 1;
+  return dep>=PULL_GD&&sd>=(h?PULL_HQ[2]:PULL_GM)?3:2;
 }
 function doPull(charge,ang,hum){   // hum = PULL_HUM per il pull di chi gioca; senza, solo l'errore della bravura (IA, prove)
   const hk=hum?hum[0]:1,hd=hum?hum[1]:0,ha=hum?hum[2]*Math.PI/180:0;
@@ -152,7 +157,7 @@ function doPull(charge,ang,hum){   // hum = PULL_HUM per il pull di chi gioca; s
   for(const q of atk.concat(T[pt])){q.fl=null;q.flD=0;q.boost=0;}
   const catcher=atk.slice().sort((a,b)=>ttr(a,spot.x,spot.y)-ttr(b,spot.x,spot.y))[0];
   catcher.fl={x:spot.x,y:spot.y};
-  G.pull={thrower:p,sx:p.x,sy:p.y,tx,ty,t:0,T:(1.8+dl/40)/PULL_SPEED,H:clamp(dl*0.16,5,12),team:pt,oob,bk,landed:false,spot,catcher,lt:0,q:pullQuality(oob,spot,rec)};
+  G.pull={thrower:p,sx:p.x,sy:p.y,tx,ty,t:0,T:(1.8+dl/40)/PULL_SPEED,H:clamp(dl*0.16,5,12),team:pt,oob,bk,landed:false,spot,catcher,lt:0,q:pullQuality(oob,spot,rec,!!hum)};
   G.ref={x:spot.x,y:spot.y};
   G.puller=null;G.mode='play';
   assignMarks();
