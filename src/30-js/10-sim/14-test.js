@@ -148,7 +148,7 @@ function selfTestPlan(opt){
     const humanQ=ps=>{   // chi gioca ferma le barre con un errore di tempo di 70 ms: qualita' del pull (0 fuori, 1 corto, 2 buono, 3 gran pull)
       const cnt=[0,0,0,0],kk=Math.max(1200,n*100);
       for(let i=0;i<kk;i++){placeTeams(1);const p=G.puller;p.s.spa=ps;p.s.lan=ps;const T0=pullPeriod(p,0),T1=pullPeriod(p,1);
-        doPull(clamp((PULL_G0+PULL_TH)/2+randn()*0.07/T0,0.12,1),(dirOf(0)>0?0:Math.PI)+randn()*0.07/T1*2*PULL_SW);cnt[G.pull.q]++;}
+        doPull(clamp((PULL_G0+PULL_TH)/2+randn()*0.07/T0,0.12,1),(dirOf(0)>0?0:Math.PI)+randn()*0.07/T1*2*PULL_SW,PULL_HUM);cnt[G.pull.q]++;}   // come in partita: anche l'errore in piu' di chi gioca (PULL_HUM)
       return cnt.map(x=>x/kk);
     };
     const lo=humanQ(30),hi=humanQ(90);placeTeams(1);const pl=G.puller;pl.s.spa=30;const per30=pullPeriod(pl,0);pl.s.spa=90;const per90=pullPeriod(pl,0);

@@ -91,13 +91,18 @@ const PULL_TH=0.88,PULL_SPEED=1.12;   // PULL_SPEED: velocita' del disco in volo
    Misurato con lo stesso errore di tempo di 70 ms (Sparo e Lancio a 90): Gran pull dal 75% al 51%. L'IA mira a PULL_AIM metri dentro la meta, cioe' un
    poco oltre la soglia del gran pull, cosi' resta brava come prima. Se li tocchi, rimisura con node tools/test-sim.js (gruppo «Pull e difesa automatica»). */
 const PULL_ERR=1.3,PULL_GD=9,PULL_GM=5.5,PULL_AIM=10;
+/* Solo per chi gioca (l'IA non cambia): le barre vanno piu' in fretta (PULL_PER = durata di una spazzata rispetto a prima) e il colpo ha un errore in piu'
+   (PULL_HUM = [moltiplicatore, metri minimi, gradi minimi]: i minimi pesano poco per chi ha Sparo e Lancio bassi, che sbaglia gia' molto, e tanto per chi e'
+   bravo, che altrimenti non sbaglia mai). Misurato con un errore di tempo di 70 ms: con Sparo e Lancio a 90 il Gran pull passa dal 52% al 37% e i pull fuori o
+   corti dal 2% al 20%; a 60 il Gran pull dal 38% al 19% e i fuori dal 10% al 29%. Se li tocchi, rimisura (gruppo «Pull e difesa automatica»). */
+const PULL_PER=0.65,PULL_HUM=[1.5,2,1];
 /* PULL A TEMPO: il pull e' un gesto difficile, non un lancio qualsiasi. Si decide in due tocchi su due indicatori che oscillano:
    1) POTENZA: la zona verde (da PULL_G0 alla tacca PULL_TH) manda il disco nella meta avversaria; prima e' corto, oltre la tacca rischia di uscire dal fondo;
    2) DIREZIONE: l'ago spazza il campo da una linea laterale all'altra e oltre (PULL_SW radianti per parte); solo la parte centrale resta in campo.
    Gli indicatori vanno piano per chi ha Sparo (potenza) e Lancio (direzione) alti e in fretta per chi li ha bassi: con Sparo 20 la barra della potenza corre
    a 0,7 s per spazzata, con 99 a 1,7 s. Anche il colpo e' meno pulito per i deboli (pullSkill). L'interfaccia legge queste costanti; il motore riceve carica e angolo. */
 const PULL_G0=0.74,PULL_Y0=0.62,PULL_SW=0.42;
-const pullPeriod=(p,k)=>k?0.36+p.s.lan*0.0112:0.42+p.s.spa*0.0128;   // secondi per una spazzata: 0 potenza (Sparo), 1 direzione (Lancio)
+const pullPeriod=(p,k)=>(k?0.36+p.s.lan*0.0112:0.42+p.s.spa*0.0128)*PULL_PER;   // secondi per una spazzata: 0 potenza (Sparo), 1 direzione (Lancio)
 const pullSkill=p=>clamp(p.s.spa*0.6+p.s.lan*0.4,20,99);            // la bravura nel pull: soprattutto Sparo (distanza), poi Lancio (precisione)
 const pullWave=(t,T)=>{const u=(t/T)%2;return u<1?u:2-u;};          // 0..1..0 a velocita' costante
 function pullAngle(team,ang){
@@ -127,9 +132,10 @@ function pullQuality(oob,spot,rec){
   if(dep<-20)return 0;if(dep<0)return 1;
   return dep>=PULL_GD&&Math.min(spot.y,FIELD_W-spot.y)>=PULL_GM?3:2;
 }
-function doPull(charge,ang){
+function doPull(charge,ang,hum){   // hum = PULL_HUM per il pull di chi gioca; senza, solo l'errore della bravura (IA, prove)
+  const hk=hum?hum[0]:1,hd=hum?hum[1]:0,ha=hum?hum[2]*Math.PI/180:0;
   const pt=G.pullTeam,p=G.puller,d=dirOf(pt),rec=G.poss,pp=pullPlan(p,pt,charge,ang);
-  const dist=pp.dist+randn()*pp.sd,a=pp.a+randn()*pp.sa;
+  const dist=pp.dist+randn()*(pp.sd*hk+hd),a=pp.a+randn()*(pp.sa*hk+ha);
   const tx=p.x+Math.cos(a)*dist+pp.wx,ty=p.y+Math.sin(a)*dist+pp.wy;
   const dl=hyp(tx-p.x,ty-p.y),oob=tx<0||tx>FIELD_L||ty<0||ty>FIELD_W;
   let spot;
