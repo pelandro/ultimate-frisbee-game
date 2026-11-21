@@ -328,6 +328,39 @@ function selfTestPlan(opt){
       row('Partenza dal centro: chi ha preso il pull lontano dal centro passa all\u2019handler centrale',pH1F+' su '+pF+' tra chi segue lo schema ('+pH1+' su '+pN+' in tutto), vicino al centro '+pC,pN>=KP-6&&pF>=pN*0.5&&pH1F>=pF*0.9&&pC>=pH1*0.9,'il primo passaggio va al centro'),
       row('Partenza dal centro: nessun taglio prima del passaggio, poi lo schema parte',(pCut?pCut+' tagli in anticipo':'nessun taglio in anticipo')+', parte '+pGo+' volte su '+pH1+(pN?' (passaggio dopo '+(pT/pN).toFixed(1)+' s)':''),pCut===0&&pGo>=pH1*0.7&&pN>0&&pT/pN<=4,'passaggio entro 4 s')];
   }]);
+  S.steps.push(['Disco fuori dal campo',()=>{
+    // WFDF 11.8 e 13.8: si riparte dal punto della zona centrale piu' vicino a dove il disco e' uscito (da una meta: dalla sua linea, all'altezza
+    // del punto d'uscita, senza passare dal fondo); i tuffi oltre la linea non valgono; un pull fuori riparte dal brick o dal punto d'uscita, se conviene
+    const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);schReset();G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
+    const fwd=dirOf(0)>0?0:Math.PI,tick=(max,stop)=>{let g=0;while(g++<max&&!stop())update(1/60);};
+    const fresh=()=>{newGame();G.auto=true;G.lvl=[0,0];G.oppPlus=0;G.idn=[null,null];G.xtr=false;G.hint=false;G.inMatch=true;G.schemeOpen=false;applyForm();setWind(0,0);};
+    // lanci: coordinate misurate dalla linea di fondo dietro a chi lancia (x) e dal lato sinistro (y); cy = curva; div = un compagno pronto al tuffo
+    const cases=[{x:6,y:12,tx:-8,ty:14},{x:6,y:5,tx:-6,ty:25},{x:4,y:10,tx:-3,ty:12,cy:6},{x:40,y:30,tx:42,ty:45},{x:90,y:18,tx:102.5,ty:18,div:1}];
+    let ok=0,bad='';
+    for(const c of cases){
+      fresh();placeTeams(1);doPull(0.99,fwd);tick(60*14,()=>G.holder&&!G.flight&&!G.pull&&!G.walk);
+      if(!G.holder){bad+=' [nessun possesso]';continue;}
+      const P=G.poss,X=v=>dirOf(P)>0?v:FIELD_L-v,th=G.holder;th.x=X(c.x);th.y=c.y;
+      const tx=X(c.tx);for(const q of T[0].concat(T[1]))if(q!==th&&hyp(q.x-tx,q.y-c.ty)<10){q.x=FIELD_L/2;q.y=q.y<MID?3:FIELD_W-3;}
+      if(c.div){const q=T[P].find(o=>o!==th);q.x=X(FIELD_L-0.8);q.y=c.ty;q.s.tuf=100;}   // a 3,3 m dal punto di caduta: fuori portata, dentro il tuffo
+      G.flight={sx:th.x,sy:th.y,tx,ty:c.ty,t:0,T:1,H:1,high:false,team:P,thrower:th,intended:null,sparo:false,info:{},cat:'lan',kind:'backhand',sp:{cd:0.03,hi:false},duoL:0,e:1,err:0,cx:0,cy:c.cy||0,stall:0,brk:false};
+      G.holder=null;const sc=G.score.join('-');tick(60*5,()=>!G.flight);
+      const w=G.walk,pt=w?w.pick:G.holder,back=c.tx<0||c.tx>FIELD_L,ln=X(c.tx<0?EZ+0.6:FIELD_L-EZ-0.6);
+      const yEx=back&&!c.cy?clamp(c.y+(c.ty-c.y)*(c.tx<0?c.x/(c.x-c.tx):(FIELD_L-c.x)/(c.tx-c.x)),2.5,FIELD_W-2.5):null;
+      const good=G.poss===1-P&&G.score.join('-')===sc&&pt&&!(w&&w.line)&&(back?Math.abs(pt.x-ln)<0.01&&(yEx===null||Math.abs(pt.y-yEx)<0.3):Math.abs(pt.y-(FIELD_W-1))<0.01);
+      if(good)ok++;else bad+=' ['+c.x+','+c.y+'→'+c.tx+','+c.ty+': '+(pt?pt.x.toFixed(1)+','+pt.y.toFixed(1):'nulla')+(w&&w.line?' poi linea':'')+(G.score.join('-')!==sc?' meta':'')+']';
+    }
+    // pull: corto e fuori di lato (si riparte da dove e' uscito, molto piu' avanti del brick) e lunghissimo fuori dal fondo (brick)
+    let pS=0,pB=0,pN=0,pL=0;
+    for(let i=0;i<8;i++){
+      fresh();placeTeams(1);const pt=G.pullTeam,f0=dirOf(pt)>0?0:Math.PI;doPull(i<4?0.3:1,i<4?f0+(i%2?1.3:-1.3):f0);
+      if(!G.pull||!G.pull.oob)continue;pN++;if(i>=4)pL++;const rec=G.poss,br=(dirOf(rec)>0?EZ:FIELD_L-EZ)+dirOf(rec)*18;
+      tick(60*12,()=>!G.pull&&!!G.holder);if(!G.holder)continue;
+      const gain=(G.holder.x-br)*dirOf(rec);if(i<4&&gain>=PULL_OOB_GAIN)pS++;if(i>=4&&Math.abs(gain)<0.01&&Math.abs(G.holder.y-MID)<0.01)pB++;
+    }
+    return [row('Disco fuori: si riparte dalla linea di meta all’altezza dell’uscita (o dal punto d’uscita sul lato), niente tuffi oltre la linea',ok+' casi su '+cases.length+bad,ok===cases.length),
+      row('Pull fuori: dal punto d’uscita se conviene, altrimenti dal brick',pS+' corti di lato su 4, '+pB+' lunghi su '+pL,pN-pL===4&&pS===4&&pL>=2&&pB===pL)];
+  }]);
   S.steps.push(['Mira e chiamate',()=>{
     // il giocatore mira una zona libera con il dito che trema (e ogni tanto sfiora un compagno): il compagno chiamato deve correrci senza ripensamenti
     const ra=ros(62,'a'),rb=ros(62,'b');setSquad(ra);applyRoster(rb);G.lines=null;G.formB=0;G.drill=null;G.injK=0;G.fix=null;
