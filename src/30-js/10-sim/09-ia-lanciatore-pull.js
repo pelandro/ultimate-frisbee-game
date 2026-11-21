@@ -119,7 +119,7 @@ function pullPlan(p,team,charge,ang){
    Alla presa, per ciascun livello (PULL_EDGE): stall di partenza di chi riceve (la difesa e' gia' addosso), quanto aspettano i tagliatori prima di partire
    (moltiplicatore) e, per qualche secondo (PULL_EDGE_T), +k alla velocita' dei difensori (k > 0) oppure dei ricevitori (k < 0) e thr punti in piu' (o in meno)
    ai lanci di chi riceve: sotto pressione sbaglia di piu', con via libera molto meno. In piu' c'e' la posizione stessa: piu' il disco cade in fondo, piu' strada devono fare per segnare. */
-const PULL_EDGE_T=6;
+const PULL_EDGE_T=6,PULL_OOB_GAIN=6;
 const PULL_EDGE=[{stall:0,cut:0.6,k:-0.05,thr:6},{stall:0,cut:0.8,k:-0.03,thr:3.5},{stall:1.5,cut:1.15,k:0.03,thr:-3},{stall:3,cut:1.7,k:0.07,thr:-12}];   // thr: punti di Lancio/Sparo in piu' (o in meno) ai lanci di chi riceve
 function pullQuality(oob,spot,rec){
   if(oob)return 0;
@@ -134,13 +134,19 @@ function doPull(charge,ang){
   const dl=hyp(tx-p.x,ty-p.y),oob=tx<0||tx>FIELD_L||ty<0||ty>FIELD_W;
   let spot;
   const dr=dirOf(rec),hx=dr>0?EZ:FIELD_L-EZ;
-  if(oob)spot={x:hx+dr*18,y:MID};   // brick: al centro, a 18 m dalla linea di meta di chi riceve
+  let bk=false;
+  if(oob){   // pull fuori senza che nessuno lo tocchi: chi riceve sceglie il brick (al centro, a 18 m dalla sua linea di meta) o il punto della zona centrale
+    // piu' vicino a dove e' uscito (WFDF). Si sceglie da solo: il punto d'uscita se fa guadagnare almeno PULL_OOB_GAIN metri, altrimenti il brick
+    let lo=0,hi=1;for(let i=0;i<16;i++){const m=(lo+hi)/2;if(inField({x:lerp(p.x,tx,m),y:lerp(p.y,ty,m)}))lo=m;else hi=m;}
+    const ex=outRestart({x:lerp(p.x,tx,lo),y:lerp(p.y,ty,lo)}),br={x:hx+dr*18,y:MID};
+    bk=(ex.x-br.x)*dr<PULL_OOB_GAIN;spot=bk?br:ex;
+  }
   else spot={x:clamp(tx,1,FIELD_L-1),y:clamp(ty,3,FIELD_W-3)};   // il pull si prende dove cade, anche dentro la meta
   const atk=T[rec];
   for(const q of atk.concat(T[pt])){q.fl=null;q.flD=0;q.boost=0;}
   const catcher=atk.slice().sort((a,b)=>ttr(a,spot.x,spot.y)-ttr(b,spot.x,spot.y))[0];
   catcher.fl={x:spot.x,y:spot.y};
-  G.pull={thrower:p,sx:p.x,sy:p.y,tx,ty,t:0,T:(1.8+dl/40)/PULL_SPEED,H:clamp(dl*0.16,5,12),team:pt,oob,landed:false,spot,catcher,lt:0,q:pullQuality(oob,spot,rec)};
+  G.pull={thrower:p,sx:p.x,sy:p.y,tx,ty,t:0,T:(1.8+dl/40)/PULL_SPEED,H:clamp(dl*0.16,5,12),team:pt,oob,bk,landed:false,spot,catcher,lt:0,q:pullQuality(oob,spot,rec)};
   G.ref={x:spot.x,y:spot.y};
   G.puller=null;G.mode='play';
   assignMarks();

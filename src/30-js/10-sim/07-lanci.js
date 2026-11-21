@@ -265,7 +265,7 @@ function updateDisc(dt){
       if(pu.t>=pu.T){
         pu.landed=true;pu.lt=0;d.z=0;d.x=pu.spot.x;d.y=pu.spot.y;
         // la qualita' (pullQuality, 09-ia-lanciatore-pull.js) decide anche che cosa succede alla presa
-        if(pu.oob)HOOKS.toast('Pull fuori! Si riparte dal brick',G.poss);
+        if(pu.oob)HOOKS.toast(pu.bk?'Pull fuori! Si riparte dal brick':'Pull fuori! Si riparte da dove è uscito',G.poss);
         else if(pu.q===3)HOOKS.toast('Gran pull! Difesa già in posizione',pu.team);
         else if(pu.q===2)HOOKS.toast('Buon pull',pu.team);
         else HOOKS.toast(pu.q===1?'Pull corto: via libera all’attacco':'Pull cortissimo: attacco libero',G.poss);
