@@ -32,7 +32,7 @@ Se un testo non entra nel limite, di solito spiega troppe cose insieme: spezzalo
 |---|---|
 | **meta** | il punto segnato; si vince a 7 mete (11 o 15 nelle partite più lunghe). Mai «punto» per il risultato |
 | **Meta N** | il punto che si sta giocando (dal pull alla meta) |
-| **pull** | il lancio lungo che fa iniziare ogni meta; **brick**: se esce, si riparte dalla × al centro |
+| **pull** | il lancio lungo che fa iniziare ogni meta; **brick**: il pull che esce; si riparte dalla × al centro o dal punto d’uscita, se è più avanti |
 | **stall** | conteggio fino a 10 di chi ha il disco marcato da vicino; a 10 perde il disco |
 | **turnover** | il disco passa agli avversari |
 | **handblock**, **tuffo**, **intercetto**, **Callahan**, **huck** | si usano questi nomi; «rovesciato» non si usa per il lancio alto |

@@ -16,7 +16,8 @@ function tryCatch(f,o,def,L){
   const ci=catchInfo(f,o,def),p=o.p;
   if(Math.random()<dropProb(p,ci.diff)*(1-DUO_DROP*(f.duoL||0))){   // disco sfuggito: e' un errore di chi riceve, non di chi lancia
     G.st.drop[f.team]++;HOOKS.sfx('drop');
-    return turnover(1-f.team,L.x,L.y,null,'Presa mancata',1-f.team);
+    const s=inField(L)?L:outRestart(p);   // gli e' sfuggito sopra la zona fuori: l'ultimo a toccarlo in campo e' lui (WFDF 11.8)
+    return turnover(1-f.team,s.x,s.y,null,'Presa mancata',1-f.team);
   }
   if(ci.kind!=='semplice'&&ci.kind!=='corsa')p.m.pre++;
   if(ci.kind==='salto'){G.st.jump[p.t]++;p.m.sal++;}
@@ -32,10 +33,11 @@ function landDisc(){
   const inR=arr=>arr.map(p=>({p,d:hyp(p.x-L.x,p.y-L.y)})).filter(o=>o.d<=reach(o.p)).sort((a,b)=>a.d-b.d);
   const A=inR(atk);let D=inR(def);
   G.flight=null;G.diveWin=null;
-  const dv=G.dive;G.dive=null;
+  const dv=G.dive,out=!inField(L);G.dive=null;   // out: il disco cade fuori dal campo
   if(dv&&dv.p.dv){dv.p.dv.end=G.tick||0;G.slowTail=SLOW_TAIL;}   // il tuffo e' finito (preso o a vuoto): il rallentatore continua un po' mentre si rialza
   G.noCine=!!dv;   // dopo un tuffo a tempo la vista resta quella di gioco: niente scene laterali per questo disco
-  if(dv&&dv.p.t===1-f.team){   // il tuo difensore ha tentato il tuffo a tempo
+  if(dv&&out&&dv.p.t===1-f.team)D=D.filter(o=>o.p!==dv.p);   // tuffo verso un disco che esce: atterra fuori, non conta
+  else if(dv&&dv.p.t===1-f.team){   // il tuo difensore ha tentato il tuffo a tempo
     const p=dv.p,d=hyp(p.x-L.x,p.y-L.y),base=clamp(0.3+0.6*p.s.tuf/100-0.1*Math.max(0,d-reach(p)),0.08,0.95);
     let pr=clamp(base+DIVE_BONUS[dv.color],0.03,0.95);
     if(A.length)pr*=0.65;   // contro un ricevitore gia' a portata e' piu' difficile
@@ -46,6 +48,7 @@ function landDisc(){
   if(A.length&&!D.length)return tryCatch(f,A[0],def,L);
   if(D.length&&!A.length)return finishTurn(f,D[0].p,'Intercetto!',L);
   if(A.length&&D.length)return duel(f,A[0],D[0],reach);
+  if(out)return outTurn(f);   // nessuno lo prende restando in campo: e' fuori (i tuffi oltre la linea non valgono)
   return diveChain(f,L,atk,def,reach);
 }
 function catchBy(f,p,msg,ck){
@@ -73,7 +76,7 @@ function catchBy(f,p,msg,ck){
 function finishTurn(f,p,msg,spot){
   registerThrow(f.thrower,false,f.cat);p.m.dif++;G.st.blk[p.t]++;
   if(f.intended){const mk0=T[1-f.team].find(q=>q.mark===f.intended);if(mk0)mk0.m.mk++;}   // buona marcatura: il lancio verso il suo uomo non e' arrivato
-  const sp=spot||{x:p.x,y:p.y};   // dove il difensore prende il disco
+  const sp=spot&&inField(spot)?spot:{x:p.x,y:p.y};   // dove il difensore prende il disco; se lo prende sopra la zona fuori conta dove sta lui
   if(inEZ(sp,p.t)){   // CALLAHAN: intercetto o blocco nella meta che il difensore attacca (la meta avversaria) = punto per il difensore
     p.x=clamp(sp.x,1,FIELD_L-1);p.y=clamp(sp.y,1,FIELD_W-1);p.vx=p.vy=0;
     G.st.to[f.team]++;G.poss=p.t;G.holder=p;G.flight=null;G.marker=null;G.stallT=0;G.holdT=0;G.hbAtt=null;G.zoneH=null;G.zoneT=0;G.call=null;
@@ -107,10 +110,27 @@ function turnover(newTeam,x,y,picker,msg,benefit){
   if(msg)HOOKS.toast(msg,benefit===undefined?newTeam:benefit);
   drillEvt('to',newTeam,pk,msg);
 }
-// ultimo punto del volo ancora dentro il campo (lungo la traiettoria vera, curva compresa): li' il disco e' uscito
+/* DISCO FUORI (regolamento WFDF 11.8 e 13.8). Il punto d'uscita e' l'ultimo punto del volo ancora sopra il campo, lungo la traiettoria vera (curva
+   compresa); si riparte dal punto della zona centrale piu' vicino. Quindi un disco uscito da una meta, dal fondo o di lato, riparte dalla linea di
+   quella meta all'altezza del punto d'uscita: prima si raccoglieva sulla linea di fondo (spesso accanto a chi aveva lanciato) e poi si camminava fino
+   alla linea. Un disco che cade fuori si puo' ancora prendere da chi e' in campo e ci arriva allungando le braccia; chi si tuffa atterrerebbe fuori:
+   per chi attacca e' fuori, per chi difende e' comunque un turnover nello stesso punto (niente Callahan in tuffo oltre la linea di fondo). */
+const inField=P=>P.x>=0&&P.x<=FIELD_L&&P.y>=0&&P.y<=FIELD_W;
+const inEZx=x=>x<EZ||x>FIELD_L-EZ;
+const outRestart=P=>{const e=inEZx(P.x),m=e?2.5:1;return {x:clamp(P.x,EZ+0.6,FIELD_L-EZ-0.6),y:clamp(P.y,m,FIELD_W-m)};};   // sulla linea di meta come gli altri turnover in meta
 function oobSpot(f){
-  for(let s=1;s>=0;s-=0.02){const P=flightAt(f,s);if(P.x>=0&&P.x<=FIELD_L&&P.y>=0&&P.y<=FIELD_W)return P;}
+  for(let s=1;s>=0;s-=0.02){
+    if(!inField(flightAt(f,s)))continue;
+    let lo=s,hi=Math.min(1,s+0.02);   // lo sopra il campo, hi gia' fuori: si affina (a passi di 0,02 l'errore arrivava a quasi 1 m sui lanci lunghi)
+    for(let i=0;i<12;i++){const m=(lo+hi)/2;if(inField(flightAt(f,m)))lo=m;else hi=m;}
+    return flightAt(f,lo);
+  }
   return {x:f.sx,y:f.sy};
+}
+function outTurn(f){
+  const s=outRestart(oobSpot(f));
+  registerThrow(f.thrower,false,f.cat);HOOKS.sfx('drop');
+  return turnover(1-f.team,s.x,s.y,null,'Fuori!',1-f.team);
 }
 // punteggi del duello (senza il caso): li usa duel() e li misura il test
 function duelScore(f,a,d,reach){
@@ -153,9 +173,9 @@ function diveChain(f,L,atk,def,reach){
   const step=i=>{
     while(i<lst.length&&used.has(i))i++;
     if(i>=lst.length){
-      const oob=L.x<0||L.x>FIELD_L||L.y<0||L.y>FIELD_W,sp=oob?oobSpot(f):L;   // fuori: si riparte dal punto in cui il disco ha lasciato il campo
+      if(!inField(L))return outTurn(f);   // landDisc non ci manda i dischi caduti fuori: per sicurezza
       registerThrow(f.thrower,false,f.cat);HOOKS.sfx('drop');
-      return turnover(1-f.team,sp.x,sp.y,null,oob?'Fuori!':'Disco a terra',1-f.team);
+      return turnover(1-f.team,L.x,L.y,null,'Disco a terra',1-f.team);
     }
     const o=lst[i];used.add(i);
     // un attaccante e un difensore che si tuffano insieme: un'unica azione, vince chi arriva (a parita' il piu' vicino)

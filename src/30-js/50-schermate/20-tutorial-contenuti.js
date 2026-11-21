@@ -41,7 +41,7 @@ les:[
 `Ogni meta comincia con il pull. Lo tiri con due tocchi (o Spazio):`,
 [`<b>Potenza</b>: ferma il cursore nel <b>verde</b> per arrivare nella meta avversaria. Prima è corto, nel rosso esce dal fondo.`,
 `<b>Direzione</b>: ferma il cursore al centro. Nel rosso il disco esce di lato.`],
-`Sul campo vedi dove cadrà: <b>FUORI</b>, <b>CORTO</b>, <b>BUON PULL</b> o <b>GRAN PULL</b> (in oro, molto in fondo alla meta e lontano dalle linee: il più difficile da centrare). Un gran pull mette in difficoltà chi riceve; un pull corto o fuori lo aiuta. Se esce si riparte dal <b>brick</b> (la × al centro).`],
+`Sul campo vedi dove cadrà: <b>FUORI</b>, <b>CORTO</b>, <b>BUON PULL</b> o <b>GRAN PULL</b> (in oro, molto in fondo alla meta e lontano dalle linee: il più difficile da centrare). Un gran pull mette in difficoltà chi riceve; un pull corto o fuori lo aiuta. Se esce si riparte dal <b>brick</b> (la × al centro) o dal punto d’uscita, se è più avanti.`],
 tip:`Per il pull scegli chi ha Lancio e Sparo più alti: le barre vanno più piano.`},
 {id:'att-lancio',t:'Lanciare e mirare',b:[
 `Non ci sono pulsanti: <b>tocca, trascina il dito all’indietro e rilascia</b>, come una fionda. Il disco parte nel verso opposto, tanto più lontano quanto più trascini. Per annullare riporta il dito dove avevi toccato.`,
