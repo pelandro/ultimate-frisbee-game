@@ -63,7 +63,7 @@ tip:`Isola il tuo cutter più veloce contro il marcatore più lento: è il modo 
 [`<b>Sparo</b>: oltre 30 m. Fin dove è preciso e quanto lontano arriva dipende dalla statistica Sparo: con 60 circa 40 m precisi, con 75 circa 55, con 99 tutto il campo.`,
 `<b>Scatto</b>: sui lanci lunghi tieni premuto lo schermo (o il fulmine in basso a destra) per far scattare chi corre al disco. Va più veloce ma consuma energia.`,
 `<b>Prese</b>: riescono quasi sempre, ma sono difficili al limite della portata, in corsa, con un difensore addosso o da stanchi. Conta la Presa di chi riceve.`,
-`<b>Duelli e tuffi</b>: contano salto e posizione. Nei duelli in aria e nei tuffi <b>tocca quando l’indicatore è nel verde</b> per un bonus.`]],
+`<b>Duelli e tuffi</b>: contano salto e posizione. Nei duelli in aria e nei tuffi incerti <b>tocca quando l’indicatore è nel verde</b> (o almeno nel giallo): nel nero il disco non si prende.`]],
 tip:`Gli avversari sfiniti hanno una goccia di sudore: cerca il duello con loro. Uno scatto sprecato stanca per il resto della meta.`},
 {id:'att-stall',t:'Stall, vento e momenti decisivi',b:[
 `Quando un difensore ti marca parte lo <b>stall</b>: lo vedi in alto («Stall 3») e, da 6, sopra chi ha il disco. A 9 c’è l’<b>ULTIMO LANCIO</b>, a 10 perdi il disco. Passa subito, anche corto, o chiama il <b>timeout</b>.`,

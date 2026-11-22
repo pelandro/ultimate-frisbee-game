@@ -517,7 +517,7 @@ function selfTestPlan(opt){
     const avgOpp=p=>{let t=0;for(let i=0;i<200;i++)t+=utoPickOpp(pool,'me',p,'',Math.random).p;return t/200;};
     const a1=avgOpp(500),a2=avgOpp(1500),a3=avgOpp(2500);
     const two=[{id:'a',p:1000,pw:60},{id:'b',p:1010,pw:60}];let repeat=0;for(let i=0;i<40;i++)if(utoPickOpp(two,'me',1000,'a',Math.random).id==='a')repeat++;
-    const lone=utoPickOpp([{id:'a',p:4000,pw:60}],'me',100,'',Math.random),none=utoPickOpp([{id:'me',p:100,pw:60}],'me',100,'',Math.random);
+    const lone=utoPickOpp([{id:'a',p:4000,pw:60}],'me',100,'',Math.random),none=utoPickOpp([{id:'me',p:100,pw:60}],'me',100,'',Math.random),twin=utoPickOpp([{id:'old',n:'Pippo ',p:100,pw:60},{id:'b',n:'Pluto',p:900,pw:60}],'me',100,'',Math.random,'pippo');
     const col=makeRoster(66,'uto|t1'),pk=utoPack(col,[0,1,2,3,4,5,6]),un=utoUnpack(JSON.parse(JSON.stringify(pk.m)),'x');
     const same=!!un&&pk.m.length===14&&un.length===14&&un.every((o,i)=>KEYS.every(k=>o.s[k]===pk.m[i].s[k]));
     const pw7=un?Math.round(un.slice(0,7).reduce((a,o)=>a+ovrX(o),0)/7):-1;
@@ -536,6 +536,7 @@ function selfTestPlan(opt){
       row('Avversario scelto: punti vicini ai tuoi (differenza media su 300 giocatori), mai te stesso',Math.round(dsum/K)+' punti',bad===0&&dsum/K<=150,'al massimo 150'),
       row('Più punti hai, più forti sono gli avversari (punti medi a 500, 1500, 2500)',[a1,a2,a3].map(Math.round).join(', '),a1<a2-500&&a2<a3-500,'salgono di oltre 500 a ogni passo'),
       row('L’ultimo avversario si evita se c’è un’alternativa; con un solo candidato lo si prende; da soli, nessuno',`${repeat} ripetizioni su 40`,repeat===0&&!!lone&&lone.id==='a'&&none===null),
+      row('Mai contro la tua squadra: anche un tuo profilo vecchio con lo stesso nome resta fuori',twin?twin.id:'nessuno',!!twin&&twin.id==='b'),
       row('Squadra caricata e scaricata: 14 giocatori con le stesse statistiche e la stessa forza',un?`${un.length} giocatori, forza ${pw7} contro ${pk.pw}`:'non valida',same&&Math.abs(pw7-pk.pw)<=1),
       row('Dati ostili da internet: statistiche nei limiti 25-99, nomi senza simboli, ruolo e tratto validi',cleaned?'ripuliti':'no',cleaned),
       row('Squadre incomplete o che non sono squadre: rifiutate',junk?'sì':'no',junk),

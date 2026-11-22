@@ -18,7 +18,7 @@ function startCine(spec){
 function cineTap(){
   const c=cine;if(!c||c.phase!=='aim'||!c.timing||c.locked||c.t<0.8)return;
   const q=Math.abs(c.pos-0.5);
-  c.locked=true;c.lockT=c.t;c.bonus=q<=c.hw?1:clamp(1-(q-c.hw)/0.33,0,1);
+  c.locked=true;c.lockT=c.t;c.bonus=q<=c.hw?1:(q<=c.hw+0.165?clamp(1-(q-c.hw)/0.33,0.5,1):0);   // verde 1, giallo da 0,5 a 1, nero 0: la scena si apre solo quando il nero non basta (08-prese-duelli.js)
   c.quality=c.bonus>=1?'Perfetto!':(c.bonus>=0.5?'Buono':(c.bonus>0?'Quasi':'Fuori tempo'));HOOKS.sfx('timing',c.bonus>=1?1:(c.bonus>=0.5?0.4:0));
   c.aimEnd=c.t+0.45;
 }
@@ -393,7 +393,7 @@ function drawCine(){
     }
     athlete(dpz.dx,gy,dpz.hip,1,dpz.pose,dpz.rot,dpz.pose==='run'?SD*11:c.t,u,undefined,false,dv);
     const rs=aim?1:clamp(1-vt/0.7,0,1);
-    athlete(xs-1.2*u+(aim?0:vt*u*2.2),gy+ri(0.55*u),0.9,1,rs>0.15?'run':'ready',0,rs>0.15?SD*11+1.3:c.t,u*1.07,undefined,false,{t:1-dv.t,look:makeLook('comp'+dv.t+dv.name)});
+    if(sp.chase)athlete(xs-1.2*u+(aim?0:vt*u*2.2),gy+ri(0.55*u),0.9,1,rs>0.15?'run':'ready',0,rs>0.15?SD*11+1.3:c.t,u*1.07,undefined,false,{t:1-dv.t,look:makeLook('comp'+dv.t+dv.name)});   // l'avversario che insegue c'e' solo se era vicino in campo
     let dp,pd=null;
     if(aim){pd=clamp(c.t/2.7,0,0.85);dp=bez(P0,P1,E,pd);}
     else if(vt<ct){pd=0.85+0.15*(vt/ct);dp=bez(P0,P1,E,pd);}
