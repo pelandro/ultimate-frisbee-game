@@ -101,11 +101,11 @@ async function uoFindOpp(current){
   for(const w of UTO_WIN){
     add(await uoDb('GET',root+'/players',undefined,`orderBy=%22p%22&startAt=${Math.max(0,profile.p-w)}&endAt=${profile.p+w}&limitToFirst=40`));
     if(!current())return null;
-    const o=utoPickOpp([...seen.values()],profile.id,profile.p,profile.last,Math.random);if(o)return o;
+    const o=utoPickOpp([...seen.values()],profile.id,profile.p,profile.last,Math.random,profile.name);if(o)return o;
   }
   add(await uoDb('GET',root+'/players',undefined,'orderBy=%22p%22&limitToLast=40'));   // nessuno vicino: il piu' vicino tra gli ultimi arrivati in classifica
   if(!current())return null;
-  return utoPickOpp([...seen.values()],profile.id,profile.p,profile.last,Math.random);
+  return utoPickOpp([...seen.values()],profile.id,profile.p,profile.last,Math.random,profile.name);
 }
 // invio del risultato in sospeso (in secondo piano: se fallisce resta da inviare e riparte alla prossima occasione)
 async function uoPush(){

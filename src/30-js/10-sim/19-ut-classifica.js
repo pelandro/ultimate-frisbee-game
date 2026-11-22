@@ -11,10 +11,12 @@ function utoDelta(mine,opp,win){
   return win?Math.max(1,d):Math.min(-1,d);
 }
 const utoName=(s,max)=>String(s==null?'':s).replace(/[\u0000-\u001f<>&"'`\\]/g,'').replace(/\s+/g,' ').trim().slice(0,max||16);
-// scelta dell'avversario tra i candidati {id,p,pw,...}: prima chi ha punti vicini ai tuoi, poi la finestra si allarga. Mai te stesso;
+// scelta dell'avversario tra i candidati {id,p,pw,...}: prima chi ha punti vicini ai tuoi, poi la finestra si allarga. Mai te stesso:
+// ne' il tuo profilo (id) ne' una squadra con il tuo nome (my), che e' un tuo profilo vecchio rimasto in classifica (altro dispositivo, dati cancellati);
 // l'ultimo avversario si evita se c'e' un'alternativa
-function utoPickOpp(list,me,pts,last,rng){
-  const c=list.filter(o=>o&&o.id!==me&&typeof o.p==='number'&&o.pw>0);
+const utoSame=(a,b)=>!!a&&!!b&&utoName(a).toLowerCase()===utoName(b).toLowerCase();
+function utoPickOpp(list,me,pts,last,rng,my){
+  const c=list.filter(o=>o&&o.id!==me&&!utoSame(o.n,my)&&typeof o.p==='number'&&o.pw>0);
   if(!c.length)return null;
   const pick=r=>{const alt=r.filter(o=>o.id!==last);if(alt.length)r=alt;return r[Math.min(r.length-1,Math.floor(rng()*r.length))];};
   for(const w of UTO_WIN){const r=c.filter(o=>Math.abs(o.p-pts)<=w);if(r.length)return pick(r);}
