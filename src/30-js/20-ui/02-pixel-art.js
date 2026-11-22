@@ -203,11 +203,11 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   };
   const skin=lk.skin,skin2=shade(skin,-0.16),hair=lk.hair,shirt=un.shirt,shirt2=shade(shirt,-0.22),sock2=shade(un.socks,-0.22),shoe2=shade(un.shoe,0.12);
   const cp=pose==='cel'?(ex.cp||{}):null;   // posa delle esultanze (20-ui/27-esultanze.js): mani, gambe, salto, accovacciata e vista date da fuori
-  const moving=!cp&&run>0.18,fast=run>0.45,view=moving?(ex.view|0):(cp?(cp.view|0):0),cheer=pose==='cheer',mark=pose==='mark';
+  const moving=!cp&&run>0.18,fast=run>0.45,view=moving?(ex.view|0):(cp?(cp.view|0):(ex.view===2?2:0)),cheer=pose==='cheer',mark=pose==='mark';
   const fr=moving?((Math.floor(ph/(Math.PI*2)*6)%6)+6)%6:0,half=fr>=3?1:0,RF=RUN_F[fr%3],k=fast?1:0.6;
   const hop=cheer?(Math.sin(G.tick*12+x*0.7)>0?3:0):(pose==='jump'?ri(6*Math.sin(Math.PI*clamp(arm,0,1))):(cp?ri(cp.hop||0):0));
   const breathe=!moving&&!cheer&&!cp&&pose!=='jump'&&Math.sin(G.tick*2.4+x*0.37)>0.55?1:0;   // da fermo il busto respira (un pixel), ognuno col suo tempo
-  const dyB=moving?ri(RF[3]*k):(mark?1:(cp?ri(cp.crouch||0):0)),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-20+breathe+(pose==='sad'?1:0);
+  const dyB=(moving?ri(RF[3]*k):(mark?1:(cp?ri(cp.crouch||0):0)))+(ex.land&&!cp?1:0),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-20+breathe+(pose==='sad'?1:0);
   const caught=ex.ca>=0&&ex.ca<0.3,recoil=caught&&ex.ca>0.08&&ex.ca<0.22?-f:0;   // presa: un pixel di rinculo all'indietro
   let lean=fast?f:0;if(ex.brk&&moving)lean=-f;if(pose==='aim')lean=-f;if(cp)lean=ri(cp.lean||0)*f;lean+=recoil;
   // GAMBE: quella lontana (dietro) e' piu' scura, cosi' si capisce quale va avanti
@@ -218,11 +218,11 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     else if(moving&&view===0){const planted=(i<0)===(half===0);dx=ri((planted?RF[0]:RF[1])*k)*f;lift=planted?0:ri(RF[2]*(fast?1:0.67));}
     else if(moving){const planted=(i<0)===(half===0);lift=planted?0:(fr%3===1?3:1);}   // di schiena o di fronte: le gambe salgono e scendono sul posto
     else if(mark)dx=i*2;   // marcatore: gambe larghe e corpo basso
-    else dx=i;
+    else dx=i>0?2:-1;   // da fermo: un pixel di prato tra i piedi, le gambe non si fondono
     const fx=hx+dx,fy=gy-2-lift;
     if(lift>=2){const kx=hx+ri(dx/2)+f*(view===0?1:0),ky=by-3-(lift>2?1:0);Lm(hx,by-6,kx,ky,sk);Lm(kx,ky,fx,fy,sk,so,0.25);}   // ginocchio piegato
     else Lm(hx,by-6,fx,fy,sk,so,0.62);
-    R(view!==0?fx:(f>0?fx:fx-1),fy,view!==0?2:3,2,sh);
+    const sx0=view!==0?fx:(f>0?fx:fx-1),sw=view!==0?2:3;R(sx0,fy,sw,2,sh);R(view!==0?sx0:(f>0?sx0:sx0+1),fy,sw-1,1,shade(sh,0.2));
   }
   const shx=x-1+lean;
   // BRACCIA: di corsa vanno in opposizione alle gambe; il lancio ha caricamento, rilascio e accompagnamento diversi per rovescio, dritto e hammer
@@ -257,7 +257,7 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   // braccio lontano (dietro al busto, piu' scuro)
   let h=hand(-1);Lm(shx,sy+1,h[0],h[1],shirt2,skin2,0.45);
   // pantaloncini e busto
-  R(x-3,by-8,6,3,un.shorts);
+  R(x-3,by-8,6,2,un.shorts);
   R(x-3+lean,sy,6,6,shirt);
   if(view===0)R(f>0?x-3+lean:x+2+lean,sy,1,6,shirt2);else R(x-3+lean,sy,1,6,shirt2);
   R(x-3+lean,sy+5,6,1,shirt2);
@@ -283,8 +283,13 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     if(view===0)R(f>0?hx0+4:hx0+1,T+3,1,1,PAL.out);else{R(hx0+1,T+3,1,1,PAL.out);R(hx0+4,T+3,1,1,PAL.out);}
   }
   }
-  // braccio vicino (davanti al busto)
-  h=hand(1);Lm(shx,sy+1,h[0],h[1],shirt,skin,0.45);
+  // braccio vicino (davanti al busto): dove l'avambraccio passa sulla maglia ha una linea scura dietro e un tono piu' scuro davanti, cosi' si legge come
+  // braccio e non come una striscia color pelle sulla maglia (il contorno scuro generale e' sotto al busto, li' non si vede)
+  h=hand(1);
+  {const tx0=x-3+lean,tx1=x+2+lean,ax=shx,ay=sy+1,n=Math.max(Math.abs(h[0]-ax),Math.abs(h[1]-ay))||1;
+   for(let i=0;i<=n;i++){const u=i/n;if(u<0.45)continue;const qx=ri(ax+(h[0]-ax)*u),qy=ri(ay+(h[1]-ay)*u);
+     for(const [ex_,c] of [[f>0?qx-1:qx+2,PAL.out],[f>0?qx+2:qx-1,shirt2]])for(const ey of [qy,qy+1])if(ex_>=tx0&&ex_<=tx1&&ey>=sy&&ey<=sy+5)R(ex_,ey,1,1,c);}}
+  Lm(shx,sy+1,h[0],h[1],shade(shirt,0.14),skin,0.45);   // manica un tono piu' chiara della maglia: il braccio vicino si stacca dal busto
   if(ex.sc&&ex.sc!==1){const k=ex.sc;for(let i=0;i<ops.length;i+=5){const a=ri(x+(ops[i]-x)*k),b=ri(y+(ops[i+1]-y)*k),a2=ri(x+(ops[i]+ops[i+2]-x)*k),b2=ri(y+(ops[i+1]+ops[i+3]-y)*k);ops[i]=a;ops[i+1]=b;ops[i+2]=Math.max(1,a2-a);ops[i+3]=Math.max(1,b2-b);}h=[ri(x+(h[0]-x)*k),ri(y+(h[1]-y)*k)];}   // eroi dei superpoteri piu' grandi: i rettangoli si allargano attorno ai piedi, i pixel restano netti
   ctx.fillStyle=PAL.out;for(let i=0;i<ops.length;i+=5)ctx.fillRect(ops[i]-1,ops[i+1]-1,ops[i+2]+2,ops[i+3]+2);
   for(let i=0;i<ops.length;i+=5){ctx.fillStyle=ops[i+4];ctx.fillRect(ops[i],ops[i+1],ops[i+2],ops[i+3]);}
@@ -373,6 +378,9 @@ function drawPlayers(dt){
     p.wasBrk=!!p._brk;p.pv=sp;
     let face=p.fc||dirOf(p.t);
     const pose=C?C.pose:poseOf(p);
+    if(!C&&pose==='run'&&sp<0.6&&!p.dv){const dx=(G.flight?G.disc.x:(G.holder?G.holder.x:G.disc.x))-p.x;if(Math.abs(dx)>0.8)face=dx>0?1:-1;p.fc=face;}   // fermo: guarda il disco
+    if(p._lf!==undefined&&face!==p._lf&&!p.dv)p.turnT=0.09;p._lf=face;p.turnT=Math.max(0,(p.turnT||0)-dt);   // girata: un attimo di fronte
+    if(p._air&&pose!=='jump')p.landT=0.12;p._air=pose==='jump';p.landT=Math.max(0,(p.landT||0)-dt);   // atterraggio: piega le gambe
     if(pose==='mark'||pose==='hold'){   // il marcatore guarda il portatore; il portatore guarda dove mira (o la meta che attacca)
       if(pose==='mark')face=G.holder.x>=p.x?1:-1;
       else if(drag&&drag.dirOk&&p===G.holder)face=Math.cos(drag.ang)>=0?1:-1;
@@ -392,10 +400,10 @@ function drawPlayers(dt){
     else if(dvp>0.45)puppetDive(x+p.dv.dir*6*dvp,y,UNI[p.t],heroLook(p),p.dv.dir,2+7*air);
     else{
       // vista: di schiena se corre verso l'alto dello schermo, di fronte se scende verso la camera, altrimenti di lato
-      const view=sp>1.2&&Math.abs(p.vy)>Math.abs(p.vx)*1.3?(p.vy<0?1:2):0;
+      const view=sp>1.2&&Math.abs(p.vy)>Math.abs(p.vx)*1.3?(p.vy<0?1:2):(p.turnT>0&&(pose==='run'||pose==='mark')?2:0);
       const kind=pose==='aim'?aimKind:(lastFl&&lastFl.thrower===p?lastFl.kind:'backhand');   // il pull e' un rovescio
       const ca=p.cfx?G.tick-(p.cfx.until-0.42):-1;
-      const hp=ghost?heroGhost(x,y,(gx,gy)=>puppet(gx,gy,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,pose,p.ph,Math.min(1,sp/6),0,{brk:!!p._brk,view,kind,ca:-1,hero:p.hero,sc:heroScale(p)})):puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,hero:heroVis(p)?p.hero:null,sc:heroScale(p)});
+      const hp=ghost?heroGhost(x,y,(gx,gy)=>puppet(gx,gy,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,pose,p.ph,Math.min(1,sp/6),0,{brk:!!p._brk,view,kind,ca:-1,hero:p.hero,sc:heroScale(p)})):puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,land:p.landT>0,hero:heroVis(p)?p.hero:null,sc:heroScale(p)});
       p._hx=hp[0];p._hy=hp[1];p._ht=G.tick;   // il disco in mano segue la mano (drawDisc)
     }
     heroFrost(p,x,y);   // il ghiaccio ai piedi di chi e' congelato (20-superpoteri.js)
