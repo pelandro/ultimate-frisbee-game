@@ -7,7 +7,8 @@
    - <nome>-scene.png: solo le immagini di salti, tuffi e replay, piu' grandi, con la fase della scena;
    - <nome>-filmato.html: il filmato da guardare nel browser, alla velocita' vera;
    - <nome>-schermo.jpg: la foto dello schermo al momento della segnalazione;
-   e stampa un riassunto: partita, schemi, cronologia (lanci, prese, turnover, salti e tuffi con l'esito, replay, cambi di fase) e chi e' rimasto fermo.
+   e stampa un riassunto: partita, schemi, cronologia (lanci, prese, turnover, salti e tuffi con l'esito, replay, cambi di fase), i momenti in cui l'attacco
+   si e' bloccato (tanti fermi insieme) e chi e' rimasto fermo a lungo.
    Blu = la tua squadra (0), rosso = gli avversari (1); B1, R3... sono i numeri della legenda in fondo all'immagine. */
 'use strict';
 const fs=require('fs'),path=require('path');
@@ -65,18 +66,32 @@ for(const fr of F){
   prev=fr;
 }
 CR.sort((a,b)=>a[0]-b[0]);for(const [t,x] of CR)L1.push(`  ${rel(t).padStart(8)}  ${x}`);
-// fermi: chi resta sotto 0,4 m/s per almeno 3 s mentre si gioca e il disco e' in mano o in volo (attaccanti lontani dal portatore)
-L1.push('');L1.push('Fermi per almeno 3 s mentre si gioca (esclusi chi ha il disco e chi gli sta a meno di 4 m):');
-const still={};let anyStill=false;
+// fermi. Un cutter che aspetta il suo turno nello stack e' normale: conta quando l'attacco si blocca, cioe' quando stanno fermi in tanti insieme
+// (almeno MANY attaccanti senza disco per MANY_T s). Chi resta fermo a lungo (LONG_T s) si elenca a parte, solo come informazione, con il ruolo nello schema.
+const MANY=4,MANY_T=2,LONG_T=8,SLOW=0.4;
+const liveOf=fr=>fr.m==='play'&&!fr.pull&&!(fr.wk!==undefined?fr.wk:fr.w&&fr.w===1)&&(fr.h||fr.f);
+const slowOf=(fr,p)=>Math.hypot(p[3],p[4])<SLOW&&p[0]!==fr.h;
+L1.push('');L1.push(`Attacco bloccato: almeno ${MANY} attaccanti senza disco fermi insieme per ${MANY_T} s o più:`);
+let blk=null,anyBlk=false;
+const blkEnd=()=>{if(blk&&blk.b-blk.a>=MANY_T){anyBlk=true;L1.push(`  ${blk.po?'Rossi':'Blu'} da ${rel(blk.a)} a ${rel(blk.b)}: fermi ${[...blk.who].map(k=>tag[k]||k).join(', ')}`);}blk=null;};
 for(const fr of F){
-  const live=fr.m==='play'&&!fr.pull&&!(fr.wk!==undefined?fr.wk:fr.w&&fr.w===1)&&(fr.h||fr.f),hp=fr.h&&posOf(fr,fr.h);
+  const st=liveOf(fr)?fr.p.filter(p=>p[0].startsWith(fr.po+'.')&&slowOf(fr,p)):[];
+  if(st.length>=MANY){if(!blk||blk.po!==fr.po){blkEnd();blk={po:fr.po,a:fr.t,b:fr.t,who:new Set()};}blk.b=fr.t;st.forEach(p=>blk.who.add(p[0]));}
+  else blkEnd();
+}
+blkEnd();if(!anyBlk)L1.push('  mai');
+L1.push('');L1.push(`Fermi per ${LONG_T} s o più (può essere normale: guarda il ruolo nello schema):`);
+const still={};let anyStill=false;
+const stillOut=(k,v,tail)=>{if(v.b-v.a>=LONG_T){anyStill=true;L1.push(`  ${nm(k)}${v.r?' (ruolo '+v.r+')':''}: da ${rel(v.a)} ${tail?'fino alla segnalazione':'a '+rel(v.b)}`);}};
+for(const fr of F){
+  const live=liveOf(fr);
   for(const p of fr.p){
-    const k=p[0],slow=live&&Math.hypot(p[3],p[4])<0.4&&k!==fr.h&&!(hp&&dist(hp,[p[1],p[2]])<4);
-    if(slow){if(!still[k])still[k]={a:fr.t,b:fr.t};still[k].b=fr.t;}
-    else if(still[k]){if(still[k].b-still[k].a>=3){anyStill=true;L1.push(`  ${nm(k)}: da ${rel(still[k].a)} a ${rel(still[k].b)}`);}delete still[k];}
+    const k=p[0];
+    if(live&&p[0].startsWith(fr.po+'.')&&slowOf(fr,p)){if(!still[k])still[k]={a:fr.t,b:fr.t,r:p[7]};still[k].b=fr.t;}
+    else if(still[k]){stillOut(k,still[k]);delete still[k];}
   }
 }
-for(const k in still)if(still[k].b-still[k].a>=3){anyStill=true;L1.push(`  ${nm(k)}: da ${rel(still[k].a)} fino alla pausa`);}
+for(const k in still)stillOut(k,still[k],true);
 if(!anyStill)L1.push('  nessuno');
 // ultimo istante
 const last=F[F.length-1];
