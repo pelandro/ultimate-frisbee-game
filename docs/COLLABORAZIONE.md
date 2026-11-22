@@ -38,7 +38,7 @@ Le regole per Claude **non vanno scritte a mano**: stanno nel repository (`CLAUD
 3. Aprire Claude Code **dentro la cartella clonata** (oppure, sul web, scegliere questo repository) e, alla richiesta, fidarsi del progetto.
 4. Verificare che funzioni dicendo a Claude: «/stato». Deve rispondere in italiano con rami e pull request aperte.
 
-Da lì in poi si lavora come descritto sotto. Non servono impostazioni personali. Due accortezze: non usare il proprio `.claude/settings.local.json` per aggirare i blocchi, e avvisarsi quando si cambiano le regole (`CLAUDE.md`, `.claude/`, `tools/hooks/`), perché cambiano il modo di lavorare di entrambi; passano da una pull request come ogni altra modifica.
+Da lì in poi si lavora come descritto sotto. Non servono impostazioni personali. Due accortezze: non usare il proprio `.claude/settings.local.json` per aggirare i blocchi, e avvisarsi quando si cambiano le regole (`CLAUDE.md`, `docs/CONTRATTI.md`, `.claude/`, `tools/hooks/`), perché cambiano il modo di lavorare di entrambi; passano da una pull request come ogni altra modifica.
 
 ## Il lavoro di tutti i giorni
 
@@ -98,4 +98,4 @@ La regola che tiene tutto sicuro è quella di `main` (pull request obbligatoria,
 
 **La verifica su GitHub è rossa.** La pull request non entra. Aprite il ramo, dite a Claude «la verifica è fallita, sistemala»: legge l'esito con `gh run view` e corregge.
 
-**I salvataggi dei giocatori si rompono se cambiamo i dati?** Le regole sono in `CLAUDE.md` («Salvataggio»): ogni campo nuovo ha un valore predefinito per i salvataggi vecchi, e i cambi non compatibili aumentano `SAVE_V`.
+**I salvataggi dei giocatori si rompono se cambiamo i dati?** Le regole sono in `docs/CONTRATTI.md` («Salvataggio»): ogni campo nuovo ha un valore predefinito per i salvataggi vecchi, e i cambi non compatibili aumentano `SAVE_V`.

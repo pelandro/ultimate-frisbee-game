@@ -33,7 +33,7 @@ npm install
 | `/integra` | Esamina e unisce le pull request aperte |
 | `/stato` | Chi sta cambiando cosa |
 
-Le regole complete sono in [`CLAUDE.md`](CLAUDE.md); il flusso di lavoro spiegato per le persone è in [`docs/COLLABORAZIONE.md`](docs/COLLABORAZIONE.md); la mappa del codice in [`docs/ARCHITETTURA.md`](docs/ARCHITETTURA.md).
+Le regole sono in [`CLAUDE.md`](CLAUDE.md) e, area per area, in [`docs/CONTRATTI.md`](docs/CONTRATTI.md); il flusso di lavoro spiegato per le persone è in [`docs/COLLABORAZIONE.md`](docs/COLLABORAZIONE.md); la mappa del codice in [`docs/ARCHITETTURA.md`](docs/ARCHITETTURA.md).
 
 ## Verifiche
 
