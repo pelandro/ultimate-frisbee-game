@@ -20,8 +20,9 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;image-rendering:pix
 #score b,#score.mini b{font-family:var(--pfont);font-size:17px;font-weight:400;color:#fff!important;min-width:1em;text-align:center;display:inline-block}
 #score b.pop{animation:scpop .5s steps(4) 1}
 @keyframes scpop{0%{transform:scale(1.9);color:var(--gold)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
-#pt{top:0;left:max(10px,var(--sal));height:28px;padding:0;background:none;line-height:28px;font-size:17px;color:#dde6f1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc((50vw - var(--sal)) / var(--ui,1) - 118px)}
+#pt{top:0;left:calc(max(10px,var(--sal)) + 44px);height:28px;padding:0;background:none;line-height:28px;font-size:17px;color:#dde6f1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc((50vw - var(--sal)) / var(--ui,1) - 162px)}
 @media (prefers-reduced-motion:reduce){#score b.pop{animation:none}}
+#bSeg{position:absolute;top:2px;left:max(10px,var(--sal));height:24px;width:34px;padding:0;text-align:center;font-family:var(--pfont);font-size:9px;font-size-adjust:none;font-weight:400;line-height:18px;background:#000;color:#ffcc33;border:2px solid #ffcc33}   /* «Segnala un problema»: a sinistra, la scritta della meta si sposta */
 #bExit{top:2px;right:max(12px,var(--sar));height:24px;min-width:44px;padding:0 9px;font-size:18px;font-weight:400;line-height:18px;background:#000;color:#fff;border:2px solid #fff}
 #stall{top:34px;left:max(8px,var(--sal));height:24px;padding:0 9px;font-family:var(--pfont);font-size:11px;line-height:20px;font-weight:400;background:#000;color:#fff;border:2px solid #fff;text-transform:uppercase}
 #stall.hot{background:var(--bad);color:#fff;border-color:#000;animation:blink .3s steps(2) infinite}

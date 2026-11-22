@@ -4,6 +4,7 @@ let cine=null;
 const easeIO=t=>t*t*(3-2*t);
 const bez=(p0,p1,p2,t)=>{const a=1-t;return {x:a*a*p0.x+2*a*t*p1.x+t*t*p2.x,y:a*a*p0.y+2*a*t*p1.y+t*t*p2.y};};
 function startCine(spec){
+  sgCine(spec);   // per «Segnala un problema»
   matchLook();
   const kits=UNI.map(kit=>({...kit}));
   G.mode='cine';
@@ -21,7 +22,7 @@ function cineTap(){
   c.quality=c.bonus>=1?'Perfetto!':(c.bonus>=0.5?'Buono':(c.bonus>0?'Quasi':'Fuori tempo'));HOOKS.sfx('timing',c.bonus>=1?1:(c.bonus>=0.5?0.4:0));
   c.aimEnd=c.t+0.45;
 }
-function cineResolve(c){c.out=c.spec.fixed!==undefined?c.spec.fixed:c.spec.resolve(c.bonus);c.phase='res';c.rt=0;c.resT0=c.t;}
+function cineResolve(c){c.out=c.spec.fixed!==undefined?c.spec.fixed:c.spec.resolve(c.bonus);sgCineOut(c);c.phase='res';c.rt=0;c.resT0=c.t;}
 function updateCine(dt){
   const c=cine;if(!c)return;
   c.t+=dt;

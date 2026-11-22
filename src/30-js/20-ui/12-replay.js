@@ -36,7 +36,7 @@ function rpCheck(){
   const lab=rpLabel(),last=RP.buf[RP.buf.length-1];
   if(reduceMotion||!lab||!G.opt.cine||!last||G.tick-last.at>0.5)return;   // niente replay dopo una meta simulata o saltata (nessun fotogramma recente)
   const fr=RP.buf.filter(f=>f.t>=last.t-RP_SPAN);if(fr.length<10)return;
-  RP.on={fr,t:0,lab};
+  RP.on={fr,t:0,lab};sgReplay(lab);
   G.banner.t+=RP_DUR;RP.n++;
 }
 function rpApply(dt){
