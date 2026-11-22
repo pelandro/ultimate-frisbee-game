@@ -41,7 +41,8 @@ function sgRecord(step){
   if(!SG.live||G.paused||SG.wt+1e-8<SG.next)return;
   SG.next=Math.max(SG.next+1/SG_HZ,SG.wt);
   const all=T[0].concat(T[1]),f=G.flight,d=G.disc,pb=G.pb||[];
-  for(const p of all){const k=sgKey(p);if(!SG.pl[k])SG.pl[k]={t:p.t,n:p.label||p.name,full:p.full,pos:p.pos,role:p.role,f:p.f?1:0,s:Object.assign({},p.s)};}
+  // nome: per le avversarie loadOpp aggiorna name e ro (la loro rosa) ma lascia label, full e f del segnaposto: si leggono da li'
+  for(const p of all){const k=sgKey(p),o=p.t?p.ro:null;if(!SG.pl[k])SG.pl[k]={t:p.t,n:p.name||p.label,full:(o&&o.full)||p.full||p.name,pos:p.pos,role:p.role,age:p.age,f:(o?o.f:p.f)?1:0,s:Object.assign({},p.s)};}
   SG.buf.push({
     w:sgR(SG.wt),m:G.mode,pt:G.pointNo,sc:G.score.slice(),po:G.poss,st:sgR(G.stallT),h:sgKey(G.holder),c:sgKey(G.ctrl),
     d:[sgR(d.x),sgR(d.y),sgR(d.z)],
