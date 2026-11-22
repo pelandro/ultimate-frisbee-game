@@ -21,7 +21,7 @@ function renderClub(){
     }):[];
     const cStr=`<div class="ccard"><h3>Strutture</h3>${facilityRows.join('')}${upkeep?`<p class="sub">Manutenzione ${upkeep} ${upkeep===1?'credito':'crediti'} a partita.</p>`:''}</div>`;
     const cStf=clTab==='stf'?staffHTML(inf):'',cGoal=`<div class="ccard">${goalsHTML()}</div>`;
-    const cNews=`<div class="ccard" style="grid-column:1/-1"><h3>Notizie</h3>${SV.news.length?`<ul class="nlist">${SV.news.slice(0,8).map(n=>`<li><i>S${n.s}·G${n.r}</i>${esc(n.txt)}</li>`).join('')}</ul>`:'<p>Nessuna notizia.</p>'}</div>`;
+    const cNews=`<div class="ccard" style="grid-column:1/-1"><h3>Notizie del club</h3>${SV.news.length?`<ul class="nlist">${SV.news.slice(0,8).map(n=>`<li><i>S${n.s}·G${n.r}</i>${esc(n.txt)}</li>`).join('')}</ul>`:'<p>Nessuna notizia.</p>'}</div>`;
     h='<div class="cgrid">'+(clTab==='man'?cSoc+cObj+cLed+cGoal+cNews:(clTab==='str'?cStr+cBud:cStf))+'</div>';
   }else if(clTab==='hon'){
     // bacheca: i trofei si accendono quando li vinci

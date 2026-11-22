@@ -21,7 +21,7 @@ function renderShell(){
   $('hInfo').textContent=isUS()?usInfo():isLN()?lnInfo():`${SERIES_NAME[SV.sr]} · Stagione ${SV.season}`+(SV.event==='camp'?(SV.done?' · conclusa':(SV.round>0?` · ${myRank()}° posto`:'')):' · Campionato europeo');
   const cash=$('hCash'),v=String(Math.round(SV.cash));
   if(cash.textContent!==v){cash.textContent=v;cash.parentNode.classList.remove('bump');void cash.parentNode.offsetWidth;cash.parentNode.classList.add('bump');}   // il numero «saltella» quando cambia
-  const nw=(SV.alerts||[]).filter(a=>!a.seen).length;   // solo i non letti: una decisione già letta ma ancora aperta non tiene acceso il numero (resta in «Da decidere» e in «Questa settimana»)
+  const nw=postaUnread();   // solo gli avvisi della Posta non letti: le notizie non accendono la campanella; una decisione già letta ma ancora aperta resta in «Da decidere» e in «Questa settimana»
   $('hBellB').textContent=nw;$('hBellB').classList.toggle('hidden',!nw);
 }
 // ---- menu ----
@@ -37,7 +37,7 @@ $('hClubBtn').addEventListener('click',()=>showScreen('club'));
 function todoItems(){
   const L=[],trained=SQ.filter(p=>p.tr).length,left=3-trained,hurt=SQ.filter(p=>p.inj),low=SQ.filter(p=>p.cond<50&&!p.inj);
   const lineBad=SV.lineO.length<7||SV.lineD.length<7||SQ.some(p=>p.inj&&(SV.lineO.includes(p.full)||SV.lineD.includes(p.full)));
-  const pd=pendingAlerts(),nw=(SV.alerts||[]).filter(a=>!a.seen).length;
+  const pd=pendingAlerts(),nw=(SV.alerts||[]).filter(a=>!a.seen&&alPosta(a)&&!alOpen(a)).length,ns=newsSummary();
   if(SV.cash<0)L.push(['bad','Conti in rosso: niente acquisti','club']);
   if(SV.sp?.off)L.push(['warn','Scegli lo sponsor per la nuova stagione','sponsor']);
   if(pd)L.push(['bad',`${pd} ${pd>1?'decisioni da prendere':'decisione da prendere'}`,'alerts']);
@@ -46,7 +46,8 @@ function todoItems(){
   if(low.length>=2)L.push(['warn',`${low.length} giocatori scarichi: un recupero li rimette in forma`,'train']);
   if(trainOpen()&&(!SV.tTeam||left>0))L.push(['warn',!SV.tTeam?'Allenamento della settimana da fare':`Restano ${left} lavori individuali`,'train']);
   if(SV.mkSeen!==SV.mkN)L.push(['ok','Il mercato si è rinnovato','market']);
-  if(nw&&!pd)L.push(['ok',`${nw} ${nw>1?'novità':'novità'} nella Posta`,'alerts']);
+  if(nw)L.push(['warn',`${nw} ${nw>1?'avvisi':'avviso'} nella Posta`,'alerts']);
+  if(ns)L.push(['ok','Notizie: '+ns,'news']);   // la riga riassume, il tocco apre l'elenco
   if(SV.chal&&!SV.chal.done)L.push(['ok','Sfida della dirigenza in corso','club']);
   return L;
 }
@@ -66,7 +67,7 @@ $('hTipB').addEventListener('click',()=>{renderTicker();popOpen('tipW');});
 $('tipWNext').addEventListener('click',()=>{tipSkip++;renderTicker();});
 $('tipWX').addEventListener('click',()=>popClose('tipW'));
 for(const id of ['todoW','tipW'])$(id).addEventListener('click',e=>{if(e.target.id===id)popClose(id);});   // un tocco fuori dal riquadro chiude
-$('hTodo').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;popClose('todoW');const g=b.dataset.go;if(g==='alerts')openAlerts();else if(g==='sponsor'){SV.evt=SV.evt||{id:'spons',a:{}};openEvt();}else showScreen(g);});
+$('hTodo').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(!b)return;popClose('todoW');const g=b.dataset.go;if(g==='alerts'||g==='news')openAlerts(g==='news'?'news':'posta');else if(g==='sponsor'){SV.evt=SV.evt||{id:'spons',a:{}};openEvt();}else showScreen(g);});
 
 // ---- informazioni a scomparsa: le spiegazioni lunghe stanno dietro un pulsante «i» (chiuse all'apertura della pagina), cosi' si vede subito cio' che serve ----
 // infoB(k) = il pulsante, infoX(k,html) = il riquadro che si apre sotto; lo stato (aperto/chiuso) resta anche quando la schermata si ridisegna

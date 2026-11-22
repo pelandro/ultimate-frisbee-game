@@ -42,7 +42,7 @@ function renderHome(){
   $('hTrainB').classList.toggle('hidden',!(trainOpen()&&(!SV.tTeam||left>0)));
   $('hMarketB').classList.toggle('hidden',SV.mkSeen===SV.mkN);
   if(!SV.evt&&SV.sp&&SV.sp.off)SV.evt={id:'spons',a:{}};   // inizio stagione: la scelta dello sponsor aspetta una risposta, come un imprevisto
-  const nwA=(SV.alerts||[]).filter(a=>!a.seen).length;   // il numero sulla campanella conta solo gli avvisi non letti: le decisioni ancora aperte restano in «Da decidere» e in «Questa settimana»
+  const nwA=postaUnread();   // il numero sulla campanella conta solo gli avvisi della Posta non letti (non le notizie): le decisioni ancora aperte restano in «Da decidere» e in «Questa settimana»
   $('hBellB').textContent=nwA;$('hBellB').classList.toggle('hidden',!nwA);
   // ordine delle finestre che si aprono da sole: prima il fumetto della schermata Partita (alla prima visita), poi sponsor e imprevisti
   // (sono scelte), poi la Posta con decisioni ed emergenze; ognuna si apre quando si chiude la precedente (tipAfter, evOk, alX richiamano renderHome)
@@ -138,6 +138,7 @@ function detailHTML(p){
     const ret=p.ret===1?'<b style="color:#c9a0ff;font-weight:400">si ritira a fine stagione</b>':(retScore(p)>-1.5?'<b style="color:#c9a0ff;font-weight:400">pensa al ritiro</b>':(p.age>=30?'ritiro lontano':''));
     body=`<div class="dst">Potenziale ${potTxt(p)}${sure?' (certo)':''} · crescita ${(p.sk|0)>=2?devLabel(p.dev):'da osservare'} · ${p.age} anni${ret?' · '+ret:''}${(p.ext|0)?` · ha superato il proprio limite ${p.ext} ${p.ext>1?'volte':'volta'} su ${EXT_MAX}`:''}</div>${histHTML(p)}${roomHTML(p,sure)}${specHTML(p)}<div class="dst scr">${scoutReport(p)}</div>`;
   }
+  if(tab==='svi')body+=pNewsHTML(p);   // le ultime notizie su di lui (prima solo nella Posta)
   if(tab==='svi')body+=`<div class="dst"><b style="color:#7fd8ff;font-weight:400">Allenamento</b>: <button type="button" class="sec${p.pri?' onb':''}" data-pri="${p.id}">${p.pri?'★ Priorità del programma':'Segna come priorità'}</button> <span>${p.pri?'il programma automatico gli riserva un lavoro individuale':'fino a 3 giocatori: il programma automatico allena prima loro'}</span></div>`;
   return `${tabs}${body}${nickEdit===p.id?`<div class="dst nkrow"><label>Soprannome <input type="text" id="nkIn" maxlength="${NICK_MAX}" value="${esc(p.nick||'')}" placeholder="${esc(p.sur||p.name)}"></label><button type="button" class="go sm" data-nkok="${p.id}">OK</button><button type="button" class="sec" data-nkx="1">Annulla</button></div>`:''}<div class="dact"><button type="button" class="sec" data-rest="${p.id}"${p.inj||p.cond>=95?' disabled':''} title="Salta la prossima partita e recupera ${RIPOSO_COND} di condizione">Riposo</button><button type="button" class="sec" data-talk="${p.id}"${(!p.mood&&(p.idle|0)<2&&SV.mor>=40)||SV.cash<TALK_COST?' disabled':''} title="Costo ${TALK_COST}: solleva l’umore, ma funziona meno se lo ripeti">Colloquio · ${TALK_COST}</button><button type="button" class="sec" data-nick="${p.id}">Soprannome</button>${sure?'':`<button type="button" class="sec" data-scout="${p.id}"${SV.cash<scoutCost(p)?' disabled':''}>Osserva (${scoutCost(p)} crediti)</button>`}<button type="button" class="sec" data-sell="${p.id}"${SQ.length>SQ_MIN?'':' disabled'}>${sellArm===p.id?'Conferma la cessione':'Cedi'} (+${sellValue(p)})</button></div>`;
 }

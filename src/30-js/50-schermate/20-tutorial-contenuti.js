@@ -123,7 +123,7 @@ les:[
 [`<b>Campionato</b>: Italia, USA, Belgio, Francia, Germania o Regno Unito.`,`<b>Squadra</b>: toccandola vedi la rosa. Con «Subentrato» salvi una squadra in crisi in una sola partita.`,`<b>Allenatore</b>: nome, cognome e volto.`],
 `«Carriera» (menu iniziale) apre i tre slot. La <b>schermata Partita</b> è il punto di partenza di ogni giornata:`,
 [`<b>Inizia partita</b> (tasto giallo): la giochi tu. <b>Simula</b>: la gioca il computer.`,
-`<b>Questa settimana</b>: ciò che serve adesso (linee incomplete, infortunati, mercato, Posta). Ogni riga porta alla schermata giusta.`,
+`<b>Questa settimana</b>: ciò che serve adesso (linee incomplete, infortunati, mercato, Posta) e un riassunto delle notizie. Ogni riga porta alla schermata giusta.`,
 `<b>Colonna a sinistra</b>: Partita, Squadra, Allena, Mercato, Lega, Società. <b>Menu</b>: Guida, Tutorial, Opzioni (difficoltà, durata, salvataggi) e Menu principale.`]],
 tip:`Prima di ogni partita: guarda il meteo e svuota «Questa settimana». Per cominciare con calma, parti in Facile.`},
 {id:'car-rosa',t:'Squadra e linee',w:'Colonna › Squadra',b:[
@@ -164,12 +164,12 @@ tip:`Se fai spesso il tutto esaurito, valuta di ampliare le Tribune.`},
 tip:`Tieni una riserva di crediti per le emergenze e guarda il bilancio prima di ogni acquisto grosso.`},
 {id:'car-classifica',t:'Lega, premi e traguardi',w:'Colonna › Lega',b:[
 `In <b>Lega</b> vedi classifica e risultati, le storie della stagione e i <b>migliori per mete, assist e difese</b>. Il formato di ogni campionato è nel capitolo «I campionati».`,
-[`<b>Fine stagione</b>: premi, squadra ideale e il tasto <b>Inizia la nuova stagione</b>. In estate la rosa recupera e si allena nelle giornate senza partita. I progressi arrivano in Posta.`,
+[`<b>Fine stagione</b>: premi, squadra ideale e il tasto <b>Inizia la nuova stagione</b>. In estate la rosa recupera e si allena nelle giornate senza partita. I progressi arrivano nelle Notizie.`,
 `<b>Rivalità</b>: ogni stagione una squadra del tuo livello diventa rivale; vincere il derby dà crediti e morale.`,
 `<b>Traguardi</b> (Società › Bacheca): obiettivi di lungo periodo adatti al tuo campionato, ognuno con un premio.`]],
 tip:`Nei playoff ogni partita conta: giocale tu.`},
 {id:'car-avvisi',t:'Posta, ritiri e imprevisti',b:[
-`La <b>Posta</b> divide i messaggi in <b>Da decidere</b>, <b>Novità</b> e <b>Cronologia</b>. Le decisioni si aprono da sole; le notizie accendono solo il numero.`,
+`La <b>Posta</b> tiene solo ciò che chiede un’azione: <b>Da decidere</b> e <b>Avvisi</b>, una riga ciascuno con il suo pulsante. Le decisioni si aprono da sole. Crescite, rientri e mercato stanno nella scheda <b>Notizie</b>.`,
 [`<b>Ritiri</b>: un giocatore prima fa capire che ci pensa, poi annuncia l’ultima stagione; puoi chiedergli un altro anno con un premio.`,
 `<b>Spogliatoio</b>: un buon giocatore che resta fuori a lungo diventa scontento e poi chiede la cessione: vendilo o promettigli spazio.`,
 `<b>Offerte</b>: una squadra più importante può chiedere un tuo giocatore. Un club di un’altra lega può offrirti la panchina: accettando cambi club, ma allenatore, storico e trofei restano tuoi.`,

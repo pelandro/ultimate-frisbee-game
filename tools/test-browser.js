@@ -292,7 +292,7 @@ catch(e){
   });
   await step('Posta: «Chiudi» non segna come letto, «Segna tutto come letto» sì; Mercato: conferma prima di comprare; Allena: lavoro individuale in due passi',async()=>{
     // una notizia nuova di sicuro: un avviso non urgente scritto nel salvataggio, poi ricarica
-    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.alerts=d.alerts||[];d.alN=(d.alN|0)+1;d.alerts.unshift({id:d.alN,s:d.season,r:1,k:'grow',txt:'Prova di lettura',full:'',act:'',data:null,seen:0,done:0,sh:1});window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
+    await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.alerts=d.alerts||[];d.alN=(d.alN|0)+1;d.alerts.unshift({id:d.alN,s:d.season,r:1,k:'tired',txt:'Prova di lettura',full:'',act:'',data:null,seen:0,done:0,sh:1});d.alN++;d.alerts.unshift({id:d.alN,s:d.season,r:1,k:'up',txt:'Notizia di prova',full:'',act:'',data:null,seen:0,done:0,sh:1});window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
     await page.reload();await page.waitForTimeout(500);await careerOpen(page);await vis('#home');
     // qui i tocchi passano da evaluate: il gestore in cima alla prova chiuderebbe la Posta prima di ogni click
     const unread=async()=>(await page.locator('#alBody .ali.new').count()),tap=id=>page.evaluate(i=>document.getElementById(i).click(),id);
@@ -300,6 +300,12 @@ catch(e){
     await tap('alX');await tap('hBell');await vis('#alerts');
     if(await unread()!==n0)throw new Error('«Chiudi» ha segnato le notizie come lette');
     await tap('alAll');if(await unread())throw new Error('«Segna tutto come letto» non ha segnato tutto');
+    // le notizie non stanno nella Posta: hanno la loro scheda e aprirla basta per leggerle
+    if(await page.locator('#alBody').getByText('Notizia di prova').count())throw new Error('una notizia è finita nella Posta');
+    await page.evaluate(()=>document.querySelector('#alTabs [data-alt="news"]').click());
+    if(!(await page.locator('#alBody').getByText('Notizia di prova').count()))throw new Error('la notizia non compare nella scheda Notizie');
+    await page.evaluate(()=>document.querySelector('#alTabs [data-alt="posta"]').click());
+    if(await page.locator('#alTabs [data-alt="news"] small').count())throw new Error('aprire le Notizie non le ha segnate come lette');
     await tap('alX');
     // mercato: con i crediti per comprare, «Acquista» apre il riepilogo; «Annulla» non compra niente
     await page.evaluate(()=>{const k='ultimate-prototipo-v2',d=JSON.parse(window.testSaves.getItem(k));d.cash=5000;window.testSaves.setItem(k,JSON.stringify(d));if(d.slot)window.testSaves.setItem('ultimate-carriera-'+d.slot,JSON.stringify(d));});
