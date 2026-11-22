@@ -24,7 +24,7 @@ function updateHUD(dt){
   elPt.textContent=G.drill?G.matchLabel:'Meta '+G.pointNo+(G.target!==MATCH_TARGET?(/^(8|11)/.test(String(G.target))?' · agli ':' · ai ')+G.target:'')+(G.matchLabel?' · '+G.matchLabel:'');   // «Meta» per prima: se il testo e' lungo si taglia in fondo
   // Sigle in barra; il nome intero resta nel titolo accessibile.
   const nm0=G.drill?drHud(2):(G.myName||'Blu'),nm1=G.drill?drHud(3):(G.oppName||'Rossi');
-  myN.textContent=G.drill?nm0:teamAbbr(nm0);oppN.textContent=G.drill?nm1:teamAbbr(nm1);myN.title=nm0;oppN.title=nm1;bExit.classList.toggle('hidden',!G.inMatch);
+  myN.textContent=G.drill?nm0:teamAbbr(nm0);oppN.textContent=G.drill?nm1:teamAbbr(nm1);myN.title=nm0;oppN.title=nm1;bExit.classList.toggle('hidden',!G.inMatch);$('bSeg').classList.toggle('hidden',!G.inMatch);
   const h=G.holder;
   const n=h&&!G.flight&&G.marker&&hyp(G.marker.x-h.x,G.marker.y-h.y)<3.8?Math.min(10,Math.floor(G.stallT)+1):0;
   elStall.classList.toggle('hidden',!n||G.mode!=='play');elStall.classList.toggle('hot',n>=7);
