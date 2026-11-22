@@ -206,10 +206,12 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   const moving=!cp&&run>0.18,fast=run>0.45,view=moving?(ex.view|0):(cp?(cp.view|0):(ex.view===2?2:0)),cheer=pose==='cheer',mark=pose==='mark';
   const fr=moving?((Math.floor(ph/(Math.PI*2)*6)%6)+6)%6:0,half=fr>=3?1:0,RF=RUN_F[fr%3],k=fast?1:0.6;
   const hop=cheer?(Math.sin(G.tick*12+x*0.7)>0?3:0):(pose==='jump'?ri(6*Math.sin(Math.PI*clamp(arm,0,1))):(cp?ri(cp.hop||0):0));
+  // lancio in tre tempi (tu: 0 rilascio, 0,22 accompagnamento, 0,6 recupero); lungo = passo e slancio piu' ampi; pw = forza del caricamento quando miri
+  const tu=pose==='throw'?1-clamp(arm,0,1):0,lg=!!ex.long,pw=pose==='aim'?clamp(ex.pow||0,0,1):0;
   const breathe=!moving&&!cheer&&!cp&&pose!=='jump'&&Math.sin(G.tick*2.4+x*0.37)>0.55?1:0;   // da fermo il busto respira (un pixel), ognuno col suo tempo
-  const dyB=(moving?ri(RF[3]*k):(mark?1:(cp?ri(cp.crouch||0):0)))+(ex.land&&!cp?1:0),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-20+breathe+(pose==='sad'?1:0);
+  const dyB=(moving?ri(RF[3]*k):(mark?1:(cp?ri(cp.crouch||0):0)))+(ex.land&&!cp?1:0)+((pose==='aim'&&pw>0.55)||(pose==='throw'&&lg&&tu<0.3)?1:0),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-20+breathe+(pose==='sad'?1:0);
   const caught=ex.ca>=0&&ex.ca<0.3,recoil=caught&&ex.ca>0.08&&ex.ca<0.22?-f:0;   // presa: un pixel di rinculo all'indietro
-  let lean=fast?f:0;if(ex.brk&&moving)lean=-f;if(pose==='aim')lean=-f;if(cp)lean=ri(cp.lean||0)*f;lean+=recoil;
+  let lean=fast?f:0;if(ex.brk&&moving)lean=-f;if(pose==='aim')lean=-f;if((pose==='throw'&&tu<0.6)||pose==='one')lean=f;if(cp)lean=ri(cp.lean||0)*f;lean+=recoil;
   // GAMBE: quella lontana (dietro) e' piu' scura, cosi' si capisce quale va avanti
   for(const i of [-1,1]){
     const far=i<0,hx=x-1+(i>0?1:-1),sk=far?skin2:skin,so=far?sock2:un.socks,sh=far?shoe2:un.shoe;
@@ -217,6 +219,10 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     if(cp&&cp.lg){const L=cp.lg[i<0?0:1];dx=ri(L[0])*(cp.ab?1:f);lift=ri(L[1]);}   // cp.ab: x sullo schermo (vista di fronte), altrimenti in avanti
     else if(moving&&view===0){const planted=(i<0)===(half===0);dx=ri((planted?RF[0]:RF[1])*k)*f;lift=planted?0:ri(RF[2]*(fast?1:0.67));}
     else if(moving){const planted=(i<0)===(half===0);lift=planted?0:(fr%3===1?3:1);}   // di schiena o di fronte: le gambe salgono e scendono sul posto
+    else if(pose==='throw')dx=(i>0?(tu<0.6?(lg?4:3):2):-(lg?3:2))*f;   // lancio: passo in avanti con la gamba vicina
+    else if(pose==='aim')dx=(i>0?1+ri(2*pw):-(1+ri(pw)))*f;   // caricamento: le gambe si allargano con la forza
+    else if(pose==='one')dx=(i>0?3:-2)*f;   // presa a una mano: allungo in avanti
+    else if(pose==='jump'){dx=i>0?f:-f;lift=2;}   // salto: gambe raccolte
     else if(mark)dx=i*2;   // marcatore: gambe larghe e corpo basso
     else dx=i>0?2:-1;   // da fermo: un pixel di prato tra i piedi, le gambe non si fondono
     const fx=hx+dx,fy=gy-2-lift;
@@ -234,22 +240,36 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   };
   const hand=i=>{   // i = 1 braccio vicino, -1 braccio lontano
     if(cp&&cp.h){const q=cp.h[i>0?0:1];return [shx+ri(q[0])*(cp.ab?1:f),sy+ri(q[1])];}
-    if(pose==='aim'){   // caricamento: il braccio va indietro (rovescio: attraverso il corpo; dritto: di lato e basso; hammer: sopra la testa)
-      if(kind==='hammer'||kind==='scoober')return i>0?[shx-f*1,sy-6]:[shx+f*3,sy+3];
-      if(kind==='forehand')return i>0?[shx-f*4,sy+6]:[shx+f*3,sy+4];
-      return i>0?[shx-f*5,sy+3]:[shx+f*3,sy+5];
+    if(pose==='aim'){   // caricamento: il braccio va indietro, piu' indietro quanto piu' forte tiri (rovescio: attraverso il corpo; dritto: di lato e basso; hammer: sopra la testa)
+      const bk=ri(3*pw);
+      if(kind==='hammer'||kind==='scoober')return i>0?[shx-f*(1+bk),sy-6-ri(pw)]:[shx+f*3,sy+3];
+      if(kind==='forehand')return i>0?[shx-f*(4+bk),sy+6]:[shx+f*3,sy+4];
+      return i>0?[shx-f*(5+bk),sy+3]:[shx+f*3,sy+5];
     }
     if(pose==='throw'){
-      const rel=arm>0.72;   // primi istanti: braccio teso verso il bersaglio; poi accompagna
-      if(kind==='hammer'||kind==='scoober')return i>0?(rel?[shx+f*3,sy-7]:[shx+f*5,sy+5]):[shx-f*2,sy+5];
-      if(kind==='forehand')return i>0?(rel?[shx+f*6,sy+4]:[shx-f*1,sy+6]):[shx-f*2,sy+5];
-      return i>0?(rel?[shx+f*6,sy+2]:[shx+f*5,sy-3]):[shx-f*2,sy+5];
+      const L=lg?1:0;
+      if(tu<0.22){   // rilascio: braccio teso verso il bersaglio, l'altro indietro
+        if(kind==='hammer'||kind==='scoober')return i>0?[shx+f*(3+L),sy-7]:[shx-f*3,sy+4];
+        if(kind==='forehand')return i>0?[shx+f*(6+L),sy+4]:[shx-f*3,sy+5];
+        return i>0?[shx+f*(6+L),sy+2]:[shx-f*3,sy+4];
+      }
+      if(tu<0.6){   // accompagnamento: il braccio finisce il gesto (rovescio alto e avanti, dritto attraverso il corpo in basso, hammer giu' davanti)
+        if(kind==='hammer'||kind==='scoober')return i>0?[shx+f*5,sy+6]:[shx-f*2,sy+5];
+        if(kind==='forehand')return i>0?[shx+f*2,sy+7]:[shx-f*3,sy+3];
+        return i>0?[shx+f*5,sy-4-L]:[shx-f*3,sy+5];
+      }
+      return i>0?[shx+f*3,sy+6]:[shx-f*1,sy+6];   // recupero
     }
     if(pose==='hold')return i>0?[shx+f*4,sy+5]:[shx-f*1,sy+6];
     if(mark){const w=Math.sin(G.tick*9+x)>0?1:0;return i>0?[shx+f*5,sy-2-w]:[shx+f*4,sy+6+w];}
-    if(caught&&ex.ca>0.08)return i>0?[shx+f*3,sy+3]:[shx+f*2,sy+4];   // il disco preso torna al petto
-    if(pose==='reach'||pose==='jump')return i>0?[shx+f*3,sy-6]:[shx+f*1,sy-5];
-    if(pose==='one')return i>0?[shx+f*4,sy-7]:[shx-f*2,sy+5];
+    // PRESE: ognuna ha il suo gesto, poi il disco torna al petto (prima tornava al petto dopo 0,08 s e il gesto non si vedeva)
+    const ca=ex.ca,cpo=pose==='reach'||pose==='jump'||pose==='one'||pose==='clap'||pose==='runcatch';
+    if(cpo&&ca>=(pose==='jump'?0.3:(pose==='one'?0.2:(pose==='clap'?0.24:0.14))))return i>0?[shx+f*3,sy+3]:[shx+f*2,sy+4];
+    if(pose==='clap')return ca<0.1?(i>0?[shx+f*5,sy]:[shx+f*5,sy+7]):(i>0?[shx+f*4,sy+3]:[shx+f*4,sy+4]);   // a tenaglia: mani aperte una sopra e una sotto, poi si chiudono
+    if(pose==='runcatch')return i>0?[shx+f*6,sy+2]:[shx+f*5,sy+4];   // in corsa: braccia tese avanti
+    if(pose==='jump')return i>0?[shx+f*2,sy-8]:[shx,sy-8];   // in salto: braccia tutte in alto
+    if(pose==='one')return i>0?[shx+f*6,sy-5]:[shx-f*4,sy+3];   // a una mano: braccio teso, l'altro indietro per l'equilibrio
+    if(pose==='reach')return i>0?[shx+f*3,sy-6]:[shx+f*1,sy-5];
     if(cheer)return i>0?[shx+3,sy-6]:[shx-3,sy-6];
     if(pose==='sad')return i>0?[shx+f,sy+7]:[shx-f,sy+7];
     return moving?runHand(i):[shx+(i>0?f:-f),sy+6];
@@ -322,7 +342,7 @@ function diveAir(p){
 }
 function poseOf(p){
   if(G.mode==='banner'&&G.banner)return p.t===G.banner.team?'cheer':'sad';
-  if(p.cfx&&G.tick<p.cfx.until)return p.cfx.k==='salto'?'jump':(p.cfx.k==='mano'?'one':'reach');
+  if(p.cfx&&G.tick<p.cfx.until){const k=p.cfx.k;return k==='salto'?'jump':k==='mano'?'one':k==='semplice'?'clap':k==='corsa'?'runcatch':'reach';}
   if((p.armT||0)>0)return 'throw';
   if(p===G.holder&&p.t===0&&drag&&drag.dirOk&&!G.flight)return 'aim';   // stai mirando: il braccio si carica
   if(p===G.holder||p===G.puller)return 'hold';
@@ -350,7 +370,7 @@ function drawRoutes(){
 }
 // NOMI solo per chi conta in quel momento (con tutti i nomi accesi le etichette si sovrapponevano e coprivano i giocatori):
 // chi ha il disco o tira il pull, il compagno agganciato dalla mira o chiamato a correre, il difensore che guidi, chi deve ricevere il lancio in volo
-let aimTgt=null,aimKind='backhand';
+let aimTgt=null,aimKind='backhand',aimF=0;   // aimF: forza della mira (0-1), per il caricamento dell'omino
 function nameKey(p){
   if(p===G.holder||p===G.puller||p===G.ctrl||p===aimTgt)return true;
   if(G.call&&G.call.q===p)return true;
@@ -361,8 +381,8 @@ function drawPlayers(dt){
   const cel=celFrame(),cy=p=>{const c=cel&&cel.get(p);return c?c.wy:p.y;};   // esultanze dopo la meta (27-esultanze.js): posizione e posa disegnate
   const all=T[0].concat(T[1],G.dec?G.dec.filter(Boolean):[]).sort((a,b)=>cy(a)-cy(b)),h=PH();   // G.dec: le copie del clone (superpoteri)
   if(cel)celGround();
-  if(G.flight&&G.flight!==lastFl){lastFl=G.flight;G.flight.thrower.armT=0.3;}
-  if(G.pull&&G.pull!==lastPull){lastPull=G.pull;if(G.pull.thrower)G.pull.thrower.armT=0.4;}
+  if(G.flight&&G.flight!==lastFl){lastFl=G.flight;G.flight.thrower.armT=G.flight.thrower.armT0=0.42;}   // lancio in tre tempi (puppet)
+  if(G.pull&&G.pull!==lastPull){lastPull=G.pull;if(G.pull.thrower)G.pull.thrower.armT=G.pull.thrower.armT0=0.5;}
   const names=[];
   for(const p of all){
     const C=cel&&cel.get(p),x=C?C.x:sxw(p.x),y=C?C.y:syw(p.y);if(x<-30||x>VW+30)continue;
@@ -403,7 +423,7 @@ function drawPlayers(dt){
       const view=sp>1.2&&Math.abs(p.vy)>Math.abs(p.vx)*1.3?(p.vy<0?1:2):(p.turnT>0&&(pose==='run'||pose==='mark')?2:0);
       const kind=pose==='aim'?aimKind:(lastFl&&lastFl.thrower===p?lastFl.kind:'backhand');   // il pull e' un rovescio
       const ca=p.cfx?G.tick-(p.cfx.until-0.42):-1;
-      const hp=ghost?heroGhost(x,y,(gx,gy)=>puppet(gx,gy,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,pose,p.ph,Math.min(1,sp/6),0,{brk:!!p._brk,view,kind,ca:-1,hero:p.hero,sc:heroScale(p)})):puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/0.3,0,1),{brk:!!p._brk,view,kind,ca,land:p.landT>0,hero:heroVis(p)?p.hero:null,sc:heroScale(p)});
+      const hp=ghost?heroGhost(x,y,(gx,gy)=>puppet(gx,gy,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,pose,p.ph,Math.min(1,sp/6),0,{brk:!!p._brk,view,kind,ca:-1,hero:p.hero,sc:heroScale(p)})):puppet(x,y,UNI[p.t],heroLook(p),dvp>0?p.dv.dir:face,dvp>0?'reach':pose,p.ph,Math.min(1,sp/6),pose==='jump'?1-(p.cfx.until-G.tick)/0.42:clamp((p.armT||0)/(p.armT0||0.42),0,1),{brk:!!p._brk,view,kind,ca,long:!!(lastFl&&lastFl.thrower===p&&hyp(lastFl.tx-lastFl.sx,lastFl.ty-lastFl.sy)>28),pow:aimF,land:p.landT>0,hero:heroVis(p)?p.hero:null,sc:heroScale(p)});
       p._hx=hp[0];p._hy=hp[1];p._ht=G.tick;   // il disco in mano segue la mano (drawDisc)
     }
     heroFrost(p,x,y);   // il ghiaccio ai piedi di chi e' congelato (20-superpoteri.js)
@@ -471,7 +491,7 @@ function drawAim(){
   if(!drag||!drag.dirOk||!G.holder||G.holder.t!==0||G.flight)return;
   const h=G.holder,w=toWorld(drag.x,drag.y),hx=sxw(h.x)+(h.fc||1)*5,hy=syw(h.y)-9,gx=sxw(h.x),gy=syw(h.y);
   const dist=hyp(w.x-h.x,w.y-h.y),pl=planThrow(h,w.x,w.y,G.high),kd=pl.kind,mk=G.marker;
-  aimKind=kd;
+  aimKind=kd;aimF=clamp(dist/45,0,1);
   if(mk&&hyp(mk.x-h.x,mk.y-h.y)<4){   // cono chiuso dal marcatore
     const ang=Math.atan2(mk.y-h.y,mk.x-h.x),half=55*Math.PI/180,R=ri(16*S);
     for(const a of [ang-half,ang+half])pline(gx,gy,gx+Math.cos(a)*R,gy+Math.sin(a)*R,PAL.red,1,3);
