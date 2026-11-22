@@ -1,19 +1,24 @@
 #!/usr/bin/env node
-/* Legge un file di «Segnala un problema» (menu di pausa del gioco) e lo rende leggibile.
-   node tools/segnalazione.js <file.json> [--uscita <cartella>] [--pannelli <n>]
+/* Legge un file di «Segnala un problema» (tasto «!» in partita) e lo rende leggibile. Mostra i dati, non giudica: che cosa non va lo dice chi ha
+   giocato, e i dati servono a capirlo.
+   node tools/segnalazione.js <file.json> [--uscita <cartella>] [--pannelli <n>] [--istante <s>] [--giocatore <B3|R5>] [--statistiche]
+   --istante -3.2   stato di tutti in quell'istante (secondi prima della segnalazione; si puo' ripetere)
+   --giocatore B3   posizione, velocita', ruolo e marcatura di un giocatore ogni 0,5 s
+   --statistiche    le statistiche in partita di tutti i giocatori
    Scrive nella cartella (di solito accanto al file):
    - <nome>-tracce.png: il campo visto dall'alto in <n> momenti (predefinito 6), ognuno con le scie dei secondi prima;
    - <nome>-filmato.png: tutte le immagini del filmato dello schermo, con il tempo (in giallo quelle di salti, tuffi e replay);
    - <nome>-scene.png: solo le immagini di salti, tuffi e replay, piu' grandi, con la fase della scena;
    - <nome>-filmato.html: il filmato da guardare nel browser, alla velocita' vera;
    - <nome>-schermo.jpg: la foto dello schermo al momento della segnalazione;
-   e stampa un riassunto: partita, schemi, cronologia (lanci, prese, turnover, salti e tuffi con l'esito, replay, cambi di fase), i momenti in cui l'attacco
-   si e' bloccato (tanti fermi insieme) e chi e' rimasto fermo a lungo.
+   e stampa un riassunto: partita, schemi, cronologia (lanci, prese, turnover, salti e tuffi con l'esito, replay, cambi di fase) e lo stato di tutti
+   nell'ultimo istante.
    Blu = la tua squadra (0), rosso = gli avversari (1); B1, R3... sono i numeri della legenda in fondo all'immagine. */
 'use strict';
 const fs=require('fs'),path=require('path');
-const args=process.argv.slice(2),file=args.find(a=>!a.startsWith('--'));
+const args=process.argv.slice(2),VAL=new Set(['--uscita','--pannelli','--istante','--giocatore']),file=args.find((a,i)=>!a.startsWith('--')&&!VAL.has(args[i-1]));
 const opt=k=>{const i=args.indexOf(k);return i>=0?args[i+1]:null;};
+const opts=k=>args.map((a,i)=>a===k?args[i+1]:null).filter(v=>v!=null);
 if(!file){console.log('Uso: node tools/segnalazione.js <file.json> [--uscita <cartella>] [--pannelli <n>]');process.exit(1);}
 const R=JSON.parse(fs.readFileSync(file,'utf8'));
 if(R.kind!=='segnalazione'){console.log('Questo file non è una segnalazione del gioco.');process.exit(1);}
@@ -66,44 +71,30 @@ for(const fr of F){
   prev=fr;
 }
 CR.sort((a,b)=>a[0]-b[0]);for(const [t,x] of CR)L1.push(`  ${rel(t).padStart(8)}  ${x}`);
-// fermi. Un cutter che aspetta il suo turno nello stack e' normale: conta quando l'attacco si blocca, cioe' quando stanno fermi in tanti insieme
-// (almeno MANY attaccanti senza disco per MANY_T s). Chi resta fermo a lungo (LONG_T s) si elenca a parte, solo come informazione, con il ruolo nello schema.
-const MANY=4,MANY_T=2,LONG_T=8,SLOW=0.4;
-const liveOf=fr=>fr.m==='play'&&!fr.pull&&!(fr.wk!==undefined?fr.wk:fr.w&&fr.w===1)&&(fr.h||fr.f);
-const slowOf=(fr,p)=>Math.hypot(p[3],p[4])<SLOW&&p[0]!==fr.h;
-L1.push('');L1.push(`Attacco bloccato: almeno ${MANY} attaccanti senza disco fermi insieme per ${MANY_T} s o più:`);
-let blk=null,anyBlk=false;
-const blkEnd=()=>{if(blk&&blk.b-blk.a>=MANY_T){anyBlk=true;L1.push(`  ${blk.po?'Rossi':'Blu'} da ${rel(blk.a)} a ${rel(blk.b)}: fermi ${[...blk.who].map(k=>tag[k]||k).join(', ')}`);}blk=null;};
-for(const fr of F){
-  const st=liveOf(fr)?fr.p.filter(p=>p[0].startsWith(fr.po+'.')&&slowOf(fr,p)):[];
-  if(st.length>=MANY){if(!blk||blk.po!==fr.po){blkEnd();blk={po:fr.po,a:fr.t,b:fr.t,who:new Set()};}blk.b=fr.t;st.forEach(p=>blk.who.add(p[0]));}
-  else blkEnd();
-}
-blkEnd();if(!anyBlk)L1.push('  mai');
-L1.push('');L1.push(`Fermi per ${LONG_T} s o più (può essere normale: guarda il ruolo nello schema):`);
-const still={};let anyStill=false;
-const stillOut=(k,v,tail)=>{if(v.b-v.a>=LONG_T){anyStill=true;L1.push(`  ${nm(k)}${v.r?' (ruolo '+v.r+')':''}: da ${rel(v.a)} ${tail?'fino alla segnalazione':'a '+rel(v.b)}`);}};
-for(const fr of F){
-  const live=liveOf(fr);
-  for(const p of fr.p){
-    const k=p[0];
-    if(live&&p[0].startsWith(fr.po+'.')&&slowOf(fr,p)){if(!still[k])still[k]={a:fr.t,b:fr.t,r:p[7]};still[k].b=fr.t;}
-    else if(still[k]){stillOut(k,still[k]);delete still[k];}
+// stato di tutti in un istante (istantanea del gioco piu' vicina)
+const atT=t=>F.reduce((b,f)=>Math.abs(f.t-t)<Math.abs(b.t-t)?f:b,F[0]);
+function stateTxt(fr,lab){
+  L1.push('');L1.push(`${lab} (${rel(fr.t)}, ${fr.m}, ${fr.sc.join('-')}, stall ${f1(fr.st)}, disco ${fr.h?'a '+nm(fr.h):(fr.f?'in volo da '+nm(fr.f.th)+' verso '+(fr.f.to?nm(fr.f.to):'lo spazio'):'a terra')}${fr.pb.some(x=>x)?' · schemi '+fr.pb.map((x,i)=>x?(i?'Rossi ':'Blu ')+x.id+' fase '+x.ph+' '+x.sg:'').filter(Boolean).join(', '):''}):`);
+  for(const t of [0,1]){
+    L1.push('  '+(t?'Rossi':'Blu')+(fr.po===t?' (attacco)':'')+':');
+    for(const p of fr.p.filter(q=>q[0].startsWith(t+'.'))){
+      const g=G[p[0]]||{};
+      L1.push(`    ${(tag[p[0]]||'').padEnd(3)} ${(g.n||'').padEnd(16)} ${(g.role||g.pos||'').toString().padEnd(7)} x ${f1(p[1]).padStart(5)} y ${f1(p[2]).padStart(4)} · ${f1(Math.hypot(p[3],p[4]))} m/s${p[7]?' · ruolo '+p[7]:''}${p[6]?' · marca '+(tag[p[6]]||p[6]):''}${p[5]?' · tuffo':''}`);
+    }
   }
 }
-for(const k in still)stillOut(k,still[k],true);
-if(!anyStill)L1.push('  nessuno');
-// ultimo istante
-const last=F[F.length-1];
-if(last){
-L1.push('');L1.push(`Ultimo istante (${last.m}, stall ${f1(last.st)}, disco ${last.h?'a '+nm(last.h):(last.f?'in volo':'a terra')}):`);
-for(const t of [0,1]){
-  L1.push('  '+(t?'Rossi':'Blu')+':');
-  for(const p of last.p.filter(q=>q[0].startsWith(t+'.'))){
-    const g=G[p[0]]||{};
-    L1.push(`    ${(tag[p[0]]||'').padEnd(3)} ${(g.n||'').padEnd(16)} ${(g.role||g.pos||'').toString().padEnd(7)} x ${f1(p[1]).padStart(5)} y ${f1(p[2]).padStart(4)} · ${f1(Math.hypot(p[3],p[4]))} m/s${p[7]?' · ruolo '+p[7]:''}${p[6]?' · marca '+(tag[p[6]]||p[6]):''}${p[5]?' · tuffo':''}`);
-  }
+if(F.length)stateTxt(F[F.length-1],'Ultimo istante');
+for(const v of opts('--istante')){const t=tEnd+(+v>0?-v:+v);stateTxt(atT(t),'Istante richiesto '+v+' s');}
+for(const v of opts('--giocatore')){
+  const k=Object.keys(tag).find(x=>tag[x].toLowerCase()===String(v).toLowerCase());
+  L1.push('');if(!k){L1.push('Giocatore '+v+' non trovato (usa i numeri della legenda: B1, R3...).');continue;}
+  L1.push(`Giocatore ${nm(k)} ogni 0,5 s:`);let nx=-1e9;
+  for(const fr of F){if(fr.t<nx)continue;nx=fr.t+0.5;const p=fr.p.find(q=>q[0]===k);if(!p)continue;
+    L1.push(`  ${rel(fr.t).padStart(8)}  ${fr.m.padEnd(6)} x ${f1(p[1]).padStart(5)} y ${f1(p[2]).padStart(4)} · ${f1(Math.hypot(p[3],p[4]))} m/s${fr.h===k?' · ha il disco':''}${p[7]?' · ruolo '+p[7]:''}${p[6]?' · marca '+(tag[p[6]]||p[6]):''}${p[5]?' · tuffo':''}`);}
 }
+if(args.includes('--statistiche')){
+  L1.push('');L1.push('Statistiche in partita:');
+  for(const k of Object.keys(tag)){const g=G[k];if(!g)continue;L1.push(`  ${nm(k).padEnd(20)} ${(g.role||g.pos||'').toString().padEnd(7)} ${Object.entries(g.s||{}).map(([a,b])=>a+' '+Math.round(b)).join(' · ')}`);}
 }
 const txt=L1.join('\n');console.log(txt);
 

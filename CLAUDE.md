@@ -13,7 +13,7 @@ Ci lavorano **due sviluppatori**, entrambi con Claude Code, sullo stesso reposit
 | `npm run confronto` | Confronta il ramo con `origin/main`: chi ha cambiato cosa e dove le modifiche si toccano |
 | `node tools/pr.js apri\|elenco\|stato\|attendi\|unisci` | Pull request: funziona sul computer e nelle sessioni cloud (dove `gh pr ...` non è disponibile) |
 | `npm run mappa -- nome` | Dice in quale modulo sta una funzione |
-| `node tools/segnalazione.js <file.json>` | Legge un file di «Segnala un problema» (tasto «!» in partita): riassunto, cronologia con salti e tuffi, momenti in cui l'attacco si è bloccato (tanti fermi insieme; un cutter che aspetta il suo turno è normale), tracce dall'alto (`-tracce.png`), filmato dello schermo (`-filmato.png`, `-filmato.html`), scene laterali (`-scene.png`) e foto finale (`-schermo.jpg`). Quando l'utente manda una segnalazione, parti da qui e guarda le immagini |
+| `node tools/segnalazione.js <file.json>` | Legge un file di «Segnala un problema» (tasto «!» in partita) e mostra i dati, senza giudicare: riassunto, cronologia con salti e tuffi, stato di tutti nell'ultimo istante, tracce dall'alto (`-tracce.png`), filmato dello schermo (`-filmato.png`, `-filmato.html`), scene laterali (`-scene.png`), foto finale (`-schermo.jpg`); su richiesta `--istante <s>`, `--giocatore <B3>`, `--statistiche`. **Quando l'utente manda una segnalazione non analizzarla di tua iniziativa: aspetta che dica che cosa non va**, poi usa lo strumento e le immagini per raccogliere i dati che servono a capirlo |
 
 ## Com'è fatto il codice
 
