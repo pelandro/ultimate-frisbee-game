@@ -76,3 +76,20 @@ function psShade(ops,st){   // st = numero di valori per rettangolo nella lista 
     while(x<W){const c=psCol[row+x];let e=x+1;while(e<W&&psCol[row+e]===c)e++;if(c){ctx.fillStyle=c;ctx.fillRect(x0+x,y0+y,e-x,1);}x=e;}
   }
 }
+// sprite a righe di caratteri (come sprDraw, 22-campo-retro.js) colorato con le stesse ombre degli omini: le 'o' del disegno diventano il contorno
+// automatico dove toccano un colore, e restano linee scure dove sono da sole (le gambe del treppiede). (x,y) = piedi, fl = specchiato
+function sprShade(x,y,rows,m,fl){
+  const h=rows.length,w=rows[0].length,ox=ri(x)-(w>>1),oy=ri(y)-h+1,ops=[];
+  const at=(c,r)=>{if(r<0||r>=h||c<0||c>=w)return '.';const ch=rows[r][fl?w-1-c:c];return ch===undefined?'.':ch;};
+  const solid=ch=>ch!=='.'&&ch!=='o'&&!!m[ch];
+  for(let r=0;r<h;r++){
+    let c=0;
+    while(c<w){
+      const ch=at(c,r);let e=c+1;while(e<w&&at(e,r)===ch)e++;
+      if(solid(ch))ops.push(ox+c,oy+r,e-c,1,m[ch],0,0);
+      else if(ch==='o')for(let k=c;k<e;k++)if(!solid(at(k-1,r))&&!solid(at(k+1,r))&&!solid(at(k,r-1))&&!solid(at(k,r+1)))ops.push(ox+k,oy+r,1,1,PAL.out,PS_FLAT,0);
+      c=e;
+    }
+  }
+  psShade(ops,7);
+}
