@@ -151,6 +151,12 @@ function duelScore(f,a,d,reach){
 }
 // SALTO DA FERMO O IN CORSA: dove stava il giocatore JUMP_LOOK secondi prima della presa (dalla sua velocita'): oltre JUMP_STILL metri dal punto d'arrivo e' arrivato correndo
 const JUMP_STILL=2.5,JUMP_LOOK=0.8;
+// SCENE LATERALI SOLO QUANDO SERVONO. Un giocatore e' «solo» se nessun avversario gli sta entro SOLO_R metri: allora niente scena del salto
+// e, nel tuffo, nessun avversario disegnato accanto (era solo prima, resta solo nella scena). La scena con la barra di tempismo si apre solo se
+// l'esito non e' gia' deciso a tuo favore: se il tuo giocatore lo prenderebbe anche toccando il nero (bonus 0) la presa avviene sul campo;
+// se la scena si apre, il nero non basta e servono il giallo o il verde (che alzano le probabilita' come prima)
+const SOLO_R=2;
+const oppNear=(p,r)=>T[1-p.t].some(q=>hyp(q.x-p.x,q.y-p.y)<=r);
 const jumpRun=(p,f)=>hyp(p.x-(p.vx||0)*JUMP_LOOK-f.tx,p.y-(p.vy||0)*JUMP_LOOK-f.ty)>JUMP_STILL;
 function duel(f,a,d,reach){
   const hi=f.high,{sa,sd}=duelScore(f,a,d,reach),rA=rnd(0,16),rD=rnd(0,16);   // il caso pesa meno: decidono di piu' statistiche, posizione e tempismo
@@ -160,8 +166,10 @@ function duel(f,a,d,reach){
     if(out==='att'){f._duel=true;catchBy(f,a.p,hi?'Presa in salto!':'Presa contesa!');}
     else finishTurn(f,d.p,hi?'Bloccato in salto!':'Intercetto!',{x:f.tx,y:f.ty});
   };
-  // nella scena laterale chi era gia' vicino al punto della presa salta da fermo, chi arrivava da lontano entra di corsa (jumpRun)
-  if(hi&&G.opt.cine&&!G.noCine&&HOOKS.cine&&defEvt(f))HOOKS.cine({kind:'jump',a:a.p,d:d.p,runA:jumpRun(a.p,f),runD:jumpRun(d.p,f),resolve,apply});
+  // nella scena laterale chi era gia' vicino al punto della presa salta da fermo, chi arrivava da lontano entra di corsa (jumpRun).
+  // Niente scena se l'avversario non e' addosso (presa da solo) o se il tuo giocatore vince anche senza tempismo (defEvt per ultimo: conta le scene)
+  const mine=a.p.t===0?'att':'def',free=hyp(a.p.x-d.p.x,a.p.y-d.p.y)>SOLO_R,won=resolve(0)===mine;
+  if(hi&&!free&&!won&&G.opt.cine&&!G.noCine&&HOOKS.cine&&defEvt(f))HOOKS.cine({kind:'jump',a:a.p,d:d.p,runA:jumpRun(a.p,f),runD:jumpRun(d.p,f),resolve,apply});
   else apply(resolve(0));
 }
 function diveChain(f,L,atk,def,reach){
@@ -184,8 +192,9 @@ function diveChain(f,L,atk,def,reach){
     if(j>=0){
       used.add(j);
       const q=lst[j],A=o.att?o:q,D=o.att?q:o,pA=pOf(A),pD=pOf(D),mine=A.p.t===0?A:D;
+      const rA=Math.random(),rD=Math.random();   // il caso si estrae una volta: cosi' si sa prima se il tuo tuffo riesce anche senza tempismo
       const resolve=b=>{
-        const okA=Math.random()<clamp(pA+(A.p.t===0?b*0.18:0),0,0.97),okD=Math.random()<clamp(pD+(D.p.t===0?b*0.18:0),0,0.97);
+        const okA=rA<clamp(pA+(A.p.t===0?b*0.18:0),0,0.97),okD=rD<clamp(pD+(D.p.t===0?b*0.18:0),0,0.97);
         if(okA&&okD)return A.d<=D.d?'att':'def';
         return okA?'att':(okD?'def':null);
       };
@@ -194,22 +203,21 @@ function diveChain(f,L,atk,def,reach){
         else if(out==='def'){G.st.dive[D.p.t]++;D.p.m.tuf++;finishTurn(f,D.p,'Blocco in tuffo!',L);}
         else{HOOKS.toast('Tuffi mancati',1-f.team);step(i+1);}
       };
+      if(resolve(0)===(mine.att?'att':'def'))return apply(resolve(0));   // lo prende comunque: niente scena
       HOOKS.cine({kind:'dive2',a:A.p,d:D.p,diver:mine.p,att:mine.att,timing:true,resolve,apply});
       return;
     }
-    const p0=pOf(o),mine=o.p.t===0;
-    const resolve=b=>Math.random()<clamp(p0+(mine?b*0.18:0),0,0.97);
+    const p0=pOf(o),mine=o.p.t===0,r=Math.random();
+    const resolve=b=>r<clamp(p0+(mine?b*0.18:0),0,0.97);
     const apply=ok=>{
       if(ok){
         G.st.dive[o.p.t]++;o.p.m.tuf++;
         if(o.att)catchBy(f,o.p,'Presa in tuffo!');else finishTurn(f,o.p,'Blocco in tuffo!',L);
       }else{HOOKS.toast('Tuffo mancato',1-o.p.t);step(i+1);}
     };
-    if(show){
-      if(mine){HOOKS.cine({kind:'dive',diver:o.p,att:o.att,p:p0,timing:true,resolve,apply});return;}
-      if(resolve(0)){HOOKS.cine({kind:'dive',diver:o.p,att:o.att,p:p0,timing:false,fixed:true,resolve,apply});return;}
-      HOOKS.toast('Tuffo mancato',o.p.t===0?1:0);step(i+1);return;
-    }
+    // la scena si apre solo per un tuo tuffo non gia' riuscito; quelli degli avversari da soli si vedono sul campo.
+    // chase: un avversario era vicino al tuffatore e lo insegue anche nella scena; da solo resta solo
+    if(show&&mine&&!resolve(0)){HOOKS.cine({kind:'dive',diver:o.p,att:o.att,p:p0,timing:true,chase:oppNear(o.p,SOLO_R),resolve,apply});return;}
     apply(resolve(0));
   };
   step(0);

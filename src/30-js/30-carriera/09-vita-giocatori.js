@@ -11,9 +11,11 @@ const FEM_N=new Set(['Beatrice','Camilla','Chiara','Claudia','Elisa','Emma','Fra
 const oa=p=>(p.f||FEM_N.has(p.name||p.n))?'a':'o';
 function alertAdd(k,txt,o){
   o=o||{};if(!SV.alerts)SV.alerts=[];
-  SV.alerts.unshift({id:(SV.alN=(SV.alN|0)+1),s:SV.season,r:(SV.round|0)+1,k,txt,full:o.full||'',act:o.act||'',data:o.data||null,seen:o.seen?1:0,done:0});
+  const a={id:(SV.alN=(SV.alN|0)+1),s:SV.season,r:(SV.round|0)+1,k,txt,full:o.full||'',act:o.act||'',data:o.data||null,seen:o.seen?1:0,done:0};
+  if(o.imp)a.imp=1;   // imp: una notizia che chiede di intervenire (va nella Posta anche senza una scelta da fare: 09b-posta-notizie.js)
+  SV.alerts.unshift(a);
   if(SV.alerts.length>60)SV.alerts.length=60;
-  if(!o.quiet)news(txt);
+  if(!o.quiet&&!o.full)news(txt);   // le notizie del club in Societa'; quelle di un giocatore stanno nella sua scheda e nelle Notizie
 }
 const retBase=x=>33+hashStr('rit|'+(x.full||x.name||x.n))%7;
 function retAnchor(x){if(x.ra===undefined)x.ra=Math.max(retBase(x),x.age+1+hashStr('ra|'+(x.full||x.name||x.n))%4);return x.ra;}   // chi a 45 anni gioca ancora non smette domani
@@ -70,7 +72,7 @@ function lifeAfterMatch(){   // dopo ogni partita: minutaggio e umore, offerte
     if(p.inj)continue;
     p.idle=(p.idle|0)+1;
     if(!(ovrX(p)>=ref-5&&p.age<34&&p.ret!==1))continue;   // si lamenta solo chi meriterebbe di giocare
-    if(p.idle>=6&&!p.mood){p.mood=1;alertAdd('mood',`${pname(p)} (Overall ${ovr(p)}) non gioca da ${p.idle} partite ed è scontent${oa(p)}: inserisci il nome in una linea o finirà per chiedere la cessione.`,{full:p.full});}
+    if(p.idle>=6&&!p.mood){p.mood=1;alertAdd('mood',`${pname(p)} (Overall ${ovr(p)}) non gioca da ${p.idle} partite ed è scontent${oa(p)}: inserisci il nome in una linea o finirà per chiedere la cessione.`,{full:p.full,imp:1});}
     else if(p.idle>=10&&p.mood===1){
       if(p.prom&&SQ.length-gone.length>SQ_MIN)gone.push(p);
       else if(!p.prom){p.mood=2;alertAdd('mood',`${pname(p)} chiede di essere cedut${oa(p)}: non gioca da ${p.idle} partite.`,{full:p.full,act:'unhappy'});}

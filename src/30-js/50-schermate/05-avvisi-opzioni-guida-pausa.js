@@ -1,39 +1,65 @@
-/* ---- AVVISI: tutto cio' che succede ai giocatori (ritiri, infortuni e rientri, scontenti, offerte, crescita e declino). Si apre da solo quando c'e' una novita' ---- */
+/* ---- POSTA: decisioni ed emergenze, una riga ciascuna con la sua azione; NOTIZIE: tutto il resto, per giornata (regole in 30-carriera/09b-posta-notizie.js).
+   La Posta si apre da sola soltanto per le decisioni e le emergenze piu' gravi ---- */
+let alTab='posta';const alExp=new Set();
+function alActs(a){   // i pulsanti di una decisione ancora aperta
+  if(!alOpen(a))return '';
+  if(a.act==='job'||a.act==='trade')return crossLgButtons(a);   // offerte dell'altra lega (35-usa/05-lega-incrociata.js)
+  const p=byFull(a.full);
+  if(a.act==='stay')return `<button type="button" class="sec" data-al="${a.id}" data-do="stay">Proponi un’altra stagione (${stayCost(p)} crediti)</button>`;
+  if(a.act==='offer')return `<button type="button" class="go" data-al="${a.id}" data-do="yes">Accetta (+${SV.offer.price})</button><button type="button" class="sec" data-al="${a.id}" data-do="no">Rifiuta</button>`;
+  if(a.act==='unhappy')return `<button type="button" class="sec" data-al="${a.id}" data-do="prom">Prometti spazio in campo</button><button type="button" class="sec" data-al="${a.id}" data-do="sell">Cedi (+${sellValue(p)})</button>`;
+  return '';
+}
+// una riga: tipo, titolo corto (si apre al tocco: testo intero e, nel mercato, i colpi) e il pulsante che serve
+function alLine(g){
+  const a=g[0],kd=AL_KIND[a.k]||['Avviso','#c2cbe6'],ex=alExp.has(a.id),nw=g.some(x=>!x.seen),act=g.length===1?alActs(a):'';
+  const go=!act&&alTab==='posta'&&AL_GO[a.k]?`<button type="button" class="sec" data-algo="${AL_GO[a.k]}" data-ids="${g.map(x=>x.id).join(',')}">${AL_GO_TXT[AL_GO[a.k]]}</button>`:'';
+  const mv=x=>x.k==='mkt'&&x.data&&x.data.mv?`<ul class="almv">${x.data.mv.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:'';
+  const title=alGroupTitle(g),more=g.length>1||title!==String(a.txt||'').trim()||!!mv(a);
+  const full=ex?`<div class="alfull">${g.map(x=>`<p>${esc(x.txt)}</p>${mv(x)}`).join('')}</div>`:'';
+  return `<div class="ali${nw?' new':''}"><span class="alk" style="background:${kd[1]}">${kd[0]}</span><div class="alb"><button type="button" class="alt" data-alx="${g.map(x=>x.id).join(',')}"${more?` aria-expanded="${ex}"`:''}><span>${esc(title)}</span>${more?`<i aria-hidden="true">${ex?'▴':'▾'}</i>`:''}</button>${full}${a.res?`<div class="res">${esc(a.res)}</div>`:''}${act||go?`<div class="schrow">${act}${go}</div>`:''}</div></div>`;
+}
 function renderAlerts(){
-  const L=SV.alerts||[],nw=L.filter(a=>!a.seen).length;
-  $('alSub').textContent=L.length?(nw?`${nw} novità · le scelte in sospeso restano qui finché non rispondi`:'Nessuna novità: qui resta la cronologia'):'Qui compare tutto ciò che succede ai tuoi giocatori.';
-  const item=a=>{
-    const kd=AL_KIND[a.k]||['Avviso','#c2cbe6'],p=a.full?byFull(a.full):null;let act='';
-    if(!a.done&&(a.act==='job'||a.act==='trade'))act=crossLgButtons(a);   // offerte dell'altra lega (35-usa/05-lega-incrociata.js)
-    else if(!a.done&&p){
-      if(a.act==='stay'&&p.ret===1)act=`<button type="button" class="sec" data-al="${a.id}" data-do="stay">Proponi un’altra stagione (${stayCost(p)} crediti)</button>`;
-      else if(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)act=`<button type="button" class="go" data-al="${a.id}" data-do="yes">Accetta (+${SV.offer.price})</button><button type="button" class="sec" data-al="${a.id}" data-do="no">Rifiuta</button>`;
-      else if(a.act==='unhappy'&&p.mood===2)act=`<button type="button" class="sec" data-al="${a.id}" data-do="prom">Prometti spazio in campo</button><button type="button" class="sec" data-al="${a.id}" data-do="sell">Cedi (+${sellValue(p)})</button>`;
-    }
-    return `<div class="ali${a.seen?'':' new'}" data-ai="${a.id}"><span class="alk" style="background:${kd[1]}">${kd[0]}</span><div><p>${esc(a.txt)}</p>${a.k==='mkt'&&a.data&&a.data.mv?`<ul class="almv">${a.data.mv.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}${a.res?`<div class="res">${esc(a.res)}</div>`:''}${act?`<div class="schrow">${act}</div>`:''}${a.seen?'':`<button type="button" class="sec" data-mark-read="${a.id}">Segna come letto</button>`}<small>Stagione ${a.s} · giornata ${a.r}</small></div></div>`;
-  };
-  // tre gruppi: da decidere (scelte in sospeso), novita' (non lette), cronologia
-  const open=a=>!a.done&&(a.act==='job'||a.act==='trade'||(a.full&&byFull(a.full)&&((a.act==='stay'&&byFull(a.full).ret===1)||(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)||(a.act==='unhappy'&&byFull(a.full).mood===2))));
-  const g1=L.filter(open),g2=L.filter(a=>!open(a)&&!a.seen),g3=L.filter(a=>!open(a)&&a.seen);
-  const grp=(t,l)=>l.length?`<h3 class="alg">${t} <b>${l.length}</b></h3>`+l.map(item).join(''):'';
-  $('alAll').disabled=!nw;$('alAll').textContent=nw?`Segna tutto come letto (${nw})`:'Tutto letto';
-  $('alBody').innerHTML=L.length?grp('Da decidere',g1)+grp('Novità',g2)+grp('Cronologia',g3.slice(0,40)):'<p class="note">Ancora nessun avviso.</p>';
+  const L=SV.alerts||[],P=L.filter(alPosta),N=L.filter(a=>!alPosta(a));
+  const nP=P.filter(a=>!a.seen).length,nN=N.filter(a=>!a.seen).length;
+  $('alTabs').innerHTML=[['posta','Posta',nP],['news','Notizie',nN]].map(([k,t,n])=>`<button type="button" class="sg${alTab===k?' on':''}" data-alt="${k}">${t}${n?` <small>${n}</small>`:''}</button>`).join('');
+  const grp=(t,l)=>l.length?`<h3 class="alg">${t} <b>${l.length}</b></h3>`+alGroups(l).map(alLine).join(''):'';
+  if(alTab==='news'){
+    $('alSub').textContent=N.length?'Le notizie su giocatori, club e mercato, per giornata':'Qui compaiono crescite, rientri, traguardi e mercato.';
+    $('alAll').classList.add('hidden');
+    const days=[];for(const a of N.slice(0,40)){const k=a.s+'|'+a.r;let d=days.find(x=>x.k===k);if(!d){d={k,s:a.s,r:a.r,l:[]};days.push(d);}d.l.push(a);}
+    $('alBody').innerHTML=days.length?days.map(d=>`<h3 class="alg">${d.s===SV.season?'':'Stagione '+d.s+' · '}Giornata ${d.r}</h3>`+alGroups(d.l).map(alLine).join('')).join(''):'<p class="note">Ancora nessuna notizia.</p>';
+    for(const a of N)a.seen=1;   // le notizie si leggono tutte insieme: aprire la scheda basta
+    if(typeof renderShell==='function')renderShell();
+    return;
+  }
+  $('alAll').classList.remove('hidden');
+  const open=P.filter(alOpen),cur=P.filter(a=>!alOpen(a)&&(!a.seen||alNow(a))),old=P.filter(a=>!alOpen(a)&&a.seen&&!alNow(a));
+  $('alSub').textContent=open.length?'Le decisioni restano qui finché non rispondi':(nP?`${nP} ${nP>1?'avvisi da leggere':'avviso da leggere'}`:'Niente da sistemare');
+  $('alAll').disabled=!nP;$('alAll').textContent=nP?`Segna tutto come letto (${nP})`:'Tutto letto';
+  const arch=old.length?`<details class="alarch"><summary>Archivio <b>${old.length}</b></summary>${alGroups(old.slice(0,30)).map(alLine).join('')}</details>`:'';
+  $('alBody').innerHTML=(open.length||cur.length||old.length)?grp('Da decidere',open)+grp('Avvisi',cur)+arch:'<p class="note">Nessun avviso: le notizie stanno nella scheda accanto.</p>';
 }
 // sh = gia' mostrato: l'apertura automatica (emergenze e decisioni) avviene una volta sola, ma l'avviso resta «nuovo» finche' non lo leggi davvero
-function openAlerts(){for(const a of SV.alerts||[])a.sh=1;renderAlerts();$('alerts').classList.remove('hidden');try{$('alX').focus({preventScroll:true});}catch(e){}}
+function openAlerts(tab){alTab=tab==='news'?'news':'posta';for(const a of SV.alerts||[])a.sh=1;renderAlerts();$('alerts').classList.remove('hidden');try{$('alX').focus({preventScroll:true});}catch(e){}}
 function closeAlerts(){$('alerts').classList.add('hidden');persist();renderHome();}
-/* Tre livelli di avviso. EMERGENZE (infortuni, addii) e DECISIONI (ritiro annunciato, offerta, richiesta di cessione, sfide) aprono il riquadro da sole, una volta.
-   Le NOTIZIE (crescita, rientri, umore tornato, club) non interrompono: accendono il numero sulla campanella e una riga sul cruscotto. */
+/* Tre livelli. EMERGENZE gravi (infortuni, addii, offerte, dirigenza) e DECISIONI aprono il riquadro da sole, una volta. Gli altri avvisi della Posta
+   accendono il numero sulla campanella; le NOTIZIE non la accendono: si riassumono in «Questa settimana». */
 const AL_URGENT={inj:1,bye:1,off:1,dir:1};   // dir: la dirigenza protesta per i conti in rosso
 const urgentAlerts=()=>(SV.alerts||[]).filter(a=>!a.seen&&!a.sh&&(AL_URGENT[a.k]||a.act)).length;
-function pendingAlerts(){return (SV.alerts||[]).filter(a=>{if(a.done)return false;if(a.act==='job'||a.act==='trade')return true;const p=a.full?byFull(a.full):null;return p&&((a.act==='stay'&&p.ret===1)||(a.act==='offer'&&SV.offer&&SV.offer.full===a.full)||(a.act==='unhappy'&&p.mood===2));}).length;}
-$('hBell').addEventListener('click',openAlerts);
-// «Chiudi» chiude e basta (prima segnava tutto come letto); «Segna tutto come letto» e' una scelta a parte; toccare un avviso lo segna come letto
+function pendingAlerts(){return (SV.alerts||[]).filter(alOpen).length;}
+$('hBell').addEventListener('click',()=>openAlerts('posta'));
+// «Chiudi» chiude e basta; «Segna tutto come letto» e' una scelta a parte; toccare un avviso lo apre e lo segna come letto
 $('alX').addEventListener('click',closeAlerts);
-$('alAll').addEventListener('click',()=>{for(const a of SV.alerts)a.seen=1;persist();renderAlerts();renderShell&&renderShell();});
+$('alAll').addEventListener('click',()=>{for(const a of SV.alerts)if(alPosta(a))a.seen=1;persist();renderAlerts();renderShell&&renderShell();});
+$('alTabs').addEventListener('click',e=>{const b=e.target.closest('[data-alt]');if(!b)return;alTab=b.dataset.alt;renderAlerts();$('alBody').scrollTop=0;});
+const alByIds=s=>String(s||'').split(',').map(Number).map(i=>SV.alerts.find(x=>x.id===i)).filter(Boolean);
 $('alBody').addEventListener('click',e=>{
-  const b=e.target.closest('[data-al]');
-  if(!b){const it=e.target.closest('[data-mark-read]');if(it){const a=SV.alerts.find(x=>x.id===+it.dataset.markRead);if(a){a.seen=1;persist();renderAlerts();($('alBody').querySelector('[data-mark-read]')||$('alX')).focus();if(typeof renderShell==='function')renderShell();}}return;}
+  const x=e.target.closest('[data-alx]');
+  if(x){const g=alByIds(x.dataset.alx),id=g[0]&&g[0].id;if(!g.length)return;if(alExp.has(id))alExp.delete(id);else alExp.add(id);for(const a of g)a.seen=1;persist();renderAlerts();if(typeof renderShell==='function')renderShell();const n=$('alBody').querySelector(`[data-alx="${x.dataset.alx}"]`);if(n)n.focus();return;}
+  const go=e.target.closest('[data-algo]');
+  if(go){for(const a of alByIds(go.dataset.ids))a.seen=1;closeAlerts();showScreen(go.dataset.algo);return;}
+  const b=e.target.closest('[data-al]');if(!b)return;
   const a=SV.alerts.find(x=>x.id===+b.dataset.al),p=a&&a.full?byFull(a.full):null;
   if(a)a.seen=1;   // chi risponde l'ha letto
   if(a&&(a.act==='job'||a.act==='trade')){a.res=crossLgAnswer(a,b.dataset.do);a.done=1;persist();renderAlerts();renderHome();return;}
@@ -82,6 +108,7 @@ function openPause(){
   $('paSub').textContent=G.drill?G.matchLabel:`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${G.oppName||'Rossi'} · meta ${G.pointNo}`;
   $('paSusp').classList.toggle('hidden',!!(G.drill||QM.on));   // sospendere: solo le partite di carriera
   $('paQuit').textContent=G.drill?'Esci dall’allenamento':(matchCounts()?'Abbandona (sconfitta a tavolino)':'Abbandona la partita');delete $('paQuit').dataset.arm;
+  $('paSegT').classList.add('hidden');   // l'esito di «Segnala un problema» vale per una sola pausa
   pauseBoard();syncToggles();$('pause').classList.remove('hidden');
 }
 function closePause(){$('pause').classList.add('hidden');G.paused=false;G.schemeOpen=false;}

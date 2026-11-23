@@ -1,7 +1,7 @@
 /* ---- SOCIETA': bilancio, obiettivo, strutture, albo d'oro, notizie, salvataggio ---- */
 let clMsg='';
 let clTab='man';const clInfo=new Set();
-const awRow=a=>`<li class="${a.mine?'me':''}"><i>${a.k}</i><b>${esc(a.name)}</b> · ${esc(a.team)}${a.txt?' · '+a.txt:''}</li>`;
+const awRow=a=>`<li class="${a.mine?'me':''}"><i>${a.k}</i><b>${esc(a.name)}</b><span>${esc(a.team)}${a.txt?' · '+a.txt:''}</span></li>`;   // premio, nome, poi squadra e numeri sulla riga sotto
 function renderClub(){
   const bach=clTab==='hon'||clTab==='ach'||clTab==='rec';   // Bacheca: albo d'oro, traguardi e record stanno insieme
   for(const b of $('clTabs').children)b.classList.toggle('on',b.dataset.k===(bach?'hon':clTab));
@@ -21,17 +21,22 @@ function renderClub(){
     }):[];
     const cStr=`<div class="ccard"><h3>Strutture</h3>${facilityRows.join('')}${upkeep?`<p class="sub">Manutenzione ${upkeep} ${upkeep===1?'credito':'crediti'} a partita.</p>`:''}</div>`;
     const cStf=clTab==='stf'?staffHTML(inf):'',cGoal=`<div class="ccard">${goalsHTML()}</div>`;
-    const cNews=`<div class="ccard" style="grid-column:1/-1"><h3>Notizie</h3>${SV.news.length?`<ul class="nlist">${SV.news.slice(0,8).map(n=>`<li><i>S${n.s}·G${n.r}</i>${esc(n.txt)}</li>`).join('')}</ul>`:'<p>Nessuna notizia.</p>'}</div>`;
-    h='<div class="cgrid">'+(clTab==='man'?cSoc+cObj+cLed+cGoal+cNews:(clTab==='str'?cStr+cBud:cStf))+'</div>';
+    // niente notizie qui: i soldi sono nel bilancio, le notizie nella scheda Notizie della Posta
+    h='<div class="cgrid">'+(clTab==='man'?cSoc+cObj+cLed+cGoal:(clTab==='str'?cStr+cBud:cStf))+'</div>';
   }else if(clTab==='hon'){
     // bacheca: i trofei si accendono quando li vinci
     const honour=leagueHonours();
     h=`<div class="trgrid">${honoursTrophies().map(([k,label])=>`<div class="trt${trophy(k)?' on':''}"><b>${trophy(k)}</b><span>${label}</span></div>`).join('')}</div>`;
     h+=`<div class="ccard"><h3>Albo d’oro · ${esc(honour.name)}</h3>${albHTML(honour.entries)}</div>`;
     h+=SV.hist.length?SV.hist.map(x=>{
-      const aw=(x.aw||[]).map(awRow).join(''),b7=(x.best7||[]).map(q=>`${q.mine?'<b style="color:var(--gold)">':'<b>'}${esc(q.name)}</b> (${q.pos}, ${esc(q.team)})`).join(', ');
-      const {league,champions}=honoursSeasonNames(x);
-      return `<div class="seas"><h3>Stagione ${x.season} · ${esc(league)} · ${x.rank}° posto${x.n?' su '+x.n:''}</h3><p>${x.w} vinte, ${x.l} perse${x.obj?' · bonus dello sponsor':''}${x.short?' · '+esc(x.short):''}</p>${champions?`<p>Campioni: ${champions}</p>`:''}${aw?`<ul class="awl">${aw}</ul>`:''}${b7?`<p>Squadra ideale: ${b7}</p>`:''}${x.mvp?`<p>MVP della tua squadra: <b>${esc(x.mvp)}</b>${x.mvpS?' ('+x.mvpS+')':''}</p>`:''}</div>`;
+      // una stagione in gruppi separati da una riga: risultato, campioni, premi, squadra ideale (prima era un unico paragrafo, difficile da leggere)
+      const aw=(x.aw||[]).map(awRow).join(''),b7=(x.best7||[]).map(q=>`<span class="sch${q.mine?' me':''}"><i>${q.pos}</i>${esc(q.name)}<small>${esc(q.team)}</small></span>`).join('');
+      const {league,list}=honoursSeasonNames(x),pill=(t,c)=>`<span class="sp${c?' '+c:''}">${t}</span>`;
+      const res=pill(`${x.w} vinte · ${x.l} perse`)+(x.obj?pill('bonus dello sponsor','ok'):'')+(x.short?pill(esc(x.short),'gold'):'')+(x.mvp?pill(`MVP della squadra: ${esc(x.mvp)}${x.mvpS?' ('+x.mvpS+')':''}`):'');
+      return `<div class="seas"><h3>Stagione ${x.season} · ${esc(league)} · ${x.rank}° posto${x.n?' su '+x.n:''}</h3><div class="spl">${res}</div>`
+        +(list.length?`<h4>Campioni</h4><ul class="sch3">${list.map(([n,c])=>`<li><i>${n}</i>${c}</li>`).join('')}</ul>`:'')
+        +(aw?`<h4>Premi</h4><ul class="awl">${aw}</ul>`:'')
+        +(b7?`<h4>Squadra ideale</h4><div class="sb7">${b7}</div>`:'')+`</div>`;
     }).join(''):'<p class="note">Qui vedrai i piazzamenti, i campioni e i premi di ogni stagione.</p>';
   }else if(clTab==='ach'){
     h=achHTML();

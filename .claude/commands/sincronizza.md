@@ -15,7 +15,7 @@ Sincronizza questo ramo con l'ultima versione di `main`, senza perdere nulla di 
    - solo se sono davvero incompatibili (due regole opposte per la stessa cosa) fermati e proponimi una soluzione che conserva il più possibile di entrambe, spiegando in tre righe cosa cambia.
 7. Anche SENZA conflitti Git, controlla le incompatibilità logiche indicate dallo strumento:
    - «dipendenze incrociate»: rileggi la funzione usata e chi la usa, e verifica che parametri, valori restituiti ed effetti attesi coincidano ancora;
-   - «contratti toccati»: applica la lista di controllo di `CLAUDE.md` (salvataggi, statistiche, ganci, schermate, ordine dei file).
+   - «contratti toccati»: applica le «Regole che valgono sempre» di `CLAUDE.md` e rileggi in `docs/CONTRATTI.md` le sezioni delle aree toccate (salvataggi, economia, campionati, partita, bilanciamento, interfaccia, testi).
 8. `npm test`. Se fallisce, correggi l'integrazione (non il test, a meno che il test descriva un comportamento che uno dei due ha cambiato apposta: in quel caso aggiornalo e dillo).
 9. Concludi il merge con un messaggio che elenca, in poche righe, che cosa è stato integrato a mano e perché.
 10. Riferiscimi solo: quanti commit sono entrati, se c'erano sovrapposizioni e come le hai risolte, esito dei test. Niente elenco se non c'era nulla da segnalare.

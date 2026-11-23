@@ -362,10 +362,11 @@ function frame(now){
     const zoomWait=G.mode==='play'&&!!G.holder&&!G.pull&&!G.flight&&(cam.zP<1||Math.abs(zoomTarget()-cam.zTo)>0.001);
     G.zoomHold=zoomWait;
     capturePointCheckpoint();
+    sgTick(dt);   // «Segnala un problema»: orologio, eventi e filmato degli ultimi secondi (anche durante salti, tuffi e replay)
     if(G.paused||zoomWait||G.schemeOpen)simRemainder=0;
     else if(G.mode==='cine'){simRemainder=0;updateCine(dt);}
     else simRemainder=advanceSimulation(simRemainder,dt,step=>{
-      rpRecord(step);
+      rpRecord(step);sgRecord(step);   // replay delle mete; ultimi secondi per «Segnala un problema»
       update(step);
       return !G.paused&&!G.schemeOpen&&G.mode!=='cine';
     });

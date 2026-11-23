@@ -135,6 +135,20 @@ function laneDodge(p,H,atk){
   }
   return p.dz;   // fuori dalla linea: resta ancora un po' dove si e' spostato, poi torna al suo posto
 }
+// AL PULL: chi riceve si dispone nello schema attorno al punto in cui cadra' il disco (G.ref, scritto da doPull), e con chi va a prenderlo
+// e gli handler dello schema finivano spesso in 4-6 ad aspettarlo in fondo. Ne restano dietro al massimo PULL_BACK (i piu' arretrati nello
+// schema); gli altri salgono almeno PULL_FW metri oltre il punto d'arrivo e comunque PULL_OUT metri fuori dalla meta.
+// La scelta si fa una volta per pull (indici in G.pull.fw)
+const PULL_BACK=3,PULL_FW=8,PULL_OUT=3;
+const pullFwX=(P,d)=>{const hx=d>0?EZ:FIELD_L-EZ;return hx+d*Math.max((G.ref.x-hx)*d+PULL_FW,PULL_OUT);};
+function pullFwd(P,atk,d,side,sch){
+  const pu=G.pull;
+  if(!pu.fw){
+    const pr=atk.map((p,i)=>({i,v:(anchor(sch,p.slot,G.ref,d,side).x-G.ref.x)*d})).sort((a,b)=>a.v-b.v);
+    pu.fw=pr.slice(PULL_BACK).map(o=>o.i);
+  }
+  return pu.fw.map(i=>atk[i]).filter(Boolean);
+}
 function updateAttackers(dt){
   const P=G.poss,atk=T[P],d=dirOf(P),Hh=G.holder,fl0=G.flight,H=Hh||((fl0&&fl0.team===P)?{x:fl0.tx,y:fl0.ty}:G.ref);   // in volo: ci si dispone attorno al punto d'arrivo
   // il lato in cui si dispone l'attacco cambia solo quando il portatore supera il centro di piu' di 2 m: prima, passando a ridosso della mezzeria, tutti scambiavano lato a ogni passo
@@ -147,7 +161,9 @@ function updateAttackers(dt){
     if(b){const open=G.marker?-G.closedSide:(Hh.y<MID?1:-1);b.cmd={k:'reset',x:clamp(Hh.x-d*4.5,2,FIELD_L-2),y:clamp(Hh.y+open*6.5,3,FIELD_W-3),t:3};b.cs='cut';}
   }
   aiIso(P,Hh,dt);   // l'IA isola il cutter che ha un vantaggio sul suo marcatore
-  const mvA=(q,x,y,dt0,am,vm)=>{const g=Hh&&!G.flight&&!G.walk?skirt(q,Hh,x,y,SKIRT_R):{x,y};moveTo(q,g.x,g.y,dt0,am,vm);};   // i compagni aggirano chi ha il disco
+  const fw=G.pull?pullFwd(P,atk,d,side,sch):null;   // al pull restano dietro al massimo PULL_BACK ricevitori: gli altri salgono
+  const fwX=fw?pullFwX(P,d):0;
+  const mvA=(q,x,y,dt0,am,vm)=>{if(fw&&fw.includes(q)&&(x-fwX)*d<0)x=fwX;const g=Hh&&!G.flight&&!G.walk?skirt(q,Hh,x,y,SKIRT_R):{x,y};moveTo(q,g.x,g.y,dt0,am,vm);};   // i compagni aggirano chi ha il disco
   const isoT=G.iso&&G.iso.p.t===P?G.iso.p.cmd:null;   // corridoio da lasciare libero
   for(const p of atk){
     p.rt=null;p.sq=0;   // dove sta andando (solo per disegnare la linea del taglio); sq: corre un movimento dello schema a sequenza

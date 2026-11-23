@@ -65,6 +65,8 @@ function resize(){
   PXS=Math.max(1,Math.round(cv.height/224));   // circa 224 pixel di gioco in altezza, ingrandimento sempre intero
   VW=Math.ceil(cv.width/PXS);VH=Math.ceil(cv.height/PXS);pcv.width=VW;pcv.height=VH;
   BAR=Math.ceil(28*UIZ*DPR/PXS);   // altezza della barra nera in alto (28 px CSS, ingrandita sugli schermi grandi) in pixel di gioco
+  // un pixel di gioco in px CSS (--gp) e dentro i riquadri ingranditi con zoom:var(--ui) (--gpz): le scritte dell'HUD lo usano per stare sulla stessa griglia del campo (27-hud-pixel.css)
+  document.documentElement.style.setProperty('--gp',(PXS/DPR)+'px');document.documentElement.style.setProperty('--gpz',(PXS/DPR/UIZ)+'px');
   baseS=(VH-BAR)/(FIELD_W+8);S=baseS*cam.z;OY=(VH+BAR)/2-cam.y*S;CX=Math.round(cam.x*S);OYi=Math.round(OY);
   layoutButtons();
 }
@@ -108,6 +110,7 @@ $('hCont').addEventListener('click',()=>{if(G.mode!=='half'||forcedSubs)return;$
 HOOKS.over=showOver;
 
 /* ---- camera ---- */
+const CAM_MT=3,CAM_MB=3;   // metri visibili oltre le linee laterali quando la camera segue il gioco in verticale: in alto la tribuna, in basso il bordocampo
 const AIM_EDGE=8;   // metri: quanto campo resta sempre visibile oltre il punto mirato (con 5 il punto finiva quasi sul bordo e non si vedeva chi corre li')
 // zoom: pull = tutto il campo, difesa = zoom forte, attacco = normale
 const zoomTarget=()=>G.mode==='ready'?Math.min(1,VW/(FIELD_L+6)/baseS):((G.mode==='play'||G.mode==='cine')?(G.poss===1?DEF_ZOOM:ATT_ZOOM):1);
@@ -142,9 +145,10 @@ function updateCamera(dt,replayDisc){
   const am=drag&&drag.dirOk&&drag.wx!==undefined&&G.mode==='play'&&!G.flight&&!G.pull&&G.holder&&G.holder.t===0?drag:null;
   if(am){const e=Math.min(AIM_EDGE,vw/3);if(am.wx>tg+vw-e)tg=am.wx-vw+e;else if(am.wx<tg+e)tg=am.wx-e;}
   tg=(hi<lo||vw>=FIELD_L+2)?(FIELD_L-vw)/2:clamp(tg,lo,hi);
-  // se lo zoom non lascia vedere tutta l'altezza del campo la camera segue il disco anche in verticale (3 m di margine oltre la linea laterale)
-  const M=3;let cy=vh>=FIELD_W+2*M?FIELD_W/2:clamp(fy,vh/2-M,FIELD_W-vh/2+M);
-  if(am&&vh<FIELD_W+2*M){const e=Math.min(AIM_EDGE/2,vh/3);cy=clamp(clamp(cy,am.wy-vh/2+e,am.wy+vh/2-e),vh/2-M,FIELD_W-vh/2+M);}   // e in verticale, se lo zoom non mostra tutta la larghezza del campo
+  // se lo zoom non lascia vedere tutta l'altezza del campo la camera segue il disco anche in verticale, fino a CAM_MT metri oltre la linea laterale in alto
+  // (la tribuna) e CAM_MB in basso (panchine e cartelloni)
+  const MT=CAM_MT,MB=CAM_MB;let cy=vh>=FIELD_W+MT+MB?FIELD_W/2+(MB-MT)/2:clamp(fy,vh/2-MT,FIELD_W-vh/2+MB);
+  if(am&&vh<FIELD_W+MT+MB){const e=Math.min(AIM_EDGE/2,vh/3);cy=clamp(clamp(cy,am.wy-vh/2+e,am.wy+vh/2-e),vh/2-MT,FIELD_W-vh/2+MB);}   // e in verticale, se lo zoom non mostra tutta la larghezza del campo
   if(cam.snap){cam.x=tg;cam.y=cy;cam.snap=false;}else{cam.x+=(tg-cam.x)*(1-Math.exp(-dt*(zooming?2.2:5)));cam.y+=(cy-cam.y)*(1-Math.exp(-dt*(zooming?2.2:4)));}
   OY=(VH+BAR)/2-cam.y*S;CX=Math.round(cam.x*S);OYi=Math.round(OY);
 }

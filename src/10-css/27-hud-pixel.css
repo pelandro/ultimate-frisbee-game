@@ -1,0 +1,18 @@
+/* HUD DELLA PARTITA SULLA GRIGLIA DEI PIXEL DI GIOCO
+   Le scritte sopra il campo usavano pixel piu' fini di quelli del gioco (e di misure diverse tra loro): stonavano con tutto il resto.
+   Qui ogni carattere a pixel ha i pixel grandi esattamente come quelli del campo: --gpz e' un pixel di gioco nello spazio dei riquadri
+   ingranditi con zoom:var(--ui) e lo scrive resize() (01-base-camera.js). Press Start 2P (UFPress) e Tiny5 (UFTiny) sono disegnati su 8 pixel:
+   con 8 --gpz combaciano con le etichette disegnate nel canvas (ptext). Bordi di un pixel di gioco, ombre di due.
+   font-size-adjust:none, se no il browser ritocca la misura dei caratteri e i pixel tornano sfocati. */
+:root{--gp:1.5px;--gpz:1.5px}
+html #hud #pt{font-family:'UFTiny',monospace;font-size:calc(var(--gpz)*8);font-size-adjust:none;letter-spacing:0;color:#dde6f1}
+html #hud #score .tn{font-family:var(--pfont);font-size:calc(var(--gpz)*8);font-size-adjust:none;letter-spacing:0}
+html #hud #score .dash{font-family:var(--pfont);font-size:calc(var(--gpz)*8);font-size-adjust:none}
+html #hud #score b{font-size:calc(var(--gpz)*16);font-size-adjust:none;line-height:1}
+html #hud #possessionHud{font-family:'UFTiny',monospace;font-size:calc(var(--gpz)*8);font-size-adjust:none;font-weight:400;letter-spacing:0}
+html #hud #bExit,html #hud #bSeg{font-size:calc(var(--gpz)*8);font-size-adjust:none;border-width:var(--gpz)}
+html #hud #stall{font-size:calc(var(--gpz)*8);font-size-adjust:none;border-width:var(--gpz)}
+html #hud #hint{font-family:var(--pfont);font-size:calc(var(--gpz)*8);font-size-adjust:none;letter-spacing:0;border-width:var(--gpz)}
+html #hud #ctrl .btn,html #skip{font-family:var(--pfont);font-size:calc(var(--gpz)*8);font-size-adjust:none;letter-spacing:0;border-width:var(--gpz);box-shadow:calc(var(--gpz)*2) calc(var(--gpz)*2) 0 rgba(0,0,0,.45)}
+/* i pulsanti restano alti come prima (il carattere e' piu' piccolo, il bersaglio per il dito no) */
+html #hud #ctrl .btn,html #skip{padding:calc(var(--gpz)*7) calc(var(--gpz)*6);line-height:calc(var(--gpz)*8)}
