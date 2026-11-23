@@ -205,13 +205,16 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   const cp=pose==='cel'?(ex.cp||{}):null;   // posa delle esultanze (20-ui/27-esultanze.js): mani, gambe, salto, accovacciata e vista date da fuori
   const moving=!cp&&run>0.18,fast=run>0.45,view=moving?(ex.view|0):(cp?(cp.view|0):(ex.view===2?2:0)),cheer=pose==='cheer',mark=pose==='mark';
   const fr=moving?((Math.floor(ph/(Math.PI*2)*6)%6)+6)%6:0,half=fr>=3?1:0,RF=RUN_F[fr%3],k=fast?1:0.6;
-  const hop=cheer?(Math.sin(G.tick*12+x*0.7)>0?3:0):(pose==='jump'?ri(6*Math.sin(Math.PI*clamp(arm,0,1))):(cp?ri(cp.hop||0):0));
+  const hop=cheer?(Math.sin(G.tick*12+x*0.7)>0?3:0):(pose==='jump'?ri(10*Math.sin(Math.PI*clamp(arm,0,1))):(cp?ri(cp.hop||0):0));
   // lancio in tre tempi (tu: 0 rilascio, 0,22 accompagnamento, 0,6 recupero); lungo = passo e slancio piu' ampi; pw = forza del caricamento quando miri
-  const tu=pose==='throw'?1-clamp(arm,0,1):0,lg=!!ex.long,pw=pose==='aim'?clamp(ex.pow||0,0,1):0;
+  const tu=pose==='throw'?1-clamp(arm,0,1):0,lg=!!ex.long,pw=pose==='aim'?clamp(ex.pow||0,0,1):0,cka=ex.ca>=0?ex.ca:-1;
+  // gesti esagerati (a 20 pixel un gesto piccolo non si vede): il corpo si abbassa nei momenti di forza
+  const crouch=(ex.land?2:0)+(pose==='aim'?(pw>0.7?2:(pw>0.35?1:0)):0)+(pose==='throw'&&tu<0.25?(lg?2:1):0)+(pose==='throw'&&(ex.kind==='hammer'||ex.kind==='scoober')&&tu>=0.25&&tu<0.6?1:0)
+    +(pose==='one'&&cka<0.2?2:0)+(pose==='clap'&&cka>=0.1&&cka<0.24?1:0);
   const breathe=!moving&&!cheer&&!cp&&pose!=='jump'&&Math.sin(G.tick*2.4+x*0.37)>0.55?1:0;   // da fermo il busto respira (un pixel), ognuno col suo tempo
-  const dyB=(moving?ri(RF[3]*k):(mark?1:(cp?ri(cp.crouch||0):0)))+(ex.land&&!cp?1:0)+((pose==='aim'&&pw>0.55)||(pose==='throw'&&lg&&tu<0.3)?1:0),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-20+breathe+(pose==='sad'?1:0);
+  const dyB=(moving?ri(RF[3]*k):(mark?1:(cp?ri(cp.crouch||0):0)))+(cp?0:crouch),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-20+breathe+(pose==='sad'?1:0);
   const caught=ex.ca>=0&&ex.ca<0.3,recoil=caught&&ex.ca>0.08&&ex.ca<0.22?-f:0;   // presa: un pixel di rinculo all'indietro
-  let lean=fast?f:0;if(ex.brk&&moving)lean=-f;if(pose==='aim')lean=-f;if((pose==='throw'&&tu<0.6)||pose==='one')lean=f;if(cp)lean=ri(cp.lean||0)*f;lean+=recoil;
+  let lean=fast?f:0;if(ex.brk&&moving)lean=-f;if(pose==='aim')lean=-f;if((pose==='throw'&&tu<0.6)||pose==='one'||pose==='runcatch')lean=f;if(cp)lean=ri(cp.lean||0)*f;lean+=recoil;
   // GAMBE: quella lontana (dietro) e' piu' scura, cosi' si capisce quale va avanti
   for(const i of [-1,1]){
     const far=i<0,hx=x-1+(i>0?1:-1),sk=far?skin2:skin,so=far?sock2:un.socks,sh=far?shoe2:un.shoe;
@@ -219,10 +222,10 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     if(cp&&cp.lg){const L=cp.lg[i<0?0:1];dx=ri(L[0])*(cp.ab?1:f);lift=ri(L[1]);}   // cp.ab: x sullo schermo (vista di fronte), altrimenti in avanti
     else if(moving&&view===0){const planted=(i<0)===(half===0);dx=ri((planted?RF[0]:RF[1])*k)*f;lift=planted?0:ri(RF[2]*(fast?1:0.67));}
     else if(moving){const planted=(i<0)===(half===0);lift=planted?0:(fr%3===1?3:1);}   // di schiena o di fronte: le gambe salgono e scendono sul posto
-    else if(pose==='throw')dx=(i>0?(tu<0.6?(lg?4:3):2):-(lg?3:2))*f;   // lancio: passo in avanti con la gamba vicina
-    else if(pose==='aim')dx=(i>0?1+ri(2*pw):-(1+ri(pw)))*f;   // caricamento: le gambe si allargano con la forza
-    else if(pose==='one')dx=(i>0?3:-2)*f;   // presa a una mano: allungo in avanti
-    else if(pose==='jump'){dx=i>0?f:-f;lift=2;}   // salto: gambe raccolte
+    else if(pose==='throw')dx=(i>0?(tu<0.25?(lg?6:5):(tu<0.6?4:2)):-(tu<0.25?(lg?5:4):(tu<0.6?3:1)))*f;   // lancio: affondo in avanti, poi la gamba dietro rientra
+    else if(pose==='aim')dx=(i>0?2+ri(3*pw):-(2+ri(2*pw)))*f;   // caricamento: le gambe si allargano con la forza
+    else if(pose==='one')dx=(i>0?(cka<0.2?5:3):-(cka<0.2?4:2))*f;   // presa a una mano: affondo
+    else if(pose==='jump'){dx=i>0?f:-f;lift=3;}   // salto: gambe raccolte
     else if(mark)dx=i*2;   // marcatore: gambe larghe e corpo basso
     else dx=i>0?2:-1;   // da fermo: un pixel di prato tra i piedi, le gambe non si fondono
     const fx=hx+dx,fy=gy-2-lift;
@@ -241,22 +244,22 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   const hand=i=>{   // i = 1 braccio vicino, -1 braccio lontano
     if(cp&&cp.h){const q=cp.h[i>0?0:1];return [shx+ri(q[0])*(cp.ab?1:f),sy+ri(q[1])];}
     if(pose==='aim'){   // caricamento: il braccio va indietro, piu' indietro quanto piu' forte tiri (rovescio: attraverso il corpo; dritto: di lato e basso; hammer: sopra la testa)
-      const bk=ri(3*pw);
-      if(kind==='hammer'||kind==='scoober')return i>0?[shx-f*(1+bk),sy-6-ri(pw)]:[shx+f*3,sy+3];
-      if(kind==='forehand')return i>0?[shx-f*(4+bk),sy+6]:[shx+f*3,sy+4];
-      return i>0?[shx-f*(5+bk),sy+3]:[shx+f*3,sy+5];
+      const bk=ri(4*pw),tr=pw>0.9&&Math.sin(G.tick*40)>0?1:0;   // al massimo della forza il braccio trema
+      if(kind==='hammer'||kind==='scoober')return i>0?[shx-f*(1+ri(2*pw)),sy-7-ri(2*pw)-tr]:[shx+f*(3+ri(2*pw)),sy+4];
+      if(kind==='forehand')return i>0?[shx-f*(4+bk)-tr*f,sy+7]:[shx+f*(3+ri(2*pw)),sy+4];
+      return i>0?[shx-f*(5+bk)-tr*f,sy+3-ri(pw)]:[shx+f*(3+ri(2*pw)),sy+4];
     }
     if(pose==='throw'){
       const L=lg?1:0;
-      if(tu<0.22){   // rilascio: braccio teso verso il bersaglio, l'altro indietro
-        if(kind==='hammer'||kind==='scoober')return i>0?[shx+f*(3+L),sy-7]:[shx-f*3,sy+4];
-        if(kind==='forehand')return i>0?[shx+f*(6+L),sy+4]:[shx-f*3,sy+5];
-        return i>0?[shx+f*(6+L),sy+2]:[shx-f*3,sy+4];
+      if(tu<0.25){   // rilascio, tenuto un istante: braccio teso fino in fondo verso il bersaglio, l'altro indietro
+        if(kind==='hammer'||kind==='scoober')return i>0?[shx+f*(4+L),sy-9]:[shx-f*4,sy+4];
+        if(kind==='forehand')return i>0?[shx+f*(8+L),sy+5]:[shx-f*4,sy+4];
+        return i>0?[shx+f*(8+L),sy+2]:[shx-f*5,sy+3];
       }
-      if(tu<0.6){   // accompagnamento: il braccio finisce il gesto (rovescio alto e avanti, dritto attraverso il corpo in basso, hammer giu' davanti)
-        if(kind==='hammer'||kind==='scoober')return i>0?[shx+f*5,sy+6]:[shx-f*2,sy+5];
-        if(kind==='forehand')return i>0?[shx+f*2,sy+7]:[shx-f*3,sy+3];
-        return i>0?[shx+f*5,sy-4-L]:[shx-f*3,sy+5];
+      if(tu<0.6){   // accompagnamento ampio: rovescio fin sopra la testa, dritto attraverso il corpo fino all'anca, hammer giu' fino al ginocchio
+        if(kind==='hammer'||kind==='scoober')return i>0?[shx+f*6,sy+9]:[shx-f*3,sy+4];
+        if(kind==='forehand')return i>0?[shx-f*3,sy+7]:[shx-f*4,sy+2];
+        return i>0?[shx+f*5,sy-8]:[shx-f*4,sy+5];
       }
       return i>0?[shx+f*3,sy+6]:[shx-f*1,sy+6];   // recupero
     }
@@ -265,10 +268,10 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     // PRESE: ognuna ha il suo gesto, poi il disco torna al petto (prima tornava al petto dopo 0,08 s e il gesto non si vedeva)
     const ca=ex.ca,cpo=pose==='reach'||pose==='jump'||pose==='one'||pose==='clap'||pose==='runcatch';
     if(cpo&&ca>=(pose==='jump'?0.3:(pose==='one'?0.2:(pose==='clap'?0.24:0.14))))return i>0?[shx+f*3,sy+3]:[shx+f*2,sy+4];
-    if(pose==='clap')return ca<0.1?(i>0?[shx+f*5,sy]:[shx+f*5,sy+7]):(i>0?[shx+f*4,sy+3]:[shx+f*4,sy+4]);   // a tenaglia: mani aperte una sopra e una sotto, poi si chiudono
-    if(pose==='runcatch')return i>0?[shx+f*6,sy+2]:[shx+f*5,sy+4];   // in corsa: braccia tese avanti
-    if(pose==='jump')return i>0?[shx+f*2,sy-8]:[shx,sy-8];   // in salto: braccia tutte in alto
-    if(pose==='one')return i>0?[shx+f*6,sy-5]:[shx-f*4,sy+3];   // a una mano: braccio teso, l'altro indietro per l'equilibrio
+    if(pose==='clap')return ca<0.1?(i>0?[shx+f*6,sy-2]:[shx+f*6,sy+9]):(i>0?[shx+f*5,sy+3]:[shx+f*5,sy+4]);   // a tenaglia: mani ben aperte una sopra e una sotto, poi si chiudono
+    if(pose==='runcatch')return i>0?[shx+f*8,sy+1]:[shx+f*7,sy+4];   // in corsa: braccia tese avanti fino in fondo
+    if(pose==='jump')return i>0?[shx+f*2,sy-10]:[shx,sy-10];   // in salto: braccia tutte in alto
+    if(pose==='one')return i>0?[shx+f*8,sy-6]:[shx-f*5,sy+2];   // a una mano: braccio teso in affondo, l'altro indietro per l'equilibrio
     if(pose==='reach')return i>0?[shx+f*3,sy-6]:[shx+f*1,sy-5];
     if(cheer)return i>0?[shx+3,sy-6]:[shx-3,sy-6];
     if(pose==='sad')return i>0?[shx+f,sy+7]:[shx-f,sy+7];
