@@ -115,35 +115,3 @@ function standShadow(y0,x0,x1){
   px(0,y0,VW,d,'rgba(16,28,52,.13)');
   for(let x=-(((CX%6)+6)%6);x<VW;x+=6)px(x+((ihash(Math.floor((x+CX)/6),1)%3)),y0+d,3,1,'rgba(16,28,52,.08)');   // bordo dell'ombra sfrangiato: il profilo della tribuna
 }
-// ---------- nome della squadra nella meta: va a capo e si rimpicciolisce finche' non sta, sempre centrato ----------
-// len = spazio lungo la meta (la larghezza del campo), wid = spazio per le righe (la profondita' della meta). Il risultato si tiene da parte
-const ezFitMemo=new Map();
-function ezSplit(w,n,f,len){   // le parole in n righe, la divisione con la riga piu' lunga piu' corta
-  if(w.length<n)return null;
-  let best=null,bw=1e9;
-  const rec=(i,k,acc)=>{
-    if(k===1){const ls=acc.concat([w.slice(i).join(' ')]),m=Math.max(...ls.map(x=>ptw(x,f)));if(m<=len&&m<bw){bw=m;best=ls;}return;}
-    for(let j=i+1;j<=w.length-k+1;j++)rec(j,k-1,acc.concat([w.slice(i,j).join(' ')]));
-  };
-  rec(0,n,[]);return best;
-}
-const EZ_REF=6;   // scala di riferimento (pixel per metro) a cui si impagina il nome nella meta; poi si disegna in scala con lo zoom
-function ezNameFit(nm,len,wid,ref){   // ref: impaginazione a scala fissa (solo carattere piccolo), indipendente dallo zoom
-  const key=nm+'|'+ri(len)+'|'+ri(wid)+'|'+(ref?2:S>5.4?1:0);let r=ezFitMemo.get(key);if(r)return r;
-  const w=nm.split(' ').filter(Boolean),fonts=ref?['p']:S>5.4?['P','p']:['p'];
-  for(const f of fonts){
-    const gh=f==='P'?16:8,lh=gh+2;
-    for(let n=1;n<=3&&!r;n++){const ls=ezSplit(w,n,f,len);if(ls&&(n-1)*lh+gh<=wid)r={f,ls,lh,gh};}
-    if(r)break;
-  }
-  if(!r){   // una parola sola troppo lunga: si spezza a lettere, al massimo tre righe, e l'ultima finisce con i puntini
-    const ls=[];let cur='';
-    for(const ch of nm){if(ptw(cur+ch,'p')>len&&cur){ls.push(cur.trim());cur='';}cur+=ch;}
-    if(cur.trim())ls.push(cur.trim());
-    const max=Math.max(1,Math.min(3,Math.floor((wid-8)/10)+1));
-    if(ls.length>max){ls.length=max;let l=ls[max-1];while(l.length>1&&ptw(l+'…','p')>len)l=l.slice(0,-1);ls[max-1]=l+'…';}
-    r={f:'p',ls,lh:10,gh:8};
-  }
-  if(ezFitMemo.size>200)ezFitMemo.clear();
-  ezFitMemo.set(key,r);return r;
-}
