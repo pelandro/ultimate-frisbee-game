@@ -60,17 +60,32 @@ function paintYardNum(n,x){
   const off=3.5*NUM_C;   // ogni cifra a mezza cifra dalla linea
   for(const [k,d] of [[-1,s[0]],[1,s[1]]]){paintBlocks([d],NUM_C,x+k*off,y0,0,col,sh);paintBlocks([d],NUM_C,x-k*off,y1,2,col,sh);}
 }
-// stemma dipinto: pieno, con il bordo di vernice bianca; sui campi di terra e' un disegno di gesso (solo la sagoma chiara)
-let crestCv=null,crestCvKey='';
+// stemma dipinto: pieno negli stadi; sui campi del club e sulla terra e' solo la sagoma chiara (vernice da righe o gesso: i colori su un prato consumato
+// diventavano una macchia marrone). Il bordo di vernice bianca va solo attorno agli stemmi fatti
+// di un pezzo (il tridente, la testa di cavallo, il sole): attorno a quelli fatti di pezzi staccati (stelle e strisce di una bandiera, lettere) appesantiva
+let crestCv=null,crestCvKey='',crestParts=0,CREST_RIM=-1;   // CREST_RIM: -1 secondo lo stemma, 0 mai, 1 sempre (per le prove)
+const CREST_RIM_MAX=2;   // pezzi al massimo perche' lo stemma abbia il bordo bianco
+function crestPieces(cv){   // pezzi staccati dello stemma (pixel pieni collegati in croce; i granelli sotto i 6 pixel non contano)
+  const W=cv.width,d=cv.getContext('2d').getImageData(0,0,W,W).data,seen=new Uint8Array(W*W),st=[];let n=0;
+  for(let q=0;q<W*W;q++){
+    if(seen[q]||d[q*4+3]<128)continue;
+    let sz=0;st.push(q);seen[q]=1;
+    while(st.length){const k=st.pop(),i=k%W,j=(k/W)|0;sz++;
+      for(const m of [i>0?k-1:-1,i<W-1?k+1:-1,j>0?k-W:-1,j<W-1?k+W:-1])if(m>=0&&!seen[m]&&d[m*4+3]>=128){seen[m]=1;st.push(m);}}
+    if(sz>=6)n++;
+  }
+  return n;
+}
 function crestPaint(cx,cy,w,name,a,chalk){
-  const size=Math.max(4,Math.round(w)),key=name+'|'+size+'|'+(chalk?1:0)+'|'+PAL.line;
+  const size=Math.max(4,Math.round(w)),key=name+'|'+size+'|'+(chalk?1:0)+'|'+PAL.line+'|'+CREST_RIM;
   if(key!==crestCvKey){
     crestCvKey=key;
     const W=size+4,base=document.createElement('canvas');base.width=base.height=W;
     const keep=ctx;ctx=base.getContext('2d');try{clubDraw(W/2,W/2,size,name,1);}finally{ctx=keep;}
     const o=crestCv||document.createElement('canvas');o.width=o.height=W;const g=o.getContext('2d');g.clearRect(0,0,W,W);
-    for(const [dx,dy] of [[-1,0],[1,0],[0,-1],[0,1]])g.drawImage(base,dx,dy);
-    g.globalCompositeOperation='source-in';g.fillStyle=PAL.line;g.fillRect(0,0,W,W);g.globalCompositeOperation='source-over';
+    crestParts=crestPieces(base);
+    if(!chalk&&(CREST_RIM<0?crestParts<=CREST_RIM_MAX:CREST_RIM>0)){for(const [dx,dy] of [[-1,0],[1,0],[0,-1],[0,1]])g.drawImage(base,dx,dy);
+    g.globalCompositeOperation='source-in';g.fillStyle=PAL.line;g.fillRect(0,0,W,W);g.globalCompositeOperation='source-over';}
     if(chalk){const k=base.getContext('2d');k.globalCompositeOperation='source-in';k.fillStyle=cMix(PAL.line,PAL.grass,0.35);k.fillRect(0,0,W,W);}
     g.drawImage(base,0,0);crestCv=o;
   }

@@ -1,11 +1,10 @@
-/* ---- OMINI A 16 BIT: ombre e contorno pixel per pixel ----
-   puppet e puppetDive (02-pixel-art.js) non dipingono piu' i loro rettangoli uno per uno: li mettono in una griglia di materiali e qui la griglia si colora
-   come negli sprite delle console a 16 bit. Luce fissa in alto a sinistra: il bordo esterno verso la luce e' chiaro, quello opposto in ombra, e c'e' ombra
-   anche sotto le parti che stanno sopra (maglia sui pantaloncini, capelli sulla fronte, braccio sul busto). Il contorno non e' nero pieno: e' il tono piu' scuro
-   del colore che tocca. I toni di ogni colore cambiano anche di tinta (ombre verso il blu-viola, luci verso il giallo): cosi' divise, pelle e prato
-   stanno nella stessa tavolozza invece di scurirsi verso il grigio.
+/* ---- OMBRE A 16 BIT: toni e contorno pixel per pixel ----
+   Per le persone a bordo campo (sprShade, 24-bordocampo-persone.js) e i toni della vernice sul prato (ramp16, 25b-scritte-dipinte.js).
+   Una griglia di materiali si colora come negli sprite delle console a 16 bit: luce fissa in alto a sinistra (bordo esterno chiaro), ombra sul bordo
+   in basso a destra e sotto le parti che stanno sopra, contorno nel tono piu' scuro del colore che tocca invece del nero pieno. I toni di ogni colore
+   cambiano anche di tinta (ombre verso il blu-viola, luci verso il giallo), cosi' stanno nella stessa tavolozza del prato.
    Un rettangolo e' [x, y, w, h, colore, fl, gruppo]: fl&3 = profondita' (0 normale, 1 lontano = un tono piu' scuro, 2 vicino = un tono piu' chiaro), fl&4 = piatto
-   (occhi: colore esatto, senza ombre); il gruppo (facoltativo) unisce colori diversi della stessa superficie, come i motivi della maglia, che non si fanno ombra. */
+   (colore esatto, senza ombre); il gruppo (facoltativo) unisce colori diversi della stessa superficie, che non si fanno ombra. */
 const PS_FAR=1,PS_NEAR=2,PS_FLAT=4;
 function rgb2hsl(c){
   const r=c[0]/255,g=c[1]/255,b=c[2]/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;let h=0,s=0;
@@ -34,7 +33,7 @@ function ramp16(c,dep){
   if(RAMP16.size>600)RAMP16.clear();
   RAMP16.set(key,r);return r;
 }
-// griglia di lavoro riusata da un omino all'altro (gli omini stanno in 64x64 pixel anche con i superpoteri ingranditi)
+// griglia di lavoro riusata da una figura all'altra
 let PSW=0,PSH=0,psGrid=new Int16Array(0),psCol=[];
 const psMat=[],psIdx=new Map();
 function psShade(ops,st){   // st = numero di valori per rettangolo nella lista (7)
@@ -58,7 +57,7 @@ function psShade(ops,st){   // st = numero di valori per rettangolo nella lista 
   const at=(x,y)=>x<0||y<0||x>=W||y>=H?0:psGrid[y*W+x];
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
     const id=psGrid[y*W+x],k=y*W+x;
-    if(!id){   // vuoto: e' contorno se tocca l'omino (solo in croce: gli angoli restano smussati)
+    if(!id){   // vuoto: e' contorno se tocca la figura (solo in croce: gli angoli restano smussati)
       const n=at(x,y-1)||at(x,y+1)||at(x-1,y)||at(x+1,y);
       psCol[k]=n?psMat[n].out:null;continue;
     }
@@ -76,7 +75,7 @@ function psShade(ops,st){   // st = numero di valori per rettangolo nella lista 
     while(x<W){const c=psCol[row+x];let e=x+1;while(e<W&&psCol[row+e]===c)e++;if(c){ctx.fillStyle=c;ctx.fillRect(x0+x,y0+y,e-x,1);}x=e;}
   }
 }
-// sprite a righe di caratteri (come sprDraw, 22-campo-retro.js) colorato con le stesse ombre degli omini: le 'o' del disegno diventano il contorno
+// sprite a righe di caratteri (come sprDraw, 22-campo-retro.js) colorato con le ombre a 16 bit: le 'o' del disegno diventano il contorno
 // automatico dove toccano un colore, e restano linee scure dove sono da sole (le gambe del treppiede). (x,y) = piedi, fl = specchiato
 function sprShade(x,y,rows,m,fl){
   const h=rows.length,w=rows[0].length,ox=ri(x)-(w>>1),oy=ri(y)-h+1,ops=[];

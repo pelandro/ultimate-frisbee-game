@@ -4,9 +4,9 @@
    - lato vicino (in basso, visto da dietro): panche di legno, poi panchine coperte dal livello 3; allenatori in piedi, borse e borracce, il tavolo del
      segnapunti con i cartellini (dal livello 4 un tabellone a LED con il punteggio vero); dal 3 un cameraman, dal 4 la steadicam che segue il disco,
      dal 5 il carrello su binario;
-   - dietro le mete: gazebo delle squadre e borse sui campi piccoli, fotografi in ginocchio negli stadi.
+   - dietro le mete (24b-fondi-campo.js): sui campetti la roba per terra, al club il gazebo di tre quarti con frigo e borsoni, negli stadi i fotografi in ginocchio.
    Con la neve: cumuli lungo i lati e dietro le mete che coprono le gambe di cameraman e panchine, pupazzo di neve sui campi piccoli.
-   Con la pioggia: ombrelloni sopra lo staff e teli trasparenti sulle telecamere. Le persone sono piccole come il pubblico: i giocatori restano i protagonisti. Si colorano con le ombre a 16 bit degli omini (sprShade, 02c-ombre-16bit.js). */
+   Con la pioggia: ombrelloni sopra lo staff e teli trasparenti sulle telecamere. Le persone sono piccole come il pubblico: i giocatori restano i protagonisti. Si colorano con le ombre a 16 bit (sprShade, 02c-ombre-16bit.js). */
 const CREW_P={o:'#0e1018',k:'#16191f',K:'#3c4352',L:'#c9d0db',l:'#7fb4e8',g:'#7d8392',p:'#2b3142',w:'#eef0f3',r:'#ff4b4b',y:'#ff8a1f',Y:'#ffb15a',W:'#ffffff'};
 // telecamera su treppiede vista di fronte (lato lontano): testa dell'operatore, obiettivo, luce rossa, treppiede
 const SP_CAM_F=['...ooo....','..ohhho...','..ossso...','.ojjjjjo..','oooooooooo','okkkkkkkro','okKLLLKkko','okLlWlLkko','okLlllLkko','okKLLLKkko','oooooooooo','....og....','...og.o...','..og...o..','.og.....o.'];
@@ -112,16 +112,21 @@ function drawEnds(){
   const V=venueNow(),lv=vnLv(V),wx=G.wx|0,on=G.inMatch&&!G.drill,list=[];
   for(const side of [0,1]){
     const ex=side?FIELD_L:0,sg=side?1:-1,xs=sxw(ex+sg*3);if(side?xs>VW+30:xs<-30)continue;
+    endGround(side,V,lv,wx);   // erba, terra, sentiero e rete, siepe, ringhiera o cartelloni secondo l'impianto (24b-fondi-campo.js)
     if(wx===2)snowBankV(ex+sg*3.4,ex+sg*5.5,side);
     if(!on)continue;
-    const t=side?(G.dir[0]>0?0:1):(G.dir[0]>0?1:0);   // la squadra della panchina da quel lato
-    if(lv<=2){   // campi piccoli: gazebo della squadra, borse, borracce, una pila di dischi
-      list.push({y:syw(9),d:()=>gazebo(ex,sg,8.5,t,wx)});
-      list.push({y:syw(4),d:()=>sprShade(sxw(ex+sg*1.8),syw(4),SP_BAG,{o:PAL.out,b:UNI[t].shirt,B:cShade(UNI[t].shirt,0.3)})});
-      list.push({y:syw(5.2),d:()=>sprShade(sxw(ex+sg*2.6),syw(5.2),SP_BAG,{o:PAL.out,b:'#2b3142',B:'#4a5163'})});
-      list.push({y:syw(14),d:()=>sprShade(sxw(ex+sg*1.7),syw(14),SP_COOLER,CREW_P)});
-      list.push({y:syw(FIELD_W-6),d:()=>discStack(sxw(ex+sg*1.8),syw(FIELD_W-6))});
-      if(wx===2&&side===0)list.push({y:syw(FIELD_W-3),d:()=>sprShade(sxw(-2.4),syw(FIELD_W-3),SP_SNOWMAN,{o:PAL.out,w:'#f4f8fc',k:'#1d212b',s:'#ff8a1f'})});
+    const t=side?(G.dir[0]>0?0:1):(G.dir[0]>0?1:0),un=UNI[t],X=d=>sxw(endX(side,d)),fl=side===0;   // la squadra della panchina da quel lato; gli oggetti guardano il campo
+    const team={b:cShade(un.shirt,-0.1),B:cShade(un.shirt,0.25),C:un.shirt,J:un.shirt,j:cShade(un.shirt,-0.25)};
+    if(lv<=1){   // campetto: la roba lasciata per terra
+      for(const [d,wy,sp,m] of [[1.6,4.2,SP_PACK,team],[2.2,5.6,SP_PACK,{b:'#2b3142',B:'#4a5163'}],[1.4,8.3,SP_HOODIE,{J:'#6b4aa8',j:'#4d3480'}],[1.9,12.5,SP_BOTTLE,{b:un.shirt}],[2.4,13.1,SP_BOTTLE,{b:'#3fd183'}],[1.5,FIELD_W-7,SP_DISCS,{}],[2.3,FIELD_W-4.5,SP_HOODIE,team]])
+        list.push({y:syw(wy),d:()=>endObj(X(d),syw(wy),sp,m,fl)});
+      for(const wy of [0.4,FIELD_W-0.4])list.push({y:syw(wy),d:()=>cone(X(0.9),syw(wy))});   // coni agli angoli della meta
+    }else if(lv===2){   // campo del club: il gazebo della squadra con il frigo e i borsoni
+      list.push({y:syw(9.5),d:()=>gazebo3q(X(2.6),syw(9.5),un.shirt,wx)});
+      list.push({y:syw(9.7),d:()=>endObj(X(2.1),syw(9.7),SP_COOLER2,{C:un.shirt})});
+      for(const [d,wy,sp,m] of [[1.7,4,SP_DUFFEL,team],[2.6,5.3,SP_DUFFEL,{b:'#2b3142',B:'#4a5163'}],[1.8,14.5,SP_BOTTLE,{b:un.shirt}],[2.2,15,SP_BOTTLE,{b:un.shirt}],[1.6,FIELD_W-6,SP_DISCS,{}]])
+        list.push({y:syw(wy),d:()=>endObj(X(d),syw(wy),sp,m,fl)});
+      for(const wy of [0.4,FIELD_W-0.4])list.push({y:syw(wy),d:()=>cone(X(0.9),syw(wy))});
     }else{   // stadi: fotografi in ginocchio lungo la linea di fondo
       const ys=lv>=4?[5,10,15,22,27,32]:[7,13,24,30];
       for(let i=0;i<ys.length;i++){
@@ -133,15 +138,6 @@ function drawEnds(){
   }
   list.sort((a,b)=>a.y-b.y);for(const it of list)it.d();
 }
-// gazebo pieghevole visto dall'alto: tetto a quattro spicchi nel colore della squadra, la balza bianca, l'ombra (sg: -1 meta di sinistra, 1 di destra)
-function gazebo(ex,sg,wy,t,wxr){
-  const c=UNI[t].shirt,X=sxw(sg<0?ex-4.4:ex+1.2),w=ri(3.2*S),y=syw(wy),h=ri(3.2*S*0.62);if(X+w<0||X>VW)return;
-  px(X+2,y+2,w,h,'rgba(10,30,10,.22)');px(X-1,y-1,w+2,h+2,PAL.out);px(X,y,w,h,c);
-  const top=wxr===2?'#f4f8fc':cShade(c,0.22),bot=cShade(c,-0.22);
-  for(let r=0;r<h;r++){const k=r/h,ww=k<0.5?ri(w*(1-2*k)):ri(w*(2*k-1));if(ww>0)px(X+ri((w-ww)/2),y+r,ww,1,k<0.5?top:bot);}
-  px(X,y,w,1,'#f4f4f4');px(X,y+h-1,w,1,'#f4f4f4');px(X+ri(w/2),y+ri(h/2),1,1,PAL.out);
-}
-function discStack(x,y){for(let i=0;i<4;i++){px(x-3,y-2*i-2,7,2,PAL.out);px(x-2,y-2*i-2,5,1,i%2?'#f4f4f4':'#ffd23f');}}
 // ---------- neve: cumuli spalati ai bordi ----------
 // rumore morbido: altezze dei cumuli che cambiano piano lungo il lato
 function nz(t,seed){const i=Math.floor(t),f=t-i,a=ihash(i,seed)%1000/1000,b=ihash(i+1,seed)%1000/1000,s=f*f*(3-2*f);return a+(b-a)*s;}

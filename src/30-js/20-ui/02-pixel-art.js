@@ -103,7 +103,7 @@ function matchLook(){
 function ezColor(t){
   const V=venueNow(),u=UNI[t],c=cLum(u.shirt)>0.78?u.shorts:u.shirt,hsl=rgb2hsl(cRgb(c));
   const p=hsl2hex(hsl[0],Math.min(hsl[1],0.62),clamp(hsl[2],0.33,0.5)),z=cMix(p,PAL.grass,fieldKind(V)===0?0.5:0.1+0.36*fieldWear(V));
-  return (G.wx|0)===2?cMix(z,'#eef3f8',0.22):z;   // sui campi poveri la vernice e' sbiadita (sulla terra resta appena un velo di colore); con la neve un po' piu' chiara
+  const wx=G.wx|0;return wx===2?cMix(z,'#eef3f8',0.22):(wx===1?cShade(z,-0.14):z);   // sui campi poveri la vernice e' sbiadita (sulla terra resta appena un velo di colore); con la neve piu' chiara, bagnata piu' scura
 }
 // Stesso stemma dei menu, disegnato sulla griglia del campo senza immagini o filtri.
 function crestPx(cx,cy,w,name,alpha){clubDraw(cx,cy,w,name,alpha);}
@@ -183,8 +183,7 @@ function pdiscSprite(x,y,spin,sz,tl,inv){
   px(rows[0][0]+1,rows[0][1],W-2,1,top);   // riflesso in alto, senza toccare gli spigoli
   const m=rows[H>>1];px(m[0]+((spin|0)%(W-2)+(W-2))%(W-2),m[1],2,1,'#7f9bd0');
 }
-const PH=()=>18;
-const MAN_K=0.7,MAN_KL=0.8;   // da omino di 20 pixel (in cui sono scritte le pose) a omino di 18: braccia e salti, passi   // altezza dello sprite in pixel: la pixel-art non si scala
+const PH=()=>20;   // altezza dello sprite in pixel: la pixel-art non si scala
 // ---- omino a pixel: testa, busto, pantaloncini, arti spessi 2 pixel; contorno scuro attorno a tutta la sagoma ----
 const lookOf=pl=>(pl&&pl.look)||DEF_LOOK;
 // CORSA a 6 fotogrammi (mezzo ciclo = 3, poi le gambe si scambiano): [piede d'appoggio avanti/indietro, piede in volo avanti/indietro, alzata del piede in volo, molleggio del corpo (+ = giu')].
@@ -193,8 +192,12 @@ const RUN_F=[[2,-3,1,1],[0,0,3,0],[-3,3,2,-1]];
 // ex: {brk: frenata, view: 0 di lato, 1 di schiena, 2 di fronte, kind: tipo di lancio, ca: secondi dalla presa (o -1)}. Restituisce la posizione della mano vicina (il disco la segue)
 function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   x=ri(x);y=ri(y);ex=ex||{};
-  // qui si decide la posa (dove vanno piedi e mani); il disegno e' quello a mano di drawMan16 (02d-omini-disegnati.js)
-  const skin=lk.skin,skin2=shade(skin,-0.16),hair=lk.hair,shirt=un.shirt;
+  const ops=[],R=(a,b,w,h,c)=>ops.push(a,b,w,h,c);
+  const Lm=(ax,ay,bx,by,c,c2,cut)=>{   // arto: quadratini 2x2 lungo la linea; da 'cut' in poi il secondo colore
+    const n=Math.max(Math.abs(bx-ax),Math.abs(by-ay))||1;
+    for(let i=0;i<=n;i++){const u=i/n;R(ri(ax+(bx-ax)*u),ri(ay+(by-ay)*u),2,2,(c2&&u>=cut)?c2:c);}
+  };
+  const skin=lk.skin,skin2=shade(skin,-0.16),hair=lk.hair,shirt=un.shirt,shirt2=shade(shirt,-0.22),sock2=shade(un.socks,-0.22),shoe2=shade(un.shoe,0.12);
   const cp=pose==='cel'?(ex.cp||{}):null;   // posa delle esultanze (20-ui/27-esultanze.js): mani, gambe, salto, accovacciata e vista date da fuori
   const moving=!cp&&run>0.18,fast=run>0.45,view=moving?(ex.view|0):(cp?(cp.view|0):(ex.view===2?2:0)),cheer=pose==='cheer',mark=pose==='mark';
   const fr=moving?((Math.floor(ph/(Math.PI*2)*6)%6)+6)%6:0,half=fr>=3?1:0,RF=RUN_F[fr%3],k=fast?1:0.6;
@@ -205,13 +208,12 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   const crouch=(ex.land?2:0)+(pose==='aim'?(pw>0.7?2:(pw>0.35?1:0)):0)+(pose==='throw'&&tu<0.25?(lg?2:1):0)+(pose==='throw'&&(ex.kind==='hammer'||ex.kind==='scoober')&&tu>=0.25&&tu<0.6?1:0)
     +(pose==='one'&&cka<0.2?2:0)+(pose==='clap'&&cka>=0.1&&cka<0.24?1:0);
   const breathe=!moving&&!cheer&&!cp&&pose!=='jump'&&Math.sin(G.tick*2.4+x*0.37)>0.55?1:0;   // da fermo il busto respira (un pixel), ognuno col suo tempo
-  const dyB=(moving?ri(RF[3]*k):(mark?1:(cp?ri(cp.crouch||0):0)))+(cp?0:crouch),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-22+breathe+(pose==='sad'?1:0);
+  const dyB=(moving?ri(RF[3]*k):(mark?1:(cp?ri(cp.crouch||0):0)))+(cp?0:crouch),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-20+breathe+(pose==='sad'?1:0);
   const caught=ex.ca>=0&&ex.ca<0.3,recoil=caught&&ex.ca>0.08&&ex.ca<0.22?-f:0;   // presa: un pixel di rinculo all'indietro
   let lean=fast?f:0;if(ex.brk&&moving)lean=-f;if(pose==='aim')lean=-f;if((pose==='throw'&&tu<0.6)||pose==='one'||pose==='runcatch')lean=f;if(cp)lean=ri(cp.lean||0)*f;lean+=recoil;
-  // GAMBE: quella lontana (dietro) e' un tono piu' scura, cosi' si capisce quale va avanti
-  const legs=[];
+  // GAMBE: quella lontana (dietro) e' piu' scura, cosi' si capisce quale va avanti
   for(const i of [-1,1]){
-    const far=i<0,hx=x+(i>0?1:-2);   // anche sotto i pantaloncini larghi 7 le gambe restano in mezzo
+    const far=i<0,hx=x-1+(i>0?1:-1),sk=far?skin2:skin,so=far?sock2:un.socks,sh=far?shoe2:un.shoe;
     let dx=0,lift=0;
     if(cp&&cp.lg){const L=cp.lg[i<0?0:1];dx=ri(L[0])*(cp.ab?1:f);lift=ri(L[1]);}   // cp.ab: x sullo schermo (vista di fronte), altrimenti in avanti
     else if(moving&&view===0){const planted=(i<0)===(half===0);dx=ri((planted?RF[0]:RF[1])*k)*f;lift=planted?0:ri(RF[2]*(fast?1:0.67));}
@@ -222,9 +224,10 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     else if(pose==='jump'){dx=i>0?f:-f;lift=3;}   // salto: gambe raccolte
     else if(mark)dx=i*2;   // marcatore: gambe larghe e corpo basso
     else dx=i>0?2:-1;   // da fermo: un pixel di prato tra i piedi, le gambe non si fondono
-    const fx=hx+dx,fy=gy-2-lift,L={far,hx,hy:by-6,fx,fy};
-    if(lift>=2){L.kx=hx+ri(dx/2)+f*(view===0?1:0);L.ky=by-3-(lift>2?1:0);}   // ginocchio piegato
-    legs.push(L);
+    const fx=hx+dx,fy=gy-2-lift;
+    if(lift>=2){const kx=hx+ri(dx/2)+f*(view===0?1:0),ky=by-3-(lift>2?1:0);Lm(hx,by-6,kx,ky,sk);Lm(kx,ky,fx,fy,sk,so,0.25);}   // ginocchio piegato
+    else Lm(hx,by-6,fx,fy,sk,so,0.62);
+    const sx0=view!==0?fx:(f>0?fx:fx-1),sw=view!==0?2:3;R(sx0,fy,sw,2,sh);R(view!==0?sx0:(f>0?sx0:sx0+1),fy,sw-1,1,shade(sh,0.2));
   }
   const shx=x-1+lean;
   // BRACCIA: di corsa vanno in opposizione alle gambe; il lancio ha caricamento, rilascio e accompagnamento diversi per rovescio, dritto e hammer
@@ -270,32 +273,58 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     if(pose==='sad')return i>0?[shx+f,sy+7]:[shx-f,sy+7];
     return moving?runHand(i):[shx+(i>0?f:-f),sy+6];
   };
-  // eroi dei superpoteri: la loro testa (o il collo, la coda, i tentacoli) si disegna sopra al corpo, con le ombre automatiche, per la testa 6x6 di prima
-  // le pose qui sopra sono scritte per l'omino di 20 pixel: si portano sull'omino piccolo (18 pixel, come in Retro Bowl) con MAN_K, e MAN_KL per i passi
-  const gN=y-ri(hop*MAN_K),bN=gN+ri(dyB*MAN_K),sN=bN-13+breathe,TN=bN-18+breathe+(pose==='sad'?1:0),shN=x-1+lean;
-  const mh=q=>[shN+ri((q[0]-shx)*MAN_K),sN+1+ri((q[1]-sy-1)*MAN_K)];
-  const legsN=legs.map(L=>{const hx=x+(L.far?-2:0),N={far:L.far,hx,hy:bN-6,fx:hx+ri((L.fx-L.hx)*MAN_KL),fy:gN-1-ri((gy-2-L.fy)*MAN_K)};if(L.kx!==undefined){N.kx=hx+ri((L.kx-L.hx)*MAN_KL);N.ky=bN-4;}return N;});
-  let hops=null;
-  if(ex.hero&&HERO_DRAW[ex.hero]){hops=[];HERO_DRAW[ex.hero]((a,b,w,h,c,fl,g)=>hops.push(a,b,w,h,c,fl|0,g||0),{x,gy:gN,by:bN,sy:sN,T:TN-1,hx0:x-3+lean+(view===0?f:0),f,view,lean,fast,skin,skin2,hair,shirt});}
-  const sc=ex.sc&&ex.sc!==1?ex.sc:0;
-  let h=mh(hand(1));
-  drawMan16({x,gy:gN,by:bN,sy:sN,T:TN,f,view,lean,un,lk,legs:legsN,hands:[h,mh(hand(-1))],shx:shN,hero:!!hops,sc});
-  if(hops){if(sc)for(let i=0;i<hops.length;i+=7){const a=ri(x+(hops[i]-x)*sc),b=ri(gN+(hops[i+1]-gN)*sc),a2=ri(x+(hops[i]+hops[i+2]-x)*sc),b2=ri(gN+(hops[i+1]+hops[i+3]-gN)*sc);hops[i]=a;hops[i+1]=b;hops[i+2]=Math.max(1,a2-a);hops[i+3]=Math.max(1,b2-b);}psShade(hops,7);}
-  if(sc)h=[ri(x+(h[0]-x)*sc),ri(gN+(h[1]-gN)*sc)];   // eroi giganti: la mano (e il disco) seguono l'ingrandimento
+  // braccio lontano (dietro al busto, piu' scuro)
+  let h=hand(-1);Lm(shx,sy+1,h[0],h[1],shirt2,skin2,0.45);
+  // pantaloncini e busto
+  R(x-3,by-8,6,2,un.shorts);
+  R(x-3+lean,sy,6,6,shirt);
+  if(view===0)R(f>0?x-3+lean:x+2+lean,sy,1,6,shirt2);else R(x-3+lean,sy,1,6,shirt2);
+  R(x-3+lean,sy+5,6,1,shirt2);
+  if(un.pat){const sB=un.shirtB,sB2=shade(sB,-0.22);for(let j=0;j<6;j++)for(let i=0;i<6;i++)if(eqPatHit(un.pat,((view===0&&f<0?5-i:i)+0.5)/6,(j+0.5)/6))R(x-3+lean+i,sy+j,1,1,j===5||(view===0?(f>0?i===0:i===5):i===0)?sB2:sB);}   // maglia a motivi (Equipaggiamento di Ultimate Team), con le stesse ombre
+  // TESTA: di lato (capelli dietro, occhio davanti), di schiena (solo capelli) o di fronte (due occhi)
+  const hx0=x-3+lean+(view===0?f:0),bk=f>0?hx0:hx0+4,bald=lk.style===4;
+  if(ex.hero&&HERO_DRAW[ex.hero])HERO_DRAW[ex.hero](R,{x,gy,by,sy,T,hx0,f,view,lean,fast,skin,skin2,hair,shirt});   // superpoteri (20-ui/20-superpoteri.js): testa, collo, coda o tentacoli dell'animale
+  else{
+  R(hx0+1,T,4,1,skin);R(hx0,T+1,6,4,skin);R(hx0+1,T+5,4,1,skin);
+  if(view===1){
+    if(bald){R(hx0+1,T,4,1,skin2);R(hx0,T+1,6,3,skin2);}
+    else{R(hx0+1,T,4,1,hair);R(hx0,T+1,6,4,hair);if(lk.style===2)R(hx0,T+5,6,1,hair);if(lk.style===3)R(hx0+2,T+5,2,3,hair);}
+    if(lk.band)R(hx0,T+2,6,1,lk.band);
+  }else{
+    if(bald){R(hx0+1,T,4,1,skin2);if(view===0)R(bk,T+1,2,1,skin2);}
+    else{
+      R(hx0+1,T,4,1,hair);R(hx0,T+1,6,1,hair);
+      if(view===0){R(bk,T+2,2,lk.style===0?1:(lk.style===1?3:(lk.style===2?6:2)),hair);if(lk.style===3)R(f>0?hx0-2:hx0+6,T+2+(fast&&Math.sin(ph)>0?1:0),2,3,hair);}
+      else if(lk.style>=1){R(hx0,T+2,1,lk.style===2?4:2,hair);R(hx0+5,T+2,1,lk.style===2?4:2,hair);}
+    }
+    if(lk.band)R(hx0,T+1,6,1,lk.band);
+    if(lk.beard){const bc=shade(hair,-0.15);R(hx0+1,T+5,4,1,bc);R(view===0?(f>0?hx0+3:hx0):hx0+1,T+4,view===0?3:4,1,bc);}
+    if(view===0)R(f>0?hx0+4:hx0+1,T+3,1,1,PAL.out);else{R(hx0+1,T+3,1,1,PAL.out);R(hx0+4,T+3,1,1,PAL.out);}
+  }
+  }
+  // braccio vicino (davanti al busto): dove l'avambraccio passa sulla maglia ha una linea scura dietro e un tono piu' scuro davanti, cosi' si legge come
+  // braccio e non come una striscia color pelle sulla maglia (il contorno scuro generale e' sotto al busto, li' non si vede)
+  h=hand(1);
+  {const tx0=x-3+lean,tx1=x+2+lean,ax=shx,ay=sy+1,n=Math.max(Math.abs(h[0]-ax),Math.abs(h[1]-ay))||1;
+   for(let i=0;i<=n;i++){const u=i/n;if(u<0.45)continue;const qx=ri(ax+(h[0]-ax)*u),qy=ri(ay+(h[1]-ay)*u);
+     for(const [ex_,c] of [[f>0?qx-1:qx+2,PAL.out],[f>0?qx+2:qx-1,shirt2]])for(const ey of [qy,qy+1])if(ex_>=tx0&&ex_<=tx1&&ey>=sy&&ey<=sy+5)R(ex_,ey,1,1,c);}}
+  Lm(shx,sy+1,h[0],h[1],shade(shirt,0.14),skin,0.45);   // manica un tono piu' chiara della maglia: il braccio vicino si stacca dal busto
+  if(ex.sc&&ex.sc!==1){const k=ex.sc;for(let i=0;i<ops.length;i+=5){const a=ri(x+(ops[i]-x)*k),b=ri(y+(ops[i+1]-y)*k),a2=ri(x+(ops[i]+ops[i+2]-x)*k),b2=ri(y+(ops[i+1]+ops[i+3]-y)*k);ops[i]=a;ops[i+1]=b;ops[i+2]=Math.max(1,a2-a);ops[i+3]=Math.max(1,b2-b);}h=[ri(x+(h[0]-x)*k),ri(y+(h[1]-y)*k)];}   // eroi dei superpoteri piu' grandi: i rettangoli si allargano attorno ai piedi, i pixel restano netti
+  ctx.fillStyle=PAL.out;for(let i=0;i<ops.length;i+=5)ctx.fillRect(ops[i]-1,ops[i+1]-1,ops[i+2]+2,ops[i+3]+2);
+  for(let i=0;i<ops.length;i+=5){ctx.fillStyle=ops[i+4];ctx.fillRect(ops[i],ops[i+1],ops[i+2],ops[i+3]);}
   return h;
 }
 // omino in tuffo: disteso in orizzontale, braccia tese in avanti
 function puppetDive(x,y,un,lk,d,lift){
-  x=ri(x);y=ri(y)-ri(lift*MAN_K);
-  const P=pal16(un,lk),N=P[0],F=P[1],A=a=>d>0?x+a:x-a;   // a = distanza in avanti lungo la direzione del tuffo
-  pgBegin(x,y);
-  pgLimb(A(-4),y-3,A(-9),y-4,2,0,0,0,d,6,false);pgLimbDraw([F.S,F.s],[F.C,F.c],0.55,6);pgSpr(SHOE_F,A(-10)-(d>0?0:1),y-4,false,F,6);   // gamba lontana, piu' alta
-  pgLimb(A(-4),y-2,A(-8),y-2,2,0,0,0,d,6,false);pgLimbDraw([N.S,N.s],[N.C,N.c],0.55,6);pgSpr(SHOE_F,A(-9)-(d>0?0:1),y-2,false,N,6);
-  pgLimb(A(2),y-4,A(8),y-4,2,0,0,0,d,5,false);pgLimbDraw([F.J,F.j],[F.S,F.s],0.3,5);   // braccio lontano teso
-  pgSpr(DIVE_B,d>0?x-5:x-3,y-5,d<0,N,1,un.pat?((i,j,ch)=>(ch==='K'||ch==='J'||ch==='j')&&eqPatHit(un.pat,(j+0.5)/3,(8.5-i)/5)?(ch==='K'?'B':(ch==='J'?'N':'n')):ch):null);   // busto disteso
-  const st=lk.style===4?4:clamp(lk.style|0,0,3),rows=HEADS[0][st],w=rows[0].length;pgSpr(rows,d>0?x+8-(w-1):x-8,y-8,d<0,N,3);   // testa alzata, guarda il disco
-  pgLimb(A(3),y-3,A(9),y-5,2,0,0,0,d,4,MAN_OL);pgLimbDraw([N.K,N.J],[N.S,N.s],0.3,4);   // braccio vicino teso verso il disco
-  pgDraw(0,x,y);
+  x=ri(x);y=ri(y)-ri(lift);
+  const ops=[],R=(a,w,b,h,c)=>ops.push(d>0?x+a:x-a-w,y+b,w,h,c);   // a = distanza in avanti lungo la direzione del tuffo
+  const skin=lk.skin;
+  R(-11,5,-4,2,skin);R(-13,3,-4,2,un.shoe);R(-10,4,-2,2,skin);R(-12,3,-2,2,un.shoe);   // gambe e scarpe
+  R(-6,4,-6,4,un.shorts);R(-2,7,-6,4,un.shirt);if(un.pat)for(let j=0;j<4;j++)for(let i=0;i<7;i++)if(eqPatHit(un.pat,(j+0.5)/4,(6.5-i)/7))R(-2+i,1,-6+j,1,un.shirtB);R(-2,7,-3,1,shade(un.shirt,-0.22));   // pantaloncini e busto (a motivi: il busto e' disteso)
+  R(5,5,-7,5,skin);R(5,5,-8,2,lk.style===4?shade(skin,-0.16):lk.hair);R(9,1,-5,1,PAL.out);   // testa
+  R(7,6,-3,2,skin);R(8,5,-5,2,skin);   // braccia tese
+  ctx.fillStyle=PAL.out;for(let i=0;i<ops.length;i+=5)ctx.fillRect(ops[i]-1,ops[i+1]-1,ops[i+2]+2,ops[i+3]+2);
+  for(let i=0;i<ops.length;i+=5){ctx.fillStyle=ops[i+4];ctx.fillRect(ops[i],ops[i+1],ops[i+2],ops[i+3]);}
 }
 // avanzamento del tuffo (0 = in piedi, 1 = disteso): si butta in 0,3 s, resta giu' fino alla fine dell'azione, poi si rialza
 function diveProg(p){
