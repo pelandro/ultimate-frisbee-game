@@ -332,15 +332,15 @@ catch(e){
     }
     await page.click('#hHome');
   });
-  await step('rosa: filtri, ordinamento e scheda in tre parti; mercato: filtro e ordinamento; guida contestuale',async()=>{
+  await step('rosa: ordinamento e scheda in tre parti; mercato: filtro e ordinamento; guida contestuale',async()=>{
     await vis('#home');await page.click('#hRoster');await vis('#roster');
     await page.click('#rBox [data-rv="c"]');   // la vista scelta resta salvata: qui si controllano le carte
     if(await page.locator('#rBox .pgrid .pcard').count()<7)throw new Error('la vista a carte non mostra la rosa');
     await page.click('#rBox [data-rv="t"]');   // il resto del percorso usa la tabella
     const all=await page.locator('#rBox tr.pl').count();
-    await page.click('#rBox [data-rf="H"]');const hs=await page.locator('#rBox tr.pl').count();
-    if(!(hs>0&&hs<all))throw new Error('il filtro Handler non restringe la rosa ('+hs+' su '+all+')');
-    await page.click('#rBox [data-rf="all"]');await page.selectOption('#rBox [data-rsort]','age');
+    if(await page.locator('#rBox [data-rf]').count())throw new Error('i filtri per linea e ruolo sono stati tolti');
+    if(all<7)throw new Error('la tabella non mostra tutta la rosa');
+    await page.selectOption('#rBox [data-rsort]','age');
     const ages=(await page.locator('#rBox tr.pl small.rl').allInnerTexts()).map(t=>+(t.match(/(\d+) anni/)||[0,0])[1]);
     if(ages.some((a,i)=>i&&a<ages[i-1]))throw new Error('ordinamento per età non rispettato: '+ages.join(','));
     await page.click('#rBox .dbtn >> nth=0');
@@ -583,8 +583,8 @@ catch(e){
     await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');await vis('#ut');
     if(await page.locator('#uBuy').count())throw new Error('«Compra un pacchetto» e\' sostituito dal Negozio');
     await page.click('#uShop');await vis('#utShop');
-    if(await page.locator('#shList [data-k]').count()!==4)throw new Error('il Negozio deve avere quattro pacchetti (con l\'equipaggiamento)');
-    if(await page.locator('#shList svg.disc').count()!==4)throw new Error('i pacchetti del Negozio sono dischi');
+    if(await page.locator('#shList [data-k]').count()!==5)throw new Error('il Negozio deve avere cinque pacchetti (con l\'oro e l\'equipaggiamento)');
+    if(await page.locator('#shList svg.disc').count()!==5)throw new Error('i pacchetti del Negozio sono dischi');
     await page.click('#shList [data-k="han"]');await page.click('#shList [data-k="cut"]');
     const u1=await ut();if(u1.c!==500-65-65||u1.pk.length!==u0.pk.length+2)throw new Error('Handler e Cutter: costo o pacchetti sbagliati '+JSON.stringify(u1));
     await page.click('#shOpen');await vis('#utPack');
@@ -594,6 +594,14 @@ catch(e){
     if(cls.length!==3||cls.some(t=>!t.trim()||t.includes(' · ')))throw new Error('le carte del pacchetto sono giocatori veri con il club: '+JSON.stringify(cls));
     await page.click('#pkGo');await page.waitForTimeout(300);await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await vis('#ut');
     const u2=await ut(),nw=u2.r.slice(u1.n);if(nw.length!==6||nw.slice(0,3).some(r=>r!=='H')||nw.slice(3).some(r=>r!=='C'))throw new Error('3 Handler e 3 Cutter attesi: '+nw.join(''));
+    // pacchetto oro: 5 carte, almeno un Raro (Overall 65 o piu')
+    await page.click('#uShop');await vis('#utShop');await page.click('#shList [data-k="oro"]');
+    const u3=await ut();if(u3.c!==u2.c-220||u3.pk.at(-1)!==54)throw new Error('pacchetto oro: costo o codice sbagliati '+JSON.stringify(u3.pk));
+    await page.click('#shOpen');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(3400);
+    if(await page.locator('#pkBody .ucard').count()!==5)throw new Error('il pacchetto oro ha 5 carte');
+    await page.click('#pkGo');await vis('#ut');
+    const best=await page.evaluate(()=>{const o=JSON.parse(window.testSaves.getItem('ultimate-ut'));return Math.max(...o.col.slice(-5).map(x=>x.ovr));});
+    if(best<65)throw new Error('il pacchetto oro garantisce almeno un Raro: migliore '+best);
     await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
   });
   await step('Ultimate Team: Real player (senza configurazione online) e ritorno al menu',async()=>{
@@ -609,7 +617,7 @@ catch(e){
     if(await page.locator('#urTeam').isVisible())throw new Error('Real player deve partire senza giocatori, non con quelli del torneo');
     await page.click('#urPack');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await vis('#utReal');
     let [cpu,real]=await cols();
-    if(!real||real.n!==10)throw new Error('pacchetto iniziale di Real player: attesi 10 giocatori, trovati '+(real&&real.n));
+    if(!real||real.n!==14)throw new Error('pacchetto iniziale di Real player: attesi 14 giocatori, trovati '+(real&&real.n));
     if(cpu.n!==cpu0.n||cpu.c!==cpu0.c)throw new Error('aprire il pacchetto di Real player ha cambiato la squadra del torneo');
     await page.click('#urTeam');await vis('#utTeam');await page.click('#tmMode [data-m="up"]');
     if(!/1100 punti/.test(await page.locator('#tmInfo').innerText()))throw new Error('sotto i 1100 punti i potenziamenti devono essere bloccati');
@@ -626,7 +634,7 @@ catch(e){
     await page.click('#urPack');await vis('#utPack');
     for(let i=0;i<4;i++){await page.click('#pkGo');await page.waitForTimeout(i<3?2200:2600);await page.click('#pkGo');}   // due pacchetti di giocatori e due di accessori
     await vis('#utReal');
-    real=(await cols())[1];if(real.n!==21||real.pk.length)throw new Error('dopo i due pacchetti premio attesi 21 giocatori, trovati '+real.n);
+    real=(await cols())[1];if(real.n!==25||real.pk.length)throw new Error('dopo i due pacchetti premio attesi 25 giocatori, trovati '+real.n);
     await page.click('#urTeam');await vis('#utTeam');await page.click('#tmMode [data-m="up"]');await page.click('#tmList .urow[data-i] >> nth=0');await vis('#tmUp');
     await page.click('#tmBack');await page.click('#urBack');await vis('#utMode');
     // rientrando nel torneo contro il computer si ritrova la sua squadra, intatta
@@ -651,8 +659,8 @@ catch(e){
     await page.click('#urPack');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await vis('#utReal');
     await page.click('#urShop');await vis('#utShop');if(await page.locator('#shList [data-k="eroi"]').count())throw new Error('il pacchetto eroi sta solo nei Superpoteri');
     await page.click('#shBack');await page.click('#urBack');await vis('#utMode');await page.click('#umHero');await vis('#utReal');
-    s=await st();if(!s.r||s.r.n!==10||s.r.hk||s.h.ha.length!==3||new Set(s.h.ha).size!==3)throw new Error('attesi i 10 giocatori di Real player (senza eroi nel suo salvataggio) e 3 eroi diversi in campo: '+JSON.stringify(s));
-    if(!(await page.locator('#urTeam').isVisible())||!/10 giocatori/.test(await page.locator('#urTeamS').textContent()))throw new Error('nei Superpoteri si vede la squadra di Real player');
+    s=await st();if(!s.r||s.r.n!==14||s.r.hk||s.h.ha.length!==3||new Set(s.h.ha).size!==3)throw new Error('attesi i 14 giocatori di Real player (senza eroi nel suo salvataggio) e 3 eroi diversi in campo: '+JSON.stringify(s));
+    if(!(await page.locator('#urTeam').isVisible())||!/14 giocatori/.test(await page.locator('#urTeamS').textContent()))throw new Error('nei Superpoteri si vede la squadra di Real player');
     await page.click('#urHero');await vis('#utHero');
     if(await page.locator('#uhList .qhe').count()!==9||await page.locator('#uhList .qhe:disabled').count()!==6)throw new Error('gli eroi sono 9, sei ancora da trovare');
     await page.click('#uhSt .uhp.has >> nth=0');if(await page.locator('#uhSt .uhp.has').count()!==2)throw new Error('toccando un titolare con l\'eroe glielo tolgo');
@@ -671,7 +679,7 @@ catch(e){
     if(w[0]!==50||w[1]!==rc0)throw new Error('il pacchetto eroi si paga con i gettoni dei Superpoteri, non con quelli di Real player: '+w.join(' e ')+', prima '+rc0);
     await page.click('#shBack');await page.click('#urBack');await vis('#utMode');
     // passando da Real player e tornando, gli eroi restano dati agli stessi titolari (due, dopo averne tolto uno)
-    await page.click('#umReal');await vis('#utReal');s=await st();if(s.r.hk||s.r.n!==10)throw new Error('Real player non deve avere eroi: '+JSON.stringify(s));
+    await page.click('#umReal');await vis('#utReal');s=await st();if(s.r.hk||s.r.n!==14)throw new Error('Real player non deve avere eroi: '+JSON.stringify(s));
     await page.click('#urBack');await vis('#utMode');await page.click('#umHero');await vis('#utReal');await page.click('#urHero');await vis('#utHero');
     if(await page.locator('#uhSt .uhp.has').count()!==2)throw new Error('gli eroi assegnati devono restare dove li hai messi');
     await page.click('#uhBack');await page.click('#urBack');await page.click('#umBack');await vis('#title');

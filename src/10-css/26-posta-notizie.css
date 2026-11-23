@@ -20,3 +20,34 @@
 .ali .alt{flex:1 1 240px}
 .ali .alb .schrow{margin-top:0;flex:none}
 .ali .alfull,.ali .alb .res{order:3;flex-basis:100%}
+/* Bacheca, una stagione per riquadro: gruppi separati da una riga, ognuno con il suo titoletto (04-club.js) */
+.seas h4{margin:8px 0 4px;padding-top:6px;border-top:2px solid rgba(0,0,0,.45);font-family:var(--pfont);font-size:8px;font-weight:400;font-size-adjust:none;color:#c9a0ff;text-transform:uppercase;letter-spacing:0}
+.seas .spl{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.seas .sp{padding:2px 8px;background:#1d293c;border:2px solid #000;font-size:15px;color:#dde6f1}
+.seas .sp.ok{color:var(--good)}.seas .sp.gold{color:var(--gold)}
+.sch3{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:4px 14px;margin:0;padding:0;list-style:none;font-size:15px;color:#dde6f1}
+.sch3 i,.sb7 i{font-style:normal;display:block;font-size:12px;color:#d1deec;text-transform:uppercase;letter-spacing:.03em}
+.sch3 b{font-weight:400;color:#fff}
+.seas .awl li{padding:4px 0;border-top:1px solid rgba(0,0,0,.35)}
+.seas .awl li span{display:block;font-size:13px;color:#aebcd0}
+.sb7{display:flex;flex-wrap:wrap;gap:5px}
+.sb7 .sch{display:inline-flex;align-items:baseline;gap:5px;padding:2px 8px;background:#1d293c;border:2px solid #000;font-size:15px;color:#fff}
+.sb7 .sch i{display:inline;color:var(--gold)}
+.sb7 .sch small{font-size:12px;color:#aebcd0}
+.sb7 .sch.me{border-color:var(--gold);color:var(--gold)}
+/* Partita veloce: riquadri con la fascia del loro colore (blu, rosso, oro), «Gioca» da solo sotto (03-ultimate-team-veloce.html) */
+.qteams{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;margin:8px 0 0}
+.qteams .qswap{margin:0}
+.qpan{background:#2e4361;border:3px solid #000;margin:8px 0 0}
+.qteams .qpan{margin:0}
+.qpan h3{margin:0;padding:4px 9px;background:var(--pc);color:#14202f;font-family:var(--pfont);font-size:9px;font-weight:400;font-size-adjust:none;text-transform:uppercase;letter-spacing:0;line-height:1.4}
+.qpb{padding:7px 10px 8px}
+.qblu{--pc:#6fa8f0}.qros{--pc:#ff6b70}.qoro{--pc:#ffd23f}
+.qpb .qp{margin:4px 0 0}
+.qrow{display:flex;align-items:center;gap:10px;margin:0 0 5px}
+.qrow label{flex:0 0 150px;color:#dde6f1;font-size:16px}
+.qrow select.qs{flex:0 0 auto;width:280px;max-width:100%}
+#qPlay.qgo{display:block;margin:8px auto 0;min-width:260px;font-size:20px;padding:7px 24px}
+.qdiv{max-width:420px;margin-left:auto;margin-right:auto}
+/* premi: il titolo (Attaccante dell'anno…) in viola, il nome in bianco */
+.awl li i{color:#c9a0ff}

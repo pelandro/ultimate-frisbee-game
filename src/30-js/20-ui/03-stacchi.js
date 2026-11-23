@@ -12,9 +12,9 @@ function startCine(spec){
   const timing=spec.kind==='jump'||spec.timing;
   // ampiezza della zona verde: dipende dal salto (duello in aria) o dal tuffo del tuo giocatore
   const sk=spec.kind==='jump'?'sal':'tuf',mp=spec.kind==='jump'?(spec.a.t===0?spec.a:spec.d):spec.diver;
-  // la difficolta' della partita stringe verde e giallo (la velocita' resta quella del Salto o del Tuffo, che si legge gia' sulla barra)
-  const dk=CINE_DK[G.lvl?clamp(G.lvl[1]|0,0,3):0],hw=(0.025+0.095*clamp((mp.s[sk]-40)/60,0,1))*dk;
-  cine={yw:0.165*dk,spec,kits,t:0,rt:0,phase:'aim',timing,locked:false,pos:0,bonus:0,quality:'',out:null,aimEnd:timing?2.4:1.0,hw,sp:2.3-1.0*clamp((mp.s[sk]-40)/60,0,1),statTxt:(sk==='sal'?'Salto ':'Tuffo ')+mp.s[sk]};
+  // verde e giallo piu' stretti (prima 5-24% e 33% della barra: troppo facili); la difficolta' della partita li stringe ancora (la velocita' resta quella del Salto o del Tuffo, che si legge gia' sulla barra)
+  const dk=CINE_DK[G.lvl?clamp(G.lvl[1]|0,0,3):0],hw=(0.012+0.058*clamp((mp.s[sk]-40)/60,0,1))*dk;   // verde: da 2,4% (Salto o Tuffo 40) a 14% (100) della barra a Facile
+  cine={yw:0.09*dk,spec,kits,t:0,rt:0,phase:'aim',timing,locked:false,pos:0,bonus:0,quality:'',out:null,aimEnd:timing?2.4:1.0,hw,sp:2.3-1.0*clamp((mp.s[sk]-40)/60,0,1),statTxt:(sk==='sal'?'Salto ':'Tuffo ')+mp.s[sk]};
   HOOKS.vibe(25);
 }
 function cineTap(){

@@ -1,5 +1,5 @@
 /* ===================== ULTIMATE TEAM =====================
-   Si parte aprendo un pacchetto da 10 giocatori casuali (piu' sono forti, piu' sono rari), si sceglie la rosa e si gioca un torneo a eliminazione diretta
+   Si parte aprendo un pacchetto da 14 giocatori casuali (piu' sono forti, piu' sono rari), si sceglie la rosa e si gioca un torneo a eliminazione diretta
    di 64 squadre (6 turni). Le avversarie crescono di forza a ogni turno. Dopo ogni vittoria si apre un nuovo pacchetto (sempre migliore). */
 const UT_KEY='ultimate-ut',UTR_KEY='ultimate-ut-real',UTH_KEY='ultimate-ut-eroi',UT_POWERS=[50,58,64,72,84,98],UT_ROUNDS=['Trentaduesimi','Sedicesimi','Ottavi','Quarti','Semifinale','Finale'],UT_TO=['ai trentaduesimi di finale','ai sedicesimi di finale','agli ottavi di finale','ai quarti di finale','in semifinale','in finale'];   // UT_TO: «passi …», «eliminati …»
 const UT_LETTERS='ABCDEFGHILMNOPRSTVZ';
@@ -10,14 +10,14 @@ function utPlayer(role,ovr,rng){
 }
 const utRar=o=>o>=90?['Leggenda','leg']:(o>=80?['Epico','epi']:(o>=65?['Raro','rar']:(o>=50?['Non comune','unc']:['Comune','com'])));
 // rarita': dipende dalla qualita' del pacchetto (modello in 10-sim/16-pacchetti.js: tabella, fasce, garanzie e «paracadute»).
-// Il primo pacchetto in assoluto ha 10 giocatori (4 handler, 4 cutter, 2 defender), tutti i successivi 5 (2 handler, 2 cutter, 1 defender)
+// Il primo pacchetto in assoluto ha 14 giocatori, cioe' due linee intere (5 handler, 6 cutter, 3 defender; prima 10), tutti i successivi 5 (2 handler, 2 cutter, 1 defender)
 // Un pacchetto in attesa e' un numero: la qualita' (0-6) piu' 10 volte il numero di carte quando non e' quello solito (i premi dei traguardi di
 // Real player ne hanno da 5 a 9): cosi' i salvataggi vecchi, che hanno solo la qualita', restano validi
 // e 100 volte il ruolo dei pacchetti del Negozio (1 = solo Handler, 2 = solo Cutter, 0 = misto)
-const utPkQ=v=>clamp((v|0)%10,0,6),utPackSize=v=>Math.floor(((v|0)%100)/10)||(UT.col.length?5:10),utPkRole=v=>Math.floor((v|0)/100)%10;
-const UT_PK_ROLES=['H','C','H','C','D','H','C','C','D'];
+const utPkQ=v=>clamp((v|0)%10,0,6),utPackSize=v=>Math.floor(((v|0)%100)/10)||(UT.col.length?5:UT_FIRST_N),utPkRole=v=>Math.floor((v|0)/100)%10;
+const UT_PK_ROLES=['H','C','H','C','D','H','C','C','D'],UT_FIRST_N=14,UT_FIRST_ROLES=['H','H','H','H','H','C','C','C','C','C','C','D','D','D'];
 function utMakePack(v){
-  const q=utPkQ(v),n=utPackSize(v),pr=utPkRole(v),roles=pr?Array(n).fill(pr===1?'H':'C'):n===10?['H','H','H','H','C','C','C','C','D','D']:UT_PK_ROLES.slice(0,n),pk=utPackTiers(q,roles.length,UT.pity,Math.random);
+  const q=utPkQ(v),n=utPackSize(v),pr=utPkRole(v),roles=pr?Array(n).fill(pr===1?'H':'C'):n===UT_FIRST_N?UT_FIRST_ROLES:UT_PK_ROLES.slice(0,n),pk=utPackTiers(q,roles.length,UT.pity,Math.random);
   UT.pity=pk.pity;
   const tiers=pk.tiers.sort(()=>Math.random()-0.5);   // la rarita' non dipende dal ruolo
   const taken=new Set(UT.col.map(c=>c.full));   // giocatori veri dei campionati (06-ut-carte-reali.js): non si ripete chi hai gia'
