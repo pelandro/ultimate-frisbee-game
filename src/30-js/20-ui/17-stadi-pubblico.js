@@ -72,7 +72,7 @@ function drawCenterMark(){
     ptext(V.ev,cx,cy-4,{f:'p',c:'rgba(255,255,255,.6)',o:false});
     return;
   }
-  if(V.home){const fk=fieldKind(V);crestPaint(cx,cy,ri(10*S),V.home,(fk===0?0.42:(fk===1?0.55:0.78))*((G.wx|0)===2?0.7:1),fk<2);}   // largo 10 m: a colori negli stadi; sui campi del club e' vernice bianca da righe, sulla terra gesso (25b-scritte-dipinte.js)   // largo 12 m (prima 10); negli stadi lo stemma e' dipinto piu' pieno
+  if(V.home){const fk=fieldKind(V);crestPaint(cx,cy,ri(10*S),V.home,(fk===0?0.66:(fk===1?0.72:0.78))*((G.wx|0)===2?0.75:1),false);}   // largo 10 m, a colori su ogni tipo di campo (sui campi poveri un po' sbiadito) (25b-scritte-dipinte.js)   // largo 12 m (prima 10); negli stadi lo stemma e' dipinto piu' pieno
 }
 // ---------- bandierine agli angoli (stadi e partite importanti) ----------
 const cornerFlags=()=>{const V=venueNow();return !!G.inMatch&&!G.drill&&(vnLv(V)>=4||V.big);};

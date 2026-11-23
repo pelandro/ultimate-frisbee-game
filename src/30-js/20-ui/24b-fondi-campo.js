@@ -5,7 +5,7 @@
      per terra zaini, borracce, felpe, coni e una pila di dischi;
    - campi del club (livello 2): prato con la siepe in fondo, il gazebo della squadra visto di tre quarti, il frigo portatile, borsoni e dischi;
    - campo comunale (livello 3): la ringhiera, con i fotografi;
-   - stadi (livelli 4-5): una fascia di prato piu' scura e i cartelloni dietro i fotografi.
+   - stadi (livelli 4-5): una fascia di prato piu' scura dove stanno i fotografi.
    Gli oggetti sono di lato, come le persone, con le ombre a 16 bit (sprShade). Tutto in metri dalla linea di fondo: scorre con la camera. */
 const END_D=6;   // metri oltre la linea di fondo che si disegnano (la camera ne mostra al massimo 5)
 const endX=(side,d)=>side?FIELD_L+d:-d;   // x del mondo a d metri oltre la linea di fondo (side 0 a sinistra, 1 a destra)
@@ -23,7 +23,6 @@ function endGround(side,V,lv,wx){
   if(fk===0){endPath(side,wx);endFence(side,4.7,wx);}
   else if(lv===2)endHedge(side,4.4,wx);
   else if(lv===3)endRail(side,4.5,wx);
-  else endBoards(side,3.9,lv,wx);
 }
 // chiazze di terra nell'erba rada: ovali sfrangiati, sempre negli stessi posti
 function endDirt(side){
@@ -69,19 +68,6 @@ function endRail(side,d,wx){
   px(x-1,y0,4,y1-y0,PAL.out);px(x,y0,2,y1-y0,'#8fb3cc');px(x,y0,1,y1-y0,'#c6dcea');
   for(let wy=-1.5;wy<=FIELD_W+1.2;wy+=2){const y=syw(wy);if(y<y0||y>y1)continue;px(x-1,y-1,4,3,PAL.out);px(x,y,2,1,'#6d8ea6');}
   if(wx===2)px(x,y0,1,y1-y0,'#f4f8fc');
-}
-// cartelloni dietro i fotografi negli stadi: pannelli di 6 m nei colori degli sponsor, di taglio (si vedono il bordo e la faccia verso il campo)
-function endBoards(side,d,lv,wx){
-  const [y0,y1]=endRows(),x=sxw(endX(side,d)),sg=side?1:-1;if(x<-8||x>VW+8)return;
-  const cols=['#1f4fa8','#d7262f','#f2c230','#1d8a5a','#f4f4f4','#ff7a1a','#232a3a'],fx=sg>0?x:x-3;
-  px(fx-1,y0,6,y1-y0,PAL.out);
-  for(let wy=-1.5,k=0;wy<FIELD_W+1.2;wy+=6,k++){
-    const a=Math.max(y0,syw(wy)),b=Math.min(y1,syw(wy+6));if(b<=a)continue;
-    const c=cols[(ihash(k,side*7+lv)%cols.length)],lt=lv>=5&&Math.sin(G.tick*3+k)>0.6;   // nel grande stadio i LED cambiano
-    px(fx,a,4,b-a-1,lt?cShade(c,0.25):c);px(sg>0?fx:fx+3,a,1,b-a-1,cShade(c,0.3));
-    for(let y=a+2;y<b-3;y+=3)px(fx+1,y,2,1,cLum(c)>0.6?'#1f2740':'#f4f4f4');   // le scritte, viste di taglio
-  }
-  if(wx===2)px(fx,y0,4,1,'#f4f8fc');
 }
 // ---- oggetti per terra, di lato ----
 // zaino, borsone, borraccia, pila di dischi, felpe e frigo portatile: b/B colore (ombra/luce), w bianco, k tappo, J/j felpa, C corpo del frigo, L coperchio

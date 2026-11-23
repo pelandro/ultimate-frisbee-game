@@ -60,8 +60,7 @@ function paintYardNum(n,x){
   const off=3.5*NUM_C;   // ogni cifra a mezza cifra dalla linea
   for(const [k,d] of [[-1,s[0]],[1,s[1]]]){paintBlocks([d],NUM_C,x+k*off,y0,0,col,sh);paintBlocks([d],NUM_C,x-k*off,y1,2,col,sh);}
 }
-// stemma dipinto: pieno negli stadi; sui campi del club e sulla terra e' solo la sagoma chiara (vernice da righe o gesso: i colori su un prato consumato
-// diventavano una macchia marrone). Il bordo di vernice bianca va solo attorno agli stemmi fatti
+// stemma dipinto: pieno, a colori su ogni tipo di campo (chalk: solo la sagoma chiara, non usato in partita). Il bordo di vernice bianca va solo attorno agli stemmi fatti
 // di un pezzo (il tridente, la testa di cavallo, il sole): attorno a quelli fatti di pezzi staccati (stelle e strisce di una bandiera, lettere) appesantiva
 let crestCv=null,crestCvKey='',crestParts=0,CREST_RIM=-1;   // CREST_RIM: -1 secondo lo stemma, 0 mai, 1 sempre (per le prove)
 const CREST_RIM_MAX=2;   // pezzi al massimo perche' lo stemma abbia il bordo bianco
