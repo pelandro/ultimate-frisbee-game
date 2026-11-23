@@ -83,7 +83,7 @@ function swapAll(){
 }
 const openDet=new Set();
 let rView=(()=>{try{return localStorage.getItem('ultimate-vista-rosa')==='t'?'t':'c';}catch(e){return 'c';}})(),cardOpen=null,nickEdit=null,rOrd=[];   // vista: carte (c) o tabella (t)
-// filtri e ordinamenti della Rosa: con 20 e piu' giocatori servono per trovare subito chi cerchi
+// ordinamenti della Rosa (R_FILT resta solo per «Tutti»: i filtri per linea e ruolo sono stati tolti, erano troppe scritte)
 let rFilt='all',rSort='ovr';
 const R_FILT={all:['Tutti',()=>true],lineO:['Linea d’attacco',p=>SV.lineO.includes(p.full)],lineD:['Linea di difesa',p=>SV.lineD.includes(p.full)],H:['Handler',p=>posOf(p)==='H'],C:['Cutter',p=>posOf(p)==='C'],D:['Defender',p=>posOf(p)==='D'],out:['Fuori linea',p=>!SV.lineO.includes(p.full)&&!SV.lineD.includes(p.full)],ko:['Da gestire',p=>!!p.inj||p.cond<50||p.mood>0||p.ret===1]};
 const R_SORT={ovr:['Overall',(a,b)=>ovrX(b)-ovrX(a)],pot:['Potenziale',(a,b)=>{const x=potRange(a),y=potRange(b);return (y[0]+y[1])-(x[0]+x[1]);}],age:['Età',(a,b)=>a.age-b.age],cond:['Condizione',(a,b)=>a.cond-b.cond],wage:['Stipendio',(a,b)=>wageOf(b)-wageOf(a)],ssn:['Rendimento',(a,b)=>seasonScore(b.car)-seasonScore(a.car)]};
@@ -166,18 +166,19 @@ function cardPanel(p){
     <div class="pcbd">${rosterMsg?`<p class="rmsg">${rosterMsg}</p>`:''}${detailHTML(p)}</div></div></div>`;
 }
 function renderRoster(){
+  rFilt='all';   // niente filtri per linea o ruolo: erano troppe scritte (resta l'ordinamento, e la tabella mostra le linee di ognuno)
   const inO=new Set(SV.lineO),inD=new Set(SV.lineD);
   const ord=SQ.filter(R_FILT[rFilt]?R_FILT[rFilt][1]:()=>true).sort((a,b)=>R_SORT[rSort][1](a,b)||ovrX(b)-ovrX(a)||a.name.localeCompare(b.name));
   rOrd=ord.map(p=>p.id);   // l'ordine che vedi: le frecce della scheda scorrono quello
   const cnt=k=>SQ.filter(R_FILT[k][1]).length;
-  const bar=`<div class="rbar"><div class="seg rview"><button type="button" class="sg${rView==='c'?' on':''}" data-rv="c">Carte</button><button type="button" class="sg${rView==='t'?' on':''}" data-rv="t">Tabella</button></div><div class="seg">${Object.keys(R_FILT).filter(k=>k==='all'||k===rFilt||cnt(k)).map(k=>`<button type="button" class="sg${rFilt===k?' on':''}" data-rf="${k}">${R_FILT[k][0]}${k==='all'?'':' '+cnt(k)}</button>`).join('')}</div><label class="rsort">Ordina per <select class="qs" data-rsort="1">${Object.keys(R_SORT).map(k=>`<option value="${k}"${rSort===k?' selected':''}>${R_SORT[k][0]}</option>`).join('')}</select></label></div>`;
+  const bar=`<div class="rbar"><div class="seg rview"><button type="button" class="sg${rView==='c'?' on':''}" data-rv="c">Carte</button><button type="button" class="sg${rView==='t'?' on':''}" data-rv="t">Tabella</button></div><label class="rsort">Ordina per <select class="qs" data-rsort="1">${Object.keys(R_SORT).map(k=>`<option value="${k}"${rSort===k?' selected':''}>${R_SORT[k][0]}</option>`).join('')}</select></label></div>`;
   $('rTop').innerHTML=`${infoB('rost')}<span>Rosa <b>${SQ.length}</b>/${SQ_MAX}</span>${lineSum('lineO','Attacco')}${lineSum('lineD','Difesa')}<span class="ract"><button type="button" class="sec" id="rAuto">Linee consigliate</button><button type="button" class="sec" id="rSmart" aria-pressed="${!!SV.autoSub}">Cambi intelligenti: ${SV.autoSub?'sì':'no'}</button></span>`;
   const head='<tr><th>Giocatore</th><th>OVR</th><th>POT</th><th>Cond</th><th>Linee</th><th></th></tr>';
   const row=p=>{
     const op=openDet.has(p.id),v=ovr(p);
     return `<tr class="pl" data-id="${p.id}"><td><span class="rn">${avatar(p,30)}<span>${moodFace(moodKey(p))} ${esc(p.label||p.name)}${p.nick?` <small class="nk">«${esc(p.nick)}»</small>`:''}${p.star?'<span class="stb">★</span>':''}${traitBadge(p)}${p.ret===1?'<span class="tg r">ultima stagione</span>':''}${p.mood===2?'<span class="tg m">chiede la cessione</span>':(p.mood===1?`<span class="tg m">scontent${oa(p)}</span>`:'')}<small class="rl${p.inj?' bad':''}">${p.age} anni · ${POS_NAME[posOf(p)]}${p.aw&&p.aw.length?' · '+p.aw.length+(p.aw.length>1?' premi':' premio'):''}${p.inj?` · ${p.abs?'indisponibile':'infortunat'+oa(p)} ${p.inj} ${p.inj>1?'partite':'partita'}`:''}</small></span></span></td><td><b class="ov ${ovrCls(v)}">${v}</b></td><td class="pot">${potTxt(p)}</td><td>${condBar(p.cond)}</td><td class="lnb"><button type="button" class="lb${inO.has(p.full)?' on':''}" data-line="lineO" data-id="${p.id}">ATT</button><button type="button" class="lb d${inD.has(p.full)?' on':''}" data-line="lineD" data-id="${p.id}">DIF</button></td><td><button type="button" class="dbtn" data-d="${p.id}" aria-expanded="${op}" aria-label="Scheda di ${esc(p.label||p.name)}">${op?'▴':'▾'}</button></td></tr>`+(op?`<tr class="dt"><td colspan="6">${detailHTML(p)}</td></tr>`:'');
   };
-  const warn=(SV.lineO.length<7||SV.lineD.length<7)?'Una linea ha meno di 7 giocatori: alla partita verrà completata con i migliori disponibili.':(SQ.some(p=>p.inj&&(inO.has(p.full)||inD.has(p.full)))?'Un giocatore in linea è indisponibile: al suo posto gioca il migliore disponibile dello stesso ruolo.':(SV.lineO.some(n=>inD.has(n))?`${SV.lineO.filter(n=>inD.has(n)).length===1?'Un giocatore è':SV.lineO.filter(n=>inD.has(n)).length+' giocatori sono'} in entrambe le linee: in partita ${SV.lineO.filter(n=>inD.has(n)).length===1?'rende':'rendono'} ${DBL_PEN} punti in meno e si ${SV.lineO.filter(n=>inD.has(n)).length===1?'stanca':'stancano'} il doppio.`:''));
+  const warn=(SV.lineO.length<7||SV.lineD.length<7)?'Una linea ha meno di 7 giocatori: alla partita verrà completata con i migliori disponibili.':(SQ.some(p=>p.inj&&(inO.has(p.full)||inD.has(p.full)))?'Un giocatore in linea è indisponibile: al suo posto gioca il migliore disponibile dello stesso ruolo.':(SV.lineO.some(n=>inD.has(n))?`${SV.lineO.filter(n=>inD.has(n)).length===1?'1 giocatore':SV.lineO.filter(n=>inD.has(n)).length+' giocatori'} in entrambe le linee: −${DBL_PEN} in partita e fatica doppia.`:''));
   $('rBox').innerHTML=`${infoX('rost',ROST_INFO)}${(rosterMsg&&!(rView==='c'&&cardOpen!==null))||warn?`<p class="rmsg">${(rView==='c'&&cardOpen!==null)?warn:(rosterMsg||warn)}</p>`:''}${bar}${ord.length?(rView==='c'?`<div class="pgrid">${ord.map(cardHTML).join('')}</div>`:`<div class="roster-table" tabindex="0" role="region" aria-label="Tabella della rosa, scorrevole orizzontalmente"><table class="rt">${head}${ord.map(row).join('')}</table></div>`):'<p class="note">Nessun giocatore con questo filtro.</p>'}${rView==='c'&&cardOpen!==null&&SQ[cardOpen]?cardPanel(SQ[cardOpen]):''}`;
 }
 const barColor=st=>`hsl(${Math.round(Math.max(0,Math.min(100,st))*1.2)},70%,45%)`;
@@ -304,6 +305,7 @@ function renderEvent(){
 function lineSum(k,lab){
   const L=SV[k].map(byFull).filter(Boolean),n=L.length,avg=n?Math.round(L.reduce((a,p)=>a+ovr(p),0)/n):0;
   const inj=L.filter(p=>p.inj).length,tired=L.filter(p=>!p.inj&&p.cond<50).length,both=L.filter(p=>SV.lineO.includes(p.full)&&SV.lineD.includes(p.full)).length;
-  const warn=[n<7?`mancano ${7-n}`:'',inj?`${inj} indisponibil${inj>1?'i':'e'}`:'',tired?`${tired} stanc${tired>1?'hi':'o'}`:'',both?`${both} in entrambe`:''].filter(Boolean);
-  return `<span class="lsum${n<7||inj?' bad':(warn.length?' warn':' ok')}" title="${esc(warn.join(', ')||'Linea completa')}"><i></i>${lab} <b>${n}/7</b>${n?` · forza <b>${avg}</b>`:''}${warn.length?` <small>${warn.join(' · ')}</small>`:''}</span>`;
+  const warn=[n<7?`mancano ${7-n}`:'',inj?`${inj} indisponibil${inj>1?'i':'e'}`:'',tired?`${tired} stanc${tired>1?'hi':'o'}`:''].filter(Boolean);   // «in entrambe» lo dice l'avviso sotto, una volta sola: qui resta il colore
+  const lv=n<7||inj?'bad':(warn.length||both?'warn':'ok'),tip=warn.concat(both?[both+' in entrambe le linee']:[]).join(', ')||'Linea completa';
+  return `<span class="lsum ${lv}" title="${esc(tip)}"><i></i>${lab} <b>${n}/7</b>${n?` · forza <b>${avg}</b>`:''}${warn.length?` <small>${warn.join(' · ')}</small>`:''}</span>`;
 }
