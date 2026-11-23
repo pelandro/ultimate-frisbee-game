@@ -332,15 +332,15 @@ catch(e){
     }
     await page.click('#hHome');
   });
-  await step('rosa: filtri, ordinamento e scheda in tre parti; mercato: filtro e ordinamento; guida contestuale',async()=>{
+  await step('rosa: ordinamento e scheda in tre parti; mercato: filtro e ordinamento; guida contestuale',async()=>{
     await vis('#home');await page.click('#hRoster');await vis('#roster');
     await page.click('#rBox [data-rv="c"]');   // la vista scelta resta salvata: qui si controllano le carte
     if(await page.locator('#rBox .pgrid .pcard').count()<7)throw new Error('la vista a carte non mostra la rosa');
     await page.click('#rBox [data-rv="t"]');   // il resto del percorso usa la tabella
     const all=await page.locator('#rBox tr.pl').count();
-    await page.click('#rBox [data-rf="H"]');const hs=await page.locator('#rBox tr.pl').count();
-    if(!(hs>0&&hs<all))throw new Error('il filtro Handler non restringe la rosa ('+hs+' su '+all+')');
-    await page.click('#rBox [data-rf="all"]');await page.selectOption('#rBox [data-rsort]','age');
+    if(await page.locator('#rBox [data-rf]').count())throw new Error('i filtri per linea e ruolo sono stati tolti');
+    if(all<7)throw new Error('la tabella non mostra tutta la rosa');
+    await page.selectOption('#rBox [data-rsort]','age');
     const ages=(await page.locator('#rBox tr.pl small.rl').allInnerTexts()).map(t=>+(t.match(/(\d+) anni/)||[0,0])[1]);
     if(ages.some((a,i)=>i&&a<ages[i-1]))throw new Error('ordinamento per età non rispettato: '+ages.join(','));
     await page.click('#rBox .dbtn >> nth=0');

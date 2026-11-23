@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Schermate più ordinate, con la stessa grafica. Squadra: tolti i filtri per linea e ruolo; l’avviso dei giocatori in entrambe le linee è più corto e compare una volta sola. Società: tolte le notizie (i soldi sono nel bilancio, le notizie nella Posta). Bacheca: ogni stagione è divisa in risultato, campioni, premi e squadra ideale; il titolo del premio è in viola, il nome sotto, poi squadra e numeri. Partita veloce: la tua squadra, l’avversaria e le regole in riquadri con la fascia blu, rossa e oro, «Gioca» grande sotto.
 - Ultimate Team: il primo pacchetto ha 14 giocatori (prima 10), cioè due linee intere. Nel Negozio c’è il nuovo Pacchetto oro: 5 carte con molte più probabilità di Rari, Epici e Leggende e almeno un Raro garantito, a 220 gettoni nel torneo e 320 in Sfide online.
 - Al pull restano dietro ad aspettare il disco al massimo 3 giocatori: gli altri salgono subito in campo (prima capitava di vederne 4 o 5 in fondo alla meta).
 - Equipaggiamento: il secondo colore della maglia sta subito sotto il colore della maglia (prima era in fondo, dopo calzettoni e motivo).

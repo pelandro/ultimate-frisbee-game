@@ -38,11 +38,12 @@ function honoursSeasonNames(x){
   const league=usa?(x.us?.conf?usConfName(x.us.conf):SERIES_NAME[x.sr])
     :(SERIES_NAME[x.sr]||x.sr);
   const keys=usa?[x.sr]:lk?[lk]:['A','B','C'];
-  const champions=keys.filter(k=>x.champs?.[k]).map(k=>{
+  const list=keys.filter(k=>x.champs?.[k]).map(k=>{   // [serie, campione] per chi li vuole in righe separate (la Bacheca)
     const champ=x.champs[k],name=usa?'Nationals USA':lk?SERIES_NAME[nationalKey(lk)]:SERIES_NAME[k];
-    return `${esc(name)}: <b${champ===SV.team?' style="color:var(--gold)"':''}>${esc(champ)}</b>`;
-  }).join(' · ');
-  return {league,champions};
+    return [esc(name),`<b${champ===SV.team?' style="color:var(--gold)"':''}>${esc(champ)}</b>`];
+  });
+  const champions=list.map(([n,c])=>`${n}: ${c}`).join(' · ');
+  return {league,champions,list};
 }
 // Hall of Fame: una carta dorata per ogni grande ritirato (le voci di prima del cambio hanno solo i numeri: niente ruolo né volto)
 function hofCard(x){
