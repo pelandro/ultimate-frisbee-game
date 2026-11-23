@@ -33,11 +33,14 @@ function utDisc(q,n,role){
   else if(role)s+=`<circle cx="60" cy="64" r="8" fill="${role==='H'?'#ff8a3d':'#3ddc97'}" stroke="#000" stroke-width="2.5"/><text x="60" y="68" text-anchor="middle" font-size="11" font-weight="900" fill="#000" font-family="inherit">${role}</text>`;
   return s+'</svg>';
 }
-// ---- il Negozio: tre pacchetti, con il prezzo per [torneo contro il computer, Real player] (i gettoni dell'una e dell'altra squadra sono separati) ----
+// ---- il Negozio: i pacchetti, con il prezzo per [torneo contro il computer, Real player] (i gettoni dell'una e dell'altra squadra sono separati) ----
 // Il pacchetto normale costa come prima (90 e 130, quello di Real player e' piu' caro perche' i gettoni si guadagnano piu' in fretta). Gli altri due hanno solo 3 carte, tutte dello stesso
 // ruolo: costano circa il 70% del normale (con il 60% delle carte), perche' si sceglie cosa comprare. La qualita' e' quella del pacchetto acquistato per tutti e tre.
 const UT_SHOP=[
   {k:'std',n:'Pacchetto',cards:5,code:1,q:1,role:'',cost:[90,UTO_PACK],d:'5 carte: handler, cutter e defender. Più sono forti, più sono rare.'},
+  // pacchetto oro: 5 carte della qualita' 4 (UT_PQ, 10-sim/16-pacchetti.js: Rari, Epici e Leggende circa tre volte piu' spesso, almeno un Raro garantito)
+  // a circa due volte e mezza il prezzo del normale; il numero di carte e' scritto nel codice (54) perche' non dipenda dalla rosa
+  {k:'oro',n:'Pacchetto oro',cards:5,code:54,q:4,role:'',cost:[220,320],d:'5 carte con molte più probabilità di Rari, Epici e Leggende. Almeno un Raro garantito.'},
   {k:'han',n:'Pacchetto Handler',cards:3,code:131,q:1,role:'H',cost:[65,90],d:'3 carte, tutte Handler: per costruire il tuo gioco al disco.'},
   {k:'cut',n:'Pacchetto Cutter',cards:3,code:231,q:1,role:'C',cost:[65,90],d:'3 carte, tutte Cutter: per tagliare e correre in campo.'},
   {k:'eq',n:'Pacchetto equipaggiamento',cards:2,code:321,q:1,role:'E',cost:[120,160],d:'2 accessori diversi che potenziano tutta la squadra. I doppioni diventano gettoni.'},   // equipaggiamento: 10-sim/25-ut-equipaggiamento.js

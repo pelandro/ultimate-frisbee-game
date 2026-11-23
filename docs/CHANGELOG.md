@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Ultimate Team: il primo pacchetto ha 14 giocatori (prima 10), cioè due linee intere. Nel Negozio c’è il nuovo Pacchetto oro: 5 carte con molte più probabilità di Rari, Epici e Leggende e almeno un Raro garantito, a 220 gettoni nel torneo e 320 in Sfide online.
 - Al pull restano dietro ad aspettare il disco al massimo 3 giocatori: gli altri salgono subito in campo (prima capitava di vederne 4 o 5 in fondo alla meta).
 - Equipaggiamento: il secondo colore della maglia sta subito sotto il colore della maglia (prima era in fondo, dopo calzettoni e motivo).
 - Primi piani di salti e tuffi più difficili: la zona verde della barra è circa metà di prima (da 2% a 14% della barra a Facile, secondo il Salto o il Tuffo del giocatore) e quella gialla quasi metà; la difficoltà le stringe ancora (fino al 60% in Estrema).
