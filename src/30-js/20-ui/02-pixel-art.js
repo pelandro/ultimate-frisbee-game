@@ -183,25 +183,7 @@ function pdiscSprite(x,y,spin,sz,tl,inv){
   px(rows[0][0]+1,rows[0][1],W-2,1,top);   // riflesso in alto, senza toccare gli spigoli
   const m=rows[H>>1];px(m[0]+((spin|0)%(W-2)+(W-2))%(W-2),m[1],2,1,'#7f9bd0');
 }
-const PH=()=>21;   // altezza dello sprite in pixel: la pixel-art non si scala
-// TESTE 8x7 per vista (0 di lato verso destra, 1 di schiena, 2 di fronte) e acconciatura (0 corti, 1 medi, 2 lunghi, 3 coda, 4 calvo): h capelli, s pelle, e occhio.
-// Le righe sotto la settima (capelli lunghi, coda) scendono sulle spalle
-const HEAD16=[
-  [["..hhhh..",".hhhhhh.","hhhhhhss","hhsssess","hhsssess",".hsssss.","..ssss.."],
-   ["..hhhh..",".hhhhhh.","hhhhhhhs","hhhssess","hhhssess",".hhssss.","..hsss.."],
-   ["..hhhh..",".hhhhhh.","hhhhhhhs","hhhssess","hhhssess","hhhssss.","hhhsss..","hh......"],
-   ["..hhhh..",".hhhhhh.","hhhhhhss","hhsssess","hhsssess",".hsssss.","..ssss.."],
-   ["..ssss..",".ssssss.","ssssssss","sssssess","sssssess",".ssssss.","..ssss.."]],
-  [["..hhhh..",".hhhhhh.","hhhhhhhh","hhhhhhhh","shhhhhhs",".ssssss.","..ssss.."],
-   ["..hhhh..",".hhhhhh.","hhhhhhhh","hhhhhhhh","hhhhhhhh",".hhhhhh.","..ssss.."],
-   ["..hhhh..",".hhhhhh.","hhhhhhhh","hhhhhhhh","hhhhhhhh","hhhhhhhh",".hhhhhh.",".hhhhhh."],
-   ["..hhhh..",".hhhhhh.","hhhhhhhh","hhhhhhhh","shhhhhhs",".sshhss.","..shhs..","...hh..."],
-   ["..ssss..",".ssssss.","ssssssss","ssssssss","ssssssss",".ssssss.","..ssss.."]],
-  [["..hhhh..",".hhhhhh.","hhsssshh","ssessess","ssessess",".ssssss.","..ssss.."],
-   ["..hhhh..",".hhhhhh.","hhsssshh","hsessesh","hsessesh",".ssssss.","..ssss.."],
-   ["..hhhh..",".hhhhhh.","hhsssshh","hsessesh","hsessesh","hssssssh","h.ssss.h","h......h"],
-   ["..hhhh..",".hhhhhh.","hhsssshh","ssessess","ssessess",".ssssss.","..ssss.."],
-   ["..ssss..",".ssssss.","ssssssss","ssessess","ssessess",".ssssss.","..ssss.."]]];
+const PH=()=>22;   // altezza dello sprite in pixel: la pixel-art non si scala
 // ---- omino a pixel: testa, busto, pantaloncini, arti spessi 2 pixel; contorno scuro attorno a tutta la sagoma ----
 const lookOf=pl=>(pl&&pl.look)||DEF_LOOK;
 // CORSA a 6 fotogrammi (mezzo ciclo = 3, poi le gambe si scambiano): [piede d'appoggio avanti/indietro, piede in volo avanti/indietro, alzata del piede in volo, molleggio del corpo (+ = giu')].
@@ -210,12 +192,7 @@ const RUN_F=[[2,-3,1,1],[0,0,3,0],[-3,3,2,-1]];
 // ex: {brk: frenata, view: 0 di lato, 1 di schiena, 2 di fronte, kind: tipo di lancio, ca: secondi dalla presa (o -1)}. Restituisce la posizione della mano vicina (il disco la segue)
 function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   x=ri(x);y=ri(y);ex=ex||{};
-  // i rettangoli vanno nella griglia delle ombre a 16 bit (02c-ombre-16bit.js): fl = lontano/vicino/piatto, g = gruppo (superficie unica di piu' colori)
-  const ops=[],R=(a,b,w,h,c,fl,g)=>ops.push(a,b,w,h,c,fl|0,g||0);
-  const Lm=(ax,ay,bx,by,c,c2,cut,fl)=>{   // arto: quadratini 2x2 lungo la linea; da 'cut' in poi il secondo colore
-    const n=Math.max(Math.abs(bx-ax),Math.abs(by-ay))||1;
-    for(let i=0;i<=n;i++){const u=i/n;R(ri(ax+(bx-ax)*u),ri(ay+(by-ay)*u),2,2,(c2&&u>=cut)?c2:c,fl);}
-  };
+  // qui si decide la posa (dove vanno piedi e mani); il disegno e' quello a mano di drawMan16 (02d-omini-disegnati.js)
   const skin=lk.skin,skin2=shade(skin,-0.16),hair=lk.hair,shirt=un.shirt;
   const cp=pose==='cel'?(ex.cp||{}):null;   // posa delle esultanze (20-ui/27-esultanze.js): mani, gambe, salto, accovacciata e vista date da fuori
   const moving=!cp&&run>0.18,fast=run>0.45,view=moving?(ex.view|0):(cp?(cp.view|0):(ex.view===2?2:0)),cheer=pose==='cheer',mark=pose==='mark';
@@ -227,12 +204,13 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   const crouch=(ex.land?2:0)+(pose==='aim'?(pw>0.7?2:(pw>0.35?1:0)):0)+(pose==='throw'&&tu<0.25?(lg?2:1):0)+(pose==='throw'&&(ex.kind==='hammer'||ex.kind==='scoober')&&tu>=0.25&&tu<0.6?1:0)
     +(pose==='one'&&cka<0.2?2:0)+(pose==='clap'&&cka>=0.1&&cka<0.24?1:0);
   const breathe=!moving&&!cheer&&!cp&&pose!=='jump'&&Math.sin(G.tick*2.4+x*0.37)>0.55?1:0;   // da fermo il busto respira (un pixel), ognuno col suo tempo
-  const dyB=(moving?ri(RF[3]*k):(mark?1:(cp?ri(cp.crouch||0):0)))+(cp?0:crouch),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-21+breathe+(pose==='sad'?1:0);
+  const dyB=(moving?ri(RF[3]*k):(mark?1:(cp?ri(cp.crouch||0):0)))+(cp?0:crouch),gy=y-hop,by=gy+dyB,sy=by-14+breathe,T=by-22+breathe+(pose==='sad'?1:0);
   const caught=ex.ca>=0&&ex.ca<0.3,recoil=caught&&ex.ca>0.08&&ex.ca<0.22?-f:0;   // presa: un pixel di rinculo all'indietro
   let lean=fast?f:0;if(ex.brk&&moving)lean=-f;if(pose==='aim')lean=-f;if((pose==='throw'&&tu<0.6)||pose==='one'||pose==='runcatch')lean=f;if(cp)lean=ri(cp.lean||0)*f;lean+=recoil;
   // GAMBE: quella lontana (dietro) e' un tono piu' scura, cosi' si capisce quale va avanti
+  const legs=[];
   for(const i of [-1,1]){
-    const far=i<0,hx=x+(i>0?1:-2),sk=skin,so=un.socks,sh=un.shoe,lf=far?PS_FAR:0;   // anche sotto i pantaloncini larghi 7 le gambe restano in mezzo
+    const far=i<0,hx=x+(i>0?1:-2);   // anche sotto i pantaloncini larghi 7 le gambe restano in mezzo
     let dx=0,lift=0;
     if(cp&&cp.lg){const L=cp.lg[i<0?0:1];dx=ri(L[0])*(cp.ab?1:f);lift=ri(L[1]);}   // cp.ab: x sullo schermo (vista di fronte), altrimenti in avanti
     else if(moving&&view===0){const planted=(i<0)===(half===0);dx=ri((planted?RF[0]:RF[1])*k)*f;lift=planted?0:ri(RF[2]*(fast?1:0.67));}
@@ -243,10 +221,9 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     else if(pose==='jump'){dx=i>0?f:-f;lift=3;}   // salto: gambe raccolte
     else if(mark)dx=i*2;   // marcatore: gambe larghe e corpo basso
     else dx=i>0?2:-1;   // da fermo: un pixel di prato tra i piedi, le gambe non si fondono
-    const fx=hx+dx,fy=gy-2-lift;
-    if(lift>=2){const kx=hx+ri(dx/2)+f*(view===0?1:0),ky=by-3-(lift>2?1:0);Lm(hx,by-6,kx,ky,sk,0,0,lf);Lm(kx,ky,fx,fy,sk,so,0.25,lf);}   // ginocchio piegato
-    else Lm(hx,by-6,fx,fy,sk,so,0.62,lf);
-    const sx0=view!==0?fx:(f>0?fx:fx-1),sw=view!==0?2:3;R(sx0,fy,sw,2,sh,lf);
+    const fx=hx+dx,fy=gy-2-lift,L={far,hx,hy:by-6,fx,fy};
+    if(lift>=2){L.kx=hx+ri(dx/2)+f*(view===0?1:0);L.ky=by-3-(lift>2?1:0);}   // ginocchio piegato
+    legs.push(L);
   }
   const shx=x-1+lean;
   // BRACCIA: di corsa vanno in opposizione alle gambe; il lancio ha caricamento, rilascio e accompagnamento diversi per rovescio, dritto e hammer
@@ -292,46 +269,28 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     if(pose==='sad')return i>0?[shx+f,sy+7]:[shx-f,sy+7];
     return moving?runHand(i):[shx+(i>0?f:-f),sy+6];
   };
-  // braccio lontano (dietro al busto, piu' scuro)
-  let h=hand(-1);Lm(shx,sy+1,h[0],h[1],shirt,skin,0.45,PS_FAR);
-  // pantaloncini e busto (luci e ombre le mette psShade)
-  R(x-3,by-9,7,3,un.shorts);
-  R(x-3+lean,sy,7,5,shirt,0,'busto');
-  if(un.pat){const sB=un.shirtB;for(let j=0;j<5;j++)for(let i=0;i<7;i++)if(eqPatHit(un.pat,((view===0&&f<0?6-i:i)+0.5)/7,(j+0.5)/5))R(x-3+lean+i,sy+j,1,1,sB,0,'busto');}   // maglia a motivi (Equipaggiamento di Ultimate Team): stessa superficie del busto
-  // TESTA grande come negli sportivi a 16 bit (8x7, un terzo dell'omino): di lato (capelli dietro, orecchio, occhio davanti), di schiena (capelli e nuca) o di fronte (due occhi)
-  const hx0=x-4+lean+(view===0?f:0),bald=lk.style===4;
-  if(ex.hero&&HERO_DRAW[ex.hero])HERO_DRAW[ex.hero](R,{x,gy,by,sy,T:T+1,hx0:hx0+1,f,view,lean,fast,skin,skin2,hair,shirt});   // superpoteri (20-ui/20-superpoteri.js): testa, collo, coda o tentacoli dell'animale, disegnati per la testa 6x6 di prima
-  else{
-    const st=bald?4:clamp(lk.style|0,0,3),rows=HEAD16[view===1?1:(view===2?2:0)][st],mx=c=>view===0&&f<0?hx0+7-c:hx0+c;
-    for(let r=0;r<rows.length;r++){
-      const row=rows[r];let c=0;
-      while(c<8){   // a tratti dello stesso materiale; di lato si specchia secondo dove guarda
-        const ch=row[c];let e=c+1;while(e<8&&row[e]===ch)e++;
-        if(ch!=='.'){const ax=view===0&&f<0?hx0+8-e:hx0+c;R(ax,T+r,e-c,1,ch==='e'?PAL.out:(ch==='h'?hair:skin),ch==='e'?PS_FLAT:0,ch==='s'?'testa':0);}
-        c=e;
-      }
-    }
-    if(lk.band)for(let c=0;c<8;c++)if(rows[2][c]!=='.')R(mx(c),T+2,1,1,lk.band);   // fascia sulla fronte
-    if(lk.beard&&view!==1){const bd=shade(hair,-0.15);for(let r=5;r<7;r++)for(let c=view===2?0:3;c<8;c++)if(rows[r][c]==='s')R(mx(c),T+r,1,1,bd);}   // barba sulla parte bassa del viso
-    if(st===3&&view===0){const bob=fast&&Math.sin(ph)>0?1:0;R(f>0?hx0-2:hx0+8,T+2+bob,2,3,hair);}   // coda di cavallo: dietro, rimbalza di corsa
-  }
-  // braccio vicino (davanti al busto), un tono piu' chiaro: dove passa sulla maglia psShade gli mette sotto l'ombra, cosi' si legge come braccio
-  h=hand(1);
-  Lm(shx,sy+1,h[0],h[1],shirt,skin,0.45,PS_NEAR);
-  if(ex.sc&&ex.sc!==1){const k=ex.sc;for(let i=0;i<ops.length;i+=7){const a=ri(x+(ops[i]-x)*k),b=ri(y+(ops[i+1]-y)*k),a2=ri(x+(ops[i]+ops[i+2]-x)*k),b2=ri(y+(ops[i+1]+ops[i+3]-y)*k);ops[i]=a;ops[i+1]=b;ops[i+2]=Math.max(1,a2-a);ops[i+3]=Math.max(1,b2-b);}h=[ri(x+(h[0]-x)*k),ri(y+(h[1]-y)*k)];}   // eroi dei superpoteri piu' grandi: i rettangoli si allargano attorno ai piedi, i pixel restano netti
-  psShade(ops,7);
+  // eroi dei superpoteri: la loro testa (o il collo, la coda, i tentacoli) si disegna sopra al corpo, con le ombre automatiche, per la testa 6x6 di prima
+  let hops=null;
+  if(ex.hero&&HERO_DRAW[ex.hero]){hops=[];HERO_DRAW[ex.hero]((a,b,w,h,c,fl,g)=>hops.push(a,b,w,h,c,fl|0,g||0),{x,gy,by,sy,T:T+2,hx0:x-3+lean+(view===0?f:0),f,view,lean,fast,skin,skin2,hair,shirt});}
+  const sc=ex.sc&&ex.sc!==1?ex.sc:0;
+  let h=hand(1);
+  drawMan16({x,gy,by,sy,T,f,view,lean,un,lk,legs,hands:[h,hand(-1)],shx,hero:!!hops,sc});
+  if(hops){if(sc)for(let i=0;i<hops.length;i+=7){const a=ri(x+(hops[i]-x)*sc),b=ri(gy+(hops[i+1]-gy)*sc),a2=ri(x+(hops[i]+hops[i+2]-x)*sc),b2=ri(gy+(hops[i+1]+hops[i+3]-gy)*sc);hops[i]=a;hops[i+1]=b;hops[i+2]=Math.max(1,a2-a);hops[i+3]=Math.max(1,b2-b);}psShade(hops,7);}
+  if(sc)h=[ri(x+(h[0]-x)*sc),ri(gy+(h[1]-gy)*sc)];   // eroi giganti: la mano (e il disco) seguono l'ingrandimento
   return h;
 }
 // omino in tuffo: disteso in orizzontale, braccia tese in avanti
 function puppetDive(x,y,un,lk,d,lift){
   x=ri(x);y=ri(y)-ri(lift);
-  const ops=[],R=(a,w,b,h,c,fl,g)=>ops.push(d>0?x+a:x-a-w,y+b,w,h,c,fl|0,g||0);   // a = distanza in avanti lungo la direzione del tuffo
-  const skin=lk.skin;
-  R(-11,5,-4,2,skin,PS_FAR);R(-13,3,-4,2,un.shoe,PS_FAR);R(-10,4,-2,2,skin);R(-12,3,-2,2,un.shoe);   // gambe e scarpe
-  R(-6,4,-6,4,un.shorts);R(-2,7,-6,4,un.shirt,0,'busto');if(un.pat)for(let j=0;j<4;j++)for(let i=0;i<7;i++)if(eqPatHit(un.pat,(j+0.5)/4,(6.5-i)/7))R(-2+i,1,-6+j,1,un.shirtB,0,'busto');   // pantaloncini e busto (a motivi: il busto e' disteso)
-  R(4,7,-9,6,skin,0,'testa');R(5,5,-10,1,skin,0,'testa');if(lk.style!==4){R(4,5,-10,2,lk.hair);R(4,2,-8,3,lk.hair);}R(9,1,-7,2,PAL.out,PS_FLAT);   // testa grande come in piedi (8x7)
-  R(7,6,-3,2,skin,PS_NEAR);R(8,5,-5,2,skin,PS_NEAR);   // braccia tese
-  psShade(ops,7);
+  const P=pal16(un,lk),N=P[0],F=P[1],A=a=>d>0?x+a:x-a;   // a = distanza in avanti lungo la direzione del tuffo
+  pgBegin(x,y);
+  pgLimb(A(-6),y-4,A(-13),y-5,2,0,0,0,d,6,false);pgLimbDraw([F.S,F.s],[F.C,F.c],0.6,6);pgSpr(SHOE_F,A(-14)-(d>0?0:1),y-6,false,F,6);   // gamba lontana, piu' alta
+  pgLimb(A(-6),y-3,A(-12),y-3,2,0,0,0,d,6,false);pgLimbDraw([N.S,N.s],[N.C,N.c],0.6,6);pgSpr(SHOE_F,A(-13)-(d>0?0:1),y-3,false,N,6);
+  pgLimb(A(3),y-5,A(11),y-4,2,0,0,0,d,5,false);pgLimbDraw([F.J,F.j],[F.S,F.s],0.3,5);   // braccio lontano teso
+  pgSpr(DIVE_B,d>0?x-7:x-5,y-7,d<0,N,1,un.pat?((i,j,ch)=>(ch==='K'||ch==='J'||ch==='j')&&eqPatHit(un.pat,(j+0.5)/4,(12.5-i)/7)?(ch==='K'?'B':(ch==='J'?'N':'n')):ch):null);   // busto disteso (a motivi: il busto e' disteso)
+  const st=lk.style===4?4:clamp(lk.style|0,0,3),rows=HEADS[0][st],w=rows[0].length;pgSpr(rows,d>0?x+12-(w-1):x-12,y-12,d<0,N,3);   // testa alzata, guarda il disco
+  pgLimb(A(4),y-4,A(12),y-6,2,0,0,0,d,4,true);pgLimbDraw([N.K,N.J],[N.S,N.s],0.3,4);   // braccio vicino teso verso il disco
+  pgDraw(0,x,y);
 }
 // avanzamento del tuffo (0 = in piedi, 1 = disteso): si butta in 0,3 s, resta giu' fino alla fine dell'azione, poi si rialza
 function diveProg(p){
