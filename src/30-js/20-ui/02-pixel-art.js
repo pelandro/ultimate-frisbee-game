@@ -99,7 +99,12 @@ function matchLook(){
   PAL.tick=cMix(PAL.dim,PAL.grass,0.5);   // le tacche ogni 2 m: piu' discrete delle linee
 }
 // colore della meta: la maglia della squadra (i pantaloncini se la maglia e' bianca), un po' piu' scura e appena velata dal verde del prato
-function ezColor(t){const V=venueNow(),u=UNI[t],c=cLum(u.shirt)>0.78?u.shorts:u.shirt,z=cMix(cShade(c,-0.12),PAL.grass,fieldKind(V)===0?0.5:0.05+0.4*fieldWear(V));return (G.wx|0)===2?cMix(z,'#eef3f8',0.22):z;}   // sui campi poveri la vernice e' sbiadita (sulla terra resta appena un velo di colore); con la neve un po' piu' chiara
+// la vernice ha saturazione e luce contenute (una meta blu elettrico copriva tutto il resto) e prende un po' del verde del prato: sta nella tavolozza del campo
+function ezColor(t){
+  const V=venueNow(),u=UNI[t],c=cLum(u.shirt)>0.78?u.shorts:u.shirt,hsl=rgb2hsl(cRgb(c));
+  const p=hsl2hex(hsl[0],Math.min(hsl[1],0.62),clamp(hsl[2],0.33,0.5)),z=cMix(p,PAL.grass,fieldKind(V)===0?0.5:0.1+0.36*fieldWear(V));
+  const wx=G.wx|0;return wx===2?cMix(z,'#eef3f8',0.22):(wx===1?cShade(z,-0.14):z);   // sui campi poveri la vernice e' sbiadita (sulla terra resta appena un velo di colore); con la neve piu' chiara, bagnata piu' scura
+}
 // Stesso stemma dei menu, disegnato sulla griglia del campo senza immagini o filtri.
 function crestPx(cx,cy,w,name,alpha){clubDraw(cx,cy,w,name,alpha);}
 /* IL CAMPO, dal basso verso l'alto: bordo campo, prato tagliato, mete piene, ciuffi d'erba, usura, neve o pozzanghere, stemma, scritte, linee;
@@ -119,35 +124,26 @@ function drawField(){
   drawMow(y0,H);
   const blueRight=G.dir[0]>0;
   px(x0,y0,gl-x0,H,blueRight?PAL.redZ:PAL.blueZ);px(gr,y0,x1-gr,H,blueRight?PAL.blueZ:PAL.redZ);
-  if(fk>0){ezHatch(x0,y0,gl-x0,H);ezHatch(gr,y0,x1-gr,H);}   // mete nel colore della squadra, con la trama (15-bordocampo.js)
+  if(fk>0){ezMow(x0,y0,gl-x0,H,true);ezMow(gr,y0,x1-gr,H,false);}   // mete nel colore della squadra, con le strisce del taglio (25b-scritte-dipinte.js)
   if(fk===0)patFill(dirtPattern(turfCover(V)),x0,y0,x1-x0,H,40);   // terra battuta: granelli, sassolini, qualche filo d'erba (anche nelle mete)
   else if(mowKind(V)!==3)patFill(tuftPattern(lv,wx===2?0:fw),gl,y0,gr-gl,H,24);   // ciuffi d'erba (non sul sintetico), con la terra che si vede sui campi poveri
   drawWear();   // erba consumata sui campi poveri (fango con la pioggia)
   standShadow(y0);   // con il sole, l'ombra della tribuna sul bordo lontano
   // a centrocampo lo stemma della squadra di casa (in campo neutro il nome della manifestazione)
   drawCenterMark();
-  // scritta nelle mete: il nome della squadra che segna in quella meta (Blu e Rossi quando i nomi non ci sono), dipinta in bianco.
-  // Se e' lunga va a capo (fino a tre righe) e passa al carattere piccolo: resta sempre dentro la meta, centrata (ezNameFit, 22-campo-retro.js)
-  const nmB=G.inMatch&&G.myName?G.myName:'BLU',nmR=G.inMatch&&G.oppName?G.oppName:'ROSSI',paint=wx===2?'rgba(255,255,255,.7)':cMix('#ffffff',PAL.grass,0.12+0.3*fw);
-  if(!titleBg())for(const z of [[EZ/2,blueRight?nmR:nmB,-1],[FIELD_L-EZ/2,blueRight?nmB:nmR,1]]){   // nel menu iniziale le mete restano senza scritte
-    // la scritta si impagina una volta sola a una scala di riferimento (EZ_REF pixel per metro) e poi si disegna in scala con il campo: resta dipinta a terra,
-    // della stessa misura rispetto alla meta a qualsiasi zoom, senza cambiare carattere o andare a capo in modo diverso
-    const nm=String(z[1]).replace(/ \([ABC]\)$/,'').toUpperCase(),fit=ezNameFit(nm,FIELD_W*EZ_REF*0.88,EZ*EZ_REF*0.82,true),tot=(fit.ls.length-1)*fit.lh+fit.gh;
-    ctx.save();ctx.translate(sxw(z[0]),syw(MID));ctx.rotate(z[2]*Math.PI/2);ctx.scale(S/EZ_REF,S/EZ_REF);
-    for(let i=0;i<fit.ls.length;i++)ptext(fit.ls[i],0,-ri(tot/2)+i*fit.lh,{f:fit.f,c:paint,sh:1,o:'rgba(8,14,36,.32)'});
-    ctx.restore();
-  }
+  // scritta nelle mete: il nome della squadra che segna in quella meta (Blu e Rossi quando i nomi non ci sono), dipinto a blocchi lungo la meta.
+  // Va a capo fino a tre righe scegliendo le lettere piu' grandi che ci stanno, sempre centrato (blockFit, 25b-scritte-dipinte.js)
+  const nmB=G.inMatch&&G.myName?G.myName:'BLU',nmR=G.inMatch&&G.oppName?G.oppName:'ROSSI';
+  if(!titleBg())for(const z of [[EZ/2,blueRight?nmR:nmB,-1,blueRight?PAL.redZ:PAL.blueZ],[FIELD_L-EZ/2,blueRight?nmB:nmR,1,blueRight?PAL.blueZ:PAL.redZ]])   // nel menu iniziale le mete restano senza scritte
+    ezPaintName(String(z[1]).replace(/ \([ABC]\)$/,''),z[0],z[2],z[3],fk===0?1:fw);
   // linee ogni 8 m e tacche ogni 2 m: non sulla terra battuta. I numeri della distanza dalla linea di meta (aiutano a misurare i lanci) solo negli stadi
   // e nelle prove. Sui campi poveri le linee sono di gesso: qualche buco qua e la'
-  const big=S>5.4,chalk=fw>0.6,nums=fk===2||!!G.drill;
+  const chalk=fw>0.6,nums=fk===2||!!G.drill;
   if(fk>0){
     for(let k=1;k<8;k++){
       const x=sxw(EZ+k*8);
       if(chalk){for(let y=y0;y<y1;y+=6){const g=ihash(k,y-y0)%5===0;px(x,y,1,g?3:6,PAL.dim);}}else px(x,y0,1,H,PAL.dim);
-      if(!nums)continue;
-      const d=Math.min(k,8-k)*8,txt=String(d);
-      ptext(txt,x+1,y1-(big?26:16),{f:big?'P':'p',c:PAL.num,o:false});
-      ctx.save();ctx.translate(x,y0+(big?26:16));ctx.rotate(Math.PI);ptext(txt,0,0,{f:big?'P':'p',c:PAL.num,o:false});ctx.restore();
+      if(nums)paintYardNum(Math.min(k,8-k)*8,EZ+k*8);   // numeri a blocchi dipinti (25b-scritte-dipinte.js)
     }
     for(let m=EZ+2;m<FIELD_L-EZ;m+=2){
       const x=sxw(m);px(x,y0+2,1,2,PAL.tick);px(x,y1-4,1,2,PAL.tick);
