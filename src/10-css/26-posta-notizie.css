@@ -1,0 +1,22 @@
+/* Posta e notizie: una riga per avviso con la sua azione, il testo intero al tocco (05-avvisi-opzioni-guida-pausa.js, 09b-posta-notizie.js) */
+.altabs{margin:8px 0 2px}
+.altabs small{font-size:.8em;color:var(--gold)}
+.ali .alb{flex:1;min-width:0}
+.alt{display:flex;width:100%;align-items:center;gap:8px;text-align:left;background:none;border:0;padding:2px 0;color:#f4f4f4;font:inherit;font-size:16px;line-height:1.25;cursor:pointer}
+.alt span{flex:1;min-width:0}
+.alt i{flex:none;font-style:normal;color:var(--gold);font-size:13px}
+.alt:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.ali.new .alt span::before{content:'';display:inline-block;width:8px;height:8px;margin:0 6px 2px 0;background:var(--gold);border:2px solid #000;vertical-align:middle}
+.alfull p{margin:4px 0 0;font-size:15px;line-height:1.25;color:#d4deea}
+.ali.new .alfull p::before{display:none}
+.alarch{margin-top:10px}
+.alarch summary{cursor:pointer;margin:6px 0;font-family:var(--pfont);font-size:9px;font-size-adjust:none;color:var(--gold);text-transform:uppercase}
+.alarch summary b{font-weight:400;background:#1d293c;border:2px solid #000;color:#fff;padding:1px 6px}
+.mknews{margin:0 0 8px;padding:6px 10px;background:rgba(0,0,0,.25);border:2px solid #000}
+.mknews summary{cursor:pointer;font-size:16px}
+.pnews .nlist{margin:4px 0 0}
+/* titolo e pulsante sulla stessa riga quando c'e' spazio; testo intero ed esito sotto */
+.ali .alb{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+.ali .alt{flex:1 1 240px}
+.ali .alb .schrow{margin-top:0;flex:none}
+.ali .alfull,.ali .alb .res{order:3;flex-basis:100%}

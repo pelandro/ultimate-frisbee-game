@@ -24,7 +24,7 @@ function renderMarket(){
   if(MK_SORT[mkSort][1])rows.sort((x,y)=>MK_SORT[mkSort][1](x[0],y[0]));
   const can=SV.market.filter(m=>!canSign(m)).length;
   const bar=`<div class="rbar"><label class="rchk"><input type="checkbox" data-mkonly="1"${mkOnly?' checked':''}> Solo chi posso prendere (${can})</label><label class="rsort">Ordina per <select class="qs" data-mksort="1">${Object.keys(MK_SORT).map(k=>`<option value="${k}"${mkSort===k?' selected':''}>${MK_SORT[k][0]}</option>`).join('')}</select></label></div>`;
-  $('mkBox').innerHTML=infoX('mk',MK_INFO)+(mkMsg?`<p class="rmsg">${mkMsg}</p>`:'')+bar+(rows.length?`<div class="mgrid">${rows.map(x=>row(x[0],x[1])).join('')}</div>`:`<p class="note">${mkOnly?'Nessun acquisto disponibile con questi filtri. Prova un’altra categoria o togli «Solo chi posso prendere».':'Nessun giocatore in questa categoria: il mercato si rinnova ogni 5 giornate.'}</p>`);
+  $('mkBox').innerHTML=infoX('mk',MK_INFO)+mkNewsHTML()+(mkMsg?`<p class="rmsg">${mkMsg}</p>`:'')+bar+(rows.length?`<div class="mgrid">${rows.map(x=>row(x[0],x[1])).join('')}</div>`:`<p class="note">${mkOnly?'Nessun acquisto disponibile con questi filtri. Prova un’altra categoria o togli «Solo chi posso prendere».':'Nessun giocatore in questa categoria: il mercato si rinnova ogni 5 giornate.'}</p>`);
 }
 $('mkTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;mkTab=b.dataset.k;mkMsg='';renderMarket();});
 $('mkBox').addEventListener('change',e=>{if(e.target.closest('[data-mksort]')){mkSort=e.target.value;renderMarket();}else if(e.target.closest('[data-mkonly]')){mkOnly=e.target.checked;renderMarket();}});

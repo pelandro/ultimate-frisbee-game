@@ -1,6 +1,7 @@
 /* ---- stacchi laterali: salto e tuffo ----
    Stesso stile del campo: tutto a pixel interi con contorno scuro. Le figure sono sprite a pixel grossi (athlete, sotto). Sfondo e interfaccia sono in drawCine. */
 let cine=null;
+const CINE_DK=[1,0.85,0.72,0.6];   // ampiezza di verde e giallo per difficolta' (Facile, Medio, Difficile, Estrema)
 const easeIO=t=>t*t*(3-2*t);
 const bez=(p0,p1,p2,t)=>{const a=1-t;return {x:a*a*p0.x+2*a*t*p1.x+t*t*p2.x,y:a*a*p0.y+2*a*t*p1.y+t*t*p2.y};};
 function startCine(spec){
@@ -11,14 +12,15 @@ function startCine(spec){
   const timing=spec.kind==='jump'||spec.timing;
   // ampiezza della zona verde: dipende dal salto (duello in aria) o dal tuffo del tuo giocatore
   const sk=spec.kind==='jump'?'sal':'tuf',mp=spec.kind==='jump'?(spec.a.t===0?spec.a:spec.d):spec.diver;
-  const hw=0.025+0.095*clamp((mp.s[sk]-40)/60,0,1);
-  cine={spec,kits,t:0,rt:0,phase:'aim',timing,locked:false,pos:0,bonus:0,quality:'',out:null,aimEnd:timing?2.4:1.0,hw,sp:2.3-1.0*clamp((mp.s[sk]-40)/60,0,1),statTxt:(sk==='sal'?'Salto ':'Tuffo ')+mp.s[sk]};
+  // la difficolta' della partita stringe verde e giallo (la velocita' resta quella del Salto o del Tuffo, che si legge gia' sulla barra)
+  const dk=CINE_DK[G.lvl?clamp(G.lvl[1]|0,0,3):0],hw=(0.025+0.095*clamp((mp.s[sk]-40)/60,0,1))*dk;
+  cine={yw:0.165*dk,spec,kits,t:0,rt:0,phase:'aim',timing,locked:false,pos:0,bonus:0,quality:'',out:null,aimEnd:timing?2.4:1.0,hw,sp:2.3-1.0*clamp((mp.s[sk]-40)/60,0,1),statTxt:(sk==='sal'?'Salto ':'Tuffo ')+mp.s[sk]};
   HOOKS.vibe(25);
 }
 function cineTap(){
   const c=cine;if(!c||c.phase!=='aim'||!c.timing||c.locked||c.t<0.8)return;
   const q=Math.abs(c.pos-0.5);
-  c.locked=true;c.lockT=c.t;c.bonus=q<=c.hw?1:clamp(1-(q-c.hw)/0.33,0,1);
+  c.locked=true;c.lockT=c.t;c.bonus=q<=c.hw?1:(q<=c.hw+c.yw?clamp(1-0.5*(q-c.hw)/c.yw,0.5,1):0);   // verde 1, giallo da 0,5 a 1, nero 0: la scena si apre solo quando il nero non basta (08-prese-duelli.js)
   c.quality=c.bonus>=1?'Perfetto!':(c.bonus>=0.5?'Buono':(c.bonus>0?'Quasi':'Fuori tempo'));HOOKS.sfx('timing',c.bonus>=1?1:(c.bonus>=0.5?0.4:0));
   c.aimEnd=c.t+0.45;
 }
@@ -255,7 +257,7 @@ function drawMeter(c,w,h){
   ctx.save();ctx.globalAlpha=al;
   pbox(bx-5,by-bh/2-5,bw+10,bh+10,PAL.out,null);
   px(bx,by-bh/2,bw,bh,'#2b3157');
-  const yh=c.hw+0.165,yx=ri(bx+bw*(0.5-yh)),yw=ri(bw*yh*2);
+  const yh=c.hw+c.yw,yx=ri(bx+bw*(0.5-yh)),yw=ri(bw*yh*2);
   px(yx,by-bh/2,yw,bh,'#ffd23f');
   const inG=Math.abs(c.pos-0.5)<=c.hw,gx=ri(bx+bw*(0.5-c.hw)),gw=ri(bw*c.hw*2);
   px(gx,by-bh/2,gw,bh,inG&&!c.locked?'#a8ffd0':'#4fe58f');
@@ -393,7 +395,7 @@ function drawCine(){
     }
     athlete(dpz.dx,gy,dpz.hip,1,dpz.pose,dpz.rot,dpz.pose==='run'?SD*11:c.t,u,undefined,false,dv);
     const rs=aim?1:clamp(1-vt/0.7,0,1);
-    athlete(xs-1.2*u+(aim?0:vt*u*2.2),gy+ri(0.55*u),0.9,1,rs>0.15?'run':'ready',0,rs>0.15?SD*11+1.3:c.t,u*1.07,undefined,false,{t:1-dv.t,look:makeLook('comp'+dv.t+dv.name)});
+    if(sp.chase)athlete(xs-1.2*u+(aim?0:vt*u*2.2),gy+ri(0.55*u),0.9,1,rs>0.15?'run':'ready',0,rs>0.15?SD*11+1.3:c.t,u*1.07,undefined,false,{t:1-dv.t,look:makeLook('comp'+dv.t+dv.name)});   // l'avversario che insegue c'e' solo se era vicino in campo
     let dp,pd=null;
     if(aim){pd=clamp(c.t/2.7,0,0.85);dp=bez(P0,P1,E,pd);}
     else if(vt<ct){pd=0.85+0.15*(vt/ct);dp=bez(P0,P1,E,pd);}
