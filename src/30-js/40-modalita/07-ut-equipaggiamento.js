@@ -84,7 +84,9 @@ function renderEquip(){
     return `<button type="button" class="eqr ${rc}${w?' on':''}" data-r="${r}"${own?'':' disabled'}>${eqIcon(eqSel,own?r:-1,32)}<span><b>${rn}</b><small>+${EQ_PLUS[r]} · ${w?'indossato':(own?'equipaggia':'da trovare')}</small></span></button>`;}).join('')}</div>${cur!==undefined?'<button type="button" class="sec" id="eqOff">Togli</button>':''}`;
   const sw=z=>EQ_KIT_COL.map(c=>`<button type="button" class="eqsw${e.kit[z]===c?' on':''}" data-z="${z}" data-c="${c}" style="background:${c}" aria-label="${EQ_COLN[c]}"></button>`).join('');
   const pat=`<div class="eqkr"><small>Motivo della maglia</small><div class="seg eqpat">${EQ_KIT_PAT.map(([m,n])=>`<button type="button" class="sg${e.kit.m===m?' on':''}" data-m="${m}">${n}</button>`).join('')}</div></div>`;
-  $('eqKit').innerHTML=`<div class="eqph">Divisa</div>${[['s','Maglia'],['p','Pantaloncini'],['c','Calzettoni']].map(([z,n])=>`<div class="eqkr"><small>${n}</small><div class="eqsws">${sw(z)}</div></div>`).join('')}${pat}${e.kit.m!=='uni'?`<div class="eqkr"><small>Secondo colore della maglia</small><div class="eqsws">${sw('b')}</div></div>`:''}${EQ_KIT_HOT.includes(e.kit.s)?'<p class="qp" style="margin:6px 0 0">Con la maglia rossa o arancione l’avversaria gioca in bianco.</p>':''}`;
+  // il secondo colore sta subito sotto quello della maglia (prima era in fondo, dopo calzettoni e motivo); il motivo segue la maglia
+  const row=(z,n)=>`<div class="eqkr"><small>${n}</small><div class="eqsws">${sw(z)}</div></div>`;
+  $('eqKit').innerHTML=`<div class="eqph">Divisa</div>${row('s','Maglia')}${e.kit.m!=='uni'?row('b','Secondo colore della maglia'):''}${pat}${row('p','Pantaloncini')}${row('c','Calzettoni')}${EQ_KIT_HOT.includes(e.kit.s)?'<p class="qp" style="margin:6px 0 0">Con la maglia rossa o arancione l’avversaria gioca in bianco.</p>':''}`;
   $('eqMsg').textContent=eqMsgT;
   const sh=$('utEquip').querySelector('.shead');   // il manichino resta fermo sotto il titolo (che sugli schermi bassi resta fermo anche lui)
   $('utEquip').style.setProperty('--eqtop',(getComputedStyle(sh).position==='sticky'?sh.offsetHeight:0)+8+'px');
