@@ -862,5 +862,469 @@
     "reference_image": "https://play.usaultimate.org//assets/TeamLogos/Hazard_Square_Logo.jpg",
     "note": "Lettere HAZ e doppia banda gialla del marchio.",
     "evidence": "logo"
+  },
+  {
+    "name": "Washington Scandal",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21671/washington-dc-scandal/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2024/10/310409C2-6B47-4D58-A148-EC4BF7EBD64C-300x300.jpeg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Boston Brute Squad",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21667/boston-brute-squad/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2014/07/boston-brute-squad-logo-2-216x300.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "San Francisco Fury",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21669/san-francisco-fury/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2019/07/fury-logo-300x300.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Denver Molly Brown",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21737/denver-molly-brown/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2014/07/Molly-Brown-logo-1.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Toronto 6ixers",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/45796/toronto-6ixers/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2016/07/Toronto-6ixers-300x300.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Seattle Riot",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21665/seattle-riot/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2019/07/riot-logo-300x300.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "New York BENT",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21696/new-york-bent/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2014/07/Bent_NY_Logo_2018-246x300.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "San Francisco Nightlock",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21675/san-francisco-nightlock/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2014/07/2014-crest-logo-300x300.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "San Diego Flipside",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/121083/san-diego-flipside/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2022/08/san-diego-flipside-logo-300x300.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Philadelphia Flight",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/106415/philadelphia-flight/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2021/08/philadelphia-flight-logo-300x278.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Portland Schwa",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21707/portland-schwa/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2013/07/schwa_logo.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Pittsburgh Parcha",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/104925/pittsburgh-parcha/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2021/07/Parcha-300x150.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Raleigh Phoenix",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21703/raleigh-phoenix/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2014/07/Phoenix-Logo_1-257x300.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Northampton Starling",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/121684/northampton-starling/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2022/08/starling-logo-extra-background-300x300.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Minneapolis Pop",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21720/minneapolis-pop/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2014/07/minneapolis-pop-logo-2.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Quebec Iris",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/33910/quebec-iris/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2015/07/WIris-300x300.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Vancouver Traffic",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21673/vancouver-traffic/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2014/07/WTraffic-300x300.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Dallas Dimes",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/184042/dallas-dimes/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2025/08/dallas-dimes-logo-300x300.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Colorado Kelp",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/163379/colorado-kelp/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2024/06/WKelp-300x300.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Chicago Nemesis",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21709/chicago-nemesis/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2021/10/chicago-nemesis-logo-300x300.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Madison Heist",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/21705/madison-heist/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2012/10/2012ClubLogos_Heist.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Ottawa Stella",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/46383/ottawa-stella/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2016/07/WStella-300x300.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Oakland LOL",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/57931/oakland-lol/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2017/07/LOL.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Austin Vengeance",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/144469/austin-vengeance/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2023/07/atxvengeance-2-300x300.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Washington Grit",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/59628/washington-dc-grit/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2017/09/DC-Grit-logo-300x300.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Atlanta Ozone",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=aGxOgRwuKH1LVsugsYl8Q6ZtAG47wjgrVXuaEBWjt4I%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/ozone_brand_explore_pick.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Komodos",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=%2fmIooEYtHZixAHs60QIbB3%2f%2fTjfDr43Tc%2fnUOpL4%2bis%3d",
+    "reference_image": null,
+    "note": "Vancouver. La squadra compare nelle qualificazioni Northwest. Il logo della formazione canadese resta da verificare.",
+    "evidence": "fallback"
+  },
+  {
+    "name": "Drift",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://ultiworld.com/team/182551/vancouver-drift/",
+    "reference_image": "https://cdn.ultiworld.com/wordpress/wp-content/uploads/2025/07/vancouver-drift-logo.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Agency",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=CaY4N%2fwvv4x6B1XZ%2f9QOlRfEibOeAVRptFrPAcl%2fFFI%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/52606127_343635976246756_7375578154364043264_n.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Vice",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=tnvU6bDdTdpOKELnAhFh72g8e%2bT1JP1OsGziTYQmJr4%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/vice_purple_pineapple.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Takedown",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=bhkPBLtgyEk4SQAWz0B%2bsO%2fnNvhaMvkofrS%2fS7sguOU%3d",
+    "reference_image": null,
+    "note": "Charlotte. La collezione Take Down di BE Ultimate non espone un prodotto verificabile.",
+    "evidence": "fallback"
+  },
+  {
+    "name": "Calypso",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://www.facebook.com/tampacalypso/",
+    "reference_image": "https://scontent-den2-1.xx.fbcdn.net/v/t39.30808-1/304935235_125952193528717_4736661215585371411_n.jpg?stp=dst-jpg_tt6&cstp=mx1000x1000&ctp=s720x720&_nc_cat=100&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=3ab345&_nc_ohc=0UHUOxK1tgMQ7kNvwFDFDxt&_nc_oc=AdqQgLjVIlH1AV56F-h80pKlXtEueaEb-5SrwCC2LvWE-L9JlbzNx_0oP_HhvMrmLzqLE0uy8igN5FeIUz5pLMSG&_nc_zt=24&_nc_ht=scontent-den2-1.xx&_nc_gid=AVWMrECEtR9u5Mv3i2M4gA&_nc_ss=7920f&oh=00_AQQHzVrp-mBIH_2sljrQuP_xaJm6FWtL77tReWaj-4ig0A&oe=6B08A8FC",
+    "note": "Immagine del profilo della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Magma",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=dyfMgT6oz1tqOsdoubX%2fXIXoD9y30PKh35PuOyqFA%2fY%3d",
+    "reference_image": null,
+    "note": "Marietta / Atlanta. Atlanta Flying Disc Club conferma il nome. Il profilo Instagram @magmaultimate non identifica la città.",
+    "evidence": "fallback"
+  },
+  {
+    "name": "St. Louis Stellar",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=reMW1YScIiDz31GUvLpuqXuXdmbZAQXn4KaAv25QxAc%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/stellarlogo.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Zephyr",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=AuLPjlUI2433d51%2bDRsVnaI8UWEQ2Z78nBPKIO4FWGk%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/Z.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Wildfire",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=alR7qk0fn%2fNTExxySkD3bQjTSUti%2bFv7mqQm%2bCduTBU%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/WF_Logo2.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Wicked",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=MEJAjIzGTFPsJj%2fNoA98TQC3KZIpvOGnxerKIRrUSms%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/Logo_Words.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Dolly For President",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=2Qop1y3EGvZebyNv0xifFT3RGgLTRBt0Kl7XUFsXm5U%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/DFP.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Dark Sky",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=sn1Gq%2f6JDN0VLu3lF8wMsu23HBlcMKK05kJWVTdk0fs%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/IMG_0501.JPG",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Omega Continuum",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=wWRoHOSHqPbfW2XN9pK4BO3vkL%2bPIG1q1bTcsRv8b0I%3d",
+    "reference_image": null,
+    "note": "Cincinnati. La squadra scolastica Omega compare in un altro campionato. Il legame con Omega Continuum resta da verificare.",
+    "evidence": "fallback"
+  },
+  {
+    "name": "Indy Rogue",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=37iHh%2bGoV%2f5kehNfyoUDxiXXlaPKaSEp%2ba2yyc3087g%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/rog.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "FAB",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=OO%2fktCVN%2bCp%2bsgCNnrsOKxSaihC70O3kECuw9B7gDqc%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/Fab_Logo_Square.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "San Antonio Problems",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=W8vm5zqh6ngwjNdO7fJcl9AcAWGjEeD2Cx5LPFbNzWM%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/IMG_5376.jpeg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Sureshot",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=lo4clg%2b2wTDGNZGMoSAmMykKmG7CZrkHUpIZVDI4BQE%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/Sureshot_Concept_WHITE-01.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Solstice",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=VItYN4AVJfGfVK4c0cj%2fd4IzXpU4lzx2wxhu5tNPXUU%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/Solstice_Logo.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Compact Disc",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=serUQsXEAwHsCpiwvSGVA%2bmIi%2b%2bK7Vw1fG9kuMad8QY%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/CD_profile.jpg",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Trainwreck",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=gSR2y%2b8W6psoL8kZbwHQEtoWAKnxuE8Cl%2bsc3cXkE%2bg%3d",
+    "reference_image": "https://play.usaultimate.org/assets/TeamLogos/TW26.png",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "River Monsters",
+    "country": "Circuito USA Ultimate Women",
+    "source": "https://play.usaultimate.org/events/teams/?EventTeamId=XHEx6utmpKwHSPSr4OT7p4WznsLJZ3W83bIxUx%2b89oY%3d",
+    "reference_image": null,
+    "note": "St. Paul. Il referto dei Northwest Plains Sectionals documenta la squadra.",
+    "evidence": "fallback"
+  },
+  {
+    "name": "BFD Shout",
+    "country": "Italia Women",
+    "source": "https://live.ultimatefederation.eu/",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12661/69fc82a1_bfd-shout.webp",
+    "note": "Stemma della squadra.",
+    "evidence": "logo"
+  },
+  {
+    "name": "Tequila Boom Boom",
+    "country": "Italia Women",
+    "source": "https://live.ultimatefederation.eu/",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12667/69fc82ad_tequila-boom-boom.webp",
+    "note": "Bomba nera con miccia accesa a destra, su indicazione dell’utente.",
+    "evidence": "logo"
+  },
+  {
+    "name": "BFD Cheetahs",
+    "country": "Italia Women",
+    "source": "https://linktr.ee/bolognaflyingdisc",
+    "reference_image": "https://ugc.production.linktr.ee/4d10941a-a873-4484-ac2f-6946e822cbd4_Risorsa-1-144x-100.jpeg?io=true&size=avatar-v3_0",
+    "note": "Stemma di BFD Redbulls condiviso da questa formazione attraverso un alias esplicito.",
+    "evidence": "club"
+  },
+  {
+    "name": "Tequila Junior",
+    "country": "Italia Women",
+    "source": "https://www.youtube.com/watch?v=d_pWdmPxw_A",
+    "reference_image": "https://i.ytimg.com/vi/d_pWdmPxw_A/maxresdefault.jpg",
+    "note": "Bomba nera con miccia accesa a sinistra e riflesso viola, su indicazione dell’utente.",
+    "evidence": "logo"
+  },
+  {
+    "name": "CUS Padova Tane Malefiche",
+    "country": "Italia Women",
+    "source": "https://www.cuspadova.it/",
+    "reference_image": "https://static.wixstatic.com/media/2d2523_e352ddadf9e0460fb31875088e93c5b1~mv2.png/v1/fill/w_124,h_130,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/logo.png",
+    "note": "Stemma di CUS Padova Barbastreji condiviso da questa formazione attraverso un alias esplicito.",
+    "evidence": "club"
+  },
+  {
+    "name": "Donkey Ladies",
+    "country": "Italia Women",
+    "source": "https://ultimatemilano.com/",
+    "reference_image": "https://ultimatemilano.com/brand/ultimate-milano.png",
+    "note": "Stemma del club Ultimate Milano.",
+    "evidence": "club"
+  },
+  {
+    "name": "DiscoBolo Women",
+    "country": "Italia Women",
+    "source": "https://live.ultimatefederation.eu/",
+    "reference_image": "https://live.ultimatefederation.eu/assets/images/sports/66/teams/12816/69fc82a3_discobolo.webp",
+    "note": "Stemma di DiscoBolo condiviso da questa formazione attraverso un alias esplicito.",
+    "evidence": "club"
+  },
+  {
+    "name": "METACARPE",
+    "country": "Italia Women",
+    "source": "https://www.polisportivanazareno.it/",
+    "reference_image": "https://www.polisportivanazareno.it/wp-content/uploads/2026/07/frisbee-216x300.png",
+    "note": "Stemma del settore ultimate della Polisportiva Nazareno.",
+    "evidence": "club"
+  },
+  {
+    "name": "Timanfaya",
+    "country": "Italia Women",
+    "source": "https://www.youtube.com/watch?v=d_pWdmPxw_A",
+    "reference_image": "https://i.ytimg.com/vi/d_pWdmPxw_A/maxresdefault.jpg",
+    "note": "Stemma ritagliato dalla grafica di gara.",
+    "evidence": "logo"
+  },
+  {
+    "name": "One Tribe Women",
+    "country": "Italia Women",
+    "source": "https://onetribeultimate.it/",
+    "reference_image": "https://onetribeultimate.it//images/design/logo-one-tribe-full.svg",
+    "note": "Stemma di One Tribe condiviso da questa formazione attraverso un alias esplicito.",
+    "evidence": "club"
   }
 ]
