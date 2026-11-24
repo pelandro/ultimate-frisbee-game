@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Rivisti 46 stemmi Women per avvicinarli ai riferimenti delle squadre. Molly Brown ha il simbolo della piuma.
 - Nuovi stemmi a pixel per la Serie A Women e il circuito USA Ultimate Women. Le due Tequila hanno una bomba nera con la miccia accesa.
 - Nuova icona dell'app: il giocatore in tuffo con il disco, su sfondo verde (scheda del browser, Home di iPhone e Android).
 - Campo più curato, in stile Retro Bowl e diverso per ogni tipo di impianto. Nelle mete il colore della squadra è meno acceso, segue le strisce dell'erba (più scuro con la pioggia) e il nome è dipinto a grandi lettere a blocchi; i numeri delle distanze sono a blocchi, con la linea che passa tra le due cifre. Lo stemma di centrocampo è dipinto a colori negli stadi, con il bordo bianco quando è fatto di un pezzo solo; si vede su ogni tipo di campo (niente più macchia marrone). Dietro le mete il fondo cambia con il campo: sui campetti erba rada, chiazze di terra, un sentiero, la rete metallica e la roba lasciata per terra (zaini, borracce, felpe, coni, dischi); al club la siepe e il gazebo della squadra visto di tre quarti, con il frigo e i borsoni; al comunale la ringhiera. Le scritte e i pulsanti della partita hanno i pixel grandi quanto quelli del campo; fotografi, cameraman e staff hanno luci e ombre.
