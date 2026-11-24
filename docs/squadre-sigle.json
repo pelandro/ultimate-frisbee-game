@@ -1782,28 +1782,28 @@
     "country": "IW",
     "tier": "A",
     "abbr": "SHO",
-    "mark": "italia-z51"
+    "mark": "iw-bfd-shout"
   },
   {
     "name": "Tequila Boom Boom",
     "country": "IW",
     "tier": "A",
     "abbr": "TBB",
-    "mark": null
+    "mark": "iw-tequila-boom-boom"
   },
   {
     "name": "BFD Cheetahs",
     "country": "IW",
     "tier": "A",
     "abbr": "CHE",
-    "mark": "italia-z51"
+    "mark": "italia-rdb"
   },
   {
     "name": "Tequila Junior",
     "country": "IW",
     "tier": "A",
     "abbr": "TEJ",
-    "mark": null
+    "mark": "iw-tequila-junior"
   },
   {
     "name": "CUS Padova Tane Malefiche",
@@ -1817,7 +1817,7 @@
     "country": "IW",
     "tier": "A",
     "abbr": "DKL",
-    "mark": "italia-ddk"
+    "mark": "iw-donkey-ladies"
   },
   {
     "name": "DiscoBolo Women",
@@ -1831,14 +1831,14 @@
     "country": "IW",
     "tier": "A",
     "abbr": "MTE",
-    "mark": "italia-mtc"
+    "mark": "iw-metacarpe"
   },
   {
     "name": "Timanfaya",
     "country": "IW",
     "tier": "A",
     "abbr": "TIM",
-    "mark": null
+    "mark": "iw-timanfaya"
   },
   {
     "name": "One Tribe Women",
@@ -1901,182 +1901,182 @@
     "country": "UW",
     "tier": "UW",
     "abbr": "SCA",
-    "mark": null
+    "mark": "uw-washington-scandal"
   },
   {
     "name": "Boston Brute Squad",
     "country": "UW",
     "tier": "UW",
     "abbr": "BRUT",
-    "mark": null
+    "mark": "uw-boston-brute-squad"
   },
   {
     "name": "San Francisco Fury",
     "country": "UW",
     "tier": "UW",
     "abbr": "FURY",
-    "mark": null
+    "mark": "uw-san-francisco-fury"
   },
   {
     "name": "Denver Molly Brown",
     "country": "UW",
     "tier": "UW",
     "abbr": "MB",
-    "mark": null
+    "mark": "uw-denver-molly-brown"
   },
   {
     "name": "Toronto 6ixers",
     "country": "UW",
     "tier": "UW",
     "abbr": "6IX",
-    "mark": null
+    "mark": "uw-toronto-6ixers"
   },
   {
     "name": "Seattle Riot",
     "country": "UW",
     "tier": "UW",
     "abbr": "RIOT",
-    "mark": null
+    "mark": "uw-seattle-riot"
   },
   {
     "name": "New York BENT",
     "country": "UW",
     "tier": "UW",
     "abbr": "BENT",
-    "mark": null
+    "mark": "uw-new-york-bent"
   },
   {
     "name": "San Francisco Nightlock",
     "country": "UW",
     "tier": "UW",
     "abbr": "NLK",
-    "mark": null
+    "mark": "uw-san-francisco-nightlock"
   },
   {
     "name": "San Diego Flipside",
     "country": "UW",
     "tier": "UW",
     "abbr": "FLIP",
-    "mark": null
+    "mark": "uw-san-diego-flipside"
   },
   {
     "name": "Philadelphia Flight",
     "country": "UW",
     "tier": "UW",
     "abbr": "FLT",
-    "mark": null
+    "mark": "uw-philadelphia-flight"
   },
   {
     "name": "Portland Schwa",
     "country": "UW",
     "tier": "UW",
     "abbr": "SCH",
-    "mark": null
+    "mark": "uw-portland-schwa"
   },
   {
     "name": "Pittsburgh Parcha",
     "country": "UW",
     "tier": "UW",
     "abbr": "PAR",
-    "mark": null
+    "mark": "uw-pittsburgh-parcha"
   },
   {
     "name": "Raleigh Phoenix",
     "country": "UW",
     "tier": "UW",
     "abbr": "PHX",
-    "mark": null
+    "mark": "uw-raleigh-phoenix"
   },
   {
     "name": "Northampton Starling",
     "country": "UW",
     "tier": "UW",
     "abbr": "STAR",
-    "mark": null
+    "mark": "uw-northampton-starling"
   },
   {
     "name": "Minneapolis Pop",
     "country": "UW",
     "tier": "UW",
     "abbr": "POP",
-    "mark": null
+    "mark": "uw-minneapolis-pop"
   },
   {
     "name": "Quebec Iris",
     "country": "UW",
     "tier": "UW",
     "abbr": "IRIS",
-    "mark": null
+    "mark": "uw-quebec-iris"
   },
   {
     "name": "Vancouver Traffic",
     "country": "UW",
     "tier": "UW",
     "abbr": "TRA",
-    "mark": null
+    "mark": "uw-vancouver-traffic"
   },
   {
     "name": "Dallas Dimes",
     "country": "UW",
     "tier": "UW",
     "abbr": "DIM",
-    "mark": null
+    "mark": "uw-dallas-dimes"
   },
   {
     "name": "Colorado Kelp",
     "country": "UW",
     "tier": "UW",
     "abbr": "KELP",
-    "mark": null
+    "mark": "uw-colorado-kelp"
   },
   {
     "name": "Chicago Nemesis",
     "country": "UW",
     "tier": "UW",
     "abbr": "NEM",
-    "mark": null
+    "mark": "uw-chicago-nemesis"
   },
   {
     "name": "Madison Heist",
     "country": "UW",
     "tier": "UW",
     "abbr": "HEI",
-    "mark": null
+    "mark": "uw-madison-heist"
   },
   {
     "name": "Ottawa Stella",
     "country": "UW",
     "tier": "UW",
     "abbr": "STL",
-    "mark": null
+    "mark": "uw-ottawa-stella"
   },
   {
     "name": "Oakland LOL",
     "country": "UW",
     "tier": "UW",
     "abbr": "LOL",
-    "mark": null
+    "mark": "uw-oakland-lol"
   },
   {
     "name": "Austin Vengeance",
     "country": "UW",
     "tier": "UW",
     "abbr": "VEN",
-    "mark": null
+    "mark": "uw-austin-vengeance"
   },
   {
     "name": "Washington Grit",
     "country": "UW",
     "tier": "UW",
     "abbr": "GRIT",
-    "mark": null
+    "mark": "uw-washington-grit"
   },
   {
     "name": "Atlanta Ozone",
     "country": "UW",
     "tier": "UW",
     "abbr": "OZO",
-    "mark": null
+    "mark": "uw-atlanta-ozone"
   },
   {
     "name": "Komodos",
@@ -2090,21 +2090,21 @@
     "country": "UW",
     "tier": "UW",
     "abbr": "DRFT",
-    "mark": null
+    "mark": "uw-drift"
   },
   {
     "name": "Agency",
     "country": "UW",
     "tier": "UW",
     "abbr": "AGY",
-    "mark": null
+    "mark": "uw-agency"
   },
   {
     "name": "Vice",
     "country": "UW",
     "tier": "UW",
     "abbr": "VICE",
-    "mark": null
+    "mark": "uw-vice"
   },
   {
     "name": "Takedown",
@@ -2118,7 +2118,7 @@
     "country": "UW",
     "tier": "UW",
     "abbr": "CAL",
-    "mark": null
+    "mark": "uw-calypso"
   },
   {
     "name": "Magma",
@@ -2132,42 +2132,42 @@
     "country": "UW",
     "tier": "UW",
     "abbr": "STLR",
-    "mark": null
+    "mark": "uw-st-louis-stellar"
   },
   {
     "name": "Zephyr",
     "country": "UW",
     "tier": "UW",
     "abbr": "ZEP",
-    "mark": null
+    "mark": "uw-zephyr"
   },
   {
     "name": "Wildfire",
     "country": "UW",
     "tier": "UW",
     "abbr": "WILD",
-    "mark": null
+    "mark": "uw-wildfire"
   },
   {
     "name": "Wicked",
     "country": "UW",
     "tier": "UW",
     "abbr": "WICK",
-    "mark": null
+    "mark": "uw-wicked"
   },
   {
     "name": "Dolly For President",
     "country": "UW",
     "tier": "UW",
     "abbr": "DFP",
-    "mark": null
+    "mark": "uw-dolly-for-president"
   },
   {
     "name": "Dark Sky",
     "country": "UW",
     "tier": "UW",
     "abbr": "DSK",
-    "mark": null
+    "mark": "uw-dark-sky"
   },
   {
     "name": "Omega Continuum",
@@ -2181,49 +2181,49 @@
     "country": "UW",
     "tier": "UW",
     "abbr": "ROG",
-    "mark": null
+    "mark": "uw-indy-rogue"
   },
   {
     "name": "FAB",
     "country": "UW",
     "tier": "UW",
     "abbr": "FAB",
-    "mark": null
+    "mark": "uw-fab"
   },
   {
     "name": "San Antonio Problems",
     "country": "UW",
     "tier": "UW",
     "abbr": "PROB",
-    "mark": null
+    "mark": "uw-san-antonio-problems"
   },
   {
     "name": "Sureshot",
     "country": "UW",
     "tier": "UW",
     "abbr": "SURE",
-    "mark": null
+    "mark": "uw-sureshot"
   },
   {
     "name": "Solstice",
     "country": "UW",
     "tier": "UW",
     "abbr": "SOL",
-    "mark": null
+    "mark": "uw-solstice"
   },
   {
     "name": "Compact Disc",
     "country": "UW",
     "tier": "UW",
     "abbr": "CD",
-    "mark": null
+    "mark": "uw-compact-disc"
   },
   {
     "name": "Trainwreck",
     "country": "UW",
     "tier": "UW",
     "abbr": "TRN",
-    "mark": null
+    "mark": "uw-trainwreck"
   },
   {
     "name": "River Monsters",

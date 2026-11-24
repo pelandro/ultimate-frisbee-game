@@ -6,10 +6,11 @@ Il centrocampo continua a mostrare il club di casa, anche in trasferta; in campo
 
 ## Identita' e sigle
 
-- Sono rappresentate le 108 voci della raccolta approvata; i marchi di sola sigla vengono composti dalla tabella delle sigle, per evitare lettere vecchie dentro l'icona.
+- Alle 108 voci della raccolta iniziale si aggiungono le 10 squadre di Serie A Women e i 48 club USA Ultimate Women. Cinque club USA Women usano la sigla perché manca uno stemma verificato: Komodos, Takedown, Magma, Omega Continuum e River Monsters. I marchi di sola sigla vengono composti dalla tabella delle sigle.
+- Tequila Boom Boom e Tequila Junior hanno due bombe nere con la miccia accesa, orientate in direzioni opposte. Cheetahs, Tane Malefiche, DiscoBolo Women e One Tribe Women condividono gli stemmi delle rispettive società con alias espliciti.
 - La Fotta Offence e Defense usano il nuovo glifo rosso a tre punte fornito dall'utente. Redbulls, Zero51 e NextGen mantengono il marchio BFD della societa'. La rana Clapham deriva dal riferimento classico allegato dall'utente.
 - Le altre formazioni delle societa' gia' presenti condividono il loro simbolo solo attraverso alias espliciti. Non si usano confronti approssimativi per assegnare a club omonimi il logo sbagliato. Dove manca il marchio, resta una sigla originale su fondo trasparente.
-- `docs/squadre-sigle.json` elenca le 319 squadre attuali e le sigle riviste (2-4 lettere/cifre, distinte dentro ogni campionato), comprese le categorie inferiori e le 17 squadre italiane Women e i 48 club USA Women con monogramma. Prevale il nome della squadra sulla societa': BAR Barbastreji, BBD Barbados, BFT Barbafighto; LFO e LFD distinguono le due La Fotta. Per le seconde formazioni restano numeri, categoria o soprannome.
+- `docs/squadre-sigle.json` elenca le 319 squadre attuali con sigle e riferimenti agli stemmi. Le sigle (2-4 lettere/cifre) sono distinte dentro ogni campionato. Prevale il nome della squadra sulla societa': BAR Barbastreji, BBD Barbados, BFT Barbafighto; LFO e LFD distinguono le due La Fotta. Per le seconde formazioni restano numeri, categoria o soprannome.
 - Non cambiano nomi o identificatori nei dati di campionato e nei salvataggi. I nomi personalizzati e le squadre future ricevono una sigla di ripiego.
 
 ## Fonti e attribuzioni
