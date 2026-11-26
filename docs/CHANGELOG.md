@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Corretto: a volte nessuno prendeva al volo un pull lungo. Chi doveva prenderlo finiva tra i compagni che salgono e si fermava davanti alla meta mentre il disco gli cadeva dietro; ora chi va a prenderlo resta sempre dietro.
 - Vincere all’universe si festeggia: chi segna la meta decisiva sul pari si toglie la maglia, corre verso le tribune facendola girare sopra la testa, i compagni lo raggiungono e lo tirano su.
 - Chi ha il disco non lo tiene più a lungo per aspettare lo schema quando un compagno davanti è libero (prima poteva tenerlo anche 10 secondi se nessuno lo marcava da vicino): con un compagno libero di 12 m passa dopo un secondo e mezzo, di 6 m dopo tre secondi e mezzo, e comunque entro sei secondi e mezzo.
 - Le prese in tuffo che non aprono il primo piano (presa sicura, tuffi degli avversari da soli) ora si vedono sul campo: il giocatore si butta. Se è una meta, la fascia META! parte dopo il tuffo e il replay lo mostra (prima si passava subito all’esultanza).
