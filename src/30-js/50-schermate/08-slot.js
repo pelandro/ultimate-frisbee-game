@@ -67,11 +67,12 @@ function careerNew(k){
   careerDraft={slot:k,back:SV.team?'slots':'title'};
   showScreen('league');
 }
-function commitCareerDraft(team,coach,relief){
+function commitCareerDraft(team,coach,relief,diff){
   const previous=SV,squad=squadData(),lineup=lineupIds();
   SV={help:previous.help,slot:careerDraft?.slot||previous.slot||1};
   try{
     startCareer(team,{coach,relief,deferSave:true});
+    SV.diff=CAR_DIFF[diff]?diff:'easy';   // scelta con l'allenatore, non cambia piu' (12-allenatore-scelta.js)
     if(persist()){careerDraft=null;return true;}
   }catch(e){}
   restoreCareerState(previous,squad,lineup);

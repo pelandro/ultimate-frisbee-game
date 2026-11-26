@@ -65,7 +65,9 @@ function seasonAwards(rank,order){   // a fine stagione: premi del campionato, s
   for(const q of best7)if(q.mine){const p=byFull(q.full);if(p){p.aw=p.aw||[];p.aw.push({s:SV.season,k:'Squadra ideale'});}}
   const tit=!!(SV.next&&SV.next.tit);   // campione: in Serie A chi vince i playoff, nelle altre chi chiude primo
   if(tit)for(const p of SQ)if(p.car&&p.car.ss.mp>=3)p.ti=(p.ti|0)+1;   // chi ha contribuito al titolo lo porta nella scheda
-  const tr=SV.troph;if(tit)tr[SV.sr]=(tr[SV.sr]|0)+1;if(SV.next&&SV.next.sr<SV.sr)tr.promo=(tr.promo|0)+1;tr.aw=(tr.aw|0)+mine;tr.b7=(tr.b7|0)+best7.filter(q=>q.mine).length;
+  const tr=SV.troph;if(tit)tr[SV.sr]=(tr[SV.sr]|0)+1;
+  if(tit||(isLN()&&rank===1))ricGive(SV.sr);   // riconoscimento del menu iniziale (34-riconoscimenti.js): nei livelli sotto il primo delle leghe europee basta chiudere primi, come in Serie B e C
+if(SV.next&&SV.next.sr<SV.sr)tr.promo=(tr.promo|0)+1;tr.aw=(tr.aw|0)+mine;tr.b7=(tr.b7|0)+best7.filter(q=>q.mine).length;
   const champs=SV.next&&SV.next.champs?Object.assign({},SV.next.champs):{};if(order)for(const sr of ['A','B','C'])if(!champs[sr])champs[sr]=order[sr][0];
   SV.hist.unshift({season:SV.season,sr:SV.sr,rank,n,w:t.w,l:t.l,mvp:mvp?(mvp.label||mvp.name):'',mvpS:mvp&&mvp.car?`${mvp.car.ss.g} mete, ${mvp.car.ss.a} assist, ${mvp.car.ss.b} difese`:'',obj:SV.obj?!!(SV.next&&SV.next.objOk):false,short:SV.next?SV.next.short:'',aw,best7,champs,po:SV.next&&SV.next.po?{kind:SV.next.po.kind,fin:SV.next.po.fin,win:SV.next.po.win}:undefined});
   if(SV.hist.length>40)SV.hist.length=40;

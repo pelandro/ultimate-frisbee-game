@@ -40,8 +40,16 @@ function renderCoach(){
   const nw=coS.mode==='new';
   $('coWhy').textContent=nw?(coS.relief?`${coS.team} ti ha scelto come nuovo allenatore. Come ti chiami?`:`Stai per allenare ${coS.team}. Come ti chiami e che faccia hai?`):'Cambia nome o volto quando vuoi: compari nella schermata Partita, nelle notizie e nella Hall of Fame.';
   $('coN').value=coS.n;$('coS').value=coS.s;$('coGo').textContent=nw?'Inizia la carriera':'Salva';
+  $('coDiffRow').classList.toggle('hidden',!nw);if(nw)coDiffPaint();
   coPaint();
 }
+// difficolta' della nuova carriera: quattro pulsanti e cosa cambia; si sceglie una volta sola
+function coDiffPaint(){
+  const cur=coS.diff||(coS.diff='easy');
+  $('coDiff').innerHTML=['easy','med','hard','xtr'].map(k=>`<button type="button" class="sg${k===cur?' on':''}" data-k="${k}">${CAR_DIFF[k].name}</button>`).join('');
+  $('coDiffN').textContent=CAR_DIFF[cur].txt+' Non potrai cambiarla durante la carriera.';
+}
+$('coDiff').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(!b||!coS)return;coS.diff=b.dataset.k;coDiffPaint();});
 function coPaint(){   // anteprima e griglia dei volti (i campi di testo non si toccano mentre si scrive)
   $('coPrev').innerHTML=avatar({look:coS.lk,t:0},84);
   $('coName').textContent='Coach '+((coS.n||'')+' '+(coS.s||'')).trim();
@@ -56,7 +64,7 @@ $('coBack').addEventListener('click',()=>{const nw=coS&&coS.mode==='new';coS=nul
 $('coGo').addEventListener('click',()=>{
   if(!coS)return;
   const c=coachNorm({n:$('coN').value,s:$('coS').value,lk:coS.lk}),s=coS;
-  if(s.mode==='new'&&!commitCareerDraft(s.team,c,s.relief)){
+  if(s.mode==='new'&&!commitCareerDraft(s.team,c,s.relief,s.diff)){
     $('coMsg').textContent='Impossibile salvare la nuova carriera. Puoi riprovare o tornare indietro.';
     return;
   }
