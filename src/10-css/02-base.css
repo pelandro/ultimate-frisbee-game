@@ -204,14 +204,15 @@ details ul{margin:6px 0 0;padding-left:18px;line-height:1.3}
 .lu{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
 .lu button{font:inherit;font-weight:700;font-size:15px;color:var(--ink);background:var(--chip);border:2px solid transparent;border-radius:10px;padding:5px 10px 7px;cursor:pointer;display:flex;flex-direction:column;align-items:stretch;min-width:112px;text-align:left}
 .lu button small{margin-left:6px;color:var(--mute);font-weight:600}
+.lu .dbd{display:inline-block;margin-left:6px;padding:0 4px;font-style:normal;font-size:11px;font-weight:800;line-height:14px;color:#0b1b33;background:#7fd0ff;border:2px solid #000;vertical-align:1px}
 .eb{display:block;height:7px;border-radius:4px;background:rgba(0,0,0,.18);margin-top:5px;overflow:hidden}
 .eb i{display:block;height:100%;border-radius:4px}
 .lu button.on{border-color:var(--accent)}
 .lu button.sel{background:#ffd23f;border-color:#ffd23f;color:#1d1700;box-shadow:0 0 0 3px rgba(255,210,63,.35),0 4px 14px rgba(0,0,0,.35);transform:scale(1.05);position:relative;z-index:1}
 .lu button.sel small{color:rgba(29,23,0,.78)}
 .lu button.sel::after{content:"✔ Selezionato";font-size:11px;font-weight:800;margin-top:3px}
-.lu button.tgt{border:2px dashed var(--gold);animation:tgtp 1.1s ease-in-out infinite}
 html[lang="en"] .lu button.sel::after{content:"✔ Selected"}
+.lu button.tgt{border:2px dashed var(--gold);animation:tgtp 1.1s ease-in-out infinite}
 .lu button.dim{opacity:.38}
 @keyframes tgtp{50%{box-shadow:0 0 0 3px rgba(255,210,63,.3)}}
 .selbar{background:rgba(255,210,63,.18);border:2px solid #ffd23f;border-radius:10px;padding:6px 10px;margin:4px 0 8px;font-size:14px;font-weight:600;line-height:1.3}

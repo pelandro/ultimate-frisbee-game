@@ -196,7 +196,9 @@ const swapRole=id=>{   // 'sel' selezionato, 'tgt' puo' essere scambiato con lui
 function renderLineupBox(){
   // l'Overall accanto al nome: senza, per scegliere chi entra bisognava ricordarsi la rosa a memoria; e' quello vero (ovrB), non quello della forma del giorno
   const on=new Set(T[0].map(p=>p.id));
-  const chip=p=>`<button type="button" class="${on.has(p.id)?'on':''} ${swapRole(p.id)}${p.inj?' inj':''}" data-id="${p.id}"><span class="rn">${avatar(p,26)}<span>${p.name}<small>${p.inj?`${p.abs?'indisponibile':'infortunat'+oa(p)}, ${p.inj} ${p.inj>1?'partite':'partita'}`:(p.role==='H'?'handler':'cutter')}</small></span><b class="ov luov ${ovrCls(ovrB(p))}">${ovrB(p)}</b></span><span class="eb"><i style="width:${Math.round(p.st)}%;background:${barColor(p.st)}"></i></span></button>`;
+  // «D»: i 7 migliori in difesa della rosa (valutazione di ruolo D, senza la forma del giorno), per scegliere a colpo d'occhio chi far entrare nella linea di difesa
+  const dTop=new Set(SQ.filter(p=>!p.inj).sort((a,b)=>rate(b.b||b.s,'D')-rate(a.b||a.s,'D')).slice(0,7).map(p=>p.id));
+  const chip=p=>`<button type="button" class="${on.has(p.id)?'on':''} ${swapRole(p.id)}${p.inj?' inj':''}" data-id="${p.id}"><span class="rn">${avatar(p,26)}<span>${p.name}<small>${p.inj?`${p.abs?'indisponibile':'infortunat'+oa(p)}, ${p.inj} ${p.inj>1?'partite':'partita'}`:(p.role==='H'?'handler':'cutter')}${dTop.has(p.id)?'<span class="dbd" title="Tra i 7 più forti in difesa">D</span>':''}</small></span><b class="ov luov ${ovrCls(ovrB(p))}">${ovrB(p)}</b></span><span class="eb"><i style="width:${Math.round(p.st)}%;background:${barColor(p.st)}"></i></span></button>`;
   $('subBox').innerHTML=`${selBanner()}<p class="lu-h lu-hr">In campo${blockIds(blockDef())?`<button type="button" class="sec lu-all" data-all="1" title="Fa entrare i 7 migliori della panchina al posto di tutti quelli in campo">Cambia tutti e 7</button>`:''}</p><div class="lu">${T[0].map(chip).join('')}</div><p class="lu-h">Panchina</p><div class="lu">${SQ.filter(p=>!on.has(p.id)).map(chip).join('')}</div>`;
   $('bSubGo').disabled=mustSub();$('bSubAuto').classList.toggle('hidden',!T[0].some(p=>p.inj));
 }

@@ -103,6 +103,7 @@ tip:`Contro la zona: Orizzontale o Weave. Contro l’uomo: Verticale o Stack lat
 {id:'sch-cambi',t:'Cambi, energia e infortuni',b:[
 `Ogni scatto consuma <b>energia</b>: un giocatore stanco è più lento (sotto di lui compare una barretta).`,
 `Con i «cambi intelligenti» chi è stanco esce da solo; a inizio meta puoi cambiare a mano con <b>Cambi</b>: tocca due giocatori per scambiarli, oppure <b>Cambia tutti e 7</b> per far entrare i 7 migliori della panchina in un colpo (di nuovo e tornano i primi). Le linee si scelgono in Squadra.`,
+`Una piccola D accanto al ruolo segna i 7 più forti in difesa.`,
 `Un giocatore molto stanco rischia di <b>infortunarsi</b> a fine meta: l’infortunato salta da 1 a 3 partite.`],
 tip:`Ruota i giocatori: un titolare fresco rende più di una stella sfinita.`},
 {id:'sch-tempo',t:'Timeout, intervallo, pausa e simulazione',b:[
@@ -142,6 +143,7 @@ tip:`Non cambiare tutta la linea a ogni partita: l’intesa si costruisce restan
 tip:`Un giovane con potenziale alto che oggi è scarso diventa il titolare di domani: osservalo prima di decidere.`},
 {id:'car-allenamenti',t:'Allenamenti e crescita',w:'Colonna › Allena',b:[
 `A ogni giornata: <b>una seduta di squadra</b> e fino a <b>3 lavori individuali</b>, che rendono di più. Cinque indirizzi: <b>Tecnica</b>, <b>Atletismo</b>, <b>Difesa</b>, <b>Tattica</b> e <b>Recupero</b> (ridà condizione, nessuna crescita).`,
+`In alto due schede: «Squadra» per la seduta di tutti, «Individuali» per i giocatori scelti. Toccando un giocatore si apre da sola la seconda.`,
 [`Tocca un indirizzo per vedere l’anteprima: la seduta parte solo con <b>Avvia</b>.`,
 `Chi è scarico rende meno e, sotto 45 di condizione, rischia l’infortunio: alterna lavoro e recupero.`,
 `Il <b>Programma automatico</b> fa le sedute al posto tuo.`],

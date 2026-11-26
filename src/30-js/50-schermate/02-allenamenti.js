@@ -2,6 +2,9 @@ const trainSel=new Set();let trainRes=null;
 // scelta in due passi: il tocco su un indirizzo lo seleziona e mostra l'anteprima (crescita, condizione, rischio); la seduta parte solo con «Avvia».
 // Prima il tocco eseguiva subito: bastava un dito nel posto sbagliato per bruciare la seduta della giornata
 let trPick={team:null,ind:null};
+// due modi separati, scelti dalle due etichette in alto: «Squadra» (una seduta per tutti, con il Programma automatico) e «Individuali» (si scelgono i giocatori nell'elenco e poi l'indirizzo).
+// Prima le due griglie di indirizzi erano una sotto l'altra e, scegliendo i giocatori, si toccava per sbaglio quella della squadra
+let trMode=null,trModeKey='';
 // cinque indirizzi: quattro fanno crescere (e costano condizione), il Recupero la restituisce
 const TR_OPTS=CATS.concat([{id:'rec',name:'Recupero',keys:[]}]);
 const TR_SUB={tec:'Lancio, Buco, Sparo, Presa',atl:'Velocità, Scatto, Agilità, Salto, Resistenza',dif:'Difesa, Tuffo',tat:'Visione; di squadra anche affiatamento',rec:'Ridà condizione, nessuna crescita'};
@@ -23,26 +26,33 @@ function progHTML(){
 }
 function renderTrain(){
   const left=3-SQ.filter(p=>p.tr).length,open=trainOpen();
+  const mkey=SV.season+'|'+SV.round;   // a ogni giornata si riparte dal lavoro che resta da fare (la scheda non cambia da sola dopo la seduta di squadra: si vede il risultato)
+  if(mkey!==trModeKey){trModeKey=mkey;trMode=(open&&!SV.tTeam)||left===0?'team':'ind';}
+  if(trainSel.size)trMode='ind';
+  const ind=trMode==='ind';
   $('tList').innerHTML=SQ.slice().sort((a,b)=>ovrX(b)-ovrX(a)).map(p=>{
     const blocked=p.tr||!open;
     return `<button type="button" class="prow${trainSel.has(p.id)?' on':''}${blocked?' dis':''}" data-i="${p.id}"${blocked?' disabled':''}><span class="chk"></span><span class="pn"><b>${esc(p.label||p.name)}</b><small>${POS_NAME[posOf(p)]} · ${p.age} anni · OVR ${ovr(p)} · pot. ${potTxt(p)}</small></span>${condBar(p.cond)}${p.inj?`<em class="bad">Inf. ${p.inj}</em>`:(p.tr?'<em>Fatto</em>':(p.pri?'<em class="pri">★ priorità</em>':''))}</button>`;
   }).join('');
   const one=trainSel.size===1?SQ[[...trainSel][0]]:null;
   const avgC=Math.round(SQ.reduce((a,p)=>a+p.cond,0)/SQ.length);
-  $('tTeamBox').innerHTML=`<div class="tteam2"><strong>Tutta la squadra ${infoB('tsq')}</strong>${!open?`<small>Bloccato: prossima sessione tra ${trainWait()} ${trainWait()>1?'partite':'partita'}.</small>`:(SV.tTeam?'<small>Già fatto in questa giornata.</small>':'')}${infoX('tsq',`<small>Una volta a giornata. Ogni seduta costa ${Math.round(TRAIN_COST*trInt().c)} di condizione a tutti (media attuale ${avgC}); il Recupero ne ridà ${REST_GAIN}. ${trInt().n}: ${trInt().t}.</small>`)}<div class="tint"><span>Intensità</span><div class="seg">${TR_INT.map((t,i)=>`<button type="button" class="sg${(SV.tInt|0)===i?' on':''}" data-int="${i}">${t.n}</button>`).join('')}</div></div><div class="ttypes t5">${TR_OPTS.map(c=>`<button type="button" class="ttype${trPick.team===c.id?' on':''}" data-team="${c.id}" aria-pressed="${trPick.team===c.id}"${SV.tTeam||!open?' disabled':''}><strong>${c.name}</strong>${SV.tTeam||!open?'':`<small class="fc">${forecastTxt(trainForecast(SQ,c,false),c)}</small>`}</button>`).join('')}</div>${trCfHTML('team')}${progHTML()}</div><strong class="tsing">Lavoro individuale: ${left} su 3 rimasti</strong>`;
-  $('tTypes').className='ttypes t5';
-  $('tTypes').innerHTML=TR_OPTS.map(c=>`<button type="button" class="ttype${trPick.ind===c.id?' on':''}" data-k="${c.id}" aria-pressed="${trPick.ind===c.id}"${trainSel.size?'':' disabled'}><strong>${c.name}</strong><small>${TR_SUB[c.id]}</small>${one&&c.keys.length?`<small class="mt">livello ${catLevel(one,c)}</small>`:''}${trainSel.size?`<small class="fc">${forecastTxt(trainForecast([...trainSel].map(i=>SQ[i]),c,true),c)}</small>`:''}</button>`).join('');
+  const intH=`<div class="tint"><span>Intensità</span><div class="seg">${TR_INT.map((t,i)=>`<button type="button" class="sg${(SV.tInt|0)===i?' on':''}" data-int="${i}">${t.n}</button>`).join('')}</div></div>`;
+  $('tTeamBox').innerHTML=ind?`<div class="tteam2 tind"><strong>Lavoro individuale: ${left} su 3 rimasti</strong>${intH}</div>`:`<div class="tteam2"><strong>Tutta la squadra ${infoB('tsq')}</strong>${!open?`<small>Bloccato: prossima sessione tra ${trainWait()} ${trainWait()>1?'partite':'partita'}.</small>`:(SV.tTeam?'<small>Già fatto in questa giornata.</small>':'')}${infoX('tsq',`<small>Una volta a giornata. Ogni seduta costa ${Math.round(TRAIN_COST*trInt().c)} di condizione a tutti (media attuale ${avgC}); il Recupero ne ridà ${REST_GAIN}. ${trInt().n}: ${trInt().t}.</small>`)}${intH}<div class="ttypes t5">${TR_OPTS.map(c=>`<button type="button" class="ttype${trPick.team===c.id?' on':''}" data-team="${c.id}" aria-pressed="${trPick.team===c.id}"${SV.tTeam||!open?' disabled':''}><strong>${c.name}</strong>${SV.tTeam||!open?'':`<small class="fc">${forecastTxt(trainForecast(SQ,c,false),c)}</small>`}</button>`).join('')}</div>${trCfHTML('team')}${progHTML()}</div>`;
+  $('tTypes').className='ttypes t5'+(ind?'':' hidden');
+  $('tTypes').innerHTML=!ind?'':TR_OPTS.map(c=>`<button type="button" class="ttype${trPick.ind===c.id?' on':''}" data-k="${c.id}" aria-pressed="${trPick.ind===c.id}"${trainSel.size?'':' disabled'}><strong>${c.name}</strong><small>${TR_SUB[c.id]}</small>${one&&c.keys.length?`<small class="mt">livello ${catLevel(one,c)}</small>`:''}${trainSel.size?`<small class="fc">${forecastTxt(trainForecast([...trainSel].map(i=>SQ[i]),c,true),c)}</small>`:''}</button>`).join('');
   const hint=!open?`Bloccati in questa difficoltà: la prossima sessione è tra ${trainWait()} ${trainWait()>1?'partite':'partita'}.`:left===0?'Hai già usato i 3 lavori individuali: tornano dopo la prossima partita.':(trainSel.size?`${trainSel.size} ${trainSel.size>1?'selezionati':'selezionato'}: scegli l’indirizzo (+50% di crescita, ${Math.round(TRAIN_COST1*trInt().c)} di condizione).`:`Seleziona fino a ${left} giocatori per il lavoro individuale: i giovani crescono di più. Sotto 45 di condizione allenarsi può causare infortuni.`);
   $('tCf').innerHTML=trainSel.size?trCfHTML('ind'):'';
-  const chip=(c,l,v)=>`<span class="tch ${c}"><i></i>${l} <b>${v}</b></span>`;   // stato della settimana: seduta di squadra e lavori individuali
-  $('tHint').innerHTML=`<div class="tchs">${chip(!open?'blk':SV.tTeam?'ok':'todo','Squadra',!open?'bloccata':SV.tTeam?'fatta':'da fare')}${chip(!open?'blk':left===0?'ok':'todo','Individuali',`${3-left}/3`)}</div><small>${hint}</small>`;
+  const chip=(c,l,v,k)=>`<button type="button" class="tch tab ${c}${trMode===k?' on':''}" data-trm="${k}" aria-pressed="${trMode===k}"><i></i>${l} <b>${v}</b></button>`;   // stato della settimana e, insieme, le due schede
+  $('tHint').innerHTML=`<div class="tchs">${chip(!open?'blk':SV.tTeam?'ok':'todo','Squadra',!open?'bloccata':SV.tTeam?'fatta':'da fare','team')}${chip(!open?'blk':left===0?'ok':'todo','Individuali',`${3-left}/3`,'ind')}</div><small>${ind?hint:(open&&!SV.tTeam?'Scegli un indirizzo per tutta la squadra, poi tocca Avvia. Per i lavori individuali apri la scheda «Individuali».':(!open?hint:'Seduta di squadra già fatta in questa giornata.'))}</small>`;
   if(trainRes){
     const ups=trainRes.filter(r=>r.gain>0),flat=trainRes.filter(r=>!r.gain&&!r.rest&&r.c.keys.length),rest=trainRes.filter(r=>r.rest!==undefined),hurt=trainRes.filter(r=>r.hurt);
     $('tRes').innerHTML=`<div class="tres">${ups.map(r=>`<div class="up">${r.p.name}: ${r.changes.map(x=>`${LONG[x.k]} ${x.from}→${x.to}`).join(', ')}</div>`).join('')}${rest.length?`<div class="rs">Recupero: ${rest.length===1?rest[0].p.name+' +'+rest[0].rest:rest.length+' giocatori, in media +'+Math.round(rest.reduce((a,r)=>a+r.rest,0)/rest.length)} di condizione${rest.some(r=>r.heal)?', stop per infortunio accorciato di una partita':''}</div>`:''}${flat.length?`<div class="no">${flat.length===1?flat[0].p.name+': nessun progresso':flat.length+' giocatori senza progressi'} in questa seduta</div>`:''}${hurt.map(r=>`<div class="bad">${esc(r.p.name)} si è infortunat${oa(r.p)} in allenamento: ${r.hurt} ${r.hurt>1?'partite':'partita'} di stop</div>`).join('')}${trainRes.note?`<div class="rs">${trainRes.note}</div>`:''}</div>`;
   }else $('tRes').innerHTML='';
 }
+$('tHint').addEventListener('click',e=>{const b=e.target.closest('[data-trm]');if(!b||b.dataset.trm===trMode)return;trMode=b.dataset.trm;trainSel.clear();trPick.ind=null;trPick.team=null;trainRes=null;renderTrain();});
 $('tList').addEventListener('click',e=>{
   const b=e.target.closest('.prow');if(!b||b.disabled||!trainOpen())return;
+  trMode='ind';trPick.team=null;   // toccare un giocatore apre da solo la scheda dei lavori individuali
   const i=+b.dataset.i;
   if(trainSel.has(i))trainSel.delete(i);
   else if(trainSel.size<3-SQ.filter(p=>p.tr).length)trainSel.add(i);
