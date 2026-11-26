@@ -72,3 +72,41 @@ function utoUnpack(m,seed){
   }
   return out;
 }
+// STAGIONI MENSILI di Sfide online (non dei Superpoteri): ogni mese ha la sua classifica (ut/seasons/<stagione> nel database). La stagione cambia a
+// mezzanotte del primo del mese, ora italiana; si riparte con 200 punti in meno (non sotto i 1000; chi era sotto i 1000 riparte da 1000). Nella
+// classifica del mese entra chi ha giocato almeno UTO_SEASON_G partite; i primi 10 a fine mese ricevono un badge (1°, 2°, 3°, dal 4° al 10°).
+// Nessun premio in gettoni o pacchetti: renderebbe piu' forti i piu' forti
+const UTO_SEASON_DROP=200,UTO_SEASON_G=10,UTO_SEASON_TOP=10;
+const UTO_MONTHS=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+// la stagione di un istante (millisecondi): 'AAAA-MM' secondo il calendario italiano
+function utoSeason(t){
+  const d=new Date(t);
+  try{const s=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Rome',year:'numeric',month:'2-digit'}).format(d);if(/^\d{4}-\d{2}$/.test(s))return s;}catch(e){}
+  const r=new Date(d.getTime()+3600000);return r.getUTCFullYear()+'-'+String(r.getUTCMonth()+1).padStart(2,'0');   // senza Intl: ora solare italiana
+}
+const utoSeasonOk=s=>typeof s==='string'&&/^20\d{2}-(0[1-9]|1[0-2])$/.test(s);
+const utoSeasonName=s=>utoSeasonOk(s)?UTO_MONTHS[+s.slice(5)-1]+' '+s.slice(0,4):'';
+function utoSeasonPrev(s){const y=+s.slice(0,4),m=+s.slice(5);return m>1?y+'-'+String(m-1).padStart(2,'0'):(y-1)+'-12';}
+const utoSeasonStart=p=>Math.max(UTO_START,p-UTO_SEASON_DROP);   // punti con cui si riparte (le regole del database fanno lo stesso conto)
+// classifica di una stagione: chi ha giocato almeno UTO_SEASON_G partite, per punti, poi vittorie; le altre righe dopo, senza posizione
+function utoSeasonRank(rows){
+  const by=(a,b)=>b.p-a.p||b.w-a.w||a.g-b.g||(a.id<b.id?-1:1);
+  const ok=rows.filter(r=>r.g>=UTO_SEASON_G).sort(by),wait=rows.filter(r=>r.g<UTO_SEASON_G).sort(by);
+  return {ok,wait};
+}
+// badge di fine stagione per una posizione: 1, 2, 3, oppure 10 (dal 4° al 10°); 0 = nessuno
+const utoSeasonBadge=pos=>pos>=1&&pos<=3?pos:(pos>=4&&pos<=UTO_SEASON_TOP?10:0);
+// prove delle stagioni (14-test.js, «Real player di Ultimate Team»)
+function utoSeasonRows(row){
+  const st=[900,1000,1150,1199,1200,1300,2050].map(utoSeasonStart),stOk=st.join()==='1000,1000,1000,1000,1000,1100,1850';
+  // mezzanotte del primo dicembre in Italia: alle 23:30 (UTC) del 30 novembre e' gia' dicembre; d'estate l'ora legale
+  const t=[Date.UTC(2026,10,30,22,59),Date.UTC(2026,10,30,23,0),Date.UTC(2027,6,31,21,59),Date.UTC(2027,6,31,22,0)].map(utoSeason),tOk=t.join()==='2026-11,2026-12,2027-07,2027-08';
+  const nm=utoSeasonName('2026-11'),prOk=utoSeasonPrev('2027-01')==='2026-12'&&utoSeasonPrev('2026-11')==='2026-10'&&nm==='novembre 2026'&&!utoSeasonOk('2026-13')&&!utoSeasonOk(null);
+  const rows=[{id:'a',p:1300,w:9,g:12},{id:'b',p:1500,w:3,g:4},{id:'c',p:1300,w:10,g:14},{id:'d',p:1100,w:6,g:10}],rk=utoSeasonRank(rows);
+  const rkOk=rk.ok.map(r=>r.id).join()==='c,a,d'&&rk.wait.map(r=>r.id).join()==='b';
+  const bd=[1,2,3,4,10,11,0].map(utoSeasonBadge),bdOk=bd.join()==='1,2,3,10,10,0,0';
+  return [row('Stagioni: punti con cui si riparte (900, 1000, 1150, 1199, 1200, 1300, 2050)',st.join(', '),stOk,'200 in meno, mai sotto 1000'),
+    row('Stagioni: il mese cambia a mezzanotte, ora italiana (anche con l’ora legale)',t.join(', '),tOk&&prOk),
+    row('Stagioni: classifica del mese solo con almeno '+UTO_SEASON_G+' partite; a parità di punti più vittorie',rk.ok.map(r=>r.id).join(' ')+' | fuori: '+rk.wait.map(r=>r.id).join(' '),rkOk),
+    row('Stagioni: badge di fine mese per il 1°, 2°, 3° e dal 4° al 10°',bd.join(', '),bdOk)];
+}

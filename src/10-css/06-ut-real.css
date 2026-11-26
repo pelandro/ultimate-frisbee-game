@@ -6,6 +6,13 @@
 .ubrow b{color:var(--gold)}
 .ubrow small{opacity:.75}
 .ubrow.me{background:rgba(255,214,64,.16)}
+/* stagioni mensili: riga della stagione sotto il profilo, linguette e badge accanto alla posizione nella classifica */
+.urs{margin:-2px 0 6px;font-size:14px;color:#c9d6ea}.urs b{color:var(--gold);font-weight:400}
+#ubTabs{max-width:520px;margin:0 0 4px}
+#ubNote{margin:0 0 4px}
+.ubrow .ubp{display:flex;align-items:center;gap:2px}.ubrow .ubp svg{width:26px;height:26px;flex:0 0 26px}
+.ubrow.wait{opacity:.7}
+.ubh{font-size:13px;color:var(--hd);margin:8px 0 2px}
 /* traguardi di punti: colonna a destra del menu (a capo sotto, sugli schermi stretti) */
 .urcols{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
 .urcol{flex:1 1 400px;max-width:440px}
