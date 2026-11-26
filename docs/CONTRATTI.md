@@ -15,7 +15,7 @@ Indice: [Salvataggio](#salvataggio) · [Economia della carriera](#economia-della
 - Un campo nuovo di `G` che deve sopravvivere a una sospensione va aggiunto anche in `suspSnap`/`resumeMatch`.
 - Se il formato cambia in modo non compatibile, aumenta `SAVE_V` e aggiungi la conversione in `loadSave()`.
 - `SV.susp` (partita sospesa) va azzerata quando la partita finisce o viene abbandonata. `SV.slot` è lo slot della carriera: `persist()` scrive anche `ultimate-carriera-<slot>`.
-- **Le chiavi di `localStorage` non si riusano.** `ultimate-cuore` = squadra del cuore per campionato (`{IT:nome, US:nome}`); `ultimate-primi` = tutorial delle prime partite; `ultimate-eroi` non si usa più (era la scelta degli eroi della vecchia partita veloce con i Superpoteri); `ultimate-settings` ha anche `uz` e `rl` (colonna della carriera: 0 automatica, 1 a destra, 2 a sinistra, che mette `html[data-rail]`).
+- **Le chiavi di `localStorage` non si riusano.** `ultimate-cuore` = squadra del cuore per campionato (`{IT:nome, US:nome}`); `ultimate-primi` = tutorial delle prime partite; `ultimate-riconoscimenti` = badge del dispositivo (`34-riconoscimenti.js`: `'comp:diff'` → `{t,s,at,nw}` per i campionati, `'UT1'`/`'UT2'`/`'UT3'`/`'UT10'` → `{n,m:[mesi],t,at,nw}` per Sfide online); `ultimate-eroi` non si usa più (era la scelta degli eroi della vecchia partita veloce con i Superpoteri); `ultimate-settings` ha anche `uz` e `rl` (colonna della carriera: 0 automatica, 1 a destra, 2 a sinistra, che mette `html[data-rail]`).
 
 Campi aggiunti nel tempo (ognuno ha il suo valore predefinito per i salvataggi vecchi):
 
@@ -67,6 +67,8 @@ Campi salvati: `SV.sp` (sponsor: offerte `off`, scelta `k`, `name`, `fix` a part
 - Un pacchetto in attesa (`UT.packs`) è un numero = qualità + 10 × carte (0 carte = quelle solite) + 100 × ruolo (0 misto, 1 solo Handler, 2 solo Cutter, 3 equipaggiamento, 4 eroi dei Superpoteri). I pacchetti del Negozio sono in `UT_SHOP` (`40-modalita/05-ut-negozio.js`), uguale per le due squadre, disegnati con `utDisc`.
 - L'equipaggiamento (`UT.eq`, `UT.mse`: `10-sim/25-ut-equipaggiamento.js`) vale solo in partita: chi fa giocare o misura la squadra di Ultimate Team passa le carte da `eqApply(p,UT.eq)`, senza scrivere il bonus nelle carte.
 - Le carte dei pacchetti sono giocatori veri dei campionati (`40-modalita/06-ut-carte-reali.js`: `utCatalog`, `utCardFor`; la carta ha anche `cl` = club). Un campionato nuovo entra da solo se è coperto da `allClubs`/`foreignRoster`. Le avversarie del torneo restano generate (`utOppRoster`).
+- **Pacchetti in attesa si aprono da soli**: non c'e' un pulsante «Apri». `showScreen('ut'|'utReal')` con `UT.packs` non vuoto porta a `utPack` (`UT.pkBack` = dove tornare); il Negozio apre subito quello comprato (`utPackGo('utShop')`). Un premio nuovo va messo in `UT.packs` e basta.
+- **Stagioni di Sfide online** (solo radice `ut`, non i Superpoteri): il mese (`utoSeason`, 'AAAA-MM' in ora italiana) sta nel profilo online (`s`) e nella classifica del mese `ut/seasons/<mese>/<uid>` (`n,p,w,l,g,pw,u`, scritta dopo il profilo con gli stessi punti). Al cambio di mese `uoSeasonSync` scrive prima i punti di ripartenza (`utoSeasonStart`: 200 in meno, minimo 1000; le regole del database rifanno lo stesso conto), poi la riga del mese, poi decide il badge del mese chiuso (`uoSeasonAward`, un'ora dopo la mezzanotte). Profilo locale: `s`, `sw/sl/sg` (partite del mese), `b` (record), `pw`, `prev`. Niente premi in gettoni o pacchetti per la posizione. Le regole nuove vanno pubblicate su Firebase **prima** di unire: senza, le stagioni si spengono da sole (`UO.noSeason`) e il resto funziona come prima.
 
 ## Campionati
 
@@ -118,6 +120,9 @@ Campi salvati: `SV.sp` (sponsor: offerte `off`, scelta `k`, `name`, `fix` a part
 - **Chi partecipa**: 16 club veri decisi a fine campionato da `euField` (`SV.next.euQ` = il campo intero): le prime 3 dopo i playoff di Italia, Belgio, Francia, Germania e Regno Unito (`EU_SLOTS`) e la quarta classificata più forte di quei campionati. Il tuo campionato usa la classifica vera (in Italia campione, finalista e vincitrice della finale per il 3° posto, `poRes.third`), gli altri i club più forti del livello più alto (`euPick`). `EU_CLUBS` (club inventati) resta solo per le edizioni già sorteggiate nei salvataggi vecchi.
 - **Stato**: `SV.eu` (`{s, state, it, nat, rk, cur, stage, cash, lastRes}`) e `SV.eup` (forza dei club europei che non giochi). Le partite europee passano da `euRecord`/`euOpponent` (`36-europa/`).
 - Il motore dei gironi da 4 e del tabellone sta in `34-torneo16/` (`t16Begin`, `t16Round`, `t16User`) ed è lo stesso dei Nationals USA: non duplicarlo. I salvataggi con la vecchia coppa a 3 turni ripartono con l'edizione nel nuovo formato.
+
+- **EUCF**: dal 2026 c'è la finale per il 3° posto (`N.br`, `ctx.bronze` in `34-torneo16/01-torneo16.js`: seconda partita di `ko[3]`); i Nationals USA no. `euPlace` dà il piazzamento finale (1-4).
+- **Riconoscimenti** (`50-schermate/34-riconoscimenti.js`): `ricGive(SV.sr)` a fine stagione per chi vince il titolo o chiude primo in un livello delle leghe europee (`seasonAwards`), `ricGive('E1'|'E2'|'E3')` alla fine dell'EUCF. La difficoltà è `SV.diff`, scelta nella schermata dell'allenatore e mai più modificabile. Un campionato o un livello nuovo va aggiunto in `RIC_LG`, con la sua forma e la sua bandiera.
 
 ## Partita e motore
 
