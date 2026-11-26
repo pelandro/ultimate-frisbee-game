@@ -137,13 +137,25 @@ function updatePlay(dt){
 const PB_STALL=3,PB_END=1,PB_CENTER=6,PB_PREP_STALL=6;   // PB_END: secondi dopo lo stall massimo in cui lo schema finisce da solo   // PB_CENTER: oltre questi metri dal centro chi ha il disco passa prima all'handler centrale; PB_PREP_STALL: fino a quando lo aspetta
 const PB_FREE=3.5,PB_FREE_D=2.7;   // distanza minima di un difensore dal ricevitore previsto perche' sia «libero»: 3,5 m con Visione bassa, 0,8 m con Visione alta (da 80)
 const pbStall=pb=>PLAYBOOK[pb.id].stall||PB_STALL;   // gli schemi con piu' tagli di fila (1 in 3-4) aspettano un po' di piu'
+// lo schema non trattiene il disco all'infinito: lo stall conta solo con il marcatore addosso, quindi chi non era marcato da vicino aspettava anche
+// 10 s con i compagni liberi (segnalazione: dopo un turnover la difesa era a 50 m). Si smette di aspettare se un compagno davanti di almeno
+// PB_OPEN_G metri, a gittata, ha PB_OPEN_M metri liberi attorno dopo PB_OPEN_T secondi col disco, o PB_WIDE metri dopo PB_WIDE_T secondi;
+// dopo PB_HOLD secondi comunque
+const PB_OPEN_T=3.5,PB_OPEN_M=6,PB_OPEN_G=10,PB_WIDE=12,PB_WIDE_T=1.5,PB_HOLD=6.5;
+function pbLoose(h){
+  if(G.holdT>PB_HOLD)return true;
+  if(G.holdT<PB_WIDE_T)return false;
+  const d=dirOf(h.t),defs=T[1-h.t],cr=throwComf(h),need=G.holdT>=PB_OPEN_T?PB_OPEN_M:PB_WIDE;
+  return T[h.t].some(q=>{if(q===h)return false;const dx=q.x-h.x,dist=hyp(dx,q.y-h.y);return dist>=8&&dist<=cr&&dx*d>=PB_OPEN_G&&defs.every(df=>hyp(df.x-q.x,df.y-q.y)>=need);});
+}
 const pbWait=h=>{const pb=G.pb&&G.pb[h.t];if(!pb||!pb.active||!pb.follow[h.id])return false;
+  if(!pb.prep&&pbLoose(h))return false;
   if(pb.prep){const c=pb.rp.H1;return !!c&&pb.follow[c.id]&&G.stallT<PB_PREP_STALL&&hyp(c.x-pb.cspot.x,c.y-pb.cspot.y)>2.5;}   // aspetta che l'handler centrale sia al suo posto (se non segue lo schema non ci va: non lo si aspetta)
   return G.stallT<pbStall(pb)&&(pb.stage==='set'||!pb.ready);};
 function pbAllowed(th){   // a chi puo' lanciare chi segue lo schema
   const pb=G.pb&&G.pb[th.t];if(!pb||!pb.active||!pb.follow[th.id])return null;
   if(pb.prep)return pb.rp.H1&&pb.follow[pb.rp.H1.id]&&G.stallT<PB_PREP_STALL?[pb.rp.H1]:null;   // primo passaggio: all'handler centrale
-  if(pb.stage==='set'||G.stallT>=pbStall(pb))return null;
+  if(pb.stage==='set'||G.stallT>=pbStall(pb)||G.holdT>PB_HOLD)return null;
   const ph=PLAYBOOK[pb.id].phases[pb.phase];if(!ph.pass||!ph.pass.length)return null;
   const al=ph.pass.map(r=>pb.rp[r]).filter(q=>q&&pb.follow[q.id]);
   return al.length?al:null;
@@ -202,6 +214,7 @@ function dangerMark(atk,def){
   cur.mark=best.mark;best.mark=ta;G.st.dm[dT]++;
 }
 function placeTeams(rec){
+  G.goalWait=null;G.diveGoal=null;   // presa in tuffo in meta in attesa (08-prese-duelli.js): non passa al punto dopo
   poserReset();   // nessuna statistica maggiorata (Poser) resta da un punto all'altro
   heroReset();   // ne' una trasformazione dei superpoteri (27-superpoteri.js)
   G.poss=rec;const d=dirOf(rec),atk=T[rec],def=T[1-rec],pt=1-rec;

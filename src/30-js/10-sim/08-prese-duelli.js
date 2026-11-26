@@ -67,7 +67,11 @@ function catchBy(f,p,msg,ck){
    const mk0=T[1-f.team].find(q=>q.mark===p);if(mk0&&nd<2)mk0.m.mk+=0.3;}                            // il marcatore era comunque addosso
   drillEvt('catch',f.team,p,f);
   G.lastPlay={gain:(p.x-f.sx)*dirOf(f.team),duel:!!f._duel,ck:ck||(/tuffo/i.test(msg||'')?'tuffo':(/salto/i.test(msg||'')?'salto':'')),team:f.team,pt:G.pointNo};   // per il replay dell'interfaccia
-  if(inEZ(p,f.team)){p.m.vis++;f.thrower.m.vis++;p.m.g++;f.thrower.m.a++;scoreGoal(f.team,p);return;}
+  if(inEZ(p,f.team)){p.m.vis++;f.thrower.m.vis++;p.m.g++;f.thrower.m.a++;
+    const dg=G.diveGoal;G.diveGoal=null;
+    if(dg&&dg.p===p&&dg.gt===(G.gt||0)){G.goalWait={team:f.team,p,t:DIVE_GOAL_WAIT};G.think=9;return;}   // prima si vede il tuffo, poi la meta
+    scoreGoal(f.team,p);return;}
+  G.diveGoal=null;
   ezCheck(f.team,p);   // vicino alla meta: parte l'attacco in meta
   HOOKS.toast(msg||'Presa!',f.team,{gain:(p.x-f.sx)*dirOf(f.team),p,ck:ck||(/tuffo/i.test(msg||'')?'tuffo':(/salto/i.test(msg||'')?'salto':''))});
   HOOKS.sfx('catch',/salto|tuffo|contesa|mano/i.test(msg||'')?1:0.65);
@@ -172,6 +176,11 @@ function duel(f,a,d,reach){
   if(hi&&!free&&!won&&G.opt.cine&&!G.noCine&&HOOKS.cine&&defEvt(f))HOOKS.cine({kind:'jump',a:a.p,d:d.p,runA:jumpRun(a.p,f),runD:jumpRun(d.p,f),resolve,apply});
   else apply(resolve(0));
 }
+// TUFFO SUL CAMPO: quando il tuffo si decide senza la scena laterale (presa sicura, tuffo degli avversari da soli) il giocatore si butta sul campo
+// (p.dv, lo disegna l'interfaccia). Se e' una presa in meta, la meta aspetta DIVE_GOAL_WAIT secondi di gioco (G.goalWait): prima la fascia META
+// partiva nell'istante della presa e il tuffo non si vedeva ne' dal vivo ne' nel replay, che registra solo il gioco
+const DIVE_GOAL_WAIT=0.75;
+function fieldDive(p,L){p.dv={t0:G.tick||0,dir:L.x>=p.x?1:-1,end:(G.tick||0)+0.3};G.diveGoal={p,gt:G.gt||0};}   // diveGoal vale solo per la presa di questo stesso istante
 function diveChain(f,L,atk,def,reach){
   const drOf=p=>3+2.4*clamp((p.s.tuf-40)/60,0,1);   // quanto oltre la portata ci si puo' tuffare: da 3 m (Tuffo 40) a 5,4 m (Tuffo 100)
   const lst=atk.map(p=>({p,att:true})).concat(def.map(p=>({p,att:false})))
@@ -203,7 +212,7 @@ function diveChain(f,L,atk,def,reach){
         else if(out==='def'){G.st.dive[D.p.t]++;D.p.m.tuf++;finishTurn(f,D.p,'Blocco in tuffo!',L);}
         else{HOOKS.toast('Tuffi mancati',1-f.team);step(i+1);}
       };
-      if(resolve(0)===(mine.att?'att':'def'))return apply(resolve(0));   // lo prende comunque: niente scena
+      if(resolve(0)===(mine.att?'att':'def')){fieldDive(A.p,L);fieldDive(D.p,L);if(resolve(0)!=='att')G.diveGoal=null;else G.diveGoal.p=A.p;return apply(resolve(0));}   // lo prende comunque: niente scena, il tuffo si vede sul campo
       HOOKS.cine({kind:'dive2',a:A.p,d:D.p,diver:mine.p,att:mine.att,timing:true,resolve,apply});
       return;
     }
@@ -218,7 +227,7 @@ function diveChain(f,L,atk,def,reach){
     // la scena si apre solo per un tuo tuffo non gia' riuscito; quelli degli avversari da soli si vedono sul campo.
     // chase: un avversario era vicino al tuffatore e lo insegue anche nella scena; da solo resta solo
     if(show&&mine&&!resolve(0)){HOOKS.cine({kind:'dive',diver:o.p,att:o.att,p:p0,timing:true,chase:oppNear(o.p,SOLO_R),resolve,apply});return;}
-    apply(resolve(0));
+    fieldDive(o.p,L);apply(resolve(0));
   };
   step(0);
 }

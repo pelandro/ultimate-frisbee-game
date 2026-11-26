@@ -109,6 +109,7 @@ function update(dt){
   }
   updateDisc(dt);
   if(G.mode!=='play')return;
+  if(G.goalWait){const w=G.goalWait;w.t-=dt;G.stallT=0;G.think=Math.max(G.think,1);if(w.t<=0){G.goalWait=null;scoreGoal(w.team,w.p);}return;}   // presa in tuffo in meta: il tuffo si vede, poi la meta
   diveOffer(dtr);
   const h=G.holder;
   if(h&&!G.flight){
@@ -129,7 +130,7 @@ function update(dt){
       const lv=AIK(h.t);
       if(!G.open&&pbWait(h)){const mk=G.marker,hold=((mk&&mk.t===0?hbDur(h,mk):0.85)+0.12)*(G.k||K_DEF);if(G.think<hold)G.think=hold;}   // schema a sequenza: non lancia finche' non e' pronto
       const patT=lv.pat+Math.max(0,idOf(h.t).pat)*0.9;
-      if(patT>0&&G.stallT<7&&!G.open){   // (il passaggio d'apertura dopo il pull non aspetta nessuno: la difesa e' ancora lontana)   // difficolta': aspetta un ricevitore libero (il tempo di lancio resta appena sopra l'inizio del cerchio)
+      if(patT>0&&G.stallT<7&&G.holdT<7&&!G.open){   // (il passaggio d'apertura dopo il pull non aspetta nessuno: la difesa e' ancora lontana)   // difficolta': aspetta un ricevitore libero (il tempo di lancio resta appena sopra l'inizio del cerchio)
         const mk=G.marker,hold=((mk&&mk.t===0?hbDur(h,mk):0.85)+0.12)*(G.k||K_DEF);
         if(G.think<hold&&aiPick(h).open<patT)G.think=hold;
       }

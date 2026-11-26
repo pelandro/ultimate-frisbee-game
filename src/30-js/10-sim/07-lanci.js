@@ -173,6 +173,7 @@ function hbProb(th,info,mk,ha){
   return clamp(hbCurve(HB_TAB[hbColor(ha.qual)],info.c)*hbRel(th,mk)*HB_K,0,0.9);
 }
 function doThrow(th,ax,ay,intended,style,exec){
+  if(G.goalWait)return;   // presa in tuffo in meta: la meta e' gia' fatta, si aspetta solo che il tuffo finisca
   endCall();G.snapQ=null;
   const pl=planThrow(th,ax,ay,style,exec),info=pl.info,sp=pl.sp;
   const cat=info.c>0.15?'buc':(info.sparo?'spa':'lan');   // categoria del lancio: buco, sparo o lancio
