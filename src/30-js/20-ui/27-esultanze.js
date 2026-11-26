@@ -6,11 +6,15 @@
    - tuffo di festa: scivolata in tuffo con la scia sul campo, poi in ginocchio con i pugni al cielo;
    - disco al cielo: lo lancia in alto e lo riprende al volo, poi il grido nel fumetto («DAJE!», «CHE TUFFO!» se la presa era in tuffo...).
    Sulla meta che vince la partita c'e' il trionfo: tutti corrono da chi ha segnato e i due compagni piu' vicini lo portano in spalla.
+   Se la vince all'universe (la meta del pari a un punto dalla fine) chi ha segnato si toglie la maglia, corre verso le tribune facendola girare sopra la
+   testa, i compagni lo raggiungono e lo tirano su (universo): la fascia della meta dura CEL_UNI_X secondi in piu'.
    A volte il fumetto del grido compare anche nello spike, nel balletto e nel tuffo. Gli altri tuoi compagni saltellano come prima, gli avversari restano a testa bassa.
    E' solo disegno: il motore non ne sa nulla e le posizioni vere non cambiano (le corse sono spostamenti disegnati; al punto dopo si riparte dalle linee
    come sempre). Se chi ha segnato e' sotto la fascia nera in basso, l'esultanza si sposta qualche passo piu' in alto. Niente esultanza nelle mete simulate
    (G.banner.sim, da simPoint) e con «riduci animazioni». Le pose nuove passano da puppet con pose 'cel' ed ex.cp (02-pixel-art.js): e' lo stesso omino.
    drawPlayers chiede celFrame() (posizioni e pose) e disegna celGround/celOverlay; drawDisc chiede celDisc() (il disco di chi esulta). */
+// universe: secondi in piu' della fascia della meta e per sfilarsi la maglia
+const CEL_UNI_X=2.6,CEL_UNI_OFF=0.4;
 const CEL_KINDS=['spike','petto','ballo','tuffo','cielo'],CEL_SHOUT=['SIII!','BOOM!','DAJE!','VAI!','EVVAI!','GRANDE!'];
 let celSt=null,celLast='',celFr=null;
 const celSm=u=>{u=clamp(u,0,1);return u*u*(3-2*u);},celOutQ=u=>{u=clamp(u,0,1);return 1-(1-u)*(1-u);};
@@ -19,7 +23,7 @@ const celPick=a=>a[Math.random()*a.length|0];
 function celOn(){
   const b=G.banner;
   if(G.mode!=='banner'||!b){celSt=null;return null;}
-  if(b.team!==0||b.t>2.4||RP.on||b.sim||reduceMotion||G.drill||!G.inMatch)return null;
+  if(b.team!==0||b.t>2.4+(b.celX||0)||RP.on||b.sim||reduceMotion||G.drill||!G.inMatch)return null;
   if(!celSt||celSt.b!==b)celSt=celStart(b);
   return celSt.kind?celSt:null;
 }
@@ -30,7 +34,9 @@ function celStart(b){
   const A=celAnchor(sc),sx0=sxw(sc.x),mates=T[0].filter(q=>q!==sc).map(q=>({q,d:hyp(q.x-sc.x,q.y-sc.y),sx:sxw(q.x)-sx0})).sort((u,v)=>u.d-v.d);
   const win=G.score[0]>=G.target&&G.score[0]>G.score[1],hero=!!(G.heroOn&&sc.hero);
   st.f=sc.x>FIELD_L/2?-1:1;   // guarda verso il campo
-  if(win&&mates.length>=2)st.kind='mucchio';
+  const uni=win&&G.score[1]===G.target-1&&G.score[0]===G.target;   // vinta all'universe: si era pari a un punto dalla fine
+  if(uni&&mates.length>=2){st.kind='universo';b.celX=CEL_UNI_X;b.t+=CEL_UNI_X;st.len=2.4+CEL_UNI_X;}
+  else if(win&&mates.length>=2)st.kind='mucchio';
   else{
     const pool=CEL_KINDS.filter(k=>k!==celLast&&!(k==='tuffo'&&hero)&&!(k==='petto'&&!(mates[0]&&mates[0].d<24)));
     st.kind=celPick(pool.length?pool:['spike']);celLast=st.kind;
@@ -60,6 +66,18 @@ function celStart(b){
     st.bub=Math.random()<0.45;st.bt=1.55;
   }else if(st.kind==='spike'){st.bub=Math.random()<0.45;st.bt=0.36;}
   else if(st.kind==='cielo'){st.bub=true;st.bt=1.48;}
+  else if(st.kind==='universo'){
+    // dove corre: verso le tribune (in alto), qualche metro verso il centro del campo, dentro lo schermo
+    const top=celAnchor({x:sc.x,y:-99}).y+24/S;st.D={x:clamp(A.x+st.f*9,4,FIELD_L-4),y:Math.min(top,A.y)};   // 24 px di margine: quando lo tirano su sta piu' in alto
+    const dD=hyp(st.D.x-A.x,st.D.y-A.y);st.run1=CEL_UNI_OFF+clamp(dD/6.5,1.1,1.8);
+    const md=mates.map(u=>({...u,d:hyp(u.q.x-st.D.x,u.q.y-st.D.y)})).sort((u,v)=>u.d-v.d),ls=md.slice(0,2);
+    const go=(u,sx,sy,role)=>add(u.q,sx,sy,0,{role,t0:rnd(0.5,0.9),t1:st.run1+rnd(0,0.45),D:true});   // partono quando lui e' gia' in corsa
+    go(ls[0],-4,-1,'lift');go(ls[1],4,-1,'lift');
+    const L=[[-12,-3],[-9,4],[-17,1]],R=[[12,-3],[9,4],[17,1]];
+    for(const u of md.slice(2)){const sl=(sxw(u.q.x)<sxw(st.D.x)&&L.length)||!R.length?L.shift():R.shift();if(!sl)break;go(u,sl[0],sl[1],'');}
+    st.L0=Math.max(st.run1,...[...st.m.values()].filter(e=>e.role==='lift').map(e=>e.t1))+0.12;
+    st.shout='UNIVERSE!';st.bub=true;st.bt=st.L0+0.25;
+  }
   else if(st.kind==='mucchio'){
     const ls=mates.slice(0,2).sort((u,v)=>u.sx-v.sx);
     add(ls[0].q,-4,-1,tRun(ls[0].d,16,0.15,0.8),{role:'lift'});add(ls[1].q,4,-1,tRun(ls[1].d,16,0.15,0.8),{role:'lift'});
@@ -140,6 +158,29 @@ const CEL_DO={
     if(!st.ev.catch){st.ev.catch=1;HOOKS.sfx('catch',0.6);addFx({t:'pop',x:g.x,y:g.y,z:48/S,vx:0,vy:0,vz:0,life:0.3,max:0.3,c:'#ffffff'});}
     return celPose(g,f,{hop:Math.abs(Math.sin((l-1.42)*9))>0.5?2:0,h:[[1,-10],[-3,4]]});   // preso: disco in alto
   },
+  universo(st,p,e,a,A){
+    const D=st.D,L0=st.L0,bo=a>L0+0.3&&Math.sin((a-L0)*11)>0?1:0;
+    if(e.role==='sc'){
+      if(a<CEL_UNI_OFF){const u=celSm(a/CEL_UNI_OFF);   // si sfila la maglia: braccia incrociate che salgono sopra la testa
+        return celPose({x:A.x,y:A.y},st.f,{crouch:u<0.5?1:0,lean:-1,h:[[lerp(-2,2,u),lerp(3,-10,u)],[lerp(2,-2,u),lerp(3,-10,u)]]},{bare:a>CEL_UNI_OFF*0.6});}
+      const u=clamp((a-CEL_UNI_OFF)/(st.run1-CEL_UNI_OFF),0,1),k=celSm(u),x=lerp(A.x,D.x,k),y=lerp(A.y,D.y,k),f=D.x>A.x+0.2?1:(D.x<A.x-0.2?-1:st.f);
+      if(u<1){const s=(a*9|0)&1;   // corre con la maglia che gira sopra la testa
+        return celPose({x,y},f,{h:[[2,-11],[-3,3+s]],lg:s?[[-3,0],[3,2]]:[[-3,2],[3,0]],hop:s,lean:1},{bare:true,rag:1});}
+      if(a<L0)return celPose({x,y},f,{h:[[2,-11],[-4,-8]],hop:(a*8|0)&1},{bare:true,rag:1});
+      const w=celSm((a-L0)/0.25),wv=(a*6|0)&1;   // i compagni lo tirano su
+      return celPose({x,y},1,{view:2,ab:1,hop:13*w+bo,lg:[[-3,2*w],[3,2*w]],h:wv?[[4,-11],[-3,-6]]:[[3,-6],[-4,-10]]},{bare:true,rag:1});
+    }
+    // i compagni: partono un attimo dopo, corrono da lui e gli si mettono attorno
+    const tx=D.x+e.sx/S,ty=D.y+e.sy/S,u=clamp((a-e.t0)/Math.max(0.1,e.t1-e.t0),0,1),k=celOutQ(u),x=lerp(e.x0,tx,k),y=lerp(e.y0,ty,k),m=e.sx<0?1:-1;
+    if(a<e.t0)return celPose({x:e.x0,y:e.y0},m,null);
+    if(u<1){const g={x,y,dx:tx-e.x0,dy:ty-e.y0,ph:hyp(tx-e.x0,ty-e.y0)*k*1.9};return celRunR(g,m);}
+    if(e.role==='lift'){
+      if(a<L0)return celPose({x,y},m,null);
+      if(a<L0+0.12)return celPose({x,y},m,{view:2,ab:1,crouch:2,h:[[2,4],[-2,4]]});
+      return celPose({x,y},m,{view:2,ab:1,hop:bo,h:m>0?[[2,-5],[-4,-9]]:[[4,-9],[-2,-5]]});   // una mano lo tiene, l'altra al cielo
+    }
+    return celPose({x,y},m,null);   // gli altri attorno saltano
+  },
   mucchio(st,p,e,a,A){
     const g=celGo(e,a,A),L0=st.L0,bo=a>L0+0.25&&Math.sin((a-L0)*11)>0?1:0,m=e.sx<0?1:-1;
     if(e.role==='sc'){
@@ -162,7 +203,7 @@ const celTuffoD=a=>a<0.28?2.5*a/0.28:(a<0.42?2.5+2.5*(a-0.28)/0.14:(a<1.05?5+4.5
 // posa e posizione di chi esulta in questo fotogramma (Map giocatore -> {x,y schermo, wx,wy mondo, f, pose, cp, view, dive, ph, run}); null fuori dalle esultanze
 function celFrame(){
   const st=celOn();if(!st){celFr=null;return null;}
-  const a=2.4-st.b.t,A=celAnchor(st.sc),M=new Map();
+  const a=(st.len||2.4)-st.b.t,A=celAnchor(st.sc),M=new Map();
   st.a=a;st.A=A;st.R=null;
   for(const [p,e] of st.m){
     if(T[0].indexOf(p)<0)continue;
@@ -202,7 +243,11 @@ function celOverlay(){
   if(st.star&&a-st.star.t<0.22){const k=(a-st.star.t)/0.22,x=R.x+st.s*4,y=R.y-30,r=2+ri(3*k),c=k<0.5?'#ffffff':PAL.gold;
     px(x-r,y+1,2*r+1,1,PAL.out);px(x-r,y,2*r+1,1,c);px(x,y-r,1,2*r+1,c);
     if(k>0.3)for(const [u,v] of [[-1,-1],[1,-1],[-1,1],[1,1]])px(x+u*(r-1),y+v*(r-1),1,1,c);}
-  if(st.bub&&a>=st.bt&&a<2.3){
+  if(R.rag&&st.sc._ht===G.tick){   // la maglia che gira sopra la testa
+    const w=a*15,hx=st.sc._hx,hy=st.sc._hy,cx=hx+ri(Math.cos(w)*4),cy=hy-2+ri(Math.sin(w)*2),c=UNI[0].shirt,d=Math.cos(w)>0?1:-1;
+    px(cx-3,cy-2,7,4,PAL.out);px(cx-2,cy-1,5,2,c);px(cx+d*3,cy,2,1,c);px(hx-1,hy-1,2,2,PAL.out);
+  }
+  if(st.bub&&a>=st.bt&&a<(st.len||2.4)-0.1){
     const sc=st.sc,l=a-st.bt;let top=R.dive?R.y-12:R.y-24-ri((R.cp&&R.cp.hop)||0)+ri((R.cp&&R.cp.crouch)||0)-(R.pose==='cheer'?3:0);
     if(sc._ht===G.tick)top=Math.min(top,sc._hy-2);   // sopra il disco alzato
     celBubble(st.shout,R.x,top-3,l);
@@ -219,6 +264,7 @@ function celBubble(txt,x,y,l){
 function celDisc(){
   const st=celSt;if(!celFr||!st||!st.R)return false;
   const R=st.R,sc=st.sc,a=st.a,f=st.f,gx=R.x,gy=R.y,e=st.m.get(sc),l=a-(e?e.t1:0);
+  if(st.kind==='universo'){const x=sxw(st.A.x)+st.f*6,y=syw(st.A.y);if(a>CEL_UNI_OFF){celDiscAt(x,y-1,y,0,0,0);return true;}}   // la maglia al posto del disco: il disco resta a terra
   const inHand=()=>{if(sc._ht!==G.tick)return false;celDiscAt(sc._hx+1+R.f*2,sc._hy+1,gy,G.tick*3,0,0,true);return true;};
   if(st.kind==='spike'&&l>=0.26){
     if(l<0.3){const u=(l-0.26)/0.04,h0=st.rh||[f*3,-23];celDiscAt(gx+lerp(h0[0],f*6,u),gy+lerp(h0[1],-1,u),gy,G.tick*22,0,0);return true;}

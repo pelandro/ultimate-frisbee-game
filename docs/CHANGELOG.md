@@ -4,6 +4,9 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Vincere all’universe si festeggia: chi segna la meta decisiva sul pari si toglie la maglia, corre verso le tribune facendola girare sopra la testa, i compagni lo raggiungono e lo tirano su.
+- Chi ha il disco non lo tiene più a lungo per aspettare lo schema quando un compagno davanti è libero (prima poteva tenerlo anche 10 secondi se nessuno lo marcava da vicino): con un compagno libero di 12 m passa dopo un secondo e mezzo, di 6 m dopo tre secondi e mezzo, e comunque entro sei secondi e mezzo.
+- Le prese in tuffo che non aprono il primo piano (presa sicura, tuffi degli avversari da soli) ora si vedono sul campo: il giocatore si butta. Se è una meta, la fascia META! parte dopo il tuffo e il replay lo mostra (prima si passava subito all’esultanza).
 - In partita i pulsanti in basso a sinistra (Marcatura, Salta, Schemi, Cambi, Simula meta) sono molto più piccoli, con un carattere più stretto: coprivano mezzo campo. Tolta la scritta «Si riparte dalla linea di meta», e chi raccoglie il disco in meta lo porta alla linea di corsa leggera, non più camminando piano.
 - Partita veloce in una sola schermata: difficoltà, durata e chi inizia si scelgono con pulsanti affiancati invece dei menu a tendina; accanto alla difficoltà c’è solo quello che cambia (niente in Facile, le statistiche in più degli avversari da Medio in su, in Estrema anche la traiettoria corta). Il riquadro di ogni squadra ha lo stemma grande con nome, serie e forza; tolto il confronto sotto, che ripeteva nomi e stemmi. Nella scelta della squadra le linguette dei paesi hanno la bandiera sullo sfondo.
 - Rivisti 46 stemmi Women per avvicinarli ai riferimenti delle squadre. Molly Brown ha il simbolo della piuma.
