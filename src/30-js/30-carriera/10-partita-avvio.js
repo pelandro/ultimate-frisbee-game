@@ -145,15 +145,20 @@ $('qpSearch').addEventListener('input',()=>{
 function updateQuick(){
   const a=QM.a,b=QM.b;
   const row=n=>`${qSerName(n)} · forza ${Math.round(qPower(n))}`;
-  const btn=n=>`<span class="tn">${crest(n,24)}<span>${n}</span></span><span class="qv">▾</span>`;
+  // stemma grande, nome e serie con la forza nello stesso pulsante (prima il confronto sotto ripeteva nomi e stemmi)
+  const btn=n=>`<span class="tn">${crest(n,60)}<span>${esc(n)}<small>${esc(row(n))}</small></span></span><span class="qv">Cambia</span>`;
   $('qA').innerHTML=btn(a);$('qB').innerHTML=btn(b);
-  $('qAP').textContent=row(a);$('qBP').textContent=row(b);
+  $('qAP').textContent='';$('qBP').textContent='';
   $('qPlay').disabled=a===b;$('qPlay').textContent=a===b?'Scegli due squadre diverse':'Gioca';
   QM.d=+$('qD').value;QM.s=+$('qS').value;QM.len=+$('qL').value;
   $('qS').options[0].textContent=a;$('qS').options[1].textContent=b;   // i nomi delle due squadre
-  $('qDP').textContent=['L’IA avversaria gioca in modo semplice.','L’IA avversaria sceglie e reagisce un po’ meglio.','L’IA avversaria sceglie e reagisce molto meglio.','Ancora più attenta del Difficile, e la traiettoria del lancio si vede solo all’inizio (un breve tratto tratteggiato).'][QM.d]+' '+['Le statistiche dei giocatori non cambiano.','Avversari con +2 a tutte le statistiche.','Avversari con +4 a tutte le statistiche.','Avversari con +6 a tutte le statistiche.'][QM.d];
-  quickVs();   // confronto tra le due squadre (29-confronto-tabellone.js)
+  // accanto ai pulsanti solo cio' che cambia: in Facile niente, poi le statistiche in piu' (DIFF_PLUS) e in Estrema anche la traiettoria corta
+  $('qDP').textContent=QM.d?(QM.d===3?'Traiettoria del lancio solo all’inizio. ':'')+`Avversari con +${DIFF_PLUS[clamp(QM.d|0,0,3)]} a tutte le statistiche.`:'';
+  // le tre scelte come pulsanti affiancati: rispecchiano i menu nascosti (#qD, #qL, #qS)
+  const short={qL:t=>t.replace(' mete',''),qS:t=>t};
+  for(const g of document.querySelectorAll('#quick .qseg')){const sel=$(g.dataset.for),f=short[g.dataset.for]||(t=>t);g.innerHTML=[...sel.options].map(o=>`<button type="button" class="sg${o.value===sel.value?' on':''}" data-v="${o.value}">${esc(f(o.textContent))}</button>`).join('');}
 }
+$('quick').addEventListener('click',e=>{const b=e.target.closest('.qseg [data-v]');if(!b)return;const sel=$(b.closest('.qseg').dataset.for);sel.value=b.dataset.v;sel.dispatchEvent(new Event('change'));});
 function startQuick(){
   const a=QM.a,b=QM.b;if(!a||!b||a===b)return;
   if(hasCareer()){persist();QM.bak=JSON.stringify(SV);}else QM.bak=null;   // la carriera resta com'e': viene rimessa alla fine

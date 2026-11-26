@@ -1,18 +1,6 @@
 /* ---- CONFRONTO E TABELLONE ----
-   Partita veloce: sotto le scelte restava mezzo schermo vuoto. Ora c'e' il confronto «contro»: stemmi, divise che le squadre indosseranno in campo
-   (le stesse di matchLook) e la forza a barre, con la favorita.
+   Il confronto «contro» della Partita veloce non c'e' piu': stemmi, serie e forza stanno nei riquadri delle squadre (updateQuick, 10-partita-avvio.js).
    Pausa: sotto «Riprendi» la colonna era vuota. Ora c'e' il tabellone della partita con le statistiche fin qui. */
-const kitOf=(n,t)=>KITS[t][hashStr('kit|'+n)%KITS[t].length];
-// divisa a pixel: maglia, pantaloncini e calzettoni, per la scheda del confronto
-const kitHTML=k=>`<span class="qkit" aria-hidden="true"><i style="background:${k.shirt}"></i><i style="background:${k.shorts}"></i><i style="background:${k.socks}"></i></span>`;
-function quickVs(){
-  const el=$('qVs');if(!el)return;
-  const a=QM.a,b=QM.b;if(!a||!b||a===b){el.innerHTML='';return;}
-  const pa=Math.round(qPower(a)),pb=Math.round(qPower(b)),lo=Math.max(0,Math.min(pa,pb)-15),hi=Math.max(pa,pb)+3,w=p=>Math.round(clamp((p-lo)/Math.max(1,hi-lo),0.06,1)*100);
-  const d=pa-pb,fav=Math.abs(d)<3?'Sfida equilibrata':`Favorita: ${esc(d>0?a:b)} (${Math.abs(d)} punti di forza in più)`;
-  const side=(n,p,t)=>`<div class="qvt${t?' r':''}">${crest(n,44)}<b>${esc(n)}</b>${kitHTML(kitOf(n,t))}<span class="qvp"><i class="qvb ${t?'r':''}" style="width:${w(p)}%"></i><em>${p}</em></span></div>`;
-  el.innerHTML=`${side(a,pa,0)}<div class="qvx">VS</div>${side(b,pb,1)}<p class="qvf">${fav}</p>`;
-}
 function pauseBoard(){
   const el=$('paBoard');if(!el)return;
   if(G.drill){el.innerHTML='';return;}

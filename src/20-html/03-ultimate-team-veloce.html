@@ -39,8 +39,7 @@
 </div></div>
 
 <div id="quick" class="screen hidden"><div class="spanel">
-  <div class="shead"><button class="back" id="qBack" type="button">‹ Indietro</button><h2 id="qH">Partita veloce</h2></div>
-  <div class="seg qdiv" id="qDiv"><button type="button" class="sg" data-v="m">Maschile</button><button type="button" class="sg" data-v="w">Femminile</button></div>
+  <div class="shead"><button class="back" id="qBack" type="button">‹ Indietro</button><h2 id="qH">Partita veloce</h2><div class="seg qdiv" id="qDiv"><button type="button" class="sg" data-v="m">Maschile</button><button type="button" class="sg" data-v="w">Femminile</button></div></div>
   <!-- riquadri con la fascia del loro colore (blu la tua squadra, rossa l'avversaria, oro le regole); «Gioca» da solo sotto, grande -->
   <div class="qteams">
     <section class="qpan qblu"><h3>La tua squadra · blu</h3><div class="qpb"><button id="qA" class="qs qpick" type="button"></button><p class="qp" id="qAP"></p></div></section>
@@ -48,12 +47,11 @@
     <section class="qpan qros"><h3>Avversaria · rossa</h3><div class="qpb"><button id="qB" class="qs qpick" type="button"></button><p class="qp" id="qBP"></p></div></section>
   </div>
   <section class="qpan qoro"><h3>Impostazioni della partita</h3><div class="qpb">
-    <div class="qrow"><label for="qD">Difficoltà</label><select id="qD" class="qs"><option value="0">Facile</option><option value="1">Medio</option><option value="2">Difficile</option><option value="3">Estrema</option></select></div>
-    <div class="qrow"><label for="qL">Durata</label><select id="qL" class="qs"><option value="7">Arcade · 7 mete</option><option value="11">Competitiva · 11 mete</option><option value="15">Lunga · 15 mete</option></select></div>
-    <div class="qrow"><label for="qS">Inizia in attacco</label><select id="qS" class="qs"><option value="0">Tua squadra</option><option value="1">Avversaria</option></select></div>
-    <p class="qp" id="qDP"></p>
+    <!-- le scelte sono pulsanti affiancati (.qseg, scritti da updateQuick); i menu restano nascosti e tengono il valore -->
+    <div class="qrow"><span class="qlab">Difficoltà</span><div class="seg qseg" data-for="qD"></div><select id="qD" class="qs hidden" aria-hidden="true" tabindex="-1"><option value="0">Facile</option><option value="1">Medio</option><option value="2">Difficile</option><option value="3">Estrema</option></select><p class="qp" id="qDP"></p></div>
+    <div class="qrow"><span class="qlab">Durata</span><div class="seg qseg" data-for="qL"></div><select id="qL" class="qs hidden" aria-hidden="true" tabindex="-1"><option value="7">Arcade · 7 mete</option><option value="11">Competitiva · 11 mete</option><option value="15">Lunga · 15 mete</option></select></div>
+    <div class="qrow"><span class="qlab">Inizia in attacco</span><div class="seg qseg" data-for="qS"></div><select id="qS" class="qs hidden" aria-hidden="true" tabindex="-1"><option value="0">Tua squadra</option><option value="1">Avversaria</option></select></div>
   </div></section>
   <button class="go qgo" id="qPlay" type="button">Gioca</button>
-  <div id="qVs" class="qvs"></div>
 </div></div>
 
