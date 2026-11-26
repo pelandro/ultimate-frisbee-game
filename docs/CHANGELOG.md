@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Lingua: in Impostazioni › Partita si sceglie tra Italiano e English. L’inglese traduce menu, schermate, messaggi, guida, tutorial completo, Primi passi e fumetti, più le scritte dipinte nel campo; nomi di squadre, giocatori e sponsor restano come sono, e qualche frase che dipende dalla situazione può essere ancora in italiano. Il gioco parte sempre in italiano.
 - Statistiche anonime: il gioco manda solo contatori (quante partite, in che modalità, con quale difesa), senza nome né dati personali, da tutti i dispositivi. La prima volta compare un avviso e si spengono da Impostazioni › Gioco.
 - Sfide online, amministratore: il pulsante «Amministratore» nella Classifica chiede un codice (una volta per dispositivo) e apre un menu con il tasto per ricominciare la stagione, quanti giocatori ci sono e quali modalità si giocano di più. Si riparte con 200 punti in meno e i primi 10 ricevono il badge, come a fine mese; la classifica ha «Questa stagione» e «Stagione scorsa».
 - Sfide online: ora ci sono le divisioni (dalla 10 alla 1 Élite, una ogni 100 punti, con promozioni e retrocessioni a fine partita) e gli obiettivi del giorno e della settimana, che danno gettoni.

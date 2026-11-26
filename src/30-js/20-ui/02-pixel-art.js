@@ -30,7 +30,7 @@ function pell(cx,cy,rx,ry,c){   // ellisse piena a pixel
 const PFONT={t:'8px UFTiny,monospace',p:'8px UFPress,monospace',P:'16px UFPress,monospace',B:'32px UFPress,monospace'};
 const OUT8=[[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]];
 function ptext(txt,x,y,o){   // o: {f, c (colore), a ('l','c','r'), o (colore del contorno; false = senza), sh (ombra in pixel)}
-  o=o||{};ctx.font=PFONT[o.f||'t'];ctx.textBaseline='top';ctx.textAlign='left';
+  o=o||{};txt=lgC(txt);ctx.font=PFONT[o.f||'t'];ctx.textBaseline='top';ctx.textAlign='left';
   const w=Math.ceil(ctx.measureText(txt).width),al=o.a||'c';
   x=ri(al==='c'?x-w/2:(al==='r'?x-w:x));y=ri(y);
   if(o.sh){ctx.fillStyle=o.o||PAL.out;ctx.fillText(txt,x+o.sh,y+o.sh);}
@@ -38,7 +38,7 @@ function ptext(txt,x,y,o){   // o: {f, c (colore), a ('l','c','r'), o (colore de
   ctx.fillStyle=o.c||'#fff';ctx.fillText(txt,x,y);
   return w;
 }
-const ptw=(txt,f)=>{ctx.font=PFONT[f||'t'];return Math.ceil(ctx.measureText(txt).width);};
+const ptw=(txt,f)=>{ctx.font=PFONT[f||'t'];return Math.ceil(ctx.measureText(lgC(txt)).width);};
 function pbox(x,y,w,h,bg,bd){   // riquadro con gli angoli smussati di un pixel, come le etichette di Retro Bowl
   x=ri(x);y=ri(y);px(x+1,y,w-2,h,bg);px(x,y+1,w,h-2,bg);
   if(bd){px(x+1,y,w-2,1,bd);px(x+1,y+h-1,w-2,1,bd);px(x,y+1,1,h-2,bd);px(x+w-1,y+1,1,h-2,bd);}
