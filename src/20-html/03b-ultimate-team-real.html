@@ -21,6 +21,7 @@
     <button class="hbtn" id="urBoard" type="button"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5h14v7a7 7 0 0 1-14 0zM9 8H4c0 4 2 6 5 6M23 8h5c0 4-2 6-5 6M16 19v5M11 27h10"/></svg><span><strong>Classifica</strong><small>I migliori giocatori online</small></span></button>
   </div>
   <div class="schrow"><button class="sec" id="urShop" type="button">Negozio</button></div>
+  <div class="urobj hidden" id="urObj"></div>
   <p class="qp" id="urGoal"></p>
   </div>
   <div class="urm" id="urMiles"></div></div>
@@ -40,6 +41,19 @@
   <!-- stagioni mensili di Sfide online: questo mese e il mese scorso (04-ut-online.js, renderUtBoard) -->
   <div class="seg hidden" id="ubTabs"></div>
   <p class="qp" id="ubNote"></p>
+  <div class="schrow"><button class="sec hidden" id="ubAdmin" type="button">Amministratore</button></div>
   <div class="ulist" id="ubList"></div>
 </div></div>
 
+<!-- amministratore: codice da inserire una volta per dispositivo, poi statistiche e «nuova stagione» (04-ut-online.js) -->
+<div id="uAdm" class="overlay hidden"><div class="panel">
+  <div class="mh"><div><h1>Amministratore</h1></div><button id="admX" class="go" type="button">Chiudi</button></div>
+  <div id="admLogin"><p class="qp">Inserisci il tuo codice: resta su questo dispositivo finché non esci.</p>
+    <div class="schrow"><input id="admCode" class="qs" type="password" maxlength="80" placeholder="Codice amministratore" autocomplete="off" spellcheck="false"><button class="go" id="admIn" type="button">Entra</button></div></div>
+  <div id="admMenu" class="hidden">
+    <div class="schrow"><button class="go danger" id="admReset" type="button">Riparti con una nuova stagione</button><button class="sec" id="admOut" type="button">Esci da amministratore</button></div>
+    <p class="qp" id="admSt"></p>
+    <div id="admModes"></div>
+  </div>
+  <p class="qp" id="admMsg"></p>
+</div></div>
