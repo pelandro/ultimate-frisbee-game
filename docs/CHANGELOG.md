@@ -4,6 +4,9 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Esultanze: nel balletto dopo la meta il disco non resta più a mezz’aria all’altezza del fianco mentre le braccia sono alzate: chi ha segnato lo posa a terra davanti a sé e balla.
+- Schemi: sul telefono il pannello sta tutto nello schermo (il punteggio con i nomi lunghi dei club non schiaccia più la frase sotto il titolo, e con attacco e difesa insieme gli schemi sono più stretti e il tasto «Fatto» si vede senza scorrere).
+- Statistiche della lega: nelle graduatorie il giocatore è in bianco e la squadra sotto, più piccola e di un altro colore, così non si confondono.
 - Allenamento: le due modalità sono separate in due schede in alto, «Squadra» (una seduta per tutti, con il Programma automatico) e «Individuali» (scegli i giocatori, poi l’indirizzo). Toccando un giocatore si apre da sola la scheda degli individuali, così non si tocca più per sbaglio la griglia della squadra.
 - Cambi: una piccola D accanto al ruolo segna i 7 giocatori più forti in difesa.
 - Lingua: in Impostazioni › Partita si sceglie tra Italiano e English. L’inglese traduce menu, schermate, messaggi, guida, tutorial completo, Primi passi e fumetti, più le scritte dipinte nel campo; nomi di squadre, giocatori e sponsor restano come sono, e qualche frase che dipende dalla situazione può essere ancora in italiano. Il gioco parte sempre in italiano.

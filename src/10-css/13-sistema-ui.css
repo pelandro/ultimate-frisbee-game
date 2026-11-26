@@ -76,9 +76,17 @@ html[data-eh="s"] #rail .rb svg{width:17px;height:17px}
 html[data-eh="s"] #rail .rb strong{font-size:11px}
 
 /* schemi tra una meta e l'altra: «Fatto» a destra, come l'azione principale di tutte le altre finestre */
+/* Schemi: titolo e punteggio sulla stessa riga, la frase sotto a tutta larghezza (con i nomi lunghi dei club il punteggio schiacciava la frase in una colonna stretta e il pannello usciva dallo schermo) */
+#menu .mh{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:baseline;column-gap:12px}
+#menu .mh>div:first-child{display:contents}
+#menu #mTitle{grid-area:1/1}
+#menu #mScore{grid-area:1/2;justify-self:end;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#menu #mSub{grid-area:2/1/3/3}
 #menu .mf{display:flex!important;align-items:center;justify-content:flex-end;gap:12px}
 #menu .mf .note{margin-right:auto!important}
 #menu #bGo{min-width:150px;min-height:44px}
+/* telefono in orizzontale: gli schemi più stretti (7 attacchi in una riga, 4 difese in una) così attacco e difesa insieme stanno nello schermo senza scorrere */
+@media (max-height:440px){#menu .opts{grid-template-columns:repeat(auto-fit,minmax(96px,1fr))}#menu .opt strong{font-size:13px}#menu .opt svg{height:clamp(22px,6.5vh,34px)}}
 /* Mercato: lo stipendio a partita accanto al prezzo (prima si scopriva solo dopo l'acquisto) */
 .mwg{font-size:13px;color:#d1deec}
 

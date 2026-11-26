@@ -38,6 +38,6 @@ function leadersHTML(){
   if(!lsLive())return '';
   const all=lsAll();if(!all.length)return '';
   const col=(k,l)=>{const r=all.filter(x=>x[k]>0).sort((a,b)=>b[k]-a[k]||a.mp-b.mp||a.name.localeCompare(b.name)).slice(0,5);
-    return `<div class="ccard"><h3>${l}</h3>${r.length?`<ol>${r.map(q=>`<li><div class="lbr"><span${q.mine?' style="color:var(--gold)"':''}>${esc(q.name)} <small>${esc(q.team)}</small></span><b>${q[k]}</b></div></li>`).join('')}</ol>`:'<p>Ancora nessun dato.</p>'}</div>`;};
+    return `<div class="ccard"><h3>${l}</h3>${r.length?`<ol>${r.map(q=>`<li><div class="lbr"><span class="lbn${q.mine?' me':''}"><span class="lbp">${esc(q.name)}</span><small>${esc(q.team)}</small></span><b>${q[k]}</b></div></li>`).join('')}</ol>`:'<p>Ancora nessun dato.</p>'}</div>`;};
   return `<h3 class="eh">I migliori di ${SERIES_NAME[SV.sr]}</h3><div class="lbg lb3">${col('g','Mete')}${col('a','Assist')}${col('b','Difese')}</div>`;
 }
