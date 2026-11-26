@@ -277,12 +277,14 @@ function simCareerMatch(){
   simInjuries([...on].map(id=>SQ[id]).filter(Boolean),staffInjuryK());
   const wasDone=SV.done,wasEuropeanChampion=SV.eu?.state==='champ';
   const msg=recordResult(w,r.a,r.b);
+  uosCount('carriera',1);
   showSim(w,`${SV.team} ${r.a} – ${r.b} ${m.name}`,msg,()=>renderHome(),careerTitleAfter(wasDone,wasEuropeanChampion));$('srMoney').innerHTML=moneyHTML(SV.lastMoney);
 }
 function simUTMatch(){
   if(UT.sel.length!==7||UT.st!=='play'||UT.packs.length)return;
   const o=UT.opp[UT.round],my=UT.sel.reduce((a,i)=>a+mean9(eqApply(UT.col[i],UT.eq)),0)/7;
   const r=simMatch(my,o.power+(DIFF_PLUS[clamp(UT.d|0,0,3)]||0),UT.d),w=r.a>r.b,msg=utRecord(w);
+  uosCount('utteam',1);
   showSim(w,`Ultimate Team ${r.a} – ${r.b} ${o.name}`,msg,()=>showScreen('ut'));
 }
 function startUT(){

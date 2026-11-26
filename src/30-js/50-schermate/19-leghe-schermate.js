@@ -98,7 +98,7 @@ function lnPoolView(){
   if(lnPoolSel<0||lnPoolSel>=comp.pools.length)lnPoolSel=L.pi;
   let h=comp.pools.length>1?`<div class="seg" id="lnPools">${comp.pools.map((p,i)=>`<button type="button" class="sg${lnPoolSel===i?' on':''}" data-lp="${i}">Girone ${lnPoolName(tr,i)}${i===L.pi?' (tuo)':''}</button>`).join('')}</div>`:'';
   const i=lnPoolSel,names=comp.pools[i],t=lnPoolTab(i),ord=usRanking(t,names),Lg=i!==L.pi&&SV.lg[i];
-  h+=`<p class="estat">${esc(SERIES_NAME[SV.sr])}${tr.comps>1?' · gruppo '+esc(comp.id):''}, stagione ${SV.season}${Lg?` · giornata ${Lg.round} di ${Lg.sched.length}`:''}</p>`;
+  if(Lg||tr.comps>1)h+=`<p class="estat">${tr.comps>1?'Gruppo '+esc(comp.id):''}${Lg?`${tr.comps>1?' · ':''}giornata ${Lg.round} di ${Lg.sched.length}`:''}</p>`;   // il livello e la stagione sono già nella barra in alto
   h+=`<div class="legrow">${lnLegend(tr)}${infoB('lnleg')}</div>${infoX('lnleg','<p>'+esc(lnCap(lnFormatTxt(tr)))+'. A parità di vittorie contano gli scontri diretti, poi la differenza mete.</p>')}`;
   h+=`<div style="overflow-x:auto"><table class="rt">${usHead}${ord.map((nm,k)=>usRow(nm,t[nm],[nm===SV.team?'me':'',comp.pools.length===1?lnZone(k+1,tr,names.length):(k<tr.fin[0]?.t?'up':'')].filter(Boolean).join(' '))).join('')}</table></div>`;
   if(Lg&&Lg.last.length)h+=`<h3 class="eh">Ultima giornata</h3><ul class="elist">${Lg.last.map(m=>`<li class="${m[2]>m[3]?'w':'l'}"><span>${esc(m[0])} – ${esc(m[1])}</span><span>${m[2]} – ${m[3]}</span></li>`).join('')}</ul>`;
@@ -151,20 +151,21 @@ function renderEventLN(){
   $('eCards').innerHTML=`<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>${esc(D.name)}</strong><small>${esc(SERIES_NAME[SV.sr])}: ${esc(lnFormatTxt(lnTierDef()))}. ${esc(lnMoveTxt(lnTierDef()))} ${SV.done?'Stagione conclusa.':esc(lnShort())+'.'}</small></button>`+
     (eu?`<button type="button" class="ecard${SV.event==='eu'?' on':''}" data-e="eu"><strong>Campionato europeo (EUCF)</strong><small>${EU_FIELD_TXT} ${euCardSub()}</small></button>`
        :(D.eu?`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo</strong><small>${euQualifiedPending()?'Qualificati: apri il torneo dal riepilogo.':`Per qualificarti: prime ${D.eu} della ${esc(D.tiers[0].name)} dopo i playoff, o quarta più forte fra i campionati.`}</small></button>`:''));   // il campionato Women non va all'EUCF
+  $('eCards').classList.add('mini');   // due linguette piccole: le descrizioni stanno nelle «i» della classifica
   if(SV.event!=='camp'){$('eBody').innerHTML=euView();return;}   // EUCF: gironi e tabellone (18-eucf-schermate.js)
-  if(lnTabPh!==L.ph){lnTabPh=L.ph;lnTabSel=L.ph==='grp'?'grp':'fin';}
+  if(lnTabPh!==L.ph){lnTabPh=L.ph;eventPage=L.ph==='grp'?'table':'final';}
   let body='';
   if(SV.done&&SV.next)body+=endSeasonHTML({});
-  body+=eventPages();
+  // una sola fila di schede (prima erano tre: viste, girone/fase finale/livelli, gironi)
+  const pages=[['table','Classifica'],['calendar','Calendario'],['final','Fase finale'],['stats','Statistiche'],['tiers',lnTiers().length>1?'Livelli':'Club']];
+  body+=`<nav class="seg evpages" aria-label="Viste della lega">${pages.map(([id,l])=>`<button type="button" class="sg${eventPage===id?' on':''}" data-evpage="${id}"${eventPage===id?' aria-current="page"':''}>${l}</button>`).join('')}</nav>`;
   if(eventPage!=='table'){
     const detail=eventPage==='calendar'?eventCalendar():eventPage==='stats'
-      ?(leadersHTML()||'<p class="note">Le statistiche compariranno dopo le prime partite.</p>'):lnFinView();
+      ?(leadersHTML()||'<p class="note">Le statistiche compariranno dopo le prime partite.</p>'):eventPage==='tiers'?lnTiersView():lnFinView();
     $('eBody').innerHTML=body+detail;
     return;
   }
-  body+=`<div class="seg" id="lnTabs">${[['grp','Girone'],['fin','Fase finale'],['tiers',lnTiers().length>1?'Livelli':'Club']].map(([k,l])=>`<button type="button" class="sg${lnTabSel===k?' on':''}" data-lt="${k}">${l}</button>`).join('')}</div>`;
-  body+=lnTabSel==='fin'?lnFinView():(lnTabSel==='tiers'?lnTiersView():lnPoolView());
-  $('eBody').innerHTML=body;
+  $('eBody').innerHTML=body+lnPoolView();
 }
 $('eBody').addEventListener('click',e=>{
   if(!isLN())return;

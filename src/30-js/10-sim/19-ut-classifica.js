@@ -84,9 +84,23 @@ function utoSeason(t){
   try{const s=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Rome',year:'numeric',month:'2-digit'}).format(d);if(/^\d{4}-\d{2}$/.test(s))return s;}catch(e){}
   const r=new Date(d.getTime()+3600000);return r.getUTCFullYear()+'-'+String(r.getUTCMonth()+1).padStart(2,'0');   // senza Intl: ora solare italiana
 }
-const utoSeasonOk=s=>typeof s==='string'&&/^20\d{2}-(0[1-9]|1[0-2])$/.test(s);
-const utoSeasonName=s=>utoSeasonOk(s)?UTO_MONTHS[+s.slice(5)-1]+' '+s.slice(0,4):'';
-function utoSeasonPrev(s){const y=+s.slice(0,4),m=+s.slice(5);return m>1?y+'-'+String(m-1).padStart(2,'0'):(y-1)+'-12';}
+// il giorno di un istante: 'AAAA-MM-GG' secondo il calendario italiano (le statistiche dell'amministratore, 04-ut-online.js)
+function utoDay(t){
+  const d=new Date(t);
+  try{const s=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Rome',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;}catch(e){}
+  return new Date(d.getTime()+3600000).toISOString().slice(0,10);
+}
+// Una stagione si puo' anche chiudere a mano (amministratore, 04-ut-online.js): la nuova e' 'AAAA-MM.NN' (NN da 02), che in ordine alfabetico
+// viene dopo 'AAAA-MM' e prima del mese dopo; il primo del mese si torna comunque alla stagione del mese
+const utoSeasonOk=s=>typeof s==='string'&&/^20\d{2}-(0[1-9]|1[0-2])(\.\d{2})?$/.test(s);
+const utoSeasonName=s=>utoSeasonOk(s)?UTO_MONTHS[+s.slice(5,7)-1]+' '+s.slice(0,4)+(s.length>7?' · '+(+s.slice(8))+'ª stagione':''):'';
+function utoSeasonPrev(s){const y=+s.slice(0,4),m=+s.slice(5,7);return m>1?y+'-'+String(m-1).padStart(2,'0'):(y-1)+'-12';}
+// la stagione in corso: quella del mese, o quella aperta a mano se e' piu' recente (ma mai di un mese che non e' ancora arrivato)
+const utoSeasonNow=(t,man)=>{const m=utoSeason(t);return utoSeasonOk(man)&&man>m&&man.slice(0,7)===m?man:m;};
+// la stagione che l'amministratore apre adesso: dopo quella in corso, nello stesso mese
+const utoSeasonNext=cur=>cur.slice(0,7)+'.'+String(Math.min(99,(cur.length>7?+cur.slice(8):1)+1)).padStart(2,'0');
+// la stagione prima di quella in corso: la piu' recente tra il mese prima e le stagioni aperte a mano (man = l'ultima, manP = quella prima)
+const utoSeasonBefore=(cur,man,manP)=>[utoSeasonPrev(cur),man,manP].filter(x=>utoSeasonOk(x)&&x<cur).sort().pop();
 const utoSeasonStart=p=>Math.max(UTO_START,p-UTO_SEASON_DROP);   // punti con cui si riparte (le regole del database fanno lo stesso conto)
 // classifica di una stagione: chi ha giocato almeno UTO_SEASON_G partite, per punti, poi vittorie; le altre righe dopo, senza posizione
 function utoSeasonRank(rows){
@@ -105,8 +119,44 @@ function utoSeasonRows(row){
   const rows=[{id:'a',p:1300,w:9,g:12},{id:'b',p:1500,w:3,g:4},{id:'c',p:1300,w:10,g:14},{id:'d',p:1100,w:6,g:10}],rk=utoSeasonRank(rows);
   const rkOk=rk.ok.map(r=>r.id).join()==='c,a,d'&&rk.wait.map(r=>r.id).join()==='b';
   const bd=[1,2,3,4,10,11,0].map(utoSeasonBadge),bdOk=bd.join()==='1,2,3,10,10,0,0';
-  return [row('Stagioni: punti con cui si riparte (900, 1000, 1150, 1199, 1200, 1300, 2050)',st.join(', '),stOk,'200 in meno, mai sotto 1000'),
+  const ad=[utoSeasonNext('2026-11'),utoSeasonNext('2026-11.02'),utoSeasonNow(Date.UTC(2026,10,26,12),'2026-11.02'),utoSeasonNow(Date.UTC(2026,11,2,12),'2026-11.03'),utoSeasonNow(Date.UTC(2026,10,26,12),'2026-12.02'),
+    utoSeasonBefore('2026-11.02','2026-11.02','2026-11'),utoSeasonBefore('2026-12','2026-11.03','2026-11.02'),utoSeasonName('2026-11.03')];
+  const adOk=ad.join('|')==='2026-11.02|2026-11.03|2026-11.02|2026-12|2026-11|2026-11|2026-11.03|novembre 2026 · 3ª stagione';
+  return [row('Stagioni a mano (amministratore): la nuova, quella in corso, quella prima, il nome',ad.join(', '),adOk),
+    row('Stagioni: punti con cui si riparte (900, 1000, 1150, 1199, 1200, 1300, 2050)',st.join(', '),stOk,'200 in meno, mai sotto 1000'),
     row('Stagioni: il mese cambia a mezzanotte, ora italiana (anche con l’ora legale)',t.join(', '),tOk&&prOk),
     row('Stagioni: classifica del mese solo con almeno '+UTO_SEASON_G+' partite; a parità di punti più vittorie',rk.ok.map(r=>r.id).join(' ')+' | fuori: '+rk.wait.map(r=>r.id).join(' '),rkOk),
-    row('Stagioni: badge di fine mese per il 1°, 2°, 3° e dal 4° al 10°',bd.join(', '),bdOk)];
+    row('Stagioni: badge di fine mese per il 1°, 2°, 3° e dal 4° al 10°',bd.join(', '),bdOk),
+    ...utoDivRows(row)];
+}
+// divisioni e obiettivi: i numeri e il rinnovo a mezzanotte e il lunedi'
+function utoDivRows(row){
+  const dv=[800,1000,1099,1100,1550,1899,1900,3000].map(p=>utoDiv(p).n),dvOk=dv.join()==='10,10,10,9,5,2,1,1'&&utoDiv(1000).next===1100&&utoDiv(2000).next===null;
+  const t0=Date.UTC(2026,10,26,12),st={},a=utoObjAdd(st,t0,{g:1,w:1,m:6}),b=utoObjAdd(st,t0,{g:2,w:0,m:5}),c=utoObjAdd(st,t0,{g:1,w:1,m:3});
+  const ob=a.coins===30&&a.done.join()==='Vinci 1 partita'&&b.coins===40&&b.done.join()==='Gioca 3 partite,Segna 10 mete'&&c.coins===0;   // ogni premio una volta sola
+  const d1=utoObjAdd(st,t0+86400000,{g:0,w:0,m:0}),wk=utoWeek(t0)==='2026-11-23'&&utoWeek(Date.UTC(2026,10,29,12))==='2026-11-23'&&utoWeek(Date.UTC(2026,10,30,12))==='2026-11-30';
+  const rn=d1.coins===0&&st.c.dg===0&&st.c.wg===4&&wk;   // il giorno dopo si azzerano i giornalieri, non quelli della settimana
+  return [row('Divisioni: da 10 (fino a 1099 punti) a 1 (da 1900)',dv.join(', '),dvOk),
+    row('Obiettivi: premio una volta sola, giornalieri azzerati il giorno dopo, settimanali il lunedì',`${a.coins}, ${b.coins}, ${c.coins} gettoni · giorno dopo ${st.c.dg}/${st.c.wg}`,ob&&rn)];
+}
+// ---- divisioni: dal punteggio, una ogni 100 punti (10 = da 1000 a 1099 e meno, 1 = da 1900). Solo un nome e un obiettivo: non danno carte ----
+const UTO_DIV_N=10,UTO_DIV_STEP=100;
+function utoDiv(p){const i=clamp(Math.floor((p-UTO_START)/UTO_DIV_STEP),0,UTO_DIV_N-1);return {n:UTO_DIV_N-i,next:i<UTO_DIV_N-1?UTO_START+(i+1)*UTO_DIV_STEP:null};}
+const utoDivName=n=>'Divisione '+n+(n===1?' · Élite':'');
+// ---- obiettivi: giornalieri (d) e settimanali (w). evento: g partita giocata, w vittoria, m mete segnate. Premio in gettoni, una volta per periodo ----
+const UTO_OBJ=[['dg','d','g',3,20,'Gioca 3 partite'],['dw','d','w',1,30,'Vinci 1 partita'],['dm','d','m',10,20,'Segna 10 mete'],
+  ['wg','w','g',15,120,'Gioca 15 partite'],['ww','w','w',7,150,'Vinci 7 partite']];
+function utoWeek(t){   // il lunedi' della settimana italiana, 'AAAA-MM-GG'
+  const x=new Date(utoDay(t)+'T12:00:00Z');x.setUTCDate(x.getUTCDate()-(x.getUTCDay()+6)%7);return x.toISOString().slice(0,10);
+}
+// st = {d,w,c:{obiettivo:avanzamento},r:{obiettivo:1 se premiato}}: si azzera da solo al cambio di giorno / settimana. Ritorna i gettoni vinti e i nomi completati
+function utoObjAdd(st,t,ev){
+  const d=utoDay(t),w=utoWeek(t);st.c=st.c||{};st.r=st.r||{};
+  for(const [per,cur,key] of [['d',d,'d'],['w',w,'w']])if(st[key]!==cur){st[key]=cur;for(const o of UTO_OBJ)if(o[1]===per){delete st.c[o[0]];delete st.r[o[0]];}}
+  let coins=0;const done=[];
+  for(const [k,,e,n,c,tx] of UTO_OBJ){
+    st.c[k]=Math.min(n,(st.c[k]|0)+(ev[e]|0));
+    if(st.c[k]>=n&&!st.r[k]){st.r[k]=1;coins+=c;done.push(tx);}
+  }
+  return {coins,done};
 }

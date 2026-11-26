@@ -4,6 +4,10 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Sfide online, amministratore: il pulsante «Amministratore» nella Classifica chiede un codice (una volta per dispositivo) e apre un menu con il tasto per ricominciare la stagione, quanti giocatori ci sono e quali modalità si giocano di più. Si riparte con 200 punti in meno e i primi 10 ricevono il badge, come a fine mese; la classifica ha «Questa stagione» e «Stagione scorsa».
+- Sfide online: ora ci sono le divisioni (dalla 10 alla 1 Élite, una ogni 100 punti, con promozioni e retrocessioni a fine partita) e gli obiettivi del giorno e della settimana, che danno gettoni.
+- Carriera: tolto il pulsante Posta dalla barra in alto. Decisioni, avvisi e notizie si aprono da «Questa settimana».
+- Lega delle leghe europee: una sola fila di schede (Classifica, Calendario, Fase finale, Statistiche, Livelli), campionato ed EUCF in due linguette piccole, gironi in bottoni piccoli.
 - Ultimate Team: niente più «Apri pacchetto». I pacchetti comprati nel Negozio, vinti nel torneo o ai traguardi si aprono subito, e l’apertura è uno spettacolo: il disco trema e si illumina del colore della carta migliore, poi le carte coperte si girano una alla volta, la migliore per ultima. Epici e Leggende tremano prima di girarsi, con raggi, scritta e coriandoli; il Super pacchetto è arcobaleno. Corretto: le carte Leggenda uscivano schiacciate.
 - Badge: la bandiera americana copre tutto il castone dell’anello dei Nationals USA.
 - Sfide online a stagioni mensili: ogni mese ha la sua classifica («Questo mese» e «Mese scorso»), si riparte con 200 punti in meno (mai sotto i 1000) e i primi 10 del mese, con almeno 10 partite, ricevono un badge nei Riconoscimenti (1°, 2°, 3°, dal 4° al 10°). Niente premi in gettoni o pacchetti per la posizione.

@@ -28,3 +28,13 @@
 .urmy::before{content:'';flex:0 0 14px;height:3px;background:var(--gold)}.urmy::after{content:'';flex:1;height:3px;background:var(--gold)}
 .urmf{margin:4px 0 0;font-size:11px;opacity:.85}
 @media (max-height:340px){.urmr .disc{width:40px}.urmr{grid-template-columns:44px minmax(0,1fr) auto;padding:1px 6px}.urmr span b{font-size:13px}}
+/* amministratore: righe con barra (modalita' piu' giocate) */
+#admModes .ubrow{grid-template-columns:8.5em minmax(0,1fr) 3em;padding:2px 8px;font-size:14px}#admModes .qp{font-size:12px}
+#admModes .admbar{display:block;height:12px;background:var(--gold);border:2px solid #000;min-width:2px;box-sizing:border-box}
+#admModes .ubrow b{text-align:right}
+#uAdm .panel{max-width:620px}
+.admt{width:100%;border-collapse:collapse;font-size:14px}.admt th,.admt td{padding:2px 6px;text-align:right}.admt th:first-child,.admt td:first-child{text-align:left}.admt td{border-bottom:2px solid rgba(255,255,255,.12)}.admt b{color:var(--gold)}
+.urobj{margin:6px 0}.urobj .urmh{margin:4px 0 2px}
+.uoob{display:grid;grid-template-columns:minmax(0,1fr) 5em 3em 3.2em;gap:6px;align-items:center;font-size:13px;padding:2px 0;border-bottom:2px solid rgba(255,255,255,.1)}
+.uoob i{display:block;height:8px;background:rgba(255,255,255,.14);position:relative}.uoob i:after{content:"";position:absolute;inset:0;width:var(--v);background:var(--gold)}
+.uoob b{text-align:right}.uoob small{color:var(--gold);text-align:right}.uoob.ok{opacity:.6}

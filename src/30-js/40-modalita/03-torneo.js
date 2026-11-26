@@ -41,7 +41,7 @@ function tnRecord(win,su,so){
 function startTourn(sim){
   if(!TOUR||TOUR.st!=='play')return;
   const a=TOUR.team,b=tnOpp();if(!b)return;
-  if(sim){const r=simMatch(qPower(a),qPower(b)+(DIFF_PLUS[clamp(TOUR.d|0,0,3)]||0),TOUR.d,lenOk(TOUR.len|0)),w=r.a>r.b,msg=tnRecord(w,r.a,r.b);showSim(w,`${a} ${r.a} – ${r.b} ${b}`,msg,()=>renderTourn());return;}
+  if(sim){const r=simMatch(qPower(a),qPower(b)+(DIFF_PLUS[clamp(TOUR.d|0,0,3)]||0),TOUR.d,lenOk(TOUR.len|0)),w=r.a>r.b,msg=tnRecord(w,r.a,r.b);uosCount('torneo',1);showSim(w,`${a} ${r.a} – ${r.b} ${b}`,msg,()=>renderTourn());return;}
   if(hasCareer()){persist();QM.bak=JSON.stringify(SV);}else QM.bak=null;   // la carriera resta com'e': viene rimessa alla fine
   QM.on=true;TN.on=true;UT.on=false;
   setSquad(qRoster(a,9));applyRoster(qRoster(b,7));oppBoost(DIFF_PLUS[clamp(TOUR.d|0,0,3)]);
