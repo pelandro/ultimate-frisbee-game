@@ -54,7 +54,7 @@ function updateHUD(dt){
   if(!defNow&&(ddrag||G.cdir)){ddrag=null;G.cdir=null;}
   let hint='';   // solo messaggi di stato (conto alla rovescia, disco da raccogliere): i suggerimenti su come si gioca non compaiono mai durante la partita
   if(G.mode==='ready'&&G.pullTeam===1&&!G.schemeOpen)hint='Pull avversario tra '+Math.max(1,Math.ceil(G.readyT));
-  if(G.mode==='play'&&G.holder&&!G.flight){if(G.walk)hint=G.walk.line?'Si riparte dalla linea di meta':'Si raccoglie il disco';}
+  if(G.mode==='play'&&G.holder&&!G.flight){if(G.walk&&!G.walk.line)hint='Si raccoglie il disco';}   // niente scritta quando si riparte dalla linea di meta: si vede
   if(DR.on)hint='';
   elHint.classList.toggle('hidden',!hint);if(hint)elHint.textContent=hint;
   adwTick();

@@ -415,7 +415,8 @@ function drawPlayers(dt){
     else if(p===G.marker&&G.holder)pring(x,y,9,3,G.dmode[p.t]===1?'#ff8a5c':'#ffffff',1,2);   // arancione: marca in anticipo (piu' pressione sul lancio)
     if(p===G.ctrl&&inDefense()){const pu=Math.sin(G.tick*8)>0?1:0;pring(x,y,10+pu,4,PAL.out,3);pring(x,y,10+pu,4,PAL.sky,1);parrow(x,y-h-16-pu,1,PAL.out,5);parrow(x,y-h-15-pu,1,PAL.sky,4);}   // il difensore che stai guidando
     if(C&&C.dive)puppetDive(x,y,UNI[p.t],heroLook(p),C.dive.dir,C.dive.lift);
-    else if(C){const hp=puppet(x,y,UNI[p.t],heroLook(p),C.f,C.pose,C.ph||0,C.run||0,0,{view:C.view|0,cp:C.cp,ca:-1,hero:heroVis(p)?p.hero:null,sc:heroScale(p)});p._hx=hp[0];p._hy=hp[1];p._ht=G.tick;}
+    else if(C){const lk=heroLook(p),un=C.bare?Object.assign({},UNI[p.t],{shirt:lk.skin,shirtB:'',pat:''}):UNI[p.t];   // bare: senza maglia (esultanza dell'universe)
+      const hp=puppet(x,y,un,lk,C.f,C.pose,C.ph||0,C.run||0,0,{view:C.view|0,cp:C.cp,ca:-1,hero:heroVis(p)?p.hero:null,sc:heroScale(p)});p._hx=hp[0];p._hy=hp[1];p._ht=G.tick;}
     else if(dvp>0.45)puppetDive(x+p.dv.dir*6*dvp,y,UNI[p.t],heroLook(p),p.dv.dir,2+7*air);
     else{
       // vista: di schiena se corre verso l'alto dello schermo, di fronte se scende verso la camera, altrimenti di lato
@@ -612,8 +613,9 @@ function drawToasts(dt){
 // meta: fascia nera, scritta grande nel colore della squadra, coriandoli a quadretti
 function drawBanner(dt){
   if(G.mode!=='banner'||!G.banner){conf.length=0;return;}
-  if(G.banner.t>2.4)return;   // prima c'e' il replay
-  const b=G.banner,age=2.4-b.t,col=b.team===0?'#6aa0ff':'#ff7b80';
+  const X=G.banner.celX||0;   // celX: secondi in piu' dell'esultanza dell'universe (27-esultanze.js)
+  if(G.banner.t>2.4+X)return;   // prima c'e' il replay
+  const b=G.banner,age=2.4+X-b.t,col=b.team===0?'#6aa0ff':'#ff7b80';
   if(!b.conf){
     b.conf=true;
     for(let i=0;i<90;i++)conf.push({x:Math.random()*VW,y:-Math.random()*VH*0.7,vx:rnd(-14,14),vy:rnd(50,120),c:[col,PAL.gold,'#ffffff',b.team===0?'#2f7bff':'#ff4b4b'][i%4],w:1+(i%2)});

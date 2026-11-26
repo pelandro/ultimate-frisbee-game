@@ -14,5 +14,5 @@ html #hud #bExit,html #hud #bSeg{font-size:calc(var(--gpz)*8);font-size-adjust:n
 html #hud #stall{font-size:calc(var(--gpz)*8);font-size-adjust:none;border-width:var(--gpz)}
 html #hud #hint{font-family:var(--pfont);font-size:calc(var(--gpz)*8);font-size-adjust:none;letter-spacing:0;border-width:var(--gpz)}
 html #hud #ctrl .btn,html #skip{font-family:var(--pfont);font-size:calc(var(--gpz)*8);font-size-adjust:none;letter-spacing:0;border-width:var(--gpz);box-shadow:calc(var(--gpz)*2) calc(var(--gpz)*2) 0 rgba(0,0,0,.45)}
-/* i pulsanti restano alti come prima (il carattere e' piu' piccolo, il bersaglio per il dito no) */
-html #hud #ctrl .btn,html #skip{padding:calc(var(--gpz)*7) calc(var(--gpz)*6);line-height:calc(var(--gpz)*8)}
+/* pulsanti in basso a sinistra (Marcatura, Salta, Schemi...): carattere stretto (Tiny5) e poco margine, se no coprivano mezzo campo */
+html #hud #ctrl .btn,html #skip{font-family:'UFTiny',monospace;padding:calc(var(--gpz)*4) calc(var(--gpz)*5);line-height:calc(var(--gpz)*8)}

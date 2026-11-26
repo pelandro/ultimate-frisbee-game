@@ -326,7 +326,17 @@ function selfTestPlan(opt){
       if(pb.role[G.flight.intended&&G.flight.intended.id]==='H1'){pH1++;if(fol)pH1F++;}if(Math.abs(G.flight.ty-MID)<=PB_CENTER+1)pC++;
       tick(60*6,()=>!G.flight);if(G.holder&&G.holder.t===1&&pb.active&&!pb.prep){tick(60*3,()=>pb.stage==='go');if(pb.stage==='go')pGo++;}
     }
+    // PULL IN MEZZO AL CAMPO O DENTRO LA META: chi va a prenderlo non sale con gli altri (PULL_BACK) e lo prende al volo
+    // (segnalazione 14:56: era tra quelli che salgono, il limite in avanti lo fermava a 3 m dalla meta e il disco gli cadeva dietro)
+    let fN=0,fAir=0,fUp=0;const KF=Math.max(40,n*6);
+    for(let i=0;i<KF;i++){
+      placeTeams(1);doPull(i%2?0.62:0.8,fwd);if(!G.pull||G.pull.oob)continue;
+      const pu=G.pull,c=pu.catcher;fN++;let land=-1,g=0,up=false;
+      while(g++<60*20&&G.pull){update(1/60);if(G.pull&&G.pull.fw&&G.pull.fw.map(j=>T[G.poss][j]).includes(c))up=true;if(G.pull&&G.pull.landed&&land<0)land=g;}
+      if(up)fUp++;if(land>=0&&g-land<=19&&G.holder===c)fAir++;
+    }
     return [row('Brick: difensori accanto al loro uomo appena si riparte, e l\u2019attacco lancia entro 4,5 secondi',bOk+' brick, '+bFar+' difese fuori posto, '+bWait+' attese',bOk>=Math.max(2,K/2-2)&&bFar===0&&bWait===0,'nessuna attesa'),
+      row('Pull in campo: chi va a prenderlo resta dietro e lo prende al volo',fAir+' al volo su '+fN+', '+fUp+' volte tra quelli che salgono',fUp===0&&fAir>=fN*0.7,'mai tra quelli che salgono, al volo almeno 7 su 10'),
       row('Partenza dal centro: chi ha preso il pull lontano dal centro passa all\u2019handler centrale',pH1F+' su '+pF+' tra chi segue lo schema ('+pH1+' su '+pN+' in tutto), vicino al centro '+pC,pN>=KP-6&&pF>=pN*0.5&&pH1F>=pF*0.9&&pC>=pH1*0.9,'il primo passaggio va al centro'),
       row('Partenza dal centro: nessun taglio prima del passaggio, poi lo schema parte',(pCut?pCut+' tagli in anticipo':'nessun taglio in anticipo')+', parte '+pGo+' volte su '+pH1+(pN?' (passaggio dopo '+(pT/pN).toFixed(1)+' s)':''),pCut===0&&pGo>=pH1*0.7&&pN>0&&pT/pN<=4,'passaggio entro 4 s')];
   }]);

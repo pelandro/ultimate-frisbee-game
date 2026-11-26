@@ -1,4 +1,6 @@
 /* ---- IA attacco (compagni senza disco) ---- */
+// chi ha raccolto il disco in meta lo porta alla linea a questa frazione della sua velocita' massima (prima 0,4: camminava pianissimo)
+const WALK_V=0.8;
 const visOf=p=>p.s.vis/100;
 const wanderW=p=>clamp((0.5-visOf(p))*0.6,0,1)*AIK(p.t).wander*(G.holder&&G.holder.t===p.t&&hasT(G.holder,'general')?0.5:1);   // quanto si muove a caso (visione bassa)
 function pickCut(p,H,d,sch,w){
@@ -138,13 +140,14 @@ function laneDodge(p,H,atk){
 // AL PULL: chi riceve si dispone nello schema attorno al punto in cui cadra' il disco (G.ref, scritto da doPull), e con chi va a prenderlo
 // e gli handler dello schema finivano spesso in 4-6 ad aspettarlo in fondo. Ne restano dietro al massimo PULL_BACK (i piu' arretrati nello
 // schema); gli altri salgono almeno PULL_FW metri oltre il punto d'arrivo e comunque PULL_OUT metri fuori dalla meta.
-// La scelta si fa una volta per pull (indici in G.pull.fw)
+// La scelta si fa una volta per pull (indici in G.pull.fw). Chi va a prendere il pull (G.pull.catcher) e' sempre tra quelli dietro: prima poteva
+// finire tra quelli che salgono, e il limite in avanti lo fermava davanti alla meta mentre il disco gli passava sopra e cadeva dentro (segnalazione 14:56)
 const PULL_BACK=3,PULL_FW=8,PULL_OUT=3;
 const pullFwX=(P,d)=>{const hx=d>0?EZ:FIELD_L-EZ;return hx+d*Math.max((G.ref.x-hx)*d+PULL_FW,PULL_OUT);};
 function pullFwd(P,atk,d,side,sch){
   const pu=G.pull;
   if(!pu.fw){
-    const pr=atk.map((p,i)=>({i,v:(anchor(sch,p.slot,G.ref,d,side).x-G.ref.x)*d})).sort((a,b)=>a.v-b.v);
+    const ci=atk.indexOf(pu.catcher),pr=atk.map((p,i)=>({i,v:i===ci?-1e9:(anchor(sch,p.slot,G.ref,d,side).x-G.ref.x)*d})).sort((a,b)=>a.v-b.v);
     pu.fw=pr.slice(PULL_BACK).map(o=>o.i);
   }
   return pu.fw.map(i=>atk[i]).filter(Boolean);
@@ -168,7 +171,7 @@ function updateAttackers(dt){
   for(const p of atk){
     p.rt=null;p.sq=0;   // dove sta andando (solo per disegnare la linea del taglio); sq: corre un movimento dello schema a sequenza
     if(p===Hh){
-      if(G.walk){const tg=G.walk.stage?G.walk.line:G.walk.pick;if(G.walk.stage)moveTo(p,tg.x,tg.y,dt,0.55,0.4);else moveTo(p,tg.x,tg.y,dt);}   // corre a prendere il disco, poi lo porta camminando alla linea
+      if(G.walk){const tg=G.walk.stage?G.walk.line:G.walk.pick;if(G.walk.stage)moveTo(p,tg.x,tg.y,dt,0.9,WALK_V);else moveTo(p,tg.x,tg.y,dt);}   // corre a prendere il disco, poi lo porta alla linea di corsa leggera
       else moveTo(p,p.x,p.y,dt);
       continue;
     }
