@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Partita veloce in una sola schermata: difficoltà, durata e chi inizia si scelgono con pulsanti affiancati invece dei menu a tendina; accanto alla difficoltà c’è solo quello che cambia (niente in Facile, le statistiche in più degli avversari da Medio in su, in Estrema anche la traiettoria corta). Il riquadro di ogni squadra ha lo stemma grande con nome, serie e forza; tolto il confronto sotto, che ripeteva nomi e stemmi. Nella scelta della squadra le linguette dei paesi hanno la bandiera sullo sfondo.
 - Rivisti 46 stemmi Women per avvicinarli ai riferimenti delle squadre. Molly Brown ha il simbolo della piuma.
 - Nuovi stemmi a pixel per la Serie A Women e il circuito USA Ultimate Women. Le due Tequila hanno una bomba nera con la miccia accesa.
 - Nuova icona dell'app: il giocatore in tuffo con il disco, su sfondo verde (scheda del browser, Home di iPhone e Android).

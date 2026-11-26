@@ -35,19 +35,48 @@
 .sb7 .sch i{display:inline;color:var(--gold)}
 .sb7 .sch small{font-size:12px;color:#aebcd0}
 .sb7 .sch.me{border-color:var(--gold);color:var(--gold)}
-/* Partita veloce: riquadri con la fascia del loro colore (blu, rosso, oro), «Gioca» da solo sotto (03-ultimate-team-veloce.html) */
-.qteams{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;margin:8px 0 0}
+/* Partita veloce in una schermata: riquadri con la fascia blu, rossa e oro, scelte a pulsanti, stemmi grandi nei riquadri (03-ultimate-team-veloce.html) */
+#quick .shead{margin-bottom:6px}
+#quick .shead .qdiv{margin:0 0 0 auto;max-width:none}
+#quick .shead .qdiv .sg{padding:5px 14px;min-height:0}
+.qteams{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;margin:0}
 .qteams .qswap{margin:0}
 .qpan{background:#2e4361;border:3px solid #000;margin:8px 0 0}
 .qteams .qpan{margin:0}
-.qpan h3{margin:0;padding:4px 9px;background:var(--pc);color:#14202f;font-family:var(--pfont);font-size:9px;font-weight:400;font-size-adjust:none;text-transform:uppercase;letter-spacing:0;line-height:1.4}
-.qpb{padding:7px 10px 8px}
+.qpan h3{margin:0;padding:3px 9px;background:var(--pc);color:#14202f;font-family:var(--pfont);font-size:9px;font-weight:400;font-size-adjust:none;text-transform:uppercase;letter-spacing:0;line-height:1.4}
+.qpb{padding:6px 9px 7px}
 .qblu{--pc:#6fa8f0}.qros{--pc:#ff6b70}.qoro{--pc:#ffd23f}
-.qpb .qp{margin:4px 0 0}
+.qpb .qp:empty{display:none}
+.qpb .qpick{padding:4px 8px}
+.qpb .qpick .tn{gap:10px}
+.qpb .qpick .tn>span{display:flex;flex-direction:column;font-size:17px}
+.qpb .qpick small{font-size:14px;color:#c5d1df}
+.qpb .qpick .qv{opacity:1;font-size:14px;padding:3px 8px;background:#2e4361;border:2px solid #000}
 .qrow{display:flex;align-items:center;gap:10px;margin:0 0 5px}
-.qrow label{flex:0 0 150px;color:#dde6f1;font-size:16px}
-.qrow select.qs{flex:0 0 auto;width:280px;max-width:100%}
-#qPlay.qgo{display:block;margin:8px auto 0;min-width:260px;font-size:20px;padding:7px 24px}
-.qdiv{max-width:420px;margin-left:auto;margin-right:auto}
+.qrow .qlab{flex:0 0 140px;color:#dde6f1;font-size:16px}
+.qseg{flex-wrap:wrap;gap:4px}
+.qseg .sg{padding:4px 11px;min-height:0;font-size:15px}
+.qseg{flex:0 0 auto}
+.qrow #qDP{flex:1 1 0;min-width:0;margin:0;font-size:13px;line-height:1.2}   /* la spiegazione della difficolta' accanto ai suoi pulsanti */
+#qPlay.qgo{display:block;margin:7px auto 0;min-width:280px;font-size:20px;padding:6px 24px}
 /* premi: il titolo (Attaccante dell'anno…) in viola, il nome in bianco */
 .awl li i{color:#c9a0ff}
+/* scelta della squadra: le linguette dei paesi sui colori della bandiera, velati perche' il testo resti leggibile (come 23-bandiere-campionati.css) */
+#qpLg button{--veil:linear-gradient(rgba(20,30,46,.55),rgba(20,30,46,.55));background:var(--veil),var(--flag,none) #3f5a80!important;text-shadow:2px 2px 0 #000;color:#fff}
+#qpLg button.on{outline:4px solid var(--gold);outline-offset:-4px;color:var(--gold)!important}
+#qpLg button[data-l="IT"],#qpLg button[data-l="IW"]{--flag:linear-gradient(90deg,#009246 0 33.4%,#f4f5f0 33.4% 66.6%,#ce2b37 66.6%)}
+#qpLg button[data-l="FR"]{--flag:linear-gradient(90deg,#0055a4 0 33.4%,#f4f5f0 33.4% 66.6%,#ef4135 66.6%)}
+#qpLg button[data-l="BE"]{--flag:linear-gradient(90deg,#111 0 33.4%,#fdda24 33.4% 66.6%,#ef3340 66.6%)}
+#qpLg button[data-l="DE"]{--flag:linear-gradient(#111 0 33.4%,#dd0000 33.4% 66.6%,#ffce00 66.6%)}
+#qpLg button[data-l="US"],#qpLg button[data-l="UW"]{--flag:linear-gradient(#3c3b6e,#3c3b6e) 0 0/40% 53.9% no-repeat,repeating-linear-gradient(#b22234 0 7.69%,#f4f5f0 7.69% 15.38%)}
+#qpLg button[data-l="UK"]{--flag:
+  linear-gradient(90deg,transparent calc(50% - 3px),#c8102e calc(50% - 3px) calc(50% + 3px),transparent calc(50% + 3px)),
+  linear-gradient(transparent calc(50% - 3px),#c8102e calc(50% - 3px) calc(50% + 3px),transparent calc(50% + 3px)),
+  linear-gradient(90deg,transparent calc(50% - 6px),#f4f5f0 calc(50% - 6px) calc(50% + 6px),transparent calc(50% + 6px)),
+  linear-gradient(transparent calc(50% - 6px),#f4f5f0 calc(50% - 6px) calc(50% + 6px),transparent calc(50% + 6px)),
+  linear-gradient(to top right,transparent calc(50% - 2px),#c8102e calc(50% - 2px) calc(50% + 2px),transparent calc(50% + 2px)),
+  linear-gradient(to bottom right,transparent calc(50% - 2px),#c8102e calc(50% - 2px) calc(50% + 2px),transparent calc(50% + 2px)),
+  linear-gradient(to top right,transparent calc(50% - 5px),#f4f5f0 calc(50% - 5px) calc(50% + 5px),transparent calc(50% + 5px)),
+  linear-gradient(to bottom right,transparent calc(50% - 5px),#f4f5f0 calc(50% - 5px) calc(50% + 5px),transparent calc(50% + 5px)),
+  linear-gradient(#012169,#012169)}
+.qpb .qpick .tn .crest{width:56px!important;height:56px!important}   /* stemma grande nei riquadri delle squadre: vince anche sulla regola che rimpicciolisce .tn .crest sugli schermi bassi */

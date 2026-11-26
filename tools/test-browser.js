@@ -139,7 +139,7 @@ catch(e){
     await page.click('#lgList [data-div="m"]');if(!(await page.locator('#lgList [data-lg="IT"]').count()))throw new Error('manca il campionato italiano maschile');
     await page.click('#lgBack');await page.click('#lgBack');await vis('#title');
     await page.click('#tQuick');await vis('#quick');await page.click('#qDiv [data-v="w"]');
-    if(!/Women/.test(await page.locator('#qAP').innerText())||!/Women/.test(await page.locator('#qBP').innerText()))throw new Error('partita veloce femminile con una squadra maschile');
+    if(!/Women/.test(await page.locator('#qA').innerText())||!/Women/.test(await page.locator('#qB').innerText()))throw new Error('partita veloce femminile con una squadra maschile');
     await page.evaluate(()=>{
       const sample=document.createElement('p');sample.id='women-copy-test';
       sample.textContent='I titolari · il difensore · giocatori infortunati';
@@ -149,7 +149,7 @@ catch(e){
     await page.waitForFunction(()=>document.getElementById('women-copy-test').textContent==='Le titolari · la difensora · giocatrici infortunate');
     if(await page.locator('#women-copy-test').getAttribute('aria-label')!=='Ricevitrice selezionata')throw new Error('Etichetta accessibile Women non aggiornata');
     await page.click('#qA');const tb=await page.locator('#qpTabs button').count();await page.click('#qpX');if(tb!==2)throw new Error('nel femminile le linguette sono Serie A e Serie B');
-    await page.click('#qDiv [data-v="m"]');if(/Women/.test(await page.locator('#qAP').innerText())||/giocatrici/.test(await page.locator('#qDP').innerText()))throw new Error('tornando al maschile resta qualcosa del femminile');
+    await page.click('#qDiv [data-v="m"]');if(/Women/.test(await page.locator('#qA').innerText())||/giocatrici/.test(await page.locator('#qDP').innerText()))throw new Error('tornando al maschile resta qualcosa del femminile');
     await page.waitForFunction(()=>document.getElementById('women-copy-test').textContent==='I titolari · il difensore · giocatori infortunati');
     if(await page.locator('#women-copy-test').getAttribute('aria-label')!=='Ricevitore selezionato')throw new Error('Etichetta accessibile originale non ripristinata');
     await page.evaluate(()=>document.getElementById('women-copy-test').remove());
@@ -490,7 +490,7 @@ catch(e){
     await c.close();
   });
   await step('timeout: uno a partita, ferma il gioco e si riprende',async()=>{
-    await page.click('#tQuick');await vis('#quick');await page.selectOption('#qS','0');await page.click('#qPlay');await page.waitForTimeout(600);
+    await page.click('#tQuick');await vis('#quick');await page.click('#quick .qseg[data-for="qS"] [data-v="0"]');await page.click('#qPlay');await page.waitForTimeout(600);
     if(await page.locator('#menu').isVisible())await page.click('#bGo');
     await page.waitForSelector('#bTO:not(.hidden)',{timeout:40000});   // compare quando hai il disco in mano
     // tipo di lancio con le dita: una = piatto, due (o piu') = alto (il rovesciato); niente pulsante in attacco. Si annulla riportando il dito al punto di partenza
@@ -525,7 +525,7 @@ catch(e){
   await step('primi passi: il tutorial si fa giocando (prove che non fermano la partita), ricorda i passi fatti e si esce',async()=>{
     const c=await browser.newContext({viewport:{width:844,height:390}}),p=await c.newPage();
     await p.goto('file://'+OUT);await p.waitForTimeout(400);
-    await p.click('#tQuick');await p.selectOption('#qS','0');await p.click('#qPlay');await p.waitForTimeout(600);
+    await p.click('#tQuick');await p.click('#quick .qseg[data-for="qS"] [data-v="0"]');await p.click('#qPlay');await p.waitForTimeout(600);
     if(await p.locator('#menu').isVisible())await p.click('#bGo');
     await p.waitForSelector('#pp:not(.hidden)',{timeout:15000});
     if(!/come si gioca/i.test(await p.locator('#ppT').innerText()))throw new Error('la prima scheda deve spiegare come si gioca');
@@ -546,7 +546,7 @@ catch(e){
     await c.close();
   });
   await step('pull a tempo, difesa automatica e tasto «Salta»',async()=>{
-    await page.click('#tQuick');await vis('#quick');await page.selectOption('#qS','1');await page.click('#qPlay');await page.waitForTimeout(500);
+    await page.click('#tQuick');await vis('#quick');await page.click('#quick .qseg[data-for="qS"] [data-v="1"]');await page.click('#qPlay');await page.waitForTimeout(500);
     if(await page.locator('#menu').isVisible())await page.click('#bGo');
     // in partita non compaiono suggerimenti: si aspetta l'inizio della meta (compare «Schemi»), poi due tocchi fermano potenza e direzione
     await page.waitForSelector('#bSch:not(.hidden)');await page.waitForTimeout(800);await page.mouse.click(420,150);   // primo tocco: potenza
@@ -562,7 +562,7 @@ catch(e){
     if(!/automatica/.test(await lab()))throw new Error('difesa predefinita non automatica: '+await lab());
     await page.click('#paDef');if(!/manuale/.test(await lab()))throw new Error('la difesa non passa a manuale');
     await page.click('#paDef');await page.click('#paDef');if(!/automatica/.test(await lab()))throw new Error('la difesa non torna automatica');
-    await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.selectOption('#qS','0');await page.click('#qBack');
+    await page.click('#paQuit');await page.click('#paQuit');await page.waitForTimeout(200);await vis('#quick');await page.click('#quick .qseg[data-for="qS"] [data-v="0"]');await page.click('#qBack');
   });
   await step('torneo personalizzato',async()=>{
     await page.click('#tTourn');await vis('#tourn');
