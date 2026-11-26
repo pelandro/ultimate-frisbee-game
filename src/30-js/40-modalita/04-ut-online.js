@@ -4,6 +4,10 @@
    I punti cambiano solo a chi gioca (logica in 10-sim/19-ut-classifica.js) e finiscono nella classifica online.
    La squadra di Real player e' separata da quella del torneo contro il computer (utUse): ha i suoi giocatori, i suoi gettoni e i suoi pacchetti.
    Il nome si sceglie una volta sola.
+   Stagioni mensili (solo Sfide online): ogni mese ha la sua classifica in ut/seasons/<AAAA-MM>, scritta subito dopo il profilo (le regole del database
+   controllano che i punti siano gli stessi). Al cambio di mese si riparte con 200 punti in meno (utoSeasonStart) e, chi ha chiuso il mese tra i primi
+   10 con almeno 10 partite, riceve il badge nei Riconoscimenti (ricUtGive). Se il database non ha ancora le regole delle stagioni (risposta 401/403)
+   le stagioni si spengono per la sessione (UO.noSeason) e il resto funziona come prima.
    Solo richieste web semplici (fetch, nessuna libreria): senza connessione il resto del gioco funziona come sempre.
    Per attivarlo servono il progetto Firebase e le regole di sicurezza: docs/ULTIMATE-TEAM-ONLINE.md e docs/firebase-rules.json. */
 const UTO_CFG={db:'https://ultimate-frisbee-e640e-default-rtdb.europe-west1.firebasedatabase.app',key:'AIzaSyC3r-oo8RQ5__-428NDT-PdzjTaiUoGbFg'};   // databaseURL e apiKey del progetto Firebase: per natura pubblici, la sicurezza sta nelle regole del database
@@ -14,16 +18,23 @@ const UO={on:false,opp:null,busy:false,flush:false,tried:0,msg:''};
 // profilo locale: id (utente anonimo di Firebase), nome, punti, partite, token di rinnovo; dirty = risultato non ancora inviato; fresh = il nodo online non esiste ancora;
 // op = punti dell'avversario di una partita iniziata e non finita (se chiudi il gioco a meta' conta come sconfitta)
 function uoReadP(k){
-  try{const o=JSON.parse(localStorage.getItem(k)||'null');if(o&&typeof o.id==='string'&&o.id)return {id:o.id,name:utoName(o.name),p:clamp(o.p|0,0,UTO_MAXP),w:o.w|0,l:o.l|0,g:o.g|0,rt:String(o.rt||''),dirty:!!o.dirty,fresh:!!o.fresh,last:String(o.last||''),op:typeof o.op==='number'?o.op:null};}catch(e){}
+  try{const o=JSON.parse(localStorage.getItem(k)||'null');if(o&&typeof o.id==='string'&&o.id)return {id:o.id,name:utoName(o.name),p:clamp(o.p|0,0,UTO_MAXP),w:o.w|0,l:o.l|0,g:o.g|0,rt:String(o.rt||''),dirty:!!o.dirty,fresh:!!o.fresh,last:String(o.last||''),op:typeof o.op==='number'?o.op:null,
+    // stagione: s = mese in corso per questo profilo, sw/sl/sg = vittorie, sconfitte e partite del mese, b = record di punti, pw = ultima forza caricata,
+    // prev = il mese chiuso {s, p, g, w, rank, done}: done quando il badge e' stato deciso
+    s:utoSeasonOk(o.s)?o.s:'',sw:o.sw|0,sl:o.sl|0,sg:o.sg|0,b:Math.max(o.b|0,o.p|0),pw:o.pw|0,
+    prev:o.prev&&utoSeasonOk(o.prev.s)?{s:o.prev.s,p:o.prev.p|0,g:o.prev.g|0,w:o.prev.w|0,rank:o.prev.rank|0,done:!!o.prev.done}:null};}catch(e){}
   return null;
 }
 let UOP=uoReadP(UTO_KEY);
 const uoSaveP=()=>{try{localStorage.setItem(uoKey(),JSON.stringify(UOP));}catch(e){}};
+const uoNewP=(id,name,rt)=>({id,name,p:UTO_START,w:0,l:0,g:0,rt,dirty:false,fresh:true,last:'',op:null,s:UT.hm?'':utoSeason(Date.now()),sw:0,sl:0,sg:0,b:UTO_START,pw:0,prev:null});
+const uoSeasonsOn=()=>!UT.hm&&!UO.noSeason;   // le stagioni sono solo di Sfide online
+const uoDenied=e=>!!e&&(e.status===401||e.status===403);
 // profilo della modalita' caricata (dopo utUse). Il nome e l'accesso anonimo sono gli stessi nelle due: chi ha gia' scelto il nome in una lo ritrova
 // nell'altra, con i punti che ripartono da quelli iniziali
 function uoUseP(){
   UOP=uoReadP(uoKey());uoTok='';uoExp=0;
-  if(!UOP){const o=uoReadP(UT.hm?UTO_KEY:UTH_OKEY);if(o){UOP={id:o.id,name:o.name,p:UTO_START,w:0,l:0,g:0,rt:o.rt,dirty:false,fresh:true,last:'',op:null};uoSaveP();}}
+  if(!UOP){const o=uoReadP(UT.hm?UTO_KEY:UTH_OKEY);if(o){UOP=uoNewP(o.id,o.name,o.rt);uoSaveP();}}
 }
 const uoOk=()=>!!(UTO_CFG.db&&UTO_CFG.key);
 const uoOffline=()=>typeof navigator!=='undefined'&&navigator.onLine===false;
@@ -58,7 +69,7 @@ function uoErr(e){
   if(e&&(e.status===401||e.status===403))return `Il server di ${uoMode()} ha rifiutato la richiesta: riprova più tardi.`;   // per chi sviluppa: regole di sicurezza e accesso anonimo in docs/ULTIMATE-TEAM-ONLINE.md
   return 'Errore online: '+((e&&e.message)||'sconosciuto')+'. Riprova tra poco.';
 }
-const uoNode=pw=>({n:UOP.name,p:UOP.p,w:UOP.w,l:UOP.l,g:UOP.g,pw,u:Date.now()});
+const uoNode=pw=>Object.assign({n:UOP.name,p:UOP.p,w:UOP.w,l:UOP.l,g:UOP.g,pw,u:Date.now()},uoSeasonsOn()&&UOP.s?{s:UOP.s}:{});
 // riga della classifica / candidato: il dato arriva da internet, quindi si controlla
 function uoRow(id,v){
   if(!v||typeof v!=='object')return null;
@@ -82,7 +93,8 @@ async function uoSync(){
     if(UOP!==profile)return null;
     const p=profile,g=p.g;
     if(p.fresh){
-      await uoDb('PUT',root+'/players/'+p.id,uoNode(pk.pw));
+      try{await uoDb('PUT',root+'/players/'+p.id,uoNode(pk.pw));}
+      catch(e){if(!uoDenied(e)||!uoNode(pk.pw).s)throw e;UO.noSeason=true;p.s='';await uoDb('PUT',root+'/players/'+p.id,uoNode(pk.pw));}   // database senza le regole delle stagioni: si entra nel mese piu' avanti
       p.fresh=false;
     }else{
       const patch={n:p.name,pw:pk.pw,u:Date.now()};
@@ -90,7 +102,9 @@ async function uoSync(){
       await uoDb('PATCH',root+'/players/'+p.id,patch);
     }
     if(p.g===g)p.dirty=false;
+    p.pw=pk.pw;
     if(UOP===profile)uoSaveP();
+    if(UOP===profile)await uoSeasonSync(p);
     if(UOP===profile)await uoDb('PUT',root+'/teams/'+p.id,{m:pk.m});
     return pk;
   });
@@ -120,9 +134,46 @@ async function uoPush(){
       await uoDb('PATCH',root+'/players/'+p.id,{p:p.p,w:p.w,l:p.l,g,u:Date.now()});
       if(p.g===g)p.dirty=false;
       if(UOP===profile)uoSaveP();
+      if(UOP===profile&&!p.dirty)await uoSeasonSync(p);
     });
   }catch(e){}
   finally{UO.flush=false;if(!UOP.dirty&&!$('utReal').classList.contains('hidden'))renderUtReal();}
+}
+// ---- stagioni mensili (solo Sfide online; si chiama dentro uoWrite, dopo che il profilo e' stato scritto) ----
+// cambio di mese: prima i punti ripartono (le regole controllano il conto), poi la riga della classifica del mese, poi il badge del mese chiuso
+async function uoSeasonSync(p){
+  if(!uoSeasonsOn()||p.fresh||p.dirty||UOP!==p)return;
+  const cur=utoSeason(Date.now()),root=uoRoot();
+  try{
+    if(p.s!==cur){
+      const np=p.s?utoSeasonStart(p.p):p.p;   // senza stagione (profili di prima): si entra nel mese con i punti che si hanno
+      await uoDb('PATCH',root+'/players/'+p.id,p.s?{s:cur,p:np,u:Date.now()}:{s:cur,u:Date.now()});
+      if(p.s){p.prev={s:p.s,p:p.p,g:p.sg|0,w:p.sw|0,rank:0,done:false};UO.msg=`È iniziata la stagione di ${utoSeasonName(cur)}: ripartite da ${np} punti (prima ${p.p}).`;}
+      p.s=cur;p.p=np;p.sw=0;p.sl=0;p.sg=0;uoSaveP();
+    }
+    if(p.pw>=25){
+      const put=()=>uoDb('PUT',root+'/seasons/'+p.s+'/'+p.id,{n:p.name,p:p.p,w:p.sw|0,l:p.sl|0,g:p.sg|0,pw:p.pw,u:Date.now()});
+      try{await put();}catch(e){if(!uoDenied(e))throw e;await uoDb('PATCH',root+'/players/'+p.id,{s:p.s,u:Date.now()});await put();}   // il profilo online non aveva ancora il mese
+    }
+    await uoSeasonAward(p);
+  }catch(e){if(uoDenied(e))UO.noSeason=true;else throw e;}
+}
+// il badge del mese chiuso: si guarda la classifica finale un'ora dopo la mezzanotte, cosi' arrivano anche i risultati delle ultime partite
+async function uoSeasonAward(p){
+  const v=p.prev;if(!v||v.done)return;
+  if(v.g<UTO_SEASON_G){v.done=true;uoSaveP();return;}
+  if(utoSeason(Date.now()-3600000)===v.s)return;
+  const rk=utoSeasonRank(uoRows(await uoDb('GET',uoRoot()+'/seasons/'+v.s,undefined,'orderBy=%22p%22&limitToLast=60'))),pos=rk.ok.findIndex(r=>r.id===p.id)+1;
+  v.rank=pos;v.done=true;uoSaveP();
+  const b=utoSeasonBadge(pos);
+  if(b&&ricUtGive(b,v.s,p.name))UO.msg=`Stagione di ${utoSeasonName(v.s)} chiusa al ${pos}° posto: nuovo badge nei Riconoscimenti!`;
+}
+let uoSeasonT=0;
+function uoSeasonKick(){   // entrando in Sfide online: cambio di mese e badge senza aspettare la prossima partita
+  const p=UOP;if(!p||p.fresh||p.dirty||!uoSeasonsOn()||UO.busy||uoOffline()||!uoOk()||Date.now()-uoSeasonT<15000)return;
+  if(p.s===utoSeason(Date.now())&&!(p.prev&&!p.prev.done))return;
+  uoSeasonT=Date.now();
+  uoWrite(()=>uoSeasonSync(p)).catch(()=>{}).then(()=>{if(!$('utReal').classList.contains('hidden'))renderUtReal();});
 }
 // ---- partita ----
 function uoLaunch(o,ros){
@@ -167,7 +218,7 @@ async function uoStart(){
 function uoRecord(win){
   const d=utoDelta(UOP.p,UO.opp.p,win),np=clamp(UOP.p+d,0,UTO_MAXP),real=np-UOP.p;
   const c=utoCoins(UOP.p,UO.opp.p,win);   // il bonus guarda i punti di prima della partita
-  UOP.p=np;UOP.g++;if(win)UOP.w++;else UOP.l++;UOP.dirty=true;UOP.op=null;uoSaveP();
+  UOP.p=np;UOP.g++;if(win)UOP.w++;else UOP.l++;UOP.dirty=true;UOP.op=null;uoSeasonCount(win);uoSaveP();
   UT.coins+=c.base+c.bonus;if(win)UT.stat.w++;
   const grown=utGrowCards(),pk=uoMiles();utSave();
   const msg=`${uoMode()} · ${win?'vittoria':'sconfitta'} contro ${UO.opp.n} (${UO.opp.p} punti): ${real>=0?'+':''}${real} punti, ora ne hai ${np}. +${c.base+c.bonus} gettoni${c.bonus?` (${c.bonus} in più perché l’avversario aveva più punti di te)`:''}.`
@@ -196,8 +247,9 @@ function uoSettle(){   // partita lasciata a meta' (gioco chiuso): sconfitta
   if(!UOP||UOP.op===null||UOP.op===undefined||UO.on)return;
   const d=utoDelta(UOP.p,UOP.op,false),np=clamp(UOP.p+d,0,UTO_MAXP);
   UO.msg=`La partita lasciata a metà conta come sconfitta: ${np-UOP.p} punti.`;
-  UOP.p=np;UOP.g++;UOP.l++;UOP.dirty=true;UOP.op=null;uoSaveP();
+  UOP.p=np;UOP.g++;UOP.l++;UOP.dirty=true;UOP.op=null;uoSeasonCount(false);uoSaveP();
 }
+function uoSeasonCount(win){UOP.b=Math.max(UOP.b|0,UOP.p);if(!UOP.s)return;UOP.sg=(UOP.sg|0)+1;if(win)UOP.sw=(UOP.sw|0)+1;else UOP.sl=(UOP.sl|0)+1;}   // partite del mese
 // ---- schermate ----
 // i traguardi di punti, dal piu' alto in cima: disco del premio, punti, quante carte; il segno «Tu» sta tra l'ultimo raggiunto e il prossimo
 function renderMiles(){
@@ -221,11 +273,13 @@ function renderUtReal(){
   $('urH').textContent=uoMode();if(UT.hm)utHeroFix();
   $('urHero').classList.toggle('hidden',!UT.hm||!UT.col.length);if(UT.hm)$('urHeroS').textContent=utHeroSub();
   $('urInfo').innerHTML=off?uoMode()+' non è disponibile in questa versione del gioco.':(UOP?`<b>${esc(UOP.name)}</b> · Punti: <b>${UOP.p}</b> · Vittorie ${UOP.w} · Sconfitte ${UOP.l}${has?` · Forza: <b>${utPower()}</b>`:''}${UT.col.length?` · Gettoni: <b>${UT.coins}</b>`:''}${UOP.dirty?' · risultato da inviare':''}`:'Scegli il tuo nome per entrare in classifica. Attenzione: una volta confermato non si può più cambiare.');
+  // la stagione del mese (solo Sfide online)
+  const ss=!off&&UOP&&!UT.hm&&!UO.noSeason&&UOP.s;$('urSeason').classList.toggle('hidden',!ss);
+  if(ss){const now=new Date(),left=Math.max(1,Math.ceil((new Date(now.getFullYear(),now.getMonth()+1,1)-now)/86400000)),sg=UOP.sg|0;
+    $('urSeason').innerHTML=`Stagione di <b>${utoSeasonName(UOP.s)}</b> · finisce ${left<=1?'oggi':'tra '+left+' giorni'} · partite del mese: <b>${sg}</b>${sg<UTO_SEASON_G?` (ne servono ${UTO_SEASON_G} per la classifica)`:''} · record: ${Math.max(UOP.b|0,UOP.p)} punti`;}
+  if(UOP&&!UT.hm&&!off&&!net)uoSeasonKick();
   $('urPlay').disabled=off||!UOP||!has||UO.busy||net;
   $('urPlayS').textContent=net?'Serve internet':(!has?(UT.hm?'Gioca con la squadra di Sfide online: prima completala lì (7 titolari)':'Prima completa la tua squadra (7 titolari)'):'Contro un giocatore con punti simili ai tuoi');
-  $('urPack').classList.toggle('hidden',!pend);
-  $('urPackT').textContent=pend?(utPkQ(UT.packs[0])===0&&!UT.col.length?'Apri il pacchetto iniziale':`Apri: ${utPackName(UT.packs[0])}${pend>1?' (+'+(pend-1)+')':''}`):'';
-  $('urPackS').textContent=pend?`${utPackSize(UT.packs[0])} ${utPackContents(UT.packs[0])} · ${utPackTip(UT.packs[0])}`:'';
   $('urTeam').classList.toggle('hidden',!UT.col.length);
   $('urTeamS').textContent=`${UT.col.length} giocatori · titolari ${UT.sel.length}/7`;
   $('urEquip').classList.toggle('hidden',!UT.col.length);$('urEquipS').textContent=eqSubTxt();
@@ -243,9 +297,8 @@ $('umHero').addEventListener('click',()=>{UO.msg='';uoEnter(true);showScreen('ut
 $('urBack').addEventListener('click',()=>showScreen('utMode'));
 $('urPlay').addEventListener('click',uoStart);
 $('urTeam').addEventListener('click',()=>{utTeamBack='utReal';showScreen('utTeam');});
-$('urPack').addEventListener('click',()=>{if(!UT.packs.length)return;UT.stage='closed';showScreen('utPack');});
 $('urShop').addEventListener('click',()=>showScreen('utShop'));
-$('urBoard').addEventListener('click',()=>{showScreen('utBoard');});
+$('urBoard').addEventListener('click',()=>{ubTab='cur';showScreen('utBoard');});
 $('urNameOk').addEventListener('click',async()=>{
   if(UOP){renderUtReal();return;}   // il nome non si cambia
   const nm=utoName($('urName').value);
@@ -254,19 +307,37 @@ $('urNameOk').addEventListener('click',async()=>{
   if(!uoOk()){renderUtReal();return;}
   UO.busy=true;UO.msg='Salvo il nome…';renderUtReal();
   try{
-    const a=await uoSignUp();UOP={id:a.id,name:nm,p:UTO_START,w:0,l:0,g:0,rt:a.rt,dirty:false,fresh:true,last:'',op:null};
+    const a=await uoSignUp();UOP=uoNewP(a.id,nm,a.rt);
     uoSaveP();
     try{await uoSync();UO.msg='Nome salvato: '+nm+'.';}catch(e){UO.msg=UT.sel.length===7?uoErr(e):'Nome salvato. Completa la tua squadra per giocare.';}
   }catch(e){UO.msg=uoErr(e);}
   finally{UO.busy=false;renderUtReal();}
 });
 // ---- classifica online ----
+// Sfide online: la classifica del mese (o del mese scorso, finale) da ut/seasons; prima chi ha almeno UTO_SEASON_G partite, con il badge che
+// riceverebbe a fine mese, poi gli altri senza posizione. Superpoteri, o database senza le stagioni: la classifica dei punti di sempre
+let ubTab='cur';
+const ubRow=(r,pos,txt)=>`<div class="ubrow${UOP&&r.id===UOP.id?' me':''}${pos?'':' wait'}"><b class="ubp">${pos?(utoSeasonBadge(pos)?badgeSVG('UT'+utoSeasonBadge(pos),'',false,26):'')+pos:'–'}</b><span class="un">${esc(r.n)}</span><small>${txt}</small><b>${r.p}</b></div>`;
 async function renderUtBoard(){
-  const box=$('ubList');box.innerHTML='<p class="qp">Carico la classifica…</p>';
+  const box=$('ubList'),cur=utoSeason(Date.now()),seas=uoSeasonsOn();box.innerHTML='<p class="qp">Carico la classifica…</p>';
+  $('ubTabs').classList.toggle('hidden',!seas);
+  if(seas)$('ubTabs').innerHTML=[['cur','Questo mese'],['prev','Mese scorso']].map(([k,t])=>`<button type="button" class="sg${ubTab===k?' on':''}" data-ub="${k}">${t}</button>`).join('');
+  const sid=ubTab==='prev'?utoSeasonPrev(cur):cur;
+  $('ubNote').textContent=seas?(ubTab==='prev'?`Classifica finale di ${utoSeasonName(sid)}.`:`Classifica di ${utoSeasonName(sid)}: riparte ogni mese. Badge ai primi 10 con almeno ${UTO_SEASON_G} partite.`):'';
   try{
+    if(seas){
+      try{
+        const rk=utoSeasonRank(uoRows(await uoDb('GET',uoRoot()+'/seasons/'+sid,undefined,'orderBy=%22p%22&limitToLast=60')));
+        box.innerHTML=rk.ok.length||rk.wait.length?rk.ok.slice(0,50).map((r,i)=>ubRow(r,i+1,`${r.w}V ${r.l}S · forza ${r.pw}`)).join('')
+          +(rk.wait.length?`<p class="ubh">Meno di ${UTO_SEASON_G} partite</p>`+rk.wait.slice(0,20).map(r=>ubRow(r,0,`${r.g} partite · forza ${r.pw}`)).join(''):'')
+          :`<p class="qp">${ubTab==='prev'?'Nessuno ha giocato in quel mese.':'Nessuno ha ancora giocato questo mese: sii il primo!'}</p>`;
+        return;
+      }catch(e){if(!uoDenied(e))throw e;UO.noSeason=true;$('ubTabs').classList.add('hidden');$('ubNote').textContent='';}   // database senza le stagioni
+    }
     const rows=uoRows(await uoDb('GET',uoRoot()+'/players',undefined,'orderBy=%22p%22&limitToLast=50')).sort((a,b)=>b.p-a.p||b.w-a.w);
     box.innerHTML=rows.length?rows.map((r,i)=>`<div class="ubrow${UOP&&r.id===UOP.id?' me':''}"><b>${i+1}</b><span class="un">${esc(r.n)}</span><small>${r.w}V ${r.l}S · forza ${r.pw}</small><b>${r.p}</b></div>`).join(''):'<p class="qp">Nessun giocatore in classifica: sii il primo!</p>';
   }catch(e){box.innerHTML='<p class="qp">'+esc(uoErr(e))+'</p>';}
 }
+$('ubTabs').addEventListener('click',e=>{const b=e.target.closest('[data-ub]');if(!b)return;ubTab=b.dataset.ub;renderUtBoard();});
 $('ubBack').addEventListener('click',()=>showScreen('utReal'));
 $('ubRef').addEventListener('click',renderUtBoard);

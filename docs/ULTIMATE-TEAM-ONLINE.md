@@ -20,13 +20,15 @@ L'indirizzo e la chiave API **non sono segreti**: stanno in ogni sito che usa Fi
 
 | Cosa | Dove sta |
 |---|---|
-| Profilo del giocatore (nome, punti, vittorie, sconfitte, forza) | `ut/players/<id>` |
+| Profilo del giocatore (nome, punti, vittorie, sconfitte, forza, mese in corso `s`) | `ut/players/<id>` |
+| Classifica del mese (gli stessi campi, con vittorie, sconfitte e partite del mese) | `ut/seasons/<AAAA-MM>/<id>` |
 | Squadra (7 titolari e fino a 7 riserve, statistiche per carta) | `ut/teams/<id>` |
 | Identità | utente anonimo di Firebase, salvato nel browser (`ultimate-ut-online`) |
 | Superpoteri: profilo e squadra (la squadra di Real player, più l'eroe `h` dei titolari, per esempio `lupo3`) | `uh/players/<id>`, `uh/teams/<id>` (nel browser `ultimate-ut-eroi-online`) |
 
 **Superpoteri** usa la radice `uh`, con regole uguali a `ut` più il campo `h` delle carte. Quando le regole cambiano (come all'arrivo dei Superpoteri), chi possiede il progetto Firebase deve incollare di nuovo [`firebase-rules.json`](firebase-rules.json) in **Realtime Database › Regole** e premere *Pubblica*: finché non lo fa, i Superpoteri rispondono «Il server di Superpoteri ha rifiutato la richiesta» e Real player continua a funzionare come prima. Il nome e l'accesso anonimo sono gli stessi delle due modalità; i punti no.
 
+- **Stagioni mensili (solo Sfide online)**: il profilo ha il mese in corso (`s`, per esempio `2026-12`) e ogni mese ha la sua classifica in `ut/seasons/<mese>/<id>`. Al primo accesso del mese nuovo si riparte con 200 punti in meno (mai sotto i 1000): le regole accettano il cambio di mese solo con quel conto e la riga del mese solo con gli stessi punti del profilo. I primi 10 del mese con almeno 10 partite ricevono un badge (sul dispositivo). **Le regole nuove vanno pubblicate prima di unire la modifica**: finché mancano, il gioco se ne accorge (risposta 401/403) e continua senza stagioni.
 - **Inizia partita**: il gioco carica la tua squadra, cerca tra i giocatori con punti vicini ai tuoi (prima ±150, poi ±500, poi ±2000, poi il più vicino) e fa giocare l'IA con la squadra scelta. L'ultimo avversario si evita se c'è un'alternativa.
 - **Punti Elo**: si parte da 1000; a ogni partita si guadagna o perde da 1 a 32 punti, secondo la differenza di punti con l'avversario. Cambiano solo i punti di chi gioca.
 - **Nome**: si sceglie una volta sola, poi non si può più cambiare (il blocco è nel gioco; le regole del database non lo impongono).

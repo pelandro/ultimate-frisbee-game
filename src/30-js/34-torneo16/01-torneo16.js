@@ -2,9 +2,11 @@
    Motore comune ai Nationals USA e agli EUCF europei (stesso formato): 16 squadre in 4 fasce di ranking, ogni girone ne prende una per fascia; 3 partite a girone;
    le prime ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte fuori dalla corsa al titolo. Nessun accoppiamento duplicato.
    Stato N: {seed, pools, tabs, sched, pg, rd, ord, ko, champ, out}: rd = turno (0-2 gironi, 3 prequarti, 4 quarti, 5 semifinali, 6 finale, 7 concluso);
-   ko[0..3] = prequarti, quarti, semifinali, finale; ogni partita e' [a,b,punti a,punti b,vincitrice].
+   ko[0..3] = prequarti, quarti, semifinali, finale; ogni partita e' [a,b,punti a,punti b,vincitrice]. Con br (solo EUCF, ctx.bronze) ko[3] ha due partite:
+   la finale e, seconda, la finale per il 3° posto fra le due perdenti delle semifinali, giocata nello stesso turno; senza br (Nationals USA, edizioni EUCF
+   sorteggiate prima) la finale e' sola.
    Il contesto ctx collega il torneo al campionato che lo usa: ctx.rate(t) = forza per le fasce e i tabelloni, ctx.grp(t) = gruppo da tenere in gironi diversi
-   (Conference, Paese), ctx.play(a,b) = simula la partita e aggiorna il ranking, ritorna [a,b,pa,pb,vincitrice]. */
+   (Conference, Paese), ctx.play(a,b) = simula la partita e aggiorna il ranking, ritorna [a,b,pa,pb,vincitrice]; ctx.bronze = si gioca anche il 3° posto. */
 const T16_MAX_GAMES=7;
 function t16Perms(n){if(n===1)return [[0]];const out=[];for(const p of t16Perms(n-1))for(let i=0;i<=p.length;i++)out.push(p.slice(0,i).concat(n-1,p.slice(i)));return out;}
 const T16_PERMS=t16Perms(4);
@@ -20,7 +22,7 @@ function t16Begin(ctx,q,me){
     const sums=pl.map(p=>p.reduce((x,t)=>x+ctx.rate(t),0)),m=(sums[0]+sums[1]+sums[2]+sums[3])/4,v=sums.reduce((x,y)=>x+(y-m)*(y-m),0),sc=conf*1e9+v;
     if(sc<bs){bs=sc;pools=pl;}
   }
-  return {seed,pools,tabs:pools.map(pl=>usFreshTab(pl)),sched:roundRobin(4),pg:pools.map(()=>[]),rd:0,ord:null,ko:[],champ:null,out:!q.includes(me)};
+  return {seed,pools,tabs:pools.map(pl=>usFreshTab(pl)),sched:roundRobin(4),pg:pools.map(()=>[]),rd:0,ord:null,ko:[],champ:null,out:!q.includes(me),...(ctx.bronze?{br:true}:{})};
 }
 const t16Pool=(N,t)=>N.pools.findIndex(pl=>pl.includes(t));
 function t16User(N,me){   // la tua partita nel turno in corso: {opp} oppure null
@@ -42,7 +44,8 @@ function t16Round(ctx,N,rec){
     const L=N.ko[rd-3];for(let k=0;k<L.length;k++)L[k]=play(L[k][0],L[k][1]);
     if(rd===3)t16Quarters(ctx,N);
     else if(rd===4)N.ko[2]=[[N.ko[1][0][4],N.ko[1][1][4],null,null,null],[N.ko[1][2][4],N.ko[1][3][4],null,null,null]];
-    else if(rd===5)N.ko[3]=[[N.ko[2][0][4],N.ko[2][1][4],null,null,null]];
+    else if(rd===5){N.ko[3]=[[N.ko[2][0][4],N.ko[2][1][4],null,null,null]];
+      if(N.br)N.ko[3].push(N.ko[2].map(m=>m[4]===m[0]?m[1]:m[0]).concat(null,null,null));}   // finale per il 3° posto fra le perdenti
     else N.champ=N.ko[3][0][4];
   }
   N.rd++;

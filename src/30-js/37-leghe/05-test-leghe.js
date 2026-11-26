@@ -114,6 +114,14 @@ function lnSelfTest(seasons,seed){
       let k=0;while(SV.event==='eu'&&SV.eu.state==='on'&&k++<12){const m=nextMatch();if(!m)break;const r=simPower(SV.team,m.name);recordResult(r[0]>r[1],r[0],r[1]);hide();}
       chk('eucf',SV.eu.state!=='on','coppa non conclusa');
     }
+    // ---- EUCF: chi perde la semifinale gioca la finale per il 3° posto; chi la vince e' terzo (badge E3) ----
+    {const r0=localStorage.getItem(RIC_KEY);startCareer(SERIES.A[0],{});SV.eu=newEu(SV.season);SV.eu.it=null;SV.event='eu';const N=euEnsure();
+      let k=0;while(SV.eu.state==='on'&&N.rd<5&&k++<12)euRecord(true,7,3);
+      chk('eucf',N.rd===5&&N.br,'semifinale non raggiunta');euRecord(false,5,7);
+      chk('eucf',SV.eu.state==='on'&&SV.eu.cur&&SV.eu.cur.label==='Finale per il 3° posto'&&N.ko[3].length===2&&SV.eu.stage===3,'finale per il 3° posto: '+(SV.eu.cur&&SV.eu.cur.label));
+      euRecord(true,7,4);
+      chk('eucf',SV.eu.state==='out'&&euPlace(N,SV.team)===3&&!!ricLoad()['E3:'+(RIC_DIFF.includes(SV.diff)?SV.diff:'easy')]&&!!N.champ,'terzo posto: '+euPlace(N,SV.team));
+      if(r0===null)localStorage.removeItem(RIC_KEY);else localStorage.setItem(RIC_KEY,r0);}
     // ---- mercato: le stelle dei club delle nuove leghe non sono in vendita nel loro campionato ----
     startCareer('Mooncatchers',{});let onMk=0;for(let i=0;i<25;i++){buildMarket();for(const m of SV.market)if(m.star){const r=STARS.find(x=>x[0]+' '+x[1]===m.o.full);if(r&&lnStarTaken(r))onMk++;}}
     chk('mercato',onMk===0,'stelle dei club sul mercato: '+onMk);

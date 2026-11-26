@@ -33,6 +33,8 @@ catch(e){
   const titleMenu=async(pg,id)=>{if(!(await pg.locator(id).isVisible()))await pg.click('#tMore');await pg.click(id);};   // le voci Guida, Guida passo passo, Audio e Impostazioni stanno nel riquadro «Altro»
   const vis_=async(pg,sel)=>{if(!(await pg.locator(sel).isVisible()))throw new Error('non visibile: '+sel);};
   const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
+  // Ultimate Team: i pacchetti arrivati si aprono da soli; «Apri» (o un tocco) salta la carica, poi «Continua» o il pacchetto dopo
+  const packs=async()=>{for(let k=0;k<40&&await page.locator('#utPack').isVisible();k++){await page.click('#pkGo');await page.waitForTimeout(250);}};
   const menu=async id=>{for(let i=0;i<3;i++){if(!(await page.locator('#cmenu').isVisible()))await page.click('#hMenu');try{await page.click(id,{timeout:3000});return;}catch(e){}}await page.click(id);};   // i fumetti e gli imprevisti che si aprono da soli chiudono il menu: si riapre   // Opzioni, Guida, Tutorial e «Menu principale» stanno nel menu della barra in alto
   const step=async(name,fn)=>{
     try{await fn();done.push(name);}
@@ -572,8 +574,11 @@ catch(e){
     await page.click('#tnBack');
   });
   await step('Ultimate Team: apertura del pacchetto',async()=>{
-    await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');await vis('#ut');
-    if(await page.locator('#uPack').isVisible()){await page.click('#uPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await page.waitForTimeout(200);}
+    await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');
+    if(await page.locator('#uPack').count()||await page.locator('#urPack').count()||await page.locator('#shOpen').count())throw new Error('i pulsanti «Apri» dei pacchetti non devono piu\' esserci');
+    await vis('#utPack','il primo pacchetto si apre da solo');await page.click('#pkDisc');await page.waitForTimeout(3600);
+    if(await page.locator('#pkBody .pkf').count()!==14)throw new Error('il primo pacchetto ha 14 carte coperte da girare');
+    await page.click('#pkGo');await page.waitForTimeout(200);
     await vis('#ut');await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
   });
   await step('Ultimate Team: Negozio con pacchetto normale, Handler e Cutter',async()=>{
@@ -585,27 +590,27 @@ catch(e){
     await page.click('#uShop');await vis('#utShop');
     if(await page.locator('#shList [data-k]').count()!==5)throw new Error('il Negozio deve avere cinque pacchetti (con l\'oro e l\'equipaggiamento)');
     if(await page.locator('#shList svg.disc').count()!==5)throw new Error('i pacchetti del Negozio sono dischi');
-    await page.click('#shList [data-k="han"]');await page.click('#shList [data-k="cut"]');
-    const u1=await ut();if(u1.c!==500-65-65||u1.pk.length!==u0.pk.length+2)throw new Error('Handler e Cutter: costo o pacchetti sbagliati '+JSON.stringify(u1));
-    await page.click('#shOpen');await vis('#utPack');
+    await page.click('#shList [data-k="han"]');await vis('#utPack','il pacchetto comprato si apre subito');
+    const u1=await ut();if(u1.c!==500-65||u1.pk.length!==u0.pk.length+1)throw new Error('Handler: costo o pacchetti sbagliati '+JSON.stringify(u1));
     await page.click('#pkGo');await page.waitForTimeout(3400);
     if(await page.locator('#pkBody .ucard').count()!==3)throw new Error('il pacchetto Handler ha 3 carte');
     const cls=await page.locator('#pkBody .ucard i:nth-of-type(2)').allTextContents();   // giocatori veri dei campionati: sulla carta c'e' il club
     if(cls.length!==3||cls.some(t=>!t.trim()||t.includes(' · ')))throw new Error('le carte del pacchetto sono giocatori veri con il club: '+JSON.stringify(cls));
-    await page.click('#pkGo');await page.waitForTimeout(300);await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await vis('#ut');
+    await page.click('#pkGo');await vis('#utShop','dopo il pacchetto si torna al Negozio');
+    await page.click('#shList [data-k="cut"]');await packs();await vis('#utShop');await page.click('#shBack');await vis('#ut');
     const u2=await ut(),nw=u2.r.slice(u1.n);if(nw.length!==6||nw.slice(0,3).some(r=>r!=='H')||nw.slice(3).some(r=>r!=='C'))throw new Error('3 Handler e 3 Cutter attesi: '+nw.join(''));
     // pacchetto oro: 5 carte, almeno un Raro (Overall 65 o piu')
     await page.click('#uShop');await vis('#utShop');await page.click('#shList [data-k="oro"]');
     const u3=await ut();if(u3.c!==u2.c-220||u3.pk.at(-1)!==54)throw new Error('pacchetto oro: costo o codice sbagliati '+JSON.stringify(u3.pk));
-    await page.click('#shOpen');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(3400);
+    await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(3400);
     if(await page.locator('#pkBody .ucard').count()!==5)throw new Error('il pacchetto oro ha 5 carte');
-    await page.click('#pkGo');await vis('#ut');
+    await page.click('#pkGo');await vis('#utShop');await page.click('#shBack');await vis('#ut');
     const best=await page.evaluate(()=>{const o=JSON.parse(window.testSaves.getItem('ultimate-ut'));return Math.max(...o.col.slice(-5).map(x=>x.ovr));});
     if(best<65)throw new Error('il pacchetto oro garantisce almeno un Raro: migliore '+best);
     await page.click('#uBack');await vis('#utMode');await page.click('#umBack');
   });
   await step('Ultimate Team: Real player (senza configurazione online) e ritorno al menu',async()=>{
-    await page.click('#tUT');await vis('#utMode');await page.click('#umReal');await vis('#utReal');
+    await page.click('#tUT');await vis('#utMode');await page.click('#umReal');await vis('#utPack','il pacchetto iniziale di Real player si apre da solo');await packs();await vis('#utReal');
     if(!(await page.locator('#urPlay').isDisabled()))throw new Error('senza nome «Inizia partita» deve essere spento');
     await page.click('#urBack');await vis('#utMode');await page.click('#umBack');await vis('#title');
   });
@@ -614,8 +619,6 @@ catch(e){
     const cpu0=(await cols())[0];if(!cpu0||cpu0.n<10)throw new Error('la squadra contro il computer dovrebbe esistere gia\'');
     await page.click('#tUT');await vis('#utMode');await page.click('#umReal');await vis('#utReal');
     if(await page.locator('#urRename').count())throw new Error('il pulsante «Cambia nome» non deve piu\' esistere');
-    if(await page.locator('#urTeam').isVisible())throw new Error('Real player deve partire senza giocatori, non con quelli del torneo');
-    await page.click('#urPack');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await vis('#utReal');
     let [cpu,real]=await cols();
     if(!real||real.n!==14)throw new Error('pacchetto iniziale di Real player: attesi 14 giocatori, trovati '+(real&&real.n));
     if(cpu.n!==cpu0.n||cpu.c!==cpu0.c)throw new Error('aprire il pacchetto di Real player ha cambiato la squadra del torneo');
@@ -626,14 +629,14 @@ catch(e){
     // un profilo con 1230 punti (finto, nessuna rete): due traguardi = due pacchetti premio (bronzo da 5, argento da 6) e potenziamenti sbloccati
     await page.evaluate(()=>localStorage.setItem('ultimate-ut-online',JSON.stringify({id:'prova',name:'Prova',p:1230,w:9,l:1,g:10,rt:'x',dirty:false,fresh:false,last:'',op:null})));
     await page.reload();await page.waitForTimeout(500);
-    await page.click('#tUT');await vis('#utMode');await page.click('#umReal');await vis('#utReal');
-    if(await page.locator('#urNameBox').isVisible())throw new Error('con il nome gia\' scelto il riquadro del nome non deve comparire');
+    await page.click('#tUT');await vis('#utMode');await page.click('#umReal');
     real=(await cols())[1];if(real.ms!==2||real.pk.join()!=='52,63,322,323')throw new Error('traguardi: attesi i pacchetti 52 e 63 e gli accessori 322 e 323, trovati '+real.pk.join()+' (ms '+real.ms+')');
-    if(!/1300 punti/.test(await page.locator('#urMiles .urmr.next').innerText()))throw new Error('il prossimo traguardo dovrebbe essere a 1300 punti: '+await page.locator('#urMiles').innerText());
-    if(await page.locator('#urMiles .urmr.done').count()!==2||await page.locator('#urMiles .urmr').count()!==5)throw new Error('i traguardi devono essere 5, con i primi due ottenuti');
-    await page.click('#urPack');await vis('#utPack');
+    await vis('#utPack','i pacchetti dei traguardi si aprono da soli');
     for(let i=0;i<4;i++){await page.click('#pkGo');await page.waitForTimeout(i<3?2200:2600);await page.click('#pkGo');}   // due pacchetti di giocatori e due di accessori
     await vis('#utReal');
+    if(await page.locator('#urNameBox').isVisible())throw new Error('con il nome gia\' scelto il riquadro del nome non deve comparire');
+    if(!/1300 punti/.test(await page.locator('#urMiles .urmr.next').innerText()))throw new Error('il prossimo traguardo dovrebbe essere a 1300 punti: '+await page.locator('#urMiles').innerText());
+    if(await page.locator('#urMiles .urmr.done').count()!==2||await page.locator('#urMiles .urmr').count()!==5)throw new Error('i traguardi devono essere 5, con i primi due ottenuti');
     real=(await cols())[1];if(real.n!==25||real.pk.length)throw new Error('dopo i due pacchetti premio attesi 25 giocatori, trovati '+real.n);
     await page.click('#urTeam');await vis('#utTeam');await page.click('#tmMode [data-m="up"]');await page.click('#tmList .urow[data-i] >> nth=0');await vis('#tmUp');
     await page.click('#tmBack');await page.click('#urBack');await vis('#utMode');
@@ -646,17 +649,16 @@ catch(e){
   await step('Ultimate Team: Superpoteri con la squadra di Sfide online, solo eroi dai pacchetti, assegnati ai titolari',async()=>{
     const st=()=>page.evaluate(()=>{const r=JSON.parse(window.testSaves.getItem('ultimate-ut-real')||'null'),h=JSON.parse(window.testSaves.getItem('ultimate-ut-eroi')||'null');
       return {r:r?{n:r.col.length,hk:r.col.filter(c=>c.hk).length,sel:r.sel.length,c:r.coins|0}:null,h:h?{col:!!h.col,hc:Object.keys(h.hc||{}).length,ha:Object.keys(h.ha||{}),pk:(h.packs||[]).length}:null};});
-    await page.click('#tUT');await vis('#utMode');await page.click('#umHero');await vis('#utReal');
+    await page.click('#tUT');await vis('#utMode');await page.click('#umHero');await vis('#utPack','il primo pacchetto eroi si apre da solo');await page.click('#pkGo');await page.waitForTimeout(1800);
+    if(await page.locator('#pkBody .hcard').count()!==3)throw new Error('il primo pacchetto eroi ha 3 carte eroe');
+    await page.click('#pkGo');await vis('#utReal');
     if((await page.locator('#urH').textContent()).trim()!=='Superpoteri')throw new Error('la schermata deve chiamarsi Superpoteri');
     if(await page.locator('#urTeam').isVisible()||await page.locator('#urHero').isVisible())throw new Error('senza la squadra di Real player non ci sono giocatori da mostrare');
     if(!/Sfide online/.test(await page.locator('#urPlayS').textContent()))throw new Error('senza squadra deve dire di completarla in Sfide online');
-    await page.click('#urPack');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(1800);
-    if(await page.locator('#pkBody .hcard').count()!==3)throw new Error('il primo pacchetto eroi ha 3 carte eroe');
-    await page.click('#pkGo');await vis('#utReal');
     let s=await st();if(s.r||!s.h||s.h.hc!==3||s.h.col)throw new Error('nei Superpoteri arrivano solo eroi, nessun giocatore: '+JSON.stringify(s));
     // la squadra si fa in Real player: tornando nei Superpoteri c'e' lei, con i tre eroi in campo
-    await page.click('#urBack');await vis('#utMode');await page.click('#umReal');await vis('#utReal');
-    await page.click('#urPack');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');await vis('#utReal');
+    await page.click('#urBack');await vis('#utMode');await page.click('#umReal');await vis('#utPack');
+    await packs();await vis('#utReal');
     await page.click('#urShop');await vis('#utShop');if(await page.locator('#shList [data-k="eroi"]').count())throw new Error('il pacchetto eroi sta solo nei Superpoteri');
     await page.click('#shBack');await page.click('#urBack');await vis('#utMode');await page.click('#umHero');await vis('#utReal');
     s=await st();if(!s.r||s.r.n!==14||s.r.hk||s.h.ha.length!==3||new Set(s.h.ha).size!==3)throw new Error('attesi i 14 giocatori di Real player (senza eroi nel suo salvataggio) e 3 eroi diversi in campo: '+JSON.stringify(s));
@@ -674,7 +676,7 @@ catch(e){
     const rc0=await page.evaluate(()=>{const h=JSON.parse(window.testSaves.getItem('ultimate-ut-eroi'));h.coins=200;window.testSaves.setItem('ultimate-ut-eroi',JSON.stringify(h));return JSON.parse(window.testSaves.getItem('ultimate-ut-real')).coins|0;});
     await page.click('#umHero');await vis('#utReal');await page.click('#urShop');await vis('#utShop');
     if(await page.locator('#shList [data-k]').count()!==1||!(await page.locator('#shList [data-k="eroi"]').count()))throw new Error('nel Negozio dei Superpoteri c\'e\' solo il pacchetto eroi');
-    await page.click('#shList [data-k="eroi"]');
+    await page.click('#shList [data-k="eroi"]');await vis('#utPack');await packs();await vis('#utShop');
     const w=await page.evaluate(()=>[JSON.parse(window.testSaves.getItem('ultimate-ut-eroi')).coins,JSON.parse(window.testSaves.getItem('ultimate-ut-real')).coins|0]);
     if(w[0]!==50||w[1]!==rc0)throw new Error('il pacchetto eroi si paga con i gettoni dei Superpoteri, non con quelli di Real player: '+w.join(' e ')+', prima '+rc0);
     await page.click('#shBack');await page.click('#urBack');await vis('#utMode');
@@ -702,10 +704,9 @@ catch(e){
     await page.click('#tUT');await vis('#utMode');await page.click('#umCpu');await vis('#ut');
     await page.click('#uShop');await vis('#utShop');await page.click('#shList [data-k="eq"]');
     let u=await eq();if(u.c!==380||u.pk[u.pk.length-1]!==321)throw new Error('pacchetto equipaggiamento: costo o codice sbagliati '+JSON.stringify(u));
-    await page.click('#shOpen');await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(1500);
+    await vis('#utPack');await page.click('#pkGo');await page.waitForTimeout(1500);
     if(await page.locator('#pkBody .ucard.eqc').count()!==2)throw new Error('il pacchetto equipaggiamento ha 2 accessori');
-    while(await page.locator('#utPack').isVisible()){await page.click('#pkGo');await page.waitForTimeout(1500);}
-    await vis('#ut');u=await eq();
+    await packs();await vis('#utShop');await page.click('#shBack');await vis('#ut');u=await eq();
     if(Object.keys(u.eq.on||{}).length!==2)throw new Error('i due accessori nuovi devono essere indossati: '+JSON.stringify(u.eq));
     await page.click('#uEquip');await vis('#utEquip');
     if(await page.locator('#eqL .eqs, #eqR .eqs').count()!==6)throw new Error('i posti dell\'equipaggiamento devono essere sei');

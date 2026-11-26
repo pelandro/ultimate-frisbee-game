@@ -4,6 +4,12 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Ultimate Team: niente più «Apri pacchetto». I pacchetti comprati nel Negozio, vinti nel torneo o ai traguardi si aprono subito, e l’apertura è uno spettacolo: il disco trema e si illumina del colore della carta migliore, poi le carte coperte si girano una alla volta, la migliore per ultima. Epici e Leggende tremano prima di girarsi, con raggi, scritta e coriandoli; il Super pacchetto è arcobaleno. Corretto: le carte Leggenda uscivano schiacciate.
+- Badge: la bandiera americana copre tutto il castone dell’anello dei Nationals USA.
+- Sfide online a stagioni mensili: ogni mese ha la sua classifica («Questo mese» e «Mese scorso»), si riparte con 200 punti in meno (mai sotto i 1000) e i primi 10 del mese, con almeno 10 partite, ricevono un badge nei Riconoscimenti (1°, 2°, 3°, dal 4° al 10°). Niente premi in gettoni o pacchetti per la posizione.
+- Campionato europeo (EUCF): chi perde la semifinale gioca la finale per il 3° posto.
+- Riconoscimenti: la coppa in alto a sinistra nel menu iniziale apre i badge di tutte le carriere. Un badge per ogni campionato vinto (ogni livello di ogni campionato, con le forme e la bandiera del suo paese) e per il podio dell’EUCF, per ognuna delle quattro difficoltà: più sono alte la difficoltà e la serie, più il badge è prezioso.
+- La difficoltà della carriera si sceglie all’inizio, dopo la squadra, e non si cambia più.
 - Corretto: a volte nessuno prendeva al volo un pull lungo. Chi doveva prenderlo finiva tra i compagni che salgono e si fermava davanti alla meta mentre il disco gli cadeva dietro; ora chi va a prenderlo resta sempre dietro.
 - Vincere all’universe si festeggia: chi segna la meta decisiva sul pari si toglie la maglia, corre verso le tribune facendola girare sopra la testa, i compagni lo raggiungono e lo tirano su.
 - Chi ha il disco non lo tiene più a lungo per aspettare lo schema quando un compagno davanti è libero (prima poteva tenerlo anche 10 secondi se nessuno lo marcava da vicino): con un compagno libero di 12 m passa dopo un secondo e mezzo, di 6 m dopo tre secondi e mezzo, e comunque entro sei secondi e mezzo.

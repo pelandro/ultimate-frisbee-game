@@ -49,15 +49,14 @@ const UT_SHOP=[
 const utShopList=()=>UT_SHOP.filter(it=>!it.hm===!UT.hm);   // nei Superpoteri si comprano solo eroi (i giocatori e gli accessori arrivano da Real player)
 let shMsg='';
 function renderShop(){
-  const rp=UT.rp?1:0,pend=UT.packs.length;
-  $('shInfo').innerHTML=`Gettoni: <b>${UT.coins}</b>${pend?` · Da aprire: <b>${pend}</b>`:''}`;
+  const rp=UT.rp?1:0;
+  $('shInfo').innerHTML=`Gettoni: <b>${UT.coins}</b>`;
   $('shList').innerHTML=utShopList().map(it=>`<div class="shopi"><div class="dpk">${utDisc(it.q,it.cards,it.role)}<b>${it.n}</b><small>${it.d}</small></div><button type="button" class="go" data-k="${it.k}"${UT.coins<it.cost[rp]?' disabled':''}>Compra · ${it.cost[rp]} gettoni</button></div>`).join('');
-  $('shMsg').textContent=shMsg;$('shOpen').classList.toggle('hidden',!pend);
+  $('shMsg').textContent=shMsg;
 }
 $('shList').addEventListener('click',e=>{
   const b=e.target.closest('[data-k]');if(!b||b.disabled)return;
   const it=utShopList().find(x=>x.k===b.dataset.k),c=it&&it.cost[UT.rp?1:0];if(!it||UT.coins<c)return;
-  UT.coins-=c;UT.packs.push(it.code);utSave();shMsg=`${it.n} comprato: lo trovi tra i pacchetti da aprire.`;renderShop();
+  UT.coins-=c;UT.packs.push(it.code);utSave();shMsg='';utPackGo('utShop');   // si apre subito, poi si torna al Negozio
 });
 $('shBack').addEventListener('click',()=>{shMsg='';showScreen(UT.rp?'utReal':'ut');});
-$('shOpen').addEventListener('click',()=>{shMsg='';UT.stage='closed';showScreen('utPack');});

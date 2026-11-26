@@ -113,7 +113,7 @@ const DET=()=>{
       await page.click('#tQuick');await look('partita veloce');await page.click('#qA');
       await look('catalogo squadre');await page.click('#qpX');await page.click('#qBack');
       await page.click('#tTourn');await look('configurazione torneo');await page.click('#tnBack');
-      await page.click('#tUT');await page.click('#umCpu');if(await page.locator('#uPack').isVisible()){await page.click('#uPack');await page.click('#pkGo');await page.waitForTimeout(3400);await page.click('#pkGo');}
+      await page.click('#tUT');await page.click('#umCpu');for(let k=0;k<20&&await page.locator('#utPack').isVisible();k++){await page.click('#pkGo');await page.waitForTimeout(300);}
       await page.click('#uEquip');await look('Ultimate Team · Equipaggiamento');await page.click('#eqBack');await page.click('#uBack');await page.click('#umBack');
       await page.click('#tCareer');await look('Carriera · slot');await page.click('#csBox [data-cnew] >> nth=0');await look('scelta del campionato');
       await page.click('#lgList [data-div="m"]');await look('scelta del campionato maschile');

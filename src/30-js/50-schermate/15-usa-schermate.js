@@ -130,12 +130,12 @@ function usConfView(){
   return h;
 }
 // tabellone: prequarti, quarti, semifinali e finale (si riempie man mano che i turni sono decisi)
-function usBracketHTML(N){
+function usBracketHTML(N,champTxt){   // champTxt: la scritta del campione (EUCF); nella colonna della finale la seconda partita e' il 3° posto (solo EUCF)
   N=N||SV.us.nat;const row=(n,sc,w)=>`<div class="${w?'w':''}${n===SV.team?' me':''}"><span title="${esc(n)}">${crest(n,13)} ${esc(n)}</span><b>${sc===null||sc===undefined?'':sc}</b></div>`;
   const box=m=>`<div class="tnm${m[2]===null?' cur':''}">${row(m[0],m[2],m[4]===m[0])}${row(m[1],m[3],m[4]===m[1])}</div>`;
   const T=['Prequarti','Quarti','Semifinali','Finale'];
-  const cols=N.ko.map((L,i)=>`<div class="tncol"><h3>${T[i]}</h3>${L.map(box).join('')}</div>`).join('');
-  return `<div class="tncols">${cols}</div>`+(N.champ?`<p class="estat">Campione degli Stati Uniti: ${esc(N.champ)}</p>`:'');
+  const cols=N.ko.map((L,i)=>`<div class="tncol"><h3>${T[i]}</h3>${L.map((m,k)=>(i===3&&k===1?'<h3 class="tn3">3° posto</h3>':'')+box(m)).join('')}</div>`).join('');
+  return `<div class="tncols">${cols}</div>`+(N.champ?`<p class="estat">${champTxt||'Campione degli Stati Uniti'}: ${esc(N.champ)}</p>`:'');
 }
 function usPoolHTML(p,N){
   N=N||SV.us.nat;const pl=N.pools[p],t=N.tabs[p],ord=usRanking(t,pl);

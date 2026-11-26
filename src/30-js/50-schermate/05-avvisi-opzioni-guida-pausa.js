@@ -75,8 +75,8 @@ let setFrom='title';
 function renderOpts(){
   const order=['easy','med','hard','xtr'],cur=SV.diff||'easy';
   $('opSub').textContent=`${SV.team} · ${SERIES_NAME[SV.sr]} · stagione ${SV.season}`;
-  $('opDiff').innerHTML=order.map(k=>`<button type="button" class="sg${k===cur?' on':''}" data-k="${k}">${CAR_DIFF[k].name}</button>`).join('');
-  $('opDiffN').textContent=CAR_DIFF[cur].txt;
+  $('opDiff').innerHTML=order.map(k=>`<button type="button" class="sg${k===cur?' on':''}" data-k="${k}" disabled>${CAR_DIFF[k].name}</button>`).join('');   // scelta all'inizio della carriera: non si cambia piu'
+  $('opDiffN').textContent=CAR_DIFF[cur].txt+' Si sceglie all’inizio della carriera e non si può cambiare.';
   $('opLen').innerHTML=LEN_OPTS.map(o=>`<button type="button" class="sg${o.n===carLen()?' on':''}" data-n="${o.n}">${o.name} · ${o.n}</button>`).join('');
   $('opLenN').textContent=LEN_OPTS.find(o=>o.n===carLen()).txt+' Vale dalla prossima partita, anche per quelle simulate e per le altre squadre; l’esperienza di una partita resta la stessa.';
   renderSlots();syncToggles();
@@ -84,7 +84,6 @@ function renderOpts(){
 $('hOpt').addEventListener('click',()=>{$('opMsg').textContent='';renderOpts();$('opts').classList.remove('hidden');});
 $('opX').addEventListener('click',()=>{$('opts').classList.add('hidden');renderHome();});
 $('opLen').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)return;SV.len=lenOk(+b.dataset.n);persist();renderOpts();});
-$('opDiff').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)return;SV.diff=b.dataset.k;persist();renderOpts();});
 $('opSet').addEventListener('click',()=>{$('opts').classList.add('hidden');setFrom='home';showScreen('settings');setSView('game');});
 /* ---- GUIDA a schede: si apre dal menu iniziale, dal cruscotto e dalla pausa, senza uscire da dove si e' ---- */
 let guideBack=null;

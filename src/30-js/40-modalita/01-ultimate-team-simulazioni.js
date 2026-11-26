@@ -105,9 +105,6 @@ function renderUT(){
   $('uShop').classList.toggle('hidden',!has);
   $('uObj').innerHTML=has?UT_OBJ.filter(o=>!UT.claimed[o.id]).slice(0,3).map(o=>`<div class="chal"><div><b>${o.txt}</b><small>${o.pr()} · premio ${o.rw} gettoni</small></div><button type="button" class="go" data-obj="${o.id}"${o.ok()?'':' disabled'}>${o.ok()?'Riscuoti':'In corso'}</button></div>`).join(''):'';
   $('uRounds').innerHTML=UT_ROUNDS.map((n,i)=>{const c=(UT.st==='won'||i<UT.round)?'done':(i===UT.round?(UT.st==='out'?'lost':'cur'):'');return `<span class="uchip ${c}"><small>${n}</small><b>${UT_POWERS[i]}</b></span>`;}).join('');
-  $('uPack').classList.toggle('hidden',!pend);
-  $('uPackT').textContent=UT.packs[0]===0&&!has?'Apri il pacchetto iniziale':`Apri: ${utPackName(UT.packs[0])}${pend>1?' (+'+(pend-1)+')':''}`;
-  $('uPackS').textContent=pend?`${utPackSize(UT.packs[0])} ${utPackContents(UT.packs[0])} · ${utPackTip(UT.packs[0])}`:'';
   const r=Math.min(UT.round,5),o=UT.opp[r];
   $('uPlayRow').classList.toggle('hidden',UT.st!=='play'||!!pend||!has);
   $('uPlay').disabled=!playing;$('uSim').disabled=!playing;
@@ -122,7 +119,6 @@ function renderUT(){
 }
 $('tUT').addEventListener('click',()=>showScreen('utMode'));   // prima si sceglie: Computer (questa pagina) o Real player (04-ut-online.js)
 $('uBack').addEventListener('click',()=>showScreen('utMode'));
-$('uPack').addEventListener('click',()=>{UT.stage='closed';showScreen('utPack');});
 let utTeamBack='ut';   // la squadra si apre sia dal torneo contro il computer sia da Real player: «Indietro» torna da dove sei venuto
 $('uTeam').addEventListener('click',()=>{utTeamBack='ut';showScreen('utTeam');});
 $('uPlay').addEventListener('click',startUT);
@@ -130,35 +126,85 @@ $('uDiff').addEventListener('click',e=>{const b=e.target.closest('.sg');if(!b)re
 $('uSim').addEventListener('click',simUTMatch);
 $('uShop').addEventListener('click',()=>showScreen('utShop'));   // il Negozio (05-ut-negozio.js) e' lo stesso per il torneo contro il computer e per Real player
 $('uObj').addEventListener('click',e=>{const b=e.target.closest('[data-obj]');if(!b||b.disabled)return;const o=UT_OBJ.find(x=>x.id===b.dataset.obj);if(!o||UT.claimed[o.id]||!o.ok())return;UT.claimed[o.id]=true;UT.coins+=o.rw;UT.res=`Obiettivo raggiunto: +${o.rw} gettoni.`;utSave();renderUT();});
-$('uNew').addEventListener('click',()=>{UT.tid++;UT.round=0;UT.st='play';UT.res='';UT.packs.push(0);utOpps();utSave();renderUT();});
+$('uNew').addEventListener('click',()=>{UT.tid++;UT.round=0;UT.st='play';UT.res='';UT.packs.push(0);utOpps();utSave();showScreen('ut');});
 // ---- apertura del pacchetto ----
 const utPos=p=>POS_NAME[posOf(p)];
 const utCard=(p,i)=>{const [rn,rc]=utRar(p.ovr);return `<div class="ucard ${rc}" style="animation-delay:${(Math.min(i,8)*0.08).toFixed(2)}s"><b>${p.ovr}</b><span>${p.n}</span><i>${utPos(p)} · ${rn}</i>${p.cl?`<i>${p.cl}</i>`:''}${p.trait&&TRAITS[p.trait]?`<i style="color:#e0b3ff">${TRAITS[p.trait][0]}</i>`:''}</div>`;};
+// ---- apertura dei pacchetti ----
+// Non c'e' un pulsante «Apri»: un pacchetto arrivato (comprato, premio del torneo o di un traguardo, il primo) si apre subito (utPackGo e il controllo
+// in showScreen). Tre tempi: il disco chiuso (si tocca o «Apri»), la carica (il disco trema, i raggi hanno gia' il colore della carta migliore:
+// piu' e' rara, piu' dura e piu' e' ricca; il super pacchetto e' arcobaleno), poi le carte coperte che si girano una alla volta, la migliore per
+// ultima. Prima di un Epico o di una Leggenda c'e' una pausa, la carta trema, si gira con un lampo, i raggi e i coriandoli. Toccando una carta
+// la giri subito; «Mostra tutto» le gira tutte.
+const PK_RC=['com','unc','rar','epi','leg'],PK_ANN={epi:'Epico!',leg:'Leggenda!'};
+const pkRc=p=>p.eq?EQ_RAR[clamp(p.r|0,0,2)][1]:(p.hk?(p.nw?'leg':'epi'):utRar(p.ovr)[1]);
+const pkBest=cs=>cs.reduce((m,p)=>Math.max(m,PK_RC.indexOf(pkRc(p))),0);
+const pkCharge=q=>[0.9,1,1.1,1.2,1.4,1.6,2][clamp(q|0,0,6)];
+const pkStill=()=>typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+let pkTimer=0,pkQ=0,pkName='';
+function utPackGo(back){UT.stage='closed';UT.pkBack=back;showScreen('utPack');}
+function pkRole(v){const hp=utPkRole(v)===HERO_PK,eq=utPkRole(v)===EQ_PK;return hp?'S':(eq?'E':(utPkRole(v)===1?'H':(utPkRole(v)===2?'C':'')));}
+// coriandoli a pixel, da far cadere dopo dl secondi
+const pkConf=(n,dl,cols)=>`<div class="pkconf">${Array.from({length:n},(_,i)=>`<i style="--x:${(Math.random()*100).toFixed(1)}%;--c:${cols[i%cols.length]};--dl:${(dl+Math.random()*0.5).toFixed(2)}s;--dr:${(1.4+Math.random()*1.2).toFixed(2)}s;--r:${Math.round(Math.random()*720-360)}deg"></i>`).join('')}</div>`;
 function renderPack(){
-  const open=UT.stage==='open';
-  $('pkReveal').classList.toggle('hidden',!open);
+  const st=UT.stage,v=st==='closed'?UT.packs[0]:pkQ,q=utPkQ(v);
+  clearTimeout(pkTimer);
+  $('pkReveal').classList.toggle('hidden',st!=='open');
+  $('pkGo').classList.toggle('hidden',st==='opening');
   $('pkBody').classList.remove('reveal-all');
-  $('pkTitle').textContent=open?(UT.cur[0]&&UT.cur[0].eq?'Ecco i tuoi accessori':(UT.cur[0]&&UT.cur[0].hk?'Ecco i tuoi eroi':'Ecco i tuoi giocatori')):utPackName(UT.packs[0]);
-  const v=UT.packs[0],eq=utPkRole(v)===EQ_PK,hp=utPkRole(v)===HERO_PK;
-  $('pkBody').innerHTML=open?`<div class="ucards">${UT.cur.map((p,i)=>p.eq?eqCard(p,i):(p.hk?heroUCard(p,i):utCard(p,i))).join('')}</div>${UT.eqMsg?`<p class="qp" style="text-align:center">${UT.eqMsg}</p>`:''}`:`<div class="dpk">${utDisc(utPkQ(v),utPackSize(v),hp?'S':(eq?'E':(utPkRole(v)===1?'H':(utPkRole(v)===2?'C':''))))}<b>${hp?'eroi':(eq?'accessori':'giocatori')}</b><small>${utPackTip(v)}</small></div>`;
-  $('pkGo').textContent=open?(UT.packs.length?`Prossimo pacchetto (${UT.packs.length})`:'Continua'):'Apri';
+  if(st==='closed'){
+    $('pkTitle').textContent=utPackName(v);
+    $('pkBody').innerHTML=`<div class="dpk pkclosed q${q}">${q>=6?'<b class="pkbig">Super pacchetto!</b>':''}<button type="button" class="pkdbtn" id="pkDisc" aria-label="Apri il pacchetto">${utDisc(q,utPackSize(v),pkRole(v))}</button><b>${utPackSize(v)} ${utPackContents(v)}</b><small>${utPackTip(v)}</small><small class="pktap">Tocca il disco per aprirlo</small></div>`;
+    $('pkGo').textContent='Apri';
+    return;
+  }
+  const best=PK_RC[pkBest(UT.cur)];
+  if(st==='opening'){   // la carica: il disco trema, i raggi del colore della carta migliore, il lampo
+    const t=pkCharge(q);
+    $('pkTitle').textContent=pkName;
+    $('pkBody').innerHTML=`<div class="pkopen q${q} r-${best}" style="--t:${t}s" id="pkSkip"><div class="pkrays"></div><div class="pkdisc">${utDisc(q,'',pkRole(v))}</div><div class="pkflash"></div></div>`;
+    pkTimer=setTimeout(()=>{if(UT.stage==='opening'){UT.stage='open';renderPack();}},pkStill()?0:t*1000);
+    return;
+  }
+  // le carte: coperte, si girano una alla volta (le piu' forti per ultime), con una pausa prima di un Epico o di una Leggenda
+  $('pkTitle').textContent=UT.cur[0]&&UT.cur[0].eq?'Ecco i tuoi accessori':(UT.cur[0]&&UT.cur[0].hk?'Ecco i tuoi eroi':'Ecco i tuoi giocatori');
+  let d=0.15,ann='',conf='';
+  const cards=UT.cur.map((p,i)=>{
+    const rc=pkRc(p),big=rc==='epi'||rc==='leg';if(big)d+=rc==='leg'?1:0.5;
+    const html=`<div class="pkf r-${rc}" style="--d:${d.toFixed(2)}s" data-pk="${i}"><div class="pkfront">${p.eq?eqCard(p,i):(p.hk?heroUCard(p,i):utCard(p,i))}</div><div class="pkback">${utDisc(q,'',pkRole(pkQ))}</div></div>`;
+    if(big&&(rc==='leg'||!ann)){const nm=p.hk&&p.nw?'Nuovo eroe!':PK_ANN[rc];ann=`<b class="pkann r-${rc}" style="--d:${(d+0.3).toFixed(2)}s">${nm}</b>`;conf=pkConf(rc==='leg'?44:24,d+0.3,rc==='leg'?['#ffd23f','#fff7b0','#ff8a3d','#ffffff']:['#b36bff','#e0b3ff','#ffffff']);}
+    d+=0.32;return html;}).join('');
+  if(q>=6&&!conf)conf=pkConf(40,0.1,['#ff4d4d','#ff9f1c','#ffe94d','#3ddc97','#4da3ff','#b36bff']);   // super pacchetto: sempre festa
+  $('pkBody').innerHTML=`<div class="ucards pkcards">${cards}</div>${ann}${conf}${UT.eqMsg?`<p class="qp" style="text-align:center">${UT.eqMsg}</p>`:''}`;
+  if(pkStill())$('pkBody').classList.add('reveal-all');
+  pkTimer=setTimeout(()=>{if(UT.stage==='open')$('pkReveal').classList.add('hidden');},(d+0.4)*1000);
+  $('pkGo').textContent=UT.packs.length?`Prossimo pacchetto (${UT.packs.length})`:'Continua';
 }
 $('pkReveal').addEventListener('click',()=>{
   $('pkBody').classList.add('reveal-all');
   $('pkGo').focus();
   $('pkReveal').classList.add('hidden');
 });
+function pkOpen(){   // apre il primo pacchetto in attesa: le carte entrano subito nella collezione, poi la carica
+  const v=UT.packs.shift();UT.eqMsg='';pkQ=v;pkName=utPackName(v);
+  if(utPkRole(v)===EQ_PK)UT.cur=utEqOpen(v);   // accessori (07-ut-equipaggiamento.js)
+  else if(utPkRole(v)===HERO_PK)UT.cur=utHeroOpen(v);   // carte eroe dei Superpoteri (08-ut-superpoteri.js)
+  else{UT.cur=utMakePack(v);UT.cur.forEach(p=>{p.isNew=true;UT.col.push(p);});
+  if(UT.sel.length<7||!UT.manual)utAuto();}   // finche' non scegli tu i titolari, restano i migliori 7
+  utSave();UT.stage='opening';renderPack();
+}
 $('pkGo').addEventListener('click',()=>{
-  if(UT.stage==='closed'){
-    const v=UT.packs.shift();UT.eqMsg='';
-    if(utPkRole(v)===EQ_PK)UT.cur=utEqOpen(v);   // accessori (07-ut-equipaggiamento.js)
-    else if(utPkRole(v)===HERO_PK)UT.cur=utHeroOpen(v);   // carte eroe dei Superpoteri (08-ut-superpoteri.js)
-    else{UT.cur=utMakePack(v);UT.cur.forEach(p=>{p.isNew=true;UT.col.push(p);});
-    if(UT.sel.length<7||!UT.manual)utAuto();}   // finche' non scegli tu i titolari, restano i migliori 7
-    utSave();UT.stage='open';renderPack();
-  }else if(UT.packs.length){UT.stage='closed';renderPack();}
-  else showScreen(UT.rp?'utReal':'ut');
+  if(UT.stage==='closed')pkOpen();
+  else if(UT.stage==='opening'){UT.stage='open';renderPack();}
+  else if(UT.packs.length){UT.stage='closed';renderPack();}
+  else{UT.stage='closed';showScreen(UT.pkBack||(UT.rp?'utReal':'ut'));}
 });
+$('pkBody').addEventListener('click',e=>{
+  if(UT.stage==='closed'&&e.target.closest('#pkDisc')){pkOpen();return;}
+  if(UT.stage==='opening'){UT.stage='open';renderPack();return;}   // toccando si salta la carica
+  const c=e.target.closest('.pkf');if(c)c.classList.add('now');   // la carta si gira subito
+});
+
 // ---- la tua squadra: scegli i 7 titolari ----
 function renderTeamUT(){
   const focused=document.activeElement?.closest?.('#tmList [data-i]')?.dataset.i;
@@ -237,7 +283,7 @@ function simUTMatch(){
   if(UT.sel.length!==7||UT.st!=='play'||UT.packs.length)return;
   const o=UT.opp[UT.round],my=UT.sel.reduce((a,i)=>a+mean9(eqApply(UT.col[i],UT.eq)),0)/7;
   const r=simMatch(my,o.power+(DIFF_PLUS[clamp(UT.d|0,0,3)]||0),UT.d),w=r.a>r.b,msg=utRecord(w);
-  showSim(w,`Ultimate Team ${r.a} – ${r.b} ${o.name}`,msg,()=>renderUT());
+  showSim(w,`Ultimate Team ${r.a} – ${r.b} ${o.name}`,msg,()=>showScreen('ut'));
 }
 function startUT(){
   if(UT.sel.length!==7||UT.st!=='play')return;
