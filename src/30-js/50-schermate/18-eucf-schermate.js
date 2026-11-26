@@ -22,17 +22,18 @@ function euTimeline(node){
 function euStakes(){
   const E=SV.eu,N=euEnsure(),rd=N.rd,lines=[];let title;
   if(rd<3){title=E.cur.label;lines.push(rd===2?'Ultima partita del girone: le prime vanno ai quarti, le seconde e le terze ai prequarti, le quarte sono fuori.':'Tre partite a girone: a parità decidono gli scontri diretti e la differenza mete.');}
-  else{title=['Prequarti','Quarti di finale','Semifinale','Finale'][rd-3];lines.push(rd===6?'Chi vince è campione d’Europa: trofeo, reputazione e '+Math.round(EU_PRIZE[4]*SR_K.A)+' crediti.':'Eliminazione diretta: chi perde è fuori. In palio '+Math.round(EU_PRIZE[rd-2]*SR_K.A)+' crediti.');}
+  else if(euBronzeMe(N)){title='Finale per il 3° posto';lines.push('Chi vince sale sul podio d’Europa: terzo posto e '+Math.round(EU_BRONZE*SR_K.A)+' crediti.');}
+  else{title=['Prequarti','Quarti di finale','Semifinale','Finale'][rd-3];lines.push(rd===6?'Chi vince è campione d’Europa: trofeo, reputazione e '+Math.round(EU_PRIZE[4]*SR_K.A)+' crediti.':(rd===5&&N.br?'Chi vince va in finale, chi perde gioca la finale per il 3° posto. In palio ':'Eliminazione diretta: chi perde è fuori. In palio ')+Math.round(EU_PRIZE[rd-2]*SR_K.A)+' crediti.');}
   return {tag:'EUCF',title,lines};
 }
 function euView(){
   const E=SV.eu,N=euEnsure();let h='';
-  const st=E.state==='champ'?'Siete campioni d’Europa!':(E.state==='out'?(N.rd>=7?'Siete fuori dall’EUCF.':'Eliminati.'):(E.cur?`${E.cur.label}: ${esc(E.cur.opp)}.`:''));
+  const st=E.state==='champ'?'Siete campioni d’Europa!':(E.state==='out'?(N.rd>=7?EU_PLACE_TXT[euPlace(N,SV.team)]:'Eliminati.'):(E.cur?`${E.cur.label}: ${esc(E.cur.opp)}.`:''));
   h+=`<p class="estat">EUCF · stagione ${E.s} · ${st}</p>`;
-  h+=`<div class="legrow"><span class="leg"><i class="g"></i>quarti</span><span class="leg"><i class="y"></i>prequarti</span><span class="leg"><i class="r"></i>fuori</span>${infoB('eucf')}</div>${infoX('eucf',`<p>${E.state==='on'?'16 club in 4 gironi da 4 (fasce del ranking europeo): tre partite a girone, le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono fuori. Poi quarti, semifinali e finale. ':''}${E.it&&E.it.length>=16?EU_WHO_TXT:'Edizione con il vecchio campo: 11 club veri e 5 club europei inventati.'}</p>`)}`;
-  if(N.ko.length)h+=usBracketHTML(N);
+  h+=`<div class="legrow"><span class="leg"><i class="g"></i>quarti</span><span class="leg"><i class="y"></i>prequarti</span><span class="leg"><i class="r"></i>fuori</span>${infoB('eucf')}</div>${infoX('eucf',`<p>${E.state==='on'?'16 club in 4 gironi da 4 (fasce del ranking europeo): tre partite a girone, le prime vanno ai quarti, le seconde e le terze ai prequarti (2ª contro 3ª di un altro girone), le quarte sono fuori. Poi quarti, semifinali, finale e finale per il 3° posto fra chi perde la semifinale. ':''}${E.it&&E.it.length>=16?EU_WHO_TXT:'Edizione con il vecchio campo: 11 club veri e 5 club europei inventati.'}</p>`)}`;
+  if(N.ko.length)h+=usBracketHTML(N,'Campione d’Europa');
   h+=[0,1,2,3].map(p=>usPoolHTML(p,N)).join('');
   if(E.state!=='on')h+=`${E.cash?`<p class="estat">Premi del torneo: ${E.cash} crediti</p>`:''}<p class="note" style="margin:0 0 8px">Per giocare la prossima edizione, chiudete ${isLN()?esc(LN_DEF[SV.lk].tiers[0].name):'la Serie A'} tra le prime 3 dopo i playoff, o quarti ma più forti delle quarte degli altri campionati.</p><button type="button" class="go" id="eCamp">Torna al campionato</button>`;
-  else h+=`<p class="note" style="margin:8px 0 0">${infoB('eupr')} Premi del torneo</p>${infoX('eupr',`<p>${EU_PRIZE.map((v,i)=>Math.round(v*SR_K.A)+' crediti ('+['qualificazione ai quarti','prequarti','quarti','semifinale','finale'][i]+')').join(', ')}. Una sola edizione a stagione.</p>`)}`;
+  else h+=`<p class="note" style="margin:8px 0 0">${infoB('eupr')} Premi del torneo</p>${infoX('eupr',`<p>${EU_PRIZE.map((v,i)=>Math.round(v*SR_K.A)+' crediti ('+['qualificazione ai quarti','prequarti','quarti','semifinale','finale'][i]+')').join(', ')}, ${Math.round(EU_BRONZE*SR_K.A)} crediti (finale per il 3° posto). Una sola edizione a stagione.</p>`)}`;
   return h;
 }
