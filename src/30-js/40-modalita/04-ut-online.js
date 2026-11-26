@@ -395,10 +395,13 @@ async function admStats(){
     const g=k=>sum[k]|0,pc=(a,b)=>{const t=g(a)+g(b);return t?Math.round(g(a)/t*100)+'%':'–';};
     const pl=UOA_MODES.reduce((a,[k])=>a+g(k),0),sm=UOA_MODES.reduce((a,[k])=>a+g('x'+k),0),dt=g('dauto')+g('dmanual')+g('dsalta');
     const row=(t,a,b)=>`<tr><td>${t}</td><td>${a}</td><td>${b}</td><td><b>${a+b}</b></td></tr>`;
-    $('admModes').innerHTML=`<p class="ubh">Partite degli ultimi 7 giorni</p><table class="admt"><tr><th></th><th>Giocate</th><th>Simulate</th><th>Totale</th></tr>`
+    const dd=Object.keys(st||{}).sort().reverse(),devs=d=>['dauto','dmanual','dsalta'].reduce((a,k)=>a+(Number(st[d][k])||0),0),td=utoDay(now),dvT=st&&st[td]?devs(td):0,rpT=cnt(day);
+    const devRows=dd.map(d=>`<tr><td>${d.slice(5)}</td><td>${devs(d)}</td><td>${Number(st[d].apre)||0}</td></tr>`).join('');
+    $('admModes').innerHTML=`<p class="ubh">Dispositivi (oggi: ${dvT} hanno giocato, di cui circa ${Math.min(dvT,rpT)} con Real player e circa ${Math.max(0,dvT-rpT)} solo offline)</p><table class="admt"><tr><th>Giorno</th><th>Hanno giocato</th><th>Aperture</th></tr>${devRows||'<tr><td colspan="3">Ancora niente</td></tr>'}</table>`
+      +`<p class="ubh">Partite degli ultimi 7 giorni</p><table class="admt"><tr><th></th><th>Giocate</th><th>Simulate</th><th>Totale</th></tr>`
       +UOA_MODES.map(([k,t])=>row(t,g(k),g('x'+k))).join('')+row('<b>Tutte</b>',pl,sm)+'</table>'
       +`<p class="ubh">Come si gioca (percentuale di giocatori, contati una volta al giorno)</p><p class="qp">Difesa: automatica <b>${dt?Math.round(g('dauto')/dt*100):'–'}%</b> · manuale <b>${dt?Math.round(g('dmanual')/dt*100):'–'}%</b> · saltata <b>${dt?Math.round(g('dsalta')/dt*100):'–'}%</b><br>Scene laterali: accese <b>${pc('lato','nolato')}</b> · spente <b>${pc('nolato','lato')}</b></p>`
-      +'<p class="qp">Contano solo i dispositivi con un profilo online (chi non ha mai usato Sfide online non viene contato). «Attivi» = chi ha giocato online di recente.</p>';
+      +'<p class="qp">I contatori arrivano da tutti i dispositivi che non hanno spento le statistiche anonime. Un dispositivo conta una volta al giorno (chi cancella i dati o usa più dispositivi può contare due volte). «Hanno giocato» = almeno una partita in campo; «Aperture» = aperture del gioco. «Con Real player» è una stima sui profili online attivi nelle ultime 24 ore.</p>';
   }catch(e){box.textContent=uoErr(e);}
 }
 function admShow(){
@@ -424,14 +427,18 @@ $('admReset').addEventListener('click',()=>{
       catch(e){$('admMsg').textContent=uoDenied(e)?'Non autorizzato: controlla il codice (esci e rientra).':uoErr(e);}
     }});
 });
-// ---- conteggio anonimo delle partite per modalita' (nessun nome, nessun id: solo «oggi, carriera, +1»), inviato quando c'e' un profilo online ----
-const UOS_KEY='ultimate-ut-stat';
+// ---- statistiche anonime d'uso: da ogni dispositivo, anche senza profilo online, solo contatori («oggi, carriera, +1»): nessun nome, nessun id, nessun account ----
+// Il gioco mostra un avviso la prima volta e si spegne da Impostazioni (ultimate-stat-off). Le richieste non hanno accesso: le regole di ut/stats lo permettono con un tetto per scrittura.
+const UOS_KEY='ultimate-ut-stat',UOS_OFF='ultimate-stat-off',UOS_INFO='ultimate-stat-avviso';
+const uosOn=()=>{try{return localStorage.getItem(UOS_OFF)!=='1';}catch(e){return true;}};
+function uosSet(on){try{if(on)localStorage.removeItem(UOS_OFF);else{localStorage.setItem(UOS_OFF,'1');localStorage.removeItem(UOS_KEY);}}catch(e){}}
 const uosMode=()=>DR.on?'allenam':TN.on?'torneo':UT.on?(UT.hm?'poteri':(UO.on?'sfide':'utteam')):QM.on?'veloce':hasCareer()?'carriera':'altro';
 let uosT=0,uosBusy=false;
 function uosLoad(){try{const o=JSON.parse(localStorage.getItem(UOS_KEY)||'{}');return o&&typeof o==='object'?o:{};}catch(e){return {};}}
 function uosSave(o){try{localStorage.setItem(UOS_KEY,JSON.stringify(o));}catch(e){}}
+const uosPost=(d,body)=>uoJson(UTO_CFG.db.replace(/\/+$/,'')+'/ut/stats/'+d+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 async function uosFlush(){
-  const p=UOP;if(!p||p.fresh||uosBusy||UO.noStat||uoOffline()||!uoOk()||Date.now()-uosT<60000)return;
+  if(!uosOn()||uosBusy||UO.noStat||uoOffline()||!uoOk()||(navigator.webdriver&&!window.uosTest)||Date.now()-uosT<60000)return;   // niente invii dalle prove automatiche
   const o=uosLoad(),sent={};if(!Object.keys(o).length)return;
   uosT=Date.now();uosBusy=true;
   try{
@@ -439,7 +446,7 @@ async function uosFlush(){
       if(!/^\d{4}-\d{2}-\d{2}$/.test(d))continue;
       const body={};sent[d]={};
       for(const m in o[d]){const n=Math.min(100,o[d][m]|0);if(n>0&&/^[a-z]{3,12}$/.test(m)){body[m]={'.sv':{increment:n}};sent[d][m]=n;}}   // le regole accettano al massimo +100 per volta
-      if(Object.keys(body).length)await uoDb('PATCH','ut/stats/'+d,body);
+      if(Object.keys(body).length)await uosPost(d,body);
     }
   }catch(e){if(uoDenied(e))UO.noStat=true;sent={};}   // senza le regole nuove si smette per la sessione
   finally{   // si toglie solo quello inviato: le partite giocate nel frattempo restano
@@ -449,13 +456,26 @@ async function uosFlush(){
   }
 }
 // mode: modalita' (uosMode() se manca); sim: 1 = partita simulata (chiave 'x'+modalita'). Una volta al giorno per dispositivo si conta anche come si gioca:
-// difesa automatica, manuale o saltata (dauto, dmanual, dsalta) e scene laterali accese o spente (lato, nolato): servono per le percentuali di giocatori.
+// difesa automatica, manuale o saltata (dauto, dmanual, dsalta: la somma e' il numero di dispositivi che hanno giocato) e scene laterali accese o spente (lato, nolato).
 function uosCount(mode,sim){
+  if(!uosOn())return;
   try{const o=uosLoad(),d=utoDay(Date.now()),m=(mode||uosMode()),k=sim?'x'+m:m;o[d]=o[d]||{};o[d][k]=(o[d][k]|0)+1;
     if(!sim&&localStorage.getItem(UOS_KEY+'-g')!==d){localStorage.setItem(UOS_KEY+'-g',d);
       for(const x of [['dauto','dmanual','dsalta'][G.opt.def|0]||'dauto',G.opt.cine?'lato':'nolato'])o[d][x]=(o[d][x]|0)+1;}
     uosSave(o);uosFlush().catch(()=>{});}catch(e){}
 }
 {const nm=HOOKS.newMatch;HOOKS.newMatch=()=>{if(nm)nm();uosCount();};}
+// all'avvio: una «apertura» al giorno per dispositivo (anche per chi poi non gioca) e, la prima volta, l'avviso
+function uosStart(){
+  if(!uosOn())return;
+  try{
+    const d=utoDay(Date.now());
+    if(localStorage.getItem(UOS_KEY+'-a')!==d){localStorage.setItem(UOS_KEY+'-a',d);const o=uosLoad();o[d]=o[d]||{};o[d].apre=(o[d].apre|0)+1;uosSave(o);}
+    if(!localStorage.getItem(UOS_INFO)&&(!navigator.webdriver||window.uosTest)){localStorage.setItem(UOS_INFO,'1');   // nelle prove automatiche l'avviso non compare (salvo prova apposta)
+      askConfirm({title:'Statistiche anonime',ok:'Va bene',no:'Non inviare',onNo:()=>{uosSet(false);syncToggles();},
+        html:'<p>Per migliorare il gioco, invia in forma anonima quante partite si giocano e con quali impostazioni (per esempio la difesa). Non contiene nome, account o altri dati personali. Puoi spegnerlo quando vuoi da Impostazioni › Gioco.</p>'});}
+  }catch(e){}
+  uosFlush().catch(()=>{});
+}
 $('ubBack').addEventListener('click',()=>showScreen('utReal'));
 $('ubRef').addEventListener('click',renderUtBoard);

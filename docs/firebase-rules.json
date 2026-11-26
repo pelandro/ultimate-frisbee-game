@@ -80,7 +80,7 @@
         ".read": true,
         "$d": {
           "$m": {
-            ".write": "auth != null",
+            ".write": true,
             ".validate": "$d.matches(/^20[0-9][0-9]-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/) && $m.matches(/^[a-z]{3,12}$/) && newData.isNumber() && newData.val() >= (data.exists() ? data.val() : 0) && newData.val() <= (data.exists() ? data.val() : 0) + 100"
           }
         }
