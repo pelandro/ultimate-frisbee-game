@@ -42,8 +42,6 @@ function renderHome(){
   $('hTrainB').classList.toggle('hidden',!(trainOpen()&&(!SV.tTeam||left>0)));
   $('hMarketB').classList.toggle('hidden',SV.mkSeen===SV.mkN);
   if(!SV.evt&&SV.sp&&SV.sp.off)SV.evt={id:'spons',a:{}};   // inizio stagione: la scelta dello sponsor aspetta una risposta, come un imprevisto
-  const nwA=postaUnread();   // il numero sulla campanella conta solo gli avvisi della Posta non letti (non le notizie): le decisioni ancora aperte restano in «Da decidere» e in «Questa settimana»
-  $('hBellB').textContent=nwA;$('hBellB').classList.toggle('hidden',!nwA);
   // ordine delle finestre che si aprono da sole: prima il fumetto della schermata Partita (alla prima visita), poi sponsor e imprevisti
   // (sono scelte), poi la Posta con decisioni ed emergenze; ognuna si apre quando si chiude la precedente (tipAfter, evOk, alX richiamano renderHome)
   const homeOn=!$('home').classList.contains('hidden'),free=homeOn&&$('opts').classList.contains('hidden')&&$('simres').classList.contains('hidden')&&$('over').classList.contains('hidden');
@@ -266,6 +264,7 @@ $('eBody').addEventListener('click',e=>{
   $('eBody').querySelector(`[data-evpage="${eventPage}"]`)?.focus();
 });
 function renderEvent(){
+  $('eCards').classList.remove('mini');
   if(isUS())return renderEventUS();   // Classifica del campionato USA: 15-usa-schermate.js
   if(isLN())return renderEventLN();   // Classifica delle leghe europee: 19-leghe-schermate.js
   const cs=SV.done?`${SERIES_NAME[SV.sr]}, stagione conclusa`:(SV.po&&SV.po.on?`${SERIES_NAME[SV.sr]}, ${PO_NAME[SV.po.kind].toLowerCase()}`:`${SERIES_NAME[SV.sr]}, giornata ${SV.round+1} di ${totalRounds()}`);

@@ -196,7 +196,7 @@ catch(e){
     if(!/Belgio/.test(await page.locator('#hInfo').innerText()))throw new Error('il cruscotto non mostra il campionato');
     await page.click('#hEvent');await vis('#event');
     if(await page.locator('#eBody .rt tr.up').count()!==4||await page.locator('#eBody .rt tr.dn').count()!==2)throw new Error('in N1 servono 4 squadre nella zona playoff e 2 in quella retrocessione');
-    for(const k of ['fin','tiers','grp'])await page.click('#lnTabs [data-lt="'+k+'"]');
+    for(const k of ['final','tiers','table'])await page.click('#eBody [data-evpage="'+k+'"]');   // una sola fila di schede
     await page.click('#hHome');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
     await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');window.testSaves.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])window.testSaves.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);
     await page.evaluate(()=>localStorage.setItem('ultimate-primi','{"d":[],"m":0,"off":1}'));await page.reload();await page.waitForTimeout(500);
@@ -290,7 +290,7 @@ catch(e){
     await page.click('#eBody [data-evpage="table"]');await vis('#eBody table.rt');
     await page.click('#hHome');
     await menu('#hOpt');await vis('#opts');await page.click('#opX');
-    await page.click('#hBell');await vis('#alerts');   // lo chiude il gestore qui sopra alla prossima azione
+    await page.evaluate(()=>{document.getElementById('hTodoB').click();document.querySelector('#hTodo [data-go="news"]').click();document.querySelector('#alTabs [data-alt="posta"]').click();});await vis('#alerts');   // la Posta si apre da «Questa settimana»; lo chiude il gestore qui sopra alla prossima azione
   });
   await step('Posta: «Chiudi» non segna come letto, «Segna tutto come letto» sì; Mercato: conferma prima di comprare; Allena: lavoro individuale in due passi',async()=>{
     // una notizia nuova di sicuro: un avviso non urgente scritto nel salvataggio, poi ricarica
@@ -298,8 +298,8 @@ catch(e){
     await page.reload();await page.waitForTimeout(500);await careerOpen(page);await vis('#home');
     // qui i tocchi passano da evaluate: il gestore in cima alla prova chiuderebbe la Posta prima di ogni click
     const unread=async()=>(await page.locator('#alBody .ali.new').count()),tap=id=>page.evaluate(i=>document.getElementById(i).click(),id);
-    await tap('hBell');await vis('#alerts');const n0=await unread();if(n0<1)throw new Error('la notizia di prova non risulta nuova');
-    await tap('alX');await tap('hBell');await vis('#alerts');
+    await page.evaluate(()=>{document.getElementById('hTodoB').click();document.querySelector('#hTodo [data-go="news"]').click();document.querySelector('#alTabs [data-alt="posta"]').click();});await vis('#alerts');const n0=await unread();if(n0<1)throw new Error('la notizia di prova non risulta nuova');
+    await tap('alX');await page.evaluate(()=>{document.getElementById('hTodoB').click();document.querySelector('#hTodo [data-go="news"]').click();document.querySelector('#alTabs [data-alt="posta"]').click();});await vis('#alerts');
     if(await unread()!==n0)throw new Error('«Chiudi» ha segnato le notizie come lette');
     await tap('alAll');if(await unread())throw new Error('«Segna tutto come letto» non ha segnato tutto');
     // le notizie non stanno nella Posta: hanno la loro scheda e aprirla basta per leggerle

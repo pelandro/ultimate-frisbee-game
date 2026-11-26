@@ -21,8 +21,6 @@ function renderShell(){
   $('hInfo').textContent=isUS()?usInfo():isLN()?lnInfo():`${SERIES_NAME[SV.sr]} · Stagione ${SV.season}`+(SV.event==='camp'?(SV.done?' · conclusa':(SV.round>0?` · ${myRank()}° posto`:'')):' · Campionato europeo');
   const cash=$('hCash'),v=String(Math.round(SV.cash));
   if(cash.textContent!==v){cash.textContent=v;cash.parentNode.classList.remove('bump');void cash.parentNode.offsetWidth;cash.parentNode.classList.add('bump');}   // il numero «saltella» quando cambia
-  const nw=postaUnread();   // solo gli avvisi della Posta non letti: le notizie non accendono la campanella; una decisione già letta ma ancora aperta resta in «Da decidere» e in «Questa settimana»
-  $('hBellB').textContent=nw;$('hBellB').classList.toggle('hidden',!nw);
 }
 // ---- menu ----
 $('hMenu').addEventListener('click',e=>{e.stopPropagation();const o=$('cmenu').classList.toggle('hidden');$('hMenu').setAttribute('aria-expanded',String(!o));});
@@ -54,6 +52,7 @@ function todoItems(){
 function renderTodo(){
   const L=todoItems(),m=nextMatch();
   $('hTodo').innerHTML=L.length?L.map(([c,t,g])=>`<li><button type="button" class="tdi ${c}" data-go="${g}"><i></i><span>${esc(t)}</span></button></li>`).join(''):`<li class="tdok">${m?'Tutto in ordine: puoi giocare.':'Niente da sistemare per ora.'}</li>`;
+  $('hTodo').insertAdjacentHTML('beforeend','<li><button type="button" class="tdi ok" data-go="news"><i></i><span>Notizie e archivio degli avvisi</span></button></li>');   // la Posta non ha più il pulsante in alto: decisioni, avvisi e notizie si aprono da qui
   // il pulsante in pagina: quante cose ci sono e il colore della piu' urgente
   const lv=L.some(x=>x[0]==='bad')?'bad':(L.some(x=>x[0]==='warn')?'warn':(L.length?'ok':''));
   $('hTodoN').textContent=L.length||'';$('hTodoN').className='hpn '+lv;

@@ -417,3 +417,5 @@ select.qs option,select.qs optgroup{background:#12301d;color:#fff}
 
 .evpages{flex-wrap:wrap;margin:6px 0 10px}
 #possessionHud{font-size:clamp(10px,2.4vh,13px);font-weight:700;color:var(--hud-mute)}
+.ecards.mini{display:flex;gap:6px;margin-bottom:6px}.ecards.mini .ecard{flex:1;padding:5px 10px;border-radius:10px;text-align:center}.ecards.mini .ecard strong{font-size:15px}.ecards.mini .ecard small{display:none}
+#lnPools{gap:4px;margin:0 0 6px}#lnPools .sg{flex:0 1 auto;font-size:13px;padding:4px 10px}

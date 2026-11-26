@@ -122,7 +122,7 @@ const DET=()=>{
       await page.click('#rpGo');await look('allenatore');
       await page.click('#coRnd');await page.click('#coGo');await page.waitForTimeout(400);
       for(const [id,name] of [['#hHome','Partita'],['#hRoster','Squadra'],['#hTrain','Allena'],['#hMarket','Mercato'],['#hEvent','Lega'],['#hClub','Società']]){await page.click(id);await look(name);}
-      await page.click('#hBell');await look('Posta');await page.click('#alX',{timeout:2000}).catch(()=>{});   // puo' averla gia' chiusa il gestore qui sopra
+      await page.evaluate(()=>{document.getElementById('hTodoB').click();document.querySelector('#hTodo [data-go="news"]').click();document.querySelector('#alTabs [data-alt="posta"]').click();});await look('Posta');await page.click('#alX',{timeout:2000}).catch(()=>{});   // puo' averla gia' chiusa il gestore qui sopra
       await page.click('#hMenu');await look('menu della carriera');await page.click('#hOpt');await look('Opzioni');await page.click('#opX',{timeout:2000}).catch(()=>{});
     }catch(e){errs.push(S.n+': percorso interrotto: '+e.message.split('\n').slice(0,12).join(' | '));}
     await ctx.close();

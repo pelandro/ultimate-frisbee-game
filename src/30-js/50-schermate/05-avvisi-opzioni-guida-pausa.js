@@ -48,7 +48,6 @@ function closeAlerts(){$('alerts').classList.add('hidden');persist();renderHome(
 const AL_URGENT={inj:1,bye:1,off:1,dir:1};   // dir: la dirigenza protesta per i conti in rosso
 const urgentAlerts=()=>(SV.alerts||[]).filter(a=>!a.seen&&!a.sh&&(AL_URGENT[a.k]||a.act)).length;
 function pendingAlerts(){return (SV.alerts||[]).filter(alOpen).length;}
-$('hBell').addEventListener('click',()=>openAlerts('posta'));
 // «Chiudi» chiude e basta; «Segna tutto come letto» e' una scelta a parte; toccare un avviso lo apre e lo segna come letto
 $('alX').addEventListener('click',closeAlerts);
 $('alAll').addEventListener('click',()=>{for(const a of SV.alerts)if(alPosta(a))a.seen=1;persist();renderAlerts();renderShell&&renderShell();});
