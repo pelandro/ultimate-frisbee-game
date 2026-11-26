@@ -29,6 +29,7 @@ function clearScreenTip(){
 function hideScreens(){clearScreenTip();for(const sc of SCREENS)$(sc).classList.add('hidden');$('cshell').classList.add('hidden');}
 function showScreen(id){
   clearScreenTip();
+  if((id==='ut'||id==='utReal')&&UT.packs.length){UT.stage='closed';UT.pkBack=id;id='utPack';}   // Ultimate Team: i pacchetti arrivati (premi, traguardi, primo pacchetto) si aprono subito
   if(id!=='utReal'&&!$('utReal').classList.contains('hidden')&&UO.busy)uoCancelSearch();
   for(const sc of SCREENS)$(sc).classList.toggle('hidden',sc!==id);
   shellShow(id);   // barra in alto e navigazione laterale della carriera (50-schermate/24-guscio-carriera.js)
@@ -92,6 +93,7 @@ const hasCareer=()=>!!(SV&&SV.team);
 function renderTitle(){   // Carriera apre i tre slot (Salvataggi): continui quella che vuoi o ne inizi una nuova
   const n=[1,2,3].filter(k=>slotInfo(k)).length;
   $('tCareerT').textContent=hasCareer()?'Continua carriera':'Carriera';
+  if(typeof ricBtn==='function')ricBtn();   // pulsante dei riconoscimenti (34-riconoscimenti.js)
   $('tCareerS').textContent=hasCareer()?`Continua: ${SV.team}, ${SERIES_NAME[SV.sr]}${SV.susp?' · partita sospesa':''}`:(n?`${n} di 3 slot usati`:'Scegli lo slot e la squadra');
 }
 const qPowCache={};
