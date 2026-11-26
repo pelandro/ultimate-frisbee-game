@@ -1,4 +1,6 @@
 /* ---- IA attacco (compagni senza disco) ---- */
+// chi ha raccolto il disco in meta lo porta alla linea a questa frazione della sua velocita' massima (prima 0,4: camminava pianissimo)
+const WALK_V=0.8;
 const visOf=p=>p.s.vis/100;
 const wanderW=p=>clamp((0.5-visOf(p))*0.6,0,1)*AIK(p.t).wander*(G.holder&&G.holder.t===p.t&&hasT(G.holder,'general')?0.5:1);   // quanto si muove a caso (visione bassa)
 function pickCut(p,H,d,sch,w){
@@ -168,7 +170,7 @@ function updateAttackers(dt){
   for(const p of atk){
     p.rt=null;p.sq=0;   // dove sta andando (solo per disegnare la linea del taglio); sq: corre un movimento dello schema a sequenza
     if(p===Hh){
-      if(G.walk){const tg=G.walk.stage?G.walk.line:G.walk.pick;if(G.walk.stage)moveTo(p,tg.x,tg.y,dt,0.55,0.4);else moveTo(p,tg.x,tg.y,dt);}   // corre a prendere il disco, poi lo porta camminando alla linea
+      if(G.walk){const tg=G.walk.stage?G.walk.line:G.walk.pick;if(G.walk.stage)moveTo(p,tg.x,tg.y,dt,0.9,WALK_V);else moveTo(p,tg.x,tg.y,dt);}   // corre a prendere il disco, poi lo porta alla linea di corsa leggera
       else moveTo(p,p.x,p.y,dt);
       continue;
     }
