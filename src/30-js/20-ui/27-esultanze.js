@@ -275,6 +275,8 @@ function celDisc(){
     else x=gx+f*12;
     celDiscAt(ri(x),gy-1-ri(h),gy,sp,0,tl);return true;
   }
+  // balletto: le braccia dei tre sono in aria e il disco in mano finiva all'altezza del fianco (o sospeso accanto alla testa): chi ha segnato lo posa a terra davanti a se' e balla
+  if(st.kind==='ballo'&&a>=0.5){celDiscAt(ri(gx+f*4),gy+2,gy+2,0,0,0);return true;}
   if(st.kind==='cielo'&&l>=0.29&&l<1.42){
     const u=(l-0.29)/1.13,pk=clamp(gy-BAR-44,12,48),H=pk*4*u*(1-u);
     celDiscAt(gx+f*3+ri(f*2*Math.sin(Math.PI*u)),gy-23-ri(H),gy,G.tick*24,H>30?2:(H>12?1:0),(l*10|0)&1?1:-1);return true;

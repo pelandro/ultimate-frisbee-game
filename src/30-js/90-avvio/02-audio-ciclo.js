@@ -312,6 +312,7 @@ document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('but
 window.addEventListener('keydown',()=>AUD.init(),{capture:true});
 for(const id of ['tSnd','sSnd','paSnd'])$(id).addEventListener('click',()=>AUD.setOn(!AUD.isOn()));
 $('sRot').addEventListener('click',()=>{setRotPref(!rotPref);syncToggles();});
+$('sLangSeg').addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(b)setLang(b.dataset.lang);});   // lingua (20-ui/30-lingua.js)
 $('sStat').addEventListener('click',()=>{uosSet(!uosOn());if(uosOn())uosStart();syncToggles();});   // contatori anonimi d'uso (04-ut-online.js)
 $('sTips').addEventListener('click',()=>{const on=!tipsOn();try{localStorage.setItem('ultimate-suggerimenti',on?'1':'0');}catch(e){}if(on&&SV&&SV.tips)SV.tips={};if(on)ppReset();syncToggles();});   // riaccesi, i fumetti si rivedono tutti
 for(const id of ['sWind'])$(id).addEventListener('click',()=>{setWindOn(G.opt.wind===false);syncToggles();if(!$('home').classList.contains('hidden'))renderHome();});
@@ -331,6 +332,7 @@ function syncToggles(){   // audio, stacchi, meteo, difesa e suggerimenti si cam
   sw('sSnd',on,on?'Musica, tifo ed effetti':'Spento');
   sw('sCine',c,c?'Primo piano con tocco a tempo sui salti e sui tuffi, replay delle mete spettacolari':'Spento: salti e tuffi si risolvono da soli');
   sw('sWind',wOn,wOn?'Vento, pioggia e neve a ogni partita':'Sempre sereno e calmo');
+  lgSeg();
   sw('sStat',uosOn(),uosOn()?'Il gioco invia quante partite si giocano e con quali impostazioni, senza dati personali':'Spente: non viene inviato niente');
   sw('sTips',tp,tp?'Fumetti alla prima visita delle schermate e Primi passi nelle prime partite':'Spenti: riaccendendoli si rivedono tutti');
   sw('sRot',rotPref,rotPref?'In verticale il gioco si gira da solo':'In verticale compare «Gira lo schermo»');
@@ -395,6 +397,7 @@ resize();
 const hasSave=loadSave();
 startPoint(G.nextRec);cam.snap=true;
 showScreen('title');
+lgStart();   // lingua scelta: traduce la pagina e quello che il gioco disegna dopo
 uosStart();   // statistiche anonime: apertura del giorno e, la prima volta, l'avviso
 requestAnimationFrame(frame);
 })();

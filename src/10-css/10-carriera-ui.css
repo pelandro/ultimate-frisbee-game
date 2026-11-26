@@ -71,6 +71,7 @@ html #home .hdash .hr{padding-top:0;display:flex;flex-direction:column;gap:8px}
 #home .dtick{white-space:normal;padding:5px 9px;font-size:16px;line-height:1.2}
 #home .dtick span{display:block;padding-left:0;animation:none}
 #home .dtick:before{content:"Consiglio · ";color:#d1deec}
+html[lang="en"] #home .dtick:before{content:"Tip · "}
 #home .dtick.nw:before{content:""}
 /* ---- Squadra: carte con Overall, scheda con barre ---- */
 .pch .pov{min-width:28px;font-size:10px;line-height:12px;padding:3px 2px;margin:-1px -3px -1px 0}
@@ -100,6 +101,9 @@ html #home .hdash .hr{padding-top:0;display:flex;flex-direction:column;gap:8px}
 .tch b{font-weight:400;color:#fff}
 .tch i{width:10px;height:10px;border:2px solid #000;background:#d1deec}
 .tch.todo i{background:#ffb83f}.tch.ok i{background:var(--good)}.tch.blk i{background:#456189}
+.tch.tab{font:inherit;font-size:16px;cursor:pointer}.tch.tab:not(.on){opacity:.8}
+.tch.tab.on{background:#ffd23f;color:#1d1700;box-shadow:0 3px 0 #000}.tch.tab.on b{color:#1d1700}.tch.tab.on i{border-color:#1d1700}
+.tteam2.tind{border-color:#ffd23f}
 #train .tgrid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
 #train .tgrid>div:last-child{order:-1}
 /* ---- Mercato: schede dei giocatori al posto della tabella ---- */
@@ -187,3 +191,10 @@ html[data-rail="r"]{--rail:calc(62px + var(--sar))}
 html[data-rail="r"] #rail{left:auto;right:0;border-right:0;border-left:3px solid #000;padding:4px calc(3px + var(--sar)) 4px 3px}
 html[data-rail="r"] .screen.csc{padding-left:max(14px,var(--sal));padding-right:calc(var(--rail) + 10px)}
 html[data-rail="r"] .screen.csc .pcov{left:0;right:var(--rail)}
+/* Graduatorie della lega: il giocatore in chiaro e più grande, la squadra sotto, piccola e di un altro colore (sulla stessa riga i due nomi si confondevano) */
+.lbr{align-items:center}
+.lbr .lbn{display:flex;flex-direction:column;line-height:1.15}
+.lbr .lbp{color:#fff;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lbr .lbn small{color:#8fb4de;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lbr .lbn.me .lbp,.lbr .lbn.me small{color:var(--gold)}
+.lbg ol li{margin-bottom:3px}
