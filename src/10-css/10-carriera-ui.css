@@ -72,6 +72,7 @@ html #home .hdash .hr{padding-top:0;display:flex;flex-direction:column;gap:8px}
 #home .dtick span{display:block;padding-left:0;animation:none}
 #home .dtick:before{content:"Consiglio · ";color:#d1deec}
 html[lang="en"] #home .dtick:before{content:"Tip · "}
+html[lang="fr"] #home .dtick:before{content:"Astuce · "}
 #home .dtick.nw:before{content:""}
 /* ---- Squadra: carte con Overall, scheda con barre ---- */
 .pch .pov{min-width:28px;font-size:10px;line-height:12px;padding:3px 2px;margin:-1px -3px -1px 0}

@@ -4,6 +4,8 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Nuova lingua: il gioco si può giocare in francese (Impostazioni › Partita › Lingua › Français).
+- Titoli a pixel: le maiuscole accentate (É, È, À, Î…) sono a tutta altezza con l’accento sopra, non più rimpicciolite.
 - Inglese: tradotti i nomi delle statistiche (Hole, Speed, Agility, Dive), le scelte delle Impostazioni, «Compare with» e i rapporti degli osservatori nel Mercato e nella Rosa.
 - Inglese: «Sparo» diventa «Deep shot»; seconde file di schede (Seasons/Milestones/Record in Trophies, Conference nella Lega USA) con rettangoli più piccoli; «(tua)» diventa «(you)» perché le 8 Conference stanno in una fila.
 - Inglese: tradotte le scritte rimaste in italiano (Club, Staff, Trofei, Traguardi, Record, Lega USA, difficoltà, oggetti, eroi e obiettivi di Ultimate Team).

@@ -9,6 +9,7 @@
 .eqs svg{flex:0 0 auto}
 .eqs span{display:flex;flex-direction:column;min-width:0}
 .eqs b{font-size:12px;line-height:1.15}.eqs small{font-size:10.5px;opacity:.85}
+html[lang="fr"] .eqs b{font-size:10.5px;letter-spacing:-.02em}
 .eqs.com,.eqs.rar,.eqs.epi{border-color:var(--rc)}
 .eqs.epi{box-shadow:3px 3px 0 #000,0 0 9px rgba(179,107,255,.55)}
 .eqs.on{outline:3px solid var(--gold);outline-offset:1px}
