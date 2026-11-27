@@ -208,7 +208,7 @@ function standingsHTML(sr){
     const cls=[nm===SV.team?'me':'',(sr!=='A'&&pos<PROMO)?'up':'',(sr!=='C'&&pos>=n-PROMO)?'dn':''].filter(Boolean).join(' ');
     return `<tr${cls?` class="${cls}"`:''}><td>${pos+1}. ${crest(nm,15)} ${nm}<span class="tp">${Math.round(teamPower(nm)||0)}</span></td><td>${t[nm].w+t[nm].l}</td><td>${t[nm].w}</td><td>${t[nm].l}</td><td>${t[nm].pf-t[nm].pa}</td><td><b>${t[nm].pts}</b></td></tr>`;
   }).join('');
-  return `<div style="overflow-x:auto"><table class="rt"><tr><th>Squadra e forza</th><th>G</th><th>V</th><th>S</th><th>Diff</th><th>Pt</th></tr>${rows}</table></div>`;
+  return `<div style="overflow-x:auto"><table class="rt"><tr><th>Squadra e forza</th><th data-lgk="th-G">G</th><th data-lgk="th-V">V</th><th data-lgk="th-S">S</th><th>Diff</th><th>Pt</th></tr>${rows}</table></div>`;
 }
 let evSr='';
 $('eBody').addEventListener('click',e=>{const b=e.target.closest('#evTabs [data-sr]');if(!b)return;evSr=b.dataset.sr;renderEvent();});
@@ -306,7 +306,7 @@ function renderEvent(){
 function lineSum(k,lab){
   const L=SV[k].map(byFull).filter(Boolean),n=L.length,avg=n?Math.round(L.reduce((a,p)=>a+ovr(p),0)/n):0;
   const inj=L.filter(p=>p.inj).length,tired=L.filter(p=>!p.inj&&p.cond<50).length,both=L.filter(p=>SV.lineO.includes(p.full)&&SV.lineD.includes(p.full)).length;
-  const warn=[n<7?`mancano ${7-n}`:'',inj?`${inj} indisponibil${inj>1?'i':'e'}`:'',tired?`${tired} stanc${tired>1?'hi':'o'}`:''].filter(Boolean);   // «in entrambe» lo dice l'avviso sotto, una volta sola: qui resta il colore
+  const warn=[n<7?`mancano ${7-n}`:'',inj?`${inj} indisponibil${inj>1?'i':'e'}`:'',tired?`${tired} stanc${tired>1?'hi':'o'}`:''].filter(Boolean).map(t=>lgTr(t));   // «in entrambe» lo dice l'avviso sotto, una volta sola: qui resta il colore
   const lv=n<7||inj?'bad':(warn.length||both?'warn':'ok'),tip=warn.concat(both?[both+' in entrambe le linee']:[]).join(', ')||'Linea completa';
   return `<span class="lsum ${lv}" title="${esc(tip)}"><i></i>${lab} <b>${n}/7</b>${n?` · forza <b>${avg}</b>`:''}${warn.length?` <small>${warn.join(' · ')}</small>`:''}</span>`;
 }

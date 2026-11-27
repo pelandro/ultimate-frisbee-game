@@ -47,7 +47,7 @@ const AL_SUM={up:['in crescita','in crescita'],dec:['in calo','in calo'],ok:['ri
 function newsSummary(){
   const c={};for(const a of SV.alerts||[])if(!alPosta(a)&&!a.seen)c[a.k]=(c[a.k]||0)+1;
   const parts=Object.keys(c).sort((x,y)=>c[y]-c[x]).map(k=>k==='mkt'?'mercato':c[k]+' '+(AL_SUM[k]||['notizia','notizie'])[c[k]>1?1:0]);
-  return parts.length?parts.slice(0,3).join(', ')+(parts.length>3?'…':''):'';
+  return parts.length?parts.slice(0,3).map(t=>lgTr(t)).join(', ')+(parts.length>3?'…':''):'';
 }
 const postaUnread=()=>(SV.alerts||[]).filter(a=>!a.seen&&alPosta(a)).length;
 // sulla scheda del giocatore: le ultime notizie che lo riguardano (crescita, calo, infortuni, umore, obiettivi)

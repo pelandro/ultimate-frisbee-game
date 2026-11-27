@@ -203,14 +203,14 @@ function renderRic(){
     $('ricGrid').innerHTML=`<div class="ricg ricu">${RIC_UT.comps.map(c=>`<div class="rich">${c.short}</div>`).join('')}${RIC_UT.comps.map(c=>{const w=o[c.k];
       return `<button type="button" class="ricb${w?' on':''}${w&&w.nw?' nw':''}${ricSel===c.k?' sel':''}" data-ric="${c.k}" aria-label="${c.name}${w?'':' (da ottenere)'}">${badgeSVG(c.k,'',!w,64)}${w&&w.n>1?`<i class="ricx">×${w.n}</i>`:''}</button>`;}).join('')}</div>`;
     const c=RIC_BY[ricSel],w=c&&o[c.k];
-    $('ricInfo').innerHTML=c?`<b>${c.name}</b><span>${w?`${w.n>1?'Ottenuto '+w.n+' volte: ':'Ottenuto a '}${w.m.map(utoSeasonName).join(', ')}${w.t?' · '+esc(w.t):''}`:c.txt+', con almeno '+UTO_SEASON_G+' partite nel mese.'}</span>`
+    $('ricInfo').innerHTML=c?`<b>${c.name}</b><span>${w?`${w.n>1?'Ottenuto '+w.n+' volte: ':'Ottenuto a '}${w.m.map(s=>lgTr(utoSeasonName(s))).join(', ')}${w.t?' · '+esc(w.t):''}`:c.txt+', con almeno '+UTO_SEASON_G+' partite nel mese.'}</span>`
       :'<span>Tocca un badge per vedere come si ottiene. La classifica riparte ogni mese.</span>';
     return;
   }
   const L=RIC_LG.find(l=>l.k===ricTab)||RIC_LG[0];
   $('ricGrid').innerHTML=block(L.name,L.comps)+block('EUCF',RIC_EU.comps);
   const id=ricSel||'',c=id?ricComp(id):null,d=id.split(':').pop(),w=o[id];
-  $('ricInfo').innerHTML=c?`<b>${c.name} · ${CAR_DIFF[d].name}</b><span>${w?`Ottenuto con ${esc(w.t)} nella stagione ${w.s}${w.at?' · '+new Date(w.at).toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'}):''}`:c.txt+' con una carriera a difficoltà '+CAR_DIFF[d].name+'.'}</span>`
+  $('ricInfo').innerHTML=c?`<b>${c.name} · ${CAR_DIFF[d].name}</b><span>${w?`Ottenuto con ${esc(w.t)} nella stagione ${w.s}${w.at?' · '+new Date(w.at).toLocaleDateString(lgLoc(),{day:'numeric',month:'long',year:'numeric'}):''}`:c.txt+' con una carriera a difficoltà '+CAR_DIFF[d].name+'.'}</span>`
     :'<span>Tocca un badge per vedere come si ottiene. La difficoltà è quella scelta all’inizio della carriera; l’EUCF vale con qualsiasi squadra.</span>';
 }
 function ricOpen(){

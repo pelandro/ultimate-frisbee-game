@@ -52,7 +52,7 @@ function renderCareers(){
   $('csBox').innerHTML=[1,2,3].map(k=>{
     const d=slotData(k);
     if(!d)return `<div class="ccard csl"><h3>Slot ${k}</h3><p class="cse">Vuoto</p><div class="schrow"><button type="button" class="go" data-cnew="${k}">Nuova carriera</button></div></div>`;
-    const when=d.savedAt?new Date(d.savedAt).toLocaleDateString('it-IT',{day:'numeric',month:'short'}):'',tr=d.troph||{},cups=(tr.A|0)+(tr.B|0)+(tr.C|0)+(tr.eu|0);
+    const when=d.savedAt?new Date(d.savedAt).toLocaleDateString(lgLoc(),{day:'numeric',month:'short'}):'',tr=d.troph||{},cups=(tr.A|0)+(tr.B|0)+(tr.C|0)+(tr.eu|0);
     const pos=d.done&&d.next?d.next.rank+'° a fine stagione':(d.tab&&d.mem&&d.round>0?ranking(d.tab,d.mem[d.sr]).indexOf(d.team)+1+'° in classifica':'inizio stagione');
     return `<div class="ccard csl${k===cur?' on':''}"><h3>Slot ${k}${k===cur?' · in uso':''}</h3><div class="cst">${crest(d.team,30)}<span><b>${esc(d.team)}</b><small>${SERIES_NAME[d.sr]} · stagione ${d.season} · ${pos}${cups?` · ${cups} ${cups>1?'trofei':'trofeo'}`:''}${d.susp?' · partita sospesa':''}</small></span></div>${when?`<p class="csd">Ultimo salvataggio: ${when}</p>`:''}<div class="schrow"><button type="button" class="go" data-cgo="${k}">Continua</button><button type="button" class="sec danger" data-cnew="${k}">Nuova carriera</button></div></div>`;
   }).join('');

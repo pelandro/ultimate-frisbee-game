@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Inglese, francese e tedesco: tradotte molte scritte rimaste in italiano (carriere salvate e schermata iniziale, notizie, avvisi, infortuni, sponsor, gironi, sfide online, premi), anche quelle che cambiano tra singolare e plurale; le date seguono la lingua scelta. In Impostazioni ogni lingua ha la sua bandiera in sfondo.
 - Nuova lingua: il gioco si può giocare in tedesco (Impostazioni › Partita › Lingua › Deutsch).
 - Inglese e francese: tradotte le scritte rimaste in italiano sugli slot di carriera (ultimo salvataggio, elimina carriera, continua) e nell’elenco delle lingue della Guida.
 - Nuova lingua: il gioco si può giocare in francese (Impostazioni › Partita › Lingua › Français).

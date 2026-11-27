@@ -11,7 +11,8 @@ const LANG_ATTR=['title','aria-label','placeholder','alt'];
 const lgOrig=new WeakMap(),lgOut=new WeakMap(),lgRx=new Map();
 function lgPats(l){   // i modelli diventano espressioni regolari una volta sola
   if(lgRx.has(l))return lgRx.get(l);
-  const r=(LANG_PAT[l]||[]).map(([a,b])=>{const n=[];const src=a.split(/(\{\d+\})/).map(p=>{const m=/^\{(\d+)\}$/.exec(p);if(m){n.push(+m[1]);return '(.+?)';}return p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('');return {rx:new RegExp('^'+src+'$'),n,to:b};});
+  // {0} testo qualsiasi · {#0} solo un numero (così «{#0} mete» non cattura le frasi) · {^0} pezzo scritto in minuscolo nella frase ma con la maiuscola nel dizionario
+  const r=(LANG_PAT[l]||[]).map(([a,b])=>{const n=[],up=[];const src=a.split(/(\{[#^]?\d+\})/).map(p=>{const m=/^\{([#^]?)(\d+)\}$/.exec(p);if(m){n.push(+m[2]);up.push(m[1]==='^');return m[1]==='#'?'(\\d+)':'(.+?)';}return p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('');return {rx:new RegExp('^'+src+'$'),n,up,to:b};});
   lgRx.set(l,r);return r;
 }
 function lgTr(s){   // un testo italiano -> la lingua scelta (invariato se non c'e')
@@ -19,9 +20,13 @@ function lgTr(s){   // un testo italiano -> la lingua scelta (invariato se non c
   const t=s.replace(/\s+/g,' ').trim();if(!t||!/[A-Za-zÀ-ÿ]{2,}/.test(t))return s;   // a capo e rientri dell'HTML non contano: la chiave ha gli spazi compattati
   const d=LANG_TXT[LANG],lead=/^\s*/.exec(s)[0],tail=/\s*$/.exec(s)[0];
   if(d&&Object.prototype.hasOwnProperty.call(d,t))return lead+d[t]+tail;
-  for(const p of lgPats(LANG)){const m=p.rx.exec(t);if(m){const v=[];p.n.forEach((k,i)=>{v[k]=lgTr(m[i+1]);});return lead+p.to.replace(/\{(\d+)\}/g,(x,k)=>v[+k]===undefined?x:v[+k])+tail;}}
+  for(const p of lgPats(LANG)){const m=p.rx.exec(t);if(m){const v=[];p.n.forEach((k,i)=>{v[k]=lgTr(p.up[i]?m[i+1].charAt(0).toUpperCase()+m[i+1].slice(1):m[i+1]);});return lead+p.to.replace(/\{(\d+)\}/g,(x,k)=>v[+k]===undefined?x:v[+k])+tail;}}
   return s;
 }
+// date scritte nella lingua scelta (nomi dei mesi compresi)
+const lgLoc=()=>({en:'en-GB',fr:'fr-FR',de:'de-DE'})[LANG]||'it-IT';
+// sigle di una lettera scritte da sole (G = giornata, V = vinta, S = sconfitta): lgTr lascia stare le scritte di una lettera, quindi le chiede chi le scrive
+const lgSigla=k=>({en:{G:'MD',V:'W',S:'L'},fr:{G:'J',V:'V',S:'D'},de:{G:'ST',V:'S',S:'N'}}[LANG]||{})[k]||k;
 // testi dipinti nel campo (ptext/ptw in 02-pixel-art.js): non sono nella pagina, quindi passano di qui; la risposta si ricorda perche' si ridisegna a ogni fotogramma
 const lgCache=new Map();
 function lgC(s){
@@ -35,11 +40,13 @@ function lgC(s){
   return v;
 }
 const lgSkip=n=>{const p=n.parentNode;return !p||/^(SCRIPT|STYLE|TEXTAREA|NOSCRIPT)$/.test(p.nodeName);};
+// sigle di una lettera (G, V, S nelle classifiche): lgTr le lascia stare, quindi chi le scrive mette data-lgk e il dizionario ha la voce '@chiave'
+const lgNode=(n,o)=>{const p=n.parentNode,k=p&&p.getAttribute&&p.getAttribute('data-lgk');return (k&&LANG_TXT[LANG]&&LANG_TXT[LANG]['@'+k])||lgTr(o);};
 function lgText(n){   // n: nodo di testo
   if(lgSkip(n)||lgNew.has(n))return;
   const cur=n.nodeValue,had=lgOrig.has(n);
-  if(had&&lgOut.get(n)===cur){const o=lgOrig.get(n),v=LANG==='it'?o:lgTr(o);if(v!==cur){n.nodeValue=v;lgOut.set(n,v);}return;}   // lo abbiamo scritto noi: solo cambio di lingua
-  const v=LANG==='it'?cur:lgTr(cur);lgOrig.set(n,cur);lgOut.set(n,v);if(v!==cur)n.nodeValue=v;   // testo nuovo del gioco: e' l'originale
+  if(had&&lgOut.get(n)===cur){const o=lgOrig.get(n),v=LANG==='it'?o:lgNode(n,o);if(v!==cur){n.nodeValue=v;lgOut.set(n,v);}return;}   // lo abbiamo scritto noi: solo cambio di lingua
+  const v=LANG==='it'?cur:lgNode(n,cur);lgOrig.set(n,cur);lgOut.set(n,v);if(v!==cur)n.nodeValue=v;   // testo nuovo del gioco: e' l'originale
 }
 /* ---- Blocchi: paragrafi con grassetti e corsivi dentro (guida, tutorial, fumetti). Una frase con <b> sta in piu' nodi di testo e tradotta a pezzi suonerebbe male:
    una «fila» e' la sequenza di nodi di testo ed elementi in linea tra due elementi di blocco; la sua chiave e' l'HTML italiano con gli spazi compattati e
@@ -152,4 +159,4 @@ function setLang(l){
   if(typeof syncToggles==='function')syncToggles();
 }
 // il selettore in Impostazioni › Gioco (i pulsanti si disegnano qui: nomi delle lingue sempre nella loro lingua, mai tradotti)
-function lgSeg(){const b=document.getElementById('sLangSeg');if(!b)return;b.innerHTML=LANGS.map(([k,t])=>`<button type="button" class="sg${LANG===k?' on':''}" data-lang="${k}" lang="${k}" translate="no">${t}</button>`).join('');}
+function lgSeg(){const b=document.getElementById('sLangSeg');if(!b)return;b.innerHTML=LANGS.map(([k,t])=>`<button type="button" class="sg${LANG===k?' on':''}" data-lang="${k}" lang="${k}" translate="no"><span>${t}</span></button>`).join('');}
