@@ -75,6 +75,7 @@ html[data-eh="s"] #rail .rb{gap:0}
 html[data-eh="s"] #rail .rb svg{width:17px;height:17px}
 html[data-eh="s"] #rail .rb strong{font-size:11px}
 html[lang="fr"] #rail .rb strong{font-size:10px;letter-spacing:-.04em}
+html[lang="de"] #rail .rb strong{font-size:10px;letter-spacing:-.04em}
 
 /* schemi tra una meta e l'altra: «Fatto» a destra, come l'azione principale di tutte le altre finestre */
 /* Schemi: titolo e punteggio sulla stessa riga, la frase sotto a tutta larghezza (con i nomi lunghi dei club il punteggio schiacciava la frase in una colonna stretta e il pannello usciva dallo schermo) */

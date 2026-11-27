@@ -4,6 +4,8 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Nuova lingua: il gioco si può giocare in tedesco (Impostazioni › Partita › Lingua › Deutsch).
+- Inglese e francese: tradotte le scritte rimaste in italiano sugli slot di carriera (ultimo salvataggio, elimina carriera, continua) e nell’elenco delle lingue della Guida.
 - Nuova lingua: il gioco si può giocare in francese (Impostazioni › Partita › Lingua › Français).
 - Titoli a pixel: le maiuscole accentate (É, È, À, Î…) sono a tutta altezza con l’accento sopra, non più rimpicciolite.
 - Inglese: tradotti i nomi delle statistiche (Hole, Speed, Agility, Dive), le scelte delle Impostazioni, «Compare with» e i rapporti degli osservatori nel Mercato e nella Rosa.

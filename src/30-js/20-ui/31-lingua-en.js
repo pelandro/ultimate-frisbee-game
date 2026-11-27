@@ -2,6 +2,15 @@
    (i piu' specifici prima: vale il primo che combacia). I paragrafi con grassetti e corsivi stanno in 32-lingua-en-blocchi.js (LANG_BLK.en).
    Le frasi nuove si raccolgono con `node tools/lingua-raccogli.js en` (scrive quelle senza traduzione) e si aggiungono qui. Nomi di persone e squadre non si traducono. */
 LANG_TXT.en={
+  "inizio stagione":"start of season",
+  "Elimina carriera":"Delete career",
+  "La carriera di":"The career of",
+  "e la sua copia precedente verranno eliminate definitivamente.":"and its previous copy will be permanently deleted.",
+  "Continua carriera":"Continue career",
+  "partita sospesa":"match paused",
+  "questa squadra":"this team",
+  "Carriera eliminata.":"Career deleted.",
+  "Impossibile eliminare la carriera. Libera spazio e riprova.":"Could not delete the career. Free up space and try again.",
   "@titolo":"Ultimate Pixel",
   "BLU":"BLUE",
   "ROSSI":"RED",
@@ -1252,6 +1261,12 @@ LANG_TXT.en={
   "Confronto con":"Comparison with"
 };
 LANG_PAT.en=[
+  ["Continua: {0}, {1} · partita sospesa","Continue: {0}, {1} · match paused"],
+  ["Eliminare la carriera nello slot {0}?","Delete the career in slot {0}?"],
+  ["Ultimo salvataggio: {0}","Last save: {0}"],
+  ["Continua: {0}, {1}","Continue: {0}, {1}"],
+  ["{0} di 3 slot usati","{0} of 3 slots used"],
+  ["Slot {0} · in uso","Slot {0} · in use"],
   ["{0} lezioni brevi, in ordine, per scoprire tutto il gioco. Ogni capitolo si legge da solo: parti dall’inizio oppure vai dritto a ciò che ti serve.","{0} short lessons, in order, to discover the whole game. Each chapter can be read on its own: start from the beginning or go straight to what you need."],
   ["(1 automatico + {0} di forza, si aggiornano dopo ogni partita dal ranking) · i posti vanno alla regione: se li giocano le squadre della Conference"," (1 automatic + {0} by strength, updated after every match from the ranking) · the spots go to the region: the Conference teams play for them"],
   ["(1 automatico, si aggiornano dopo ogni partita dal ranking) · i posti vanno alla regione: se li giocano le squadre della Conference"," (1 automatic, updated after every match from the ranking) · the spots go to the region: the Conference teams play for them"],
@@ -1420,5 +1435,12 @@ LANG_PAT.en=[
   ["Slot {0}","Slot {0}"],
   ["{0} anni","{0} years old"],
   ["era {0}","was {0}"],
-  ["e {0}","and {0}"]
+  ["e {0}","and {0}"],
+  ["{0}° a fine stagione","{0}° at season end"],
+  ["{0}° in classifica","{0}° in the standings"],
+  ["{0} · partita sospesa","{0} · match paused"],
+  ["{0} · {1} trofei","{0} · {1} trophies"],
+  ["{0} · {1} trofeo","{0} · {1} trophy"],
+  ["{0} trofei","{0} trophies"],
+  ["{0} trofeo","{0} trophy"]
 ];
