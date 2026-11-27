@@ -1,0 +1,27 @@
+/* Telefono in orizzontale (altezza fino a 440 px): le schermate a cui mancava poco per stare intere si stringono un po', così non serve scorrere */
+@media (max-height:440px){
+  /* Partita veloce */
+  #quick .shead{margin-bottom:3px}
+  .qpb{padding:4px 9px 5px}
+  .qpb .qpick{padding:2px 8px}
+  .qpan{margin-top:5px}
+  .qrow{margin-bottom:3px}
+  #qPlay.qgo{margin-top:5px;padding:4px 24px}
+  /* Sfide online */
+  #utReal .smenu{gap:5px;margin-top:3px}
+  #utReal .smenu .hbtn{padding:4px 12px}
+  #utReal .smenu .hbtn small{font-size:12px}
+  #utReal .utinfo,#utReal .urs{margin:1px 0 3px;line-height:1.2}
+  #utReal .shead{margin-bottom:4px}
+  #utReal .urobj{margin:2px 0}
+  #utReal .urobj .urmh{margin:2px 0 1px}
+  #utReal .uoob{padding:1px 0}
+  #utReal .urmr .disc{width:40px}#utReal .urmr{grid-template-columns:44px minmax(0,1fr) auto;padding:1px 6px}#utReal .urm{padding:4px 8px;margin-top:3px}
+  /* I tuoi eroi */
+  #utHero .qhero{margin-top:4px;padding:6px 10px;gap:5px 12px}
+  #utHero .uhst{margin-top:5px}
+  #utHero .qhe{padding:3px 8px}
+  #utHero .shead{margin-bottom:3px}
+  #utHero .qhero{gap:4px 12px}
+  #utHero .utinfo{margin:0 0 2px}
+}
