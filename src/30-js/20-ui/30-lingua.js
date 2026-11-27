@@ -3,7 +3,7 @@
    se non c'e', resta l'italiano. Le frasi con numeri o nomi sono modelli con {0}, {1}… (LANG_PAT). Il testo originale resta in una WeakMap, cosi' si torna all'italiano
    senza ricaricare. Un osservatore traduce anche cio' che il gioco disegna dopo (innerHTML, textContent): per aggiungere una frase basta aggiungerla al dizionario,
    senza toccare il codice che la scrive. I testi dipinti nel campo passano da lgC() (chiamata da ptext e ptw). */
-const LANG_KEY='ultimate-lingua',LANGS=[['it','Italiano'],['en','English']];
+const LANG_KEY='ultimate-lingua',LANGS=[['it','Italiano'],['en','English'],['fr','Français']];
 const LANG_TXT={},LANG_PAT={};   // lingua -> {italiano: traduzione}, lingua -> [[modello italiano con {0}, modello tradotto]]
 let LANG='it';
 try{const s=localStorage.getItem(LANG_KEY);LANG=LANGS.some(l=>l[0]===s)?s:'it';}catch(e){}   // sempre italiano finche' la persona non sceglie: niente scelta automatica dalla lingua del browser
