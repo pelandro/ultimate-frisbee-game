@@ -28,6 +28,7 @@
 .swr[aria-checked="false"] strong::after{content:' · no';color:#d1deec}
 html[lang="en"] .swr[aria-checked="true"] strong::after{content:' · yes'}
 html[lang="fr"] .swr[aria-checked="true"] strong::after{content:' · oui'}
+html[lang="de"] .swr[aria-checked="true"] strong::after{content:' · ja'}
 @media (prefers-reduced-motion:reduce){.sw::after{transition:none}}
 
 /* pulsanti di gioco: anteprima e «Sposta i pulsanti» sulla stessa riga */

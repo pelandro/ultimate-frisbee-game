@@ -1,5 +1,14 @@
 /* Dizionario fr (20-ui/30-lingua.js): chiave = testo italiano per intero. I modelli con {0}, {1} stanno in LANG_PAT.fr. */
 LANG_TXT.fr={
+  "inizio stagione":"début de saison",
+  "Elimina carriera":"Supprimer la carrière",
+  "La carriera di":"La carrière de",
+  "e la sua copia precedente verranno eliminate definitivamente.":"et sa copie précédente seront définitivement supprimées.",
+  "Continua carriera":"Continuer la carrière",
+  "partita sospesa":"match suspendu",
+  "questa squadra":"cette équipe",
+  "Carriera eliminata.":"Carrière supprimée.",
+  "Impossibile eliminare la carriera. Libera spazio e riprova.":"Impossible de supprimer la carrière. Libère de l’espace et réessaie.",
   "@titolo":"@titolo",
   "BLU":"BLEUS",
   "ROSSI":"ROUGES",
@@ -1254,6 +1263,12 @@ LANG_TXT.fr={
   "Stag.":"Sais."
 };
 LANG_PAT.fr=[
+  ["Continua: {0}, {1} · partita sospesa","Continuer : {0}, {1} · match suspendu"],
+  ["Eliminare la carriera nello slot {0}?","Supprimer la carrière de l’emplacement {0} ?"],
+  ["Ultimo salvataggio: {0}","Dernière sauvegarde : {0}"],
+  ["Continua: {0}, {1}","Continuer : {0}, {1}"],
+  ["{0} di 3 slot usati","Emplacements utilisés : {0} sur 3"],
+  ["Slot {0} · in uso","Emplacement {0} · utilisé"],
   ["{0} lezioni brevi, in ordine, per scoprire tutto il gioco. Ogni capitolo si legge da solo: parti dall’inizio oppure vai dritto a ciò che ti serve.","{0} leçons courtes, dans l’ordre, pour découvrir tout le jeu. Chaque chapitre se lit seul : commence par le début ou va droit à ce qu’il te faut."],
   ["(1 automatico + {0} di forza, si aggiornano dopo ogni partita dal ranking) · i posti vanno alla regione: se li giocano le squadre della Conference","(1 automatique + {0} selon la force, mis à jour après chaque match d’après le classement) · les places reviennent à la région : les équipes de la Conference se les disputent"],
   ["(1 automatico, si aggiornano dopo ogni partita dal ranking) · i posti vanno alla regione: se li giocano le squadre della Conference","(1 automatique, mise à jour après chaque match d’après le classement) · les places reviennent à la région : les équipes de la Conference se les disputent"],
@@ -1423,5 +1438,12 @@ LANG_PAT.fr=[
   ["Slot {0}","Emplacement {0}"],
   ["{0} anni","{0} ans"],
   ["era {0}","était {0}"],
-  ["e {0}","et {0}"]
+  ["e {0}","et {0}"],
+  ["{0}° a fine stagione","{0}° en fin de saison"],
+  ["{0}° in classifica","{0}° au classement"],
+  ["{0} · partita sospesa","{0} · match suspendu"],
+  ["{0} · {1} trofei","{0} · {1} trophées"],
+  ["{0} · {1} trofeo","{0} · {1} trophée"],
+  ["{0} trofei","{0} trophées"],
+  ["{0} trofeo","{0} trophée"]
 ];
