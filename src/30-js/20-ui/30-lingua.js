@@ -150,7 +150,7 @@ function lgStart(){
   }));
   lgRun(()=>{lgWalk(document.body);document.title=lgTitle();});
 }
-const lgTitle=()=>LANG==='it'?'Ultimate Pixel':(LANG_TXT[LANG]&&LANG_TXT[LANG]['@titolo'])||document.title;
+const lgTitle=()=>LANG==='it'?'Pixel Ultimate':(LANG_TXT[LANG]&&LANG_TXT[LANG]['@titolo'])||document.title;
 function setLang(l){
   if(!LANGS.some(x=>x[0]===l))return;
   LANG=l;try{localStorage.setItem(LANG_KEY,l);}catch(e){}

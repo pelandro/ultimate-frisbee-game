@@ -4,6 +4,11 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Audio: tolto il fruscio continuo del pubblico, restano la musica e i suoni del tifo. Nel menu principale «Carriera» non è più giallo: ha lo stesso colore degli altri pulsanti.
+- Il gioco si chiama Pixel Ultimate (titolo, nome della pagina e dell’icona, cartelloni a bordo campo).
+- Più il campo è grande, più il tifo è caldo: dal primo potenziamento delle Tribune si aggiungono tamburi, battimani, trombe e fischi, con pause in mezzo e ogni livello con il suo modo di tifare. Nella descrizione delle Tribune ora c’è anche «Migliora il campo».
+- Inglese, francese e tedesco: tradotti lo stile degli avversari negli schemi e il nome dello schema nell’avviso «Difesa adattata»; corretti i singolari nei dettagli di fine partita.
+- Francese e tedesco: i nomi dei lanci, delle azioni e delle regole sono quelli inglesi (Backhand, Forehand, Cut, Stall, Timeout, Half time, Assist…).
 - Inglese, francese e tedesco: tradotte molte scritte rimaste in italiano (carriere salvate e schermata iniziale, notizie, avvisi, infortuni, sponsor, gironi, sfide online, premi), anche quelle che cambiano tra singolare e plurale; le date seguono la lingua scelta. In Impostazioni ogni lingua ha la sua bandiera in sfondo.
 - Nuova lingua: il gioco si può giocare in tedesco (Impostazioni › Partita › Lingua › Deutsch).
 - Inglese e francese: tradotte le scritte rimaste in italiano sugli slot di carriera (ultimo salvataggio, elimina carriera, continua) e nell’elenco delle lingue della Guida.

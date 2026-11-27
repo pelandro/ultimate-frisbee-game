@@ -17,7 +17,7 @@ Per l'indice aggiornato di tutte le funzioni: `npm run mappa` (oppure `npm run m
 | `src/30-js/30-carriera/` | Salvataggio, squadre e roster, stagione, rosa e linee, economia, mercato, premi, evoluzione del campionato, vita dei giocatori, avvio partita e navigazione, staff, intesa, obiettivi personali, scouting e specializzazioni (`12-progressione-club.js`), campionati persistenti, rivalità e storie (`13-campionati.js`), carriera dinamica (`11-carriera-dinamica.js`: intensità degli allenamenti, manutenzione e usura delle strutture, imprevisti `EVT`, sfida della dirigenza, dominio) |
 | `src/30-js/40-modalita/` | Ultimate Team, partite simulate, campo di allenamento (tutorial, sfide), torneo |
 | `src/30-js/50-schermate/` | Schermate della carriera: cruscotto, rosa (con confronti), allenamenti, mercato, club, avvisi, opzioni, guida, pausa, imprevisti, partite sospese (`07-sospendi.js`: `SV.susp`, `suspSnap`, `resumeMatch`), slot carriera (`08-slot.js`) |
-| `src/30-js/90-avvio/` | Ciclo principale, audio, avvio |
+| `src/30-js/90-avvio/` | Ciclo principale, audio (`02-audio-ciclo.js`: musiche, effetti e pubblico di base; `00-tifo-stadi.js`: tamburi, battimani, trombe e fischi, diversi per ogni livello, che crescono con il livello dell’impianto `G.vn.lv`, tabella `TIFO_LV`), avvio |
 | `tools/` | Costruzione, verifiche, confronto tra rami, ganci |
 
 ## Il motore (`10-sim/`)

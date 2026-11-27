@@ -65,7 +65,7 @@ function spStripHTML(n){
   return `<span class="spb" style="--sb:${b.bg};--si:${b.ink};--sa:${b.ac}">${spLogoSVG(n,24)}<span class="spt"><b>${esc(UPC(n))}</b>${b.sl?`<i>${esc(b.sl)}</i>`:''}</span></span>`;
 }
 // ---------- contenuti dei cartelloni ----------
-const B_UF={bg:'#1d2b53',ink:'#ffd23f',ac:'#f4f4f4',ic:'disc',t:['ULTIMATE PIXEL','ULTIMATE','UP'],nm:['ULTIMATE','UP'],s:'PIXEL'};   // il cartellone del gioco (Ultimate Pixel)
+const B_UF={bg:'#1d2b53',ink:'#ffd23f',ac:'#f4f4f4',ic:'disc',t:['PIXEL ULTIMATE','PIXEL','PU'],nm:['PIXEL','PU'],s:'ULTIMATE'};   // il cartellone del gioco (Pixel Ultimate)
 const B_SPIRIT={bg:'#f4f4f4',ink:'#1d2b53',ac:'#ff6b70',ic:'heart',t:['SPIRITO DEL GIOCO','SPIRITO']};   // lo spirito del gioco: niente arbitri, il fair play e' una regola
 function bSp(n,sl){   // sl: lo slogan al posto del nome (sui LED si alternano)
   const b=spBrand(n),N=UPC(n);

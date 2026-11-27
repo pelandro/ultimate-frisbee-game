@@ -1,4 +1,4 @@
-# Ultimate Pixel
+# Pixel Ultimate
 
 Gioco arcade 2D di Ultimate Frisbee in stile retro: carriera con squadre e giocatori veri dei Campionati Italiani Open 2026,
 partita veloce, torneo, Ultimate Team, tutorial e sfide. Il gioco è un solo file HTML e funziona offline.

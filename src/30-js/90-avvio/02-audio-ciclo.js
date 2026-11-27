@@ -1,4 +1,4 @@
-/* ---- audio: tre musiche sintetizzate (schermata iniziale, partita e la canzoncina della festa del titolo) e il pubblico che tifa (brusio, cori, applausi in lontananza, trombette). Nessun file: tutto generato con Web Audio ---- */
+/* ---- audio: tre musiche sintetizzate (schermata iniziale, partita e la canzoncina della festa del titolo) e il pubblico che tifa (battimani, cori, applausi in lontananza, trombette). Nessun file: tutto generato con Web Audio ---- */
 function buildAudio(c,dest){
   const mtof=m=>440*Math.pow(2,(m-69)/12),rr=(a,b)=>a+Math.random()*(b-a);
   const master=c.createGain();master.gain.value=0.9;
@@ -6,9 +6,9 @@ function buildAudio(c,dest){
   master.connect(comp);comp.connect(dest);
   const musicBus=c.createGain();musicBus.gain.value=1.5;musicBus.connect(master);
   const crowdBus=c.createGain();crowdBus.gain.value=0.9;crowdBus.connect(master);
-  // rumore bianco e rumore "marrone" (piu' cupo): base del brusio del pubblico, dei piatti e degli applausi
-  const NS=c.sampleRate*3,wb=c.createBuffer(1,NS,c.sampleRate),bb=c.createBuffer(1,NS,c.sampleRate),wd=wb.getChannelData(0),bd=bb.getChannelData(0);
-  let lastV=0;for(let i=0;i<NS;i++){const w=Math.random()*2-1;wd[i]=w;lastV=(lastV+0.02*w)/1.02;bd[i]=lastV*8;}
+  // rumore bianco: base dei piatti, degli applausi e dei battimani
+  const NS=c.sampleRate*3,wb=c.createBuffer(1,NS,c.sampleRate),wd=wb.getChannelData(0);
+  for(let i=0;i<NS;i++)wd[i]=Math.random()*2-1;
   const noise=(out,t,dur,type,f,q,vol,att)=>{
     const sr=c.createBufferSource();sr.buffer=wb;const fl=c.createBiquadFilter();fl.type=type;fl.frequency.value=f;fl.Q.value=q;
     const g=c.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+(att||0.003));g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
@@ -162,30 +162,18 @@ function buildAudio(c,dest){
       schedule(until,now){
         if(next===null)return;if(now&&next<now)next=now+0.05;     // dopo una pausa non recupera le note perse
         while(next<until){stepFn(out,echo,step%8,next,sd,def.bars[Math.floor(step/8)%def.bars.length]);step++;next+=sd;}
-      }
+      },
+      battuta:()=>next===null?null:next-(step%8)*sd,passo:sd,numero:()=>Math.floor(step/8)   // inizio e numero della battuta in corso e durata di una croma: ci si accorda il tifo
     };
   }
-  /* pubblico: brusio continuo, applausi ritmati ogni tanto e cori ("aaah" quando si segna, "ooh" quando va male) */
-  const crowd={on:false,nodes:[],gain:null,nextClap:0,nextAmb:0};
+  /* pubblico: battimani ritmati e applausi ogni tanto, cori ("aaah" quando si segna, "ooh" quando va male). Niente rumore di fondo continuo:
+     si sentiva come un fruscio e copriva il resto */
+  const crowd={on:false,nextClap:0,nextAmb:0};
   function crowdStart(t){
-    if(crowd.on)return;crowd.on=true;
-    const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+2);g.connect(crowdBus);crowd.gain=g;
-    const layer=(buf,type,f,q,vol,lfoHz,depth)=>{
-      const sr=c.createBufferSource();sr.buffer=buf;sr.loop=true;const fl=c.createBiquadFilter();fl.type=type;fl.frequency.value=f;fl.Q.value=q;
-      const v=c.createGain();v.gain.value=vol;sr.connect(fl);fl.connect(v);v.connect(g);sr.start(t,rr(0,2));
-      const lfo=c.createOscillator(),ld=c.createGain();lfo.frequency.value=lfoHz;ld.gain.value=depth;lfo.connect(ld);ld.connect(v.gain);lfo.start(t);
-      crowd.nodes.push(sr,lfo);
-    };
-    layer(bb,'bandpass',650,0.6,0.05,0.13,0.02);
-    layer(wb,'bandpass',1500,0.8,0.007,0.21,0.004);
-    layer(bb,'lowpass',250,0.5,0.018,0.07,0.006);
+    if(crowd.on)return;crowd.on=true;tifo.start();
     crowd.nextClap=t+rr(4,9);crowd.nextAmb=t+rr(8,16);
   }
-  function crowdStop(t){
-    if(!crowd.on)return;crowd.on=false;const g=crowd.gain,ns=crowd.nodes;crowd.nodes=[];
-    g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(0,t+1);
-    for(const n of ns){try{n.stop(t+1.1);}catch(e){}}
-  }
+  function crowdStop(){crowd.on=false;}
   const clap=(t,vol)=>{for(let k=0;k<3;k++)noise(crowdBus,t+rr(0,0.025),0.07,'bandpass',rr(1500,2600),0.9,vol*rr(0.6,1),0.002);};
   function clapTrain(t,n,gap,vol){for(let i=0;i<n;i++)clap(t+i*gap+rr(-0.012,0.012),vol*rr(0.7,1));}
   function chant(t){const u=0.42;[0,1,2,2.5,3].forEach(k=>clap(t+k*u+rr(-0.01,0.01),0.05));[5,6,7,7.5,8].forEach(k=>clap(t+k*u+rr(-0.01,0.01),0.05));}
@@ -241,11 +229,16 @@ function buildAudio(c,dest){
     else if(kind==='doppia'){hornNote(t,f0*1.5,0.22,v,pan);hornNote(t+0.3,f0*1.5,0.5,v,pan);}
     else hornNote(t,f0*rr(0.9,1.2),rr(0.9,1.4),v,pan);
   }
-  function tickCrowd(until){
-    while(crowd.on&&crowd.nextClap<until){chant(crowd.nextClap);crowd.nextClap+=rr(10,18);}
-    while(crowd.on&&crowd.nextAmb<until){const t=crowd.nextAmb;if(Math.random()<0.6)applause(t,rr(0.12,0.22));else horn(t,'blast',rr(0.25,0.4));crowd.nextAmb+=rr(18,35);}   // ogni tanto, piano: qualcuno applaude o suona la trombetta in curva
+  // il tifo degli stadi piu' grandi: tamburi, trombe, applausi e fischi (00-tifo-stadi.js)
+  const tifo=buildTifo({c,out:crowdBus,noise,rr,snare:(out,t,vol)=>snare(out,t,vol),applause,horn});
+  function crowdLevel(l){tifo.setLevel(l);}
+  function tickCrowd(until,scena){
+    const ritmo=tifo.dati().ritmo;
+    while(crowd.on&&crowd.nextClap<until){chant(crowd.nextClap);crowd.nextClap+=rr(10,18)/ritmo;}
+    while(crowd.on&&crowd.nextAmb<until){const t=crowd.nextAmb;if(Math.random()<0.6)applause(t,rr(0.12,0.22));else horn(t,'blast',rr(0.25,0.4));crowd.nextAmb+=rr(18,35)/ritmo;}   // ogni tanto, piano: qualcuno applaude o suona la trombetta in curva
+    if(crowd.on&&scena&&scena.battuta)tifo.tick(until,scena.battuta(),scena.passo,scena.numero());
   }
-  return {sfx:SFX,master,musicBus,crowdBus,scenes:{home:makeScene(HOME,homeStep,0.6),match:makeScene(MATCH,matchStep,1.5),festa:makeFesta(1.3)},crowdStart,crowdStop,tickCrowd,cheer,groan,clapTrain,chant,applause,horn};
+  return {sfx:SFX,master,musicBus,crowdBus,scenes:{home:makeScene(HOME,homeStep,0.6),match:makeScene(MATCH,matchStep,1.5),festa:makeFesta(1.3)},crowdStart,crowdStop,tickCrowd,crowdLevel,tifo,cheer,groan,clapTrain,chant,applause,horn};
 }
 const AUD=(function(){
   let A=null,eng=null,on=true,cur='none',lastSfx=-9;
@@ -254,7 +247,7 @@ const AUD=(function(){
     if(!A||!eng||!on||A.state!=='running')return;
     const now=A.currentTime,until=now+1.0,sc=eng.scenes[cur];
     if(sc)sc.schedule(until,now);
-    eng.tickCrowd(until);
+    eng.tickCrowd(until,sc);
   }
   function init(){   // il browser consente l'audio solo dopo un gesto: parte al primo tocco
     if(A){if(A.state==='suspended')A.resume();return;}
@@ -263,11 +256,13 @@ const AUD=(function(){
     cur='none';
   }
   function sync(name){
-    if(!A||!eng||name===cur)return;
+    if(!A||!eng)return;
+    eng.crowdLevel(name==='match'&&G.vn&&!G.drill?vnLv(G.vn):0);   // il tifo segue lo stadio che si vede (menu, allenamenti e festa del titolo: quello di base)
+    if(name===cur)return;
     const t=A.currentTime;
     if(eng.scenes[cur])eng.scenes[cur].stop(t);
     cur=name;eng.scenes[name].start(t);
-    if(name==='match'||name==='festa')eng.crowdStart(t);else eng.crowdStop(t);
+    if(name==='match'||name==='festa')eng.crowdStart(t);else eng.crowdStop();
   }
   // la festa del titolo: la canzoncina riparte sempre dall'inizio, anche se era gia' aperta (true = partita)
   function festa(){
@@ -288,10 +283,10 @@ const AUD=(function(){
     if(type==='ui'){eng.sfx.ui(A.currentTime);return;}   // i clic dei menu suonano anche fuori partita
     if(cur!=='match')return;
     const t=A.currentTime+0.02;
-    if(type==='goal'){eng.sfx.goal(t);if(a===0){eng.cheer(t,1);eng.applause(t+0.6,0.8);hornAt(t+0.4,Math.random()<0.6?'carica':'doppia',1);}else eng.groan(t,0.9);}   // a = squadra che segna
-    else if(type==='turn'){if(t-lastSfx<2)return;lastSfx=t;if(a===0)eng.cheer(t,0.28);else eng.groan(t,0.4);}
-    else if(type==='crowd'){eng.cheer(t,a||0.5);if((a||0)>=0.6)hornAt(t+0.3,'blast',0.8);}   // boato del pubblico nei momenti decisivi (a = intensita')
-    else if(type==='catch'||type==='block'){eng.sfx[type](t,a,b);if(type==='block'||a>=1){eng.applause(t+0.15,type==='block'?0.45:0.6);if(Math.random()<0.35)hornAt(t+0.5,'doppia',0.8);}}   // prese in salto o in tuffo e blocchi: applauso leggero e a volte la trombetta
+    if(type==='goal'){eng.tifo.event('goal',t,a===0);eng.sfx.goal(t);if(a===0){eng.cheer(t,1);eng.applause(t+0.6,0.8);hornAt(t+0.4,Math.random()<0.6?'carica':'doppia',1);}else eng.groan(t,0.9);}   // a = squadra che segna
+    else if(type==='turn'){if(t-lastSfx<2)return;lastSfx=t;eng.tifo.event('turn',t,a===0);if(a===0)eng.cheer(t,0.28);else eng.groan(t,0.4);}
+    else if(type==='crowd'){if((a||0)>=0.6)eng.tifo.event('crowd',t,true);eng.cheer(t,a||0.5);if((a||0)>=0.6)hornAt(t+0.3,'blast',0.8);}   // boato del pubblico nei momenti decisivi (a = intensita')
+    else if(type==='catch'||type==='block'){eng.sfx[type](t,a,b);if(type==='block'||a>=1){eng.tifo.event(type,t,true);eng.applause(t+0.15,type==='block'?0.45:0.6);if(Math.random()<0.35)hornAt(t+0.5,'doppia',0.8);}}   // prese in salto o in tuffo e blocchi: applauso leggero e a volte la trombetta
     else if(eng.sfx[type])eng.sfx[type](t,a,b);
   }
   let lastHorn=-9;   // le trombette non si accavallano: al massimo una ogni 5 secondi
