@@ -1,5 +1,5 @@
 /* =====================================================================================================================
-   ULTIMATE PIXEL — indice del codice (un solo file; le sezioni sono in quest'ordine)
+   PIXEL ULTIMATE — indice del codice (un solo file; le sezioni sono in quest'ordine)
    ---------------------------------------------------------------------------------------------------------------------
    SIMULAZIONE (tra SIM_START e SIM_END: nessun accesso alla pagina, si puo' eseguire e provare da riga di comando)
      1. costanti del campo, stato G, giocatori e HOOKS (ganci verso l'interfaccia)
