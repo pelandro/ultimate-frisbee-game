@@ -101,18 +101,18 @@ function roleKeys(o){const w=ROLE_W[posOf(o)==='H'?'H':(posOf(o)==='D'?'D':'C')]
 function scoutReport(o){
   const sk=o.sk|0,keys=roleKeys(o).sort((a,b)=>o.s[b]-o.s[a]),pos=posOf(o);
   if(sk<1)return '<span class="note">Osservalo almeno una volta per leggere il rapporto.</span>';
-  const str=keys.slice(0,2).map(k=>`${LONG[k]} ${o.s[k]}`).join(', '),weak=keys.slice(-2).reverse().map(k=>`${LONG[k]} ${o.s[k]}`).join(', ');
+  const str=keys.slice(0,2).map(k=>`<span>${LONG[k]}</span> ${o.s[k]}`).join(', '),weak=keys.slice(-2).reverse().map(k=>`<span>${LONG[k]}</span> ${o.s[k]}`).join(', ');
   let h=`<b>Punti di forza</b>: ${str}.`;
-  if(sk>=2){h+=` <b>Punti deboli</b>: ${weak}.`+(o.trait&&TRAITS[o.trait]?` <b>${TRAITS[o.trait][0]}</b>: ${TRAITS[o.trait][1].toLowerCase()}.`:'');}
+  if(sk>=2){h+=` <b>Punti deboli</b>: ${weak}.`+(o.trait&&TRAITS[o.trait]?` <b>${TRAITS[o.trait][0]}</b>: <span>${TRAITS[o.trait][1].toLowerCase()}</span>.`:'');}
   else h+=' <span class="note">Con una seconda osservazione: punti deboli e tratto.</span>';
   if(sk>=3){
     const deep=(o.s.vel+o.s.sal+o.s.spa)/3,short=(o.s.agi+o.s.pre+o.s.vis)/3,wide=(o.s.sca+o.s.vel)/2;
     const best=Math.max(deep,short,wide),sch=best===deep?'Verticale o T1 (gioco lungo)':(best===short?'Esagono o Weave (gioco corto)':'Orizzontale (campo largo)');
     const idn=teamIdentity('club|'+SV.team,bestSeven(squadData())),styl=idn.deep>0.3?'lungo':(idn.deep<-0.3?'corto':'misto');
     const same=(best===deep&&idn.deep>0.3)||(best===short&&idn.deep<-0.3);
-    h+=` <b>Schemi adatti</b>: ${sch}. Il vostro gioco è ${styl}: ${same?'si inserisce bene':'porterebbe qualcosa di diverso'}.`;
+    h+=` <b>Schemi adatti</b>: <span>${sch}</span>. <span>Il vostro gioco è</span> <span>${styl}</span>: <span>${same?'si inserisce bene':'porterebbe qualcosa di diverso'}</span>.`;
     const same2=SQ.filter(p=>posOf(p)===pos).sort((a,b)=>ovrX(b)-ovrX(a)),slot=pos==='H'?3:4,cut=same2[slot-1],v=ovrX(o);
-    h+=cut&&v>ovrX(cut)?` <b>In squadra</b>: prenderebbe il posto di ${esc(pname(cut))} (Overall ${ovr(cut)}).`:` <b>In squadra</b>: sarebbe una riserva${cut?' (il titolare più debole ha Overall '+ovr(cut)+')':''}.`;
+    h+=cut&&v>ovrX(cut)?` <b>In squadra</b>: <span>prenderebbe il posto di</span> ${esc(pname(cut))} (Overall ${ovr(cut)}).`:` <b>In squadra</b>: <span>sarebbe una riserva</span>${cut?' (<span>il titolare più debole ha Overall</span> '+ovr(cut)+')':''}.`;
   }else if(sk===2)h+=' <span class="note">Alla terza osservazione: schemi adatti e posto in squadra.</span>';
   return h;
 }

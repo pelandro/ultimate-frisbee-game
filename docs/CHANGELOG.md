@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Inglese: tradotti i nomi delle statistiche (Hole, Speed, Agility, Dive), le scelte delle Impostazioni, «Compare with» e i rapporti degli osservatori nel Mercato e nella Rosa.
 - Inglese: «Sparo» diventa «Deep shot»; seconde file di schede (Seasons/Milestones/Record in Trophies, Conference nella Lega USA) con rettangoli più piccoli; «(tua)» diventa «(you)» perché le 8 Conference stanno in una fila.
 - Inglese: tradotte le scritte rimaste in italiano (Club, Staff, Trofei, Traguardi, Record, Lega USA, difficoltà, oggetti, eroi e obiettivi di Ultimate Team).
 - Lega USA: una sola fila di schede (Conference, Calendario, Statistiche, Nationals, Ranking nazionale) al posto di due con nomi ripetuti. Bacheca: la scheda «Albo d’oro» diventa «Stagioni» e ogni parte ha il suo titolo.
