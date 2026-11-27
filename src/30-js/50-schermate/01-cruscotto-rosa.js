@@ -266,7 +266,7 @@ $('eBody').addEventListener('click',e=>{
   $('eBody').querySelector(`[data-evpage="${eventPage}"]`)?.focus();
 });
 function renderEvent(){
-  $('eCards').classList.remove('mini');
+  $('eCards').classList.remove('mini','solo');
   if(isUS())return renderEventUS();   // Classifica del campionato USA: 15-usa-schermate.js
   if(isLN())return renderEventLN();   // Classifica delle leghe europee: 19-leghe-schermate.js
   const cs=SV.done?`${SERIES_NAME[SV.sr]}, stagione conclusa`:(SV.po&&SV.po.on?`${SERIES_NAME[SV.sr]}, ${PO_NAME[SV.po.kind].toLowerCase()}`:`${SERIES_NAME[SV.sr]}, giornata ${SV.round+1} di ${totalRounds()}`);

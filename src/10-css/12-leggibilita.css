@@ -112,3 +112,5 @@ html[data-rail="r"] #cmenu{right:calc(var(--rail) + 6px)}
 .tcf small{display:block;font-size:14px;color:#dde6f1}
 .tcfb{display:flex;gap:8px}.tcfb button{min-height:40px;min-width:92px}
 .tcfh{margin:6px 0 0;font-size:14px;color:#d1deec}
+/* inglese: «Physiotherapist» è più lungo di «Fisioterapista» e andava a capo in mezzo alla parola */
+html[lang="en"] .scard .spt .sr{font-size:14px;letter-spacing:-.02em}
