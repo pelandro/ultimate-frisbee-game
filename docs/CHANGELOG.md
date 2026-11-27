@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Telefono in orizzontale: Partita veloce, Sfide online e I tuoi eroi si stringono un po' e stanno intere nello schermo, senza scorrere.
 - Esultanze: nel balletto dopo la meta il disco non resta più a mezz’aria all’altezza del fianco mentre le braccia sono alzate: chi ha segnato lo posa a terra davanti a sé e balla.
 - Schemi: sul telefono il pannello sta tutto nello schermo (il punteggio con i nomi lunghi dei club non schiaccia più la frase sotto il titolo, e con attacco e difesa insieme gli schemi sono più stretti e il tasto «Fatto» si vede senza scorrere).
 - Statistiche della lega: nelle graduatorie il giocatore è in bianco e la squadra sotto, più piccola e di un altro colore, così non si confondono.
