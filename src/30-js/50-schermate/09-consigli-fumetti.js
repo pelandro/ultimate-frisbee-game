@@ -21,13 +21,13 @@ function timelineHTML(){
   }else{
     if(SV.po&&SV.po.on){   // playoff: l'ultima partita, il turno di adesso e quello dopo
       const l=SV.po.last,r0=SV.res[SV.res.length-1];
-      const prev=l?node(l.win?'w':'l',(l.win?'V ':'S ')+l.su+'–'+l.so,l.label+' · '+shortN(l.opp)):(r0?node(r0.su>r0.so?'w':'l',(r0.su>r0.so?'V ':'S ')+r0.su+'–'+r0.so,'G'+SV.res.length+' · '+shortN(r0.opp)):node('f','Giornate','finite'));
+      const prev=l?node(l.win?'w':'l',(l.win?lgSigla('V')+' ':lgSigla('S')+' ')+l.su+'–'+l.so,l.label+' · '+shortN(l.opp)):(r0?node(r0.su>r0.so?'w':'l',(r0.su>r0.so?lgSigla('V')+' ':lgSigla('S')+' ')+r0.su+'–'+r0.so,lgSigla('G')+SV.res.length+' · '+shortN(r0.opp)):node('f','Giornate','finite'));
       return `<div class="tline">${[prev,node('n',SV.po.round===2?'3° posto':PO_RD[SV.po.round],shortN(SV.po.opp)),SV.po.round===0&&SV.po.kind!=='tit'?node('f','Finale','promozione'):SV.po.round===0?node('f','Finale','scudetto o 3° posto'):node('f','Fine','stagione')].join('')}</div>`;
     }
     const R=SV.sched.length,last=SV.res[SV.res.length-1],lastN=SV.res.length;
-    const prev=last?node(last.su>last.so?'w':'l',(last.su>last.so?'V ':'S ')+last.su+'–'+last.so,'G'+lastN+' · '+shortN(last.opp)):node('f','Inizio','stagione '+SV.season);
+    const prev=last?node(last.su>last.so?'w':'l',(last.su>last.so?lgSigla('V')+' ':lgSigla('S')+' ')+last.su+'–'+last.so,lgSigla('G')+lastN+' · '+shortN(last.opp)):node('f','Inizio','stagione '+SV.season);
     const cur=SV.done?node('n','Fine','posto '+(SV.next?SV.next.rank:myRank())+'°'):node('n','G'+(SV.round+1)+' di '+R,shortN(oppAt(SV.round))+(oppAt(SV.round)===SV.riv?' · derby':''));
-    const nxt=SV.done?node('f','Nuova','stagione'):(SV.round+1<R?node('f','G'+(SV.round+2),shortN(oppAt(SV.round+1))):node('f','Ultima','giornata'));
+    const nxt=SV.done?node('f','Nuova','stagione'):(SV.round+1<R?node('f',lgSigla('G')+(SV.round+2),shortN(oppAt(SV.round+1))):node('f','Ultima','giornata'));
     nodes=[prev,cur,nxt];
   }
   return `<div class="tline">${nodes.join('')}</div>`;

@@ -1,0 +1,27 @@
+/* ---- Impostazioni › Lingua: ogni tasto ha in sfondo la bandiera della sua lingua (30-lingua.js, lgSeg) ----
+   Il nome sta su una targhetta, così si legge anche sulle strisce chiare; la lingua in uso ha bordo e targhetta gialli
+   e la bandiera piena, le altre restano sotto un velo scuro. */
+#settings #sLangSeg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#settings #sLangSeg .sg{--veil:linear-gradient(rgba(20,30,46,.45),rgba(20,30,46,.45));background:var(--veil),var(--flag) #2f4463!important;display:flex;align-items:center;justify-content:center;min-width:0;min-height:72px;padding:6px 4px}
+#settings #sLangSeg .sg:hover,#settings #sLangSeg .sg:focus-visible{--veil:linear-gradient(rgba(20,30,46,.22),rgba(20,30,46,.22))}
+#settings #sLangSeg .sg span{max-width:100%;padding:4px 10px;background:rgba(20,30,46,.9);border:2px solid #000;color:#fff;font-size:17px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#settings #sLangSeg .sg.on{--veil:linear-gradient(transparent,transparent);border-color:var(--gold)!important;box-shadow:0 0 0 3px #000}
+#settings #sLangSeg .sg.on span{background:var(--gold);color:#1a1c2c}
+/* Italia e Francia: bande verticali; Germania: orizzontali */
+#sLangSeg .sg[data-lang="it"]{--flag:linear-gradient(90deg,#009246 0 33.4%,#f4f5f0 33.4% 66.6%,#ce2b37 66.6%)}
+#sLangSeg .sg[data-lang="fr"]{--flag:linear-gradient(90deg,#0055a4 0 33.4%,#f4f5f0 33.4% 66.6%,#ef4135 66.6%)}
+#sLangSeg .sg[data-lang="de"]{--flag:linear-gradient(#111 0 33.4%,#dd0000 33.4% 66.6%,#ffce00 66.6%)}
+/* inglese: bandiera del Regno Unito (croce rossa su croce bianca, diagonali, fondo blu) */
+#sLangSeg .sg[data-lang="en"]{--flag:
+  linear-gradient(90deg,transparent calc(50% - 7px),#c8102e calc(50% - 7px) calc(50% + 7px),transparent calc(50% + 7px)),
+  linear-gradient(transparent calc(50% - 7px),#c8102e calc(50% - 7px) calc(50% + 7px),transparent calc(50% + 7px)),
+  linear-gradient(90deg,transparent calc(50% - 12px),#f4f5f0 calc(50% - 12px) calc(50% + 12px),transparent calc(50% + 12px)),
+  linear-gradient(transparent calc(50% - 12px),#f4f5f0 calc(50% - 12px) calc(50% + 12px),transparent calc(50% + 12px)),
+  linear-gradient(to top right,transparent calc(50% - 3px),#c8102e calc(50% - 3px) calc(50% + 3px),transparent calc(50% + 3px)),
+  linear-gradient(to bottom right,transparent calc(50% - 3px),#c8102e calc(50% - 3px) calc(50% + 3px),transparent calc(50% + 3px)),
+  linear-gradient(to top right,transparent calc(50% - 9px),#f4f5f0 calc(50% - 9px) calc(50% + 9px),transparent calc(50% + 9px)),
+  linear-gradient(to bottom right,transparent calc(50% - 9px),#f4f5f0 calc(50% - 9px) calc(50% + 9px),transparent calc(50% + 9px)),
+  linear-gradient(#012169,#012169)}
+/* schermi stretti: due file da due */
+html[data-ew="xs"] #settings #sLangSeg{grid-template-columns:repeat(2,minmax(0,1fr))}
+html[data-ew="xs"] #settings #sLangSeg .sg{min-height:56px}

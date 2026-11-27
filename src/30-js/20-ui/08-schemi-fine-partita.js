@@ -45,7 +45,7 @@ function openSchemes(first,fromHome){
   // a inizio meta si sceglie solo lo schema che serve: se difendi (tiri tu il pull) quello difensivo, se attacchi quello d'attacco
   const role=(G.inMatch&&G.mode==='ready'&&!fromHome)?(G.pullTeam===0?'def':'att'):'both';
   $('hAtt').parentElement.classList.toggle('hidden',role==='def');$('hDef').parentElement.classList.toggle('hidden',role==='att');
-  $('mSub').textContent=(role==='def'?'In questa meta difendi: scegli lo schema difensivo.':(role==='att'?'In questa meta attacchi: scegli lo schema d’attacco.':'Restano quelli scelti finché non li cambi.'))+(G.inMatch&&G.idn&&G.idn[1]&&G.idn[1].tags.length?' Stile degli avversari: '+G.idn[1].tags.join(', ')+'.':'');
+  $('mSub').textContent=(role==='def'?'In questa meta difendi: scegli lo schema difensivo.':(role==='att'?'In questa meta attacchi: scegli lo schema d’attacco.':'Restano quelli scelti finché non li cambi.'))+(G.inMatch&&G.idn&&G.idn[1]&&G.idn[1].tags.length?' Stile degli avversari: '+G.idn[1].tags.map(t=>lgTr(t)).join(', ')+'.':'');
   const career=!QM.on&&!G.drill&&G.inMatch;
   const choose=(side,id)=>{G.sch[side]=id;if(career)SV.scheme={...G.sch};};
   buildOpts($('optAtt'),ATTS,'#2f7bff',G.sch.att,v=>choose('att',v),career);
@@ -58,7 +58,7 @@ const overBest=()=>SQ.filter(p=>p.m&&p.m.pts>0).map(p=>{const m=p.m,t=m.lan[0]+m
 function overMoreHTML(){
   const L=G.ptLog||[],o=L.filter(x=>x.rec===0),d=L.filter(x=>x.rec===1),hold=o.filter(x=>x.by===0).length,brk=d.filter(x=>x.by===0).length;
   let h=`<div class="omore"><div><b>In attacco</b> (ricevi il pull): ${hold} mete su ${o.length}${o.length?' ('+Math.round(hold/o.length*100)+'%)':''}</div><div><b>In difesa</b> (tiri il pull): ${brk} break su ${d.length}${d.length?' ('+Math.round(brk/d.length*100)+'%)':''}</div>`;
-  const sch=(R,N,lab)=>{const ks=Object.keys(R||{}).filter(k=>R[k][0]);return ks.length?`<div><b>${lab}</b>: ${ks.map(k=>`${N[k]||k} ${R[k][1]}/${R[k][0]}`).join(' · ')}</div>`:'';};
+  const sch=(R,N,lab)=>{const ks=Object.keys(R||{}).filter(k=>R[k][0]);return ks.length?`<div><b>${lab}</b>: ${ks.map(k=>`${lgTr(N[k]||k)} ${R[k][1]}/${R[k][0]}`).join(' · ')}</div>`:'';};
   h+=sch(G.schR,ATT_NAME,'Schemi d’attacco (mete su possessi)')+sch(G.defR,DEF_NAME,'Difese (mete subite su possessi avversari)');
   const pl=overBest();
   if(pl.length)h+=`<div class="otop"><span class="hd">Migliori</span><span class="hd">Mete</span><span class="hd">Assist</span><span class="hd">Difese</span><span class="hd">Lanci</span>${pl.map((x,i)=>`<span>${i===0?'★ ':''}${esc(x.p.label||x.p.name)}</span><span>${x.g}</span><span>${x.a}</span><span>${x.b}</span><span>${x.c}</span>`).join('')}</div>`;
@@ -112,10 +112,10 @@ function showOver(){
   // TABELLONE: stemmi, nomi e punteggio grande (i numeri contano da zero); sotto il migliore in campo
   const my=G.myName||'Blu',best=overBest()[0];
   $('oScore').innerHTML=`<span class="osb"><span class="ot">${crest(my,34)}<b>${esc(my)}</b></span><em class="${w?'w':''}">0</em><i>–</i><em class="${w?'':'w'}">0</em><span class="ot r"><b>${esc(on)}</b>${crest(on,34)}</span></span>`+
-    (best?`<span class="omvp">★ Migliore in campo: <b>${esc(best.p.label||best.p.name)}</b>${best.g||best.a||best.b?' · '+[best.g?best.g+(best.g>1?' mete':' meta'):'',best.a?best.a+' assist':'',best.b?best.b+(best.b>1?' difese':' difesa'):''].filter(Boolean).join(', '):''}</span>`:'');
+    (best?`<span class="omvp">★ Migliore in campo: <b>${esc(best.p.label||best.p.name)}</b>${best.g||best.a||best.b?' · '+[best.g?best.g+(best.g>1?' mete':' meta'):'',best.a?best.a+' assist':'',best.b?best.b+(best.b>1?' difese':' difesa'):''].filter(Boolean).map(t=>lgTr(t)).join(', '):''}</span>`:'');
   const ems=$('oScore').querySelectorAll('em');countUp(ems[0],G.score[0]);countUp(ems[1],G.score[1]);
   $('oEvent').textContent=msg;$('oMoney').innerHTML=mny;   // i conti della giornata: biglietti, sponsor, premio, trasferta, stipendi
-  $('oInj').textContent=hurt.length?'Infortuni: '+hurt.map(p=>`${p.name} (${p.inj} ${p.inj>1?'partite':'partita'} di stop)`).join(', ')+'.':'';
+  $('oInj').textContent=hurt.length?'Infortuni: '+hurt.map(p=>lgTr(`${p.name} (${p.inj} ${p.inj>1?'partite':'partita'} di stop)`)).join(', ')+'.':'';
   const pct=t=>G.st.thr[t]?Math.round(G.st.cmp[t]/G.st.thr[t]*100)+'%':'–';
   const rows=[['',G.myName||'Blu',on],['Lanci riusciti',pct(0),pct(1)],['Turnover causati',G.st.to[1],G.st.to[0]],['Salti vinti',G.st.jump[0],G.st.jump[1]],['Tuffi riusciti',G.st.dive[0],G.st.dive[1]],['Handblock',G.st.hb[0],G.st.hb[1]],['Prese mancate',G.st.drop[0],G.st.drop[1]]];
   // statistiche a confronto: una barra divisa tra le due squadre (blu la tua, rossa l'avversaria) al posto della tabella fitta

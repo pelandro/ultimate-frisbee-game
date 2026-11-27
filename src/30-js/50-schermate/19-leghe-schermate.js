@@ -17,14 +17,14 @@ const lnOppAt=r=>{const names=SV.mem[SV.sr],ui=names.indexOf(SV.team),m=SV.sched
 function lnTimelineHTML(node){
   const L=SV.ln,po=SV.po&&SV.po.on,R=SV.sched.length,last=SV.res[SV.res.length-1],lastN=SV.res.length;
   let prev;
-  if(SV.po&&SV.po.last){const l=SV.po.last;prev=node(l.win?'w':'l',(l.win?'V ':'S ')+l.su+'–'+l.so,(l.label||'Fase finale')+' · '+shortN(l.opp));}
-  else prev=last?node(last.su>last.so?'w':'l',(last.su>last.so?'V ':'S ')+last.su+'–'+last.so,'G'+lastN+' · '+shortN(last.opp)):node('f','Inizio','stagione '+SV.season);
+  if(SV.po&&SV.po.last){const l=SV.po.last;prev=node(l.win?'w':'l',(l.win?lgSigla('V')+' ':lgSigla('S')+' ')+l.su+'–'+l.so,(l.label||'Fase finale')+' · '+shortN(l.opp));}
+  else prev=last?node(last.su>last.so?'w':'l',(last.su>last.so?lgSigla('V')+' ':lgSigla('S')+' ')+last.su+'–'+last.so,lgSigla('G')+lastN+' · '+shortN(last.opp)):node('f','Inizio','stagione '+SV.season);
   let cur,nxt;
   if(SV.done){cur=node('n','Fine','posto '+(SV.next?SV.next.rank:myRank())+'°');nxt=node('f','Nuova','stagione');}
   else if(po){cur=node('n',lnLabel(),shortN(SV.po.opp));nxt=node('f',L.F&&L.F.rd+1<L.F.rounds?'Turno dopo':'Fine','stagione');}
   else{
     const o=lnOppAt(SV.round);cur=node('n','G'+(SV.round+1)+' di '+R,shortN(o)+(o===SV.riv?' · derby':''));
-    nxt=SV.round+1<R?node('f','G'+(SV.round+2),shortN(lnOppAt(SV.round+1))||'riposo'):node('f',lnTierDef().fin.length?'Fase finale':'Fine','stagione');
+    nxt=SV.round+1<R?node('f',lgSigla('G')+(SV.round+2),shortN(lnOppAt(SV.round+1))||'riposo'):node('f',lnTierDef().fin.length?'Fase finale':'Fine','stagione');
   }
   return `<div class="tline">${[prev,cur,nxt].join('')}</div>`;
 }
@@ -61,11 +61,11 @@ function renderTeamsLN(){
 // descrizione breve di un livello: girone (con quante partite) e playoff
 function lnFormatTxt(tr){
   const lk=LN_IDS.find(k=>LN_DEF[k].tiers.includes(tr)||(LN_OLD[k]&&LN_OLD[k].tiers.includes(tr))),tg=lk?lnTierGames(lk,tr):null;
-  const legs=tg&&tg.one?Math.round(tg.g/tg.one):1,g=(tr.pools>1?`${tr.pools} gironi${tr.geo?' geografici (ovest ed est)':''}`:'girone unico')+(legs>1?', andata e ritorno':', sola andata')+(tg?` (${tg.g} partite)`:'');
+  const legs=tg&&tg.one?Math.round(tg.g/tg.one):1,g=lgTr(tr.pools>1?`${tr.pools} gironi${tr.geo?' geografici (ovest ed est)':''}`:'girone unico')+', '+lgTr(legs>1?'andata e ritorno':'sola andata')+(tg?' '+lgTr(`(${tg.g} partite)`):'');   // a pezzi: la frase cambia con la lega (30-lingua.js)
   const f=tr.fin[0];
   const m={c4:tr.pools>1?'playoff promozione fra le prime 2 di ogni girone':'playoff fra le prime 4',b6:'playoff fra le prime 6',c8:'playoff fra le prime 8',
     x8:'turno incrociato e finali di piazzamento',p:'finali di piazzamento a coppie',rr:'minigirone',k4:f&&f.f>1?'1ª promossa, 2ª-5ª spareggio per la promozione':'playoff fra le prime 4'};
-  return `${tr.comps>1?tr.comps+' competizioni, ':''}${g}${tr.fin.length?'; '+[...new Set(tr.fin.map(x=>m[x.m]))].join(' e '):''}`;
+  return `${tr.comps>1?lgTr(tr.comps+' competizioni')+', ':''}${g}${tr.fin.length?'; '+[...new Set(tr.fin.map(x=>m[x.m]))].map(t=>lgTr(t)).join(' '+({en:'and',fr:'et',de:'und'}[LANG]||'e')+' '):''}`;
 }
 const lnCap=t=>t[0].toUpperCase()+t.slice(1);
 // chi sale, chi scende e chi va all'EUCF da un livello (per la scelta della squadra e per la scheda del campionato)

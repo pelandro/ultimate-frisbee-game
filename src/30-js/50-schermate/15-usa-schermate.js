@@ -42,10 +42,10 @@ function usHomeTab(){
 function usTimelineHTML(node){
   const U=SV.us,R=SV.sched.length,last=SV.res[SV.res.length-1],lastN=SV.res.length;
   const po=SV.po&&SV.po.on;
-  const prevRes=r=>node(r.su>r.so?'w':'l',(r.su>r.so?'V ':'S ')+r.su+'–'+r.so,'G'+lastN+' · '+shortN(r.opp)),lx=U.xl&&U.xl[U.xl.length-1];
+  const prevRes=r=>node(r.su>r.so?'w':'l',(r.su>r.so?lgSigla('V')+' ':lgSigla('S')+' ')+r.su+'–'+r.so,lgSigla('G')+lastN+' · '+shortN(r.opp)),lx=U.xl&&U.xl[U.xl.length-1];
   let prev;
-  if(SV.po&&SV.po.last){const l=SV.po.last;prev=node(l.win?'w':'l',(l.win?'V ':'S ')+l.su+'–'+l.so,(l.label?l.label.replace('Nationals · ',''):'Play-in')+' · '+shortN(l.opp));}
-  else if(U.lp==='x'&&lx)prev=node(lx.su>lx.so?'w':'l',(lx.su>lx.so?'V ':'S ')+lx.su+'–'+lx.so,'Interreg. · '+shortN(lx.opp));
+  if(SV.po&&SV.po.last){const l=SV.po.last;prev=node(l.win?'w':'l',(l.win?lgSigla('V')+' ':lgSigla('S')+' ')+l.su+'–'+l.so,(l.label?l.label.replace('Nationals · ',''):'Play-in')+' · '+shortN(l.opp));}
+  else if(U.lp==='x'&&lx)prev=node(lx.su>lx.so?'w':'l',(lx.su>lx.so?lgSigla('V')+' ':lgSigla('S')+' ')+lx.su+'–'+lx.so,'Interreg. · '+shortN(lx.opp));
   else prev=last?prevRes(last):node('f','Inizio','stagione '+SV.season);
   let cur,nxt;
   if(SV.done){cur=node('n','Fine','posto '+(SV.next?SV.next.rank:myRank())+'°');nxt=node('f','Nuova','stagione');}
@@ -89,7 +89,7 @@ function renderTeamsUS(){
 }
 // ---- Classifica ----
 const usRow=(nm,t,cls)=>`<tr${cls?` class="${cls}"`:''}><td>${crest(nm,15)} ${esc(nm)}<span class="tp">${Math.round(teamPower(nm)||(typeof euPowOf==='function'?euPowOf(nm):0)||0)}</span></td><td>${t.w+t.l}</td><td>${t.w}</td><td>${t.l}</td><td>${t.pf-t.pa>0?'+':''}${t.pf-t.pa}</td></tr>`;
-const usHead='<tr><th>Squadra e forza</th><th>G</th><th>V</th><th>S</th><th>Diff</th></tr>';
+const usHead='<tr><th>Squadra e forza</th><th data-lgk="th-G">G</th><th data-lgk="th-V">V</th><th data-lgk="th-S">S</th><th>Diff</th></tr>';
 function usConfTable(c){
   const names=SV.us.conf[c],t=usTab(c),ord=usRanking(t,names),sp=usBidSplit(usBidsNow()[c]);   // dirette (verde), Play-in (giallo), fuori (rosso) secondo i posti della regione
   const rows=ord.map((nm,i)=>usRow(nm,t[nm],[nm===SV.team?'me':'',i<sp.d?'up':(i<sp.d+2*sp.k?'pi':'dn')].filter(Boolean).join(' '))).join('');

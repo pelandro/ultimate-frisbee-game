@@ -48,7 +48,7 @@ function leagueEndStories(order,res){
     const o=order[sr];if(!o)continue;
     const w0=sr==='A'&&res&&res.A?res.A.win:o[0];
     if(res&&res[sr])story(sr==='A'?`${res[sr].win} è campione d’Italia: batte ${res[sr].runner} in finale ${Math.max(res[sr].fin[2],res[sr].fin[3])}–${Math.min(res[sr].fin[2],res[sr].fin[3])}.`:`Spareggio promozione in ${SERIES_NAME[sr]}: sale ${res[sr].win}.`,false);
-    story(`${w0} vince la ${SERIES_NAME[sr]}; ${sr==='A'?'':'sale'+(PROMO>1?'no':'')+' con '+o.slice(1,PROMO).join(' e ')+(PROMO>1?'':'')+'. '}${sr==='C'?'':'In coda: '+o.slice(-PROMO).join(' e ')+'.'}`.replace(/; \. /,'. ').replace(/ con \./,'.'),false);
+    story(`${w0} vince la ${SERIES_NAME[sr]}; ${sr==='A'?'':'sale con '+o.slice(1,PROMO).join(' e ')+(PROMO>1?'':'')+'. '}${sr==='C'?'':'In coda: '+o.slice(-PROMO).join(' e ')+'.'}`.replace(/; \. /,'. ').replace(/ con \./,'.'),false);
   }
 }
 /* ---- rivalita' ---- */

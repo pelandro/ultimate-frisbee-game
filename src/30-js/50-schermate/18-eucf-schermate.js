@@ -14,7 +14,7 @@ const euEventSub=()=>{const E=SV.eu;if(E.state==='on'){euEnsure();return 'EUCF: 
 const euCardSub=()=>{const E=SV.eu;return E.state==='champ'?'Campioni.':(E.state==='out'?'Eliminati.':(E.cur?E.cur.label+'.':''));};
 function euTimeline(node){
   const E=SV.eu;euEnsure();
-  const prev=E.lastRes?node(E.lastRes.win?'w':'l',(E.lastRes.win?'V ':'S ')+E.lastRes.su+'–'+E.lastRes.so,shortN(E.lastRes.opp)):node('f','Inizio','EUCF');
+  const prev=E.lastRes?node(E.lastRes.win?'w':'l',(E.lastRes.win?lgSigla('V')+' ':lgSigla('S')+' ')+E.lastRes.su+'–'+E.lastRes.so,shortN(E.lastRes.opp)):node('f','Inizio','EUCF');
   const cur=E.state==='on'&&E.cur?node('n',E.cur.label.replace(/ · partita /,' · ').replace(' di 3','/3'),shortN(E.cur.opp)):node('n',E.state==='champ'?'Campioni':'Fuori','EUCF');
   const nxt=E.state==='on'&&E.nat.rd<6?node('f',E.nat.rd<2?'Girone '+(E.nat.rd+2)+'/3':euRoundNames[Math.min(3,Math.max(0,E.nat.rd-2))],'se avanzate'):node('f','Fine','torneo');
   return `<div class="tline">${[prev,cur,nxt].join('')}</div>`;
