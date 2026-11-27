@@ -25,7 +25,7 @@ const FAC_MAX=5;
 const FAC={
   camp:['Centro sportivo','Allenati meglio e limita gli infortuni'],
   viv:['Vivaio e osservatori','Trova più giovani e spendi meno per osservarli'],
-  stad:['Tribune','Ospita più tifosi e incassa dagli affitti']
+  stad:['Tribune','Migliora il campo, ospita più tifosi e incassa dagli affitti']
 };
 // Il valore storico serve agli affitti e ai rimborsi dei vecchi salvataggi.
 const FAC_BASE_VALUES=[40,55,75,100,125];
