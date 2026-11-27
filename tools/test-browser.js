@@ -170,7 +170,8 @@ catch(e){
     if(!/Conference/.test(await page.locator('#hInfo').innerText()))throw new Error('il cruscotto non mostra la Conference');
     await page.click('#hEvent');await vis('#event');
     {const up=await page.locator('#eBody .rt tr.up').count(),pi=await page.locator('#eBody .rt tr.pi').count(),dn=await page.locator('#eBody .rt tr.dn').count();if(up<1||up>2||pi>4||up+pi+dn!==6)throw new Error('zone Nationals / Play-in / eliminate non evidenziate ('+up+'/'+pi+'/'+dn+')');}
-    for(const k of ['nat','rank','conf'])await page.click('#usTabs [data-ut="'+k+'"]');
+    for(const k of ['nat','rank','calendar','stats','conf'])await page.click('#usTabs [data-up="'+k+'"]');   // una sola fila di viste nella Lega USA
+    if(await page.locator('#usTabs [data-up]').count()!==5||await page.locator('#eBody .evpages').count()!==1)throw new Error('la Lega USA deve avere una sola fila di viste (5 schede)');
     await page.click('#hHome');await vis('#home');await page.click('#hSim');await vis('#simres');await page.click('#srOk');await vis('#home');
     await menu('#hOpt');await page.click('#opX');
     await page.evaluate(()=>{localStorage.removeItem('ultimate-cuore');window.testSaves.removeItem('ultimate-prototipo-v2');for(const k of [1,2,3])window.testSaves.removeItem('ultimate-carriera-'+k);});await page.reload();await page.waitForTimeout(500);

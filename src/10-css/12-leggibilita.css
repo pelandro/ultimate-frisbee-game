@@ -112,3 +112,11 @@ html[data-rail="r"] #cmenu{right:calc(var(--rail) + 6px)}
 .tcf small{display:block;font-size:14px;color:#dde6f1}
 .tcfb{display:flex;gap:8px}.tcfb button{min-height:40px;min-width:92px}
 .tcfh{margin:6px 0 0;font-size:14px;color:#d1deec}
+/* inglese: «Physiotherapist» è più lungo di «Fisioterapista» e andava a capo in mezzo alla parola */
+html[lang="en"] .scard .spt .sr{font-size:14px;letter-spacing:-.02em}
+/* Bacheca: Stagioni · Traguardi · Record sono una sottosezione: stesso stile delle Conference della Lega USA, rettangoli più piccoli e bassi della fila sopra */
+#clBox #clSub{gap:6px;max-width:none;margin:0 0 10px}
+#clBox #clSub .sg{flex:0 0 auto;padding:3px 14px;min-height:0;font-size:14px}
+/* Lega USA: le Conference sono la seconda fila, rettangoli più piccoli di quelli delle viste sopra */
+#usConfs{gap:4px}
+#usConfs .sg{padding:3px 4px;min-height:0;font-size:13px}

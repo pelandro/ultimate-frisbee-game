@@ -26,9 +26,9 @@ function renderClub(){
   }else if(clTab==='hon'){
     // bacheca: i trofei si accendono quando li vinci
     const honour=leagueHonours();
-    h=`<div class="trgrid">${honoursTrophies().map(([k,label])=>`<div class="trt${trophy(k)?' on':''}"><b>${trophy(k)}</b><span>${label}</span></div>`).join('')}</div>`;
-    h+=`<div class="ccard"><h3>Albo d’oro · ${esc(honour.name)}</h3>${albHTML(honour.entries)}</div>`;
-    h+=SV.hist.length?SV.hist.map(x=>{
+    h=`<h3 class="eh">I tuoi trofei</h3><div class="trgrid">${honoursTrophies().map(([k,label])=>`<div class="trt${trophy(k)?' on':''}"><b>${trophy(k)}</b><span>${label}</span></div>`).join('')}</div>`;
+    h+=`<h3 class="eh">Albo d’oro · ${esc(honour.name)}</h3><div class="ccard">${albHTML(honour.entries)}</div>`;   // chi ha vinto ogni edizione, non solo tu
+    h+=`<h3 class="eh">Le tue stagioni</h3>`+(SV.hist.length?SV.hist.map(x=>{
       // una stagione in gruppi separati da una riga: risultato, campioni, premi, squadra ideale (prima era un unico paragrafo, difficile da leggere)
       const aw=(x.aw||[]).map(awRow).join(''),b7=(x.best7||[]).map(q=>`<span class="sch${q.mine?' me':''}"><i>${q.pos}</i>${esc(q.name)}<small>${esc(q.team)}</small></span>`).join('');
       const {league,list}=honoursSeasonNames(x),pill=(t,c)=>`<span class="sp${c?' '+c:''}">${t}</span>`;
@@ -37,7 +37,7 @@ function renderClub(){
         +(list.length?`<h4>Campioni</h4><ul class="sch3">${list.map(([n,c])=>`<li><i>${n}</i>${c}</li>`).join('')}</ul>`:'')
         +(aw?`<h4>Premi</h4><ul class="awl">${aw}</ul>`:'')
         +(b7?`<h4>Squadra ideale</h4><div class="sb7">${b7}</div>`:'')+`</div>`;
-    }).join(''):'<p class="note">Qui vedrai i piazzamenti, i campioni e i premi di ogni stagione.</p>';
+    }).join(''):'<p class="note">Qui vedrai i piazzamenti, i campioni e i premi di ogni stagione.</p>');
   }else if(clTab==='ach'){
     h=achHTML();
   }else{
@@ -49,7 +49,7 @@ function renderClub(){
     h+=`<div class="ccard" style="margin-top:10px"><h3>Record di una stagione</h3>${rec?`<ul class="nlist">${rec}</ul>`:'<p>I record di una stagione compariranno qui. In grigio, nelle classifiche, chi non è più in rosa.</p>'}</div>`;
     h+=`<div class="ccard hofbox" style="margin-top:10px"><h3>Hall of Fame</h3>${hofHTML()}</div>`;
   }
-  if(bach)h=`<div class="seg csub" id="clSub">${[['hon','Albo d’oro'],['ach','Traguardi'],['rec','Record']].map(([k,l])=>`<button type="button" class="sg${clTab===k?' on':''}" data-k="${k}">${l}</button>`).join('')}</div>`+h;
+  if(bach)h=`<div class="seg csub" id="clSub">${[['hon','Stagioni'],['ach','Traguardi'],['rec','Record']].map(([k,l])=>`<button type="button" class="sg${clTab===k?' on':''}" data-k="${k}">${l}</button>`).join('')}</div>`+h;
   $('clBox').innerHTML=h;
 }
 $('clTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;clTab=b.dataset.k;renderClub();});

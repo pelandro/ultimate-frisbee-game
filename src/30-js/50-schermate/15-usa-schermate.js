@@ -166,23 +166,21 @@ function usRankView(){
 }
 function renderEventUS(){
   const U=SV.us,sub=SV.done?'Stagione conclusa.':(U.ph==='reg'?usRegSub()+'.':US_PHASE_NAME[U.ph]+'.');
+  $('eCards').classList.add('solo');   // una sola scheda: sui telefoni bassi si nasconde (il nome del campionato è già in cima)
   $('eCards').innerHTML=`<button type="button" class="ecard on" data-e="camp"><strong>${usLeagueName(SV.lk)}</strong><small>48 club, 8 Conference da 6: 5 giornate di Conference + 7 interregionali, Play-in e Nationals a 16 squadre. ${sub}</small></button>`;
   if(usTabPh!==U.ph){usTabPh=U.ph;usTabSel=(U.ph==='nat'||U.ph==='done')?'nat':'conf';}
   let body='';
   if(SV.done&&SV.next)body+=endSeasonHTML({rl:'Conference',awTitle:usConfName(U.cf)});
-  body+=eventPages();
-  if(eventPage!=='table'){
-    const detail=eventPage==='calendar'?eventCalendar():eventPage==='stats'
-      ?(leadersHTML()||'<p class="note">Le statistiche compariranno dopo le prime partite.</p>'):usNatView();
-    $('eBody').innerHTML=body+detail;
-    return;
-  }
-  body+=`<div class="seg" id="usTabs">${[['conf','Conference'],['nat','Nationals'],['rank','Ranking']].map(([k,l])=>`<button type="button" class="sg${usTabSel===k?' on':''}" data-ut="${k}">${l}</button>`).join('')}</div>`;
+  // una sola fila di viste: prima erano due (Classifica/Calendario/Statistiche/Fase finale e poi Conference/Nationals/Ranking) con nomi ripetuti e la stessa pagina in due posti
+  const page=eventPage==='calendar'||eventPage==='stats'?eventPage:usTabSel;
+  body+=`<nav class="seg evpages" id="usTabs" aria-label="Viste della lega">${[['conf','Conference'],['calendar','Calendario'],['stats','Statistiche'],['nat','Nationals'],['rank','Ranking nazionale']].map(([k,l])=>`<button type="button" class="sg${page===k?' on':''}" data-up="${k}"${page===k?' aria-current="page"':''}>${l}</button>`).join('')}</nav>`;
+  if(page==='calendar'){$('eBody').innerHTML=body+eventCalendar();return;}
+  if(page==='stats'){$('eBody').innerHTML=body+(leadersHTML()||'<p class="note">Le statistiche compariranno dopo le prime partite.</p>');return;}
   body+=usTabSel==='nat'?usNatView():(usTabSel==='rank'?usRankView():usConfView());
   if(usTabSel==='nat'&&SV.usAlb?.length)body+=`<h3 class="eh">Albo d’oro dei Nationals</h3>${albHTML(SV.usAlb.slice(0,6))}`;
   $('eBody').innerHTML=body;
 }
 $('eBody').addEventListener('click',e=>{
-  const t=e.target.closest('#usTabs [data-ut]');if(t){usTabSel=t.dataset.ut;renderEvent();return;}
+  const t=e.target.closest('#usTabs [data-up]');if(t){const k=t.dataset.up;if(k==='calendar'||k==='stats')eventPage=k;else{eventPage='table';usTabSel=k;}renderEvent();$('eBody').querySelector(`#usTabs [data-up="${k}"]`)?.focus();return;}
   const c=e.target.closest('#usConfs [data-uc]');if(c){usConfSel=c.dataset.uc;renderEvent();}
 });

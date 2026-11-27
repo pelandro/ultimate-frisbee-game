@@ -1,5 +1,7 @@
 /* Telefono in orizzontale (altezza fino a 440 px): le schermate a cui mancava poco per stare intere si stringono un po', così non serve scorrere */
 @media (max-height:440px){
+  /* Lega USA: la scheda unica del campionato si nasconde, il nome sta già in alto */
+  #eCards.solo{display:none}
   /* Partita veloce */
   #quick .shead{margin-bottom:3px}
   .qpb{padding:4px 9px 5px}
