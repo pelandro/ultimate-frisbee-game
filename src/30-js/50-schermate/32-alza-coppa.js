@@ -96,7 +96,8 @@ function openCupScene(title,after){
   if(F.back==='petto')cupPairs(mates);
   let land='IT';try{land=kind==='us'?'US':(kind==='eu'?'EU':clubLega(team));}catch(e){}
   if(land==='IW')land='IT';
-  const fem=SV.lk==='IW',ev={bg:'#1d2b53',ink:'#ffd23f',ac:'#f4f4f4',ic:'trophy',t:[UPC(title.text),fem?'CAMPIONESSE':'CAMPIONI']};
+  else if(LN_DEF[land]?.w)land=land.slice(0,2);
+  const fem=lnWomenNow(),ev={bg:'#1d2b53',ink:'#ffd23f',ac:'#f4f4f4',ic:'trophy',t:[UPC(title.text),fem?'CAMPIONESSE':'CAMPIONI']};
   const boards=[ev,{...bClub(team,0),bg:kit.shirt},SV.sp&&SV.sp.name?bSp(SV.sp.name):B_UF,ev,{...bClub(team,0),bg:kit.shirt},B_SPIRIT];
   const shorts=kit.shorts===kit.shirt?'#ffffff':kit.shorts;
   cup={kind,F,kit,team,cap,lifters,mates,boards,ev,fem,after,

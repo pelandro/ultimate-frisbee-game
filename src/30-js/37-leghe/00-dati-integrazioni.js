@@ -38,6 +38,7 @@ for(const lk in LN_PL_PLUS){
 // nessun club di una serie supera di oltre 3 punti la potenza del club piu' debole della serie sopra meno 0,5 (Belgio, Francia, Germania; chi supera il tetto ci va sotto in fila, nello stesso ordine di prima): erano al contrario club come Eclipse Solaire (3º livello belga, 10 punti sopra
 // l'ultimo del 2º). Jetset Open (4º belga) resta sotto Freezzz Beezzz.
 const LN_POW_FIX={
+  'M.U.C.':84,
   'Freezzz Beezzz one':87.5,
   'Heidees':84,
   'Helgtre Open':69.8,
@@ -49,3 +50,17 @@ const LN_POW_FIX={
 // WUCC 2026, contro 0,76-0,87 degli altri club Open) e Victor Weller (2,0 punti a partita, terzo della squadra) era fuori dalla rosa; con le 10 partite Open del WUCC 2026 (Limerick, portali
 // WFDF) il bonus e' la media tra il vecchio e la retta ricavata dagli altri club (bonus = -3,14 + 2,41 x punti a partita), solo la retta per chi non aveva dati; a meta' interi.
 const LN_BONUS_FIX={'Freezzz Beezzz one':{'Lucca Rogissart':4,'Kamiel Van Mullem':2.5,'Corneel Descan':2,'Arthur Moyersoen':2,'Victor Weller':1.5,'Arne Geernaert':1,'Stan Vanhecke':1,'Tom Van Quathem':0.5,'August Smessaert':0.5,'Adrien Aurousseau':0.5,'Raf De Vlaemynck':-0.5,'Raven Proot':-0.5,'Ewoud Delanote':-0.5,'Stan Coppejans':-1,'Emile Willems':-1.5,'William Dumon':-1.5,'Bavo Delanote':-1.5,'Broes Delanote':-2,'Robbe Wets':-2,'Joseph Delachat':-2,'Lars Vanderbeck':-2.5,'Seppe Demeulemeester':-2.5}};
+
+
+// M.U.C. 2026: riscontri Mixed nelle finali EUCF (Tiefseetaucher e Zamperl) e ai WUCC.
+// https://eucf.ultimatefederation.eu/?view=teamcard&team=1184
+// https://eucf.ultimatefederation.eu/?view=teamcard&team=1227
+LN_PL.DE['M.U.C.']=[
+  ...(LN_PL.DE['M.U.C.']||[]),
+  ['Rincker','Yannik',0,0,'C',6],
+  ['Wolf','Aaron',0,0,'C',7],
+  ['Walker','Simon',0,0,'C',4],
+  ['Klimesch','Moritz',0,0,'C',5],
+  ['Bernecker','Henri',0,0,'H',3],
+  ['Maierhofer','Fabian',0,0,'H',3]
+];

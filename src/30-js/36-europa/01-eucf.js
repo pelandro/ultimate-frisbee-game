@@ -13,7 +13,7 @@
 const EU_CLUBS=[['Madrid Toros','ESP',91],['Amsterdam Windmills','NED',88],['Prague Golems','CZE',87],['Barcelona Mar','ESP',85],['Zurich Alpentraum','SUI',83],['Dublin Shamrocks','IRL',78]];
 const EU_BY={};for(const [n,c,p] of EU_CLUBS)EU_BY[n]={c,p};
 // quanti club per paese vanno all'EUCF (piu' la sedicesima, la quarta piu' forte) e codice usato per tenere i connazionali in gironi diversi
-const EU_SLOTS={IT:3,BE:3,FR:3,UK:3,DE:3},EU_CC={IT:'ITA',BE:'BEL',FR:'FRA',UK:'GBR',DE:'GER'};
+const EU_SLOTS={IT:3,BE:3,FR:3,UK:3,DE:3},EU_CC={IT:'ITA',BE:'BEL',FR:'FRA',UK:'GBR',DE:'GER',IW:'ITA',BEW:'BEL',FRW:'FRA',UKW:'GBR',DEW:'GER'};
 const EU_PRIZE=[12,16,22,34,60];   // crediti (per il coefficiente della Serie A): qualificazione ai quarti o ai prequarti, poi prequarti, quarti, semifinale, finale vinti
 const EU_BRONZE=18;   // finale per il 3° posto vinta
 const euNew=season=>({s:season|0,state:'on',nat:null,it:(SV&&SV.next&&SV.next.euQ)||null,cash:0});   // la lista dei club si costruisce al primo uso (euEnsure)
@@ -34,13 +34,15 @@ function euPick(lk,k,R){
   return pool.map(([n,p])=>{const v=clamp((SV.eup[n]===undefined?p:SV.eup[n])+R()*5-2.5,50,96);SV.eup[n]=v;return [n,v+R()*4-2];}).sort((a,b)=>b[1]-a[1]).slice(0,k).map(x=>x[0]);
 }
 // il campo dell'EUCF alla fine del campionato: le prime 3 di ogni paese (top/fourth = classifica vera del tuo campionato) e la quarta piu' forte
-const EU_LK=['IT','BE','FR','DE','UK'];
-const EU_WHO_TXT='Prime 3 dopo i playoff di Italia, Belgio, Francia, Germania e Regno Unito, più la quarta più forte fra questi campionati.';
+const EU_LK=['IT','BE','FR','DE','UK'],EU_WOMEN_LK=['IW','BEW','FRW','DEW','UKW'];
+const euLeagues=lk=>lnWomen(lk)?EU_WOMEN_LK:EU_LK;
+const euChampions=()=>lnWomenNow()?'Campionesse':'Campioni';
+const EU_WHO_TXT='Prime 3 delle classifiche finali di Italia, Belgio, Francia, Germania e Regno Unito, più la quarta più forte fra questi campionati.';
 const EU_FIELD_TXT='16 club: prime 3 di Italia, Belgio, Francia, Germania e Regno Unito, più la quarta più forte. Gironi da 4, poi playoff.';
 function euField(lk,top,fourth){
   if(!SV.eup)SV.eup={};
   const R=mulberry32(hashStr(SV.seed+'|euf|'+SV.season)),teams=[],cand=[];
-  for(const c of EU_LK){
+  for(const c of euLeagues(lk)){
     const p=c===lk?top.slice(0,3).concat(fourth?[fourth]:[]):euPick(c,4,R);
     teams.push(...p.slice(0,3));if(p[3])cand.push(p[3]);
   }
@@ -48,7 +50,7 @@ function euField(lk,top,fourth){
   if(ex)teams.push(ex);
   return teams;
 }
-// costruisce l'edizione al primo uso: i club del tuo paese (qualificati), quelli degli altri paesi e 5 europei inventati, sorteggio dei gironi
+// Costruisce l'edizione e sorteggia i gironi al primo uso.
 function euEnsure(){
   const E=SV.eu;if(E.nat)return E.nat;
   const old=E.state!=='on'?{state:E.state,cash:E.cash|0}:null;   // salvataggio vecchio con coppa gia' conclusa: si conserva l'esito
@@ -59,6 +61,7 @@ function euEnsure(){
     const pool=(isLN()?lnClubs(lk).filter(n=>LN_BY[n].t===LN_DEF[lk].tiers[0].id):(SV.mem&&SV.mem.A)||[]).filter(n=>n===SV.team||(SV.rost&&SV.rost[n]));
     const mine=teams.concat(pool.filter(n=>!teams.includes(n)).sort((a,b)=>teamPow(b)-teamPow(a)));
     teams=euField(lk,mine.slice(0,3),mine[3]);
+    if(lnWomen(lk))E.it=teams;
   }
   if(!teams.includes(SV.team))teams[teams.length-1]=SV.team;
   E.rk={};for(const t of teams)E.rk[t]=1500+(euPowOf(t)-82)*18;
@@ -76,7 +79,7 @@ function euAdvance(){
     t16Round(euCtx(),N,null);
   }
   E.cur=null;
-  if(N.champ===SV.team&&E.state!=='champ'){E.state='champ';SV.troph.eu=(SV.troph.eu|0)+1;SV.rep=clamp(SV.rep+5,0,100);news('Campioni d’Europa nella stagione '+SV.season+'! Premi del torneo: '+(E.cash|0)+' crediti.');ricGive('E1');}
+  if(N.champ===SV.team&&E.state!=='champ'){E.state='champ';SV.troph.eu=(SV.troph.eu|0)+1;SV.rep=clamp(SV.rep+5,0,100);news(euChampions()+' d’Europa nella stagione '+SV.season+'! Premi del torneo: '+(E.cash|0)+' crediti.');ricGive('E1');}
   else if(E.state==='on'){E.state='out';const pl=euPlace(N,SV.team);if(pl===2||pl===3)ricGive('E'+pl);}   // podio: finale persa o 3° posto (34-riconoscimenti.js)
   return false;
 }
@@ -94,16 +97,16 @@ function euRecord(win,su,so){
   let pre=`${c.label}: ${win?'vittoria':'sconfitta'} contro ${opp} (${su}–${so}).`,pz=0;
   if(rd===2){
     const p=t16Pool(N,SV.team),pos=N.ord[p].indexOf(SV.team)+1;
-    if(pos===1){pre+=` Primi nel girone ${US_POOL[p]}: direttamente ai quarti.`;pz=EU_PRIZE[0];}
+    if(pos===1){pre+=` ${lnWomenNow()?'Prime':'Primi'} nel girone ${US_POOL[p]}: direttamente ai quarti.`;pz=EU_PRIZE[0];}
     else if(pos<=3){const m=N.ko[0].find(x=>x[0]===SV.team||x[1]===SV.team);pre+=` ${pos}° nel girone ${US_POOL[p]}: prequarti contro ${m[0]===SV.team?m[1]:m[0]}.`;pz=EU_PRIZE[0];}
-    else{pre+=` Ultimi nel girone ${US_POOL[p]}: fuori dalla corsa al titolo.`;N.out=true;}
+    else{pre+=` ${lnWomenNow()?'Ultime':'Ultimi'} nel girone ${US_POOL[p]}: fuori dalla corsa al titolo.`;N.out=true;}
   }else if(bz){if(win)pz=EU_BRONZE;N.out=true;}   // il piazzamento lo dice euEndTxt
   else if(rd>=3){if(win)pz=EU_PRIZE[rd-2];else if(!(rd===5&&N.br)){N.out=true;if(rd<6)pre+=' Eliminati dal torneo.';}}   // chi perde la semifinale gioca per il 3° posto
   if(pz){pz=Math.round(pz*SR_K.A);SV.cash+=pz;E.cash=(E.cash|0)+pz;}
   return pre+(euAdvance()?` Prossima: ${E.cur.label} contro ${E.cur.opp}.`:' '+euEndTxt());
 }
 const EU_PLACE_TXT=['Fuori dall’EUCF.','Siete campioni d’Europa!','Secondo posto all’EUCF.','Terzo posto all’EUCF: siete sul podio!','Quarto posto all’EUCF.'];
-const euEndTxt=()=>{const E=SV.eu;return E.state==='champ'?EU_PLACE_TXT[1]:(E.state==='out'?(E.nat&&E.nat.rd>=7?EU_PLACE_TXT[euPlace(E.nat,SV.team)]:'Eliminati.'):'');};
+const euEndTxt=()=>{const E=SV.eu;return E.state==='champ'?'Siete '+euChampions().toLowerCase()+' d’Europa!':(E.state==='out'?(E.nat&&E.nat.rd>=7?EU_PLACE_TXT[euPlace(E.nat,SV.team)]:'Eliminati.'):'');};
 // il tuo piazzamento alla fine del torneo: 1 campione, 2 finale persa, 3 terzo posto, 4 quarto, 0 uscito prima. Nelle edizioni senza finale per il 3° posto
 // (sorteggiate prima del 2026) e' terzo chi ha perso la semifinale
 function euPlace(N,me){

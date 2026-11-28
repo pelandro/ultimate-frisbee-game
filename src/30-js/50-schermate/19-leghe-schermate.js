@@ -21,7 +21,7 @@ function lnTimelineHTML(node){
   else prev=last?node(last.su>last.so?'w':'l',(last.su>last.so?lgSigla('V')+' ':lgSigla('S')+' ')+last.su+'–'+last.so,lgSigla('G')+lastN+' · '+shortN(last.opp)):node('f','Inizio','stagione '+SV.season);
   let cur,nxt;
   if(SV.done){cur=node('n','Fine','posto '+(SV.next?SV.next.rank:myRank())+'°');nxt=node('f','Nuova','stagione');}
-  else if(po){cur=node('n',lnLabel(),shortN(SV.po.opp));nxt=node('f',L.F&&L.F.rd+1<L.F.rounds?'Turno dopo':'Fine','stagione');}
+  else if(po){cur=node('n',lnLabel(),shortN(SV.po.opp));nxt=node('f',L.F&&(L.F.rd+1<L.F.rounds||L.F.lv[0]?.m==='cross')?'Turno dopo':'Fine','stagione');}
   else{
     const o=lnOppAt(SV.round);cur=node('n','G'+(SV.round+1)+' di '+R,shortN(o)+(o===SV.riv?' · derby':''));
     nxt=SV.round+1<R?node('f',lgSigla('G')+(SV.round+2),shortN(lnOppAt(SV.round+1))||'riposo'):node('f',lnTierDef().fin.length?'Fase finale':'Fine','stagione');
@@ -34,7 +34,9 @@ function lnStakes(m){
   if(po&&po.on){
     tag='Fase finale';title=lnLabel();
     const lv=L.F.lv[po.li],b=lv.base;
-    if(lv.m==='k4'){lines.push('Chi perde è eliminato.');if(L.F.rd===L.F.rounds-1)lines.push(b>1?'Chi vince sale in Serie A insieme alla prima del girone.':'Chi vince è campione.');}
+    if(lv.tab){
+      lines.push(lv.carried?'Il risultato contro la squadra del tuo girone è già in classifica.':'Ogni partita conta per la classifica del pool.');
+    }else if(lv.m==='k4'){lines.push('Chi perde è eliminato.');if(L.F.rd===L.F.rounds-1)lines.push(b>1?'Chi vince sale in Serie A insieme alla prima del girone.':'Chi vince è campione.');}
     else{
     lines.push(lv.m==='rr'?'Minigirone per le posizioni '+b+'°-'+(b+lv.T.length-1)+'°: ogni partita conta per il piazzamento.':'Si gioca per il piazzamento: nessuno è eliminato, ma ogni posizione vale premio e punti di reputazione.');
     if(L.F.rd===L.F.rounds-1&&lv.base===1&&lv.m!=='rr')lines.push(po.k===0?'Chi vince è campione.':'Posizione finale in palio.');}
@@ -64,8 +66,8 @@ function lnFormatTxt(tr){
   const legs=tg&&tg.one?Math.round(tg.g/tg.one):1,g=lgTr(tr.pools>1?`${tr.pools} gironi${tr.geo?' geografici (ovest ed est)':''}`:'girone unico')+', '+lgTr(legs>1?'andata e ritorno':'sola andata')+(tg?' '+lgTr(`(${tg.g} partite)`):'');   // a pezzi: la frase cambia con la lega (30-lingua.js)
   const f=tr.fin[0];
   const m={c4:tr.pools>1?'playoff promozione fra le prime 2 di ogni girone':'playoff fra le prime 4',b6:'playoff fra le prime 6',c8:'playoff fra le prime 8',
-    x8:'turno incrociato e finali di piazzamento',p:'finali di piazzamento a coppie',rr:'minigirone',k4:f&&f.f>1?'1ª promossa, 2ª-5ª spareggio per la promozione':'playoff fra le prime 4'};
-  return `${tr.comps>1?lgTr(tr.comps+' competizioni')+', ':''}${g}${tr.fin.length?'; '+[...new Set(tr.fin.map(x=>m[x.m]))].map(t=>lgTr(t)).join(' '+({en:'and',fr:'et',de:'und'}[LANG]||'e')+' '):''}`;
+    x8:'turno incrociato e finali di piazzamento',p:'finali di piazzamento a coppie',rr:'minigirone',cross:'pool incrociati e playoff',k4:f&&f.f>1?'1ª promossa, 2ª-5ª spareggio per la promozione':'playoff fra le prime 4'};
+  return `${tr.comps>1?lgTr(tr.comps+' competizioni')+', ':''}${g}${tr.fin.length?'; '+[...new Set(tr.fin.map(x=>x.m==='rr'&&x.tag?x.tag+(x.legs===2?' (andata e ritorno)':''):m[x.m]))].map(t=>lgTr(t)).join(' '+({en:'and',fr:'et',de:'und'}[LANG]||'e')+' '):''}`;
 }
 const lnCap=t=>t[0].toUpperCase()+t.slice(1);
 // chi sale, chi scende e chi va all'EUCF da un livello (per la scelta della squadra e per la scheda del campionato)
@@ -88,7 +90,7 @@ function lnZone(r,tr,n){
 function lnLegend(tr){
   const T=lnTiers(),i=T.findIndex(t=>t.id===tr.id),f=tr.fin[0],L=[];
   if(f&&f.f>1)L.push(['g','sale'],['y','spareggio promozione']);
-  else if(f)L.push(['g',f.m==='c4'&&tr.pools>1?'semifinali promozione':(i===0?(f.m==='c8'?'tabellone':'playoff'):'fase finale')]);
+  else if(f)L.push(['g',f.m==='rr'?f.tag:f.m==='cross'?'Upper pool':f.m==='c4'&&tr.pools>1?'semifinali promozione':(i===0?(f.m==='c8'?'tabellone':'playoff'):'fase finale')]);
   else if(i>0)L.push(['g','sale']);
   if(i<T.length-1)L.push(['r','scende']);
   return L.map(([c,t])=>`<span class="leg"><i class="${c}"></i>${t}</span>`).join('');
@@ -115,10 +117,14 @@ function lnPoolView(){
 function lnFinView(){
   const L=SV.ln,tr=lnTierDef();
   if(!tr.fin.length)return `<p class="estat">Nessuna fase finale</p><p class="note">${esc(SERIES_NAME[SV.sr])}: la classifica finale è quella del girone.</p>`;
+  if(!L.F&&tr.fin.some(sp=>sp.m==='rr'||sp.m==='cross'))return `<p class="estat">Fase finale</p><p class="note">${esc(lnCap(lnFormatTxt(tr)))}.</p>`;
   if(!L.F)return `<p class="estat">Fasi finali</p><p class="note">${esc(lnCap(lnFormatTxt(tr)))}. Il tabellone si forma alla fine ${tr.fin[0].m==='k4'?'del girone: chi perde è eliminato':(tr.fin[0].m==='c8'?'del girone: nessuno è eliminato, ogni turno decide un piazzamento':'del girone: c’è anche la finale per il 3° posto')}.</p>`;
   const F=L.F;let h=`<p class="estat">Fasi finali · ${esc(SERIES_NAME[SV.sr])}${F.done?' · concluse':''}</p>`;
-  F.lv.forEach(lv=>{
-    h+=`<h3 class="eh">Posti ${lv.base}°-${lv.base+lv.T.length-1}°</h3>`;
+  [...(F.pools||[]),...F.lv].forEach(lv=>{
+    const name=lv.tab&&lv.tag?lv.tag:`Posti ${lv.base}°-${lv.base+lv.T.length-1}°`;
+    h+=`<h3 class="eh">${esc(name)}</h3>`;
+    if(lv.tab)h+=`<div style="overflow-x:auto"><table class="rt">${usHead}${usRanking(lv.tab,lv.T).map(n=>usRow(n,lv.tab[n],n===SV.team?'me':'')).join('')}</table></div>`;
+    if(lv.carried)h+=`<p class="note">Risultati riportati dal primo girone</p><ul class="elist">${lv.carried.map(([a,b,sa,sb])=>`<li><span>${esc(a)} – ${esc(b)}</span><span>${sa} – ${sb}</span></li>`).join('')}</ul>`;
     for(let rd=0;rd<lv.R.length;rd++){
       const rows=lv.R[rd].map((m,k)=>{
         if(m[0]===null&&m[1]===null)return '';
@@ -149,8 +155,8 @@ function lnTiersView(){
 function renderEventLN(){
   const L=SV.ln,D=LN_DEF[SV.lk],eu=SV.euUnlocked;
   $('eCards').innerHTML=`<button type="button" class="ecard${SV.event==='camp'?' on':''}" data-e="camp"><strong>${esc(D.name)}</strong><small>${esc(SERIES_NAME[SV.sr])}: ${esc(lnFormatTxt(lnTierDef()))}. ${esc(lnMoveTxt(lnTierDef()))} ${SV.done?'Stagione conclusa.':esc(lnShort())+'.'}</small></button>`+
-    (eu?`<button type="button" class="ecard${SV.event==='eu'?' on':''}" data-e="eu"><strong>Campionato europeo (EUCF)</strong><small>${EU_FIELD_TXT} ${euCardSub()}</small></button>`
-       :(D.eu?`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo</strong><small>${euQualifiedPending()?'Qualificati: apri il torneo dal riepilogo.':`Per qualificarti: prime ${D.eu} della ${esc(D.tiers[0].name)} dopo i playoff, o quarta più forte fra i campionati.`}</small></button>`:''));   // il campionato Women non va all'EUCF
+    (eu?`<button type="button" class="ecard${SV.event==='eu'?' on':''}" data-e="eu"><strong>Campionato europeo${D.w?' Women':''} (EUCF)</strong><small>${EU_FIELD_TXT} ${euCardSub()}</small></button>`
+       :(D.eu?`<button type="button" class="ecard" data-e="eu" disabled><strong>Campionato europeo${D.w?' Women':''}</strong><small>${euQualifiedPending()?'Qualificati: apri il torneo dal riepilogo.':`Per qualificarti: prime ${D.eu} della ${esc(D.tiers[0].name)} in classifica, o quarta più forte fra i campionati.`}</small></button>`:''));
   $('eCards').classList.add('mini');   // due linguette piccole: le descrizioni stanno nelle «i» della classifica
   if(SV.event!=='camp'){$('eBody').innerHTML=euView();return;}   // EUCF: gironi e tabellone (18-eucf-schermate.js)
   if(lnTabPh!==L.ph){lnTabPh=L.ph;eventPage=L.ph==='grp'?'table':'final';}

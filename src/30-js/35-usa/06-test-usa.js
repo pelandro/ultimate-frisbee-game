@@ -104,7 +104,7 @@ function usaSelfTest(seasons,seed){
     chk('lega',isUS()&&SV.team==='Seattle Sockeye','da Italia a USA');
     // Dieci atlete a SCINNY: anche la distinta più corta può finire una stagione.
     startCareer('Omega Continuum',{});
-    chk('women',SV.sr==='UW'&&SQ.length===10&&SQ.every(p=>p.f)&&foreignClubs().every(n=>clubLega(n)==='IW'),'avvio o mercato Women');
+    chk('women',SV.sr==='UW'&&SQ.length===10&&SQ.every(p=>p.f)&&foreignClubs().every(n=>isWomenClub(n)&&clubLega(n)!=='UW'),'avvio o mercato Women');
     for(let g=0;!SV.done&&g<24;g++){
       const m=nextMatch();
       chk('women',m&&UW_ROSTERS[m.name],'avversaria in carriera Women');

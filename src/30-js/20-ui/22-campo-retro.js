@@ -20,6 +20,7 @@ function vnLand(V){
   }catch(e){}
   if(l==='IW')l='IT';
   if(l==='UW')l='US';
+  if(LN_DEF[l]?.w)l=l.slice(0,2);
   V.land=l;return l;
 }
 // ---------- colori ----------

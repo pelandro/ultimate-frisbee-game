@@ -58,7 +58,12 @@ function venueOf(){
     if(U.ph==='pin'){const P=U.pin&&U.pin[U.cf],m=P&&SV.po?P.m[SV.po.mi]:null;return m&&m[0]===SV.team?'H':'A';}   // Play-in: gara secca in casa della meglio piazzata
     return 'N';   // Nationals
   }
-  if(isLN())return SV.ln.ph==='grp'?venueAlt():'N';   // fasi finali: tabellone in un weekend
+  if(isLN()){
+    if(SV.ln.ph==='grp')return venueAlt();
+    const po=SV.po,lv=po&&SV.ln.F?.lv[po.li];
+    if(lv?.doubleRound)return lv.R[po.round][po.k][0]===SV.team?'H':'A';
+    return 'N';
+  }
   if(SV.po&&SV.po.on)return SV.po.round?'N':'H';      // playoff italiani: semifinale in casa, finale in campo neutro
   return venueAlt();
 }

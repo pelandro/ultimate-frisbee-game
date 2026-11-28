@@ -1,0 +1,440 @@
+id_partita,punteggio_1,punteggio_2,squadra_in_meta,id_marcatrice,id_assist,callahan,fonte
+100,1,0,SMOG Women,1017,1007,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,1,1,Bristol Women,609,603,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,2,1,SMOG Women,1006,1007,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,2,2,Bristol Women,602,599,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,3,2,SMOG Women,1007,1001,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,3,3,Bristol Women,608,603,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,4,3,SMOG Women,1007,1001,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,4,4,Bristol Women,605,602,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,5,4,SMOG Women,997,1004,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,5,5,Bristol Women,599,603,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,5,6,Bristol Women,615,613,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,5,7,Bristol Women,597,601,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,5,8,Bristol Women,597,610,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,5,9,Bristol Women,602,595,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,6,9,SMOG Women,1006,1003,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,6,10,Bristol Women,605,-1,1,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,6,11,Bristol Women,613,610,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,7,11,SMOG Women,1017,1006,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,7,12,Bristol Women,595,608,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,8,12,SMOG Women,997,1001,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,8,13,Bristol Women,599,608,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,8,14,Bristol Women,613,601,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+100,8,15,Bristol Women,613,610,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=100
+101,1,0,SYC,1102,1090,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,2,0,SYC,1099,1095,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,3,0,SYC,1101,1083,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,3,1,Horizon,722,735,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,4,1,SYC,1092,1100,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,4,2,Horizon,726,735,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,5,2,SYC,1091,1101,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,5,3,Horizon,718,735,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,6,3,SYC,1084,1098,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,6,4,Horizon,718,736,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,7,4,SYC,1087,1100,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,8,4,SYC,1099,1085,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,9,4,SYC,1096,1101,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,10,4,SYC,1102,1095,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,10,5,Horizon,719,735,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,11,5,SYC,1092,1101,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,11,6,Horizon,718,735,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,12,6,SYC,1092,1101,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,12,7,Horizon,735,729,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,13,7,SYC,1098,1083,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,13,8,Horizon,732,735,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,14,8,SYC,1084,1098,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+101,15,8,SYC,1094,1097,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=101
+102,1,0,LMU,792,793,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,2,0,LMU,788,798,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,3,0,LMU,789,795,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,4,0,LMU,788,797,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,5,0,LMU,794,784,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,6,0,LMU,788,789,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,7,0,LMU,797,795,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,8,0,LMU,794,792,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,8,1,Midlands Boom,833,841,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,9,1,LMU,794,784,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,10,1,LMU,788,791,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,11,1,LMU,800,783,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,12,1,LMU,793,796,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,13,1,LMU,791,800,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,14,1,LMU,785,788,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+102,15,1,LMU,794,784,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=102
+103,0,1,LMU,798,795,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,0,2,LMU,787,791,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,0,3,LMU,792,793,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,1,3,SYC,1092,1101,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,2,3,SYC,1097,1082,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,2,4,LMU,784,802,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,2,5,LMU,795,791,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,2,6,LMU,795,790,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,3,6,SYC,1093,1088,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,3,7,LMU,793,784,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,4,7,SYC,1091,1087,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,4,8,LMU,794,783,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,4,9,LMU,784,796,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,5,9,SYC,1086,1083,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,5,10,LMU,793,792,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,6,10,SYC,1098,1092,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,6,11,LMU,786,794,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,7,11,SYC,1086,1089,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,7,12,LMU,794,796,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,7,13,LMU,790,800,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,8,13,SYC,1088,1102,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,8,14,LMU,784,799,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,9,14,SYC,1092,1083,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+103,9,15,LMU,794,784,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=103
+104,1,0,Horizon,732,727,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,2,0,Horizon,737,722,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,2,1,Midlands Boom,832,833,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,2,2,Midlands Boom,835,844,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,3,2,Horizon,727,729,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,3,3,Midlands Boom,839,838,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,4,3,Horizon,726,736,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,5,3,Horizon,733,728,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,6,3,Horizon,733,723,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,7,3,Horizon,726,721,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,8,3,Horizon,735,718,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,9,3,Horizon,719,728,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,10,3,Horizon,732,723,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,10,4,Midlands Boom,834,839,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,11,4,Horizon,718,725,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,11,5,Midlands Boom,827,839,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,12,5,Horizon,729,724,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,13,5,Horizon,722,721,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,14,5,Horizon,726,728,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,14,6,Midlands Boom,834,839,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,14,7,Midlands Boom,832,833,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+104,15,7,Horizon,737,728,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=104
+85,1,0,Iceni,757,755,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,2,0,Iceni,744,756,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,3,0,Iceni,759,757,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,4,0,Iceni,749,747,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,5,0,Iceni,757,761,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,6,0,Iceni,758,750,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,7,0,Iceni,752,756,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,8,0,Iceni,747,748,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,9,0,Iceni,747,762,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,10,0,Iceni,756,757,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,11,0,Iceni,741,750,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,12,0,Iceni,761,752,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,12,1,Midlands Boom,841,846,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,13,1,Iceni,761,746,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,14,1,Iceni,748,747,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+85,15,1,Iceni,739,743,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=85
+86,1,0,Iceni,752,756,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,2,0,Iceni,742,749,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,3,0,Iceni,742,747,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,4,0,Iceni,738,760,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,5,0,Iceni,752,761,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,6,0,Iceni,742,747,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,7,0,Iceni,748,762,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,8,0,Iceni,761,752,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,9,0,Iceni,747,742,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,9,1,SYC,1088,1082,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,9,2,SYC,1095,1088,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,10,2,Iceni,755,746,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,11,2,Iceni,750,754,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,12,2,Iceni,738,747,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,12,3,SYC,1097,1088,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,13,3,Iceni,751,746,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,14,3,Iceni,758,742,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,14,4,SYC,1088,1102,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+86,15,4,Iceni,751,752,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=86
+87,0,1,Bristol Women,606,611,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,1,1,Iceni,753,756,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,1,2,Bristol Women,595,603,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,1,3,Bristol Women,601,608,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,2,3,Iceni,738,762,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,2,4,Bristol Women,610,605,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,3,4,Iceni,753,756,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,4,4,Iceni,748,747,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,5,4,Iceni,760,750,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,6,4,Iceni,754,741,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,7,4,Iceni,742,760,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,8,4,Iceni,748,750,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,8,5,Bristol Women,603,602,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,8,6,Bristol Women,606,601,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,8,7,Bristol Women,602,605,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,9,7,Iceni,747,762,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,9,8,Bristol Women,603,610,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,9,9,Bristol Women,616,595,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,10,9,Iceni,741,750,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,11,9,Iceni,747,749,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,12,9,Iceni,758,750,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,13,9,Iceni,748,742,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,14,9,Iceni,746,747,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,14,10,Bristol Women,606,597,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+87,15,10,Iceni,753,756,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=87
+88,1,0,Bristol Women,596,595,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,2,0,Bristol Women,614,597,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,2,1,Midlands Boom,842,834,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,3,1,Bristol Women,610,599,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,4,1,Bristol Women,616,604,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,5,1,Bristol Women,597,605,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,6,1,Bristol Women,603,598,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,7,1,Bristol Women,609,613,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,8,1,Bristol Women,611,616,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,9,1,Bristol Women,600,596,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,9,2,Midlands Boom,834,839,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,10,2,Bristol Women,600,611,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,11,2,Bristol Women,607,610,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,12,2,Bristol Women,596,616,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,13,2,Bristol Women,614,601,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,14,2,Bristol Women,606,603,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+88,15,2,Bristol Women,610,607,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=88
+89,0,1,SYC,1091,1101,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,1,1,Bristol Women,602,610,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,1,2,SYC,1084,1100,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,2,2,Bristol Women,602,610,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,2,3,SYC,1092,1101,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,2,4,SYC,1094,1095,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,3,4,Bristol Women,598,597,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,3,5,SYC,1087,1098,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,4,5,Bristol Women,596,612,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,5,5,Bristol Women,607,605,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,5,6,SYC,1087,1098,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,6,6,Bristol Women,602,610,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,7,6,Bristol Women,614,595,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,8,6,Bristol Women,610,613,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,8,7,SYC,1097,1088,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,9,7,Bristol Women,612,611,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,9,8,SYC,1096,1101,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,10,8,Bristol Women,614,595,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,11,8,Bristol Women,614,602,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,11,9,SYC,1083,1098,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,12,9,Bristol Women,607,601,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,13,9,Bristol Women,612,606,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,14,9,Bristol Women,599,601,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+89,15,9,Bristol Women,614,595,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=89
+90,1,0,SYC,1091,1084,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,2,0,SYC,1094,1085,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,2,1,Midlands Boom,841,836,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,3,1,SYC,1083,1096,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,4,1,SYC,1102,1097,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,5,1,SYC,1101,1094,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,5,2,Midlands Boom,841,833,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,6,2,SYC,1086,1098,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,6,3,Midlands Boom,829,833,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,7,3,SYC,1089,1083,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,8,3,SYC,1088,1090,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,9,3,SYC,1102,1097,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,9,4,Midlands Boom,836,846,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,10,4,SYC,1098,1092,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,11,4,SYC,1082,1097,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,11,5,Midlands Boom,839,827,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,12,5,SYC,1098,1089,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,12,6,Midlands Boom,838,827,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,13,6,SYC,1101,1092,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,14,6,SYC,1090,1085,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+90,15,6,SYC,1087,1100,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=90
+91,1,0,Spice,1060,1072,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,2,0,Spice,1063,1073,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,3,0,Spice,1068,1080,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,4,0,Spice,1072,1065,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,4,1,Horizon,732,718,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,4,2,Horizon,737,719,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,5,2,Spice,1071,1065,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,5,3,Horizon,721,728,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,6,3,Spice,1067,1065,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,7,3,Spice,1080,1064,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,8,3,Spice,1079,1061,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,9,3,Spice,1061,1065,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,10,3,Spice,1067,1072,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,10,4,Horizon,720,718,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,11,4,Spice,1060,1078,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,11,5,Horizon,734,728,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,11,6,Horizon,730,735,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,12,6,Spice,1059,1067,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,13,6,Spice,1068,1064,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,13,7,Horizon,722,728,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,14,7,Spice,1075,1059,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,14,8,Horizon,737,728,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,14,9,Horizon,718,735,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+91,15,9,Spice,1065,1072,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=91
+92,1,0,Spice,1072,1075,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,1,1,LMU,792,786,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,2,1,Spice,1069,1059,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,3,1,Spice,1066,1064,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,4,1,Spice,1058,1079,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,4,2,LMU,795,791,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,5,2,Spice,1078,1065,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,6,2,Spice,1074,1079,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,6,3,LMU,794,793,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,7,3,Spice,1067,1059,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,7,4,LMU,792,796,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,8,4,Spice,1065,1071,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,9,4,Spice,1061,1064,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,9,5,LMU,798,797,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,10,5,Spice,1077,1070,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,11,5,Spice,1079,1068,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,11,6,LMU,800,788,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,12,6,Spice,1078,1069,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,13,6,Spice,1064,1074,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,13,7,LMU,791,793,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,14,7,Spice,1065,1077,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,14,8,LMU,784,793,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+92,15,8,Spice,1075,1071,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=92
+93,0,1,SMOG Women,1009,1006,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,1,1,Spice,1071,1078,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,2,1,Spice,1061,1079,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,3,1,Spice,1061,1058,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,3,2,SMOG Women,997,1001,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,3,3,SMOG Women,1010,998,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,4,3,Spice,1078,1075,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,4,4,SMOG Women,1001,1016,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,5,4,Spice,1075,1060,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,5,5,SMOG Women,999,1002,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,6,5,Spice,1075,1078,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,6,6,SMOG Women,1007,1001,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,7,6,Spice,1078,1069,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,7,7,SMOG Women,1016,1002,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,7,8,SMOG Women,999,1005,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,8,8,Spice,1075,1079,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,9,8,Spice,1062,1072,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,9,9,SMOG Women,1009,1008,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,10,9,Spice,1078,1072,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,10,10,SMOG Women,1003,1004,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,11,10,Spice,1072,1078,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,11,11,SMOG Women,1016,1007,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,12,11,Spice,1078,1065,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,13,11,Spice,1080,1074,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,13,12,SMOG Women,1004,1001,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,14,12,Spice,1065,1069,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+93,15,12,Spice,1058,1072,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=93
+94,1,0,SMOG Women,1007,1013,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,2,0,SMOG Women,1011,1015,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,3,0,SMOG Women,1018,998,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,4,0,SMOG Women,1015,1009,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,4,1,Horizon,729,725,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,5,1,SMOG Women,1016,1001,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,6,1,SMOG Women,1000,1006,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,6,2,Horizon,733,734,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,7,2,SMOG Women,997,1007,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,8,2,SMOG Women,1011,1005,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,9,2,SMOG Women,1017,1001,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,9,3,Horizon,727,730,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,10,3,SMOG Women,999,1017,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,11,3,SMOG Women,1012,1008,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,12,3,SMOG Women,1004,1001,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,12,4,Horizon,722,725,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,13,4,SMOG Women,1004,1003,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,14,4,SMOG Women,1018,998,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+94,15,4,SMOG Women,1006,1000,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=94
+95,0,1,LMU,798,787,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,1,1,SMOG Women,1014,1009,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,1,2,LMU,792,784,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,2,2,SMOG Women,1016,1007,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,3,2,SMOG Women,1009,1014,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,3,3,LMU,784,786,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,4,3,SMOG Women,1016,1007,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,5,3,SMOG Women,1011,1113,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,5,4,LMU,800,784,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,6,4,SMOG Women,1004,1002,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,6,5,LMU,793,784,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,7,5,SMOG Women,1016,997,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,7,6,LMU,792,784,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,8,6,SMOG Women,1016,1007,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,8,7,LMU,784,802,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,9,7,SMOG Women,999,1001,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,10,7,SMOG Women,1113,1005,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,10,8,LMU,792,793,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,11,8,SMOG Women,1016,997,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,11,9,LMU,784,793,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,12,9,SMOG Women,1004,1007,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,12,10,LMU,801,784,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+95,13,10,SMOG Women,1003,1007,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=95
+96,1,0,LMU,791,783,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,1,1,Horizon,729,725,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,2,1,LMU,794,799,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,2,2,Horizon,718,735,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,3,2,LMU,794,792,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,3,3,Horizon,730,725,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,4,3,LMU,792,799,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,4,4,Horizon,718,735,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,5,4,LMU,801,784,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,6,4,LMU,800,795,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,6,5,Horizon,722,735,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,7,5,LMU,801,784,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,8,5,LMU,798,790,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,9,5,LMU,794,796,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,10,5,LMU,795,790,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,11,5,LMU,798,791,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,12,5,LMU,794,799,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,13,5,LMU,788,795,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,14,5,LMU,794,802,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,14,6,Horizon,729,736,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+96,15,6,LMU,796,794,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=96
+97,1,0,Iceni,742,750,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,1,1,SMOG Women,1003,1001,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,2,1,Iceni,761,757,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,3,1,Iceni,762,750,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,4,1,Iceni,748,738,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,4,2,SMOG Women,1018,1012,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,5,2,Iceni,753,759,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,6,2,Iceni,748,747,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,6,3,SMOG Women,997,999,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,7,3,Iceni,757,756,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,7,4,SMOG Women,1016,1007,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,7,5,SMOG Women,1012,1113,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,8,5,Iceni,751,757,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,9,5,Iceni,752,753,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,9,6,SMOG Women,1001,1007,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,10,6,Iceni,755,746,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,10,7,SMOG Women,1007,997,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,10,8,SMOG Women,1113,1014,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,11,8,Iceni,757,756,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,12,8,Iceni,742,745,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,13,8,Iceni,744,747,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,14,8,Iceni,741,760,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+97,15,8,Iceni,740,747,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=97
+98,0,1,Spice,1072,1069,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,0,2,Spice,1061,1064,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,1,2,Bristol Women,605,602,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,1,3,Spice,1069,1065,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,1,4,Spice,1066,1079,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,1,5,Spice,1061,1079,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,2,5,Bristol Women,595,610,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,2,6,Spice,1069,1067,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,3,6,Bristol Women,608,603,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,3,7,Spice,1072,1065,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,4,7,Bristol Women,609,602,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,4,8,Spice,1072,1065,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,5,8,Bristol Women,599,595,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,5,9,Spice,1059,1067,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,6,9,Bristol Women,609,595,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,6,10,Spice,1072,1069,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,7,10,Bristol Women,595,605,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,7,11,Spice,1070,1072,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,8,11,Bristol Women,602,603,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,8,12,Spice,1078,1065,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,9,12,Bristol Women,602,595,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,9,13,Spice,1072,1065,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,9,14,Spice,1074,1064,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,10,14,Bristol Women,597,610,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+98,10,15,Spice,1072,1075,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=98
+99,0,1,Spice,1078,1069,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,0,2,Spice,1079,1058,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,1,2,Iceni,752,756,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,1,3,Spice,1072,1075,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,2,3,Iceni,757,746,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,2,4,Spice,1069,1065,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,3,4,Iceni,746,752,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,4,4,Iceni,750,742,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,4,5,Spice,1075,1069,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,5,5,Iceni,761,756,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,5,6,Spice,1075,1069,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,5,7,Spice,1061,1058,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,6,7,Iceni,743,751,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,7,7,Iceni,740,750,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,7,8,Spice,1069,1072,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,8,8,Iceni,751,752,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,9,8,Iceni,744,741,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,10,8,Iceni,752,740,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,11,8,Iceni,748,747,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,12,8,Iceni,749,752,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,12,9,Spice,1075,1072,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,13,9,Iceni,756,757,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,14,9,Iceni,760,754,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99
+99,15,9,Iceni,741,750,0,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=games&id=99

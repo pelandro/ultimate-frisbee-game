@@ -19,8 +19,15 @@ function seriesPow(){   // forza media delle altre squadre della tua divisione (
 // LIVELLO EUROPEO: chi gioca nella serie piu' alta di un campionato che manda squadre al Campionato europeo non si misura solo con le rivali di casa.
 // In Inghilterra o in Germania le migliori sono gia' sopra tutte le altre (Clapham 82,5 contro 77,5; Wall City 86 contro 74), ma le migliori d'Europa
 // stanno intorno a 88: senza questo il freno per chi domina (carGrowK) le avrebbe fermate prima di diventare competitive in Europa.
-let euTopC=0;
-const euTop=()=>euTopC||(euTopC=Math.max(...SERIES.A.map(n=>TEAM[n].power),...LN_IDS.filter(k=>LN_DEF[k].eu).flatMap(k=>LN_NAMES.filter(n=>LN_BY[n].lk===k&&LN_BY[n].t===LN_DEF[k].tiers[0].id).map(n=>LN_BY[n].p))));
+const euTopC={};
+function euTop(){
+  const women=lnWomenNow(),key=women?'women':'open';
+  if(euTopC[key])return euTopC[key];
+  const leagues=euLeagues(women?'IW':'IT');
+  const strengths=leagues.flatMap(lk=>lk==='IT'?SERIES.A.map(n=>TEAM[n].power):
+    lnClubRows(lk).filter(r=>r[1]===LN_DEF[lk].tiers[0].id).map(([n])=>LN_BY[n].p));
+  return euTopC[key]=Math.max(...strengths);
+}
 const euTier=()=>!!SV&&!isUS()&&(isLN()?!!(LN_DEF[SV.lk]&&LN_DEF[SV.lk].eu&&SV.ln&&lnTiers().findIndex(t=>t.id===SV.ln.tier)===0):SV.sr==='A');
 const EU_GAP=8;   // nel mercato di queste serie la media non scende sotto il livello europeo meno 8 (la Serie A, a 81, non cambia)
 function potRef(kind){
@@ -63,5 +70,13 @@ function carGrowK(){
   const k=srGrowK(SV.sr);
   const ns=((SV.mem&&SV.mem[SV.sr])||[]).filter(n=>n!==SV.team);
   const lead=ns.length?matchLevel(SV.team)-Math.max(...ns.map(matchLevel),euTier()?euTop():0):0;   // nelle serie con posti europei il riferimento e' anche il livello europeo
-  cgk={key,v:k*(lead>0?clamp(1-LEAD_K*lead,0.5,1):1)};return cgk.v;
+  const europeGrowth=lead>0?clamp(1-LEAD_K*lead,0.5,1):1;
+  // Nei Nationals Open il riferimento europeo lascia crescere anche chi ha già un ampio margine in patria.
+  // Con le gare aggiuntive il freno nazionale conta sopra quattro punti di vantaggio effettivo.
+  let domesticGrowth=1;
+  if(SV.lk==='UK'&&ns.length){
+    const gap=squadPower()-Math.max(...ns.map(teamPow));
+    domesticGrowth=clamp(1-0.16*Math.max(0,gap-4),0.45,1);
+  }
+  cgk={key,v:k*Math.min(europeGrowth,domesticGrowth)};return cgk.v;
 }

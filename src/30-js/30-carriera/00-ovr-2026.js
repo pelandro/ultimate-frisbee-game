@@ -93,6 +93,8 @@ const OVR_POW={
 // squadra al massimo di 5,4 punti (in media 1,4); le serie italiane B e C arrivavano a +19 (un diciannovenne di Serie B a 91, piu' di quasi tutta la Serie A). Un
 // riscontro pubblico di valore (nazionale maggiore, premio) rialzerebbe il tetto: per questi giocatori le ricerche non ne hanno trovati. Affidabilita' bassa: sono stime prudenti
 const OVR_PART={
+  // M.U.C. campione tedesco Open 2026; contributi individuali WUCC ed EUCF Mixed.
+  'M.U.C.':[['Holzer','Denis',96,0,'H','','a'],['Hörnschemeyer','Torben',97,0,'H','','a']],
   'KISS - Ultimate Cremona':[['Conti','Carlo',80,0,'','','b']],            // 63 punti a 19 anni nella B (era 91)
   'Frisbaobab':[['Mcgraw','Taylor',80,0,'','','b']],                        // 53 punti a 33 anni (era 86)
   'Cotarica J':[['Nanni','Simone',76,0,'','','b']],                         // 46 punti a 18 anni (era 79)

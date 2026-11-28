@@ -256,7 +256,17 @@ function eventCalendar(){
       }
     }
   }
-  if(next&&!regular)add(next.label,next.name,null,true);
+  if(isLN()&&SV.ln.F&&SV.event==='camp'){
+    const F=SV.ln.F;
+    for(const lv of [...(F.pools||[]),...F.lv]){
+      lv.R.forEach((round,rd)=>round.forEach(([a,b,sa,sb],k)=>{
+        if(!a||!b||a!==SV.team&&b!==SV.team)return;
+        const home=a===SV.team,opp=home?b:a;
+        const result=sa===null?null:{opp,su:home?sa:sb,so:home?sb:sa};
+        add(lnLvLabel(lv,rd,k),opp,result,!result&&next?.name===opp&&SV.po?.round===rd);
+      }));
+    }
+  }else if(next&&!regular)add(next.label,next.name,null,true);
   return rows.length?`<ul class="elist">${rows.join('')}</ul>`:'<p class="note">Il calendario comparirà quando inizierà il campionato.</p>';
 }
 $('eBody').addEventListener('click',e=>{

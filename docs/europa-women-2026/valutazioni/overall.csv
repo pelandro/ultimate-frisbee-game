@@ -1,0 +1,830 @@
+paese,squadra,stato,id,nome,tipo,overall,ruolo,base_ruolo,affidabilita,base_club,domestico,club_estero,mixed,giovanile,soglia,eventi_mixed,origine,fonte
+BE,Mooncup Astra,in rosa,maiwennleduc,Maiwenn Le duc,reale,91,B,profilo di gioco,alta,83.95,0,4.908,0,2.5,88,,BUOC,https://ultie.org/buoc-2026-adult/teams/4974/roster
+BE,Mooncup Astra,in rosa,tifainelatchy,Tifaine Latchy,reale,90,H,produzione,alta,83.95,0,1.98,0.525,0,90,MX-EUC | MX-WUC | MX-World Games 2025,BUOC,https://ultie.org/buoc-2026-adult/teams/4974/roster
+BE,Mooncup Astra,in rosa,bealefebvre,Bea Lefebvre,reale,86,C,produzione,media,83.95,0.667,1.54,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4974/roster
+BE,Mooncup Astra,in rosa,emmasexton,Emma Sexton,reale,86,H,produzione,media,83.95,0,2.2,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4974/roster
+BE,Mooncup Astra,in rosa,hawadiop,Hawa Diop,reale,86,C,produzione,media,83.95,0.167,1.692,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4974/roster
+BE,Mooncup Astra,in rosa,anoukmaurer,Anouk Maurer,reale,84,B,profilo di gioco,bassa,83.95,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4974/roster
+BE,Mooncup Astra,in rosa,kirstendesmet,Kirsten De Smet,reale,84,B,profilo di gioco,bassa,83.95,0,0,0,0,0,,BUIC novembre 2026,https://ultie.org/buic-2627-adults/teams/5938/roster
+BE,Mooncup Astra,in rosa,lounachaouchi,Louna Chaouchi,reale,84,B,profilo di gioco,media,83.95,0.5,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4974/roster
+BE,Mooncup Astra,in rosa,marlenewehrheim,Marlene Wehrheim,reale,84,B,profilo di gioco,media,83.95,0,0,0,0.308,75,,BUIC novembre 2026,https://ultie.org/buic-2627-adults/teams/5938/roster
+BE,Mooncup Astra,in rosa,noemiedekoninck,Noémie Dekoninck,reale,84,B,profilo di gioco,bassa,83.95,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4974/roster
+BE,Mooncup Astra,in rosa,suzannawalton,Suzanna Walton,reale,84,B,profilo di gioco,bassa,83.95,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4974/roster
+BE,Mooncup Astra,in rosa,gen-BE-mooncupastra-12,Marie Wouters,generata,82,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Mooncup Astra,in rosa,gen-BE-mooncupastra-13,Camille Claes,generata,82,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Mooncup Astra,in rosa,gen-BE-mooncupastra-14,Inès De Smet,generata,81,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Mooncup Astra,in rosa,gen-BE-mooncupastra-15,Margaux Mertens,generata,80,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Mooncup Astra,in rosa,gen-BE-mooncupastra-16,Camille Lambert,generata,80,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Mooncup Nova,in rosa,fionaschluter,Fiona Schlueter,reale,85,H,produzione,alta,82.87,0,2.2,0,0,85,,BUOC,https://ultie.org/buoc-2026-adult/teams/4973/roster
+BE,Mooncup Nova,in rosa,lisalateur,Lisa Lateur,reale,84,B,profilo di gioco,media,82.87,0,0.9,0.1,0,82,MX-EUC,BUOC,https://ultie.org/buoc-2026-adult/teams/4973/roster
+BE,Mooncup Nova,in rosa,luciapalosluzon,Lucía Palos Luzón,reale,84,C,produzione,media,82.87,0,1.354,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4973/roster
+BE,Mooncup Nova,in rosa,mariabelpaire,Maria Belpaire,reale,84,H,produzione,media,82.87,0,0.88,0,0,82,,BUOC,https://ultie.org/buoc-2026-adult/teams/4973/roster
+BE,Mooncup Nova,in rosa,alissasylaj,Alissa Sylaj,reale,83,B,profilo di gioco,bassa,82.87,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4973/roster
+BE,Mooncup Nova,in rosa,chloetuerlinckx,Chloé Tuerlinckx,reale,83,B,profilo di gioco,bassa,82.87,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4973/roster
+BE,Mooncup Nova,in rosa,lauramuyldermans,Laura Muyldermans,reale,83,B,profilo di gioco,bassa,82.87,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4973/roster
+BE,Mooncup Nova,in rosa,maxinewillaert,Maxine Willaert,reale,83,B,profilo di gioco,bassa,82.87,0,0,0,0,0,,BUIC novembre 2026,https://ultie.org/buic-2627-adults/teams/5939/roster
+BE,Mooncup Nova,in rosa,oliviacerf,Olivia Cerf,reale,83,B,profilo di gioco,bassa,82.87,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4973/roster
+BE,Mooncup Nova,in rosa,raphaelebombart,Raphaële Bombart,reale,83,B,profilo di gioco,bassa,82.87,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4973/roster
+BE,Mooncup Nova,in rosa,gen-BE-mooncupnova-11,Lotte Claeys,generata,82,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Mooncup Nova,in rosa,gen-BE-mooncupnova-12,Lise Maes,generata,81,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Mooncup Nova,in rosa,gen-BE-mooncupnova-13,Fien Declercq,generata,80,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Mooncup Nova,in rosa,gen-BE-mooncupnova-14,Axelle Vandenberghe,generata,80,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Mooncup Nova,in rosa,gen-BE-mooncupnova-15,Noémie Lambert,generata,79,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Mooncup Nova,in rosa,gen-BE-mooncupnova-16,Zoé Janssens,generata,79,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Wuf.,in rosa,axellevandevelde,Axelle Vandevelde,reale,82,C,profilo di gioco,alta,79.02,0.154,0,0.646,0,82,MX-WU,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,naominoels,Naomi Noels,reale,82,B,profilo di gioco,media,79.02,0,0,0,0,82,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,silkenolf,Silke Nolf,reale,82,B,profilo di gioco,media,79.02,0.154,0,0,0,82,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,mariefrees,Marie Frees,reale,81,B,profilo di gioco,media,79.02,0.462,0,0,1.385,75,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,noorvandenbussche,Noor Van den Bussche,reale,81,B,profilo di gioco,media,79.02,0.769,0,0,1.0,75,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,maarescholten,Maare Scholten,reale,80,B,profilo di gioco,media,79.02,0.462,0,0,1.0,75,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,sofiedelanote,Sofie Delanote,reale,80,B,profilo di gioco,media,79.02,1.231,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,anjenineguanlao,Anjenine Guanlao,reale,79,C,profilo di gioco,media,79.02,0.154,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,babsvanhooreweder,Babs Van Hooreweder,reale,79,C,profilo di gioco,bassa,79.02,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,febehoorens,Febe Hoorens,reale,79,H,profilo di gioco,bassa,79.02,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,fiennolf,Fien Nolf,reale,79,H,profilo di gioco,media,79.02,0.154,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,jannefrees,Janne Frees,reale,79,H,profilo di gioco,bassa,79.02,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,joliekevandekerckhove,Jolieke Vande Kerckhove,reale,79,H,profilo di gioco,media,79.02,0.154,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,judithsnoeck,Judith Snoeck,reale,79,H,profilo di gioco,bassa,79.02,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,juliettebovijn,Juliette Bovijn,reale,79,H,profilo di gioco,bassa,79.02,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,lottedescan,Lotte Descan,reale,79,B,profilo di gioco,media,79.02,0.308,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,ninastroo,Nina Stroo,reale,79,B,profilo di gioco,bassa,79.02,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,nooradams,Noor Adams,reale,79,B,profilo di gioco,media,79.02,0.308,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,reneedebaene,Renée Debaene,reale,79,B,profilo di gioco,bassa,79.02,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,robinevanwildemeersch,Robine Vanwildemeersch,reale,79,B,profilo di gioco,bassa,79.02,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,siencoppejans,Sien Coppejans,reale,79,B,profilo di gioco,bassa,79.02,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,tildedebaene,Tilde de Baene,reale,79,B,profilo di gioco,bassa,79.02,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,zitakimpe,Zita Kimpe,reale,79,B,profilo di gioco,bassa,79.02,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Wuf.,in rosa,zitalogghe,Zita Logghe,reale,79,B,profilo di gioco,bassa,79.02,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5120/roster
+BE,Gentlew()men,in rosa,evareybroeck,Eva Reybroeck,reale,82,H,profilo di gioco,media,77.63,0,1.2,0,0,82,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,marijkejordens,Marijke Jordens,reale,82,C,produzione,media,77.63,0,0.75,0.7,0,82,MX-EUC,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,shaunimarchand,Shauni Marchand,reale,82,B,profilo di gioco,media,77.63,0,0.338,0,0,82,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,emmadesmet,Emma Desmet,reale,81,H,profilo di gioco,alta,77.63,0.769,1.95,0.646,0,0,MX-WU,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,kikiverhofstadt,Kiki Verhofstadt,reale,80,C,produzione,alta,77.63,0.769,0.3,0.754,0.538,75,MX-WU,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,kleodesloover,Kleo Desloover,reale,80,B,profilo di gioco,alta,77.63,0.923,0.45,0.108,0.636,75,MX-WU,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,pitadhespeel,Pita Dhespeel,reale,80,B,profilo di gioco,media,77.63,1.231,0,0,1.154,75,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,astridooghe,Astrid Ooghe,reale,79,H,profilo di gioco,media,77.63,0.462,0.9,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,bonniedalle,Bonnie Dalle,reale,79,H,profilo di gioco,alta,77.63,0,0.3,0.28,0.385,75,MX-WU,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,magalibernaert,Magali Bernaert,reale,79,B,profilo di gioco,alta,77.63,0.615,0.45,0.215,0,0,MX-WU,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,annelieslenain,Annelies Lenain,reale,78,C,profilo di gioco,media,77.63,0.154,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,fiendecorte,Fien De Corte,reale,78,H,profilo di gioco,media,77.63,0.769,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,frankapays,Franka Pays,reale,78,H,profilo di gioco,media,77.63,0,0.6,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,ingavalentinerbranth,Inga Valentiner-Branth,reale,78,B,profilo di gioco,media,77.63,0.154,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,juliettevancoillie,Juliette Van Coillie,reale,78,B,profilo di gioco,bassa,77.63,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,lenademol,Lena De Mol,reale,78,B,profilo di gioco,media,77.63,0.154,0.15,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,lisevanneste,Lise Vanneste,reale,78,B,profilo di gioco,media,77.63,0,0,0,0.385,75,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,mariekecroonenberghs,Marieke Croonenberghs,reale,78,B,profilo di gioco,alta,77.63,0.154,0.3,0.323,0,0,MX-WU,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,marilouvansteelant,Marilou Vansteelant,reale,78,B,profilo di gioco,bassa,77.63,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,michellewauters,Michelle Wauters,reale,78,B,profilo di gioco,media,77.63,0.154,0.45,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Gentlew()men,in rosa,tildedenaert,Tilde Denaert,reale,78,B,profilo di gioco,bassa,77.63,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5079/roster
+BE,Jetset OneLUV,in rosa,annadebaene,Anna De baene,reale,82,C,profilo di gioco,media,76.97,0,0,0,0,82,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,biekevandaele,Bieke Vandaele,reale,82,H,profilo di gioco,media,76.97,0,0,0.1,0,82,MX-EUC,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,charlottepeeters,Charlotte Peeters,reale,82,H,profilo di gioco,media,76.97,0,0,0,0,82,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,esthervanwijck,Esther Vanwijck,reale,82,C,produzione,media,76.97,0,1.414,0,0,82,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,floorvandamme,Floor Van Damme,reale,82,B,profilo di gioco,media,76.97,0,0,0,0,82,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,charlottevangerven,Charlotte Van Gerven,reale,78,C,produzione,media,76.97,0,1.1,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,carolinemeesters,Caroline Meesters,reale,77,H,profilo di gioco,bassa,76.97,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,charlottemattele,Charlotte Mattele,reale,77,H,profilo di gioco,bassa,76.97,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,elisabethdeketelaere,Elisabeth Deketelaere,reale,77,H,profilo di gioco,bassa,76.97,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,ellawils,Ella Wils,reale,77,H,profilo di gioco,bassa,76.97,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,ferahiakel,Ferahi Akel,reale,77,B,profilo di gioco,bassa,76.97,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,jolienloeckx,Jolien Loeckx,reale,77,B,profilo di gioco,media,76.97,0,0,0,0.231,75,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,juliettekeith,Juliette Keith,reale,77,B,profilo di gioco,bassa,76.97,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,martinarolandi,Martina Rolandi,reale,77,B,profilo di gioco,media,76.97,0,0.4,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,melissalee,Melissa Lee,reale,77,B,profilo di gioco,bassa,76.97,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,nikatollenaere,Nika Tollenaere,reale,77,B,profilo di gioco,media,76.97,0,0,0,0.308,75,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,saskiachambille,Saskia Chambille,reale,77,B,profilo di gioco,bassa,76.97,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Jetset OneLUV,in rosa,sofiacardin,Sofia Cardin,reale,77,B,profilo di gioco,bassa,76.97,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4942/roster
+BE,Spekkies,in rosa,delphineoosters,Delphine Oosters,reale,82,H,profilo di gioco,media,75.57,0.5,0,0.3,0,82,MX-EUC,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,lorevanhemelrijck,Lore Van hemelrijck,reale,82,C,produzione,media,75.57,0.667,0,1.3,0,82,MX-EUC,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,nelekelchtermans,Nele Kelchtermans,reale,82,B,profilo di gioco,media,75.57,0,0,0.2,0,82,MX-EUC,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,noraoosters,Nora Oosters,reale,82,B,profilo di gioco,media,75.57,0.5,0,0.3,0,82,MX-EUC,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,alexandrawinderickx,Alexandra Winderickx,reale,76,H,profilo di gioco,bassa,75.57,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,annabeloosters,Annabel Oosters,reale,76,H,profilo di gioco,media,75.57,0.167,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,charlottepauwels,Charlotte Pauwels,reale,76,H,profilo di gioco,media,75.57,0.667,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,dagmarvolkaert,Dagmar Volkaert,reale,76,H,profilo di gioco,bassa,75.57,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,jessicaleliaert,Jessica Leliaert,reale,76,B,profilo di gioco,bassa,75.57,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,noordewit,Noor De Wit,reale,76,B,profilo di gioco,bassa,75.57,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,pauliendoms,Paulien Doms,reale,76,B,profilo di gioco,bassa,75.57,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,sienvanliefferinge,Sien Van liefferinge,reale,76,B,profilo di gioco,bassa,75.57,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,tzaraalbancando,Tzara Albancando,reale,76,B,profilo di gioco,bassa,75.57,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/4984/roster
+BE,Spekkies,in rosa,gen-BE-spekkies-14,Axelle Michiels,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Spekkies,in rosa,gen-BE-spekkies-15,Emma Van Damme,generata,72,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Spekkies,in rosa,gen-BE-spekkies-16,Hanne Lambert,generata,71,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Flying Rabbits Mammouth,in rosa,marieverboomen,Marie Verboomen,reale,82,H,produzione,media,75.54,0,0,0.8,0,82,MX-EUC,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,auroredemahieu,Aurore de Mahieu,reale,76,C,profilo di gioco,bassa,75.54,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,chloemasson,Chloe Masson,reale,76,H,profilo di gioco,bassa,75.54,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,isaurevermeersch,Isaure Vermeersch,reale,76,H,profilo di gioco,bassa,75.54,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,jillsteenkist,Jill Steenkist,reale,76,H,profilo di gioco,bassa,75.54,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,juliebrahy,Julie Brahy,reale,76,H,profilo di gioco,bassa,75.54,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,juliepotvin,Julie Potvin,reale,76,H,profilo di gioco,bassa,75.54,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,juliettesoucisse,Juliette Soucisse,reale,76,B,profilo di gioco,media,75.54,0,0,0,0.538,75,,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,louisesail,Louise Sail,reale,76,B,profilo di gioco,bassa,75.54,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,margauxsnoeck,Margaux Snoeck,reale,76,B,profilo di gioco,bassa,75.54,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,mariefobe,Marie Fobe,reale,76,B,profilo di gioco,media,75.54,0,0,0.538,0,0,MX-WU,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,noemicasarin,Noemi Casarin,reale,76,B,profilo di gioco,bassa,75.54,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,sesiltozcu,Sesil Tozcu,reale,76,B,profilo di gioco,bassa,75.54,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,zoedebroeyer,Zoé Debroeyer,reale,76,B,profilo di gioco,bassa,75.54,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5091/roster
+BE,Flying Rabbits Mammouth,in rosa,gen-BE-flyingrabbitsmammouth-15,Eva Hermans,generata,72,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Flying Rabbits Mammouth,in rosa,gen-BE-flyingrabbitsmammouth-16,Lise Dubois,generata,71,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+BE,Blackbirds Women,in rosa,florinecroquet,Florine Croquet,reale,82,H,profilo di gioco,media,63.66,0,0,0,0,82,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,benedictekuypers,Bénédicte Kuypers,reale,64,C,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,chloevanvyvecourtois,Chloé Van Vyve Courtois,reale,64,C,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,claireheiderscheidt,Claire Heiderscheidt,reale,64,C,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,elisebontemps,Elise Bontemps,reale,64,H,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,emelineverstraeten,Emeline Verstraeten,reale,64,H,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,estelleverslype,Estelle Verslype,reale,64,H,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,jadepohlig,Jade Pohlig,reale,64,H,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,jillsaussus,Jill Saussus,reale,64,H,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,manonroelandts,Manon Roelandts,reale,64,B,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,marialaurabencosme,Maria Laura Bencosme,reale,64,B,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,mariegorza,Marie Gorza,reale,64,B,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,marinehansart,Marine Hansart,reale,64,B,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,mariondelecourt,Marion de le Court,reale,64,B,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,romanetoussaint,Romane Toussaint,reale,64,B,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,salomelengrand,Salomé Lengrand,reale,64,B,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,sibyllem,Sibylle M,reale,64,B,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,virginiesibret,Virginie Sibret,reale,64,B,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+BE,Blackbirds Women,in rosa,zoemoskwiak,Zoé Moskwiak,reale,64,B,profilo di gioco,bassa,63.66,0,0,0,0,0,,BUOC,https://ultie.org/buoc-2026-adult/teams/5075/roster
+DE,Heidees,in rosa,jessicaruhle,Jessica Rühle,reale,86,H,produzione,alta,80.73,0,4.8,0.5,0,85,MX-WUC,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,Heidees,in rosa,ellenbeiglbock,Ellen Beiglböck,reale,85,C,produzione,alta,80.73,0,1.35,0,0,85,,DFV senior gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Heidees,in rosa,helengrossebrauckmann,Helen Große-Brauckmann,reale,85,B,profilo di gioco,alta,80.73,0,2.514,0,0,85,,DFV senior gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Heidees,in rosa,mareikekuhn,Mareike Kühn,reale,85,B,profilo di gioco,alta,80.73,0,2.6,0.373,0,85,MX-EUC | MX-WUC,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,Heidees,in rosa,monaschack,Mona Schäck,reale,85,H,produzione,alta,80.73,0,3.3,0,0,85,,DFV senior gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Heidees,in rosa,sonjalauruhn,Sonja Lauruhn,reale,85,B,profilo di gioco,alta,80.73,0,2.2,0.1,0,85,MX-WUC,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,Heidees,in rosa,sveataube,Svea Taube,reale,84,C,produzione,media,80.73,0,3.143,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,Heidees,in rosa,carolinagordillo,Carolina Gordillo,reale,83,H,produzione,media,80.73,0,2.2,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1066
+DE,Heidees,in rosa,claradimitrijevic,Clara Dimitrijevic,reale,83,C,produzione,media,80.73,0,2.0,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,Heidees,in rosa,franziskakreis,Franziska Kreis,reale,83,C,produzione,media,80.73,0,2.671,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,Heidees,in rosa,hayleydevine,Hayley Devine,reale,83,B,profilo di gioco,media,80.73,0,2.43,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,Heidees,in rosa,johannameyerbothling,Johanna Meyer-Bothling,reale,83,H,produzione,media,80.73,0,1.729,0,0.538,80,MX-U24,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1066
+DE,Heidees,in rosa,alenabautz,Alena Bautz,reale,82,C,produzione,media,80.73,0,1.485,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,Heidees,in rosa,anjafolberth,Anja Folberth,reale,82,H,produzione,media,80.73,0,1.257,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,Heidees,in rosa,carlarieser,Carla Rieser,reale,82,H,produzione,media,80.73,0,1.257,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1066
+DE,Heidees,in rosa,celinegreis,Celine Greis,reale,82,B,profilo di gioco,media,80.73,0,0.3,0.754,0,0,MX-WU,2026 Summer Tour Wroclaw,https://eucs-schedule.ultimatefederation.eu/?team=1173&view=teamcard
+DE,Heidees,in rosa,helenaschrattenecker,Helena Schrattenecker,reale,82,H,produzione,media,80.73,0,0.629,0.156,0,82,MX-EUC,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,Heidees,in rosa,idarosenthal,Ida Rosenthal,reale,82,C,produzione,alta,80.73,0,1.185,0,0.154,80,,DFV U24 Women,https://www.frisbeesportverband.de/u24-ultimate-frisbee-nationalteams/
+DE,Heidees,in rosa,janagmelin,Jana Gmelin,reale,82,B,profilo di gioco,media,80.73,0,1.08,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1066
+DE,Heidees,in rosa,lenasandig,Lena Sandig,reale,82,B,profilo di gioco,media,80.73,0,0.786,0,0.231,80,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1066
+DE,Heidees,in rosa,leoniemuller,Leonie Müller,reale,82,B,profilo di gioco,media,80.73,0,0.786,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1066
+DE,Heidees,in rosa,maiketiro,Maike Tiro,reale,82,B,profilo di gioco,media,80.73,0,0.81,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,Heidees,in rosa,annehohl,Anne Hohl,reale,81,B,profilo di gioco,media,80.73,0,0.27,0,0,0,,2026 Spring Tour Budweis,https://eucs-schedule.ultimatefederation.eu/?view=teamcard&team=1005
+DE,Heidees,in rosa,julialeoniemuller,Julia Leonie Müller,reale,81,B,profilo di gioco,media,80.73,0,0.75,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,Heidees,in rosa,victoriahubert,Victoria Hubert,reale,81,B,profilo di gioco,media,80.73,0,0.6,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1223
+DE,MUC,in rosa,lisaschutz,Lisa Schütz,reale,90,C,produzione,alta,81.38,0,0,2.1,0,90,MX-EU | MX-WU | MX-WUC | MX-World Games 2025,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1227
+DE,MUC,in rosa,emmafalke,Emma Falke,reale,85,C,produzione,media,81.38,0,0,1.9,0,85,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1227
+DE,MUC,in rosa,lenaschafer,Lena Schäfer,reale,84,H,profilo di gioco,media,81.38,0,0,2.38,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1184
+DE,MUC,in rosa,magdalenaschutz,Magdalena Schütz,reale,83,C,produzione,media,81.38,0,0,1.4,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1227
+DE,MUC,in rosa,paulawagner,Paula Wagner,reale,83,H,produzione,alta,81.38,0,0,0.7,1.0,80,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1227
+DE,MUC,in rosa,saskiabeeck,Saskia Beeck,reale,83,C,produzione,media,81.38,0,0,1.4,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1184
+DE,MUC,in rosa,valerieebner,Valerie Ebner,reale,83,B,profilo di gioco,media,81.38,0,0,1.2,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1227
+DE,MUC,in rosa,alinahermeking,Alina Hermeking,reale,82,H,profilo di gioco,alta,81.38,0,0,0.5,0.308,81,MX-EU | MX-U24 | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1184
+DE,MUC,in rosa,charlottepfister,Charlotte Pfister,reale,82,C,produzione,media,81.38,0,0,0.5,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1184
+DE,MUC,in rosa,franziskameyer,Franziska Meyer,reale,82,C,produzione,media,81.38,0,0,0.84,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1184
+DE,MUC,in rosa,fridarucker,Frida Rücker,reale,82,H,profilo di gioco,media,81.38,0,0,0.7,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1227
+DE,MUC,in rosa,isabelkuersten,Isabel Kuersten,reale,82,C,produzione,media,81.38,0,0,0.8,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1227
+DE,MUC,in rosa,linneaseibert,Linnea Seibert,reale,82,H,produzione,media,81.38,0,0,1.1,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1184
+DE,MUC,in rosa,luanakaiser,Luana Kaiser,reale,82,B,profilo di gioco,media,81.38,0,0,0.14,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1227
+DE,MUC,in rosa,melaniebrandl,Melanie Brandl,reale,82,C,produzione,media,81.38,0,0,0.9,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1184
+DE,MUC,in rosa,miraglocker,Mira Glocker,reale,82,C,produzione,media,81.38,0,0,0.8,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1184
+DE,MUC,in rosa,sarahhermeking,Sarah Hermeking,reale,82,C,produzione,media,81.38,0,0,0.98,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1184
+DE,MUC,in rosa,sophierossteuscher,Sophie Rossteuscher,reale,82,C,produzione,media,81.38,0,0,0.6,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1184
+DE,MUC,in rosa,swenjakastenmiller,Swenja Kastenmiller,reale,82,H,produzione,media,81.38,0,0,1.0,0,0,MX-EU | MX-WU,"EUCF Mixed 2026, assegnazione MUC indicata dal progetto",https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1227
+DE,Jinx Midnight,in rosa,annagerner,Anna Gerner,reale,91,H,profilo di gioco,alta,81.9,0,6,0,0,91,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,annikaprien,Annika Prien,reale,90,B,profilo di gioco,media,81.9,0,0,0,0,90,MX-World Games 2025,DFV mixed gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Jinx Midnight,in rosa,paulinalewandowska,Paulina Lewandowska,reale,88,H,produzione,media,81.9,0,6,0,0,88,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,danielasetina,Daniela Setina,reale,85,H,produzione,media,81.9,0,3.143,0,0,82,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,dominikahadova,Dominika Hadová,reale,85,B,profilo di gioco,media,81.9,0,2.514,0,0.846,80,MX-U24,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,fenjagewitsch,Fenja Gewitsch,reale,85,H,produzione,alta,81.9,0,1.1,0,0,85,,DFV senior gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Jinx Midnight,in rosa,florascala,Flora Scala,reale,85,B,profilo di gioco,media,81.9,0,2.671,0,0,85,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,grazynachlebicka,Grażyna Chlebicka,reale,85,B,profilo di gioco,media,81.9,0,1.257,1.4,0,82,MX-EUC,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,majakozak,Maja Kozak,reale,85,C,produzione,alta,81.9,0,0.6,0.8,1.308,82,MX-EUC | MX-U24,2026 Elite Invite Leuven,https://eucs-schedule.ultimatefederation.eu/?view=teamcard&team=1085
+DE,Jinx Midnight,in rosa,majalindroth,Maja Lindroth,reale,85,C,produzione,media,81.9,0,2.829,0,0,82,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,marlenemuller,Marlene Müller,reale,85,H,produzione,alta,81.9,0,2.357,0,0,85,,DFV senior gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Jinx Midnight,in rosa,niciprien,Nici Prien,reale,85,B,profilo di gioco,media,81.9,0,1.1,0,0,85,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,simonalieberth,Simona Lieberth,reale,85,C,produzione,media,81.9,0,1.833,0,0,85,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,cynthiadoos,Cynthia Döös,reale,84,C,produzione,media,81.9,0,1.8,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,gretamelega,Greta Melega,reale,84,B,profilo di gioco,media,81.9,0,2.25,0,0,0,,2026 Elite Invite Leuven,https://eucs-schedule.ultimatefederation.eu/?view=teamcard&team=1085
+DE,Jinx Midnight,in rosa,inkawessman,Inka Wessman,reale,84,C,produzione,media,81.9,0,2.2,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,wilhelminagraff,Wilhelmina Graff,reale,84,H,produzione,media,81.9,0,2.043,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,ellenkohne,Ellen Köhne,reale,83,C,produzione,media,81.9,0,1.257,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,essiinkinen,Essi Inkinen,reale,83,B,profilo di gioco,media,81.9,0,0.629,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,neslihananik,Neslihan Anik,reale,83,C,produzione,media,81.9,0,1.414,0,0,81,,DFV senior gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Jinx Midnight,in rosa,sophiehoher,Sophie Höher,reale,83,C,produzione,media,81.9,0,1.1,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,brinadokl,Brina Dokl,reale,82,B,profilo di gioco,media,81.9,0,0.314,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,charlotteledamany,Charlotte Le Damany,reale,82,B,profilo di gioco,media,81.9,0,0,0,0.417,75,,DFV U20 Women,https://www.frisbeesportverband.de/u20-ultimate-frisbee-nationalteam/
+DE,Jinx Midnight,in rosa,constanceholman,Constance Holman,reale,82,B,profilo di gioco,media,81.9,0,0,0,0,0,,DFV Masters Women 2025,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/masters-nationalteams/
+DE,Jinx Midnight,in rosa,friderikebannmuller,Friderike Bannmüller,reale,82,B,profilo di gioco,media,81.9,0,0.314,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,lilianmisaogrote,Lilian Misao Grote,reale,82,B,profilo di gioco,media,81.9,0,0.6,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,marianust,Maria Nüst,reale,82,B,profilo di gioco,media,81.9,0,0.45,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,in rosa,mariatereshina,Maria Tereshina,reale,82,B,profilo di gioco,media,81.9,0,0.15,0,0,0,,2026 Elite Invite Leuven,https://eucs-schedule.ultimatefederation.eu/?view=teamcard&team=1085
+DE,Jinx Midnight,riserva oltre limite,ninabruns,Nina Bruns,reale,82,B,profilo di gioco,media,81.9,0,0.314,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,riserva oltre limite,odahomlong,Oda Homlong,reale,82,B,profilo di gioco,media,81.9,0,0.2,0,0,82,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1065
+DE,Jinx Midnight,riserva oltre limite,sandyspiegel,Sandy Spiegel,reale,82,B,profilo di gioco,media,81.9,0,0,0,0.385,80,,DFV U24 Women,https://www.frisbeesportverband.de/u24-ultimate-frisbee-nationalteams/
+DE,Black Foxx,in rosa,joanaerdmann,Joana Erdmann,reale,90,C,produzione,alta,77.81,0,0,1.75,0,90,MX-EU | MX-EUC | MX-World Games 2025,DFV mixed gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Black Foxx,in rosa,annikahambrecht,Annika Hambrecht,reale,85,B,profilo di gioco,alta,77.81,0,1.886,1.909,0,85,MX-EU | MX-WUC,DFV mixed gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Black Foxx,in rosa,frederikewagener,Frederike Wagener,reale,85,B,profilo di gioco,alta,77.81,0,0.15,0,0,85,,DFV senior gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Black Foxx,in rosa,svenjapruns,Svenja Pruns,reale,85,B,profilo di gioco,media,77.81,0,0,1.773,0,85,MX-EU | MX-EUC | MX-WUC,DFV senior gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Black Foxx,in rosa,hannalisettesontag,Hanna-Lisette Sontag,reale,80,B,profilo di gioco,alta,77.81,0,0,0.636,1.308,80,MX-EU,DFV U24 Women,https://www.frisbeesportverband.de/u24-ultimate-frisbee-nationalteams/
+DE,Black Foxx,in rosa,wunnaschultzwild,Wunna Schultz-Wild,reale,80,C,produzione,alta,77.81,0,1.2,0,0.154,80,,DFV U24 Women,https://www.frisbeesportverband.de/u24-ultimate-frisbee-nationalteams/
+DE,Black Foxx,in rosa,carolingrasi,Carolin Grasi,reale,78,B,profilo di gioco,media,77.81,0,0,0.42,0,0,MX-EU,DFV Masters Women 2025,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/masters-nationalteams/
+DE,Black Foxx,in rosa,gen-DE-blackfoxx-8,Emma Schneider,generata,78,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Black Foxx,in rosa,gen-DE-blackfoxx-9,Johanna Meyer,generata,78,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Black Foxx,in rosa,gen-DE-blackfoxx-10,Hannah Schneider,generata,77,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Black Foxx,in rosa,gen-DE-blackfoxx-11,Jana Neumann,generata,77,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Black Foxx,in rosa,gen-DE-blackfoxx-12,Lotta Lange,generata,76,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Black Foxx,in rosa,gen-DE-blackfoxx-13,Elisa Hartmann,generata,75,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Black Foxx,in rosa,gen-DE-blackfoxx-14,Marie Lange,generata,75,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Black Foxx,in rosa,gen-DE-blackfoxx-15,Lea Klein,generata,74,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Black Foxx,in rosa,gen-DE-blackfoxx-16,Clara Braun,generata,73,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Zamperl,in rosa,annemiekvonstietencron,Annemiek von Stietencron,reale,78,B,profilo di gioco,media,77.38,0,0,0,0.5,75,,DFV U20 Women,https://www.frisbeesportverband.de/u20-ultimate-frisbee-nationalteam/
+DE,Zamperl,in rosa,gretabering,Greta Bering,reale,78,B,profilo di gioco,media,77.38,0,0,0,0.25,75,,DFV U20 Women,https://www.frisbeesportverband.de/u20-ultimate-frisbee-nationalteam/
+DE,Zamperl,in rosa,gen-DE-zamperl-10,Klara Müller,generata,77,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Zamperl,in rosa,gen-DE-zamperl-5,Lena Werner,generata,77,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Zamperl,in rosa,gen-DE-zamperl-6,Lotta Müller,generata,77,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Zamperl,in rosa,gen-DE-zamperl-7,Klara Wagner,generata,77,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Zamperl,in rosa,gen-DE-zamperl-8,Greta Meyer,generata,77,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Zamperl,in rosa,gen-DE-zamperl-9,Lotta Werner,generata,77,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Zamperl,in rosa,isabellfranceskursten,Isabell Frances Kürsten,reale,77,B,profilo di gioco,media,77.38,0,0,0,0,74,,DFV U20 Women,https://www.frisbeesportverband.de/u20-ultimate-frisbee-nationalteam/
+DE,Zamperl,in rosa,svenjakastenmiller,Svenja Kastenmiller,reale,77,B,profilo di gioco,media,77.38,0,0,0,0,0,,DFV Masters Women 2025,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/masters-nationalteams/
+DE,Zamperl,in rosa,gen-DE-zamperl-11,Lea Krause,generata,76,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Zamperl,in rosa,gen-DE-zamperl-12,Jule Zimmermann,generata,76,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Zamperl,in rosa,gen-DE-zamperl-13,Elisa Klein,generata,75,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Zamperl,in rosa,gen-DE-zamperl-14,Klara Wolf,generata,74,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Zamperl,in rosa,gen-DE-zamperl-15,Lotta Schneider,generata,74,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Zamperl,in rosa,gen-DE-zamperl-16,Elisa Werner,generata,73,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-2,Nina Richter,generata,82,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-3,Nora Becker,generata,82,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-4,Luisa Hartmann,generata,82,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,kyokobinnewies,Kyoko Binnewies,reale,82,B,profilo di gioco,media,75.95,0,0,0,0,82,,DFV Masters Women 2025,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/masters-nationalteams/
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-5,Paula Schwarz,generata,80,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-6,Clara Neumann,generata,79,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-7,Nora Wolf,generata,77,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-8,Clara Klein,generata,77,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-10,Clara Wagner,generata,76,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-9,Jule Richter,generata,76,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-11,Nina Zimmermann,generata,75,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-12,Greta Klein,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-13,Klara Richter,generata,74,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-14,Johanna Becker,generata,73,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-15,Lotta Richter,generata,72,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Mainz Ultimate,in rosa,gen-DE-mainzultimate-16,Frida Wolf,generata,72,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-2,Emma Wolf,generata,82,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-3,Nora Lange,generata,82,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,paulinejanssen,Pauline Janßen,reale,82,B,profilo di gioco,media,74.58,0,0,0,0,82,,DFV Masters Women 2025,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/masters-nationalteams/
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-4,Greta Fischer,generata,80,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-5,Carla Lehmann,generata,79,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-6,Eva Meyer,generata,78,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-7,Nina Meyer,generata,76,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-8,Luisa Schmidt,generata,75,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-9,Nina Braun,generata,75,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-10,Luisa Müller,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-11,Emma Schwarz,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-12,Frida Hoffmann,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-13,Hannah Hoffmann,generata,72,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-14,Anika Klein,generata,72,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-15,Lotta Weber,generata,71,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Hucks Ultimate Club Berlin,in rosa,gen-DE-hucksultimateclubberlin-16,Nina Klein,generata,70,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,liloumuhlberg,Lilou Mühlberg,reale,77,B,profilo di gioco,media,73.56,0,0,0,0,77,,DFV U24 Women,https://www.frisbeesportverband.de/u24-ultimate-frisbee-nationalteams/
+DE,U de Cologne,in rosa,gen-DE-udecologne-3,Luisa Schwarz,generata,74,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,gen-DE-udecologne-4,Emma Werner,generata,74,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,gen-DE-udecologne-5,Maren Schmidt,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,gen-DE-udecologne-6,Anika Schwarz,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,gen-DE-udecologne-7,Nora Weber,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,gen-DE-udecologne-8,Clara Schmidt,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,gen-DE-udecologne-9,Klara Hartmann,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,hannahdorothymcculloch,Hannah Dorothy McCulloch,reale,74,B,profilo di gioco,media,73.56,0,0,0,0,0,,DFV Masters Women 2025,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/masters-nationalteams/
+DE,U de Cologne,in rosa,gen-DE-udecologne-10,Frida Schneider,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,gen-DE-udecologne-11,Lea Koch,generata,72,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,gen-DE-udecologne-12,Lotta Neumann,generata,72,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,gen-DE-udecologne-13,Eva Wolf,generata,71,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,gen-DE-udecologne-14,Nina Werner,generata,71,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,gen-DE-udecologne-15,Frida Schulz,generata,70,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,U de Cologne,in rosa,gen-DE-udecologne-16,Eva Schneider,generata,69,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-2,Nele Schneider,generata,73,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-3,Nina Schneider,generata,73,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-4,Nora Neumann,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-5,Lena Wolf,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-6,Elisa Lange,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-7,Clara Schulz,generata,73,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-8,Lea Schmidt,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-9,Carla Koch,generata,73,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,verenaplehn,Verena Plehn,reale,73,B,profilo di gioco,media,72.63,0,0,0,0,0,,DFV Masters Women 2025,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/masters-nationalteams/
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-10,Paula Hartmann,generata,72,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-11,Jule Wagner,generata,72,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-12,Lea Richter,generata,71,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-13,Lena Braun,generata,70,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-14,Marie Richter,generata,70,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-15,Jule Lange,generata,69,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,FT Würzburg Ultimate,in rosa,gen-DE-ftwurzburgultimate-16,Carla Klein,generata,68,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,luisanaumann,Luisa Naumann,reale,81,B,profilo di gioco,media,71.27,0,0,0,0.923,81,,DFV senior gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Endamazonis,in rosa,mathildaluxenburger,Mathilda Luxenburger,reale,77,B,profilo di gioco,media,71.27,0,0,0,0,77,,DFV U24 Women,https://www.frisbeesportverband.de/u24-ultimate-frisbee-nationalteams/
+DE,Endamazonis,in rosa,gen-DE-endamazonis-4,Emma Schmidt,generata,74,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,gen-DE-endamazonis-5,Greta Braun,generata,74,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,gen-DE-endamazonis-6,Amelie Zimmermann,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,karlottajasper,Karlotta Jasper,reale,74,B,profilo di gioco,media,71.27,0,0,0,0,74,,DFV U20 Women,https://www.frisbeesportverband.de/u20-ultimate-frisbee-nationalteam/
+DE,Endamazonis,in rosa,gen-DE-endamazonis-7,Nele Braun,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,gen-DE-endamazonis-8,Marie Weber,generata,72,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,gen-DE-endamazonis-10,Marie Klein,generata,71,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,gen-DE-endamazonis-9,Elisa Krause,generata,71,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,gen-DE-endamazonis-11,Maren Zimmermann,generata,70,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,gen-DE-endamazonis-12,Lotta Krause,generata,70,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,gen-DE-endamazonis-13,Marie Zimmermann,generata,69,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,gen-DE-endamazonis-14,Lea Schwarz,generata,68,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,gen-DE-endamazonis-15,Klara Becker,generata,68,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Endamazonis,in rosa,gen-DE-endamazonis-16,Lena Krause,generata,67,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-1,Clara Wolf,generata,80,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-2,Nele Wolf,generata,79,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-3,Nele Weber,generata,78,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-4,Greta Wolf,generata,76,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-5,Luisa Klein,generata,75,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-6,Jule Schmidt,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-7,Maren Müller,generata,72,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-8,Klara Weber,generata,71,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-10,Greta Krause,generata,70,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-9,Eva Klein,generata,70,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-11,Carla Schwarz,generata,69,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-12,Elisa Neumann,generata,68,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-13,Amelie Wagner,generata,68,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-14,Amelie Meyer,generata,67,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-15,Nele Hoffmann,generata,67,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,SPOKO,in rosa,gen-DE-spoko-16,Amelie Werner,generata,66,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Seagulls Ocean,in rosa,inganarjes,Inga Narjes,reale,85,H,profilo di gioco,media,68.72,0,0,0,0,85,,DFV mixed gruppo 2026,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/
+DE,Seagulls Ocean,in rosa,melinakoschnitzki,Melina Koschnitzki,reale,82,B,profilo di gioco,media,68.72,0,0,0.373,0,82,MX-EUC,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1002
+DE,Seagulls Ocean,in rosa,celiagaillard,Celia Gaillard,reale,69,H,profilo di gioco,bassa,68.72,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1002
+DE,Seagulls Ocean,in rosa,clarawolkenhauer,Clara Wolkenhauer,reale,69,H,profilo di gioco,bassa,68.72,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1002
+DE,Seagulls Ocean,in rosa,juliawoortmann,Julia Woortmann,reale,69,H,profilo di gioco,bassa,68.72,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1002
+DE,Seagulls Ocean,in rosa,lauraolivieri,Laura Olivieri,reale,69,H,profilo di gioco,bassa,68.72,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1002
+DE,Seagulls Ocean,in rosa,lizzygerischer,Lizzy Gerischer,reale,69,H,profilo di gioco,bassa,68.72,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1002
+DE,Seagulls Ocean,in rosa,malinmeyer,Malin Meyer,reale,69,B,profilo di gioco,bassa,68.72,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1002
+DE,Seagulls Ocean,in rosa,mariaseewald,Maria Seewald,reale,69,B,profilo di gioco,media,68.72,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1002
+DE,Seagulls Ocean,in rosa,noemigeiger,Noemi Geiger,reale,69,B,profilo di gioco,bassa,68.72,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1002
+DE,Seagulls Ocean,in rosa,patriciaboglowska,Patricia Boglowska,reale,69,B,profilo di gioco,bassa,68.72,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1002
+DE,Seagulls Ocean,in rosa,susanpenack,Susan Penack,reale,69,B,profilo di gioco,bassa,68.72,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1002
+DE,Seagulls Ocean,in rosa,wiebkebrugner,Wiebke Brügner,reale,69,B,profilo di gioco,bassa,68.72,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1002
+DE,Seagulls Ocean,in rosa,gen-DE-seagullsocean-14,Frida Lange,generata,66,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Seagulls Ocean,in rosa,gen-DE-seagullsocean-15,Johanna Hartmann,generata,65,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Seagulls Ocean,in rosa,gen-DE-seagullsocean-16,Hannah Wolf,generata,64,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-1,Eva Braun,generata,77,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-2,Carla Hartmann,generata,76,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-3,Maren Meyer,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-4,Eva Richter,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-5,Johanna Schneider,generata,72,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-6,Anika Hartmann,generata,70,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-7,Lotta Hoffmann,generata,69,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-8,Nina Hartmann,generata,68,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-10,Lea Hoffmann,generata,67,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-9,Luisa Schulz,generata,67,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-11,Luisa Fischer,generata,66,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-12,Nele Hartmann,generata,65,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-13,Emma Schulz,generata,65,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-14,Lena Klein,generata,64,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-15,Jana Zimmermann,generata,63,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,MUC II,in rosa,gen-DE-mucii-16,Luisa Krause,generata,63,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,evastoffels,Eva Stoffels,reale,80,B,profilo di gioco,media,66.69,0,0,0,0.538,80,,DFV U24 Women,https://www.frisbeesportverband.de/u24-ultimate-frisbee-nationalteams/
+DE,Bonnsai,in rosa,gen-DE-bonnsai-3,Lea Weber,generata,67,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,gen-DE-bonnsai-4,Lena Koch,generata,67,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,gen-DE-bonnsai-5,Lotta Wolf,generata,67,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,gen-DE-bonnsai-6,Marie Neumann,generata,67,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,gen-DE-bonnsai-7,Amelie Koch,generata,67,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,gen-DE-bonnsai-8,Nele Werner,generata,67,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,gen-DE-bonnsai-9,Amelie Klein,generata,67,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,lauramaassen,Laura Maaßen,reale,67,B,profilo di gioco,media,66.69,0,0,0,0,0,,DFV Masters Women 2025,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/masters-nationalteams/
+DE,Bonnsai,in rosa,gen-DE-bonnsai-10,Paula Wolf,generata,66,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,gen-DE-bonnsai-11,Klara Schmidt,generata,66,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,gen-DE-bonnsai-12,Jule Werner,generata,65,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,gen-DE-bonnsai-13,Luisa Wolf,generata,64,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,gen-DE-bonnsai-14,Lotta Koch,generata,64,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,gen-DE-bonnsai-15,Johanna Krüger,generata,63,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonnsai,in rosa,gen-DE-bonnsai-16,Nora Fischer,generata,62,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Frau Rauscher,in rosa,annawiedenau,Anna Wiedenau,reale,82,B,profilo di gioco,media,65.06,0,0,0.373,0,82,MX-EUC,DFV Masters Women 2025,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/masters-nationalteams/
+DE,Frau Rauscher,in rosa,leonaalbinger,Leona Albinger,reale,80,B,profilo di gioco,media,65.06,0,0,0,0.692,80,,DFV U24 Women,https://www.frisbeesportverband.de/u24-ultimate-frisbee-nationalteams/
+DE,Frau Rauscher,in rosa,alinastuck,Alina Stück,reale,65,B,profilo di gioco,media,65.06,0,0,0,0,0,,DFV Masters Women 2025,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/masters-nationalteams/
+DE,Frau Rauscher,in rosa,gen-DE-fraurauscher-10,Frida Krause,generata,65,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Frau Rauscher,in rosa,gen-DE-fraurauscher-5,Nele Meyer,generata,65,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Frau Rauscher,in rosa,gen-DE-fraurauscher-6,Nina Koch,generata,65,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Frau Rauscher,in rosa,gen-DE-fraurauscher-7,Lea Neumann,generata,65,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Frau Rauscher,in rosa,gen-DE-fraurauscher-8,Elisa Wolf,generata,65,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Frau Rauscher,in rosa,gen-DE-fraurauscher-9,Maren Wagner,generata,65,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Frau Rauscher,in rosa,katharinablumor,Katharina Blumör,reale,65,B,profilo di gioco,media,65.06,0,0,0,0,0,,DFV Masters Women 2025,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/masters-nationalteams/
+DE,Frau Rauscher,in rosa,gen-DE-fraurauscher-11,Luisa Wagner,generata,64,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Frau Rauscher,in rosa,gen-DE-fraurauscher-12,Klara Meyer,generata,63,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Frau Rauscher,in rosa,gen-DE-fraurauscher-13,Johanna Schulz,generata,63,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Frau Rauscher,in rosa,gen-DE-fraurauscher-14,Anika Weber,generata,62,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Frau Rauscher,in rosa,gen-DE-fraurauscher-15,Jana Krüger,generata,61,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Frau Rauscher,in rosa,gen-DE-fraurauscher-16,Marie Becker,generata,61,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-2,Luisa Neumann,generata,64,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-3,Emma Lange,generata,64,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-4,Maren Lange,generata,64,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-5,Marie Krause,generata,64,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-6,Paula Schmidt,generata,64,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-7,Hannah Richter,generata,64,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-8,Marie Koch,generata,64,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-9,Elisa Schulz,generata,64,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,rabeabrandt,Rabea Brandt,reale,64,B,profilo di gioco,media,63.93,0,0,0,0,0,,DFV Masters Women 2025,https://www.frisbeesportverband.de/adults-ultimate-nationalteams/masters-nationalteams/
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-10,Carla Richter,generata,63,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-11,Greta Wagner,generata,63,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-12,Johanna Richter,generata,62,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-13,Jana Werner,generata,62,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-14,Carla Meyer,generata,61,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-15,Carla Braun,generata,60,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+DE,Bonobos Bonobabes,in rosa,gen-DE-bonobosbonobabes-16,Elisa Schwarz,generata,60,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Freezgo,in rosa,evabornot,Eva Bornot,reale,91,B,profilo di gioco,alta,81.81,0,6,1.517,0,91,MX-EUC | MX-WUC,France Mixed senior · EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Freezgo,in rosa,zoeforget,Zoé Forget,reale,90,B,profilo di gioco,alta,81.81,0,1.05,0.733,0,90,MX-BEACH | MX-World Games 2025,France Mixed senior · EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Freezgo,in rosa,juliettebertrand,Juliette Bertrand,reale,85,B,profilo di gioco,alta,81.81,0,0.786,0.275,0.929,85,MX-BEACH | MX-U24,France Mixed senior · EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Freezgo,in rosa,annaellebeauvais,Annaëlle Beauvais,reale,82,B,profilo di gioco,media,81.81,0,0,0,0.231,75,MX-BEACH,MX-BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1058
+FR,Freezgo,in rosa,coralieimize,Coralie IMIZE,reale,82,B,profilo di gioco,media,81.81,0,0,0.183,0,0,MX-BEACH,MX-BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1058
+FR,Freezgo,in rosa,evapayet,Eva Payet,reale,82,B,profilo di gioco,media,81.81,0,0,0.138,0,0,MX-BEACH,MX-BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1058
+FR,Freezgo,in rosa,gen-FR-freezgo-8,Lucie Michel,generata,82,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Freezgo,in rosa,gen-FR-freezgo-9,Louise Thomas,generata,82,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Freezgo,in rosa,lalieblanchard,Lalie Blanchard,reale,82,B,profilo di gioco,media,81.81,0,0,0.321,0,0,MX-BEACH,MX-BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1058
+FR,Freezgo,in rosa,gen-FR-freezgo-10,Julie Thomas,generata,81,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Freezgo,in rosa,gen-FR-freezgo-11,Léa Simon,generata,81,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Freezgo,in rosa,gen-FR-freezgo-12,Alice Petit,generata,80,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Freezgo,in rosa,gen-FR-freezgo-13,Camille Thomas,generata,79,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Freezgo,in rosa,gen-FR-freezgo-14,Jeanne Thomas,generata,79,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Freezgo,in rosa,gen-FR-freezgo-15,Alice Roux,generata,78,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Freezgo,in rosa,gen-FR-freezgo-16,Marion Durand,generata,77,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,ondineropars,Ondine Ropars,reale,84,C,produzione,media,80.34,0,0,0.42,0,84,MX-EU | MX-WU,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Stade Bordelais,in rosa,paulinedumas,Pauline Dumas,reale,84,C,produzione,media,80.34,0,0,0.98,0,84,MX-EU | MX-WU,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-4,Alice Garcia,generata,82,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-5,Victoire Moreau,generata,82,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-6,Lucie Thomas,generata,82,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-7,Anaïs Richard,generata,82,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,zoepoisson,Zoé Poisson,reale,82,C,produzione,media,80.34,0,0,0.84,1.0,75,MX-EU | MX-WU,MX-WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1050
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-8,Anaïs David,generata,81,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-9,Inès André,generata,81,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-10,Inès Michel,generata,80,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-11,Jeanne Richard,generata,79,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-12,Inès Thomas,generata,79,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-13,Jeanne Simon,generata,78,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-14,Jeanne Durand,generata,77,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-15,Léa Girard,generata,77,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Stade Bordelais,in rosa,gen-FR-stadebordelais-16,Claire Robert,generata,76,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,NLSU,in rosa,chloeollivier,Chloé Ollivier,reale,90,B,profilo di gioco,alta,83.04,0,3.457,1.4,0,90,MX-EUC | MX-WUC | MX-World Games 2025,France Mixed senior · EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,NLSU,in rosa,juliamas,Julia Mas,reale,88,C,produzione,media,83.04,0,5.343,0,0,82,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,ainaperez,Aina Pérez,reale,87,C,produzione,alta,83.04,0,3.457,0.605,0,82,MX-BEACH,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,perrineleproux,Perrine Leproux,reale,87,B,profilo di gioco,alta,83.04,0,3.08,0,0.769,84,MX-U24,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,NLSU,in rosa,carolinetisson,Caroline Tisson,reale,86,H,produzione,media,83.04,0,1.886,0.933,0,82,MX-EUC,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1047
+FR,NLSU,in rosa,florianegaspar,Floriane Gaspar,reale,86,C,produzione,media,83.04,0,2.514,0,0,84,,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,NLSU,in rosa,klarasvecova,Klára Švecová,reale,86,C,produzione,alta,83.04,0,1.571,0.508,0.385,80,MX-BEACH | MX-U24,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,alinemondiot,Aline Mondiot,reale,85,H,produzione,media,83.04,0,0.9,0,0,85,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,anneleborgne,Anne Le Borgne,reale,85,H,profilo di gioco,media,83.04,0,0.3,0,0,85,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,claramathias,Clara Mathias,reale,85,C,produzione,media,83.04,0,0.3,1.938,0,85,MX-EUC | MX-WUC,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1047
+FR,NLSU,in rosa,elisebecker,Elise Becker,reale,85,C,produzione,media,83.04,0,1.414,0,0,85,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,laurablume,Laura Blume,reale,85,B,profilo di gioco,alta,83.04,0,1.729,0,0.357,84,MX-U24,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,NLSU,in rosa,leoburton,Leo Burton,reale,85,C,produzione,media,83.04,0,1.32,0,0.714,80,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,mariacastillo,Maria Castillo,reale,85,H,produzione,media,83.04,0,2.2,0,0,82,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1047
+FR,NLSU,in rosa,paniapreston,Pania Preston,reale,85,B,profilo di gioco,media,83.04,0,1.54,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,paulabaas,Paula Baas,reale,85,H,produzione,media,83.04,0,2.2,0,0,82,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,tessajalink,Tessa Jalink,reale,85,C,produzione,alta,83.04,0,1.414,0.7,0,85,MX-WUC,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,NLSU,in rosa,camillebernier,Camille Bernier,reale,84,H,produzione,media,83.04,0,0.75,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,constancedouwes,Constance Douwes,reale,84,C,produzione,media,83.04,0,0.88,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,emmadelaunay,Emma Delaunay,reale,84,B,profilo di gioco,media,83.04,0,1.1,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,juliemenard,Julie Ménard,reale,84,B,profilo di gioco,media,83.04,0,0.629,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,NLSU,in rosa,marketahudcova,Marketa Hudcova,reale,84,B,profilo di gioco,media,83.04,0,1.05,0,0,82,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1047
+FR,NLSU,in rosa,suzannedeshayes,Suzanne Deshayes,reale,84,B,profilo di gioco,media,83.04,0,0.3,0,0.462,75,,2026 Spring Tour Grenoble,https://eucs-schedule.ultimatefederation.eu/?view=teamcard&team=1020
+FR,NLSU,in rosa,francescaplacanica,Francesca Placanica,reale,83,B,profilo di gioco,media,83.04,0,0.45,0,0,0,,EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1219
+FR,Monkey,in rosa,lisonbornot,Lison Bornot,reale,93,C,produzione,alta,77.46,0,3.74,1.508,0,93,MX-EUC | MX-WUC | MX-World Games 2025,France Mixed senior · EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Monkey,in rosa,lylapetitbon,Lyla Petitbon,reale,86,H,produzione,alta,77.46,0,6,0,2.429,85,MX-U24,France Mixed senior · EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Monkey,in rosa,lucilerichard,Lucile Richard,reale,85,H,produzione,media,77.46,0,0,0.764,0,85,MX-EU | MX-WU,MX-WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1049
+FR,Monkey,in rosa,agathecrouzat,Agathe Crouzat,reale,84,C,produzione,alta,77.46,0,0,1.9,2.0,84,MX-EU | MX-WU,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Monkey,in rosa,amelieclark,Amélie Clark,reale,84,C,produzione,media,77.46,0,1.571,0,0,84,,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Monkey,in rosa,anaeguilloteau,Anaé Guilloteau,reale,84,B,profilo di gioco,media,77.46,0,0,0,0,84,,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Monkey,in rosa,anaismaubourguet,Anaïs Maubourguet,reale,84,C,produzione,media,77.46,0,0,1.145,0,84,MX-EU,MX-EU,https://eucf.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=1225
+FR,Monkey,in rosa,camillelariviere,Camille Larivière,reale,84,H,produzione,alta,77.46,0,0,0.7,1.231,84,MX-WU,MX-WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1049
+FR,Monkey,in rosa,carlasorin,Carla Sorin,reale,84,B,profilo di gioco,media,77.46,0,0,0,0,84,,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Monkey,in rosa,alicesammarco,Alice Sammarco,reale,82,C,produzione,media,77.46,0,0,0.382,0,82,MX-EU | MX-WU,MX-WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1049
+FR,Monkey,in rosa,gen-FR-monkey-11,Manon Durand,generata,76,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Monkey,in rosa,gen-FR-monkey-12,Camille Girard,generata,76,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Monkey,in rosa,gen-FR-monkey-13,Juliette Laurent,generata,75,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Monkey,in rosa,gen-FR-monkey-14,Inès Vincent,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Monkey,in rosa,gen-FR-monkey-15,Noémie Lefebvre,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Monkey,in rosa,gen-FR-monkey-16,Agathe Lefebvre,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,erellperez,Erell Perez,reale,84,C,produzione,media,75.69,0,0,1.909,0,84,MX-EU | MX-WU,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Tsunami,in rosa,gen-FR-tsunami-2,Anaïs Fournier,generata,84,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-3,Inès Martin,generata,83,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-4,Alice David,generata,82,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-5,Léa Mercier,generata,80,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-6,Juliette Michel,generata,79,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-7,Jeanne Robert,generata,77,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-8,Claire Michel,generata,77,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-9,Julie Mercier,generata,76,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-10,Léonie Lefebvre,generata,75,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-11,Louise Simon,generata,75,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-12,Marion André,generata,74,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-13,Louise Morel,generata,73,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-14,Victoire Morel,generata,73,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-15,Lucie Garcia,generata,72,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tsunami,in rosa,gen-FR-tsunami-16,Adèle Bernard,generata,71,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate,in rosa,francafellmann,Franca Fellmann,reale,85,C,produzione,media,77.77,0,1.523,0.56,0,85,MX-EUC | MX-WUC,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,mariontonnaire,Marion Tonnaire,reale,85,B,profilo di gioco,media,77.77,0,0.9,0,0,85,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,paulinelambolez,Pauline Lambolez,reale,85,B,profilo di gioco,media,77.77,0,2.043,0,0,85,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,annegaellelevillayer,Anne-Gaëlle Levillayer,reale,82,C,produzione,media,77.77,0,1.2,0.646,0,82,MX-EUC,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,floragirard,Flora Girard,reale,82,H,produzione,media,77.77,0,3.929,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,madeleinekoechlin,Madeleine Koechlin,reale,82,C,produzione,media,77.77,0,0.75,0.56,0,82,MX-EUC,2026 Spring Tour Grenoble,https://eucs-schedule.ultimatefederation.eu/?view=teamcard&team=1029
+FR,PUC Ultimate,in rosa,clairechemineau,Claire Chemineau,reale,81,C,produzione,media,77.77,0,3.143,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,annesophieherling,Anne-Sophie Herling,reale,80,C,produzione,media,77.77,0,2.043,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,maiwennmiskovic,Maiwenn Miskovic,reale,80,H,produzione,media,77.77,0,2.357,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,camillebreuil,Camille Breuil,reale,79,H,profilo di gioco,media,77.77,0,0.733,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,camillerambert,Camille Rambert,reale,79,H,profilo di gioco,media,77.77,0,0.75,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,carinagwennap,Carina Gwennap,reale,79,B,profilo di gioco,media,77.77,0,0.75,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,haudehermand,Haude Hermand,reale,79,H,produzione,media,77.77,0,1.185,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,inesfontaine,Inès Fontaine,reale,79,B,profilo di gioco,media,77.77,0,0.786,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,ingahuille,Inga Huille,reale,79,B,profilo di gioco,media,77.77,0,1.257,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,maddiekoechlin,Maddie Koechlin,reale,79,B,profilo di gioco,media,77.77,0,1.354,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,marianavivas,Mariana Vivas,reale,79,H,produzione,media,77.77,0,1.257,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,diolainjai,Diola Injai,reale,78,B,profilo di gioco,media,77.77,0,0.677,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,jetzabelsorinas,Jetzabel Sorinas,reale,78,B,profilo di gioco,media,77.77,0,0.677,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,leaguelaud,Léa Guelaud,reale,78,B,profilo di gioco,media,77.77,0,0.45,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,PUC Ultimate,in rosa,swannvandeventer,Swann Vandeventer,reale,78,B,profilo di gioco,media,77.77,0,0.677,0,0,0,,WU,https://results.wfdf.sport/wucc-2026/index.php?view=live/api&entity=teams&id=1048
+FR,A.S.U.L. Ultimate,in rosa,chloevallet,Chloé Vallet,reale,90,B,profilo di gioco,media,72.36,0,0,0,0,90,MX-World Games 2025,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,A.S.U.L. Ultimate,in rosa,laliemaillard,Lalie Maillard,reale,84,B,profilo di gioco,alta,72.36,0,0,0.862,1.385,84,MX-EU | MX-WU,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-3,Léa Lefebvre,generata,80,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-4,Jeanne Morel,generata,78,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-5,Léonie Roux,generata,77,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-6,Julie Bertrand,generata,75,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-7,Adèle David,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-8,Lucie Lefebvre,generata,73,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-9,Anaïs Simon,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-10,Marion Bernard,generata,72,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-11,Maëlle Simon,generata,71,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-12,Jeanne Vincent,generata,71,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-13,Élise Robert,generata,70,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-14,Victoire Lefebvre,generata,69,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-15,Louise Richard,generata,69,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,A.S.U.L. Ultimate,in rosa,gen-FR-asulultimate-16,Agathe Dubois,generata,68,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,camilleblanc,Camille Blanc,reale,90,C,produzione,alta,71.19,0,2.64,0.467,0,90,MX-WUC | MX-World Games 2025,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Tchac,in rosa,aurorelanglois,Aurore Langlois,reale,85,B,profilo di gioco,alta,71.19,0,1.98,0,0,85,,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Tchac,in rosa,gen-FR-tchac-3,Maëlle Dubois,generata,78,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-4,Jeanne Roux,generata,77,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-5,Manon Petit,generata,76,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-6,Lucie Durand,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-7,Agathe Fournier,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-8,Juliette Bernard,generata,72,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-10,Julie Dubois,generata,71,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-9,Lucie Fournier,generata,71,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-11,Agathe Richard,generata,70,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-12,Marion Mercier,generata,69,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-13,Alice Moreau,generata,69,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-14,Manon Lefebvre,generata,68,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-15,Agathe Martin,generata,67,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Tchac,in rosa,gen-FR-tchac-16,Juliette Fournier,generata,67,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Jets,in rosa,florinegouleau,Florine Gouleau,reale,84,B,profilo di gioco,media,70.88,0,0,0,0,84,,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,Jets,in rosa,annaellechevillonguillerm,Annaelle Chevillon-Guillerm,reale,75,H,profilo di gioco,media,70.88,0,0,0,0.385,75,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1009
+FR,Jets,in rosa,chloelabrousse,Chloé La Brousse,reale,75,H,profilo di gioco,media,70.88,0,0,0,0.077,75,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1009
+FR,Jets,in rosa,elisaassie,Elisa Assié,reale,72,C,produzione,media,70.88,0,0,1.4,0,0,MX-WU,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1009
+FR,Jets,in rosa,camillephylemy,Camille Phylemy,reale,71,H,profilo di gioco,bassa,70.88,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1009
+FR,Jets,in rosa,elvanefalguieres,Elvane Falguieres,reale,71,H,profilo di gioco,bassa,70.88,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1009
+FR,Jets,in rosa,ethaniegouleau,Ethanie Gouleau,reale,71,H,profilo di gioco,bassa,70.88,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1009
+FR,Jets,in rosa,evadevaud,Eva Devaud,reale,71,B,profilo di gioco,bassa,70.88,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1009
+FR,Jets,in rosa,juliegouleau,Julie Gouleau,reale,71,B,profilo di gioco,bassa,70.88,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1009
+FR,Jets,in rosa,lisonphylemy,Lison Phylemy,reale,71,B,profilo di gioco,bassa,70.88,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1009
+FR,Jets,in rosa,lywenlaurinobonneau,Lywen Laurino-Bonneau,reale,71,B,profilo di gioco,bassa,70.88,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1009
+FR,Jets,in rosa,marilougirard,Marilou Girard,reale,71,B,profilo di gioco,bassa,70.88,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1009
+FR,Jets,in rosa,noaloiseau,Noa Loiseau,reale,71,B,profilo di gioco,bassa,70.88,0,0,0,0,0,,BEACH,https://live.ebucc.eu/scores2026/index.php?view=live/api&entity=teams&id=1009
+FR,Jets,in rosa,gen-FR-jets-14,Julie Durand,generata,68,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Jets,in rosa,gen-FR-jets-15,Marion Garcia,generata,67,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Jets,in rosa,gen-FR-jets-16,Camille Roux,generata,67,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,salomeraulet,Salomé Raulet,reale,90,H,produzione,alta,69.16,0,3.215,0,0.286,90,MX-U24 | MX-World Games 2025,France Mixed senior · EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,BTR,in rosa,laetitiaguillet,Laëtitia Guillet,reale,85,C,produzione,alta,69.16,0,1.257,0,0,85,,France Mixed senior · EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,BTR,in rosa,perrineberteaudau,Perrine Berteaudau,reale,84,B,profilo di gioco,media,69.16,0,0,0,0,84,,France Women senior · progetto EUC 2027,https://www.ff-flyingdisc.fr/wp-content/uploads/2026/11/liste-selections-EDF-adultes-2026.pdf
+FR,BTR,in rosa,gen-FR-btr-4,Juliette Thomas,generata,75,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,gen-FR-btr-5,Alice Laurent,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,gen-FR-btr-6,Lucie Simon,generata,72,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,gen-FR-btr-7,Juliette Dubois,generata,71,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,gen-FR-btr-8,Claire Dubois,generata,70,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,gen-FR-btr-10,Élise Leroy,generata,69,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,gen-FR-btr-9,Claire Lefebvre,generata,69,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,gen-FR-btr-11,Julie Morel,generata,68,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,gen-FR-btr-12,Agathe Roux,generata,67,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,gen-FR-btr-13,Maëlle Petit,generata,67,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,gen-FR-btr-14,Noémie André,generata,66,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,gen-FR-btr-15,Julie Robert,generata,65,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,BTR,in rosa,gen-FR-btr-16,Jeanne Fournier,generata,65,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-1,Alice Thomas,generata,77,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-2,Julie Richard,generata,76,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-3,Julie Roux,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-4,Manon Leroy,generata,73,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-5,Victoire Durand,generata,71,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-6,Louise Moreau,generata,70,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-7,Julie Petit,generata,68,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-8,Adèle Durand,generata,68,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-10,Anaïs Robert,generata,67,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-9,Maëlle Vincent,generata,67,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-11,Lucie Richard,generata,66,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-12,Marion Girard,generata,65,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-13,Noémie Dubois,generata,65,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-14,Jeanne Bertrand,generata,64,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-15,Louise Vincent,generata,63,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,RFO,in rosa,gen-FR-rfo-16,Léonie Durand,generata,63,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-1,Inès Girard,generata,75,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-2,Élise Petit,generata,74,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-3,Claire Mercier,generata,72,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-4,Maëlle Moreau,generata,71,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-5,Inès Petit,generata,69,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-6,Élise Morel,generata,68,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-7,Léa Morel,generata,66,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-8,Juliette André,generata,66,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-10,Maëlle Michel,generata,65,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-9,Juliette Garcia,generata,65,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-11,Noémie Moreau,generata,64,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-12,Agathe Moreau,generata,63,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-13,Jeanne Bernard,generata,63,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-14,Victoire Vincent,generata,62,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-15,Noémie Garcia,generata,61,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,Révolution'Air,in rosa,gen-FR-revolutionair-16,Victoire Michel,generata,61,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-1,Manon Thomas,generata,74,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-2,Léa Moreau,generata,72,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-3,Léa Fournier,generata,71,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-4,Adèle Laurent,generata,69,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-5,Adèle Robert,generata,68,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-6,Élise Girard,generata,66,D,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-7,Jeanne Lefebvre,generata,65,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-8,Camille Simon,generata,64,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-9,Léa Petit,generata,64,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-10,Lucie Roux,generata,63,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-11,Adèle Thomas,generata,62,C,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-12,Adèle Leroy,generata,62,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-13,Juliette Roux,generata,61,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-14,Léonie Mercier,generata,60,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-15,Léonie Michel,generata,60,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+FR,PUC Ultimate 2,in rosa,gen-FR-pucultimate2-16,Léa Bernard,generata,59,H,profilo di gioco,simulata,,,,,,,,completamento fino a 16,
+UK,Iceni,in rosa,emilypotter,Emily Potter,reale,90,H,produzione,media,82.7,4.444,2.514,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,fionakwan,Fiona Kwan,reale,90,H,produzione,alta,82.7,3.333,3.3,1.1,0,85,MX-EUC | MX-WUC,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,madeleineleong,Madeleine Leong,reale,90,H,produzione,alta,82.7,3.333,2.986,0,1.214,82,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,sophiechowgule,Sophie Chowgule,reale,90,H,produzione,alta,82.7,0.625,4.871,0,1.643,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,emmahealy,Emma Healy,reale,89,C,produzione,alta,82.7,2.5,3.723,0,0,82,MX-EUC,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,hannahsmith,Hannah Smith,reale,89,B,profilo di gioco,alta,82.7,3.333,1.6,0.9,0,85,MX-EUC,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,natalieoldfield,Natalie Oldfield,reale,89,B,profilo di gioco,alta,82.7,3.125,3.6,0,0,85,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,alexniouma,Alex Niouma,reale,87,C,produzione,alta,82.7,1.111,2.0,0,1.0,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,amyvanzyl,Amy van Zyl,reale,87,H,profilo di gioco,alta,82.7,1.25,2.671,0,0,85,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,baileymelvinteng,Bailey Melvin-Teng,reale,87,C,produzione,alta,82.7,2.778,1.257,0.4,0,85,MX-EUC | MX-WUC,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,yasmingill,Yasmin Gill,reale,87,C,produzione,media,82.7,1.944,2.043,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,anabellau,Anabel Lau,reale,86,B,profilo di gioco,media,82.7,1.667,1.571,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,catpope,Cat Pope,reale,86,B,profilo di gioco,alta,82.7,0.556,2.043,0.5,0,85,MX-WUC,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,eleanortaylor,Eleanor Taylor,reale,86,B,profilo di gioco,media,82.7,1.944,1.4,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,hannahleong,Hannah Leong,reale,86,B,profilo di gioco,media,82.7,1.562,2.2,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,kristieto,Kristie To,reale,86,B,profilo di gioco,media,82.7,0.833,2.295,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,yiyincao,Yiyin Cao,reale,86,B,profilo di gioco,alta,82.7,1.389,0.943,0,1.0,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,alicehanton,Alice Hanton,reale,85,H,profilo di gioco,alta,82.7,0.278,1.571,0.7,0,85,MX-WUC,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,fichang,Fi Chang,reale,85,C,produzione,media,82.7,1.111,0.8,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,katrowland,Kat Rowland,reale,85,C,produzione,media,82.7,1.389,1.222,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,lizziecolenso,Lizzie Colenso,reale,85,B,profilo di gioco,media,82.7,0.833,1.08,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,selinachan,Selina Chan,reale,85,C,produzione,media,82.7,0.833,1.185,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,sophieharris,Sophie Harris,reale,85,B,profilo di gioco,media,82.7,1.562,0,0,0.571,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,catherineflavell,Catherine Flavell,reale,84,C,produzione,alta,82.7,0.833,0.157,0,0.308,80,MX-U24,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Iceni,in rosa,chloengweiyun,Chloe Ng Weiyun,reale,83,B,profilo di gioco,media,82.7,0.278,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=34
+UK,Spice,in rosa,kategibson,Kate Gibson,reale,92,B,profilo di gioco,alta,80.75,5.278,6,0,0,85,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,heathergibson,Heather Gibson,reale,90,B,profilo di gioco,alta,80.75,3.611,5.814,0,0,85,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,marinasymington,Marina Symington,reale,90,B,profilo di gioco,alta,80.75,3.333,6,0,0,85,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,freyalenton,Freya Lenton,reale,88,H,produzione,alta,80.75,4.444,1.89,0.7,0,85,MX-WUC,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,sophiewong,Sophie Wong,reale,88,C,produzione,media,80.75,3.333,3.6,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,ciaramoore,Ciara Moore,reale,86,H,produzione,media,80.75,1.944,2.829,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,alicegwynneevans,Alice Gwynne-Evans,reale,85,H,produzione,alta,80.75,1.389,1.6,1.0,0,0,MX-WU,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,arwenzhang,Arwen Zhang,reale,85,H,profilo di gioco,alta,80.75,1.389,2.357,0,0.357,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,beatrixtowers,Beatrix Towers,reale,85,C,produzione,alta,80.75,2.222,1.571,0,0.5,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,stellaslingerthompson,Stella Slinger-Thompson,reale,85,H,produzione,media,80.75,2.5,1.729,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,hannahscott,Hannah Scott,reale,84,B,profilo di gioco,media,80.75,1.667,1.571,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,joannarobinson,Joanna Robinson,reale,84,C,produzione,media,80.75,1.111,2.2,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,imogenmarcar,Imogen Marcar,reale,83,C,produzione,media,80.75,0.556,1.2,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,lucycinnamond,Lucy Cinnamond,reale,83,B,profilo di gioco,media,80.75,1.111,0.943,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,baoqizhang,Baoqi Zhang,reale,82,H,profilo di gioco,media,80.75,0.833,0.8,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,catstallan,Cat Stallan,reale,82,B,profilo di gioco,media,80.75,0.278,1.35,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,gracewilkinson,Grace Wilkinson,reale,82,C,produzione,media,80.75,0.556,1.1,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,hanuushahvizabaskaran,Hanuushah Vizabaskaran,reale,82,B,profilo di gioco,media,80.75,0.833,0.3,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,sophiemance,Sophie Mance,reale,82,B,profilo di gioco,media,80.75,0.556,1.0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,yixunlim,Yi Xun Lim,reale,82,B,profilo di gioco,media,80.75,0.833,0.8,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,christinaathanasiou,Christina Athanasiou,reale,81,B,profilo di gioco,media,80.75,0.278,0.405,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,lauracoleman,Laura Coleman,reale,81,B,profilo di gioco,media,80.75,0.278,0.45,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Spice,in rosa,natashataylor,Natasha Taylor,reale,81,B,profilo di gioco,media,80.75,0,0.471,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=33
+UK,Bristol Women,in rosa,mollywedge,Molly Wedge,reale,90,B,profilo di gioco,alta,78.21,1.944,3.554,0,0,90,MX-World Games 2025,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,carlalink,Carla Link,reale,88,H,produzione,alta,78.21,2.222,6,1.2,0,85,MX-EUC | MX-WUC,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,emilystewart,Emily Stewart,reale,86,H,produzione,alta,78.21,3.889,3.614,0,0.714,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,alicebeeching,Alice Beeching,reale,85,H,produzione,alta,78.21,0,2.2,0.538,0,85,MX-EUC | MX-WUC,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,elliepayne,Ellie Payne,reale,85,C,produzione,alta,78.21,0.625,2.671,0,0,85,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,gemmahenry,Gemma Henry,reale,85,C,produzione,media,78.21,3.611,3.4,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,lisahocking,Lisa Hocking,reale,84,H,produzione,media,78.21,2.778,3.2,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,persephonepantling,Persephone Pantling,reale,84,H,produzione,media,78.21,3.611,2.42,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,catjohnson,Cat Johnson,reale,83,B,profilo di gioco,alta,78.21,1.944,2.514,0,0.643,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,keevamorrell,Keeva Morrell,reale,83,C,produzione,alta,78.21,1.111,2.6,0,0.714,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,caitlinchallis,Caitlin Challis,reale,82,C,produzione,media,78.21,1.562,1.89,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,hannahmudd,Hannah Mudd,reale,82,B,profilo di gioco,media,78.21,1.25,2.75,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,jasminebrianboys,Jasmine Brian-Boys,reale,82,B,profilo di gioco,alta,78.21,1.667,2.2,0.338,0,0,MX-BEACH,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,ruthcabrera,Ruth Cabrera,reale,82,B,profilo di gioco,media,78.21,1.667,2.2,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,saskiakantorowicz,Saskia Kantorowicz,reale,82,C,produzione,media,78.21,1.562,2.6,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,emberdelooze,Ember de Looze,reale,81,C,produzione,media,78.21,1.667,1.215,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,estherawcock,Esther Awcock,reale,81,C,produzione,media,78.21,1.111,1.257,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,graceandrews,Grace Andrews,reale,81,H,produzione,media,78.21,1.111,1.2,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,molliewilliams,Mollie Williams,reale,81,B,profilo di gioco,alta,78.21,0.556,0.8,0,1.0,75,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,rosiecoward,Rosie Coward,reale,81,C,produzione,alta,78.21,0.833,1.414,0,0.786,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,ameliadurbin,Amelia Durbin,reale,80,H,produzione,media,78.21,1.111,1.1,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,hannahdarlami,Hannah Darlami,reale,80,B,profilo di gioco,alta,78.21,0.278,0.8,0,0.143,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,Bristol Women,in rosa,marthapayne,Martha Payne,reale,80,B,profilo di gioco,media,78.21,0.278,1.571,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=35
+UK,SMOG Women,in rosa,hannahquinn,Hannah Quinn,reale,87,H,produzione,alta,76.74,4.444,4.4,0,1.5,85,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,emilyhill,Emily Hill,reale,85,H,produzione,alta,76.74,1.389,3.6,0,0.643,85,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,emilyatkinson,Emily Atkinson,reale,84,H,produzione,media,76.74,3.611,3.375,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,amyconstantine,Amy Constantine,reale,83,H,profilo di gioco,media,76.74,2.222,3.6,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,rachelthompson,Rachel Thompson,reale,83,C,produzione,alta,76.74,3.125,3.2,0,0.429,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,ellenjohnson,Ellen Johnson,reale,81,C,produzione,alta,76.74,1.389,2.2,0,0.429,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,katieharris,Katie Harris,reale,81,B,profilo di gioco,media,76.74,1.389,2.565,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,emilybarker,Emily Barker,reale,80,B,profilo di gioco,alta,76.74,0.833,2.4,0,0.154,80,MX-U24,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,everobertson,Eve Robertson,reale,80,B,profilo di gioco,alta,76.74,1.667,1.35,0,0.231,80,MX-U24 | MX-WU,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,naomibond,Naomi Bond,reale,80,B,profilo di gioco,media,76.74,0.833,0,0,1.357,80,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,natashalim,Natasha Lim,reale,80,H,produzione,media,76.74,1.429,1.8,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,emilytran,Emily Tran,reale,79,C,produzione,media,76.74,1.944,0.81,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,izzyretout,Izzy Retout,reale,79,B,profilo di gioco,media,76.74,0.556,1.62,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,lilybristow,Lily Bristow,reale,79,B,profilo di gioco,media,76.74,0.833,1.08,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,luisaleyland,Luisa Leyland,reale,79,B,profilo di gioco,media,76.74,0.833,1.35,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,thearose,Thea Rose,reale,79,C,produzione,media,76.74,1.111,1.215,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,claireye,Claire Ye,reale,78,H,profilo di gioco,media,76.74,0.833,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,ellenorchaplin,Ellenor Chaplin,reale,78,B,profilo di gioco,media,76.74,0.556,0.405,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,enhueylow,En Huey Low,reale,78,B,profilo di gioco,media,76.74,0.833,0.54,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,nicolemun,Nicole Mun,reale,78,B,profilo di gioco,media,76.74,0.556,0.4,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,tiffanyanderson,Tiffany Anderson,reale,78,B,profilo di gioco,media,76.74,0.833,0.45,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,lauracoxon,Laura Coxon,reale,77,B,profilo di gioco,media,76.74,0.278,0.405,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,SMOG Women,in rosa,melissabarnett,Melissa Barnett,reale,77,B,profilo di gioco,media,76.74,0.278,0.2,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=36
+UK,LMU,in rosa,karenkwok,Karen Kwok,reale,85,B,profilo di gioco,alta,72.3,2.5,0.771,0,0,85,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,helenaandres,Helena Andres,reale,82,B,profilo di gioco,alta,72.3,0.556,0.405,0,0,82,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,lucybarnes,Lucy Barnes,reale,82,C,produzione,media,72.3,1.667,0,0.7,0,82,MX-EUC,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,hannahboddy,Hannah Boddy,reale,79,H,produzione,media,72.3,5.278,1.755,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,alexnevitte,Alex Nevitte,reale,78,C,produzione,media,72.3,4.167,2.025,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,sophiebeavan,Sophie Beavan,reale,78,H,produzione,media,72.3,3.056,2.16,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,kaleighmaietta,Kaleigh Maietta,reale,76,C,produzione,media,72.3,3.056,0.945,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,chescaweddell,Chesca Weddell,reale,75,H,produzione,media,72.3,2.222,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,ilonalivarskibond,Ilona Livarski-Bond,reale,75,B,profilo di gioco,alta,72.3,0.833,1.62,0.108,0,0,MX-WU,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,joycekwok,Joyce Kwok,reale,75,C,produzione,alta,72.3,1.944,0.506,0.55,0,0,MX-BEACH,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,annatrebble,Anna Trebble,reale,74,H,profilo di gioco,media,72.3,1.111,0.6,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,carriecurtin,Carrie Curtin,reale,74,B,profilo di gioco,media,72.3,0.833,0.405,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,emmaburbidge,Emma Burbidge,reale,74,B,profilo di gioco,media,72.3,1.111,0.135,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,jennathomson,Jenna Thomson,reale,74,B,profilo di gioco,media,72.3,0.833,0.54,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,joannahamer,Joanna Hamer,reale,74,B,profilo di gioco,media,72.3,0.556,0.81,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,maraalperin,Mara Alperin,reale,74,H,produzione,media,72.3,1.667,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,olakulikowska,Ola Kulikowska,reale,74,B,profilo di gioco,media,72.3,1.667,0,0.381,0,0,MX-BEACH,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,samfisk,Sam Fisk,reale,74,B,profilo di gioco,media,72.3,0.833,0.54,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,cordelialodge,Cordelia Lodge,reale,73,B,profilo di gioco,media,72.3,0.833,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,kateford,Kate Ford,reale,73,B,profilo di gioco,media,72.3,0.278,0.27,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,LMU,in rosa,beccihaigh,Becci Haigh,reale,72,H,profilo di gioco,media,72.3,0,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=37
+UK,SYC,in rosa,alicelogan,Alice Logan,reale,73,H,produzione,media,69.4,2.778,1.2,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,annabelplummer,Annabel Plummer,reale,73,C,produzione,media,69.4,2.5,1.215,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,bethanmetcalfe,Bethan Metcalfe,reale,73,C,profilo di gioco,media,69.4,2.222,1.05,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,emmapickens,Emma Pickens,reale,73,H,produzione,media,69.4,3.056,0.771,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,annieford,Annie Ford,reale,72,C,produzione,media,69.4,1.667,0.75,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,cameronjewett,Cameron Jewett,reale,72,H,profilo di gioco,media,69.4,1.389,1.485,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,eyansham,Eyan Sham,reale,72,H,produzione,media,69.4,1.944,0.9,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,hollyblackburn,Holly Blackburn,reale,72,B,profilo di gioco,media,69.4,0.833,1.755,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,jennyfielder,Jenny Fielder,reale,72,B,profilo di gioco,media,69.4,1.944,0.75,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,katemitrofanov,Kate Mitrofanov,reale,72,B,profilo di gioco,media,69.4,1.111,1.35,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,nadinegolding,Nadine Golding,reale,72,B,profilo di gioco,media,69.4,1.111,1.05,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,shuyitan,Shu Yi Tan,reale,72,B,profilo di gioco,media,69.4,1.111,1.8,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,vickycockle,Vicky Cockle,reale,72,B,profilo di gioco,media,69.4,1.111,1.05,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,connielynch,Connie Lynch,reale,71,H,profilo di gioco,media,69.4,0.833,0.675,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,emmaholden,Emma Holden,reale,71,H,profilo di gioco,media,69.4,0.833,0.75,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,kirstenwells,Kirsten Wells,reale,71,B,profilo di gioco,media,69.4,1.111,0.338,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,lauracongreve,Laura Congreve,reale,71,B,profilo di gioco,media,69.4,0.833,0.27,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,laurenlayre,Lauren Layre,reale,71,B,profilo di gioco,media,69.4,0.833,0.405,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,rachelspanton,Rachel Spanton,reale,71,B,profilo di gioco,media,69.4,0.833,1.08,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,sandraelsabbagh,Sandra Elsabbagh,reale,71,B,profilo di gioco,media,69.4,0.556,0.75,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,katiemelville,Katie Melville,reale,70,B,profilo di gioco,media,69.4,0.278,0.75,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,SYC,in rosa,nourelsheikh,Nour El Sheikh,reale,70,B,profilo di gioco,media,69.4,0,1.08,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=38
+UK,Horizon,in rosa,tarynfunnell,Taryn Funnell,reale,80,H,produzione,alta,72.47,3.611,2.369,0,0.214,80,MX-U24,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,alliemackintosh,Allie Mackintosh,reale,79,B,profilo di gioco,media,72.47,2.778,4.062,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,lornamayo,Lorna Mayo,reale,78,C,produzione,media,72.47,1.667,3.74,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,fernharvey,Fern Harvey,reale,77,H,produzione,media,72.47,1.389,2.933,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,katieallen,Katie Allen,reale,76,H,produzione,media,72.47,2.222,1.08,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,lucypead,Lucy Pead,reale,76,C,produzione,media,72.47,0.833,2.2,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,mennacooper,Menna Cooper,reale,76,C,produzione,alta,72.47,1.111,2.567,0,0,74,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,charlottejones,Charlotte Jones,reale,75,C,produzione,media,72.47,1.667,1.185,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,zoecalder,Zoe Calder,reale,75,B,profilo di gioco,media,72.47,0.833,1.523,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,annawilliamson,Anna Williamson,reale,74,C,produzione,media,72.47,0.833,1.015,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,charlottehuddart,Charlotte Huddart,reale,74,H,produzione,media,72.47,0.833,0.677,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,eviebutler,Evie Butler,reale,74,H,produzione,media,72.47,0.278,1.35,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,finolaclark,Finola Clark,reale,74,B,profilo di gioco,media,72.47,1.111,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,hettyconnor,Hetty Connor,reale,74,C,produzione,media,72.47,0.833,1.05,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,zoemarshall,Zoe Marshall,reale,74,C,produzione,media,72.47,1.111,0.338,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,aikobailey,Aiko Bailey,reale,73,H,profilo di gioco,media,72.47,0,0.405,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,charlotteholmes,Charlotte Holmes,reale,73,B,profilo di gioco,media,72.47,0.278,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,cleocornou,Cleo Cornou,reale,73,B,profilo di gioco,media,72.47,0.556,0.3,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,melaneypeter,Melaney Peter,reale,73,B,profilo di gioco,media,72.47,0,0.508,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,putrinursyakirahbintimegatmuhaiminhasrin,Putri Nur Syakirah Binti Megat Muhaimin Hasrin,reale,73,B,profilo di gioco,media,72.47,0.833,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Horizon,in rosa,sashamoore,Sasha Moore,reale,73,B,profilo di gioco,media,72.47,0.556,0.27,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=39
+UK,Midlands Boom,in rosa,amelieline,Amelie Line,reale,74,C,profilo di gioco,media,63.63,0.556,0,0,0,74,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,maiseymullins,Maisey Mullins,reale,74,B,profilo di gioco,media,63.63,0.556,0,0,0,74,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,chelseahua,Chelsea Hua,reale,65,H,profilo di gioco,media,63.63,1.111,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,kileytapp,Kiley Tapp,reale,65,B,profilo di gioco,media,63.63,1.25,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,maygehlhaar,May Gehlhaar,reale,65,H,produzione,media,63.63,1.667,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,opheliabyrne,Ophelia Byrne,reale,65,B,profilo di gioco,media,63.63,1.389,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,abbzconejos,Abbz Conejos,reale,64,C,profilo di gioco,media,63.63,0.833,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,bethmewse,Beth Mewse,reale,64,C,profilo di gioco,media,63.63,0.714,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,ellieharwood,Ellie Harwood,reale,64,H,profilo di gioco,media,63.63,0,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,islaatay,Isla Atay,reale,64,H,profilo di gioco,media,63.63,0.278,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,kathrynbailey,Kathryn Bailey,reale,64,H,profilo di gioco,media,63.63,0,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,kellymartin,Kelly Martin,reale,64,H,profilo di gioco,media,63.63,0,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,kimwardell,Kim Wardell,reale,64,B,profilo di gioco,media,63.63,0,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,livgoldsmith,Liv Goldsmith,reale,64,B,profilo di gioco,media,63.63,0.714,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,mariawalley,Maria Walley,reale,64,B,profilo di gioco,media,63.63,0,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,michaelameeraus,Michaela Meeraus,reale,64,B,profilo di gioco,media,63.63,0.357,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,michelleline,Michelle Line,reale,64,B,profilo di gioco,media,63.63,0,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,monicahenderson,Monica Henderson,reale,64,B,profilo di gioco,media,63.63,0.278,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,rebeccadodd,Rebecca Dodd,reale,64,B,profilo di gioco,media,63.63,0.357,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,ruthgale,Ruth Gale,reale,64,B,profilo di gioco,media,63.63,0,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
+UK,Midlands Boom,in rosa,sophietran,Sophie Tran,reale,64,B,profilo di gioco,media,63.63,0,0,0,0,0,,UKU,https://uku-schedule.ultimatefederation.eu/index.php?view=live/api&entity=teams&id=40
