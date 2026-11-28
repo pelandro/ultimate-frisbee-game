@@ -37,7 +37,7 @@ for(const k in SCUSE){const s=SCUSE[k];EVT['sc_'+k]={w:0,ok:()=>false,mk:()=>scu
 // dopo ogni partita di campionato, se non c'e' gia' un imprevisto in attesa
 function rollScusa(force){
   if(SV.evt||SV.event!=='camp'||SV.done||SV.fired)return;
-  if(!force&&Math.random()>=scuseChance())return;
+  const pr=scuseChance();if(!force&&(!pr||Math.random()>=pr))return;   // con il morale alto non si tira nemmeno il dado: la carriera resta quella di prima
   const ids=Object.keys(SCUSE).filter(k=>SV.mor<SCUSE[k].mor&&scuseChi(SCUSE[k]));if(!ids.length)return;
   const k=ids[Math.floor(Math.random()*ids.length)],a=scuseChi(SCUSE[k]);
   SV.evt={id:'sc_'+k,a};
