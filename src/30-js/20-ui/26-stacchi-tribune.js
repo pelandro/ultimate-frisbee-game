@@ -53,7 +53,7 @@ function cineLandscape(w,h,y,shift,land,wx){
 
 function cineFans(a,b,y,row,offset,V,{standing=false,seated=false,aisle=0,mosaic=false,cheer=false,t=0}={}){
   const gap=standing?21:10,stagger=row%2?gap/2:0;
-  const seat=cShade(UNI[vnSide(V)].shirt,-0.44);
+  const seat=V.vip?'#4a2f95':cShade(UNI[vnSide(V)].shirt,-0.44);
   for(let i=Math.floor((a+offset-stagger)/gap);;i++){
     const x=ri(i*gap-offset+stagger),seed=ihash(i,row+801);
     if(x>b)break;
@@ -61,7 +61,7 @@ function cineFans(a,b,y,row,offset,V,{standing=false,seated=false,aisle=0,mosaic
     if(aisle&&Math.abs(x+offset-Math.round((x+offset)/aisle)*aisle)<8)continue;
     if(seed%1000>=1000*V.fill*(standing?0.72:0.88)){
       if(seated){
-        const paint=mosaic&&((i>>2)+row)%3===0?'#8997ad':seat;
+        const paint=mosaic&&((i>>2)+row)%3===0?(V.vip?'#e5b53a':'#8997ad'):seat;
         px(x-3,y-4,7,4,CINE_EDGE);px(x-2,y-4,5,2,paint);px(x-2,y-1,5,1,paint);
       }
       continue;
@@ -116,14 +116,14 @@ function cineOutdoor(w,h,shift,V,lv,land,wx,cheer,t){
 
 function cineGrandstand(w,h,shift,V,lv,land,wx,cheer,t){
   const top=ri(h*CINE_TOP[lv]),home=UNI[vnSide(V)].shirt;
-  const col=CINE_CONCRETE[land==='US'&&lv===2?1:0];
+  const col=V.vip?ORO_STEP:CINE_CONCRETE[land==='US'&&lv===2?1:0];
   const rails=shift*0.75,gap=Math.max(100,ri(h*1.1));
   const two=lv>=4,roof=lv>=3,deckGap=two?Math.max(8,ri(h*0.09)):0;
   const roofH=roof?Math.max(6,ri(h*(lv===5?0.14:lv===3?0.105:0.075))):0;
   const front=h-5,roofY=top+roofH;
-  cineLandscape(w,h,lv<=3?top:0,shift,land,wx);
-  const support=lv===5?'#68748c':'#8d98a8';
-  if(lv===5){   // tralicci dietro il tetto e batterie di fari
+  if(V.vip)oroCineSky(w,roofY+2);else cineLandscape(w,h,lv<=3?top:0,shift,land,wx);
+  const support=V.vip?'#e5b53a':(lv===5?'#68748c':'#8d98a8');
+  if(lv===5&&!V.vip){   // tralicci dietro il tetto e batterie di fari
     cineRepeat(w,gap*1.6,rails*0.46,(x,i)=>{
       const y=2+(i&1)*4;
       px(x-2,y+5,5,top-y+4,'#586478');
@@ -181,6 +181,7 @@ function cineGrandstand(w,h,shift,V,lv,land,wx,cheer,t){
   }else{
     px(-5,top-5,w+10,6,'#9099a8');px(-5,top-5,w+10,1,'#bec6cf');
   }
+  if(V.vip)oroCineRoof(w,top,roofH,front,shift);
   px(-5,front,w+10,h-front,CINE_EDGE);
 }
 

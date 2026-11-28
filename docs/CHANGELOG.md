@@ -4,6 +4,10 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Chi ha il badge «Sostenitore» ha anche lo Stadio d’Oro: in carriera, al posto del campo di livello 6, una notte con tribune dorate, che a ogni meta si accende di fuochi d’artificio, luci colorate, scintille e coriandoli. Si spegne da Riconoscimenti › Altro.
+- Cotarica Grandes: Nicolò Zavattini è tra i più forti (Overall 90); quattro compagni hanno un punto in meno, la media della squadra resta quella di prima.
+- Menu Amministratore: i premi ai giocatori hanno un elenco con ricerca immediata, filtro «Con premi», più codici incollati insieme e assegnazione a tutti quelli mostrati.
+- Nuova divisa speciale «Oro Nero» (maglia nera con gallone, maniche, fascia e calze dorate, riflesso che brilla) per chi ha il badge «Sostenitore»: si indossa in tutte le modalità. Nei Riconoscimenti c’è la scheda «Altro» con i badge «Sostenitore» e «Prima settimana»; li assegna chi gestisce il gioco al tuo profilo di Sfide online.
 - Audio: tolto il fruscio continuo del pubblico, restano la musica e i suoni del tifo. Nel menu principale «Carriera» non è più giallo: ha lo stesso colore degli altri pulsanti.
 - Il gioco si chiama Pixel Ultimate (titolo, nome della pagina e dell’icona, cartelloni a bordo campo).
 - Più il campo è grande, più il tifo è caldo: dal primo potenziamento delle Tribune si aggiungono tamburi, battimani, trombe e fischi, con pause in mezzo e ogni livello con il suo modo di tifare. Nella descrizione delle Tribune ora c’è anche «Migliora il campo».

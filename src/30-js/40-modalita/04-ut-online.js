@@ -55,10 +55,11 @@ async function uoSignUp(){   // accesso anonimo: l'utente non vede niente, serve
 }
 async function uoToken(){
   if(uoTok&&Date.now()<uoExp)return uoTok;
-  if(!UOP||!UOP.rt)throw new Error('Nessun accesso: scegli il nome');
-  const j=await uoJson('https://securetoken.googleapis.com/v1/token?key='+encodeURIComponent(UTO_CFG.key),{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(UOP.rt)});
+  const P=UOP||uoReadP(UTH_OKEY);   // chi ha il profilo solo nei Superpoteri (i premi si leggono anche per lui)
+  if(!P||!P.rt)throw new Error('Nessun accesso: scegli il nome');
+  const j=await uoJson('https://securetoken.googleapis.com/v1/token?key='+encodeURIComponent(UTO_CFG.key),{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(P.rt)});
   uoTok=j.id_token;uoExp=uoLife(j.expires_in);
-  if(j.refresh_token&&j.refresh_token!==UOP.rt){UOP.rt=j.refresh_token;uoSaveP();}
+  if(UOP&&j.refresh_token&&j.refresh_token!==UOP.rt){UOP.rt=j.refresh_token;uoSaveP();}
   return uoTok;
 }
 // le letture sono pubbliche (classifica e squadre); le scritture servono l'accesso e valgono solo per il proprio nodo
@@ -360,6 +361,7 @@ async function renderUtBoard(){
       const m=await uoSeasonMeta(true),cur=uoSeasonCur(),sid=ubTab==='prev'?utoSeasonBefore(cur,m&&m.s,m&&m.p):cur;
       $('ubNote').textContent=ubTab==='prev'?`Classifica finale: ${utoSeasonName(sid)}.`:`${utoSeasonName(sid)}: la classifica riparte ogni mese. Badge ai primi 10 con almeno ${UTO_SEASON_G} partite.`;
       uoAdminCheck();
+      premiSync().then(ch=>{if(ch)ricBtn();});   // premi dell'amministratore (35-premi.js)
       try{
         const rk=utoSeasonRank(uoRows(await uoDb('GET',uoRoot()+'/seasons/'+sid,undefined,'orderBy=%22p%22&limitToLast=60')));
         box.innerHTML=rk.ok.length||rk.wait.length?rk.ok.slice(0,50).map((r,i)=>ubRow(r,i+1,`${r.w}V ${r.l}S · forza ${r.pw}`)).join('')
@@ -406,7 +408,9 @@ async function admStats(){
 }
 function admShow(){
   const c=uoaGet();$('admLogin').classList.toggle('hidden',!!c);$('admMenu').classList.toggle('hidden',!c);$('admMsg').textContent='';
-  $('uAdm').classList.remove('hidden');if(c)admStats();else try{$('admCode').focus({preventScroll:true});}catch(e){}
+  $('uAdm').classList.remove('hidden');
+  if(c)admTab(ADM.tab);   // premi o stagione e numeri (50-schermate/35-premi.js)
+  else{$('uAdm').classList.remove('wide');try{$('admCode').focus({preventScroll:true});}catch(e){}}
 }
 $('ubAdmin').addEventListener('click',admShow);
 $('admX').addEventListener('click',()=>$('uAdm').classList.add('hidden'));

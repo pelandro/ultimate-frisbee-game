@@ -33,7 +33,11 @@ const RIC_UT={k:'UT',name:'Ultimate Team',rb:['b','y'],hang:'v',comps:[
   {k:'UT2',name:'Sfide online · 2° del mese',short:'2° posto',txt:'Chiudi un mese al 2° posto della classifica di Sfide online',ch:'2',mat:'med',lv:2},
   {k:'UT3',name:'Sfide online · 3° del mese',short:'3° posto',txt:'Chiudi un mese al 3° posto della classifica di Sfide online',ch:'3',mat:'easy',lv:1},
   {k:'UT10',name:'Sfide online · primi 10 del mese',short:'Primi 10',txt:'Chiudi un mese tra il 4° e il 10° posto della classifica di Sfide online',ch:'10',mat:'blu',lv:0}].map(c=>Object.assign({lg:'UT',sh:'disc'},c))};
-const RIC_BY={};for(const c of RIC_COMP.concat(RIC_UT.comps))RIC_BY[c.k]=c;
+// Altro: badge che assegna l'amministratore a un profilo online (35-premi.js). Materiale e ornamenti fissi, uno per profilo
+const RIC_AL={k:'AL',name:'Altro',rb:['y','k'],hang:'v',comps:[
+  {k:'SOST',name:'Sostenitore',short:'Sostenitore',txt:'Per chi ha sostenuto il gioco con una donazione di almeno 5 euro',sh:'heart',ch:'',mat:'hard',lv:2,glow:1},
+  {k:'PRIMA',name:'Prima settimana',short:'Prima settimana',txt:'Per chi ha scaricato il gioco nella sua prima settimana',sh:'burst',ch:'1',mat:'xtr',lv:2}].map(c=>Object.assign({lg:'AL'},c))};
+const RIC_BY={};for(const c of RIC_COMP.concat(RIC_UT.comps,RIC_AL.comps))RIC_BY[c.k]=c;
 const RIC_DIFF=['easy','med','hard','xtr'];
 // materiali per difficolta': M metallo, L luce, D ombra, O contorno
 const RIC_MAT={easy:{M:'#c27a3a',L:'#eda66a',D:'#87491d',O:'#3b1f0c'},med:{M:'#b9c4d3',L:'#f2f6fb',D:'#77849a',O:'#262d3b'},
@@ -61,7 +65,7 @@ function badgeGrid(comp,diff){
   const get=(x,y)=>x>=0&&y>=0&&x<N&&y<N?g[y][x]:'.';
   const lv=C.lv!==undefined?C.lv:RIC_DIFF.indexOf(diff),rank=sh==='cup'?4-(+C.ch):0;   // rank delle coppe: 1 terzo, 2 secondo, 3 primo
   const fill=(test,c)=>{for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(test(x+0.5,y+0.5))g[y][x]=c;};
-  const LG=RIC_LG.find(l=>l.k===C.lg)||(C.lg==='UT'?RIC_UT:RIC_EU),RB=LG.rb;
+  const LG=RIC_LG.find(l=>l.k===C.lg)||(C.lg==='UT'?RIC_UT:(C.lg==='AL'?RIC_AL:RIC_EU)),RB=LG.rb;
   // corona a tre punte (Serie A, N1 belga, Serie A Women): base da y0 a y0+4, punte sopra
   const crown=(y0,x0,x1)=>{fill((x,y)=>y>=y0&&y<y0+4&&x>=x0&&x<=x1,'M');for(const cx of [x0+1,(x0+x1)/2,x1-1])fill((x,y)=>y>=y0-4.5&&y<y0+0.1&&Math.abs(x-cx)<=(y-y0+4.5)*0.55+0.3,'M');};
   // ALLORO dal Difficile: due rami che salgono dal basso ai lati della figura, foglie a coppie lungo il ramo (in Estrema di cristallo)
@@ -104,6 +108,11 @@ function badgeGrid(comp,diff){
     fill((x,y)=>y>15&&Math.hypot(x-20,(y-24.5)*1.05)<=9.4&&Math.hypot(x-20,(y-24.5)*1.05)>=5.6,'M');
     fill((x,y)=>{const dx=Math.max(0,Math.abs(x-20)-5.5),dy=Math.max(0,Math.abs(y-11.5)-3.8);return Math.hypot(dx,dy)<=2.6;},'M');cy=8;
   }else if(sh==='star'){const P=ricStar(20,17.5,13.5,6.6);fill((x,y)=>ricIn(x,y,P),'M');fill((x,y)=>y>=27.5&&y<=31&&Math.abs(x-20)<=4.5+(y-27.5)*0.6,'M');cy=14;}
+  else if(sh==='heart'){   // cuore pieno: la curva classica, un po' schiacciata
+    fill((x,y)=>{const u=(x-20)/11.2,v=(19.5-y)/10.6,q=u*u+v*v-1;return q*q*q-u*u*v*v*v<=0;},'M');cy=14;
+  }else if(sh==='burst'){   // sigillo a dodici punte
+    fill((x,y)=>{const t=Math.atan2(y-20,x-20),r=Math.hypot(x-20,y-20),k=Math.abs(((t*6/Math.PI)%2+2)%2-1);return r<=9.4+3.8*k;},'M');cy=17;
+  }
   else if(sh==='disc'){   // disco da ultimate visto un po' dall'alto: superficie, bordo e spessore
     fill((x,y)=>Math.hypot((x-20)/13.2,(y-22)/8.6)<=1,'D');fill((x,y)=>Math.hypot((x-20)/13.2,(y-20)/8.6)<=1,'M');cy=16;
     if(C.k==='UT1')crown(9.5,13.5,26.5);
@@ -134,6 +143,7 @@ function badgeGrid(comp,diff){
   // il segno inciso al centro: lettera della serie, numero del livello o del podio
   // il segno: uno o due caratteri da 5 colonne, centrati
   const tc=sh==='cocarde'?'w':(sh==='disc'?'o':'T'),chs=[...(C.ch||'')],x0=Math.round(20-(chs.length*6-1)/2);
+  if(sh==='heart')['..111','.1...','1111.','.1...','1111.','.1...','..111'].forEach((r,j)=>[...r].forEach((b,i)=>{if(b==='1')set(18+i,cy+j,tc);}));   // il simbolo dell'euro
   chs.forEach((ch,k)=>{const F=CLUB_FONT[ch];if(F)F.forEach((r,j)=>[...r].forEach((b,i)=>{if(b==='1')set(x0+k*6+i,cy+j,tc);}));});
   if(lv>=3&&sh!=='ring')for(const [dx,dy,c] of [[0,0,'J'],[-1,1,'J'],[0,1,'W'],[1,1,'K'],[0,2,'K']])set(20+dx,cy+8+dy,c);   // gemma sotto il segno
   if(lv>=3&&sh==='ring')for(const [dx,dy,c] of [[0,0,'J'],[-1,1,'J'],[0,1,'W'],[1,1,'K'],[0,2,'K']])set(20+dx,26+dy,c);   // nell'anello, la gemma va sulla fascia in basso
@@ -183,7 +193,7 @@ function ricUtGive(pos,season,name){
   w.m.push(season);w.n=w.m.length;w.t=utoName(name);w.at=Date.now();w.nw=1;o[c.k]=w;ricSave(o);
   return true;
 }
-const ricKeyOk=k=>!!ricComp(k)||RIC_UT.comps.some(c=>c.k===k);
+const ricKeyOk=k=>!!ricComp(k)||RIC_UT.comps.concat(RIC_AL.comps).some(c=>c.k===k);
 // ---------- pannello ----------
 // a sinistra il campionato scelto nelle linguette (all'apertura quello della carriera in corso), a destra il podio dell'EUCF, che vale per tutti:
 // al massimo tre righe per blocco, su un telefono di traverso stanno senza scorrere
@@ -191,14 +201,15 @@ let ricSel=null,ricTab='IT';
 function renderRic(){
   const o=ricLoad(),has=c=>RIC_DIFF.filter(d=>o[c.k+':'+d]).length;
   const got=Object.keys(o).filter(k=>ricComp(k)).length;
-  $('ricSub').textContent=ricTab==='UT'?'Sfide online: i primi 10 della classifica di ogni mese (almeno 10 partite giocate)':`${got} su ${RIC_COMP.length*RIC_DIFF.length} · per ogni campionato vinto un badge per difficoltà della carriera`;
+  $('ricSub').textContent=ricTab==='AL'?'Riconoscimenti speciali: li assegna chi gestisce il gioco al tuo profilo di Sfide online':ricTab==='UT'?'Sfide online: i primi 10 della classifica di ogni mese (almeno 10 partite giocate)':`${got} su ${RIC_COMP.length*RIC_DIFF.length} · per ogni campionato vinto un badge per difficoltà della carriera`;
   const utN=RIC_UT.comps.reduce((t,c)=>t+((o[c.k]&&o[c.k].n)|0),0),utNw=RIC_UT.comps.some(c=>o[c.k]&&o[c.k].nw);
-  const tabs=`<div class="rict2" role="tablist">${RIC_LG.concat([RIC_UT]).map(l=>{const n=l.k==='UT'?utN:l.comps.reduce((t,c)=>t+has(c),0),nw=l.k==='UT'?utNw:l.comps.some(c=>RIC_DIFF.some(d=>o[c.k+':'+d]&&o[c.k+':'+d].nw));
-    return `<button type="button" role="tab" class="sg${l.k===ricTab?' on':''}${nw?' nw':''}" data-rtab="${l.k}" aria-selected="${l.k===ricTab}">${l.name}${n?` <i>${n}</i>`:''}</button>`;}).join('')}</div>`;
+  const tabs=`<div class="rict2" role="tablist">${RIC_LG.concat([RIC_UT,RIC_AL]).map(l=>{const n=l.k==='UT'?utN:l.k==='AL'?premiCount():l.comps.reduce((t,c)=>t+has(c),0),nw=l.k==='UT'?utNw:l.k==='AL'?premiNew():l.comps.some(c=>RIC_DIFF.some(d=>o[c.k+':'+d]&&o[c.k+':'+d].nw));
+    return `<button type="button" role="tab" class="sg${l.k===ricTab?' on':''}${nw?' nw':''}" data-rtab="${l.k}" aria-selected="${l.k===ricTab}">${l.k==='AL'?'<span data-lgk="ricAltro">'+l.name+'</span>':l.name}${n?` <i>${n}</i>`:''}</button>`;}).join('')}</div>`;
   const block=(title,cs)=>`<div class="ricg"><div class="rich rict">${title}</div>${RIC_DIFF.map(d=>`<div class="rich">${CAR_DIFF[d].name}</div>`).join('')}`+
     cs.map(c=>`<div class="ricl">${c.short}</div>`+RIC_DIFF.map(d=>{const id=c.k+':'+d,w=o[id];
       return `<button type="button" class="ricb${w?' on':''}${w&&w.nw?' nw':''}${ricSel===id?' sel':''}" data-ric="${id}" aria-label="${c.name} · ${CAR_DIFF[d].name}${w?'':' (da ottenere)'}">${badgeSVG(c.k,d,!w,64)}</button>`;}).join('')).join('')+'</div>';
   $('ricTabs').innerHTML=tabs;
+  if(ricTab==='AL'){premiRender(o);return;}
   if(ricTab==='UT'){   // una riga sola: i quattro badge di fine mese, con quante volte li hai vinti
     $('ricGrid').innerHTML=`<div class="ricg ricu">${RIC_UT.comps.map(c=>`<div class="rich">${c.short}</div>`).join('')}${RIC_UT.comps.map(c=>{const w=o[c.k];
       return `<button type="button" class="ricb${w?' on':''}${w&&w.nw?' nw':''}${ricSel===c.k?' sel':''}" data-ric="${c.k}" aria-label="${c.name}${w?'':' (da ottenere)'}">${badgeSVG(c.k,'',!w,64)}${w&&w.n>1?`<i class="ricx">×${w.n}</i>`:''}</button>`;}).join('')}</div>`;
@@ -214,18 +225,22 @@ function renderRic(){
     :'<span>Tocca un badge per vedere come si ottiene. La difficoltà è quella scelta all’inizio della carriera; l’EUCF vale con qualsiasi squadra.</span>';
 }
 function ricOpen(){
+  premiSync().then(ch=>{if(ch&&!$('ric').classList.contains('hidden'))renderRic();});
   ricSel=null;const lk=SV&&SV.lk;ricTab=RIC_LG.some(l=>l.k===lk)?lk:'IT';
   renderRic();$('ric').classList.remove('hidden');
 }
 function ricClose(){   // quelli nuovi smettono di brillare quando li hai visti
   const o=ricLoad();let ch=false;for(const k in o)if(o[k]&&o[k].nw){delete o[k].nw;ch=true;}if(ch)ricSave(o);
+  premiSeen();
   $('ric').classList.add('hidden');ricBtn();
 }
 function ricBtn(){   // il pulsante del menu iniziale: quanti ne hai e un punto se ce n'e' uno nuovo
-  const o=ricLoad(),ks=Object.keys(o).filter(ricKeyOk),n=ks.reduce((t,k)=>t+(ricComp(k)?1:(o[k].n|0)),0);$('tRicN').textContent=n?String(n):'';$('tRic').classList.toggle('nw',ks.some(k=>o[k]&&o[k].nw));
+  const o=ricLoad(),ks=Object.keys(o).filter(ricKeyOk),n=ks.reduce((t,k)=>t+(ricComp(k)?1:(o[k].n|0)),0);$('tRicN').textContent=n?String(n):'';$('tRic').classList.toggle('nw',ks.some(k=>o[k]&&o[k].nw)||premiNew());
 }
 $('ricTabs').addEventListener('click',e=>{const b=e.target.closest('[data-rtab]');if(!b)return;ricTab=b.dataset.rtab;ricSel=null;renderRic();});
 $('tRic').addEventListener('click',ricOpen);
 $('ricX').addEventListener('click',ricClose);
-$('ricGrid').addEventListener('click',e=>{const b=e.target.closest('[data-ric]');if(!b)return;ricSel=b.dataset.ric;renderRic();});
+$('ricGrid').addEventListener('click',e=>{if(e.target.closest('#prWear')){premiWear(!premiKit());renderRic();return;}
+  if(e.target.closest('#prStad')){premiStadioWear(!premiStadio());renderRic();return;}
+  const b=e.target.closest('[data-ric]');if(!b)return;ricSel=b.dataset.ric;renderRic();});
 ESC_CLOSE.push(['ric',ricClose]);

@@ -1,6 +1,7 @@
 /* Paragrafi inglesi con grassetti e corsivi (guida, tutorial, fumetti): chiave = HTML italiano con gli spazi compattati, valore = HTML inglese con gli stessi tag
    nello stesso ordine (vedi LANG_BLK in 20-ui/30-lingua.js). Raccolta: `node tools/lingua-raccogli.js en` (campo «blk»). */
 LANG_BLK.en={
+  "<b>Divisa Oro Nero e badge speciali</b> (Riconoscimenti › Altro)":"<b>Black Gold kit and special badges</b> (Achievements › Other)",
   "<b>Telefono e schermo</b>: il campo si gioca in orizzontale; in verticale il gioco si gira da solo (si spegne da Impostazioni › Schermo e audio). Per averlo come app: iPhone, Safari › Condividi › Aggiungi a Home; Android, menu › Aggiungi a schermata Home.":"<b>Phone and screen</b>: the field is played in landscape; in portrait the game rotates by itself (turn it off in Settings › Screen and sound). To have it as an app: iPhone, Safari › Share › Add to Home; Android, menu › Add to Home screen.",
   "<b>Dimensione dell’interfaccia</b>: menu e pulsanti si adattano allo schermo. In Impostazioni › Schermo e audio scegli la dimensione (da «Più piccola» a «Molto più grande») e, a parte, quella dei pulsanti di gioco.":"<b>Interface size</b>: menus and buttons adapt to the screen. In Settings › Screen and sound pick the size (from “Smallest” to “Much larger”) and, separately, the size of the game buttons.",
   "<b>Impostazioni</b>: quattro schede.":"<b>Settings</b>: four tabs.",

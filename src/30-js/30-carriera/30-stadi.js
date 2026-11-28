@@ -40,6 +40,7 @@ function careerVenue(m){
   }
   o.comp=SV.event==='eu'?'EUCF':(SERIES_NAME[SV.sr]||'');   // la competizione, su un cartellone (18-cartelloni.js)
   o.fill=o.cap?clamp(o.n/o.cap,0.04,1):0.4;
+  if(o.lv===5&&typeof premiStadio==='function'&&premiStadio())o.vip=true;   // chi sostiene il gioco: al posto del grande stadio, lo Stadio d'Oro (20-ui/33-stadio-oro.js)
   return o;
 }
 // riga della schermata Partita: quanta gente aspettarsi

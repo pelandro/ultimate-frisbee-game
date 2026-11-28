@@ -7,8 +7,8 @@
 .tric.nw::after{content:'';position:absolute;top:-4px;right:-4px;width:10px;height:10px;background:var(--gold);border:2px solid #000}
 .ricpanel{max-width:900px}
 .ricw{display:flex;gap:18px;margin:2px 0 6px}
-.rict2{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
-.rict2 .sg{padding:3px 8px;min-height:0;font-size:14px;position:relative}
+.rict2{display:flex;flex-wrap:wrap;gap:3px;margin:0 0 6px}
+.rict2 .sg{padding:3px 4px;min-height:0;font-size:14px;position:relative}
 .rict2 .sg i{font-style:normal;color:var(--gold)}.rict2 .sg.on i{color:inherit}
 .rict2 .sg.nw::after{content:'';position:absolute;top:-3px;right:-3px;width:7px;height:7px;background:var(--gold);border:2px solid #000}
 /* tabellone dell'EUCF (usBracketHTML): la finale per il 3° posto sotto la finale */

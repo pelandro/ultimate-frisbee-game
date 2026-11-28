@@ -1,5 +1,6 @@
 /* Paragrafi fr con grassetti e corsivi: chiave = HTML italiano con gli spazi compattati, stessi tag nello stesso ordine. */
 LANG_BLK.fr={
+  "<b>Divisa Oro Nero e badge speciali</b> (Riconoscimenti › Altro)":"<b>Tenue Or Noir et badges spéciaux</b> (Distinctions › Autres)",
   "<b>Telefono e schermo</b>: il campo si gioca in orizzontale; in verticale il gioco si gira da solo (si spegne da Impostazioni › Schermo e audio). Per averlo come app: iPhone, Safari › Condividi › Aggiungi a Home; Android, menu › Aggiungi a schermata Home.":"<b>Téléphone et écran</b> : le terrain se joue à l’horizontale ; à la verticale, le jeu pivote tout seul (désactivable dans Réglages › Écran et audio). Pour l’avoir comme appli : iPhone, Safari › Partager › Sur l’écran d’accueil ; Android, menu › Ajouter à l’écran d’accueil.",
   "<b>Dimensione dell’interfaccia</b>: menu e pulsanti si adattano allo schermo. In Impostazioni › Schermo e audio scegli la dimensione (da «Più piccola» a «Molto più grande») e, a parte, quella dei pulsanti di gioco.":"<b>Taille de l’interface</b> : menus et boutons s’adaptent à l’écran. Dans Réglages › Écran et audio, choisis la taille (de « Plus petite » à « Bien plus grande ») et, à part, celle des boutons de jeu.",
   "<b>Impostazioni</b>: quattro schede.":"<b>Réglages</b> : quatre onglets.",

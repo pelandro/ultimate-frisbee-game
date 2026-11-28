@@ -117,8 +117,8 @@ function diveMo(v,xs,xc,u,tt){
 // dove sta l'anca perche' la mano della presa arrivi in (tx, ty) nell'istante della presa
 const diveAt=(tx,u)=>{const h=handPos(0,0,DV_HIP,1,DV_ROT,u,SK_FLY);return tx-h.x;};
 // materiali: indice nella tavolozza dell'omino
-const PXM={SK:1,SKF:2,HR:3,SH:4,PT:5,PTF:6,SO:7,SHO:8,SOL:9,HD:10,SKD:11,EYE:12,MO:13,WH:14,HSK:15};   // HSK: pelle del viso, coi toni disegnati a mano (senza ombre automatiche)
-const PXM_LN=new Set([PXM.SK,PXM.SKF,PXM.SH,PXM.PT,PXM.PTF,PXM.SO,PXM.SHO]);   // materiali che fanno la linea scura dove finiscono su un altro
+const PXM={SK:1,SKF:2,HR:3,SH:4,PT:5,PTF:6,SO:7,SHO:8,SOL:9,HD:10,SKD:11,EYE:12,MO:13,WH:14,HSK:15,BND:16};   // HSK: pelle del viso, coi toni disegnati a mano (senza ombre automatiche)
+const PXM_LN=new Set([PXM.BND,PXM.SK,PXM.SKF,PXM.SH,PXM.PT,PXM.PTF,PXM.SO,PXM.SHO]);   // materiali che fanno la linea scura dove finiscono su un altro
 // I due corpi hanno superfici separate, anche quando lo stacco disegna le scie.
 const PX_BUF=Array.from({length:2},()=>({
   body:document.createElement('canvas'),
@@ -163,7 +163,7 @@ function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
   const arm=(a,sk)=>{const [s,e,h]=a;
     quad(s,e,0.17,0.15,sk,0.03,0.07);quad(e,h,0.15,0.13,sk,0.03,0.02);   // braccio e avambraccio, gomito chiuso
     const hd=[h[0]+(h[0]-e[0])*0.25,h[1]+(h[1]-e[1])*0.25];quad(h,hd,0.19,0.19,sk,0.04,0);   // mano a blocco
-    quad(s,mix(s,e,0.5),0.22,0.21,PXM.SH,0.06,0);};   // manica: finisce con un taglio dritto
+    quad(s,mix(s,e,0.5),0.22,0.21,un.man?PXM.BND:PXM.SH,0.06,0);};   // manica: finisce con un taglio dritto
   const leg=(l,sk,pt)=>{
     const [hp,kn,ft]=l,h0=mix(hp,kn,0.18);seg(h0,kn,0.105,0.085,sk);seg(kn,ft,0.085,0.07,sk);   // la coscia parte sotto l'orlo della maglia: niente sporgenze ai lati del busto
     seg(mix(kn,ft,0.45),ft,0.08,0.075,PXM.SO);   // calza
@@ -185,7 +185,7 @@ function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
   for(let j=Math.floor(hc[1]-24*hq);j<=Math.ceil(hc[1]+24*hq);j++)for(let i=Math.floor(hc[0]-24*hq);i<=Math.ceil(hc[0]+24*hq);i++){
     if(i<0||j<0||i>=n||j>=n)continue;
     const dx=(i+0.5-hc[0])*face/hq,dy=(j+0.5-hc[1])/hq,qx=Math.floor(hcr*dx+hsr*dy+hcx),qy=Math.floor(-hsr*dx+hcr*dy+hcy);
-    if(qx<0||qy<0||qx>=hw||qy>=hh)continue;const ch=hd[qy][qx];if(ch!=='.')id[j*n+i]=hmap[ch];
+    if(qx<0||qy<0||qx>=hw||qy>=hh)continue;const ch=hd[qy][qx];if(ch!=='.')id[j*n+i]=un.man&&qy===(sm?2:5)?PXM.BND:hmap[ch];   // divisa Oro Nero: la fascia in testa
   }
   arm(A[1],PXM.SK);   // davanti: braccio vicino
   // colori
@@ -194,11 +194,11 @@ function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
   const patAt=(i,j)=>{   // motivo della maglia: dal pixel alle coordinate del busto (t lungo il busto, f verso il petto)
     const X=(i+0.5-c0)/(face*hs),Y=(j+0.5-c0)/hs,dx=cr*X+sr*Y-hip[0],dy=-sr*X+cr*Y-hip[1],t=(dx*ux+dy*uy)/Lt,f=(dx*nx+dy*ny)/bw;
     return t>-0.25&&t<1.15&&Math.abs(f)<0.22&&eqPatHit(pat,(f+0.2)/0.4,(1.1-t)/1.3);};
-  const base=[null,skin,pxTone(skin,-0.2),hair,cs,sorts,pxTone(sorts,-0.15),pxRgb(un.socks),pxRgb(un.shoe),[238,242,248],pxTone(hair,-0.4),pxTone(skin,-0.22),[20,18,30],pxTone(skin,-0.5),[255,255,255],skin];
-  const auto=new Set([PXM.SK,PXM.SKF,PXM.HR,PXM.SH,PXM.PT,PXM.PTF,PXM.SO,PXM.SHO]);
+  const base=[null,skin,pxTone(skin,-0.2),hair,cs,sorts,pxTone(sorts,-0.15),pxRgb(un.socks),pxRgb(un.shoe),[238,242,248],pxTone(hair,-0.4),pxTone(skin,-0.22),[20,18,30],pxTone(skin,-0.5),[255,255,255],skin,un.man?pxRgb(un.man):skin];
+  const auto=new Set([PXM.BND,PXM.SK,PXM.SKF,PXM.HR,PXM.SH,PXM.PT,PXM.PTF,PXM.SO,PXM.SHO]);
   const B=PX_BUF[side][ghost?'ghost':'body'];if(B.width!==n){B.width=n;B.height=n;}
   const gb=B.getContext('2d'),od=gb.createImageData(n,n),o=od.data,at=(i,j)=>i<0||j<0||i>=n||j>=n?0:id[j*n+i],fr=face>0?1:-1;
-  const gc=ghost?pxTone(cs,0.35):null;
+  const gc=ghost?pxTone(cs,0.35):null,lp=!ghost&&un.oro?oroLampo(G.tick*0.8,side*0.9):-1,lk0=Math.round(n*0.35+lp*n*1.1),lw=Math.max(2,Math.round(n/40));   // divisa Oro Nero: il riflesso che scorre
   for(let j=0;j<n;j++)for(let i=0;i<n;i++){
     const p=j*n+i,k=id[p];let c=null;
     if(ghost){if(k&&((i+j)&1)===0)c=gc;}
@@ -210,6 +210,7 @@ function athlete(x,gy,hipH,face,pose,rot,tt,hu,alpha,ghost,who){
         c=lit?pxTone(b,0.22):(dark?pxTone(b,-0.3):b);
       }else c=base[k];
     }else if(at(i-1,j)||at(i+1,j)||at(i,j-1)||at(i,j+1))c=OUTRGB;
+    if(c&&lp>=0&&k===PXM.SH&&c!==OUTRGB&&Math.abs(i+j-lk0)<lw)c=pxTone(c,0.7);
     if(c){o[p*4]=c[0];o[p*4+1]=c[1];o[p*4+2]=c[2];o[p*4+3]=255;}
   }
   gb.putImageData(od,0,0);
@@ -348,7 +349,7 @@ function drawCine(){
     else{const t2=vt-ct;dp={x:C.x+u*5.5*t2,y:Math.min(gy-0.2*u,C.y-u*3.2*t2+0.5*u*16*t2*t2)};}
     if(pd!==null)trail(P0,P1,C,pd);
     if(dp.held)heldDisc(...dp.held,c.t*9);else discSprite(dp.x,dp.y,0.17*u,c.t*9);
-    plates=[{x:cx-2.7*u,p:A,col:c.kits[A.t].shirt},{x:cx+2.7*u,p:Dd,col:c.kits[Dd.t].shirt}];
+    plates=[{x:cx-2.7*u,p:A,col:c.kits[A.t].man||c.kits[A.t].shirt},{x:cx+2.7*u,p:Dd,col:c.kits[Dd.t].man||c.kits[Dd.t].shirt}];
     impact=C;
     if(!aim){benefit=(winA?A.t:Dd.t)===0;result=winA?'Presa in salto!':'Bloccato in salto!';}
   }else if(sp.kind==='dive2'){
@@ -380,7 +381,7 @@ function drawCine(){
     if(pd!==null)trail(P0,P1,Ce,pd);
     if(dp.held)heldDisc(...dp.held,c.t*9);else discSprite(dp.x,dp.y,0.17*u,c.t*9);
     if(!aim&&vt>0.4)dust(c,vt,[Aa,Dd].map(who=>({x:(who===Aa?dps.a:dps.d).dx,y:gyOf(who)})),u);
-    plates=[{x:cx-2.2*u,p:Aa,col:c.kits[Aa.t].shirt},{x:cx+2.2*u,p:Dd,col:c.kits[Dd.t].shirt}];
+    plates=[{x:cx-2.2*u,p:Aa,col:c.kits[Aa.t].man||c.kits[Aa.t].shirt},{x:cx+2.2*u,p:Dd,col:c.kits[Dd.t].man||c.kits[Dd.t].shirt}];
     impact=win?Ce:null;
     if(!aim){benefit=win?win.t===0:Dd.t===0;result=out==='att'?'Presa in tuffo!':(out==='def'?'Blocco in tuffo!':'Tuffi mancati');}
   }else{
@@ -404,7 +405,7 @@ function drawCine(){
     if(pd!==null)trail(P0,P1,E,pd);
     if(dp.held)heldDisc(...dp.held,c.t*9);else discSprite(dp.x,dp.y,0.17*u,c.t*9);
     if(!aim&&vt>0.4)dust(c,vt,[{x:dpz.dx,y:gy}],u);
-    plates=[{x:cx-1.6*u,p:dv,col:c.kits[dv.t].shirt}];
+    plates=[{x:cx-1.6*u,p:dv,col:c.kits[dv.t].man||c.kits[dv.t].shirt}];
     impact=ok?{x:E.x,y:E.y}:{x:Tt.x,y:Tt.y};
     if(!aim){benefit=(ok?dv.t:1-dv.t)===0;result=ok?(sp.att?'Presa in tuffo!':'Blocco in tuffo!'):'Tuffo mancato';}
   }

@@ -82,5 +82,6 @@ function eqPatHit(m,u,v){
   if(m==='fas')return v>=0.34&&v<0.62;
   if(m==='dia')return Math.abs(u-v)<0.17;
   if(m==='met')return u>=0.5;
+  if(m==='oro')return Math.abs(v-(0.62-Math.abs(u-0.5)*0.9))<0.09||Math.abs(u-0.5)*1.4+Math.abs(v-0.22)<0.16;   // divisa Oro Nero: gallone a V e rombo sul petto (non si sceglie: la da' l'amministratore)
   return false;
 }
