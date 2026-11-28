@@ -30,7 +30,7 @@ const euBronzeMe=N=>!!(N&&N.br&&N.rd===6&&N.ko[3]&&N.ko[3][1]&&N.ko[3][1].slice(
 function euLabelAt(N){const rd=N.rd;return rd<3?`Girone ${US_POOL[t16Pool(N,SV.team)]} · partita ${rd+1} di 3`:(euBronzeMe(N)?'Finale per il 3° posto':['Prequarti','Quarti di finale','Semifinale','Finale'][rd-3]);}
 // i k club piu' forti di un paese in questa edizione (la forza cambia un po' di anno in anno, in SV.eup)
 function euPick(lk,k,R){
-  const pool=lk==='IT'?SERIES.A.map(n=>[n,TEAM[n].power]):lnClubRows(lk).filter(r=>r[1]===LN_DEF[lk].tiers[0].id).map(r=>[r[0],r[3]]);
+  const pool=lk==='IT'?SERIES.A.map(n=>[n,TEAM[n].power]):lnClubRows(lk).filter(r=>r[1]===LN_DEF[lk].tiers[0].id).map(([name,,,level])=>[name,LN_EUCS_OPEN_LEVEL[name]??level]);
   return pool.map(([n,p])=>{const v=clamp((SV.eup[n]===undefined?p:SV.eup[n])+R()*5-2.5,50,96);SV.eup[n]=v;return [n,v+R()*4-2];}).sort((a,b)=>b[1]-a[1]).slice(0,k).map(x=>x[0]);
 }
 // il campo dell'EUCF alla fine del campionato: le prime 3 di ogni paese (top/fourth = classifica vera del tuo campionato) e la quarta piu' forte
