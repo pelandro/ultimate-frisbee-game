@@ -37,7 +37,22 @@ for(const lk in LN_PL_PLUS){
 // punteggi (rating = media tra WUCC e EUCF, potenza attesa = 84,3 + 0,83 x rating, piu' 1,5 punti di prestigio) e piazzamenti 2024-2026. (2) Una serie piu' alta e' di norma piu' forte di una piu' bassa:
 // nessun club di una serie supera di oltre 3 punti la potenza del club piu' debole della serie sopra meno 0,5 (Belgio, Francia, Germania; chi supera il tetto ci va sotto in fila, nello stesso ordine di prima): erano al contrario club come Eclipse Solaire (3º livello belga, 10 punti sopra
 // l'ultimo del 2º). Jetset Open (4º belga) resta sotto Freezzz Beezzz.
+// Revisione Open su tutti gli eventi EUCS 2026. Metodo e fonti in docs/OPEN-EUCS-2026.md.
+const LN_EUCS_OPEN_LEVEL={
+  "SMASH'D":80,
+  "SMOG Open":81,
+  "Bristol Open":81.5,
+  "Alba":78.5,
+  "SOLENT Open":77.5,
+  "Ka-Pow!":77.5,
+  "Magic Disc":79.5,
+  "PUC Ultimate":78.5,
+  "Roazhon Ultimate":77,
+  "BORA":75,
+  "Hardfisch":76.5,
+};
 const LN_POW_FIX={
+  ...LN_EUCS_OPEN_LEVEL,
   'M.U.C.':84,
   'Freezzz Beezzz one':87.5,
   'Heidees':84,
