@@ -22,7 +22,7 @@ const STARS=[
   ['McClamrock','Lukas',29,'D',85,'Atlanta Chain Lightning','lock'],['Atkins','Alex',27,'D',85,'Philadelphia Pacmen',null],['Jurek','Cole',28,'C',85,'Washington DC Truck Stop','hands'],
   ['Vohnoutka','Bryan',33,'C',85,'USA',null],['Gouchoe-Hanas','Matt',28,'H',85,'Raleigh Ring of Fire',null],['Boxley','Christian',29,'C',85,'Washington DC Truck Stop','explosive'],
   ['Barzasi','David',26,'C',85,'Mooncatchers',null],['Abrams','Tom',32,'H',85,'Clapham Ultimate',null],['Müller','Nico',31,'C',85,'Bad Skid',null],
-  ['Poitte-Sokolsky','Sacha',30,'C',85,'Tchac','sky'],['Lindsley','Grant',37,'C',84,'USA','hands'],['Blasman','Tom',24,'H',84,'Paesi Bassi',null],
+  ['Poitte-Sokolsky','Sacha',30,'C',85,'Tchac','sky'],['Lindsley','Grant',37,'C',84,'USA','hands'],['Blasman','Tom',24,'H',93,'M.U.C.',null],
   ['Heyman','Scott',27,'H',84,'New York PoNY',null],['Krenik','Paul',27,'C',84,'Minneapolis Sub Zero',null],['Larson','Gordon',27,'H',84,'Minneapolis Sub Zero',null],
   ['Mott','Sean',30,'H',84,'Washington DC Truck Stop','break'],['Selfridge','Will',26,'C',84,'Atlanta Chain Lightning',null],['Tremblay-Joncas','Christophe',29,'H',84,'Montréal Mephisto',null],
   ['Hanson','Noah',26,'D',84,'Minneapolis Sub Zero','lock'],['Fisher','Henry',26,'D',84,'Raleigh Ring of Fire','sky'],['Wilson Holliday','Alec',27,'C',84,'USA','deep'],

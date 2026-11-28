@@ -1,0 +1,50 @@
+# Overall e rose dei club femminili europei 2026
+
+Versione locale del 28 novembre 2026. [overall.csv](overall.csv) contiene ogni giocatrice, squadra, ruolo di gioco, Overall, stato in rosa, provenienza e componenti della valutazione. [squadre.csv](squadre.csv) riporta sia la potenza risultante sia il livello stimato dai risultati. Per riprodurre i due fogli dalla repository eseguire `python3 docs/europa-women-2026/valutazioni/calcola.py`. Il calcolo usa i CSV della ricerca e la libreria standard di Python.
+
+| Campionato | Club | Reali in rosa | Generate | In rosa | Giocatrici in rosa con riscontri mixed |
+|---|---:|---:|---:|---:|---:|
+| UKU Nationals | 8 | 179 | 0 | 179 | 20 |
+| BUOC, gironi iniziali N1 | 8 | 130 | 16 | 146 | 17 |
+| Francia | 13 | 86 | 135 | 221 | 34 |
+| Germania | 16 | 111 | 169 | 280 | 36 |
+| **Totale** | **45** | **506** | **320** | **826** | **107** |
+
+L’identità di una giocatrice reale e il suo posto nel club sono due informazioni diverse. Per **306** posti c’è una distinta del campionato di riferimento (179 UKU e 127 BUOC). Per **200** posti l’affiliazione alla squadra outdoor è ricostruita da altre fonti. L’origine e il link sono indicati per ogni riga. Dei 509 nomi valutati, tre di jinX Midnight restano a disposizione oltre il limite di rosa. Le 320 giocatrici inventate hanno un ID che inizia con `gen-`, tipo `generata` e affidabilità `simulata`.
+
+## Scelta delle rose
+
+- Si usa prima la distinta outdoor domestica. Seguono il club dichiarato dalla federazione nella stagione 2026, le distinte outdoor di club Women e, in mancanza di questi riscontri, gli altri eventi o le affiliazioni storiche. La nazionale francese pubblicata a novembre documenta l’affiliazione a quella data. Il gruppo tedesco di sviluppo indica l’associazione di tesseramento. Entrambe sono approssimazioni per il campionato già terminato. [Identità e fonte dell’assegnazione](identita.csv) · [Club tedeschi e rispettive associazioni](https://scores.frisbeesportverband.de/?list=allteams&season=dmo26&view=teams)
+- Una distinta mixed può sostenere un’assegnazione quando il club corrisponde e c’è un riscontro indipendente nella categoria femminile o in un elenco esplicito del club. Il nome di battesimo e la città da soli sono insufficienti. Per Bordeaux la società conferma che 33 Tours è il nome storico del club. L’elenco del club Freezgo per il beach distingue le nove atlete; le ospiti identificate con altre affiliazioni restano escluse da quella ricostruzione. [Stade Bordelais](https://stade-bordelais.com/sport/ultimate/) · [FFFD sui club ai WUCC](https://www.ff-flyingdisc.fr/2026/08/13/championnats-du-monde-des-clubs-2026-6-clubs-francais-en-lice/) · [Freezgo](https://blois.asptt.com/actualites/ultimate-les-freezgos-vices-champions-deurope/)
+- Il nome completo viene normalizzato per accenti, maiuscole, spazi e punteggiatura. Nei dati WUCC di PUC i campi nome e cognome sono invertiti rispetto alle altre distinte. Abbiamo ricomposto l’ordine prima di confrontare i nomi. Un’identità già assegnata nel gioco conserva la carriera esistente. Fra gli esempi figurano Ava Müller con BFD Shout, Levke Walczak con Boston Brute Squad e Margot Nissen con San Diego Flipside. Il registro conserva anche le attribuzioni concorrenti, i casi non assegnabili e le due voci belghe anonima o abbreviata. [Casi da rivedere](casi-da-rivedere.csv)
+- Sul modello delle rose europee maschili, una squadra con meno di **16** giocatrici viene completata. Per le rose documentate si usa il limite del gioco di **28**, conservando in un elenco di riserva ogni nome in eccesso, ordinato per Overall e poi ID per i pari merito. Le generate hanno nomi del paese, produzione statistica vuota e livello decrescente secondo la curva maschile. Il loro tetto è 88 o l’Overall più basso documentato del club, se inferiore. Il seme dipende dal club e dalla stagione. [Rose europee maschili](../../../src/30-js/37-leghe/02-roster-lega.js) · [Applicazione delle rose documentate](../../../src/30-js/38-ovr/01-applica.js)
+- Le rose interamente generate sono **MUC II, SPOKO, RFO, Révolution’Air e PUC Ultimate 2**. Il loro livello di squadra deriva dalle partite reali. I nominativi riferiti soltanto a ESV München restano sospesi fra le due squadre di Monaco. Per Mooncup, le distinte indoor aiutano a distinguere Astra e Nova; dove l’outdoor indica l’altra squadra si dà precedenza all’outdoor. [Rosa indoor Astra](https://ultie.org/buic-2627-adults/teams/5938/roster) · [Rosa indoor Nova](https://ultie.org/buic-2627-adults/teams/5939/roster)
+
+## Aggiornamento MUC
+
+La rosa di gioco di MUC usa 19 giocatrici dalle distinte mixed 2026 di Tiefseetaucher e Zamperl, su indicazione del progetto. Quattro passano da Zamperl a MUC nella rosa di gioco. Per i nomi trasferiti il registro conserva anche l’affiliazione precedente. I referti EUCF e WUCC documentano la squadra mixed e i contributi individuali. [Tiefseetaucher](https://eucf.ultimatefederation.eu/?view=teamcard&team=1184) · [Zamperl](https://eucf.ultimatefederation.eu/?view=teamcard&team=1227)
+
+## Come si calcola l’Overall
+
+Il **livello della squadra** parte da 68 per l’ultima e 84 per la prima. Per il Belgio il piazzamento si riferisce al campo di 16. Si aggiunge quattro volte la somma degli scarti relativi per gara, ciascuno limitato a ±0,65, divisa per il numero di gare più tre. Sono escluse le gare con una sola meta complessiva. Dove c’è un piazzamento ai Mondiali per club o alle finali europee si fa la media degli indici di torneo (da 92 a 79 ai WUCC, da 91 a 78 agli EUCF). Questa media pesa il 60%, ridotto al 30% per Astra e Nova che schierano una formazione unica all’estero. Gli estremi sono parametri di bilanciamento scelti sulla scala Women già in uso. La potenza finale applica esattamente i pesi 60/35/5 dei tre blocchi da sette previsti dal motore. [Piazzamenti e fonti](piazzamenti-internazionali.csv) · [Metodo Women italiano](../../OVERALL-WOMEN-2026.md)
+
+La base **individuale** è il livello di squadra meno tre. Per ogni torneo il rendimento offensivo è `(mete + assist) / (gare indicate + 4)`. Le quattro gare aggiuntive riducono il peso dei campioni brevi. Si aggiungono il contributo domestico (massimo 7 in UK, 2 in Belgio), la miglior prova di club Women (massimo 6), la miglior prova mixed senior (massimo 3) e il miglior contributo giovanile (massimo 2,5). Un evento beach mixed pesa meno del sette contro sette. Lo stesso rendimento entra una volta per categoria. L’assenza di statistiche dà zero correzione.
+
+La somma ha tetto 93. A parte si considerano soglie individuali, usando la maggiore applicabile. Valgono 90 per i World Games, 85 per i Mondiali senior outdoor, 82 per gli Europei senior, 80 per i Mondiali U24 e 75 per i Mondiali U20. Gli elenchi federali di sviluppo e le convocazioni per il 2027 ricevono una soglia distinta dalla partecipazione documentata a un torneo. Per i nomi selezionati dalla Top 25 europea di Ultiworld la soglia è 93 nei primi cinque, 91 dal sesto al decimo e 88 nelle altre posizioni. I coefficienti e i valori intermedi si trovano nel calcolo e nel foglio individuale. [Calcolo completo](calcola.py) · [Ultiworld](https://ultiworld.com/2026/08/14/the-top-25-womens-players-in-europe-2026/)
+
+L’affidabilità dell’Overall è alta con almeno tre categorie di riscontro, media con una o due, bassa con nessuna. Il campo descrive il sostegno alla valutazione; l’affidabilità dell’assegnazione al club va letta nella colonna `origine`. Ruoli H e C sono stimati quando, su almeno sei contributi in eventi utilizzabili, gli assist sono almeno 1,5 volte le mete o viceversa. Dove serve, il profilo bilanciato viene distribuito per garantire sei handler e tre cutter. Ogni assegnazione tattica priva di riscontro numerico è marcata `profilo di gioco`. I referti documentano soprattutto l’attacco: restano incerti i minuti, i blocchi e il valore delle specialiste difensive.
+
+## Riscontri mixed
+
+Sono state incrociate tutte le **48** squadre dei WUCC Mixed 2026 e le **16** degli EUCF Mixed 2026, comprese quelle di altri paesi. Per 47 giocatrici in rosa c’è una corrispondenza con almeno uno di questi due tornei. Allargando a WUC 2024, EUC 2023, Mondiali U24 2025, World Games 2025 ed Europei beach 2026 si sale a **107**. Il registro dei World Games è un controllo mirato su Francia, Germania e Molly Wedge con il Canada. Il file delle fonti include anche i gruppi federali e distingue il torneo effettivo dalla selezione. [Distinte controllate](tornei-controllati.csv) · [Evidenze nominative con URL e statistiche](evidenze.csv)
+
+| Giocatrice | Club di gioco | Overall | Elementi che contano |
+|---|---|---:|---|
+| Lison Bornot | Monkey | 93 | World Games con la Francia, risultati mixed senior e quarta nella graduatoria europea di Ultiworld. Il club francese deriva dalla lista federale di novembre. |
+| Lisa Schütz | MUC | 90 | Distinte mixed di Zamperl sia ai WUCC sia agli EUCF e presenza con la Germania ai World Games. |
+| Joana Erdmann | Black Foxx | 90 | Tesseramento con PTSV-Jahn-Freiburg, EUCF mixed e World Games con la Germania. |
+| Agathe Crouzat | Monkey | 84 | Affiliazione federale e referti mixed di Grenoble sia europei sia mondiali. |
+
+A parità di rosa e livello di club, ricalcolando senza le evidenze mixed, **70 giocatrici** avrebbero un Overall più basso. Per Schütz, ora in rosa con MUC, il confronto è 81 contro 90, per Erdmann 85 contro 90 e per Latchy 86 contro 90. Lison Bornot resta a 93 per la soglia editoriale indipendente. Le 45 potenze esportate sono state confrontate con la funzione effettiva del motore; un secondo calcolo ha prodotto CSV identici.
+
+La mediana è **81** per le giocatrici reali in rosa (64–93) e **72** per le generate (59–84). L’ordine dei club può differire dal piazzamento nazionale di una stagione, specialmente se diverse atlete hanno riscontri internazionali. Per la revisione, i punti di maggiore incertezza sono le cinque rose sintetiche, le affiliazioni ricostruite e le giocatrici senza tabellini individuali.

@@ -1,0 +1,46 @@
+paese,squadra,piazzamento,livello_risultati,potenza,reali,generate,riserve,minimo,massimo
+BE,Mooncup Astra,1,86.95,84.79,11,5,0,80,91
+BE,Mooncup Nova,2,85.87,82.49,10,6,0,79,85
+BE,Wuf.,3,82.02,80.29,24,0,0,79,82
+BE,Gentlew()men,4,80.63,79.95,21,0,0,78,82
+BE,Jetset OneLUV,5,79.97,79.06,18,0,0,77,82
+BE,Spekkies,6,78.57,77.38,13,3,0,71,82
+BE,Flying Rabbits Mammouth,7,78.54,75.99,14,2,0,71,82
+BE,Blackbirds Women,16,66.66,65.43,19,0,0,64,82
+DE,Heidees,1,83.73,84.05,25,0,0,81,86
+DE,MUC,2,84.38,83.34,19,0,0,82,90
+DE,Jinx Midnight,3,84.9,86.07,28,0,3,82,91
+DE,Black Foxx,4,80.81,80.14,7,9,0,73,90
+DE,Zamperl,5,80.38,76.34,4,12,0,73,78
+DE,Mainz Ultimate,6,78.95,77.91,1,15,0,72,82
+DE,Hucks Ultimate Club Berlin,7,77.58,76.84,1,15,0,70,82
+DE,U de Cologne,8,76.56,73.18,2,14,0,69,77
+DE,FT Würzburg Ultimate,9,75.63,71.97,1,15,0,68,73
+DE,Endamazonis,10,74.27,72.79,3,13,0,67,81
+DE,SPOKO,11,73.25,72.86,0,16,0,66,80
+DE,Seagulls Ocean,12,71.72,70.81,13,3,0,64,85
+DE,MUC II,13,70.19,69.76,0,16,0,63,77
+DE,Bonnsai,14,69.69,67.09,2,14,0,62,80
+DE,Frau Rauscher,15,68.06,66.86,4,12,0,61,82
+DE,Bonobos Bonobabes,16,66.93,63.06,1,15,0,60,64
+FR,Freezgo,1,84.81,82.69,7,9,0,77,91
+FR,Stade Bordelais,2,83.34,80.81,3,13,0,76,84
+FR,NLSU,3,86.04,86.26,24,0,0,83,90
+FR,Monkey,4,80.46,82.35,10,6,0,73,93
+FR,Tsunami,5,78.69,78.19,1,15,0,71,84
+FR,PUC Ultimate,6,80.77,81.56,21,0,0,78,85
+FR,A.S.U.L. Ultimate,7,75.36,75.9,2,14,0,68,90
+FR,Tchac,8,74.19,74.96,2,14,0,67,90
+FR,Jets,9,73.88,72.25,13,3,0,67,84
+FR,BTR,10,72.16,73.99,3,13,0,65,90
+FR,RFO,11,69.96,69.59,0,16,0,63,77
+FR,Révolution'Air,12,67.99,67.59,0,16,0,61,75
+FR,PUC Ultimate 2,13,66.47,66.04,0,16,0,59,74
+UK,Iceni,1,85.7,88.31,25,0,0,83,90
+UK,Spice,2,83.75,86.6,23,0,0,81,92
+UK,Bristol Women,3,81.21,84.64,23,0,0,80,90
+UK,SMOG Women,4,79.74,81.82,23,0,0,77,87
+UK,LMU,5,75.3,77.72,21,0,0,72,85
+UK,SYC,6,72.4,72.24,22,0,0,70,73
+UK,Horizon,7,75.47,76.11,21,0,0,73,80
+UK,Midlands Boom,8,66.63,66.06,21,0,0,64,74

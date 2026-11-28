@@ -7,14 +7,14 @@
 #lgList .lgflag .lgnt{font-size:19px;line-height:1.25;color:#fff;text-shadow:2px 2px 0 #000}
 /* Italia (anche la divisione femminile) e Francia: tre bande verticali */
 #lgList .lgflag[data-lg="IT"],#lgList .lgflag[data-lg="IW"]{--flag:linear-gradient(90deg,#009246 0 33.4%,#f4f5f0 33.4% 66.6%,#ce2b37 66.6%)}
-#lgList .lgflag[data-lg="FR"]{--flag:linear-gradient(90deg,#0055a4 0 33.4%,#f4f5f0 33.4% 66.6%,#ef4135 66.6%)}
-#lgList .lgflag[data-lg="BE"]{--flag:linear-gradient(90deg,#111 0 33.4%,#fdda24 33.4% 66.6%,#ef3340 66.6%)}
+#lgList .lgflag:is([data-lg="FR"],[data-lg="FRW"]){--flag:linear-gradient(90deg,#0055a4 0 33.4%,#f4f5f0 33.4% 66.6%,#ef4135 66.6%)}
+#lgList .lgflag:is([data-lg="BE"],[data-lg="BEW"]){--flag:linear-gradient(90deg,#111 0 33.4%,#fdda24 33.4% 66.6%,#ef3340 66.6%)}
 /* Germania: tre bande orizzontali */
-#lgList .lgflag[data-lg="DE"]{--flag:linear-gradient(#111 0 33.4%,#dd0000 33.4% 66.6%,#ffce00 66.6%)}
+#lgList .lgflag:is([data-lg="DE"],[data-lg="DEW"]){--flag:linear-gradient(#111 0 33.4%,#dd0000 33.4% 66.6%,#ffce00 66.6%)}
 /* USA: il riquadro blu in alto a sinistra sopra le tredici strisce */
 #lgList .lgflag[data-lg="US"],#lgList .lgflag[data-lg="UW"]{--flag:linear-gradient(#3c3b6e,#3c3b6e) 0 0/40% 53.9% no-repeat,repeating-linear-gradient(#b22234 0 7.69%,#f4f5f0 7.69% 15.38%)}
 /* Regno Unito: croce rossa su croce bianca, diagonali, fondo blu (gli angoli «to top right» seguono le diagonali della scheda) */
-#lgList .lgflag[data-lg="UK"]{--flag:
+#lgList .lgflag:is([data-lg="UK"],[data-lg="UKW"]){--flag:
   linear-gradient(90deg,transparent calc(50% - 7px),#c8102e calc(50% - 7px) calc(50% + 7px),transparent calc(50% + 7px)),
   linear-gradient(transparent calc(50% - 7px),#c8102e calc(50% - 7px) calc(50% + 7px),transparent calc(50% + 7px)),
   linear-gradient(90deg,transparent calc(50% - 12px),#f4f5f0 calc(50% - 12px) calc(50% + 12px),transparent calc(50% + 12px)),

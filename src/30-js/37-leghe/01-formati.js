@@ -30,15 +30,29 @@ const LN_DEF={
       {id:'D2',name:'2. Liga',k:1.15,comps:1,pools:1,fin:[]},
       {id:'D3',name:'3. Liga',k:1,comps:1,pools:1,fin:[]}]},
   UK:{id:'UK',cc:'Regno Unito',de:'del Regno Unito',name:'Regno Unito · UKU',sub:'UKU Nationals · 11 squadre',eu:3,mv:[],
-    txt:'11 club, girone unico di sola andata, playoff fra le prime 8. Prime 3 all’EUCF.',
+    txt:'11 club, girone unico di sola andata, playoff fra le prime 8 e Lower pool per i posti 9–11. Prime 3 all’EUCF.',
     tiers:[
-      {id:'N1',name:'Nationals',k:1.4,comps:1,pools:1,fin:[{f:1,t:8,m:'c8'}]}]},
+      {id:'N1',name:'Nationals',k:1.4,comps:1,pools:1,fin:[{f:1,t:8,m:'c8'},{f:9,t:11,m:'rr',tag:'Lower pool'}]}]},
   // campionato femminile (w): le sue squadre giocano solo tra loro, anche nella partita veloce (allClubs, 37-leghe/07-women.js); niente EUCF
-  IW:{id:'IW',cc:'Italia Women',de:'italiano femminile',name:'Italia · Women',w:true,eu:0,sub:'Campionato italiano femminile · Serie A e Serie B · 17 squadre',mv:[2],
+  IW:{id:'IW',cc:'Italia Women',de:'italiano femminile',name:'Italia · Women',w:true,eu:3,sub:'Campionato italiano femminile · Serie A e Serie B · 17 squadre',mv:[2],
     txt:'Club italiani Women dei CIU 2026. Serie A: girone unico di sola andata, playoff fra le prime 4. Serie B: andata e ritorno, 1ª promossa, 2ª-5ª spareggio per la promozione. Due promosse e due retrocesse.',
     tiers:[
       {id:'A',name:'Serie A',k:1.3,comps:1,pools:1,fin:[{f:1,t:4,m:'k4'}]},
-      {id:'B',name:'Serie B',k:1,comps:1,pools:1,legs:2,fin:[{f:2,t:5,m:'k4'}]}]}
+      {id:'B',name:'Serie B',k:1,comps:1,pools:1,legs:2,fin:[{f:2,t:5,m:'k4'}]}]},
+  UKW:{id:'UKW',cc:'Regno Unito Women',de:'del Regno Unito',name:'Regno Unito · Women',sub:'UKU Nationals Women · 8 squadre',w:true,eu:3,mv:[],
+    txt:'Girone unico di sola andata. Poi Upper e Lower pool di andata e ritorno. 13 partite per squadra.',
+    tiers:[{id:'N1',name:'Nationals',k:1.4,comps:1,pools:1,groupGames:7,fin:[{f:1,t:4,m:'rr',legs:2,tag:'Upper pool'},{f:5,t:8,m:'rr',legs:2,tag:'Lower pool'}]}]},
+  BEW:{id:'BEW',cc:'Belgio Women',de:'del Belgio',name:'Belgio · Women',sub:'BUOC Women · 8 squadre',w:true,eu:3,mv:[],
+    txt:'Girone unico di sola andata. Poi Upper e Lower pool di andata e ritorno. 13 partite per squadra.',
+    tiers:[{id:'N1',name:'N1',k:1.4,comps:1,pools:1,groupGames:7,fin:[{f:1,t:4,m:'rr',legs:2,tag:'Upper pool'},{f:5,t:8,m:'rr',legs:2,tag:'Lower pool'}]}]},
+  FRW:{id:'FRW',cc:'Francia Women',de:'della Francia',name:'Francia · Women',sub:'Championnat de France Women · 13 squadre',w:true,eu:3,mv:[],
+    txt:'Girone unico di sola andata. Le prime quattro giocano semifinali e finali. 12 partite per tutte, 14 per le prime quattro.',
+    tiers:[{id:'N1',name:'N1',k:1.4,comps:1,pools:1,fin:[{f:1,t:4,m:'c4'}]}]},
+  DEW:{id:'DEW',cc:'Germania Women',de:'della Germania',name:'Germania · Women',sub:'DFV Women · 16 squadre',w:true,eu:3,mv:[],
+    txt:'Due gironi, poi quattro pool incrociati con uno scontro diretto riportato. Quarti, semifinali e finali per tutti i piazzamenti. 12 partite per squadra.',
+    tiers:[{id:'N1',name:'1. Liga',k:1.4,comps:1,pools:2,groupGames:7,fin:[
+      {f:1,t:2,m:'cross',tag:'Upper pool'},{f:3,t:4,m:'cross',tag:'Medium pool'},
+      {f:5,t:6,m:'cross',tag:'Lower pool A'},{f:7,t:8,m:'cross',tag:'Lower pool B'}]}]}
 };
 const LN_IDS=Object.keys(LN_DEF);
 // I formati delle stagioni precedenti (fino al 2026): servono a finire una stagione gia' iniziata e a leggere lo storico. extra = un livello ancora

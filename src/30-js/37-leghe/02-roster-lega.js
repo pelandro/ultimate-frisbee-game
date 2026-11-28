@@ -8,7 +8,7 @@
 const LN_STAR_CLUB={
   'De Marrée|Daan':'Mooncatchers','Barzasi|David':'Mooncatchers','Abeltins|Toms':'Mooncatchers','Mueller|Mathieu':'Mooncatchers','Karklins|Arvids':'Mooncatchers','Edmonds|Thomas':'Mooncatchers',
   'Schlör|Conrad':'Wall City','Herkens|Paul':'Wall City','Müller|Nico':'Bad Skid','Beuttenmüller|Holger':'Bad Skid',
-  'Rýdlo|Ondřej':'Wall City','Foord|Justin':'Clapham Ultimate','Abrams|Tom':'Clapham Ultimate','Yeo|Ashley':'Clapham Ultimate','Poitte-Sokolsky|Sacha':'Tchac','Bonnet|Elliot':'Tchac'
+  'Rýdlo|Ondřej':'Wall City','Foord|Justin':'Clapham Ultimate','Abrams|Tom':'Clapham Ultimate','Yeo|Ashley':'Clapham Ultimate','Poitte-Sokolsky|Sacha':'Tchac','Bonnet|Elliot':'Tchac','Blasman|Tom':'M.U.C.'
 };
 const lnStarTaken=r=>isLN()&&!!LN_STAR_CLUB[usStarKey(r)]&&!!LN_BY[LN_STAR_CLUB[usStarKey(r)]]&&LN_BY[LN_STAR_CLUB[usStarKey(r)]].lk===SV.lk;   // usato dal mercato (buildMarket)
 // contesto europeo: chi in Europa e' un punto di riferimento non diventa mediocre in America per un torneo storto. Per chi compare in un club di queste leghe (stella o dalle
@@ -27,7 +27,7 @@ function lnCtxOvr(k){
   if(LN_HOMONYM.has(k))return 0;
   if(!lnKeyClub){
     lnKeyClub={};
-    for(const lk of LN_IDS)for(const club in LN_PL[lk])for(const r of LN_PL[lk][club]){const key=usNameKey(r[1]+' '+r[0]);if(!lnKeyClub[key]&&!LN_OUT.has(key))lnKeyClub[key]=club;}
+    for(const lk of LN_IDS.filter(k=>!LN_DEF[k].w))for(const club in LN_PL[lk])for(const r of LN_PL[lk][club]){const key=usNameKey(r[1]+' '+r[0]);if(!lnKeyClub[key]&&!LN_OUT.has(key))lnKeyClub[key]=club;}
     for(const r of STARS){const club=LN_STAR_CLUB[usStarKey(r)];if(club)lnKeyClub[usNameKey(r[1]+' '+r[0])]=club;}
   }
   const club=lnKeyClub[k];if(!club)return 0;
@@ -49,7 +49,7 @@ const LN_POOL={
 // (U17/U20/U24, di qui o di la') e la stima lo supera, un valore tra il limite meno tre e il limite meno uno. Chi gioca in entrambe le leghe ha cosi' la stessa eta' in tutte e due. Ritorna [eta', esatta?]
 let lnUsAge=null,lnHiMap=null;
 function lnHiOf(k){   // limite d'eta' dalle convocazioni giovanili nei dati europei (0 = nessuno)
-  if(!lnHiMap){lnHiMap={};for(const lk of LN_IDS)for(const club in LN_PL[lk])for(const r of LN_PL[lk][club])if(r[3]>0){const key=usNameKey(r[1]+' '+r[0]);lnHiMap[key]=Math.min(lnHiMap[key]||99,r[3]);}
+  if(!lnHiMap){lnHiMap={};for(const lk of LN_IDS.filter(k=>!LN_DEF[k].w))for(const club in LN_PL[lk])for(const r of LN_PL[lk][club])if(r[3]>0){const key=usNameKey(r[1]+' '+r[0]);lnHiMap[key]=Math.min(lnHiMap[key]||99,r[3]);}
     for(const n in LN_AGE_HI){const key=usNameKey(n);lnHiMap[key]=Math.min(lnHiMap[key]||99,LN_AGE_HI[n]);}}   // + i tornei giovanili (00-eta-giovanili.js)
   return lnHiMap[k]||0;
 }
@@ -100,7 +100,8 @@ function lnRoster(club,seedStr,opt){
     return {k:'r',row:[r[0],r[1],ag[0],r[4],0],ex:ag[1],base:-1+(bf!==undefined?bf:r[5]),fx:lnDual(r[0],r[1])};
   });
   real.sort((a,b)=>(b.fx>0?100:b.base)-(a.fx>0?100:a.base)).slice(0,Math.max(0,20-specs.length)).forEach(s=>specs.push(s));   // una rosa ha al massimo 20 giocatori
-  const N=Math.min(20,Math.max(opt.n||16,specs.length)),used=new Set(specs.map(s=>s.row[0]+s.row[1])),pool=LN_POOL[B.lk];
+  const rosterMax=club==='M.U.C.'?23:20;   // conserva anche i rinforzi documentati rimasti fuori dopo l’integrazione Mixed
+  const N=Math.min(rosterMax,Math.max(opt.n||(club==='M.U.C.'?rosterMax:16),specs.length)),used=new Set(specs.map(s=>s.row[0]+s.row[1])),pool=LN_POOL[B.lk];
   const extras=lnRosterSources(B.lk)?.names[club]||[],have=new Set(extras.length?specs.map(({row:[sur,nm]})=>usNameKey(nm+' '+sur)):[]);
   const additions=extras.filter(([sur,nm])=>{
     const k=usNameKey(nm+' '+sur);

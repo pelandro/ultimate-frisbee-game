@@ -5,6 +5,7 @@
    La carriera vera non viene toccata (QM.on blocca persist e alla fine si rimette com'era). Seme fisso: risultati ripetibili. */
 function lnSelfTest(seasons,seed){
   const bak=hasCareer()?(persist(),JSON.stringify(SV)):null,R0=Math.random,q0=QM.on,rows=[],row=(name,val,ok,note)=>({name,val,ok:!!ok,note:note||''});
+  const savedBadges=localStorage.getItem(RIC_KEY);
   Math.random=mulberry32(seed||2026);QM.on=true;
   const bad={},chk=(k,c,m)=>{if(!c)(bad[k]=bad[k]||[]).push(m||'');};
   let err='',seasonsDone=0,games=0,titles=new Set(),moved=0,nReal=0,nExact=0,nAll=0;
@@ -12,12 +13,23 @@ function lnSelfTest(seasons,seed){
   const play=()=>{let g=0;while(!SV.done&&g++<40){const m=nextMatch();if(!m){chk('flusso',false,'partita mancante in '+SV.ln.ph);break;}const r=simPower(SV.team,m.name);recordResult(r[0]>r[1],r[0],r[1]);hide();games++;
     for(const v of ['grp','fin','tiers']){lnTabSel=v;try{renderEvent();}catch(e){chk('viste',false,v+' fase '+SV.ln.ph+': '+e.message);}}}   // le tre viste della Classifica si aprono in ogni fase
     chk('flusso',SV.done&&g<=20,'stagione non chiusa o troppo lunga '+g);
-    if(SV.done&&SV.next&&SV.next.rank===1)chk('minime',(SV.sgp|0)>=LN_MIN,`${SV.sr}: la vincitrice ha giocato ${SV.sgp|0} partite`);};
+    if(SV.done&&(SV.next?.rank===1||['UK','UKW','BEW','FRW','DEW'].includes(SV.lk))){
+      chk('minime',(SV.sgp|0)>=LN_MIN,`${SV.sr}: ${SV.sgp|0} partite`);
+    }
+    if(SV.done&&['UKW','BEW','DEW'].includes(SV.lk)){
+      const expected=SV.lk==='DEW'?12:13;
+      chk('minime',SV.sgp===expected,`${SV.lk}: ${SV.sgp} invece di ${expected} partite`);
+      if(SV.lk==='DEW'){
+        const F=SV.ln.F,seed=F.pools.flatMap(lv=>lv.order);
+        chk('giri',F.pools.every(lv=>lv.carried.length===2&&lv.T.every(n=>lv.tab[n].w+lv.tab[n].l===3)),'risultati riportati nei pool tedeschi');
+        chk('giri',F.lv.every((lv,g)=>lv.R[0].every(([a,b],i)=>a===seed[g*8+i]&&b===seed[g*8+7-i])),'seeding dei quarti tedeschi');
+      }
+    }};
   try{
     // ---- dati ----
     const all=LN_NAMES.concat(Object.keys(TEAM),US_NAMES,UW_NAMES,EU_CLUBS.map(x=>x[0]));
     chk('dati',new Set(all).size===all.length,'nomi di club ripetuti tra le leghe');
-    const want={BE:46,FR:36,DE:49,UK:11,IW:17};
+    const want={BE:46,FR:36,DE:49,UK:11,IW:17,UKW:8,BEW:8,FRW:13,DEW:16};
     for(const lk of LN_IDS){
       chk('dati',lnClubs(lk).length===want[lk],lk+': '+lnClubs(lk).length+' club');
       chk('dati',LN_CL[lk].every(r=>r[3]>=30&&r[3]<=95&&LN_TIER[lnKey(lk,r[1])]),'forza o livello fuori misura in '+lk);
@@ -114,6 +126,26 @@ function lnSelfTest(seasons,seed){
       let k=0;while(SV.event==='eu'&&SV.eu.state==='on'&&k++<12){const m=nextMatch();if(!m)break;const r=simPower(SV.team,m.name);recordResult(r[0]>r[1],r[0],r[1]);hide();}
       chk('eucf',SV.eu.state!=='on','coppa non conclusa');
     }
+    // ---- EUCF Women: qualificazione dalla classifica, rose femminili e torneo fino al podio ----
+    for(const lk of EU_WOMEN_LK){
+      const club=lnClubs(lk).find(n=>LN_BY[n].t===LN_DEF[lk].tiers[0].id);
+      startCareer(club,{});
+      for(let i=0;!SV.done&&i<20;i++){recordResult(true,11,1);hide();}
+      const field=SV.next?.euQ||[],countries={};
+      for(const n of field)countries[euCountry(n)]=(countries[euCountry(n)]||0)+1;
+      chk('eucfw',field.length===16&&new Set(field).size===16&&field.every(isWomenClub)&&field.includes(club),lk+': qualificate');
+      chk('eucfw',Object.keys(countries).length===5&&Object.values(countries).every(n=>n===3||n===4),lk+': paesi rappresentati');
+      if(!openSeasonEurope()){chk('eucfw',false,lk+': EUCF assente');continue;}
+      const N=SV.eu.nat,bronze=lk==='DEW',domestic=SV.sgp;
+      chk('eucfw',N.pools.length===4&&N.pools.every(p=>p.length===4),lk+': sorteggio');
+      for(let i=0;euActive()&&i<T16_MAX_GAMES;i++){
+        const m=nextMatch(),win=!(bronze&&N.rd===5);
+        chk('eucfw',m?.roster?.every(p=>p.f),lk+': rosa avversaria');
+        recordResult(win,win?11:6,win?6:11);hide();
+      }
+      chk('eucfw',N.rd===7&&euPlace(N,club)===(bronze?3:1)&&(SV.troph.eu||0)===(bronze?0:1)&&SV.sgp===domestic,lk+': percorso e piazzamento');
+      chk('eucfw',newSeason()&&SV.event==='camp',lk+': nuova stagione dopo EUCF');
+    }
     // ---- EUCF: chi perde la semifinale gioca la finale per il 3° posto; chi la vince e' terzo (badge E3) ----
     {const r0=localStorage.getItem(RIC_KEY);startCareer(SERIES.A[0],{});SV.eu=newEu(SV.season);SV.eu.it=null;SV.event='eu';const N=euEnsure();
       let k=0;while(SV.eu.state==='on'&&N.rd<5&&k++<12)euRecord(true,7,3);
@@ -159,7 +191,7 @@ function lnSelfTest(seasons,seed){
     }
     // ---- campionato Women (07-women.js): un mondo a parte, solo giocatrici ----
     {const S0=SV;SV={};chk('women',!allClubs().some(isWomenClub),'club femminili tra quelli maschili (mercato, offerte, carte)');
-     startCareer('Tequila Boom Boom',{});chk('women',allClubs().length===LN_CL.IW.length+UW_NAMES.length&&allClubs().every(isWomenClub)&&foreignClubs().length===UW_NAMES.length&&foreignClubs().every(n=>clubLega(n)==='UW'),'nella carriera Women ci sono club maschili');
+     startCareer('Tequila Boom Boom',{});chk('women',allClubs().length===LN_NAMES.filter(isWomenClub).length+UW_NAMES.length&&allClubs().every(isWomenClub)&&foreignClubs().every(n=>isWomenClub(n)&&clubLega(n)!=='IW'),'nella carriera Women ci sono club maschili');
      chk('women',SQ.every(p=>p.f)&&Object.values(SV.rost).every(r=>r.every(o=>o.f)),'giocatori maschi nel campionato Women');
      buildMarket();chk('women',SV.market.every(m=>m.o.f),'mercato del campionato Women con giocatori maschi');
      const pw=t=>LN_CL.IW.filter(r=>r[1]===t).map(r=>rosterPower(lnRoster(r[0],'t')));
@@ -178,11 +210,12 @@ function lnSelfTest(seasons,seed){
   }catch(e){err=e&&e.message||String(e);rows.push(row('Errore durante il test',err,false));}
   finally{
     Math.random=R0;QM.on=q0;hide();
+    if(savedBadges===null)localStorage.removeItem(RIC_KEY);else localStorage.setItem(RIC_KEY,savedBadges);
     if(bak){SV={};loadSave(JSON.parse(bak));}else{SV={};initTeams();}
     G.inMatch=false;
   }
   const r=(name,k,okTxt)=>rows.push(row(name,bad[k]?bad[k].slice(0,2).join('; '):okTxt,!bad[k]));
-  r('Dati: 46 club belgi, 36 francesi, 49 tedeschi, 11 britannici, 17 Women, nomi distinti da Italia, USA ed EUCF, forza e livelli validi','dati','sì');
+  r('Dati: 46 club belgi, 36 francesi, 49 tedeschi, 11 britannici, 62 Women, nomi distinti da Italia, USA ed EUCF, forza e livelli validi','dati','sì');
   r('Campionato Women: solo giocatrici e club femminili (mercato compreso), forza secondo serie e classifica, nessun club femminile nel mondo maschile','women','sì');
   r('Rose di tutti i club: 14-28 giocatori (20 dove non c’è il foglio di revisione 2026), Overall e età nei limiti, forza uguale a quella dei dati (stelle escluse)','rose','sì');
   r('Età esatte dove note e giocatori veri presenti','eta',`sì (${nExact} esatte)`);
@@ -195,6 +228,7 @@ function lnSelfTest(seasons,seed){
   r('Salvataggio: ricarica a metà stagione','salvataggio','sì');
   r('Avvio carriera: livello e girone giusti, rose di tutti i club','lega','sì');
   r('Campionato europeo: 16 club veri, 3 per paese più la quarta più forte, in gironi','eucf','sì');
+  r('EUCF Women: qualificazione, cinque paesi, rose femminili, titolo e finale per il terzo posto','eucfw','sì');
   r('Gironi a giri completi: ogni avversaria si incontra lo stesso numero di volte','giri','sì');
   r('Salvataggio con il formato vecchio: la stagione finisce come prima, poi si passa al formato nuovo','vecchi','sì');
   r('Mercato: le stelle che giocano nei club della lega non sono in vendita','mercato','sì');

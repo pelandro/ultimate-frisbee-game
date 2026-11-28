@@ -65,11 +65,11 @@
 #qpLg button{--veil:linear-gradient(rgba(20,30,46,.55),rgba(20,30,46,.55));background:var(--veil),var(--flag,none) #3f5a80!important;text-shadow:2px 2px 0 #000;color:#fff}
 #qpLg button.on{outline:4px solid var(--gold);outline-offset:-4px;color:var(--gold)!important}
 #qpLg button[data-l="IT"],#qpLg button[data-l="IW"]{--flag:linear-gradient(90deg,#009246 0 33.4%,#f4f5f0 33.4% 66.6%,#ce2b37 66.6%)}
-#qpLg button[data-l="FR"]{--flag:linear-gradient(90deg,#0055a4 0 33.4%,#f4f5f0 33.4% 66.6%,#ef4135 66.6%)}
-#qpLg button[data-l="BE"]{--flag:linear-gradient(90deg,#111 0 33.4%,#fdda24 33.4% 66.6%,#ef3340 66.6%)}
-#qpLg button[data-l="DE"]{--flag:linear-gradient(#111 0 33.4%,#dd0000 33.4% 66.6%,#ffce00 66.6%)}
+#qpLg button:is([data-l="FR"],[data-l="FRW"]){--flag:linear-gradient(90deg,#0055a4 0 33.4%,#f4f5f0 33.4% 66.6%,#ef4135 66.6%)}
+#qpLg button:is([data-l="BE"],[data-l="BEW"]){--flag:linear-gradient(90deg,#111 0 33.4%,#fdda24 33.4% 66.6%,#ef3340 66.6%)}
+#qpLg button:is([data-l="DE"],[data-l="DEW"]){--flag:linear-gradient(#111 0 33.4%,#dd0000 33.4% 66.6%,#ffce00 66.6%)}
 #qpLg button[data-l="US"],#qpLg button[data-l="UW"]{--flag:linear-gradient(#3c3b6e,#3c3b6e) 0 0/40% 53.9% no-repeat,repeating-linear-gradient(#b22234 0 7.69%,#f4f5f0 7.69% 15.38%)}
-#qpLg button[data-l="UK"]{--flag:
+#qpLg button:is([data-l="UK"],[data-l="UKW"]){--flag:
   linear-gradient(90deg,transparent calc(50% - 3px),#c8102e calc(50% - 3px) calc(50% + 3px),transparent calc(50% + 3px)),
   linear-gradient(transparent calc(50% - 3px),#c8102e calc(50% - 3px) calc(50% + 3px),transparent calc(50% + 3px)),
   linear-gradient(90deg,transparent calc(50% - 6px),#f4f5f0 calc(50% - 6px) calc(50% + 6px),transparent calc(50% + 6px)),

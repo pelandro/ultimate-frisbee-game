@@ -15,3 +15,12 @@ function openSeasonEurope(){
   persist();
   return true;
 }
+
+
+// Una stagione Women già chiusa prima dell'introduzione dell'EUCF ha ancora la classifica finale.
+function euRestoreWomenQualification(){
+  if(!SV.done||!SV.next||SV.next.euQ?.length||SV.euUnlocked||!lnWomenNow()||!euTier()||!SV.ln?.ord)return;
+  const order=lnCompOrder(SV.ln.ord,SV.ln.F),quota=LN_DEF[SV.lk].eu;
+  SV.next.euQ=euField(SV.lk,order.slice(0,quota),order[quota]);
+  SV.next.qual=SV.next.euQ.includes(SV.team);
+}
