@@ -163,7 +163,7 @@ catch(e){
     if(!/roster non completamente reali/i.test(await page.locator('#genNoticeTitle').innerText()))throw new Error('titolo dell’avviso poco chiaro');
     if(!/giocatori generati/.test(await page.locator('#genNotice').innerText()))throw new Error('manca la spiegazione sui giocatori generati');
     await page.click('#genNoticeContinue');await vis('#team');
-    await page.click('#teamBack');await vis('#league');await page.click('#lgBack');await vis('#title');
+    await page.click('#teamBack');await vis('#league');await page.click('#lgBack');await vis('#league');await page.click('#lgBack');await vis('#title');
   });
   await step('carriera USA dall\'interfaccia: Italia/USA, Conference, club, allenatore, Classifica a tre viste, partita simulata',async()=>{
     await careerOpen(page);await vis('#league');await page.click('#lgList [data-div="m"]');if(await page.locator('#lgList .lgcard').count()<2)throw new Error('servono le schede dei campionati');await page.click('#lgList [data-lg="US"]');await vis('#team');
