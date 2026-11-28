@@ -4,7 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
-- Nella scelta della squadra in carriera, l’anteprima del roster avvisa che alcuni giocatori potrebbero essere inventati e permette di inviare informazioni più precise a pix3l.ultimate@gmail.com.
+- Quando scegli un campionato che contiene giocatori generati, compare un avviso in primo piano prima della scelta della squadra; l’anteprima del roster non ripete più il messaggio.
 - Chi ha il badge «Sostenitore» ha anche lo Stadio d’Oro: in carriera, al posto del campo di livello 6, una notte con tribune dorate, che a ogni meta si accende di fuochi d’artificio, luci colorate, scintille e coriandoli. Si spegne da Riconoscimenti › Altro.
 - Cotarica Grandes: Nicolò Zavattini è tra i più forti (Overall 90); quattro compagni hanno un punto in meno, la media della squadra resta quella di prima.
 - Menu Amministratore: i premi ai giocatori hanno un elenco con ricerca immediata, filtro «Con premi», più codici incollati insieme e assegnazione a tutti quelli mostrati.
