@@ -32,7 +32,7 @@ catch(e){
   const careerOpen=async pg=>{await pg.click('#tCareer');await pg.locator('#slots:not(.hidden)').waitFor();const g=pg.locator('#csBox .csl.on [data-cgo]');if(await g.count())await g.first().click();else await pg.click('#csBox [data-cnew] >> nth=0');};   // Carriera apre gli slot: si continua quella in uso o se ne inizia una
   const titleMenu=async(pg,id)=>{if(!(await pg.locator(id).isVisible()))await pg.click('#tMore');await pg.click(id);};   // le voci Guida, Guida passo passo, Audio e Impostazioni stanno nel riquadro «Altro»
   const vis_=async(pg,sel)=>{if(!(await pg.locator(sel).isVisible()))throw new Error('non visibile: '+sel);};
-  const vis=async(sel,what)=>{if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
+  const vis=async(sel,what)=>{if(sel!=='#genNotice'&&await page.locator('#genNotice:not(.hidden)').isVisible())await page.click('#genNoticeContinue');if(!(await page.locator(sel).isVisible()))throw new Error('non visibile: '+(what||sel));};
   // Ultimate Team: i pacchetti arrivati si aprono da soli; «Apri» (o un tocco) salta la carica, poi «Continua» o il pacchetto dopo
   const packs=async()=>{for(let k=0;k<40&&await page.locator('#utPack').isVisible();k++){await page.click('#pkGo');await page.waitForTimeout(250);}};
   const menu=async id=>{for(let i=0;i<3;i++){if(!(await page.locator('#cmenu').isVisible()))await page.click('#hMenu');try{await page.click(id,{timeout:3000});return;}catch(e){}}await page.click(id);};   // i fumetti e gli imprevisti che si aprono da soli chiudono il menu: si riapre   // Opzioni, Guida, Tutorial e «Menu principale» stanno nel menu della barra in alto
@@ -156,6 +156,14 @@ catch(e){
     if(await page.locator('#women-copy-test').getAttribute('aria-label')!=='Ricevitore selezionato')throw new Error('Etichetta accessibile originale non ripristinata');
     await page.evaluate(()=>document.getElementById('women-copy-test').remove());
     await page.click('#qBack');await vis('#title');
+  });
+  await step('avviso in primo piano quando il campionato contiene giocatori generati',async()=>{
+    await careerOpen(page);await vis('#league');await page.click('#lgList [data-div="m"]');await page.click('#lgList [data-lg="US"]');
+    await vis('#genNotice');
+    if(!/roster non completamente reali/i.test(await page.locator('#genNoticeTitle').innerText()))throw new Error('titolo dell’avviso poco chiaro');
+    if(!/giocatori generati/.test(await page.locator('#genNotice').innerText()))throw new Error('manca la spiegazione sui giocatori generati');
+    await page.click('#genNoticeContinue');await vis('#team');
+    await page.click('#teamBack');await vis('#league');await page.click('#lgBack');await vis('#league');await page.click('#lgBack');await vis('#title');
   });
   await step('carriera USA dall\'interfaccia: Italia/USA, Conference, club, allenatore, Classifica a tre viste, partita simulata',async()=>{
     await careerOpen(page);await vis('#league');await page.click('#lgList [data-div="m"]');if(await page.locator('#lgList .lgcard').count()<2)throw new Error('servono le schede dei campionati');await page.click('#lgList [data-lg="US"]');await vis('#team');
