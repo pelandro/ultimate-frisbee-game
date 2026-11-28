@@ -19,8 +19,6 @@ catch(e){
   page.setDefaultTimeout(15000);
   page.on('pageerror',e=>errs.push('errore JavaScript: '+e.message+' ('+String(e.stack||'').split('\n').slice(1,3).map(x=>x.trim().replace(/^at /,'').replace(/\(.*[\/\\]/,'(')).join(' < ')+')'));   // anche dove succede: gli errori casuali si possono cercare
   page.on('console',m=>{if(m.type()==='error'&&!/font|net::ERR|Failed to load resource/i.test(m.text()))errs.push('console: '+m.text());});
-  // L'avviso sui roster generati deve essere visto e confermato dal giocatore; nei percorsi successivi lo chiudo quando copre un controllo.
-  await page.addLocatorHandler(page.locator('#genNotice:not(.hidden) #genNoticeContinue'),async()=>{await page.click('#genNoticeContinue');});
   // gli avvisi della carriera si aprono da soli: li chiudo quando coprono cio' che sto per toccare
   await page.addLocatorHandler(page.locator('#alerts:not(.hidden) #alX'),async()=>{await page.click('#alX');});
   // anche gli imprevisti compaiono da soli (di rado): scelgo la prima risposta possibile e chiudo
@@ -167,6 +165,8 @@ catch(e){
     await page.click('#genNoticeContinue');await vis('#team');
     await page.click('#teamBack');await vis('#league');await page.click('#lgBack');await vis('#title');
   });
+  // Nei test successivi l'avviso viene confermato automaticamente quando blocca un controllo.
+  await page.addLocatorHandler(page.locator('#genNotice:not(.hidden) #genNoticeContinue'),async()=>{await page.click('#genNoticeContinue');});
   await step('carriera USA dall\'interfaccia: Italia/USA, Conference, club, allenatore, Classifica a tre viste, partita simulata',async()=>{
     await careerOpen(page);await vis('#league');await page.click('#lgList [data-div="m"]');if(await page.locator('#lgList .lgcard').count()<2)throw new Error('servono le schede dei campionati');await page.click('#lgList [data-lg="US"]');await vis('#team');
     if(await page.locator('#tSr button').count()!==8)throw new Error('servono le 8 Conference');
