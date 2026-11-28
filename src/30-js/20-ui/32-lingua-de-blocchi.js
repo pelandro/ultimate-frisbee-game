@@ -1,5 +1,6 @@
 /* Paragrafi de con grassetti e corsivi: chiave = HTML italiano con gli spazi compattati, stessi tag nello stesso ordine. */
 LANG_BLK.de={
+  "<b>Divisa Oro Nero e badge speciali</b> (Riconoscimenti › Altro)":"<b>Schwarzgold-Dress und besondere Abzeichen</b> (Auszeichnungen › Sonstiges)",
   "<b>Telefono e schermo</b>: il campo si gioca in orizzontale; in verticale il gioco si gira da solo (si spegne da Impostazioni › Schermo e audio). Per averlo come app: iPhone, Safari › Condividi › Aggiungi a Home; Android, menu › Aggiungi a schermata Home.":"<b>Handy und Bildschirm</b>: Das Feld wird im Querformat gespielt; im Hochformat dreht sich das Spiel von selbst (abschaltbar unter Einstellungen › Bild & Ton). Als App: iPhone, Safari › Teilen › Zum Home-Bildschirm; Android, Menü › Zum Startbildschirm hinzufügen.",
   "<b>Dimensione dell’interfaccia</b>: menu e pulsanti si adattano allo schermo. In Impostazioni › Schermo e audio scegli la dimensione (da «Più piccola» a «Molto più grande») e, a parte, quella dei pulsanti di gioco.":"<b>Größe der Oberfläche</b>: Menüs und Buttons passen sich dem Bildschirm an. Unter Einstellungen › Bild & Ton wählst du die Größe (von „Kleiner“ bis „Viel größer“) und separat die der Spielbuttons.",
   "<b>Impostazioni</b>: quattro schede.":"<b>Einstellungen</b>: vier Reiter.",

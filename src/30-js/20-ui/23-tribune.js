@@ -27,6 +27,7 @@ function drawStands(y0){
     const a=FIELD_L/2-BLEACH_HALF,b=FIELD_L/2+BLEACH_HALF;
     standingFans(y0,V,[a-1,b+1]);drawFenceTop(y0,[a,b]);bleacher(front,a,b,V,land);
   }else concreteStand(front,lv,V,land,wx);
+  if(V.vip)oroFront(y0);
   if(V.big)drawStreamer(Math.max(BAR+1,front-5*Math.min(rows,3)-10));   // lo striscione dei tifosi sopra le prime file
   drawTopBoards(y0);   // cartelloni davanti alla tribuna, con i varchi per vedere il pubblico (18-cartelloni.js)
   farCrew(y0);   // telecamere davanti ai cartelloni (24-bordocampo-persone.js)
@@ -115,14 +116,15 @@ const STAND_LO=[0,0,3,4,7,7],STAND_UP=[0,0,0,0,5,8],AISLE_STEP=14,AISLE_OFF=7,AI
 const aisleNear=wx=>{const d=(((wx-AISLE_OFF)%AISLE_STEP)+AISLE_STEP)%AISLE_STEP;return Math.min(d,AISLE_STEP-d);};
 const aisleHW=()=>Math.max(2,ri(AISLE_W*S/2));   // meta' larghezza del corridoio in pixel
 function concreteStand(front,lv,V,land,wx){
-  const us=land==='US'&&lv<=3,C=us?STEP_US:STEP_LV[lv],hs=vnSide(V),seat=lv>=3,home=UNI[hs].shirt,GAP=7;
+  const us=land==='US'&&lv<=3,C=V.vip?ORO_STEP:(us?STEP_US:STEP_LV[lv]),hs=vnSide(V),seat=lv>=3,home=UNI[hs].shirt,GAP=7;
   const nLo=STAND_LO[lv],nUp=STAND_UP[lv],nAll=nLo+nUp,rowY=r=>front-5*r-(r>=nLo?GAP:0);
   const topBand=rowY(nAll-1)-4,roofH=[0,0,0,5,7,9][lv],roofB=topBand-9,roofT=roofB-roofH,backTop=lv===2?topBand-5:roofT;
-  if(backTop>BAR){px(0,BAR,VW,backTop-BAR+2,SKY[wx]);drawClouds(backTop,wx);if(lv<=4)drawTrees(backTop+2,land,wx);else floodMasts(backTop+2,wx);}
+  if(V.vip){if(backTop>BAR)oroSky(BAR,backTop+2,VW);}
+  else if(backTop>BAR){px(0,BAR,VW,backTop-BAR+2,SKY[wx]);drawClouds(backTop,wx);if(lv<=4)drawTrees(backTop+2,land,wx);else floodMasts(backTop+2,wx);}
   if(lv===2){px(0,topBand-5,VW,6,'#8a90a0');px(0,topBand-5,VW,1,'#b5bbc8');if(wx===2)px(0,topBand-6,VW,1,'#f4f8fc');}   // muro in cima ai gradoni, dietro l'ultima fila
   const stepRow=(r,dk)=>{
     const y=rowY(r);if(y<BAR-6||y-14>VH)return;
-    px(0,y-4,VW,5,dk?cShade(C[r%2],dk):C[r%2]);px(0,y-4,VW,1,wx===2?'#eef4fa':(us?'#d7dde6':'#a7adbb'));   // gradino con lo spigolo chiaro (con la neve, bianco)
+    px(0,y-4,VW,5,dk?cShade(C[r%2],dk):C[r%2]);px(0,y-4,VW,1,wx===2?'#eef4fa':(V.vip?'#e5b53a':(us?'#d7dde6':'#a7adbb')));   // gradino con lo spigolo chiaro (con la neve, bianco)
     crowdRow(y,r,V,{seat,mosaic:lv>=5,dark:dk,aisle:true});
   };
   if(nUp){
@@ -131,11 +133,12 @@ function concreteStand(front,lv,V,land,wx){
     const yp=rowY(nLo)+1;   // parapetto dell'anello superiore con il LED che scorre: sta nello spazio tra i due anelli
     if(yp+GAP>BAR){px(0,yp,VW,GAP,'#232838');px(0,yp,VW,1,'#3b4252');
       for(let x=-(((CX+ri(G.tick*20))%24)+24)%24;x<VW;x+=24){px(x,yp+2,12,2,home);px(x+12,yp+2,12,2,PAL.gold);}
+      if(V.vip)oroRibbon(yp+1,GAP-2,VW,CX);
       px(0,yp+GAP-1,VW,1,'#161a2b');if(wx===2)px(0,yp-1,VW,1,'#f4f8fc');}
   }
   for(let r=nLo-1;r>=0;r--)stepRow(r,0);
   aisles(rowY(nLo-1)-4,front,wx);
-  if(lv>=3)standRoof(roofT,roofB,front,lv,home,wx);
+  if(V.vip)oroRoof(roofT,roofB,front);else if(lv>=3)standRoof(roofT,roofB,front,lv,home,wx);
 }
 // corridoi tra i settori: scale di cemento, senza nessuno seduto (i pali del tetto salgono qui)
 function aisles(yt,yb,wx){
@@ -185,7 +188,7 @@ function crowdRow(yb,row,V,o){
   o=o||{};if(yb-14>VH||yb<BAR-1)return;   // fila fuori dallo schermo
   const step=1.55,lo=o.a!==undefined?o.a:toWorld(0,0).x-2,hi=o.b!==undefined?o.b:toWorld(VW,0).x+2,k0=Math.floor(lo/step),k1=Math.ceil(hi/step);
   const bt=G.mode==='banner'&&G.banner?G.banner.team:-9,hs=vnSide(V),fill=V.fill*(1-0.05*Math.min(row,6)),lv=vnLv(V);
-  const seatC=o.seat?cShade(UNI[hs].shirt,-0.3):'',seatW=cShade('#e9edf3',-0.15);
+  const seatC=o.seat?(V.vip?'#4a2f95':cShade(UNI[hs].shirt,-0.3)):'',seatW=V.vip?'#e5b53a':cShade('#e9edf3',-0.15);
   const wave=lv>=3&&G.mode==='ready'&&!V.big?((G.tick*15)%(FIELD_L+70))-35:-999;   // la ola tra un punto e l'altro
   for(let k=k0;k<=k1;k++){
     const h=ihash(k,row*131+7),wx=k*step+(row&1?step/2:0)+((h>>>3)%5)*0.1;if(wx<lo||wx>hi)continue;
@@ -200,6 +203,7 @@ function crowdRow(yb,row,V,o){
     if(bt!==-9)hop=(t===bt||(t<0&&h%4===0))&&Math.sin(G.tick*11+h)>0.2?2:0;
     else if(up)hop=2;else if(Math.sin(G.tick*1.3+h)>0.96)hop=1;
     fanFigure(x,yb-hop,h,V,t,false,{arms:(bt!==-9&&hop&&t===bt)||up,dark:o.dark,far:row>=2,back:o.back});
+    if(V.vip&&oroFesta()&&ihash(h,Math.floor(oroT()*5))%23===0){px(x-1,yb-hop-9,2,3,'#ffffff');px(x-2,yb-hop-8,4,1,neon(h));}   // le torce dei telefoni
     if(lv>=4&&bt!==-9&&ihash(h,Math.floor(G.tick*9))%97===0)px(x-1,yb-hop-7,3,2,'#ffffff');   // flash delle macchine fotografiche alla meta
   }
 }
@@ -258,7 +262,7 @@ function nearStand(y1){
     for(let k=k0;k<=k1;k++){const h=ihash(k,611);if((h%1000)/1000>=V.fill*0.45)continue;const wx=k*step+((h>>>3)%9)*0.12;fanFigure(sxw(wx),yS+((h>>>9)%3)*3,h,V,fanTeam(V,wx,h),true,{back:true});}
     return;
   }
-  const C=STEP_LV[Math.max(2,lv)],nR=Math.ceil((VH-yS)/5)+2;
+  const C=V.vip?ORO_STEP:STEP_LV[Math.max(2,lv)],nR=Math.ceil((VH-yS)/5)+2;
   px(0,yS-8,VW,2,'#5d6375');   // il parapetto della tribuna vicina, subito sotto i cartelloni
   for(let r=0;r<Math.min(nR,NEAR_RMAX)&&yS+5*r-12<VH;r++){
     const y=yS+5*r;px(0,y-4,VW,5,cShade(C[r%2],-0.1));px(0,y-4,VW,1,'#8d93a3');
@@ -270,12 +274,12 @@ function nearStand(y1){
 // Ogni tifoso e' disegnato anche spostato di una trama (a destra e a sinistra, e la prima fila sotto): la trama si ripete senza teste tagliate.
 const crowdTiles=new Map(),CT_W=60,CT_H=20;
 function crowdTilePat(V,back,dk){
-  const lv=vnLv(V),wx=G.wx|0,hs=vnSide(V),key=[lv,wx,UNI[0].shirt,UNI[1].shirt,back?1:0,dk,ri(V.fill*10),hs].join('|');
+  const lv=vnLv(V),wx=G.wx|0,hs=vnSide(V),key=[lv,V.vip?1:0,wx,UNI[0].shirt,UNI[1].shirt,back?1:0,dk,ri(V.fill*10),hs].join('|');
   let p=crowdTiles.get(key);if(p)return p;
   const c=document.createElement('canvas');c.width=CT_W;c.height=CT_H;const g=c.getContext('2d'),save=ctx,Vt=Object.assign({},V,{big:false});
   ctx=g;
   try{
-    const C=STEP_LV[Math.max(2,lv)],seatC=cShade(UNI[hs].shirt,-0.3);
+    const C=V.vip?ORO_STEP:STEP_LV[Math.max(2,lv)],seatC=V.vip?'#4a2f95':cShade(UNI[hs].shirt,-0.3);
     for(const yb of [5,10,15,20,25]){   // dall'alto in basso: la fila sotto copre la testa di quella sopra; 25 = la fila 5 della trama sotto
       const r=(yb/5)%4;
       px(0,yb-4,CT_W,5,cShade(C[r%2],dk-(back?0.1:0)));px(0,yb-4,CT_W,1,cShade('#a7adbb',dk));

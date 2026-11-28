@@ -87,7 +87,7 @@ function homeSponsors(home){
 }
 let bsKey='',bsSeq=null;
 function boardSeq(){   // la sequenza dei cartelloni del campo di oggi: si ripete lungo il bordo
-  const V=venueNow(),hs=vnSide(V),key=[V.v,V.home,V.ev,V.spon,V.comp,hs,G.myName,G.oppName,UNI[0].shirt,UNI[1].shirt].join('|');
+  const V=venueNow(),hs=vnSide(V),key=[V.v,V.home,V.ev,V.spon,V.comp,V.vip?1:0,hs,G.myName,G.oppName,UNI[0].shirt,UNI[1].shirt].join('|');
   if(key===bsKey&&bsSeq)return bsSeq;
   const comp=V.comp?bComp(V.comp):B_UF;let s;
   if(V.ev){   // campo neutro: la manifestazione e i suoi sponsor; tra questi c'e' anche il tuo (un cartellone su otto)
@@ -100,6 +100,7 @@ function boardSeq(){   // la sequenza dei cartelloni del campo di oggi: si ripet
     const [a,b]=homeSponsors(V.home||'ultimate'),cl=V.home?bClub(V.home,hs):B_UF;
     s=[bSp(a),cl,bSp(b),comp,bSp(a,1),B_UF,bSp(b,1),B_SPIRIT];
   }
+  if(V.vip)s=oroSeq(s);
   bsKey=key;bsSeq=s;return s;
 }
 // ---------- disegno ----------
@@ -163,7 +164,7 @@ function drawTopBoards(y0){
   const k0=Math.floor(toWorld(0,0).x/step)-1,k1=Math.ceil(toWorld(VW,0).x/step)+1;
   for(let k=k0;k<=k1;k++){
     const wx=k*step+gap/2-4,a=sxw(wx),b=sxw(wx+bw);if(b<0||a>VW)continue;
-    drawBoard(a,b,y,k,st,seq,0);
+    drawBoard(a,b,y,k,st,seq,0);if(V.vip)oroFrame(a,b,y,k);
   }
 }
 // fila in basso (davanti alle panchine niente cartelloni): gli stessi contenuti, sfasati rispetto a quella in alto
@@ -174,7 +175,7 @@ function drawBottomBoards(y,skip){
   for(let k=k0;k<=k1;k++){
     const wx=k*step-4;if(skip&&wx+bw>skip[0]&&wx<skip[1])continue;
     const a=sxw(wx),b=sxw(wx+bw);if(b<0||a>VW)continue;
-    drawBoard(a,b,y,k,st,seq,3);
+    drawBoard(a,b,y,k,st,seq,3);if(V.vip)oroFrame(a,b,y,k+3);
   }
 }
 // i cartelloni dei primi piani di salti e tuffi (03-stacchi.js): grandi, quindi l'icona ingrandita, il nome con il carattere grande e sotto lo slogan

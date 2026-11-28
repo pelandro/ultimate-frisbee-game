@@ -74,6 +74,7 @@ const careK=V=>V.care>=0?clamp(V.care|0,0,5)/5:-1;   // il Campo di allenamento,
 // quanto e' consumato il prato (0 perfetto, 1 del tutto): terra e prato consumato lo sono sempre molto, gli stadi quasi mai
 const WEAR_LV=[1,1,1,0.85,0.05,0];
 function fieldWear(V){
+  if(V.vip)return 0;   // lo Stadio d'Oro e' sempre perfetto
   const k=fieldKind(V),c=careK(V);
   if(k===0)return 1;
   if(k===1)return c<0?WEAR_LV[clamp(vnLv(V),2,3)]:1-0.3*c;

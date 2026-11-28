@@ -21,7 +21,7 @@ const OVR_OUT={
 };
 // Overall voluto a mano, sopra quello del foglio: «nome cognome» per club
 const OVR_FORCE={
-  'Cotarica Grandes':{'Pietro Puppi':87},
+  'Cotarica Grandes':{'Pietro Puppi':87,'Nicolò Zavattini':90,'Nicolò Mazzola':87,'Arturo Benzi':84,'Nicolò Bellofiore':84,'Alberto Tonelli':84},   // Zavattini tra i migliori, un punto in meno a quattro compagni (media della squadra uguale)
   'CUS Padova Barbastreji':{'Francesco Martini':85,'Alessandro Spiritigliozzi':84}   // bilanciamenti
 };
 // giocatori aggiunti a mano, nello stesso formato delle righe di OVR_2026. H = portatore; il segno d lo mette nella linea di difesa (piu' difesa, sempre handler)

@@ -1,0 +1,28 @@
+/* PREMI (50-schermate/35-premi.js): scheda «Altro» dei Riconoscimenti e premi nel menu amministratore */
+.prm{flex:1 1 0;display:flex;justify-content:center;align-items:center;gap:28px;flex-wrap:wrap}
+.prkit{display:flex;align-items:center;gap:12px}
+.prkit>div:last-child{display:grid;grid-template-columns:auto auto;align-items:center;justify-items:start;gap:8px 12px}
+.prkit b{color:var(--gold);font-weight:400;font-size:18px}
+.prkit small{color:#c9d6ea;font-size:15px}
+.prkit>div:last-child>small:last-child{grid-column:1/-1;max-width:20em}
+.prfig svg{width:auto;height:150px;display:block}
+.prkit.lock .prfig{filter:grayscale(1) brightness(.55)}
+.prbadges{display:flex;gap:14px}
+.prbadges .ricb{flex-direction:column;gap:2px}
+.prbadges .ricb svg{width:80px;height:80px}
+.prbadges .ricb small{color:#dde6f1;font-size:14px}
+.prcode{color:var(--gold);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:1.1em;font-weight:700;letter-spacing:.08em;user-select:text;-webkit-user-select:text}
+@media (max-height:420px){.prfig svg{height:118px}.prbadges .ricb svg{width:64px;height:64px}}
+.admtop{justify-content:space-between;margin-top:0}
+#uAdm.wide .panel{max-width:760px}
+.admhead{position:sticky;top:0;z-index:2;background:var(--panel);padding-bottom:4px;border-bottom:3px solid #000}
+.admhead .seg{flex-wrap:nowrap}.admhead .sg{padding:3px 8px;min-height:32px;font-size:14px}
+.admhead .qs{flex:1 1 200px;min-width:0;font:inherit;font-size:16px;padding:5px 8px}
+#admBulk small{color:var(--gold);font-size:15px}
+.admp{display:grid;grid-template-columns:minmax(6em,1fr) 7.2em 4.4em auto;align-items:center;gap:8px;padding:3px 0;border-bottom:2px solid #3f5a7f}
+.admp .un{color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admp small{color:#c9d6ea;text-align:right}
+.admp .seg{flex-wrap:nowrap;justify-self:end}
+.admp .sg,#admBulk .sg{padding:3px 8px;min-height:32px;font-size:14px}
+#admMore{margin-top:8px}
+@media (max-width:600px){.admp{grid-template-columns:minmax(0,1fr) auto auto;row-gap:2px}.admp .seg{grid-column:1/-1;justify-self:start;flex-wrap:wrap}}

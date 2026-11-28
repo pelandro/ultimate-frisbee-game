@@ -76,6 +76,25 @@
         "at": { ".validate": true },
         "$other": { ".validate": false }
       },
+      "admins": {
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid && root.child('ut/adminKey').exists() && newData.parent().parent().child('ctl/k').val() === root.child('ut/adminKey').val() && newData.parent().parent().child('ctl/at').val() === now",
+          ".validate": "newData.val() === true"
+        }
+      },
+      "gifts": {
+        ".read": "auth != null && root.child('ut/admins/' + auth.uid).exists()",
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid",
+          ".write": "auth != null && root.child('ut/adminKey').exists() && newData.parent().parent().child('ctl/k').val() === root.child('ut/adminKey').val() && newData.parent().parent().child('ctl/at').val() === now",
+          ".validate": "newData.hasChildren(['k','d','w','at'])",
+          "k": { ".validate": "newData.isBoolean()" },
+          "d": { ".validate": "newData.isBoolean()" },
+          "w": { ".validate": "newData.isBoolean()" },
+          "at": { ".validate": "newData.isNumber() && newData.val() <= now + 60000" },
+          "$other": { ".validate": false }
+        }
+      },
       "stats": {
         ".read": true,
         "$d": {

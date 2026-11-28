@@ -87,7 +87,7 @@ const CUP_FEST={
 function openCupScene(title,after){
   cancelAnimationFrame(cupFrame);
   const kind=CUP_FEST[title.kind]?title.kind:(title.europe?'eu':'camp'),F=CUP_FEST[kind],team=SV.team;
-  const kit={pat:'',shirtB:'',shoe:'#18202e',...KITS[0][hashStr('kit|'+team)%KITS[0].length]};   // la divisa di sempre (matchLook)
+  const kit={...KIT_RESET,...(premiKit()||KITS[0][hashStr('kit|'+team)%KITS[0].length])};   // la divisa di sempre (matchLook)
   // chi alza la coppa: il migliore dei titolari; poi gli altri titolari e il resto della rosa, dal piu' forte
   let line=[];try{line=matchLine('lineO').map(id=>SQ[id]).filter(Boolean);}catch(e){}
   const byOvr=a=>a.slice().sort((p,q)=>ovr(q)-ovr(p)),pool=[...new Set([...byOvr(line),...byOvr(SQ)])];

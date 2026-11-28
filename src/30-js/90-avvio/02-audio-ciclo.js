@@ -394,5 +394,6 @@ startPoint(G.nextRec);cam.snap=true;
 showScreen('title');
 lgStart();   // lingua scelta: traduce la pagina e quello che il gioco disegna dopo
 uosStart();   // statistiche anonime: apertura del giorno e, la prima volta, l'avviso
+premiSync().then(ch=>{if(ch)ricBtn();});   // divisa e badge assegnati dall'amministratore (50-schermate/35-premi.js)
 requestAnimationFrame(frame);
 })();

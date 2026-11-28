@@ -6,6 +6,7 @@ const EQ_RC=['#9aa8a0','#4da3ff','#b36bff'];   // colori delle rarita' (come .co
 const EQ_SIDE=[['coach','band','glove'],['prep','drink','boot']];   // sinistra e destra del manichino
 const EQ_COLN={'#2f7bff':'blu','#e8383d':'rosso','#ff8a1f':'arancione','#2fbf5a':'verde','#9be22d':'verde lime','#ffd23f':'giallo','#8a4dff':'viola','#f2f5fa':'bianco','#8d97ab':'grigio','#101827':'nero'};
 // icone a pixel 12x12: o contorno, m colore della rarita', l sua luce, d suo scuro, w bianco, k grigio scuro, s pelle del manichino
+const EQ_KIT_ORO={s:'#282331',p:'#282331',c:'#ffcb3d',b:'#ffcb3d',m:'oro'};   // la divisa Oro Nero sul manichino (KIT_ORO in campo)
 const EQ_ICON={
   boot:['............','...oooo.....','...omlo.....','...ommo.....','...ommoooo..','...ommmmmmo.','..ommmlmmmmo','..ommmmmmmmo','..owwwwwwwwo','..oooooooooo','...k.k..k.k.','............'],
   drink:['....oooo....','...okkkko...','...oooooo...','...ommmmo...','...omwmlo...','...omwwmo...','...ommwwo...','...omwwmo...','...omwmmo...','...ommmmo...','...oddddo...','....oooo....'],
@@ -23,9 +24,10 @@ function eqIcon(k,r,px){   // r: 0-2 rarita', -1 posto vuoto (sagoma grigia)
 }
 // il manichino: griglia di pixel con forme semplici, poi il contorno dove un pixel vuoto tocca la figura
 function eqDoll(e){
-  const W=32,H=54,g=Array.from({length:H},()=>Array(W).fill('')),kit=e.kit||EQ_KIT0,on=k=>e.on[k]!==undefined?EQ_RC[e.on[k]]:null;
+  const W=32,H=54,g=Array.from({length:H},()=>Array(W).fill('')),kit=e.oro?EQ_KIT_ORO:(e.kit||EQ_KIT0),on=k=>e.on[k]!==undefined?EQ_RC[e.on[k]]:null;
   const C={b:'#2b2f3a',B:'#3d4352',b2:'#22252e',s:kit.s,s2:eqShade(kit.s,-0.22),t:kit.b,t2:eqShade(kit.b,-0.22),p:kit.p,p2:eqShade(kit.p,-0.22),c:kit.c,c2:eqShade(kit.c,-0.22),f:'#1a1d25',w:'#f4f6fb'};
   const boot=on('boot'),glove=on('glove'),band=on('band'),drink=on('drink');
+  if(kit.m==='oro'){C.f=KIT_ORO.shoe;C.f2=eqShade(KIT_ORO.shoe,-0.3);C.m=KIT_ORO.man;C.m2=eqShade(KIT_ORO.man,-0.25);}
   if(boot){C.f=boot;C.f2=eqShade(boot,-0.3);}
   if(glove){C.g=glove;C.g2=eqShade(glove,-0.3);}
   if(band)C.a=band;
@@ -38,6 +40,7 @@ function eqDoll(e){
   R(7,16,3,4,'s');R(8,15,2,1,'s');R(22,16,3,4,'s2');R(22,15,2,1,'s2');                       // maniche
   R(7,20,3,9,'b');R(22,20,3,9,'b');R(24,20,1,9,'b2');R(9,20,1,9,'b2');                         // braccia
   if(kit.m&&kit.m!=='uni')for(let y=15;y<28;y++)for(let x=10;x<22;x++)if(g[y][x]==='s'||g[y][x]==='s2'){if(eqPatHit(kit.m,(x-9.5)/12,(y-14.5)/13))g[y][x]=g[y][x]==='s'?'t':'t2';}   // motivo della maglia
+  if(kit.m==='oro'){R(7,16,3,4,'m');R(8,15,2,1,'m');R(22,16,3,4,'m2');R(22,15,2,1,'m2');R(10,28,1,6,'m');R(21,28,1,6,'m2');}   // maniche e filetto dorati
   if(band)R(7,21,3,2,'a');
   R(7,29,3,3,glove?'g':'b');R(22,29,3,3,glove?'g':'b');if(glove){R(9,29,1,3,'g2');R(24,29,1,3,'g2');}
   R(10,28,12,6,'p');R(20,28,2,6,'p2');R(15,32,2,2,'');R(10,33,5,1,'p2');R(17,33,5,1,'p2');   // pantaloncini
@@ -78,7 +81,7 @@ function renderEquip(){
     return `<button type="button" class="eqs${has?' '+EQ_RAR[r][1]:''}${k===eqSel?' on':''}" data-k="${k}" aria-label="${it.n}">${eqIcon(k,has?r:-1,44)}<span><b>${it.n}</b><small>${has?'+'+EQ_PLUS[r]+' '+LBL[it.st]:LBL[it.st]+' · vuoto'}</small></span></button>`;};
   $('eqInfo').innerHTML=`Bonus a tutta la squadra: ${eqSumTxt()} · Gettoni: <b>${UT.coins}</b>`;
   $('eqL').innerHTML=EQ_SIDE[0].map(slot).join('');$('eqR').innerHTML=EQ_SIDE[1].map(slot).join('');
-  $('eqFig').innerHTML=eqDoll(e);
+  $('eqFig').innerHTML=eqDoll({on:e.on,kit:e.kit,oro:!!premiKit()});
   const it=eqItem(eqSel),cur=e.on[eqSel];
   $('eqPick').innerHTML=`<div class="eqph">${it.n} · ${LBL[it.st]}</div><div class="eqrs">${EQ_RAR.map(([rn,rc],r)=>{const own=eqHas(e,eqSel,r),w=cur===r;
     return `<button type="button" class="eqr ${rc}${w?' on':''}" data-r="${r}"${own?'':' disabled'}>${eqIcon(eqSel,own?r:-1,32)}<span><b>${rn}</b><small>+${EQ_PLUS[r]} · ${w?'indossato':(own?'equipaggia':'da trovare')}</small></span></button>`;}).join('')}</div>${cur!==undefined?'<button type="button" class="sec" id="eqOff">Togli</button>':''}`;
@@ -86,7 +89,7 @@ function renderEquip(){
   const pat=`<div class="eqkr"><small>Motivo della maglia</small><div class="seg eqpat">${EQ_KIT_PAT.map(([m,n])=>`<button type="button" class="sg${e.kit.m===m?' on':''}" data-m="${m}">${n}</button>`).join('')}</div></div>`;
   // il secondo colore sta subito sotto quello della maglia (prima era in fondo, dopo calzettoni e motivo); il motivo segue la maglia
   const row=(z,n)=>`<div class="eqkr"><small>${n}</small><div class="eqsws">${sw(z)}</div></div>`;
-  $('eqKit').innerHTML=`<div class="eqph">Divisa</div>${row('s','Maglia')}${e.kit.m!=='uni'?row('b','Secondo colore della maglia'):''}${pat}${row('p','Pantaloncini')}${row('c','Calzettoni')}${EQ_KIT_HOT.includes(e.kit.s)?'<p class="qp" style="margin:6px 0 0">Con la maglia rossa o arancione l’avversaria gioca in bianco.</p>':''}`;
+  $('eqKit').innerHTML=`<div class="eqph">Divisa</div>${premiEqRow()}${row('s','Maglia')}${e.kit.m!=='uni'?row('b','Secondo colore della maglia'):''}${pat}${row('p','Pantaloncini')}${row('c','Calzettoni')}${EQ_KIT_HOT.includes(e.kit.s)?'<p class="qp" style="margin:6px 0 0">Con la maglia rossa o arancione l’avversaria gioca in bianco.</p>':''}`;
   $('eqMsg').textContent=eqMsgT;
   const sh=$('utEquip').querySelector('.shead');   // il manichino resta fermo sotto il titolo (che sugli schermi bassi resta fermo anche lui)
   $('utEquip').style.setProperty('--eqtop',(getComputedStyle(sh).position==='sticky'?sh.offsetHeight:0)+8+'px');
@@ -97,7 +100,9 @@ $('eqPick').addEventListener('click',e=>{
   const b=e.target.closest('.eqr');if(!b||b.disabled)return;const r=+b.dataset.r;
   if(!eqHas(UT.eq,eqSel,r))return;UT.eq.on[eqSel]=r;eqMsgT=`${eqItem(eqSel).n} ${EQ_RAR[r][0].toLowerCase()}: +${EQ_PLUS[r]} ${LBL[eqItem(eqSel).st]} a tutta la squadra.`;utSave();renderEquip();
 });
-$('eqKit').addEventListener('click',e=>{const m=e.target.closest('[data-m]');if(m){UT.eq.kit.m=m.dataset.m;eqMsgT='';utSave();renderEquip();return;}
+$('eqKit').addEventListener('click',e=>{if(e.target.closest('#eqOro')){premiWear(!premiKit());renderEquip();return;}
+  if(e.target.closest('[data-m],.eqsw'))premiWear(false);   // scegli colori o motivo: la Oro Nero si toglie, cosi' li vedi
+  const m=e.target.closest('[data-m]');if(m){UT.eq.kit.m=m.dataset.m;eqMsgT='';utSave();renderEquip();return;}
   const b=e.target.closest('.eqsw');if(!b)return;UT.eq.kit[b.dataset.z]=b.dataset.c;eqMsgT='';utSave();renderEquip();});
 $('eqBack').addEventListener('click',()=>{eqMsgT='';showScreen(eqBack);});
 $('uEquip').addEventListener('click',()=>{eqBack='ut';showScreen('utEquip');});

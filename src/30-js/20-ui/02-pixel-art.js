@@ -84,6 +84,12 @@ const FAN_C=['#2f7bff','#ff4b4b','#ffd23f','#f4f4f4','#3fd183','#b36bff','#ff9a3
 const KITS=[[{shirt:'#2f7bff',shorts:'#f2f5fa',socks:'#2f7bff'},{shirt:'#1f5fd0',shorts:'#172554',socks:'#f2f5fa'},{shirt:'#3aa0ff',shorts:'#f2f5fa',socks:'#f2f5fa'},{shirt:'#2a4fb8',shorts:'#ffd23f',socks:'#2a4fb8'},{shirt:'#2f7bff',shorts:'#101827',socks:'#101827'}],
   [{shirt:'#ff4b4b',shorts:'#1f2740',socks:'#ff4b4b'},{shirt:'#d93636',shorts:'#f2f5fa',socks:'#d93636'},{shirt:'#ff6a3d',shorts:'#1f2740',socks:'#1f2740'},{shirt:'#c22d55',shorts:'#f2f5fa',socks:'#f2f5fa'},{shirt:'#ff4b4b',shorts:'#101010',socks:'#ffd23f'}]];
 const KIT_AWAY={shirt:'#f2f5fa',shorts:'#1f2740',socks:'#f2f5fa'};
+// la divisa Oro Nero di chi sostiene il gioco (20-ui/34-premi.js): man = maniche, trim = filetto dei pantaloncini, oro = riflesso che scorre e scintille,
+// ez = colore delle mete. KIT_RESET toglie questi campi quando si torna a una divisa normale
+const KIT_ORO={shirt:'#282331',shorts:'#282331',socks:'#ffcb3d',shoe:'#ffe27a',shirtB:'#ffcb3d',pat:'oro',man:'#ffcb3d',trim:'#ffcb3d',oro:true,ez:'#9c7a1e'};
+const KIT_RESET={pat:'',shirtB:'',shoe:'#18202e',man:'',trim:'',oro:false,ez:''};
+// il riflesso passa sulla maglia per mezzo secondo ogni 2,4: restituisce a che punto e' (0-1) o -1; sfasa = per non farli brillare tutti insieme
+const oroLampo=(t,sfasa)=>{const u=(t+(sfasa||0))%2.4;return u<0.5?u/0.5:-1;};
 // prati saturi come nei giochi a 16 bit (prima erano verdi slavati): classico, verde-azzurro, secco d'estate, vecchio campo con il bordo in terra
 const VENUES=[{grass:'#5ba348',grass2:'#4f9440',dot:'#72b85d',apron:'#3f8436',apron2:'#37752f',dim:'#e4f0d8',num:'#eef6e6'},
   {grass:'#4e9c58',grass2:'#448e4e',dot:'#66b06e',apron:'#367f43',apron2:'#2f703b',dim:'#dff0dc',num:'#ebf6e8'},
@@ -91,9 +97,9 @@ const VENUES=[{grass:'#5ba348',grass2:'#4f9440',dot:'#72b85d',apron:'#3f8436',ap
   {grass:'#5a9845',grass2:'#4f8b3d',dot:'#6fab58',apron:'#8a6c4c',apron2:'#7a5e42',dim:'#e2eed6',num:'#edf5e4'}];
 let lookKey='';
 function matchLook(){
-  const on=!!G.inMatch,V=venueNow(),uk=on&&typeof utKitNow==='function'?utKitNow():null,key=(on?(G.myName||'')+'|'+(G.oppName||''):'')+'|'+V.home+'|'+V.v+'|'+V.tier+'|'+vnLv(V)+'|'+V.care+'|'+(G.wx|0)+'|'+(uk?uk.shirt+uk.shorts+uk.socks+uk.shirtB+uk.pat:'');if(key===lookKey)return;lookKey=key;   // anche il tempo: con la pioggia il prato e' piu' scuro
-  Object.assign(UNI[0],{pat:'',shirtB:''},uk||KITS[0][on&&G.myName?hashStr('kit|'+G.myName)%KITS[0].length:0]);   // in Ultimate Team la divisa la scegli tu (Equipaggiamento), anche a motivi (pat, shirtB)
-  Object.assign(UNI[1],uk&&uk.hot?KIT_AWAY:KITS[1][on&&G.oppName?hashStr('kit|'+G.oppName)%KITS[1].length:0]);   // se ti vesti di rosso o arancione l'avversaria gioca in bianco
+  const on=!!G.inMatch,V=venueNow(),uk=on&&typeof utKitNow==='function'?utKitNow():null,pk=on&&typeof premiKit==='function'?premiKit():null,key=(on?(G.myName||'')+'|'+(G.oppName||''):'')+'|'+V.home+'|'+V.v+'|'+V.tier+'|'+vnLv(V)+'|'+V.care+'|'+(V.vip?'v':'')+(G.wx|0)+'|'+(uk?uk.shirt+uk.shorts+uk.socks+uk.shirtB+uk.pat:'')+(pk?'|oro':'');if(key===lookKey)return;lookKey=key;   // anche il tempo: con la pioggia il prato e' piu' scuro
+  Object.assign(UNI[0],KIT_RESET,pk||uk||KITS[0][on&&G.myName?hashStr('kit|'+G.myName)%KITS[0].length:0]);   // in Ultimate Team la divisa la scegli tu (Equipaggiamento), anche a motivi (pat, shirtB)
+  Object.assign(UNI[1],!pk&&uk&&uk.hot?KIT_AWAY:KITS[1][on&&G.oppName?hashStr('kit|'+G.oppName)%KITS[1].length:0]);   // se ti vesti di rosso o arancione l'avversaria gioca in bianco
   Object.assign(PAL,venuePal());grassPat=null;   // prato del club di casa (17-stadi-pubblico.js)
   PAL.blueZ=ezColor(0);PAL.redZ=ezColor(1);   // mete piene nel colore delle due divise di oggi
   PAL.tick=cMix(PAL.dim,PAL.grass,0.5);   // le tacche ogni 2 m: piu' discrete delle linee
@@ -101,7 +107,7 @@ function matchLook(){
 // colore della meta: la maglia della squadra (i pantaloncini se la maglia e' bianca), un po' piu' scura e appena velata dal verde del prato
 // la vernice ha saturazione e luce contenute (una meta blu elettrico copriva tutto il resto) e prende un po' del verde del prato: sta nella tavolozza del campo
 function ezColor(t){
-  const V=venueNow(),u=UNI[t],c=cLum(u.shirt)>0.78?u.shorts:u.shirt,hsl=rgb2hsl(cRgb(c));
+  const V=venueNow(),u=UNI[t],c=u.ez||(cLum(u.shirt)>0.78?u.shorts:u.shirt),hsl=rgb2hsl(cRgb(c));
   const p=hsl2hex(hsl[0],Math.min(hsl[1],0.62),clamp(hsl[2],0.33,0.5)),z=cMix(p,PAL.grass,fieldKind(V)===0?0.5:0.1+0.36*fieldWear(V));
   const wx=G.wx|0;return wx===2?cMix(z,'#eef3f8',0.22):(wx===1?cShade(z,-0.14):z);   // sui campi poveri la vernice e' sbiadita (sulla terra resta appena un velo di colore); con la neve piu' chiara, bagnata piu' scura
 }
@@ -162,6 +168,7 @@ function drawField(){
   drawEnds();   // dietro le mete: fotografi, borse, cumuli di neve (24-bordocampo-persone.js)
   const fl=cornerFlags();   // negli stadi e nelle partite importanti agli angoli ci sono le bandierine
   for(const c of [[0,0],[0,FIELD_W],[FIELD_L,0],[FIELD_L,FIELD_W],[EZ,0],[EZ,FIELD_W],[FIELD_L-EZ,0],[FIELD_L-EZ,FIELD_W]])(fl&&(c[0]===0||c[0]===FIELD_L)?cornerFlag:cone)(sxw(c[0]),syw(c[1]));
+  if(V.vip)oroField(x0,x1,y0,y1);   // luci, fari, scintille e coriandoli dello Stadio d'Oro
 }
 // sagoma fatta di righe orizzontali [x0, y, w]: la si allarga di 'g' pixel con gli angoli smussati (g=1 contorno, g=2 alone)
 function spanGrow(rows,g,c){
@@ -274,13 +281,16 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
     return moving?runHand(i):[shx+(i>0?f:-f),sy+6];
   };
   // braccio lontano (dietro al busto, piu' scuro)
-  let h=hand(-1);Lm(shx,sy+1,h[0],h[1],shirt2,skin2,0.45);
+  let h=hand(-1);Lm(shx,sy+1,h[0],h[1],un.man?shade(un.man,-0.28):shirt2,skin2,0.45);
   // pantaloncini e busto
   R(x-3,by-8,6,2,un.shorts);
+  if(un.trim){R(x-3,by-8,1,2,un.trim);R(x+2,by-8,1,2,un.trim);}
   R(x-3+lean,sy,6,6,shirt);
   if(view===0)R(f>0?x-3+lean:x+2+lean,sy,1,6,shirt2);else R(x-3+lean,sy,1,6,shirt2);
   R(x-3+lean,sy+5,6,1,shirt2);
   if(un.pat){const sB=un.shirtB,sB2=shade(sB,-0.22);for(let j=0;j<6;j++)for(let i=0;i<6;i++)if(eqPatHit(un.pat,((view===0&&f<0?5-i:i)+0.5)/6,(j+0.5)/6))R(x-3+lean+i,sy+j,1,1,j===5||(view===0?(f>0?i===0:i===5):i===0)?sB2:sB);}   // maglia a motivi (Equipaggiamento di Ultimate Team), con le stesse ombre
+  const lampo=un.oro&&!ex.fermo?oroLampo(G.tick,(lk.style|0)*0.37+(lk.beard?0.9:0)):-1;
+  if(lampo>=0){const k=Math.round(lampo*10);for(let j=0;j<6;j++)for(let i=0;i<6;i++){const d=i+j-k;if(d===0||d===1)R(x-3+lean+i,sy+j,1,1,d?'#ffe27a':'#fffbe6');}}
   // TESTA: di lato (capelli dietro, occhio davanti), di schiena (solo capelli) o di fronte (due occhi)
   const hx0=x-3+lean+(view===0?f:0),bk=f>0?hx0:hx0+4,bald=lk.style===4;
   if(ex.hero&&HERO_DRAW[ex.hero])HERO_DRAW[ex.hero](R,{x,gy,by,sy,T,hx0,f,view,lean,fast,skin,skin2,hair,shirt});   // superpoteri (20-ui/20-superpoteri.js): testa, collo, coda o tentacoli dell'animale
@@ -308,10 +318,12 @@ function puppet(x,y,un,lk,f,pose,ph,run,arm,ex){
   {const tx0=x-3+lean,tx1=x+2+lean,ax=shx,ay=sy+1,n=Math.max(Math.abs(h[0]-ax),Math.abs(h[1]-ay))||1;
    for(let i=0;i<=n;i++){const u=i/n;if(u<0.45)continue;const qx=ri(ax+(h[0]-ax)*u),qy=ri(ay+(h[1]-ay)*u);
      for(const [ex_,c] of [[f>0?qx-1:qx+2,PAL.out],[f>0?qx+2:qx-1,shirt2]])for(const ey of [qy,qy+1])if(ex_>=tx0&&ex_<=tx1&&ey>=sy&&ey<=sy+5)R(ex_,ey,1,1,c);}}
-  Lm(shx,sy+1,h[0],h[1],shade(shirt,0.14),skin,0.45);   // manica un tono piu' chiara della maglia: il braccio vicino si stacca dal busto
+  Lm(shx,sy+1,h[0],h[1],un.man||shade(shirt,0.14),skin,0.45);   // manica un tono piu' chiara della maglia: il braccio vicino si stacca dal busto
   if(ex.sc&&ex.sc!==1){const k=ex.sc;for(let i=0;i<ops.length;i+=5){const a=ri(x+(ops[i]-x)*k),b=ri(y+(ops[i+1]-y)*k),a2=ri(x+(ops[i]+ops[i+2]-x)*k),b2=ri(y+(ops[i+1]+ops[i+3]-y)*k);ops[i]=a;ops[i+1]=b;ops[i+2]=Math.max(1,a2-a);ops[i+3]=Math.max(1,b2-b);}h=[ri(x+(h[0]-x)*k),ri(y+(h[1]-y)*k)];}   // eroi dei superpoteri piu' grandi: i rettangoli si allargano attorno ai piedi, i pixel restano netti
+  if(un.man&&!ex.hero)R(hx0,T+1,6,1,un.man);   // divisa Oro Nero: la fascia dorata in testa
   ctx.fillStyle=PAL.out;for(let i=0;i<ops.length;i+=5)ctx.fillRect(ops[i]-1,ops[i+1]-1,ops[i+2]+2,ops[i+3]+2);
   for(let i=0;i<ops.length;i+=5){ctx.fillStyle=ops[i+4];ctx.fillRect(ops[i],ops[i+1],ops[i+2],ops[i+3]);}
+  if(lampo>0.55){const sx=x+(f>0?6:-7),sY=sy-3;ctx.fillStyle='#fff6c4';ctx.fillRect(sx,sY-1,1,3);ctx.fillRect(sx-1,sY,3,1);}   // divisa Oro Nero: la scintilla quando il riflesso arriva in fondo
   return h;
 }
 // omino in tuffo: disteso in orizzontale, braccia tese in avanti
@@ -322,6 +334,7 @@ function puppetDive(x,y,un,lk,d,lift){
   R(-11,5,-4,2,skin);R(-13,3,-4,2,un.shoe);R(-10,4,-2,2,skin);R(-12,3,-2,2,un.shoe);   // gambe e scarpe
   R(-6,4,-6,4,un.shorts);R(-2,7,-6,4,un.shirt);if(un.pat)for(let j=0;j<4;j++)for(let i=0;i<7;i++)if(eqPatHit(un.pat,(j+0.5)/4,(6.5-i)/7))R(-2+i,1,-6+j,1,un.shirtB);R(-2,7,-3,1,shade(un.shirt,-0.22));   // pantaloncini e busto (a motivi: il busto e' disteso)
   R(5,5,-7,5,skin);R(5,5,-8,2,lk.style===4?shade(skin,-0.16):lk.hair);R(9,1,-5,1,PAL.out);   // testa
+  if(un.man)R(8,1,-8,4,un.man);
   R(7,6,-3,2,skin);R(8,5,-5,2,skin);   // braccia tese
   ctx.fillStyle=PAL.out;for(let i=0;i<ops.length;i+=5)ctx.fillRect(ops[i]-1,ops[i+1]-1,ops[i+2]+2,ops[i+3]+2);
   for(let i=0;i<ops.length;i+=5){ctx.fillStyle=ops[i+4];ctx.fillRect(ops[i],ops[i+1],ops[i+2],ops[i+3]);}

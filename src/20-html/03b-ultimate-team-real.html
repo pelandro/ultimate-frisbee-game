@@ -51,9 +51,19 @@
   <div id="admLogin"><p class="qp">Inserisci il tuo codice: resta su questo dispositivo finché non esci.</p>
     <div class="schrow"><input id="admCode" class="qs" type="password" maxlength="80" placeholder="Codice amministratore" autocomplete="off" spellcheck="false"><button class="go" id="admIn" type="button">Entra</button></div></div>
   <div id="admMenu" class="hidden">
-    <div class="schrow"><button class="go danger" id="admReset" type="button">Riparti con una nuova stagione</button><button class="sec" id="admOut" type="button">Esci da amministratore</button></div>
-    <p class="qp" id="admSt"></p>
-    <div id="admModes"></div>
+    <div class="schrow admtop"><span class="seg"><button type="button" class="sg" id="admTabP">Premi ai giocatori</button><button type="button" class="sg" id="admTabS">Stagione e numeri</button></span><button class="sec" id="admOut" type="button">Esci da amministratore</button></div>
+    <div id="admPrizes" class="hidden">
+      <div class="admhead">
+        <div class="schrow"><input id="admQ" class="qs" maxlength="600" placeholder="Nome o codice (anche più di uno)" autocomplete="off" spellcheck="false"><span class="seg"><button type="button" class="sg" id="admFAll">Tutti</button><button type="button" class="sg" id="admFWon">Con premi</button></span><button class="sec" id="admFind" type="button">Aggiorna</button></div>
+        <div id="admBulk" class="schrow hidden"></div>
+      </div>
+      <div id="admRes"></div>
+    </div>
+    <div id="admSeason">
+      <div class="schrow"><button class="go danger" id="admReset" type="button">Riparti con una nuova stagione</button></div>
+      <p class="qp" id="admSt"></p>
+      <div id="admModes"></div>
+    </div>
   </div>
   <p class="qp" id="admMsg"></p>
 </div></div>

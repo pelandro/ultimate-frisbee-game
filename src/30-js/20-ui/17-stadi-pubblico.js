@@ -48,6 +48,7 @@ function venuePal(){
     for(const k of ['grass','grass2','dot','turf'])o[k]=cMix(o[k],'#e6eeea',0.3);
     o.apron='#dde7f1';o.apron2='#cfdbe8';
   }
+  if(V.vip)oroPal(o,wx);
   return o;
 }
 function drawMow(y0,H){
