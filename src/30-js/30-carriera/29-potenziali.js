@@ -70,5 +70,13 @@ function carGrowK(){
   const k=srGrowK(SV.sr);
   const ns=((SV.mem&&SV.mem[SV.sr])||[]).filter(n=>n!==SV.team);
   const lead=ns.length?matchLevel(SV.team)-Math.max(...ns.map(matchLevel),euTier()?euTop():0):0;   // nelle serie con posti europei il riferimento e' anche il livello europeo
-  cgk={key,v:k*(lead>0?clamp(1-LEAD_K*lead,0.5,1):1)};return cgk.v;
+  const europeGrowth=lead>0?clamp(1-LEAD_K*lead,0.5,1):1;
+  // Nei Nationals Open il riferimento europeo lascia crescere anche chi ha già un ampio margine in patria.
+  // Con le gare aggiuntive il freno nazionale conta sopra quattro punti di vantaggio effettivo.
+  let domesticGrowth=1;
+  if(SV.lk==='UK'&&ns.length){
+    const gap=squadPower()-Math.max(...ns.map(teamPow));
+    domesticGrowth=clamp(1-0.16*Math.max(0,gap-4),0.45,1);
+  }
+  cgk={key,v:k*Math.min(europeGrowth,domesticGrowth)};return cgk.v;
 }
