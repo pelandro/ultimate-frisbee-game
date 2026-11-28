@@ -2,6 +2,19 @@
    (i piu' specifici prima: vale il primo che combacia). I paragrafi con grassetti e corsivi stanno in 32-lingua-en-blocchi.js (LANG_BLK.en).
    Le frasi nuove si raccolgono con `node tools/lingua-raccogli.js en` (scrive quelle senza traduzione) e si aggiungono qui. Nomi di persone e squadre non si traducono. */
 LANG_TXT.en={
+  "Al primo avvio il gioco chiede in che lingua giocare: poi si cambia da Impostazioni.":"On first launch the game asks which language to play in: you can change it later in Settings.",
+  "Scuse: sotto 55 di morale qualcuno trova scuse per saltare le partite, arriva in cattive condizioni o chiede un aumento. Più il morale scende più succede, soprattutto nelle serie minori.":"Excuses: below 55 morale some players find excuses to miss matches, show up in bad shape or ask for a raise. The lower the morale, the more often it happens, especially in the lower divisions.",
+  "Notte lunga":"Long night",
+  "Lezione di judo":"Judo class",
+  "Basket al parchetto":"Basketball in the park",
+  "Riflessi lenti":"Slow reflexes",
+  "Vacanze in coppia":"Holiday for two",
+  "Salta la prossima partita.":"Misses the next match.",
+  "Infortunio: salta due partite.":"Injured: out for two matches.",
+  "Aumento concesso: resta sereno fino a fine stagione.":"Raise granted: happy until the end of the season.",
+  "Aumento rifiutato: lo spogliatoio mormora.":"Raise refused: the locker room is grumbling.",
+  "Toccando la classifica in breve della schermata Partita si apre la classifica completa.":"Tap the short standings on the Match screen to open the full table.",
+  "Apri la classifica":"Open the standings",
   "Lo Stadio d’Oro è solo per i sostenitori: in carriera prende il posto del campo di livello 6 (Tribune al massimo, grandi stadi in trasferta, finali in campo neutro); fuochi d’artificio e luci si accendono solo alle mete. Si accende e si spegne dalla stessa scheda.":"The Golden Stadium is for supporters only: in career mode it replaces the level 6 stadium (fully upgraded Stands, big away stadiums, finals at neutral venues); fireworks and lights come on only when a goal is scored. Turn it on and off from the same tab.",
   "Stadio d'Oro":"Golden Stadium",
   "STADIO D'ORO":"GOLDEN STADIUM",
@@ -2099,6 +2112,16 @@ LANG_TXT.en={
   "Hai informazioni più precise sui roster? Scrivici:":"Have more accurate roster information? Email us:",
 };
 LANG_PAT.en=[
+  ["{0} la sera prima della partita era a un rave.", "{0} was at a rave the night before the match."],
+  ["{0} ha una lezione di judo proprio il giorno della prossima partita.", "{0} has a judo class on the very day of the next match."],
+  ["{0} ha preso una storta giocando a basket con gli amici al parchetto.", "{0} twisted an ankle playing basketball with friends in the park."],
+  ["{0} ha fumato troppe canne prima di giocare.", "{0} smoked too many joints before playing."],
+  ["{0} deve andare in vacanza con il fidanzato e chiede un aumento di stipendio del {#1}%.", "{0} is going on holiday with her boyfriend and asks for a {1}% pay raise."],
+  ["{0} deve andare in vacanza con la fidanzata e chiede un aumento di stipendio del {#1}%.", "{0} is going on holiday with his girlfriend and asks for a {1}% pay raise."],
+  ["Nella prossima partita le sue statistiche calano del {#0}%.", "Stats down {0}% in the next match."],
+  ["Accetta: stipendio +{#0}% fino a fine stagione", "Accept: salary +{0}% until the end of the season"],
+  ["Rifiuta: −{#0} morale", "Refuse: −{0} morale"],
+  ["serata storta: −{#0}% nella prossima partita", "off night: −{0}% in the next match"],
   ["Tutti ({0})","All ({0})"],
   ["Con premi ({0})","With rewards ({0})"],
   ["A tutti i {0} mostrati:","To all {0} shown:"],

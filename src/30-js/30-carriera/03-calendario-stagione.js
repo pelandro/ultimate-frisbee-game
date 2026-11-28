@@ -294,7 +294,7 @@ function recordResult(win,su,so){
       if((SV.fisShield|0)>0&&p.inj>shield){p.inj=shield;SV.fisShield--;}
       if(big){p.injC=(p.injC|0)+1;p.injBig=1;}alertAdd('inj',`${pname(p)} si è infortunat${oa(p)}${big?' in modo serio':''}: ${p.inj} ${p.inj>1?'partite':'partita'} di stop.`,{full:p.full});}
     else if(p.inj>0){p.inj--;if(p.inj===0){if(p.abs)p.abs=0;else healed(p);}}   // abs: assenza per impegni, non un infortunio
-    p.injNew=false;
+    p.injNew=false;p.hang=0;   // la serata storta vale per una partita sola
   }
   SV.tTeam=false;
   // incasso, morale, affiatamento, condizione: chi ha giocato si stanca, la settimana fa recuperare (di piu' con la fisioterapia)

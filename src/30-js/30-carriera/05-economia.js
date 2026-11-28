@@ -8,7 +8,7 @@ const sellValue=o=>Math.round(priceOf(o)*sellPct()*(o.ret===1?0.35:1)*(o.inj?0.8
 const repCap=()=>48+SV.rep*0.5;   // Overall massimo dei giocatori disposti a venire, in base alla reputazione
 // l'incasso di una partita e' in 26-economia-partita.js (matchMoney): biglietti secondo i tifosi (20-tifosi-umore.js) e la capienza delle Tribune, sponsor, premio vittoria
 // stipendi: ogni giocatore costa in base al suo Overall (a stagione); si pagano a ogni partita. Una rosa lunga e forte costa: tenere le riserve giuste e' una scelta
-const wageOf=o=>4+Math.pow(Math.max(0,ovrX(o)-40),2)/50;   // prima 2+(Ov-40)²/85: un giocatore costava quasi niente dopo averlo comprato e la cassa cresceva da sola (Ov 50: 6 invece di 3, 70: 22 invece di 13, 85: 45 invece di 26)
+const wageOf=o=>(4+Math.pow(Math.max(0,ovrX(o)-40),2)/50)*(1+(o.raise||0));   // prima 2+(Ov-40)²/85: un giocatore costava quasi niente dopo averlo comprato e la cassa cresceva da sola (Ov 50: 6 invece di 3, 70: 22 invece di 13, 85: 45 invece di 26)
 // premio della lega a chi sale di categoria (150 per il peso della serie nuova: Serie B circa 195, Serie A circa 250): senza, con gli stipendi veri una neopromossa non aveva di che rinforzarsi
 const promoPrize=sr=>Math.round(150*(SR_K[sr]||1));
 // stipendi a partita: i 14 stipendi piu' alti per intero, le riserve oltre il quattordicesimo a meta' (un rimborso, non un ingaggio). Le rose da 20 di USA ed
