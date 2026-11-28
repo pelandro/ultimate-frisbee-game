@@ -2094,7 +2094,9 @@ LANG_TXT.en={
   "stagione":"season",
   "giornata":"matchday",
   "finite":"over",
-  "riposo":"bye"
+  "riposo":"bye",
+  "Alcuni giocatori potrebbero essere inventati per mancanza di fonti o informazioni sui roster.":"Some players may be fictional because roster sources or information are missing.",
+  "Hai informazioni più precise sui roster? Scrivici:":"Have more accurate roster information? Email us:",
 };
 LANG_PAT.en=[
   ["Tutti ({0})","All ({0})"],
