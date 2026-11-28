@@ -15,6 +15,18 @@ LEAGUES.push({id:'UW',name:SERIES_NAME.UW,sub:'48 club · 8 Conference',ser:()=>
   txt:'Divisione femminile per club di USA Ultimate 2026. Le otto regioni portano 16 squadre ai Nationals.',
   clubs:()=>UW_NAMES,roster:n=>usRoster(n,'preview|'+n),sub2:n=>usConfName(usConfOf(n))});
 const lgOf=id=>LEAGUES.find(l=>l.id===(id||teamLg))||LEAGUES[0];
+const LG_GEN_CACHE={};
+function leagueHasGenerated(l){
+  if(!Object.prototype.hasOwnProperty.call(LG_GEN_CACHE,l.id))LG_GEN_CACHE[l.id]=l.clubs().some(n=>l.roster(n).some(o=>o.gen));
+  return LG_GEN_CACHE[l.id];
+}
+function selectLeague(l){
+  teamLg=l.id;teamMode='cuore';reliefName=null;
+  if(leagueHasGenerated(l))$('genNotice').classList.remove('hidden');
+  else showScreen('team');
+}
+$('genNoticeContinue').addEventListener('click',()=>{$('genNotice').classList.add('hidden');showScreen('team');});
+
 const FAV_KEY='ultimate-cuore';
 function favAll(){try{return JSON.parse(localStorage.getItem(FAV_KEY)||'{}')||{};}catch(e){return {};}}
 const favGet=lg=>{const n=favAll()[lg||teamLg];return n&&lgOf(lg).clubs().includes(n)?n:'';};
@@ -40,8 +52,8 @@ function drawLeagues(){
 }
 $('lgList').addEventListener('click',e=>{
   const d=e.target.closest('[data-div]');
-  if(d){lgDiv=d.dataset.div;const ls=LEAGUES.filter(l=>lgW(l)===(lgDiv==='w'));if(ls.length===1){teamLg=ls[0].id;teamMode='cuore';reliefName=null;showScreen('team');return;}drawLeagues();femPass();return;}
-  const b=e.target.closest('[data-lg]');if(!b)return;teamLg=b.dataset.lg;teamMode='cuore';reliefName=null;showScreen('team');});
+  if(d){lgDiv=d.dataset.div;const ls=LEAGUES.filter(l=>lgW(l)===(lgDiv==='w'));if(ls.length===1){selectLeague(ls[0]);return;}drawLeagues();femPass();return;}
+  const b=e.target.closest('[data-lg]');if(!b)return;selectLeague(lgOf(b.dataset.lg));});
 $('lgBack').addEventListener('click',()=>{if(lgDiv){lgDiv='';drawLeagues();femPass();}else teamBack();});
 // ---- roster del club, prima di sceglierlo ----
 let rpTeam='';
@@ -50,7 +62,7 @@ function openRosterPreview(n){
   $('rpT').innerHTML=`${crest(n,28)} ${esc(n)}`;
   $('rpS').textContent=`${L.sub2(n)} · forza ${pw} · ${ro.length} giocatori · età media ${age}`;
   const posN={H:'Handler',C:'Cutter',D:'Difensore'},gen=ro.some(o=>o.gen);
-  $('rpBody').innerHTML=`<table class="rt"><tr><th>Giocatore</th><th>Ruolo</th><th>Età</th><th>Overall</th></tr>${ro.map(o=>`<tr><td>${esc(o.label||o.n)}${o.star?' <span class="tp" title="Giocatore internazionale del mercato">★ int.</span>':''}${o.gen?' <span class="tp" title="Giocatore generato dal gioco">gen.</span>':''}</td><td>${posN[posOf(o)]||''}</td><td>${o.age}</td><td><b>${Math.round(ovrX(o))}</b></td></tr>`).join('')}</table>`+`<p class="note" style="margin:6px 0 0">Questa è la rosa con cui parti.${L.id==='UW'?' Gli Overall e i ruoli con pochi dati sono stimati.':''}${gen?' «gen.» = giocatore generato dal gioco, non presente nelle fonti.':''}</p><p class="note" role="note" style="margin:8px 0 0">Alcuni giocatori potrebbero essere inventati per mancanza di fonti o informazioni sui roster.</p><p class="note" style="margin:4px 0 0">Hai informazioni più precise sui roster? Scrivici: <a href="mailto:pix3l.ultimate@gmail.com">pix3l.ultimate@gmail.com</a>.</p>`;
+  $('rpBody').innerHTML=`<table class="rt"><tr><th>Giocatore</th><th>Ruolo</th><th>Età</th><th>Overall</th></tr>${ro.map(o=>`<tr><td>${esc(o.label||o.n)}${o.star?' <span class="tp" title="Giocatore internazionale del mercato">★ int.</span>':''}${o.gen?' <span class="tp" title="Giocatore generato dal gioco">gen.</span>':''}</td><td>${posN[posOf(o)]||''}</td><td>${o.age}</td><td><b>${Math.round(ovrX(o))}</b></td></tr>`).join('')}</table>`+`<p class="note" style="margin:6px 0 0">Questa è la rosa con cui parti.${L.id==='UW'?' Gli Overall e i ruoli con pochi dati sono stimati.':''}${gen?' «gen.» = giocatore generato dal gioco, non presente nelle fonti.':''}</p>`;
   $('rpFav').textContent=favGet()===n?'★ Squadra del cuore (togli)':'☆ Segna come squadra del cuore';
   $('rpv').classList.remove('hidden');$('rpBody').scrollTop=0;
 }
