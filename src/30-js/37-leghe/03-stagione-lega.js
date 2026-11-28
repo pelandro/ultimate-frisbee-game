@@ -192,6 +192,7 @@ function lnFinBuild(fin,ord,tag,groupResults=[]){
     const pools=ord.map(o=>o.slice(sp.f-1,sp.t)).filter(p=>p.length);
     if(!pools.length)continue;
     const lv=lnLvInit(sp,sp.m==='p'?[ord[0].slice(sp.f-1,sp.t)]:pools,base,groupResults);
+    if(sp.independent)lv.independent=true;
     if(sp.tag)lv.tag=sp.tag;
     else if(tag&&base===1&&(sp.m==='c4'||sp.m==='b6'))lv.tag=tag;
     F.lv.push(lv);base+=pools.reduce((a,p)=>a+p.length,0);
@@ -199,9 +200,18 @@ function lnFinBuild(fin,ord,tag,groupResults=[]){
   F.rounds=Math.max(0,...F.lv.map(l=>l.rounds));
   return F;
 }
-function lnPlay(a,b,rec){
+function lnPlay(a,b,rec,independent){
   if(rec&&((rec[0]===a&&rec[1]===b)||(rec[0]===b&&rec[1]===a)))return rec[0]===a?rec:[a,b,rec[3],rec[2],rec[4]];
-  const [sa,sb]=simPower(a,b);return [a,b,sa,sb,sa>sb?a:b];
+  const random=Math.random;
+  // Le simulazioni del Lower pool UK hanno un seme proprio. I risultati del tabellone
+  // del titolo e l'economia delle carriere già qualificate non dipendono da queste gare.
+  if(independent)Math.random=mulberry32(hashStr(`${SV.seed}|lower|${SV.season}|${a}|${b}`));
+  try{
+    const [sa,sb]=simPower(a,b);
+    return [a,b,sa,sb,sa>sb?a:b];
+  }finally{
+    if(independent)Math.random=random;
+  }
 }
 // dopo un turno: prepara il successivo di un livello, oppure ne fissa la classifica
 function lnLvNext(lv,rd){
@@ -235,7 +245,7 @@ function lnFinRoundF(F,rec){
   for(const lv of F.lv){
     if(rd>=lv.rounds)continue;
     const R=lv.R[rd];
-    for(let k=0;k<R.length;k++){const m=R[k];if(m[4]!==null||m[0]===null||m[1]===null)continue;R[k]=lnPlay(m[0],m[1],rec);if(lv.tab)usAddRes(lv.tab,R[k][0],R[k][1],R[k][2],R[k][3]);}
+    for(let k=0;k<R.length;k++){const m=R[k];if(m[4]!==null||m[0]===null||m[1]===null)continue;R[k]=lnPlay(m[0],m[1],rec,lv.independent);if(lv.tab)usAddRes(lv.tab,R[k][0],R[k][1],R[k][2],R[k][3]);}
     lnLvNext(lv,rd);
   }
   F.rd++;
