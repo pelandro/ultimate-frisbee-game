@@ -24,3 +24,15 @@
   linear-gradient(to top right,transparent calc(50% - 9px),#f4f5f0 calc(50% - 9px) calc(50% + 9px),transparent calc(50% + 9px)),
   linear-gradient(to bottom right,transparent calc(50% - 9px),#f4f5f0 calc(50% - 9px) calc(50% + 9px),transparent calc(50% + 9px)),
   linear-gradient(#012169,#012169)}
+
+/* Avviso evidente prima di entrare in un campionato con roster generati */
+#genNotice{z-index:120}
+#genNotice .genwarn{max-width:560px;text-align:center;border:3px solid #e6a323;background:linear-gradient(180deg,#fff8df,#fff);box-shadow:0 12px 40px rgba(0,0,0,.5);padding:clamp(20px,4vw,32px)}
+#genNotice .genwarnIcon{display:grid;place-items:center;width:54px;height:54px;margin:0 auto 12px;border-radius:50%;background:#e6a323;color:#241900;font-size:38px;font-weight:1000;line-height:1}
+#genNotice .genwarn h2{margin:0 0 14px;color:#684300;font-size:clamp(21px,4vw,28px);line-height:1.15}
+#genNotice .genwarn p{margin:10px 0;color:#332b1c;font-size:clamp(15px,2.5vw,18px);line-height:1.45}
+#genNotice .genwarn .genwarnMail{font-weight:800}
+#genNotice .genwarn a{color:#805000;text-decoration:underline}
+#genNotice .genwarn .schrow{justify-content:center;margin-top:18px}
+#genNotice .genwarn button{min-width:min(100%,240px);font-size:17px}
+@media(max-width:480px){#genNotice .genwarn{padding:20px 16px}#genNotice .genwarnIcon{width:48px;height:48px;font-size:34px}}
