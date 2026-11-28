@@ -453,7 +453,7 @@ function drawPlayers(dt){
   if(cel)celOverlay();   // stelline e fumetto del grido
   // i giocatori simbolo (stelle internazionali e chi ha vinto premi) hanno il nome dorato
   for(const p of names)ptext(p.name,sxw(p.x),syw(p.y)-Math.round(h*heroScale(p))-10-(p.dv?4:0)-heroTop(p),{f:'t',c:(p.star||(p.aw&&p.aw.length)||(p.ro&&p.ro.star))?PAL.gold:(p.t===0?'#ffffff':'#ffd9d9')});
-  // ETICHETTA DELLA SITUAZIONE sopra chi ha il disco, in un riquadro nero come il «2nd & 10» di Retro Bowl: stall da 6, ultimo lancio, universe point (il match point lo annuncia la fascia a inizio punto)
+  // ETICHETTA DELLA SITUAZIONE sopra chi ha il disco, in un riquadro nero come il «2nd & 10» di Retro Bowl: stall da 6 e ultimo lancio (i punti decisivi li annuncia la fascia a inizio meta)
   const hh=G.holder;
   if(hh&&!G.flight&&G.mode==='play'){
     const n=G.marker&&hyp(G.marker.x-hh.x,G.marker.y-hh.y)<3.8?Math.min(10,Math.floor(G.stallT)+1):0,lb=situationLabel(hh,n);

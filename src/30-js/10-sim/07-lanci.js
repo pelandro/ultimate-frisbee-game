@@ -182,7 +182,8 @@ function doThrow(th,ax,ay,intended,style,exec){
   const mk=G.marker,ha=(G.hbAtt&&G.hbAtt.q===mk)?G.hbAtt:null;
   G.hbAtt=null;
   if(mk&&mk.t!==th.t&&hyp(mk.x-th.x,mk.y-th.y)<3.8){
-    if(Math.random()<hbProb(th,info,mk,ha)*sp.hb){handblock(th,mk,cat);return;}
+    const blocked=G.primi==='handblock'?ha?.qual>=0.6:Math.random()<hbProb(th,info,mk,ha)*sp.hb;
+    if(blocked){handblock(th,mk,cat);return;}
   }
   const dL=duoOf(th,intended),sg=pl.sig*(1-DUO_SIG*dL);   // intesa con il compagno a cui lancia
   const lx=pl.tx+randn()*sg,ly=pl.ty+randn()*sg,dl=Math.max(0.5,hyp(lx-th.x,ly-th.y));
@@ -303,7 +304,7 @@ function updateDisc(dt){
   }
   f.t+=dt;const u=Math.min(1,f.t/f.T),fs=flightS(f,u),P=flightAt(f,fs);   // il disco parte veloce e rallenta e segue la sua curva
   d.x=P.x;d.y=P.y;d.z=discZ(f,fs);
-  if(f.t<f.T&&laneCheck(f,P,d.z))return;   // toccato da un difensore lungo il volo
+  if(f.t<f.T&&G.primi!=='defDive'&&laneCheck(f,P,d.z))return;   // toccato da un difensore lungo il volo
   if(f.t>=f.T)landDisc();
 }
 

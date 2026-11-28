@@ -11,10 +11,9 @@ function showIntro(m){
   G.schemeOpen=true;$('intro').classList.remove('hidden');return true;
 }
 $('inGo').addEventListener('click',()=>{$('intro').classList.add('hidden');if($('menu').classList.contains('hidden'))G.schemeOpen=false;});
-let momPt=-1;
 function momentTick(){
-  if(!G.inMatch||G.drill||G.mode!=='ready'||G.schemeOpen||momPt===G.pointNo)return;
-  momPt=G.pointNo;
+  if(!G.inMatch||G.drill||G.primi||G.mode!=='ready'||G.schemeOpen||G.momPt===G.pointNo)return;
+  G.momPt=G.pointNo;
   const a=G.score[0],b=G.score[1],t=G.target-1;
   if(a===t&&b===t){band={txt:'UNIVERSE POINT',t:2.4,max:2.4,c:PAL.gold};HOOKS.sfx('crowd',0.8);HOOKS.vibe(30);}
   else if(a===t||b===t){band={txt:a===t?'MATCH POINT':'MATCH POINT PER LORO',t:1.7,max:1.7,c:a===t?PAL.green:PAL.red};HOOKS.sfx('crowd',0.35);}

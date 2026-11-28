@@ -103,13 +103,20 @@ html[data-ew="xs"] .tteams{grid-template-columns:repeat(2,minmax(0,1fr))!importa
 #title .crow .hbtn{min-width:0}#title .crow .hbtn>span{min-width:0}
 html[data-ew="xs"] #team .seg{flex-wrap:wrap}html[data-ew="xs"] #team .seg .sg{flex:1 1 auto;min-width:0}
 
-/* tutorial in partita (14-primi-passi.js): «prova» con il bordo azzurro, riuscita in verde, suggerimento e «riprova» in un riquadro a parte */
-.ppc.try{border-color:#7fd8ff}
-.ppc.try h3{color:#7fd8ff}
-.ppc.ok{border-color:#4fe58f;background:#0e2a1c}
-.ppc.ok h3{color:#4fe58f}
-.ppc .pph{margin:0 0 8px;padding:5px 8px;font-size:15px;line-height:1.25;color:#fff;background:rgba(255,210,63,.12);border-left:4px solid var(--gold)}
-.ppc.ok .pph{background:rgba(79,229,143,.14);border-left-color:#4fe58f;font-size:16px}
+/* La striscia della prova ha spazio proprio: il campo e i comandi si ridimensionano. */
+body.pp-live #c{bottom:auto;height:calc(100% - var(--pp-space,0px))}
+body.pp-live #hud{bottom:var(--pp-space,0px)}
+#pp:not(.pp-bar){inset:0;align-items:center;pointer-events:auto;background:var(--scrim)}
+#pp.pp-bar{top:auto;bottom:0;z-index:37}
+.ppc button{border-radius:0}
+.pp-bar .ppc{width:100%;display:flex;align-items:center;justify-content:space-between;gap:4px 12px;flex-wrap:wrap;padding:4px max(10px,var(--sar)) max(4px,var(--sab)) max(10px,var(--sal));border:0;border-top:2px solid #7fd8ff;box-shadow:none}
+.pp-bar .pp-text{flex:1 1 240px}
+.pp-bar h3{display:inline;margin:0 5px 0 0;color:#7fd8ff}
+.pp-bar p{display:inline;font-size:14px}
+.pp-bar #ppH{display:inline;margin-left:6px;color:var(--gold);font-size:8px}
+.pp-bar #ppH.hidden{display:none}
+.pp-bar .schrow{gap:4px}
+.pp-bar .sec{padding:3px 8px;min-height:28px;font-size:13px}
 .ppc .schrow .sec,.ppc .schrow .go{min-height:36px}
 /* durante una prova il campo deve restare visibile: riquadro piu' basso, tasti piccoli; a prova riuscita resta solo il «Ben fatto» */
 .ppc.try,.ppc.ok{padding:6px 12px 7px;width:min(600px,94%)}

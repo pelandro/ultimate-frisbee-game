@@ -41,7 +41,8 @@ function landDisc(){
     const p=dv.p,d=hyp(p.x-L.x,p.y-L.y),base=clamp(0.3+0.6*p.s.tuf/100-0.1*Math.max(0,d-reach(p)),0.08,0.95);
     let pr=clamp(base+DIVE_BONUS[dv.color],0.03,0.95);
     if(A.length)pr*=0.65;   // contro un ricevitore gia' a portata e' piu' difficile
-    if(Math.random()<pr){G.st.dive[p.t]++;p.m.tuf++;return finishTurn(f,p,'Intercetto in tuffo!',L);}
+    const caught=G.primi==='defDive'?dv.color==='green':Math.random()<pr;
+    if(caught){G.st.dive[p.t]++;p.m.tuf++;return finishTurn(f,p,'Intercetto in tuffo!',L);}
     HOOKS.toast('Tuffo mancato',f.team);
     D=D.filter(o=>o.p!==p);   // il difensore e' fuori posizione
   }
@@ -74,7 +75,7 @@ function catchBy(f,p,msg,ck){
   G.diveGoal=null;
   ezCheck(f.team,p);   // vicino alla meta: parte l'attacco in meta
   HOOKS.toast(msg||'Presa!',f.team,{gain:(p.x-f.sx)*dirOf(f.team),p,ck:ck||(/tuffo/i.test(msg||'')?'tuffo':(/salto/i.test(msg||'')?'salto':''))});
-  HOOKS.sfx('catch',/salto|tuffo|contesa|mano/i.test(msg||'')?1:0.65);
+  HOOKS.sfx('catch',/salto|tuffo|contesa|mano/i.test(msg||'')?1:0.65,G.lastPlay.ck);
   if(/tuffo|salto/i.test(msg||'')){HOOKS.shake(4);G.freeze=Math.max(G.freeze,0.05);}
 }
 function finishTurn(f,p,msg,spot){
@@ -89,7 +90,7 @@ function finishTurn(f,p,msg,spot){
     p.m.vis++;p.m.g++;HOOKS.shake(9);
     scoreGoal(p.t,p,'callahan');return;
   }
-  HOOKS.sfx('block');HOOKS.shake(/tuffo|salto/i.test(msg||'')?5:3);G.freeze=Math.max(G.freeze,0.07);
+  HOOKS.sfx('block',null,/tuffo/i.test(msg||'')?'tuffo':(/salto/i.test(msg||'')?'salto':''));HOOKS.shake(/tuffo|salto/i.test(msg||'')?5:3);G.freeze=Math.max(G.freeze,0.07);
   turnover(p.t,p.x,p.y,p,msg,p.t);
 }
 function turnover(newTeam,x,y,picker,msg,benefit){
@@ -196,7 +197,7 @@ function diveChain(f,L,atk,def,reach){
     }
     const o=lst[i];used.add(i);
     // un attaccante e un difensore che si tuffano insieme: un'unica azione, vince chi arriva (a parita' il piu' vicino)
-    const show=G.opt.cine&&!G.noCine&&HOOKS.cine&&(f.team===0||defMan());   // in difesa automatica i tuffi oltre la portata si risolvono da soli (resta il tuffo a tempo)
+    const show=(G.opt.cine||G.primi==='catchDive')&&!G.noCine&&HOOKS.cine&&(f.team===0||defMan());   // in difesa automatica i tuffi oltre la portata si risolvono da soli (resta il tuffo a tempo)
     const j=show?lst.findIndex((q,k)=>k>i&&!used.has(k)&&q.att!==o.att):-1;
     if(j>=0){
       used.add(j);
@@ -216,7 +217,7 @@ function diveChain(f,L,atk,def,reach){
       HOOKS.cine({kind:'dive2',a:A.p,d:D.p,diver:mine.p,att:mine.att,timing:true,resolve,apply});
       return;
     }
-    const p0=pOf(o),mine=o.p.t===0,r=Math.random();
+    const p0=pOf(o),mine=o.p.t===0,r=G.primi==='catchDive'?p0+Math.random()*0.17:Math.random();
     const resolve=b=>r<clamp(p0+(mine?b*0.18:0),0,0.97);
     const apply=ok=>{
       if(ok){

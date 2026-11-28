@@ -86,6 +86,10 @@ Il dettaglio di ognuna è in `docs/CONTRATTI.md`.
 - Dati dei giocatori reali: solo nome, età e statistiche pubbliche; niente date di nascita o altri dati personali.
 - **Il repository è pubblico e `main` va in rete**: codice, commit e pull request sono leggibili da chiunque, e ciò che entra in `main` viene pubblicato sulla pagina del gioco pochi minuti dopo. Mai chiavi, password, indirizzi email, salvataggi personali o altri dati privati, nemmeno nei messaggi dei commit.
 
+## Anteprime grafiche
+
+- Prima di pubblicare una modifica grafica, invia al giocatore un’anteprima visiva. Usa una schermata reale del gioco locale quando possibile. Se non puoi ottenerla, usa la grafica originale per preparare una bozza fedele e indicala come bozza.
+
 ## Cosa non fare senza chiedere
 
 - Pubblicare o distribuire il gioco oltre a ciò che è già autorizzato: il repository pubblico e la pagina <https://pelandro.github.io/ultimate-frisbee-game/>, che GitHub aggiorna da solo a ogni modifica entrata in `main`. Tutto il resto (rilasci, altri siti, negozi di app, annunci) va chiesto.

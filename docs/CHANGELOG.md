@@ -4,6 +4,9 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- I Primi passi ora partono nella prima partita: 15 spiegazioni e prove con una barra sotto il campo, tentativi ripetibili e difesa manuale durante le prove difensive.
+- Musica ed effetti sonori hanno interruttori separati. La musica continua all’intervallo e il tifo cresce con il pubblico e le tribune.
+- In carriera il menu apre le Impostazioni. Nei Cambi il bollino D viola sta sotto il ritratto. L’Universe point viene annunciato all’inizio della meta decisiva.
 - Carriera: dopo aver riaperto il gioco, un giocatore assente per un impegno non risulta più infortunato.
 - Al primo avvio si sceglie la lingua; si può sempre cambiare da Impostazioni › Partita.
 - Carriera: con il morale sotto 55 i giocatori possono trovare scuse (judo, storta a basket, serata in un rave, canne, vacanza con aumento), più spesso nelle serie minori.

@@ -231,7 +231,8 @@ catch(e){
     if(!(await page.locator('#evt:not(.hidden)').count()))throw new Error('chiuso il fumetto deve arrivare la scelta dello sponsor');
     // ogni sponsor ha il suo marchio (18-cartelloni.js): i tre della scelta mostrano il cartellone (che ogni nome abbia il marchio lo controlla check.js)
     if(await page.locator('#evOpts .spb').count()!==3)throw new Error('la scelta dello sponsor deve mostrare i tre cartelloni');
-    await vis('#home');await menu('#hTut');await vis('#tut');await page.click('#tuX');await vis('#home');
+    await vis('#home');await menu('#hSet');await vis('#settings');await page.click('#sBack');await vis('#home');
+    await menu('#hHelp');await vis('#guide');await page.click('#gdTut');await vis('#tut');await page.click('#tuX');await vis('#home');
   });
   await step('allenatore e staff: cambio nome dal cruscotto, candidati, assunzione e rinnovo dell\'elenco',async()=>{
     await page.click('#hCoach');await vis('#coachsel');await page.fill('#coS','Bianchi');await page.click('#coGo');await vis('#home');
@@ -540,19 +541,19 @@ catch(e){
     if(await p.locator('#menu').isVisible())await p.click('#bGo');
     await p.waitForSelector('#pp:not(.hidden)',{timeout:15000});
     if(!/come si gioca/i.test(await p.locator('#ppT').innerText()))throw new Error('la prima scheda deve spiegare come si gioca');
-    await p.keyboard.press('Escape');await p.waitForTimeout(150);if(await p.locator('#pause:not(.hidden)').count())throw new Error('con la scheda aperta Esc non deve aprire la pausa sotto');
-    await p.keyboard.press('Enter');await p.waitForTimeout(200);   // Invio = «Capito»
-    await p.waitForSelector('#pp:not(.hidden)',{timeout:25000});   // la prima prova: il pull se tocca a te, altrimenti il passaggio quando hai il disco
-    const t2=await p.locator('#ppT').innerText();
-    if(!/prova/i.test(t2)||!/pull|passa/i.test(t2))throw new Error('il secondo passo deve essere una prova (pull o passaggio): '+t2);
-    if(!/salta questo passo/i.test(await p.locator('#ppOk').innerText()))throw new Error('nelle prove il tasto principale deve essere «Salta questo passo»');
-    await p.keyboard.press('Space');await p.waitForTimeout(150);
-    if(await p.locator('#pp.hidden').count())throw new Error('durante una prova i tasti vanno al gioco, non chiudono il riquadro');
-    await p.click('#ppOk');await p.waitForTimeout(200);
-    await p.waitForSelector('#pp:not(.hidden)',{timeout:25000});
-    await p.click('#ppSkip');if(await p.locator('#pp:not(.hidden)').count())throw new Error('«Esci dal tutorial» deve chiudere il riquadro');
+    await p.keyboard.press('Escape');
+    if(await p.locator('#pause:not(.hidden)').count())throw new Error('con la scheda aperta Esc non deve aprire la pausa sotto');
+    await p.keyboard.press('Enter');
+    await p.waitForFunction(()=>document.querySelector('#ppT').textContent==='Pull');
+    await p.click('#ppOk');
+    const bar=await p.locator('#pp.pp-bar').boundingBox(),campo=await p.locator('#c').boundingBox();
+    if(!bar||campo.y+campo.height>bar.y+1)throw new Error('la barra deve stare fuori dal campo');
+    await p.click('#ppOk');
+    await p.waitForFunction(()=>document.querySelector('#ppT').textContent==='Passaggio');
+    await p.click('#ppSkip');
+    if(await p.locator('#pp:not(.hidden)').count())throw new Error('«Esci dal tutorial» deve chiudere il riquadro');
     const st=await p.evaluate(()=>JSON.parse(localStorage.getItem('ultimate-primi')));
-    if(!st.off||st.d.length!==3||st.d[0]!=='goal')throw new Error('lo stato deve ricordare tre passi e il tutorial spento: '+JSON.stringify(st));
+    if(!st.off||st.d.join(',')!=='goal,pull,throw')throw new Error('lo stato deve ricordare i tre passi: '+JSON.stringify(st));
     await p.waitForTimeout(2500);if(await p.locator('#pp:not(.hidden)').count())throw new Error('uscito dal tutorial non devono comparire altri passi');
     await c.close();
   });

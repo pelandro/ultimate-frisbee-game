@@ -17,7 +17,7 @@ function updateHUD(dt){
   const play=G.mode==='play'||G.mode==='banner'||G.mode==='ready';
   hud.classList.toggle('hidden',!play||G.schemeOpen);
   heroHud();   // superpoteri: i tre pulsanti con il timer (20-superpoteri.js)
-  skipBtn.classList.toggle('hidden',!(G.mode==='cine'||RP.on));if(RP.on||G.mode==='cine'){const st=RP.on?'Salta il replay':'Salta';if(skipBtn.textContent!==st)skipBtn.textContent=st;}
+  skipBtn.classList.toggle('hidden',!(G.mode==='cine'||RP.on)||G.primi==='catchDive');if(RP.on||G.mode==='cine'){const st=RP.on?'Salta il replay':'Salta';if(skipBtn.textContent!==st)skipBtn.textContent=st;}
   if(!play)return;
   scoreSet(elScore0,G.drill?drHud(0):G.score[0]);scoreSet(elScore1,G.drill?drHud(1):G.score[1]);
   $('score').classList.toggle('mini',G.mode==='play');   // durante l'azione restano solo i due numeri; a fine meta tornano i nomi
@@ -47,7 +47,7 @@ function updateHUD(dt){
   const spr=G.mode==='play'&&!!G.flight&&!!G.flight.sparo&&!!G.sprint&&!G.pull;   // SCATTO: solo sui lanci lunghi
   bSprint.classList.toggle('hidden',!spr);
   if(spr){const q=G.sprint.p;bSprint.classList.toggle('on',!!(G.hold&&q.st>3));const f=bSprint.querySelector('.rf');f.style.strokeDashoffset=(RING_C*(1-clamp(q.st/100,0,1))).toFixed(1);f.style.stroke=barColor(q.st);}
-  bSch.classList.toggle('hidden',G.mode!=='ready'||!!G.drill);bSub.classList.toggle('hidden',G.mode!=='ready'||!!G.drill);$('bSimPt').classList.toggle('hidden',G.mode!=='ready'||!!G.drill);
+  bSch.classList.toggle('hidden',G.mode!=='ready'||!!G.drill||!!G.primi&&G.primi!=='schemi');bSub.classList.toggle('hidden',G.mode!=='ready'||!!G.drill||!!G.primi);$('bSimPt').classList.toggle('hidden',G.mode!=='ready'||!!G.drill||!!G.primi);
   $('bTO').classList.toggle('hidden',!(canTimeout(0)&&!G.paused&&!G.schemeOpen&&!G.auto&&G.freeze<=0&&!G.zoomHold));
   bSkipD.classList.toggle('hidden',!canSkipDef());
   bDef.classList.toggle('hidden',!defNow);bDef.classList.toggle('on',G.dmode[0]===1);bDef.textContent=G.dmode[0]?'Marcatura: anticipo':'Marcatura: contenimento';

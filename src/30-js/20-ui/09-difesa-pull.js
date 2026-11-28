@@ -5,7 +5,7 @@ const DEF_KEY='ultimate-difesa',DEF_LBL=['Automatica','Manuale','Saltata'];
 const DEF_TXT=['i tuoi difendono da soli, restano pochi tuffi e salti a tempo','guidi un difensore: handblock e tuffi a ogni occasione','il possesso avversario si risolve in un istante'];
 function setDefMode(v){G.opt.def=v;try{localStorage.setItem(DEF_KEY,String(v));}catch(e){}ddrag=null;G.cdir=null;G.ctrl=null;}
 const bSkipD=$('bSkipD');
-const canSkipDef=()=>!!G.inMatch&&!G.drill&&!G.paused&&G.mode==='play'&&G.poss===1&&!G.pull&&!G.diveWin&&!!(G.holder||G.flight);
+const canSkipDef=()=>!!G.inMatch&&!G.drill&&!G.primi&&!G.paused&&G.mode==='play'&&G.poss===1&&!G.pull&&!G.diveWin&&!!(G.holder||G.flight);
 /* SALTA: il possesso avversario viene giocato in un istante dal motore vero (stesse statistiche, stessa fatica, stessi schemi), finche' il disco
    torna a te o loro segnano. Durante il salto non ci sono stacchi ne' momenti a tempo: decidono le statistiche. Alla fine una fascia dice com'e' andata. */
 function skipDefense(){
@@ -42,7 +42,7 @@ function defTick(){
 /* PULL A TEMPO (le regole sono nel motore, 09-ia-lanciatore-pull.js): pm = indicatore attivo. Fase 0: la potenza sale e scende; fase 1: la direzione spazza il campo.
    Ogni tocco (schermo, Spazio, tasto A del controller) ferma l'indicatore; al secondo parte il pull. Il punto d'arrivo si muove sul campo: non serve leggere numeri. */
 let pm=null;
-const pullMineNow=()=>G.mode==='ready'&&G.pullTeam===0&&!G.auto&&!G.schemeOpen&&!G.paused&&!!G.puller;
+const pullMineNow=()=>G.mode==='ready'&&G.primi!=='schemi'&&G.pullTeam===0&&!G.auto&&!G.schemeOpen&&!G.paused&&!!G.puller;
 const pmSpd=()=>G.drill?0.78:[0.9,1,1.12,1.12][G.lvl?G.lvl[1]|0:0];   // la difficolta' della partita accelera un poco gli indicatori; nella lezione vanno piano
 function pullTick(){
   if(!pullMineNow()){pm=null;return;}

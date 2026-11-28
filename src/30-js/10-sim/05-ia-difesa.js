@@ -88,7 +88,10 @@ function updateDefenders(dt){
     q.nT-=dt;
     if(q.nT<=0){const A=clamp(1+(0.6-q.s.vis/100)*5,0.2,3)*AIK(q.t).mark*(hasT(q,'lock')?0.5:1)*(1-ADAPT_TIGHT*ak)*(1-FIT_TIGHT*ft);q.nx=rnd(-A,A);q.ny=rnd(-A,A);q.nT=rnd(0.6,1.4);}
     if(q===G.ctrl&&G.cdir){   // lo guidi tu
-      const sp=sprinting(q);moveTo(q,clamp(q.x+G.cdir.x*8,0.5,FIELD_L-0.5),clamp(q.y+G.cdir.y*8,0.5,FIELD_W-0.5),dt,sp?SPRINT_AM:1.12,sp?SPRINT_VM:1);q.flD=0;q.m.dif+=0;continue;
+      const sp=sprinting(q),x=q.x,y=q.y;
+      moveTo(q,clamp(x+G.cdir.x*8,0.5,FIELD_L-0.5),clamp(y+G.cdir.y*8,0.5,FIELD_W-0.5),dt,sp?SPRINT_AM:1.12,sp?SPRINT_VM:1);
+      if(G.primi==='def')G.primiMoved+=hyp(q.x-x,q.y-y);
+      q.flD=0;continue;
     }
     if(q.fl){
       if(q.flD>0){q.flD-=dt;}

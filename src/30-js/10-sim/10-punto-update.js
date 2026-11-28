@@ -1,11 +1,12 @@
 /* ---- punto, aggiornamento ---- */
 function scoreGoal(team,p,kind){
+  if(G.primi&&(team===1||G.primi!=='score')){G.primiMiss=true;G.flight=null;return;}
   if(G.drill){G.flight=null;HOOKS.sfx('goal',team);HOOKS.toast(team===0?'Meta!':'Meta avversaria',team);drillEvt('goal',team,p,kind);return;}   // allenamento: niente punteggio, si ricomincia
   if(G.seen){G.seen.att[G.sch.att]=(G.seen.att[G.sch.att]||0)+1;G.seen.def[G.sch.def]=(G.seen.def[G.sch.def]||0)+1;}   // gli schemi che hai appena usato: l'avversario se li ricorda
   if(G.ptLog){G.ptLog.push({rec:1-G.pullTeam,by:team,att:G.sch.att,def:G.sch.def});const R=team===0?G.schR:G.defR,k=team===0?G.sch.att:G.sch.def;if(R)(R[k]||(R[k]=[0,0]))[1]++;}   // per il riepilogo della partita
   {const a=G.adw||(G.adw={k:'',n:0});   // break subiti di fila con lo stesso schema d'attacco: dal secondo l'interfaccia lo segnala prima del pull (#adw)
    if(team===1&&G.pullTeam===1){const k=(G.rep&&G.rep[0].k)||G.sch.att;if(a.k===k)a.n++;else{a.k=k;a.n=1;}}else a.n=0;}
-  checkInjuries();
+  if(!G.primi)checkInjuries();
   if(team===1){const k=G.opp.att,r=G.aiRec||(G.aiRec={});(r[k]||(r[k]=[0,0]))[0]++;}
   G.score[team]++;G.mode='banner';HOOKS.sfx('goal',team);HOOKS.shake(team===0?7:4);G.banner={t:2.4,team,scorer:p,kind};G.flight=null;
   HOOKS.vibe(40);
@@ -101,8 +102,9 @@ function update(dt){
   heroTick(dt);   // superpoteri: timer, trasformazioni e IA (27-superpoteri.js)
   if(G.drill&&G.drill.wait>0){G.drill.wait-=dtr;if(G.drill.wait<=0){if(G.drill.done){G.drill.wait=0;HOOKS.drill('end');return;}drillStart();return;}}
   if(G.freeze>0){G.freeze-=dt;return;}
-  updatePlay(dt);
-  updateAttackers(dt);updateDefenders(dt);separate();
+  if(G.primi!=='defDive'&&G.primi!=='handblock'&&G.primi!=='score'){
+    updatePlay(dt);updateAttackers(dt);updateDefenders(dt);separate();
+  }
   if(G.flight){   // lo scatto sui lanci lunghi consuma energia: meno con la Resistenza alta
     for(const q of (G.sprint&&G.hold?[G.sprint.p]:[]).concat(G.aiSprint||[]))
       if(q.fl&&q.st>0&&hyp(q.x-q.fl.x,q.y-q.fl.y)>0.6)q.st=Math.max(0,q.st-SPRINT_DRAIN*heroDrain(q)*(1.5-q.s.res/100)*(hasT(q,'iron')?0.7:1)*(G.aiSprint&&G.aiSprint.includes(q)?AI_SPRINT_COST:1)*dt);   // l'IA scatta piu' spesso e si stanca meno
@@ -125,6 +127,10 @@ function update(dt){
     if(h.t===1&&!G.auto&&defMan()&&!G.skip){   // il cerchio dell'handblock deve sempre partire intero: se il tuo marcatore arriva quando manca poco al lancio, l'avversario aspetta
       const mk=G.marker;
       if(mk&&mk.t===0&&G.hbOk!==h&&hyp(mk.x-h.x,mk.y-h.y)<3.8){const need=hbDur(h,mk)*(G.k||K_DEF)+0.04;if(G.think<need)G.think=need;G.hbOk=h;}
+    }
+    if(h.t===1&&G.primi){
+      if(G.primi==='handblock'&&((G.think-=dt)<=0))doThrow(h,T[1][1].x,T[1][1].y,T[1][1],0);
+      return;
     }
     if((h.t===1||G.auto)&&!waiting){
       const lv=AIK(h.t);
