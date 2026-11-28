@@ -2,7 +2,7 @@
    Come nell'ultimate vero: una pausa a partita (TMO_N), chiamata da chi ha il disco. Lo stall riparte da zero, la tua squadra in campo recupera un poco di energia
    (TMO_REST) e si puo' cambiare lo schema d'attacco prima di ripartire. Si chiama solo con il disco in mano, fuori dal volo e dal pull.
    G.tmo[squadra] = timeout gia' usati (si azzera in newGame; sopravvive alla sospensione, vedi suspSnap).
-   L'etichetta della situazione sopra il portatore (stall, ultimo lancio, universe point) e' qui: la usano il campo e le prove. */
+   L'etichetta della situazione sopra il portatore (stall e ultimo lancio) e' qui: la usano il campo e le prove. */
 const TMO_N=1,TMO_REST=14;
 const tmoLeft=t=>TMO_N-((G.tmo&&G.tmo[t])|0);
 function canTimeout(t){return !!G.inMatch&&!G.drill&&G.mode==='play'&&!G.flight&&!G.walk&&!G.pull&&!!G.holder&&G.holder.t===t&&tmoLeft(t)>0;}
@@ -20,9 +20,7 @@ function timeoutRescheme(){if(G.holder&&G.holder.t===0){G.pb=G.pb||[null,null];s
 // etichetta della situazione: testo e colore, oppure null. n = conteggio dello stall (1..10) se sei marcato
 function situationLabel(h,n){
   if(!h||G.mode!=='play')return null;
-  const t=G.target-1,a=G.score[0],b=G.score[1];
   if(n>=9)return {txt:'ULTIMO LANCIO',hot:true};
   if(n>=6)return {txt:'STALL '+n,hot:n>=8};
-  if(a===t&&b===t)return {txt:'UNIVERSE POINT',hot:false};
   return null;
 }

@@ -14,10 +14,10 @@ function startMatch(resume){
   G.sch=useCareerSchemes(SV.scheme);fixLines();G.lines={o:matchLine('lineO'),d:matchLine('lineD'),auto:!!SV.autoSub};G.injK=staffInjuryK();
   hideScreens();$('over').classList.add('hidden');
   startPoint(G.nextRec);cam.snap=true;
-  if(first)openSchemes(true);   // la prima volta si aprono gli schemi, con il rimando a tutorial e guida
-  else if(!resume)showIntro(m);   // finali, derby, ultima giornata con qualcosa in palio: un cartello breve prima del pull
+  if(first&&!ppPending())openSchemes(true);   // la prima volta si aprono gli schemi, con il rimando a tutorial e guida
+  else if(!first&&!resume)showIntro(m);   // finali, derby, ultima giornata con qualcosa in palio: un cartello breve prima del pull
 }
-function quitMatch(){if(!QM.on&&SV&&SV.susp){SV.susp=null;persist();}   // abbandonata: niente da riprendere
+function quitMatch(){ppStop();if(!QM.on&&SV&&SV.susp){SV.susp=null;persist();}   // abbandonata: niente da riprendere
   $('half').classList.add('hidden');$('pause').classList.add('hidden');G.paused=false;restoreForm();if(QM.on){exitQuick(quickNext());return;}G.schemeOpen=false;G.inMatch=false;$('menu').classList.add('hidden');$('over').classList.add('hidden');showScreen('home');}
 const SCREENS=['title','slots','quick','home','league','team','coachsel','roster','event','train','market','club','school','tourn','settings','posedit','ut','utPack','utShop','utTeam','utMode','utReal','utBoard','utEquip','utHero'];
 let screenTipTimer;

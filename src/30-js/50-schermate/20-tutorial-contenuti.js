@@ -19,7 +19,7 @@ les:[
 [`<b>Handler</b> lancia, <b>Cutter</b> taglia e riceve, <b>Defender</b> difende.`,
 `<b>Taglio</b>: corsa per smarcarsi. <b>Marcatore</b>: chi marca il portatore. <b>Handblock</b>: blocco del lancio con la mano. <b>Tuffo</b>: slancio per un disco lontano. <b>Huck</b>: lancio lungo e alto.`,
 `<b>Overall</b> (OVR): il valore di un giocatore, da 1 a 99.`]],
-tip:`Non serve imparare tutto subito: nelle prime tre partite compaiono schede che spiegano ogni cosa quando serve.`},
+tip:`I Primi passi si aprono nella tua prima partita. Puoi fare le prove al tuo ritmo.`},
 {id:'ini-comandi',t:'Menu e comandi',b:[
 `Dal menu iniziale scegli: <b>Carriera</b> (più stagioni: si apre con i tre slot), <b>Partita veloce</b>, <b>Torneo</b> e <b>Ultimate Team</b> (carte). Guida, Guida passo passo, Audio e Impostazioni stanno in «Altro», in alto a destra.`,
 [`<b>Touch e mouse</b>: per lanciare trascina il dito all’indietro e rilascia; per chiamare un compagno toccalo; in difesa usa i pulsanti rossi in basso.`,
@@ -28,9 +28,9 @@ tip:`Non serve imparare tutto subito: nelle prime tre partite compaiono schede c
 `Le <b>Impostazioni</b> (menu iniziale, in «Altro», e pausa) hanno quattro schede: Partita, Comandi, Schermo e audio, Avanzate.`],
 tip:`Sul telefono si gioca in orizzontale: se lo tieni in verticale il gioco si gira da solo.`},
 {id:'ini-primi',t:'Imparare giocando',w:'Prime partite',b:[
-`La prima partita è anche un tutorial: in alto un riquadro ti chiede una cosa alla volta (tirare il pull, passare, chiamare un taglio, difendere, segnare) mentre la partita continua.`,
-[`Quando ci riesci il riquadro diventa verde; se sbagli ti dice di riprovare e, se tardi, ti dà un suggerimento.`,
-`«Salta questo passo» va avanti, «Esci dal tutorial» lo spegne. Dura le prime tre partite; per rifarlo: Impostazioni › Partita › Suggerimenti.`]],
+`Nella prima partita trovi 15 Primi passi. Leggi a gioco fermo, poi segui la barra sotto il campo.`,
+[`Se sbagli, riprovi senza subire mete. Per le prove difensive guidi tu un difensore. Alla fine riparte la partita con le tue impostazioni.`,
+`Puoi saltare una prova o uscire dal tutorial. Per rifarlo, spegni e riaccendi i Suggerimenti in Impostazioni › Partita.`]],
 tip:`Una Partita veloce in Facile è il posto migliore per imparare a mirare un huck o un lancio alto.`}
 ]});
 
@@ -68,7 +68,7 @@ tip:`Gli avversari sfiniti hanno una goccia di sudore: cerca il duello con loro.
 {id:'att-stall',t:'Stall, vento e momenti decisivi',b:[
 `Quando un difensore ti marca parte lo <b>stall</b>: lo vedi in alto («Stall 3») e, da 6, sopra chi ha il disco. A 9 c’è l’<b>ULTIMO LANCIO</b>, a 10 perdi il disco. Passa subito, anche corto, o chiama il <b>timeout</b>.`,
 [`<b>Serie</b>: tanti lanci riusciti di fila (alone rosso) migliorano i lanci; due errori di fila (alone azzurro) li peggiorano.`,
-`<b>MATCH POINT</b> a una meta dalla vittoria, <b>UNIVERSE POINT</b> se lo sono entrambe.`,
+`A inizio meta compare <b>MATCH POINT</b> se una squadra è a una meta dalla vittoria, <b>UNIVERSE POINT</b> se lo sono entrambe.`,
 `<b>Vento</b> (in alto a destra): con il vento alle spalle si lancia più lungo, controvento meno; a ogni meta si cambia campo. <b>Pioggia e neve</b> rendono prese e lanci più difficili. Si spengono da Impostazioni › Partita › Meteo.`]],
 tip:`Con lo stall alto non cercare il lancio perfetto: uno scarico corto vale più di un huck forzato.`}
 ]});
@@ -109,7 +109,7 @@ tip:`Ruota i giocatori: un titolare fresco rende più di una stella sfinita.`},
 {id:'sch-tempo',t:'Timeout, intervallo, pausa e simulazione',b:[
 [`<b>Timeout</b>: uno a partita, con il disco in mano. Azzera lo stall e permette di cambiare schema.`,
 `<b>Intervallo</b>: alla 4ª meta (6ª su 11, 8ª su 15). Chi aveva iniziato in difesa riprende in attacco.`,
-`<b>Pausa</b> (tasto «II»): regoli audio e difesa, apri la guida, sospendi o abbandoni.`,
+`In <b>Pausa</b> (tasto «II») puoi regolare musica, effetti sonori e difesa, aprire la guida, sospendere o abbandonare.`,
 `<b>Simula meta</b> (a inizio meta): la gioca il computer per entrambe le squadre.`,
 `<b>Durata</b>: Arcade 7 mete, Competitiva 11, Lunga 15. <b>Difficoltà</b>: da Facile a Estrema.`],
 `In carriera, nel torneo e in Ultimate Team abbandonare è una <b>sconfitta a tavolino</b>: per fermarti usa <b>Sospendi e continua più tardi</b>.`],

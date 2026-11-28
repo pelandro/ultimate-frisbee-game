@@ -1,104 +1,159 @@
-/* ---- PRIMI PASSI: il tutorial dentro la prima partita, imparando facendo ----
-   Prima erano schede da leggere che fermavano il gioco. Ora quasi ogni passo e' una prova: il riquadro in alto dice che cosa fare
-   («Lancia a un compagno», «Chiama un taglio», «Fai un lancio alto»...), la partita continua e il passo si chiude solo quando l'hai fatto davvero,
-   con un riscontro («Passaggio riuscito!»). Se sbagli lo dice e ti fa riprovare; se dopo un po' non ci riesci compare un suggerimento in piu'.
-   Mentre impari a lanciare il conteggio dello stall e' fermo o rallentato (G.stallK, letto dal motore); si rimette normale nel passo che lo spiega.
-   Restano poche schede da leggere (obiettivo, dopo la meta, schemi, cambi e pausa): quelle fermano il gioco finche' non premi «Capito».
-   Vale per le prime tre partite di qualsiasi modalita' (allenamento escluso); «Salta questo passo» passa oltre, «Esci dal tutorial» lo spegne.
-   Cio' che hai gia' fatto resta segnato sul dispositivo (chiave «ultimate-primi»). Si riaccende dalle Impostazioni (Partita › Suggerimenti: no, poi sì). */
-const PP_KEY='ultimate-primi',PP_MAXM=3;
-let PP={d:[],m:0,off:0};   // d: passi fatti o visti, m: partite iniziate con il tutorial, off: spento (saltato o finito)
-try{const o=JSON.parse(localStorage.getItem(PP_KEY)||'null');if(o&&Array.isArray(o.d))PP={d:o.d.filter(x=>typeof x==='string').slice(0,30),m:o.m|0,off:o.off?1:0};}catch(e){}
+/* Primi passi: si usano i comandi della partita, su una copia del punto iniziale.
+   Al ritorno in partita contano solo le azioni giocate dopo le prove. */
+const PP_KEY='ultimate-primi';
+let PP={d:[],off:0};
+try{const o=JSON.parse(localStorage.getItem(PP_KEY)||'null');if(o&&Array.isArray(o.d))PP={d:o.d.filter(x=>typeof x==='string'),off:o.off?1:0};}catch(e){}
 const ppSave=()=>{try{localStorage.setItem(PP_KEY,JSON.stringify(PP));}catch(e){}};
-function ppReset(){PP={d:[],m:0,off:0};ppSave();}
-// gesti che il motore non conta da solo: li segnala l'interfaccia (chiamate rapide in 05-input-impostazioni.js)
+function ppReset(){PP={d:[],off:0};ppSave();}
 const ppEv={};
 function tutEv(k){ppEv[k]=(ppEv[k]|0)+1;}
-const ppHold=()=>{const h=G.holder;return !!(h&&h.t===0&&!G.flight&&G.mode==='play'&&G.freeze<=0&&!G.zoomHold&&!G.walk&&!G.pull);};   // il disco e' tuo e puoi lanciare
-const ppSeen=id=>PP.d.includes(id);
-const ppMy=f=>!!(f&&f.team===0);
-/* passi: info = scheda da leggere (ferma il gioco); gli altri sono prove con done(b) (b = fotografia dei contatori all'inizio della prova).
-   sk = velocita' dello stall durante la prova (0 fermo, 1 normale); h = suggerimento se dopo 14 s non ci sei ancora riuscito; ok = riscontro */
 const PP_STEPS=[
-  {id:'goal',info:1,t:'Come si gioca',x:'Si segna prendendo il disco dentro la meta avversaria. Chi ha il disco non può correre: si avanza solo passandolo. I Primi passi ti propongono una prova alla volta durante la partita. Puoi saltare una prova o continuare senza suggerimenti.',when:()=>G.mode==='ready'},
-  {id:'pull',t:'Prova: tira il pull',x:'Ogni punto comincia con il pull, il lancio lungo agli avversari. Tocca una volta per fermare la POTENZA nel verde, poi una seconda per la DIREZIONE al centro.',h:'Guarda le due barre in basso: il primo tocco quando la potenza è nel verde, il secondo quando la direzione è al centro.',
-    when:()=>pullMineNow(),done:()=>!!G.pull||G.mode==='play',ok:'Pull tirato! Più cade in fondo al campo, più la tua difesa parte avvantaggiata.'},
-  {id:'throw',side:0,t:'Prova: passa il disco',x:'Appoggia il dito, trascinalo all’indietro come una fionda verso un compagno e rilascia: l’arco mostra dove arriva il disco. Finché non ci riesci lo stall è fermo.',sk:0,
-    h:'Lancia dove il compagno sta andando, non dove si trova. Più trascini, più il lancio va lontano: per i primi passaggi bastano pochi centimetri.',
-    when:()=>ppHold(),done:b=>(G.st.cmp[0]|0)>b.cmp,fail:b=>(G.st.thr[0]|0)>b.thr+b.miss,retry:'Quasi! Il disco non è arrivato: riprova con un passaggio più corto, verso un compagno libero.',ok:'Passaggio riuscito! È così che si avanza.'},
-  {id:'calls',side:0,t:'Prova: chiama un taglio',x:'Tocca un compagno senza trascinare: gli chiedi di smarcarsi («VIENI!» o «LUNGO!»). Poi lancia a lui.',sk:0.5,h:'Un tocco breve sopra un tuo compagno, non sul portatore.',
-    when:()=>ppHold()&&ppSeen('throw'),done:b=>(ppEv.call|0)>b.call,ok:'Chiamata fatta: il compagno taglia e ti offre il passaggio. Toccando chi ha il disco rimetti tutti in posizione.'},
-  {id:'iso',side:0,t:'Prova: isolamento',x:'Tieni premuto il dito su un compagno: taglia solo lui e gli altri gli liberano lo spazio. Usalo con il tuo giocatore più veloce.',sk:0.5,h:'Tieni il dito fermo sul compagno per circa mezzo secondo, finché compare «ISO!».',
-    when:()=>ppHold()&&ppSeen('calls'),done:b=>(ppEv.iso|0)>b.iso,ok:'Isolamento chiamato: ha tutto lo spazio per lui.'},
-  {id:'alto',side:0,t:'Prova: lancio alto',x:'Il lancio alto scavalca il marcatore: tocca due volte un punto libero del campo e tieni giù il secondo tocco per mirare (oppure usa due dita).',sk:0.5,h:'Due tocchi veloci nello stesso punto, lontano dai giocatori, e al secondo resta giù col dito mentre miri.',
-    when:()=>ppHold()&&ppSeen('iso'),done:()=>!!(G.flight&&ppMy(G.flight)&&G.flight.high),ok:'Lancio alto! Scavalca la difesa, ma sui lanci lunghi è più lento e meno preciso.'},
-  {id:'stall',side:0,t:'Prova: passa prima del 10',x:'Ora il conteggio è vero: quando il difensore ti marca conta fino a 10 (lo vedi in alto, «Stall 3»…). A 10 perdi il disco: passa prima, anche corto.',sk:1,h:'Non aspettare il lancio perfetto: un passaggio corto a un compagno vicino azzera il conteggio.',
-    when:()=>ppHold()&&ppSeen('alto')&&G.stallT>=2&&!!G.marker,done:b=>(G.st.thr[0]|0)>b.thr,ok:'Passato in tempo: ogni passaggio fa ripartire il conteggio da zero.'},
-  {id:'def',side:1,t:()=>defMan()?'Prova: difendi':'In difesa',x:()=>defMan()?'Guida il difensore con l’anello azzurro (trascina il dito). Quando compare un cerchio che si stringe, premi la mano (handblock) o TUFFO mentre arriva sull’anello interno. Riprenditi il disco.':'I tuoi difendono da soli. Ogni tanto arriva un momento a tempo: tocca quando il cerchio si stringe sull’anello. Aspetta che il disco torni a te.',
-    h:()=>defMan()?'Stai vicino all’uomo che hai davanti: l’handblock riesce solo se sei addosso a chi lancia.':'Puoi anche premere «Salta» per far giocare il loro attacco in un attimo.',
-    when:()=>G.mode==='play'&&G.poss===1&&!G.pull&&ppSeen('goal'),done:b=>G.score[1]>b.sc1||G.poss===0||G.pointNo!==b.pno,ok:()=>ppB&&G.score[1]>ppB.sc1?'Meta subita: capita. Alla prossima riprovaci.':'Disco recuperato! Ora attacchi tu.'},
-  {id:'score',side:0,t:'Prova: segna una meta',x:'Porta il disco nella meta avversaria (il rettangolo in fondo): un compagno che lo prende là dentro segna. Avanza a passaggi, senza fretta.',sk:1,h:'Lancia verso un compagno che corre verso la meta: chiamagli un taglio «LUNGO!» toccandolo quando è lontano.',
-    when:()=>G.mode==='play'&&G.poss===0&&ppSeen('stall'),done:b=>G.score[0]>b.sc0,ok:'META! Prima meta segnata. Dopo ogni meta si cambia campo e chi ha segnato tira il pull.'},
-  {id:'next',info:1,t:'Il timeout',x:'Quando hai il disco puoi chiamare un Timeout (uno a partita, in basso a sinistra): azzera lo stall e fa riprendere fiato. Usalo quando il conteggio è alto e nessuno è libero.',when:()=>G.mode==='ready'&&G.pointNo>=2},
-  {id:'schemi',info:1,t:'Gli schemi',x:'A inizio meta «Schemi» sceglie come attaccare e come difendere. Nessuno schema vince sempre: nel menu trovi cosa batte e cosa soffre ognuno (la zona, per esempio, ferma il Verticale ma soffre l’Orizzontale).',when:()=>G.mode==='ready'&&G.pointNo>=3&&!G.schemeOpen},
-  {id:'sim',info:1,t:'Cambi, Simula e Pausa',x:()=>'Accanto a «Schemi» trovi «Cambi» (chi gioca) e «Simula meta» (la gioca il computer). Il tasto II in alto ferma la partita: da lì «Sospendi» la salva per continuare più tardi.'+(PP.d.length>=PP_STEPS.length-1?' Hai finito i Primi passi: il resto è nel Tutorial completo, dal menu.':''),when:()=>G.mode==='ready'&&G.pointNo>=4&&!G.schemeOpen&&(ppSeen('score')||G.pointNo>=7)}
+  {id:'goal',t:'Come si gioca',x:'Segni quando un compagno prende il disco nella meta avversaria. Con il disco in mano non puoi correre. Fai una prova alla volta e riprova se sbagli.'},
+  {id:'pull',t:'Pull',x:'Il pull apre ogni meta. Tocca per fermare la potenza nel verde, poi tocca di nuovo quando la direzione è al centro.',a:'Ferma la potenza, poi la direzione.',done:()=>!!G.pull||G.mode==='play'},
+  {id:'throw',t:'Passaggio',x:'Trascina all’indietro come con una fionda e rilascia per lanciare. Il cerchio dell’indicatore mostra la zona in cui può cadere il disco.',a:'Completa un passaggio a un compagno.',done:()=>G.st.cmp[0]>0},
+  {id:'calls',t:'Chiamare un taglio',x:'Tocca un compagno senza trascinare per dirgli di smarcarsi. Lancia verso il punto in cui sta correndo.',a:'Tocca un compagno.',done:()=>!!ppEv.call},
+  {id:'iso',t:'Isolamento',x:'Tieni premuto su un compagno. Solo lui taglia, mentre gli altri gli fanno spazio.',a:'Tieni premuto su un compagno finché compare «ISO!».',done:()=>!!ppEv.iso},
+  {id:'alto',t:'Lancio alto',x:'Tocca due volte il campo libero e tieni premuto il secondo tocco per mirare. Puoi anche trascinare con due dita, oppure iniziare a trascinare con un dito e poi toccare con un altro senza sollevare il primo.',a:'Lancia alto con uno dei tre gesti.',done:()=>!!(G.flight&&G.flight.team===0&&G.flight.high)},
+  {id:'catchDive',t:'Presa in tuffo',x:'Tocca quando l’indicatore entra nel verde. Nel giallo puoi ancora prendere il disco. Nel nero lo perdi.',a:'Tocca nella zona verde.',done:()=>G.st.dive[0]>0},
+  {id:'stall',t:'Stall',x:'Il marcatore vicino conta fino a 10. A 10 perdi il disco. Passa prima che finisca il conteggio.',a:'Completa un passaggio prima del 10.',done:()=>G.st.cmp[0]>0},
+  {id:'def',t:'Difesa manuale',x:'Trascina per guidare il difensore con l’anello azzurro. Puoi toccare un altro difensore per passare a lui.',a:'Trascina per muovere il difensore.',done:()=>G.primiMoved>=0.3},
+  {id:'handblock',t:'Handblock',x:'Il pulsante rosso con la mano si illumina in basso a destra. Premilo quando il cerchio che si stringe raggiunge l’anello interno.',a:'Premi la mano quando i due cerchi coincidono.',done:()=>G.st.hb[0]>0},
+  {id:'defDive',t:'Tuffo difensivo',x:'Il pulsante rosso del tuffo si illumina in basso a destra. Premilo quando il cerchio che si stringe raggiunge l’anello interno.',a:'Premi il tuffo quando i due cerchi coincidono.',done:()=>G.st.dive[0]>0},
+  {id:'score',t:'Segnare una meta',x:'Servi un compagno nella meta avversaria. Se prende il disco dentro il rettangolo di fondo, segni.',a:'Completa un passaggio dentro la meta.',done:()=>G.score[0]>0},
+  {id:'next',t:'Timeout',x:'Quando hai il disco puoi chiamare un Timeout, una volta a partita. Azzera lo stall e fa recuperare energia.',a:'Premi «Timeout», poi «Riprendi».',done:()=>G.tmo[0]>0&&!G.schemeOpen},
+  {id:'schemi',t:'Schemi',x:'Prima del pull apri «Schemi» per scegliere come attaccare e come difendere. Puoi leggere come risponde ogni schema a quelli avversari.',a:'Apri «Schemi», poi torna in campo.',done:()=>!!ppEv.schemi&&!G.schemeOpen},
+  {id:'sim',t:'Cambi, Simula e Pausa',x:'Prima del pull, «Cambi» sceglie chi gioca e «Simula meta» fa giocare il computer. Il tasto II mette in pausa. In carriera puoi anche sospendere e riprendere più tardi.'}
 ];
-const ppTxt=v=>typeof v==='function'?v():v;
-let ppCur=null,ppWas=false,ppB=null,ppT0=0,ppOkT=0,ppHintOn=false,ppAway=0;
-const ppOkNow=()=>tipsOn()&&!PP.off&&PP.d.length<PP_STEPS.length&&!!G.inMatch&&!G.drill&&!DR.on&&!G.skip;
-function ppPaint(sub,cls){
-  const s=ppCur;if(!s)return;
-  $('ppN').textContent=`Primi passi · ${Math.min(PP.d.length+1,PP_STEPS.length)} di ${PP_STEPS.length}`+(s.info?'':' · prova');
-  $('ppT').textContent=ppTxt(s.t);$('ppX').textContent=ppTxt(s.x);
-  const h=$('ppH');h.textContent=sub||'';h.classList.toggle('hidden',!sub);
-  const box=$('pp').firstElementChild;box.classList.toggle('ok',cls==='ok');box.classList.toggle('try',!s.info&&cls!=='ok');
-  $('ppOk').textContent=s.info?'Capito':'Salta questo passo';$('ppOk').className=s.info?'go':'sec';
-  $('ppOk').classList.toggle('hidden',cls==='ok');$('ppSkip').classList.toggle('hidden',cls==='ok');
+const ppDefense=id=>['def','handblock','defDive'].includes(id);
+let ppCur=null,ppPhase='',ppReal=null,ppT0=0,ppSuccess=0,ppRetry=false;
+const ppPending=()=>!PP.off&&tipsOn()&&PP_STEPS.some(s=>!PP.d.includes(s.id));
+function ppLayout(bar){
+  const panel=$('pp');
+  panel.classList.toggle('pp-bar',bar);
+  document.body.classList.toggle('pp-live',bar);
+  if(bar)ppMeasure();
+  else document.body.style.removeProperty('--pp-space');
+  resize();
 }
-function ppShow(s){
-  ppCur=s;ppT0=G.tick;ppOkT=0;ppHintOn=false;ppAway=0;
-  ppB={thr:G.st.thr[0]|0,cmp:G.st.cmp[0]|0,miss:0,call:ppEv.call|0,iso:ppEv.iso|0,sc0:G.score[0],sc1:G.score[1],pno:G.pointNo};
-  if(s.info){G.paused=true;clearMatchInput();}   // solo le schede da leggere fermano il gioco
-  ppPaint();$('pp').classList.remove('hidden');
-  if(s.info)$('ppOk').focus({preventScroll:true});
+function ppMeasure(){
+  if(!document.body.classList.contains('pp-live'))return;
+  document.body.style.setProperty('--pp-space',Math.ceil($('pp').offsetHeight*UIZ)+'px');
+}
+new ResizeObserver(()=>{if(document.body.classList.contains('pp-live')){ppMeasure();if(cv.clientHeight!==CH)resize();}}).observe($('pp'));
+function ppPaint(note){
+  const s=ppCur,bar=ppPhase==='play';
+  $('ppN').textContent=`Primi passi · ${PP_STEPS.indexOf(s)+1} di ${PP_STEPS.length}`;
+  $('ppT').textContent=s.t;$('ppX').textContent=bar?s.a:s.x;
+  $('ppH').textContent=note||'';$('ppH').classList.toggle('hidden',!note);
+  $('ppOk').textContent=bar?'Salta questo passo':(s.done?'Prova':'Capito');
+  $('ppOk').className=bar?'sec':'go';
+  $('pp').classList.remove('hidden');
+  ppLayout(bar);
+}
+function ppStart(){
+  const copy=structuredClone({game:G,teams:T});
+  ppReal={game:{...G},teams:T.slice()};
+  Object.assign(G,copy.game,{opt:G.opt,score:[0,0],tmo:[0,0],heroOn:false,hz:null,hk:null});
+  [T[0],T[1]]=copy.teams;
+  ppShow();
+}
+function ppStop(){
+  if(!ppReal)return;
+  const tick=G.tick,opt=G.opt;
+  for(const id of ['menu','tout'])$(id).classList.add('hidden');
+  clearMatchInput();
+  for(const k of Object.keys(G))if(!(k in ppReal.game))delete G[k];
+  Object.assign(G,ppReal.game,{tick,opt});
+  [T[0],T[1]]=ppReal.teams;
+  toasts.length=0;floaters.length=0;
+  ppReal=null;ppCur=null;ppPhase='';cine=null;pm=null;cam.snap=true;band=null;
+  $('pp').classList.add('hidden');ppLayout(false);
+}
+function ppScenario(){
+  const id=ppCur.id,side=ppDefense(id)?1:0;
+  clearMatchInput();resetStats();placeTeams(1);pm=null;band=null;
+  setWind(0,0);setWx(0);
+  Object.assign(G,{primi:id,primiManual:!!side,primiMiss:false,primiMoved:0,goalWait:null,diveCool:0,slowK:1,k:1,stallK:id==='stall'?1:0,score:[0,0],tmo:[0,0],paused:false});
+  if(id!=='pull'&&id!=='schemi'){
+    const d=dirOf(side),x=id==='score'?(d>0?FIELD_L-EZ-6:EZ+6):FIELD_L/2;
+    const atk=T[side],def=T[1-side],h=atk[0];
+    atk.forEach((p,i)=>{p.x=x+d*(i?(id==='score'?9:5)+i*2:0);p.y=i===1||!i?MID:clamp(MID+(i-4)*5,3,FIELD_W-3);p.cutT=4;});
+    def.forEach((p,i)=>{p.x=x+d*(id==='defDive'?10+i:2+i*2);p.y=id==='score'?(i%2?5:FIELD_W-5):(i?clamp(MID+(i-4)*5+3,3,FIELD_W-3):MID+0.6);});
+    Object.assign(G,{mode:'play',poss:side,puller:null,holder:h,holdT:0,hbAtt:null,hbOk:null,think:side?1.8:1,stallT:id==='stall'?4:0});
+    Object.assign(G.disc,{x:h.x,y:h.y,z:1});
+    assignMarks();
+    if(id==='def'||id==='handblock'){G.ctrl=def[0];G.ctrlH=h;G.marker=def[0];}
+    if(id==='catchDive')ppCatchDive(h,atk[1]);
+  }
+  cam.snap=true;ppT0=G.tick;ppSuccess=0;ppRetry=false;
+}
+function ppCatchDive(h,p){
+  // Si prepara un disco oltre la portata, poi il motore apre la normale scena del tuffo.
+  const x=p.x+dirOf(0)*3.3;G.noCine=false;
+  const f={team:0,thrower:h,intended:p,tx:x,ty:p.y,sx:h.x,sy:h.y,cat:'lan',sp:{cd:0},stall:0};
+  G.holder=null;G.marker=null;G.disc.x=x;G.disc.y=p.y;G.disc.z=0;
+  for(const q of T[0].concat(T[1]))if(q!==p&&q!==h){q.y=q.slot%2?4:FIELD_W-4;}
+  diveChain(f,{x,y:p.y},[p],[],q=>reachOf(f,q));
+}
+function ppDiveThrow(){
+  const h=G.holder,p=T[0][0],d=dirOf(1),x=h.x+12*d,y=h.y;
+  doThrow(h,x,y,null,0);
+  if(!G.flight)return;
+  Object.assign(G.flight,{tx:x,ty:y,cx:0,cy:0,T:1.1,H:1.4,high:false,intended:null});
+  p.x=x-3*d;p.y=y+2;
+  G.ctrl=p;
+}
+function ppShow(){
+  ppCur=PP_STEPS.find(s=>!PP.d.includes(s.id));
+  if(!ppCur){PP.off=1;ppSave();ppStop();return;}
+  if(G.mode==='cine')G.mode='play';
+  cine=null;
+  ppPhase='info';G.primi=ppCur.id;G.primiManual=false;G.paused=true;pm=null;clearMatchInput();
+  for(const k of Object.keys(ppEv))delete ppEv[k];
+  ppPaint();$('ppOk').focus({preventScroll:true});
 }
 function ppClose(all){
-  $('pp').classList.add('hidden');
-  if(ppCur&&!PP.d.includes(ppCur.id))PP.d.push(ppCur.id);
-  if(all||PP.d.length>=PP_STEPS.length)PP.off=1;
-  if(ppCur&&ppCur.info)G.paused=false;
-  ppSave();ppCur=null;ppOkT=0;G.stallK=1;
+  if(!ppCur)return;
+  if(!PP.d.includes(ppCur.id))PP.d.push(ppCur.id);
+  if(all)PP.off=1;
+  ppSave();
+  if(all)ppStop();else ppShow();
+}
+function ppAction(){
+  if(!ppCur)return;
+  if(ppPhase==='info'&&ppCur.done){ppPhase='play';ppPaint();ppScenario();cv.focus({preventScroll:true});}
+  else ppClose(false);
 }
 function ppTick(){
-  const inM=!!G.inMatch&&!G.drill&&!DR.on;
-  if(ppCur&&!G.inMatch){$('pp').classList.add('hidden');ppCur=null;ppOkT=0;}   // la partita e' finita o abbandonata con il riquadro aperto
-  if(inM&&!ppWas&&!PP.off){PP.m++;if(PP.m>PP_MAXM)PP.off=1;ppSave();}   // il tutorial dura le prime tre partite
-  ppWas=inM;
-  if(!inM){if(G.stallK!==1)G.stallK=1;return;}
-  // prova in corso: stall rallentato, riscontro quando la fai, «riprova» se sbagli, un suggerimento se non ci riesci
-  if(ppCur&&!ppCur.info){
-    if(ppOkT){G.stallK=1;if(G.tick-ppOkT>2.4)ppClose(false);return;}
-    G.stallK=ppCur.sk==null?1:ppCur.sk;
-    if(ppCur.done(ppB)){ppOkT=G.tick;G.stallK=1;HOOKS.sfx('ui');ppPaint('✓ '+ppTxt(ppCur.ok),'ok');return;}
-    if(ppCur.fail&&ppCur.fail(ppB)&&!G.flight){ppB.miss++;ppPaint(ppCur.retry);return;}
-    // il disco e' passato all'altra squadra (o il punto e' finito) durante una prova: la prova resta da fare e torna quando il disco e' di nuovo tuo
-    if(ppCur.side!=null&&(G.mode!=='play'||G.poss!==ppCur.side)){if(!ppAway)ppAway=G.tick;else if(G.tick-ppAway>1.2){$('pp').classList.add('hidden');ppCur=null;G.stallK=1;}return;}
-    ppAway=0;
-    if(!ppHintOn&&ppCur.h&&G.tick-ppT0>14&&!G.paused){ppHintOn=true;ppPaint('Suggerimento: '+ppTxt(ppCur.h));}
+  if(ppReal&&!G.inMatch){ppStop();G.inMatch=false;G.mode='home';return;}
+  if(!ppCur){
+    if(G.inMatch&&!G.auto&&!G.drill&&!DR.on&&!G.skip&&ppPending()&&G.mode==='ready'&&!G.paused&&!G.schemeOpen&&!overlayBusy())ppStart();
     return;
   }
-  G.stallK=1;
-  if(ppCur||!ppOkNow()||G.paused||G.mode==='cine'||G.mode==='banner'||RP.on||overlayBusy())return;
-  for(const s of PP_STEPS)if(!PP.d.includes(s.id)&&s.when()){ppShow(s);return;}
+  if(ppPhase!=='play')return;
+  if(ppSuccess){if(G.tick>=ppSuccess)ppClose(false);return;}
+  if(G.paused||G.schemeOpen)return;
+  const id=ppCur.id;
+  if(ppCur.done()){
+    ppSuccess=G.tick+(id==='score'?1.4:0.85);
+    G.paused=true;clearMatchInput();ppPaint('✓ '+lgC('Prova riuscita!'));HOOKS.sfx('ui');
+    return;
+  }
+  if(id==='defDive'&&G.holder?.t===1&&G.tick-ppT0>1.2&&!ppRetry){ppDiveThrow();ppRetry=true;}
+  const ended=G.mode==='play'&&!G.flight&&!G.pull&&(G.primiMiss||
+    (ppDefense(id)?G.poss!==1||id==='defDive'&&ppRetry||id==='handblock'&&G.st.thr[1]>0:id==='catchDive'||G.poss!==0||id==='alto'&&G.st.thr[0]>0));
+  if(ended&&id!=='pull'&&id!=='schemi'){
+    ppScenario();ppPaint('Riprova.');
+  }
 }
-$('ppOk').addEventListener('click',()=>ppClose(false));
+$('ppOk').addEventListener('click',ppAction);
 $('ppSkip').addEventListener('click',()=>ppClose(true));
-// con una scheda da leggere aperta Invio e Spazio la chiudono e nessun altro tasto arriva al gioco; durante le prove i tasti servono per giocare
 window.addEventListener('keydown',e=>{
-  if(!ppCur||!ppCur.info)return;
+  if(!ppCur||ppPhase!=='info')return;
   e.stopImmediatePropagation();e.preventDefault();
   if(e.repeat)return;
-  if(e.code==='Tab'){($(document.activeElement.id==='ppOk'?'ppSkip':'ppOk')).focus();return;}
-  if(e.code==='Escape')ppClose(false);
-  else if(['Enter','Space','NumpadEnter'].includes(e.code))ppClose(document.activeElement?.id==='ppSkip');
+  if(e.code==='Tab')($(document.activeElement.id==='ppOk'?'ppSkip':'ppOk')).focus();
+  else if(['Enter','Space','NumpadEnter'].includes(e.code)){
+    if(document.activeElement?.id==='ppSkip')ppClose(true);else ppAction();
+  }
 },true);

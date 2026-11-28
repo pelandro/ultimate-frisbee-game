@@ -122,7 +122,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)openPause()
 /* ---- SIMULA META: la meta in corso (o quella che sta per cominciare) viene giocata in un istante dal motore vero, con l'IA anche per la tua squadra.
    Valgono le stesse statistiche, la stessa fatica e gli stessi schemi di una meta giocata; poi compare il normale stacco della meta segnata ---- */
 function simPoint(){
-  if(!G.inMatch||G.drill||G.paused||!(G.mode==='ready'||G.mode==='play'))return false;
+  if(!G.inMatch||G.drill||G.primi||G.paused||!(G.mode==='ready'||G.mode==='play'))return false;
   const H0=Object.assign({},HOOKS),c0=G.opt.cine,tot=G.score[0]+G.score[1];
   drag=null;ddrag=null;aimPid=null;G.cdir=null;G.schemeOpen=false;
   for(const k of ['toast','sfx','vibe','shake'])HOOKS[k]=function(){};
@@ -182,7 +182,7 @@ $('hPlay').addEventListener('click',()=>{if(suspOk())resumeMatch();else if(nextM
 $('hRoster').addEventListener('click',()=>showScreen('roster'));
 $('tCareer').addEventListener('click',()=>showScreen('slots'));   // prima i tre slot (Salvataggi): da li' si continua o si inizia
 $('tQuick').addEventListener('click',()=>showScreen('quick'));
-$('tSet').addEventListener('click',()=>{setFrom='title';showScreen('settings');setSView('game');});
+for(const [id,from] of [['tSet','title'],['hSet',null]])$(id).addEventListener('click',()=>{setFrom=from||csCur;showScreen('settings');setSView('game');});
 $('sBack').addEventListener('click',()=>{const to=setFrom;setFrom='title';showScreen(to);});   // le schede non hanno sottolivelli: «Indietro» torna sempre da dove si e' venuti
 $('hBack').addEventListener('click',()=>showScreen('title'));
 $('teamBack').addEventListener('click',()=>{lgKeep=LEAGUES.filter(l=>lgW(l)===(lgDiv==='w')).length>1;showScreen('league');});

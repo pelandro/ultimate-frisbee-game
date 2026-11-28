@@ -14,25 +14,27 @@ function suspSnap(){
   }else if(G.mode==='half'){fresh=true;dir=[-dir[0],-dir[1]];pno=G.pointNo+1;rec=G.nextRec;half=true;}
   else if(!(G.mode==='play'||G.mode==='ready'||G.mode==='cine'))return null;
   const cp=o=>JSON.parse(JSON.stringify(o));
-  return {v:1,key:m.label+'|'+m.name,tg:G.target,tmo:(G.tmo||[0,0]).slice(),score:G.score.slice(),pno,half,rec,dir,fresh,startRec:G.startRec,st:cp(G.st),seen:cp(G.seen||{att:{},def:{}}),rep:cp(G.rep||[{k:'',n:0},{k:'',n:0}]),adw:cp(G.adw||{k:'',n:0}),obs:cp(G.obs||{u:0,d:0,n:0}),
+  return {v:1,key:m.label+'|'+m.name,tg:G.target,tmo:(G.tmo||[0,0]).slice(),mom:G.momPt||0,score:G.score.slice(),pno,half,rec,dir,fresh,startRec:G.startRec,st:cp(G.st),seen:cp(G.seen||{att:{},def:{}}),rep:cp(G.rep||[{k:'',n:0},{k:'',n:0}]),adw:cp(G.adw||{k:'',n:0}),obs:cp(G.obs||{u:0,d:0,n:0}),
     aiRec:cp(G.aiRec||{}),sch:cp(G.sch),opp:cp(G.opp),dmode:G.dmode.slice(),
     my:SQ.map(p=>({f:p.full,st:Math.round(p.st),m:cp(p.m),inj:p.injNew?p.inj:0})),
     op:T[1].map(q=>({ro:OPP.list.indexOf(q.ro),st:Math.round(q.st),m:cp(q.m)})),ol:OPP.list.map(o=>o.st===undefined?100:Math.round(o.st))};
 }
 let pointCheckpoint=null;
 function capturePointCheckpoint(){
-  if(G.mode==='ready'&&pointCheckpoint?.pno!==G.pointNo)
+  if(!G.primi&&G.mode==='ready'&&pointCheckpoint?.pno!==G.pointNo)
     pointCheckpoint=suspSnap();
 }
 function suspensionState(){
   if(!G.inMatch||QM.on||G.drill||G.recorded)return null;
+  if(G.primi)return pointCheckpoint;
   if((G.mode==='play'||G.mode==='cine')&&pointCheckpoint?.pno===G.pointNo)
-    return pointCheckpoint;
+    return {...pointCheckpoint,mom:G.momPt||0};
   return suspSnap();
 }
 const suspOk=()=>!!(SV&&SV.susp&&nextMatch()&&SV.susp.key===nextMatch().label+'|'+nextMatch().name);
 function suspendMatch(){
   const s=suspensionState();if(!s)return false;
+  ppStop();
   SV.susp=s;$('pause').classList.add('hidden');$('half').classList.add('hidden');G.paused=false;restoreForm();
   G.schemeOpen=false;G.inMatch=false;$('menu').classList.add('hidden');$('over').classList.add('hidden');
   persist();showScreen('home');return true;
@@ -42,6 +44,7 @@ function resumeMatch(){
   const s=SV.susp;
   startMatch(true);   // squadre, forma, vento, linee e intesa come all'inizio: poi si rimette lo stato salvato
   G.tmo=Array.isArray(s.tmo)?s.tmo.slice():[0,0];   // il timeout gia' usato resta usato
+  G.momPt=s.mom||0;
   G.target=lenOk(s.tg|0);   // la partita sospesa finisce al punteggio con cui era cominciata, anche se nel frattempo hai cambiato la durata
   G.score=s.score.slice();G.pointNo=s.pno;G.halfDone=s.half;G.startRec=s.startRec;G.nextRec=s.rec;G.dir=s.dir.slice();
   G.st=s.st;G.seen=s.seen;G.rep=s.rep||[{k:'',n:0},{k:'',n:0}];G.adw=s.adw||{k:'',n:0};G.obs=s.obs;G.aiRec=s.aiRec;G.sch=useCareerSchemes(s.sch);Object.assign(G.opp,s.opp);G.dmode=s.dmode.slice();

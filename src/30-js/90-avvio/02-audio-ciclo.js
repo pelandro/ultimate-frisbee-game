@@ -10,9 +10,10 @@ function buildAudio(c,dest){
   const NS=c.sampleRate*3,wb=c.createBuffer(1,NS,c.sampleRate),wd=wb.getChannelData(0);
   for(let i=0;i<NS;i++)wd[i]=Math.random()*2-1;
   const noise=(out,t,dur,type,f,q,vol,att)=>{
-    const sr=c.createBufferSource();sr.buffer=wb;const fl=c.createBiquadFilter();fl.type=type;fl.frequency.value=f;fl.Q.value=q;
+    const sr=c.createBufferSource();sr.buffer=wb;sr.loop=true;const fl=c.createBiquadFilter();fl.type=type;fl.frequency.value=f;fl.Q.value=q;
     const g=c.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+(att||0.003));g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
     sr.connect(fl);fl.connect(g);g.connect(out);sr.start(t,rr(0,1.5));sr.stop(t+dur+0.05);
+    sr.onended=()=>{sr.disconnect();fl.disconnect();g.disconnect();};
   };
   const tone=(out,type,f,t,a,d,vol,lp)=>{
     const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(f,t);
@@ -133,7 +134,6 @@ function buildAudio(c,dest){
     if(i===0&&s%64===0)noise(out,t,1.3,'highpass',6000,0.6,0.1,0.003);   // piatto a inizio giro
     const m=bar.mel[i];
     if(m){tone(out,'square',mtof(m),t,0.006,sd*1.5,0.045,2800);tone(out,'triangle',mtof(m-12),t,0.006,sd*1.5,0.03,1500);tone(echo,'square',mtof(m),t,0.006,sd*1.5,0.025,2400);}
-    if(s%16===14)hey(t,!!(cup&&cup.fem));
   }
   function makeFesta(vol){
     const out=c.createGain();out.gain.value=0;out.connect(musicBus);
@@ -143,10 +143,14 @@ function buildAudio(c,dest){
     return {
       start(t){out.gain.cancelScheduledValues(t);out.gain.setValueAtTime(vol,t);t0=t+FESTA_LEAD;festaIntro(out,t0,CUP_LIFT,sd);next=t0+CUP_DANCE;step=0;},
       stop(t){out.gain.cancelScheduledValues(t);out.gain.setValueAtTime(out.gain.value,t);out.gain.linearRampToValueAtTime(0,t+0.8);next=null;},
-      schedule(until,now){
+      schedule(until,now,music,fx){
         if(next===null)return;
         if(now&&next<now-0.02){const k=Math.ceil((now-next)/sd);next+=k*sd;step+=k;}   // dopo una pausa salta avanti, sempre a tempo con il balletto
-        while(next<until){festaStep(out,echo,step%8,next,sd,FESTA[Math.floor(step/8)%FESTA.length],step);step++;next+=sd;}
+        while(next<until){
+          if(music)festaStep(out,echo,step%8,next,sd,FESTA[Math.floor(step/8)%FESTA.length],step);
+          if(fx&&step%16===14)hey(next,!!(cup&&cup.fem));
+          step++;next+=sd;
+        }
       },
       t0:()=>t0
     };
@@ -159,9 +163,10 @@ function buildAudio(c,dest){
     return {
       start(t){out.gain.cancelScheduledValues(t);out.gain.setValueAtTime(0,t);out.gain.linearRampToValueAtTime(vol,t+1.2);next=t+0.1;step=0;},
       stop(t){out.gain.cancelScheduledValues(t);out.gain.setValueAtTime(out.gain.value,t);out.gain.linearRampToValueAtTime(0,t+0.8);next=null;},
-      schedule(until,now){
-        if(next===null)return;if(now&&next<now)next=now+0.05;     // dopo una pausa non recupera le note perse
-        while(next<until){stepFn(out,echo,step%8,next,sd,def.bars[Math.floor(step/8)%def.bars.length]);step++;next+=sd;}
+      schedule(until,now,audible){
+        if(next===null)return;
+        if(next<now){const lost=Math.ceil((now-next)/sd);next+=lost*sd;step+=lost;}
+        while(next<until){if(audible)stepFn(out,echo,step%8,next,sd,def.bars[Math.floor(step/8)%def.bars.length]);step++;next+=sd;}
       },
       battuta:()=>next===null?null:next-(step%8)*sd,passo:sd,numero:()=>Math.floor(step/8)   // inizio e numero della battuta in corso e durata di una croma: ci si accorda il tifo
     };
@@ -197,15 +202,23 @@ function buildAudio(c,dest){
     swell(t,1.4,0.3*power,900);
     voices(t,1.5,0.13*power,rr(190,215),0.8,500,850,7);
   }
-  /* applausi leggeri in lontananza: tanti battiti di mani sparsi, smorzati e distribuiti a destra e a sinistra (il pubblico intorno al campo) */
-  function applause(t,power){
-    const n=Math.round(18+40*power),dur=1.2+2.2*power,bus=c.createGain(),lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2300;bus.gain.value=0.9;lp.connect(bus);bus.connect(crowdBus);
-    for(let i=0;i<n;i++){
-      const k=Math.pow(Math.random(),0.7),at=t+k*dur,v=0.05*power*(1-k*0.75)*rr(0.5,1);   // piu' fitti all'inizio, poi si spengono
-      const pn=c.createStereoPanner?c.createStereoPanner():null;
-      if(pn){pn.pan.value=rr(-0.8,0.8);pn.connect(lp);}
-      noise(pn||lp,at,0.06,'bandpass',rr(1200,2400),0.8,v,0.002);
+  // Una traccia di battimani riutilizzabile evita decine di nodi audio a ogni meta.
+  const hands=c.createBuffer(2,Math.round(c.sampleRate*3.6),c.sampleRate);
+  for(let i=0;i<56;i++){
+    const k=Math.pow(Math.random(),0.7),start=Math.floor(k*3.4*c.sampleRate);
+    const pan=rr(0.12,0.88),vol=0.25*(1-k*0.72)*rr(0.55,1),offset=Math.floor(rr(0,NS/2));
+    const left=hands.getChannelData(0),right=hands.getChannelData(1);
+    for(let j=0;j<0.059*c.sampleRate;j++){
+      const v=wd[offset+j]*Math.min(1,j/(0.002*c.sampleRate))*Math.exp(-j/(0.009*c.sampleRate))*vol;
+      left[start+j]+=v*(1-pan);right[start+j]+=v*pan;
     }
+  }
+  function applause(t,power){
+    const s=c.createBufferSource(),lp=c.createBiquadFilter(),g=c.createGain();
+    s.buffer=hands;s.playbackRate.value=3.6/(1.2+2.2*power);
+    lp.type='bandpass';lp.frequency.value=1800;lp.Q.value=0.65;g.gain.value=power*0.7;
+    s.connect(lp);lp.connect(g);g.connect(crowdBus);s.start(t);
+    s.onended=()=>{s.disconnect();lp.disconnect();g.disconnect();};
   }
   /* trombette da stadio: tromba di plastica nasale (dente di sega e quadra filtrati, un po' di vibrato), lontana e con l'eco della curva.
      'blast' = una suonata lunga, 'doppia' = due brevi, 'carica' = la fanfara «ta-ta-ta-taaa, ta-taaa» */
@@ -233,79 +246,108 @@ function buildAudio(c,dest){
   const tifo=buildTifo({c,out:crowdBus,noise,rr,snare:(out,t,vol)=>snare(out,t,vol),applause,horn});
   function crowdLevel(l){tifo.setLevel(l);}
   function tickCrowd(until,scena){
-    const ritmo=tifo.dati().ritmo;
+    if(!crowd.on||tifo.level<2)return;
+    const now=c.currentTime,ritmo=tifo.dati().ritmo;
+    if(crowd.nextClap<now)crowd.nextClap=now+rr(4,9);
+    if(crowd.nextAmb<now)crowd.nextAmb=now+rr(8,16);
     while(crowd.on&&crowd.nextClap<until){chant(crowd.nextClap);crowd.nextClap+=rr(10,18)/ritmo;}
     while(crowd.on&&crowd.nextAmb<until){const t=crowd.nextAmb;if(Math.random()<0.6)applause(t,rr(0.12,0.22));else horn(t,'blast',rr(0.25,0.4));crowd.nextAmb+=rr(18,35)/ritmo;}   // ogni tanto, piano: qualcuno applaude o suona la trombetta in curva
     if(crowd.on&&scena&&scena.battuta)tifo.tick(until,scena.battuta(),scena.passo,scena.numero());
   }
-  return {sfx:SFX,master,musicBus,crowdBus,scenes:{home:makeScene(HOME,homeStep,0.6),match:makeScene(MATCH,matchStep,1.5),festa:makeFesta(1.3)},crowdStart,crowdStop,tickCrowd,crowdLevel,tifo,cheer,groan,clapTrain,chant,applause,horn};
+  return {sfx:SFX,musicBus,crowdBus,sfxBus,scenes:{home:makeScene(HOME,homeStep,0.6),match:makeScene(MATCH,matchStep,1.5),festa:makeFesta(1.3)},crowdStart,crowdStop,tickCrowd,crowdLevel,tifo,cheer,groan,clapTrain,chant,applause,horn};
 }
 const AUD=(function(){
-  let A=null,eng=null,on=true,cur='none',lastSfx=-9;
-  try{on=localStorage.getItem('ultimate-audio')!=='0';}catch(e){}
+  let A=null,eng=null,timer=null,music=true,fx=true,cur='none',lastSfx=-9,attendance=1;
+  try{music=localStorage.getItem('ultimate-audio')!=='0';fx=localStorage.getItem('ultimate-effetti')!=='0';}catch(e){}
+  function levels(immediate){
+    if(!eng)return;
+    for(const [bus,gain] of [[eng.musicBus,music?1.5:0],[eng.crowdBus,fx?0.9*attendance:0],[eng.sfxBus,fx?0.8:0]]){
+      if(immediate)bus.gain.value=gain;
+      else bus.gain.setTargetAtTime(gain,A.currentTime,0.035);
+    }
+  }
   function tick(){
-    if(!A||!eng||!on||A.state!=='running')return;
-    const now=A.currentTime,until=now+1.0,sc=eng.scenes[cur];
-    if(sc)sc.schedule(until,now);
-    eng.tickCrowd(until,sc);
+    if(!eng||A.state!=='running')return;
+    const now=A.currentTime,until=now+0.8,sc=eng.scenes[cur];
+    if(sc)sc.schedule(until,now,music,fx);
+    if(fx)eng.tickCrowd(until,sc);
   }
   function init(){   // il browser consente l'audio solo dopo un gesto: parte al primo tocco
     if(A){if(A.state==='suspended')A.resume();return;}
     const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
-    try{A=new AC();eng=buildAudio(A,A.destination);eng.master.gain.value=on?0.9:0;setInterval(tick,60);if(A.resume)A.resume();}catch(e){A=null;eng=null;}
+    try{A=new AC();eng=buildAudio(A,A.destination);levels(true);timer=setInterval(tick,40);if(A.resume)A.resume();}catch(e){A=null;eng=null;}
     cur='none';
   }
   function sync(name){
     if(!A||!eng)return;
-    eng.crowdLevel(name==='match'&&G.vn&&!G.drill?vnLv(G.vn):0);   // il tifo segue lo stadio che si vede (menu, allenamenti e festa del titolo: quello di base)
+    const venue=name==='match'&&!G.drill?venueNow():null;
+    eng.crowdLevel(venue?vnLv(venue):0);
+    const fill=venue?0.3+0.7*venue.fill:1;
+    if(fill!==attendance){attendance=fill;levels(false);}
     if(name===cur)return;
     const t=A.currentTime;
     if(eng.scenes[cur])eng.scenes[cur].stop(t);
     cur=name;eng.scenes[name].start(t);
-    if(name==='match'||name==='festa')eng.crowdStart(t);else eng.crowdStop();
+    eng.crowdStop();if(fx&&name==='match')eng.crowdStart(t);
+    tick();
   }
   // la festa del titolo: la canzoncina riparte sempre dall'inizio, anche se era gia' aperta (true = partita)
   function festa(){
     if(!A||!eng)return false;
     const t=A.currentTime;
     if(eng.scenes[cur])eng.scenes[cur].stop(t);
-    cur='festa';eng.scenes.festa.start(t);eng.crowdStart(t);
+    cur='festa';eng.scenes.festa.start(t);eng.crowdStop();tick();
     return true;
   }
   // secondi dall'inizio della canzoncina, come li sente chi gioca: il balletto li segue per restare a tempo (null senza audio)
   function festaT(){
-    if(!A||!eng||!on||A.state!=='running'||cur!=='festa')return null;
+    if(!A||!eng||!music||A.state!=='running'||cur!=='festa')return null;
     const t0=eng.scenes.festa.t0();
     return t0===null?null:A.currentTime-(A.outputLatency||A.baseLatency||0)-t0;
   }
   function sfx(type,a,b){
-    if(!A||!eng||!on||A.state!=='running')return;
-    if(type==='ui'){eng.sfx.ui(A.currentTime);return;}   // i clic dei menu suonano anche fuori partita
+    if(!eng||!fx||A.state!=='running')return;
+    if(type==='ui'){eng.sfx.ui(A.currentTime);return;}
     if(cur!=='match')return;
-    const t=A.currentTime+0.02;
-    if(type==='goal'){eng.tifo.event('goal',t,a===0);eng.sfx.goal(t);if(a===0){eng.cheer(t,1);eng.applause(t+0.6,0.8);hornAt(t+0.4,Math.random()<0.6?'carica':'doppia',1);}else eng.groan(t,0.9);}   // a = squadra che segna
-    else if(type==='turn'){if(t-lastSfx<2)return;lastSfx=t;eng.tifo.event('turn',t,a===0);if(a===0)eng.cheer(t,0.28);else eng.groan(t,0.4);}
-    else if(type==='crowd'){if((a||0)>=0.6)eng.tifo.event('crowd',t,true);eng.cheer(t,a||0.5);if((a||0)>=0.6)hornAt(t+0.3,'blast',0.8);}   // boato del pubblico nei momenti decisivi (a = intensita')
-    else if(type==='catch'||type==='block'){eng.sfx[type](t,a,b);if(type==='block'||a>=1){eng.tifo.event(type,t,true);eng.applause(t+0.15,type==='block'?0.45:0.6);if(Math.random()<0.35)hornAt(t+0.5,'doppia',0.8);}}   // prese in salto o in tuffo e blocchi: applauso leggero e a volte la trombetta
-    else if(eng.sfx[type])eng.sfx[type](t,a,b);
+    const t=A.currentTime+0.02,lv=eng.tifo.level,small=lv<2;
+    if(type==='goal'){
+      if(a===0){eng.sfx.goal(t);eng.cheer(t,0.3+lv*0.12);}
+      else{eng.sfx.whistle(t);if(!small)eng.groan(t,0.25+lv*0.1);}
+      if(!small)eng.tifo.event('goal',t,a===0);
+    }else if(type==='catch'||type==='block'){
+      const highlight=b==='salto'||b==='tuffo';
+      if(!small||highlight)eng.sfx[type](t,a,b);
+      if(highlight||(!small&&(type==='block'||a>=1))){
+        if(!small)eng.tifo.event(type,t,true);
+        eng.applause(t+0.12,0.16+lv*0.08);
+      }
+    }else if(type==='turn'||type==='crowd'){
+      if(small||t-lastSfx<2)return;
+      lastSfx=t;eng.tifo.event(type,t,type==='crowd'||a===0);
+      if(type==='crowd'||a===0)eng.cheer(t,type==='crowd'?(a||0.5):0.25);
+      else eng.groan(t,0.28);
+    }else if(eng.sfx[type]&&(!small||!['throw','pull','slap','drop','dive'].includes(type)))eng.sfx[type](t,a,b);
   }
-  let lastHorn=-9;   // le trombette non si accavallano: al massimo una ogni 5 secondi
-  function hornAt(t,kind,vol){if(t-lastHorn<5)return;lastHorn=t;eng.horn(t,kind,vol);}
   function setOn(v){
-    on=!!v;try{localStorage.setItem('ultimate-audio',on?'1':'0');}catch(e){}
-    if(eng)eng.master.gain.setTargetAtTime(on?0.9:0,A.currentTime,0.08);
-    syncToggles();
+    music=!!v;try{localStorage.setItem('ultimate-audio',music?'1':'0');}catch(e){}
+    levels(false);syncToggles();
+  }
+  function setFx(v){
+    fx=!!v;try{localStorage.setItem('ultimate-effetti',fx?'1':'0');}catch(e){}
+    if(eng){if(fx&&cur==='match')eng.crowdStart(A.currentTime);else eng.crowdStop();}
+    levels(false);syncToggles();
   }
   // pagina nascosta o chiusa (browser chiuso, altra app, altra scheda): la musica si ferma subito; torna da sola se si rientra e l'audio e' acceso
   function hold(){try{if(A&&A.state==='running')A.suspend().catch(()=>{});}catch(e){}}
-  function back(){try{if(A&&on&&!document.hidden&&A.state!=='running'&&A.state!=='closed')A.resume().catch(()=>{});}catch(e){}}
-  function close(){try{if(A&&A.state!=='closed')A.close().catch(()=>{});}catch(e){}A=null;eng=null;}
-  return {init,sync,sfx,setOn,hold,back,close,festa,festaT,isOn:()=>on};
+  function back(){try{if(A&&(music||fx)&&!document.hidden&&A.state!=='running'&&A.state!=='closed')A.resume().catch(()=>{});}catch(e){}}
+  function close(){try{if(A&&A.state!=='closed')A.close().catch(()=>{});}catch(e){}clearInterval(timer);timer=null;A=null;eng=null;}
+  return {init,sync,sfx,setOn,setFx,hold,back,close,festa,festaT,isOn:()=>music,fxOn:()=>fx};
 })();
 window.addEventListener('pointerdown',()=>AUD.init(),{capture:true});
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('button'))AUD.sfx('ui');},true);
 window.addEventListener('keydown',()=>AUD.init(),{capture:true});
 for(const id of ['tSnd','sSnd','paSnd'])$(id).addEventListener('click',()=>AUD.setOn(!AUD.isOn()));
+for(const id of ['sFx','paFx'])$(id).addEventListener('click',()=>AUD.setFx(!AUD.fxOn()));
 $('sRot').addEventListener('click',()=>{setRotPref(!rotPref);syncToggles();});
 $('sLangSeg').addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(b)setLang(b.dataset.lang);});   // lingua (20-ui/30-lingua.js)
 $('sStat').addEventListener('click',()=>{uosSet(!uosOn());if(uosOn())uosStart();syncToggles();});   // contatori anonimi d'uso (04-ut-online.js)
@@ -323,19 +365,23 @@ try{if(localStorage.getItem(WIND_KEY)==='0')G.opt.wind=false;}catch(e){}
 function syncToggles(){   // audio, stacchi, meteo, difesa e suggerimenti si cambiano da piu' punti (menu, Impostazioni, pausa): stati ed etichette restano allineati
   const on=AUD.isOn(),c=G.opt.cine,wOn=G.opt.wind!==false,tp=tipsOn(),fs=fsOn();
   const sw=(id,v,txt)=>{const b=$(id);if(!b)return;b.setAttribute('aria-checked',String(!!v));b.classList.toggle('on',!!v);if(txt!==undefined){const s=b.querySelector('small');if(s)s.textContent=txt;}};
-  $('tSnd').classList.toggle('off',!on);$('tSndT').textContent=on?'Audio sì':'Audio no';
-  sw('sSnd',on,on?'Musica, tifo ed effetti':'Spento');
+  $('tSnd').classList.toggle('off',!on);$('tSndT').textContent=on?'Musica sì':'Musica no';
+  sw('sSnd',on,on?'Musica di sottofondo':'Spento');
+  sw('sFx',AUD.fxOn(),AUD.fxOn()?'Suoni di gioco e pubblico':'Spento');
+  $('paFx').classList.toggle('off',!AUD.fxOn());
+  $('paFx').textContent='Effetti sonori: '+(AUD.fxOn()?'sì':'no');
   sw('sCine',c,c?'Primo piano con tocco a tempo sui salti e sui tuffi, replay delle mete spettacolari':'Spento: salti e tuffi si risolvono da soli');
   sw('sWind',wOn,wOn?'Vento, pioggia e neve a ogni partita':'Sempre sereno e calmo');
   lgSeg();
   sw('sStat',uosOn(),uosOn()?'Il gioco invia quante partite si giocano e con quali impostazioni, senza dati personali':'Spente: non viene inviato niente');
-  sw('sTips',tp,tp?'Fumetti alla prima visita delle schermate e Primi passi nelle prime partite':'Spenti: riaccendendoli si rivedono tutti');
+  sw('sTips',tp,tp?'Fumetti alla prima visita e Primi passi nella prima partita':'Spenti: riaccendendoli si rivedono tutti');
   sw('sRot',rotPref,rotPref?'In verticale il gioco si gira da solo':'In verticale compare «Gira lo schermo»');
   sw('sFs',fs);
   $('paSnd').classList.toggle('off',!on);$('paCine').classList.toggle('off',!c);   // nella pausa l'interruttore mostra anche lo stato con il colore
-  $('paSnd').textContent='Audio: '+(on?'sì':'no');$('paCine').textContent='Salti, tuffi e replay: '+(c?'sì':'no');
+  $('paSnd').textContent='Musica: '+(on?'sì':'no');$('paCine').textContent='Salti, tuffi e replay: '+(c?'sì':'no');
   $('paFs').textContent='Schermo intero: '+(fs?'sì':'no');$('paFs').classList.toggle('off',!fs);
-  $('paDef').textContent='Difesa: '+DEF_LBL[G.opt.def].toLowerCase();
+  $('paDef').disabled=!!G.primiManual;
+  $('paDef').textContent='Difesa: '+DEF_LBL[G.primiManual?1:G.opt.def].toLowerCase();
   $('sDefS').textContent=DEF_LBL[G.opt.def]+': '+DEF_TXT[G.opt.def];
   $('sDefSeg').innerHTML=DEF_LBL.map((n,i)=>`<button type="button" class="sg${G.opt.def===i?' on':''}" data-def="${i}" aria-pressed="${G.opt.def===i}">${n}</button>`).join('');
 }
@@ -353,24 +399,25 @@ function frame(now){
   if(!portrait()||rotOn){   // in verticale il gioco si ferma, tranne quando si disegna ruotato da solo
     G.tick+=dt;
     padPoll();vinPushDir();
-    pullTick();defTick();momentTick();ppTick();
+    capturePointCheckpoint();
+    ppTick();pullTick();defTick();momentTick();
     if(inDefense()&&!ddrag&&defMan())G.cdir=VIN.ang!==null?{x:Math.cos(VIN.ang),y:Math.sin(VIN.ang)}:null;   // tastiera o stick: guida il difensore cerchiato
     if(drag&&drag.sl&&!drag.was&&!drag.iso&&G.tick-drag.s>0.5){drag.iso=true;quickCall(drag.tw,true);}   // pressione lunga su un compagno: isolamento
     syncCall();
     // con il disco in mano e lo zoom che sta cambiando l'azione aspetta: riparte quando lo zoom ha finito
     const zoomWait=G.mode==='play'&&!!G.holder&&!G.pull&&!G.flight&&(cam.zP<1||Math.abs(zoomTarget()-cam.zTo)>0.001);
     G.zoomHold=zoomWait;
-    capturePointCheckpoint();
     sgTick(dt);   // «Segnala un problema»: orologio, eventi e filmato degli ultimi secondi (anche durante salti, tuffi e replay)
     if(G.paused||zoomWait||G.schemeOpen)simRemainder=0;
     else if(G.mode==='cine'){simRemainder=0;updateCine(dt);}
     else simRemainder=advanceSimulation(simRemainder,dt,step=>{
-      rpRecord(step);sgRecord(step);   // replay delle mete; ultimi secondi per «Segnala un problema»
+      if(!G.primi)rpRecord(step);
+      sgRecord(step);   // replay delle mete; ultimi secondi per «Segnala un problema»
       update(step);
       return !G.paused&&!G.schemeOpen&&G.mode!=='cine';
     });
     if(G.mode==='banner'&&Math.max(...G.score)>=G.target)recordFinishedMatch();
-    rpCheck();
+    if(!G.primi)rpCheck();
     const replayFrame=rpApply(dt);
     if(replayFrame){
       updateHUD(dt);

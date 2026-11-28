@@ -38,6 +38,7 @@ function buildOpts(box,list,col,cur,set,career){
   }
 }
 function openSchemes(first,fromHome){
+  if(G.primi)tutEv('schemi');
   G.schemeOpen=true;$('menu').classList.remove('hidden');$('over').classList.add('hidden');
   $('mTitle').textContent='Schemi';
   $('mScore').textContent=`${G.myName||'Blu'} ${G.score[0]} – ${G.score[1]} ${G.oppName||'Rossi'}`;
@@ -47,10 +48,10 @@ function openSchemes(first,fromHome){
   $('hAtt').parentElement.classList.toggle('hidden',role==='def');$('hDef').parentElement.classList.toggle('hidden',role==='att');
   $('mSub').textContent=(role==='def'?'In questa meta difendi: scegli lo schema difensivo.':(role==='att'?'In questa meta attacchi: scegli lo schema d’attacco.':'Restano quelli scelti finché non li cambi.'))+(G.inMatch&&G.idn&&G.idn[1]&&G.idn[1].tags.length?' Stile degli avversari: '+G.idn[1].tags.map(t=>lgTr(t)).join(', ')+'.':'');
   const career=!QM.on&&!G.drill&&G.inMatch;
-  const choose=(side,id)=>{G.sch[side]=id;if(career)SV.scheme={...G.sch};};
+  const choose=(side,id)=>{G.sch[side]=id;if(career&&!G.primi)SV.scheme={...G.sch};};
   buildOpts($('optAtt'),ATTS,'#2f7bff',G.sch.att,v=>choose('att',v),career);
   buildOpts($('optDef'),DEFS,'#ff4b4b',G.sch.def,v=>choose('def',v),career);
-  $('mTip').textContent=first?'Prima partita? Il tutorial è nel menu iniziale, alla voce Allenamento; la guida è nel menu di pausa (II).':'';
+  $('mTip').textContent=first?'Nella prima partita trovi i Primi passi. Apri la guida dal menu di pausa (II).':'';
 }
 // riepilogo: rendimento delle linee (O = mete in cui ricevi il pull, D = quelle in cui lo tiri), schemi usati e migliori in campo
 // i migliori in campo della tua squadra (mete, assist e difese contano di piu', poi i lanci riusciti)
@@ -68,6 +69,7 @@ function overMoreHTML(){
 const matchCounts=()=>!!G.inMatch&&!G.recorded&&!G.drill&&(!QM.on||UT.on||TN.on);
 // abbandono di una partita che conta: sconfitta a tavolino. L'avversario arriva al punteggio che chiude la partita, il tuo resta quello che era
 function forfeitMatch(){
+  ppStop();
   if(!matchCounts())return false;
   $('half').classList.add('hidden');G.paused=false;G.schemeOpen=false;
   G.score=[Math.min(G.score[0],G.target-1),G.target];G.mode='over';G.forfeit=true;

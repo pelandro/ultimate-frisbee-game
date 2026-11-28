@@ -59,7 +59,7 @@ function adviceText(){
 function renderTicker(){$('hTick').textContent=adviceText();}   // il testo della finestra «Consiglio» (le novita' stanno in «Questa settimana» e sulla campanella)
 /* ---- fumetti ---- */
 const TIPS={
-  home:'Benvenuto! Da qui parte ogni giornata: «Inizia partita» (tasto giallo) la giochi tu, «Simula» la gioca il computer. «Questa settimana» ti dice cosa sistemare prima di partire. La colonna a lato porta alle altre sezioni.',
+  home:'Tocca «Inizia partita» per giocare o «Simula» per lasciare giocare il computer. Nella prima partita trovi i Primi passi. «Questa settimana» ti dice cosa sistemare prima di partire.',
   roster:'Qui ci sono i tuoi giocatori. Su ogni carta: Overall (quanto è forte), barra verde (condizione) e faccina (umore). Tocca una carta per aprire la scheda. A e D dicono chi gioca in attacco e in difesa: si cambiano con ATT e DIF, o con «Linee consigliate».',
   market:'Qui compri giocatori; l’elenco cambia ogni 5 giornate. Il potenziale dei giovani è un intervallo: «Osserva» (qualche credito) lo restringe. Ogni acquisto ha uno stipendio a ogni partita.',
   club:'Gestisci qui conti, strutture e staff. Dai un’occhiata alla cassa prima di investire.',

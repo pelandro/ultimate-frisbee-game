@@ -53,13 +53,13 @@ function resize(){
   // ADATTAMENTO ALLO SCHERMO: il gioco e' pensato per un riquadro di circa 800x450 (telefono in orizzontale: ingrandimento 1). Su iPad e computer il riquadro
   // e' molto piu' grande e menu, pannelli e pulsanti crescono in proporzione (fino a 2,5), a passi di un quarto per tenere nitidi i caratteri a pixel.
   // Il giocatore puo' rimpicciolire o ingrandire ancora (Impostazioni > Dimensioni). Con 1 il telefono resta com'era.
-  const uq=Math.min(10,Math.max(4,Math.round(Math.min(CW/800,CH/450)*4)));
+  const uq=Math.min(10,Math.max(4,Math.round(Math.min(CW/800,document.body.clientHeight/450)*4)));
   UIZ=clamp((uq+UZ_STEP[UZS|0])/4,0.75,3);BZ=clamp(UIZ,1,1.75);   // i pulsanti di gioco crescono un po' meno del resto: sotto il dito bastano 90 px
   document.documentElement.style.setProperty('--ui',UIZ);document.documentElement.style.setProperty('--bz',BZ);
   tszFix();
   // larghezza utile in px CSS dopo l'ingrandimento: con «piu' grande» il telefono ha meno spazio e le schermate passano a disposizioni piu' compatte (12-leggibilita.css)
   const ew=CW/UIZ;document.documentElement.dataset.ew=ew<640?'xs':(ew<800?'s':'');
-  document.documentElement.dataset.eh=CH/UIZ<300?'s':'';   // altezza utile bassa: la colonna della carriera si stringe (12-leggibilita.css)
+  document.documentElement.dataset.eh=document.body.clientHeight/UIZ<300?'s':'';   // altezza utile bassa: la colonna della carriera si stringe (12-leggibilita.css)
   document.documentElement.dataset.big=UIZ>=1.5?'1':'';   // iPad e computer: il cruscotto riempie meglio l'altezza (05-schermi-grandi-e-tocco.css)
   cv.width=Math.round(CW*DPR);cv.height=Math.round(CH*DPR);
   PXS=Math.max(1,Math.round(cv.height/224));   // circa 224 pixel di gioco in altezza, ingrandimento sempre intero

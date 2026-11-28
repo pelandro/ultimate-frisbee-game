@@ -54,7 +54,6 @@ $('tuX').addEventListener('click',closeTut);
 // «indietro» del telefono/tastiera: Esc chiude il tutorial
 window.addEventListener('keydown',e=>{if(e.code==='Escape'&&!$('tut').classList.contains('hidden')){e.stopImmediatePropagation();closeTut();}},true);
 $('tTut').addEventListener('click',()=>openTut(null,null,null));
-$('hTut').addEventListener('click',()=>openTut(null,null,null));
 $('gdTut').addEventListener('click',()=>{$('guide').classList.add('hidden');const f=guideBack;guideBack=null;openTut(null,null,f);});
 // fumetti di primo accesso: «Scopri di più» porta alla lezione della schermata
 const TIP_LES={home:'car-cruscotto',roster:'car-rosa',market:'car-mercato',club:'car-club',train:'car-allenamenti',event:'car-classifica'};
