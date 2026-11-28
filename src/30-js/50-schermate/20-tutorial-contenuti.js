@@ -175,7 +175,8 @@ tip:`Nei playoff ogni partita conta: giocale tu.`},
 [`<b>Ritiri</b>: un giocatore prima fa capire che ci pensa, poi annuncia l’ultima stagione; puoi chiedergli un altro anno con un premio.`,
 `<b>Spogliatoio</b>: un buon giocatore che resta fuori a lungo diventa scontento e poi chiede la cessione: vendilo o promettigli spazio.`,
 `<b>Offerte</b>: una squadra più importante può chiedere un tuo giocatore. Un club di un’altra lega può offrirti la panchina: accettando cambi club, ma allenatore, storico e trofei restano tuoi.`,
-`<b>Conferenza stampa</b> e <b>imprevisti</b>: dopo alcune partite scegli tra tre risposte; una o due volte a stagione succede qualcosa (sponsor, influenza, provino…).`]],
+`<b>Conferenza stampa</b> e <b>imprevisti</b>: dopo alcune partite scegli tra tre risposte; una o due volte a stagione succede qualcosa (sponsor, influenza, provino…).`,
+`Scuse: sotto 55 di morale qualcuno trova scuse per saltare le partite, arriva in cattive condizioni o chiede un aumento. Più il morale scende più succede, soprattutto nelle serie minori.`]],
 tip:`Un buon giocatore in panchina troppo a lungo ti lascia: ruotalo oppure promettigli spazio.`}
 ]});
 

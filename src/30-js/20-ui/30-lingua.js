@@ -6,7 +6,9 @@
 const LANG_KEY='ultimate-lingua',LANGS=[['it','Italiano'],['en','English'],['fr','Français'],['de','Deutsch']];
 const LANG_TXT={},LANG_PAT={};   // lingua -> {italiano: traduzione}, lingua -> [[modello italiano con {0}, modello tradotto]]
 let LANG='it';
-try{const s=localStorage.getItem(LANG_KEY);LANG=LANGS.some(l=>l[0]===s)?s:'it';}catch(e){}   // sempre italiano finche' la persona non sceglie: niente scelta automatica dalla lingua del browser
+// letto subito al caricamento, prima che qualcosa scriva nel browser: serve a chiedere la lingua solo a chi apre il gioco per la prima volta
+const LANG_NUOVO=(()=>{try{return !Object.keys(localStorage).some(k=>k.startsWith('ultimate'));}catch(e){return false;}})();
+try{const s=localStorage.getItem(LANG_KEY);LANG=LANGS.some(l=>l[0]===s)?s:'it';}catch(e){}   // sempre italiano finche' la persona non sceglie (al primo avvio: 36-lingua-avvio.js): niente scelta automatica dalla lingua del browser
 const LANG_ATTR=['title','aria-label','placeholder','alt'];
 const lgOrig=new WeakMap(),lgOut=new WeakMap(),lgRx=new Map();
 function lgPats(l){   // i modelli diventano espressioni regolari una volta sola

@@ -66,7 +66,7 @@ function myPow(cond){
   const lo=new Set(matchLine('lineO')),ld=new Set(matchLine('lineD'));if(!lo.size||!ld.size)return squadPower();
   const v=[];
   for(const p of SQ){
-    if(p.inj)continue;const n=(lo.has(p.id)?1:0)+(ld.has(p.id)?1:0),x=mean9(p)-(n===2?DBL_PEN:0)-(cond?COND_PEN*(100-(p.cond===undefined?100:p.cond)):0);
+    if(p.inj)continue;const n=(lo.has(p.id)?1:0)+(ld.has(p.id)?1:0),x=mean9(p)*(1-(p.hang||0))-(n===2?DBL_PEN:0)-(cond?COND_PEN*(100-(p.cond===undefined?100:p.cond)):0);
     for(let k=0;k<Math.max(1,n);k++)v.push(x);
   }
   return powerOfVals(v)+PW_MY;

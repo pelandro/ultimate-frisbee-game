@@ -203,7 +203,7 @@ function applySurnames(list){
 // la tua squadra: 7 in campo scelti tra i migliori, gli altri in panchina
 function setSquad(list){
   SQ.length=0;
-  list.forEach((o,i)=>{const p=newPlayer(0,i,{name:o.n,label:o.label,full:o.full,gen:o.gen,f:o.f,role:o.r,tl:o.tl,tf:o.tf,tv:o.tv,age:o.age,s:Object.assign({},o.s),trait:o.trait,dev:o.dev,cond:o.cond,sk:o.sk,car:o.car,pos:o.pos});p.sur=o.sur;p.inj=o.inj|0;p.tr=!!o.tr;if(o.star){p.star=true;p.nat=o.nat;}if(o.ae)p.ae=1;p.aw=o.aw||[];p.ra=o.ra;p.ret=o.ret|0;p.retHold=o.retHold|0;p.injC=o.injC|0;p.injBig=o.injBig|0;p.idle=o.idle|0;p.mood=o.mood|0;p.prom=o.prom|0;p.rw=o.rw|0;if(o.spec&&SPECS[o.spec])p.spec=o.spec;if(o.goal)p.goal=o.goal;p.sad=o.sad|0;p.ext=o.ex|0;p.nick=o.nk||'';p.lm=o.lm||null;p.ti=o.ti|0;p.tk=o.tk||0;p.pri=o.pri?1:0;p.hist=Array.isArray(o.hi)?o.hi:[];SQ.push(p);});
+  list.forEach((o,i)=>{const p=newPlayer(0,i,{name:o.n,label:o.label,full:o.full,gen:o.gen,f:o.f,role:o.r,tl:o.tl,tf:o.tf,tv:o.tv,age:o.age,s:Object.assign({},o.s),trait:o.trait,dev:o.dev,cond:o.cond,sk:o.sk,car:o.car,pos:o.pos});p.sur=o.sur;p.inj=o.inj|0;p.abs=o.abs|0;p.hang=+o.hang||0;p.raise=+o.raise||0;p.tr=!!o.tr;if(o.star){p.star=true;p.nat=o.nat;}if(o.ae)p.ae=1;p.aw=o.aw||[];p.ra=o.ra;p.ret=o.ret|0;p.retHold=o.retHold|0;p.injC=o.injC|0;p.injBig=o.injBig|0;p.idle=o.idle|0;p.mood=o.mood|0;p.prom=o.prom|0;p.rw=o.rw|0;if(o.spec&&SPECS[o.spec])p.spec=o.spec;if(o.goal)p.goal=o.goal;p.sad=o.sad|0;p.ext=o.ex|0;p.nick=o.nk||'';p.lm=o.lm||null;p.ti=o.ti|0;p.tk=o.tk||0;p.pri=o.pri?1:0;p.hist=Array.isArray(o.hi)?o.hi:[];SQ.push(p);});
   applySurnames(SQ);
   setLineup(pickSeven(SQ,p=>p.role,mean9).map(p=>p.id));
 }
@@ -298,7 +298,8 @@ function applyForm(dbl){   // dbl: id dei tuoi giocatori in entrambe le linee (s
     // affiatamento e morale (solo carriera, G.formB da -1,5 a +1,5) spostano di poco la forma del giorno della tua squadra
     // chi arriva scarico (condizione bassa, solo in carriera) rende meno, come nelle partite simulate
     const fb=p.t===0?(G.formB||0)-(p.cond!==undefined?COND_PEN*(100-p.cond):0)-(dbl&&dbl.has(p.id)?DBL_PEN:0):0;
-    for(const k of KEYS)p.s[k]=flowFloor(k,clamp(p.b[k]+formDev(talOf(p,k))+(fb?Math.trunc(fb)+(Math.random()<Math.abs(fb%1)?Math.sign(fb):0):0),1,Math.max(p.b[k],Math.min(99,capOf(p,k)))));   // pavimento del gioco di squadra (28-pavimento.js)
+    const hk=p.t===0&&p.hang?1-p.hang:1;   // serata storta (carriera, 34-scuse.js): statistiche ridotte in questa partita
+    for(const k of KEYS){const v=clamp(p.b[k]+formDev(talOf(p,k))+(fb?Math.trunc(fb)+(Math.random()<Math.abs(fb%1)?Math.sign(fb):0):0),1,Math.max(p.b[k],Math.min(99,capOf(p,k))));p.s[k]=hk<1?Math.max(1,Math.round(flowFloor(k,v)*hk)):flowFloor(k,v);}   // il calo si toglie dopo il pavimento, che altrimenti lo annullerebbe in Serie C   // pavimento del gioco di squadra (28-pavimento.js)
   }
 }
 function restoreForm(){poserReset();heroReset();for(const p of SQ.concat(T[1]))if(p.b){p.s=p.b;p.b=null;}}

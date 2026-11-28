@@ -37,9 +37,9 @@ function offTrainSessions(){
 function seasonReady(){
   // Lo stop estivo chiude infortuni e assenze. Il numero di infortuni seri resta nello storico.
   for(const p of SQ){
-    p.inj=0;p.injNew=false;p.injBig=0;p.abs=0;p.cond=100;p.tr=false;
+    p.inj=0;p.injNew=false;p.injBig=0;p.abs=0;p.cond=100;p.tr=false;p.hang=0;p.raise=0;
   }
-  for(const roster of Object.values(SV.rost))for(const p of roster){p.inj=0;p.cond=100;}
+  for(const roster of Object.values(SV.rost))for(const p of roster){p.inj=0;p.cond=100;delete p.raise;}
   SV.tTeam=false;
 }
 function offTrain(sessions){
