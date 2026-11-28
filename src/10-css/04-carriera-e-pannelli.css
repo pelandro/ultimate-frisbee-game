@@ -17,6 +17,10 @@
 #hTab>div{display:flex;justify-content:space-between;font-size:17px;line-height:1.15;color:#dde6f1}
 #hTab>div.me{color:#fff;background:rgba(255,210,63,.16);box-shadow:inset 3px 0 var(--gold);padding-left:6px}
 #hTab>div b{font-weight:400;color:var(--gold)}
+#hTab{cursor:pointer;position:relative;padding-right:22px}
+#hTab::after{content:'›';position:absolute;right:7px;top:50%;transform:translateY(-50%);font-size:26px;color:var(--gold)}
+#hTab:active{background:#3f5a80}
+#eBody .estat,#eBody table{scroll-margin-top:62px}#eBody table tr{scroll-margin:62px 0 8px}   /* sotto la barra in alto quando si arriva dalla classifica in breve */
 .dbars{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px}
 .dbar,.dcash{display:flex;align-items:center;gap:6px;font-size:16px;color:#dde6f1}
 .dbar>span:first-child{flex:none;width:86px}
