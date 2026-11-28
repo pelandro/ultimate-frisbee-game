@@ -165,8 +165,6 @@ catch(e){
     await page.click('#genNoticeContinue');await vis('#team');
     await page.click('#teamBack');await vis('#league');await page.click('#lgBack');await vis('#title');
   });
-  // Nei test successivi l'avviso viene confermato automaticamente quando blocca un controllo.
-  await page.addLocatorHandler(page.locator('#genNotice:not(.hidden) #genNoticeContinue'),async()=>{await page.click('#genNoticeContinue');});
   await step('carriera USA dall\'interfaccia: Italia/USA, Conference, club, allenatore, Classifica a tre viste, partita simulata',async()=>{
     await careerOpen(page);await vis('#league');await page.click('#lgList [data-div="m"]');if(await page.locator('#lgList .lgcard').count()<2)throw new Error('servono le schede dei campionati');await page.click('#lgList [data-lg="US"]');await vis('#team');
     if(await page.locator('#tSr button').count()!==8)throw new Error('servono le 8 Conference');
