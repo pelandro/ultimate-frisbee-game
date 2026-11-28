@@ -153,5 +153,6 @@ function dynAfterMatch(){
   const tn=tired.length,more=tn>(SV.tiredN|0);SV.tiredN=tn;   // l'avviso arriva quando la situazione peggiora, non a ogni giornata
   if(more)alertAdd('tired',(tired.length===1?pname(tired[0])+' è molto affaticat'+oa(tired[0]):tired.slice(0,4).map(pname).join(', ')+(tired.length>4?' e altri':'')+' sono molto affaticati')+': con il Recupero o una partita in panchina il rischio di infortunio rientra.');
   rollEvent();
+  rollScusa();   // morale basso: scuse e serate storte (34-scuse.js)
   crossLgTick();   // scadenza delle offerte dell'altra lega e, ogni tanto, una proposta di scambio
 }

@@ -202,6 +202,16 @@ $('qSwap').addEventListener('click',()=>{const a=QM.a;QM.a=QM.b;QM.b=a;updateQui
 $('qPlay').addEventListener('click',startQuick);
 $('hTrain').addEventListener('click',()=>showScreen('train'));
 $('hEvent').addEventListener('click',()=>showScreen('event'));
+// la classifica in breve della schermata Partita si tocca: apre Lega sulla classifica intera, gia' scorsa fino alla tabella e alla tua riga
+function openStandings(){
+  evSr=SV.sr;eventPage='table';usTabPh=lnTabPh='';usConfSel='';   // si torna alla classifica anche se in Lega si stava guardando un'altra vista
+  showScreen('event');
+  const t=$('eBody').querySelector('table');if(!t)return;
+  ($('eBody').querySelector('.estat')||t).scrollIntoView({block:'start'});   // la riga che dice serie e stagione, poi le intestazioni
+  const me=t.querySelector('tr.me');if(me)me.scrollIntoView({block:'nearest'});
+}
+$('hTab').addEventListener('click',openStandings);
+$('hTab').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openStandings();}});
 $('hHelp').addEventListener('click',()=>openGuide(5,null,{roster:'Rosa',train:'Allenamenti',market:'Mercato',club:'Strutture',event:'Campionati'}[csCur]));   // la guida si apre dal punto che riguarda la schermata
 $('tHelp').addEventListener('click',()=>openGuide(0));
 function armed(btn,label,idle,fn){

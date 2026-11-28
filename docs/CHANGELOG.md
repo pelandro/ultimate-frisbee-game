@@ -4,6 +4,12 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Carriera: dopo aver riaperto il gioco, un giocatore assente per un impegno non risulta più infortunato.
+- Al primo avvio si sceglie la lingua; si può sempre cambiare da Impostazioni › Partita.
+- Carriera: con il morale sotto 55 i giocatori possono trovare scuse (judo, storta a basket, serata in un rave, canne, vacanza con aumento), più spesso nelle serie minori.
+- Carriera: toccando la classifica in breve della schermata Partita si apre la classifica completa.
+- Nel menu iniziale il giocatore in tuffo ha la maglia rossa, non più blu.
+- Nella scelta della squadra in carriera, l’anteprima del roster avvisa che alcuni giocatori potrebbero essere inventati e permette di inviare informazioni più precise a pix3l.ultimate@gmail.com.
 - Quando scegli un campionato che contiene giocatori generati, compare un avviso in primo piano prima della scelta della squadra; l’anteprima del roster non ripete più il messaggio. La prova nel browser verifica anche l’avviso e lo conferma nei percorsi automatici.
 - Chi ha il badge «Sostenitore» ha anche lo Stadio d’Oro: in carriera, al posto del campo di livello 6, una notte con tribune dorate, che a ogni meta si accende di fuochi d’artificio, luci colorate, scintille e coriandoli. Si spegne da Riconoscimenti › Altro.
 - Cotarica Grandes: Nicolò Zavattini è tra i più forti (Overall 90); quattro compagni hanno un punto in meno, la media della squadra resta quella di prima.
@@ -30,7 +36,7 @@ Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattrib
 - Allenamento: le due modalità sono separate in due schede in alto, «Squadra» (una seduta per tutti, con il Programma automatico) e «Individuali» (scegli i giocatori, poi l’indirizzo). Toccando un giocatore si apre da sola la scheda degli individuali, così non si tocca più per sbaglio la griglia della squadra.
 - Cambi: una piccola D accanto al ruolo segna i 7 giocatori più forti in difesa.
 - Lingua: in Impostazioni › Partita si sceglie tra Italiano e English. L’inglese traduce menu, schermate, messaggi, guida, tutorial completo, Primi passi e fumetti, più le scritte dipinte nel campo; nomi di squadre, giocatori e sponsor restano come sono, e qualche frase che dipende dalla situazione può essere ancora in italiano. Il gioco parte sempre in italiano.
-- Statistiche anonime: il gioco manda solo contatori (quante partite, in che modalità, con quale difesa), senza nome né dati personali, da tutti i dispositivi. La prima volta compare un avviso e si spengono da Impostazioni › Gioco.
+- Statistiche anonime: il gioco manda solo contatori (quante partite, in che modalità, con quale difesa), senza nome né dati personali, da tutti i dispositivi. La prima volta compare un avviso e si spengono da Impostazioni › Partita.
 - Sfide online, amministratore: il pulsante «Amministratore» nella Classifica chiede un codice (una volta per dispositivo) e apre un menu con il tasto per ricominciare la stagione, quanti giocatori ci sono e quali modalità si giocano di più. Si riparte con 200 punti in meno e i primi 10 ricevono il badge, come a fine mese; la classifica ha «Questa stagione» e «Stagione scorsa».
 - Sfide online: ora ci sono le divisioni (dalla 10 alla 1 Élite, una ogni 100 punti, con promozioni e retrocessioni a fine partita) e gli obiettivi del giorno e della settimana, che danno gettoni.
 - Carriera: tolto il pulsante Posta dalla barra in alto. Decisioni, avvisi e notizie si aprono da «Questa settimana».

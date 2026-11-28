@@ -52,6 +52,7 @@ Campi salvati: `SV.sp` (sponsor: offerte `off`, scelta `k`, `name`, `fix` a part
 
 - **Mercato di giocatori veri** (`30-carriera/33-mercato-veri.js`): `SV.fa` (svincolati veri, oggetti giocatore con `faS` = stagione in cui sono stati lasciati liberi), `SV.abroad` (`full` di chi è arrivato dall'estero: non compare più nel suo club straniero), `SV.mkStars` = 3 (versione del mercato: i salvataggi con un numero diverso lo ricostruiscono). Chi lascia una rosa del computer passa da `faAdd`, gli stranieri presi da `abroadAdd`. Nel mercato non entrano giocatori inventati finché c'è un vero con l'Overall giusto (`mkTakeR`).
 - **Partite minime**: `SV.sgp` (giornate di campionato della stagione, azzerato in `beginSeason`; da subentrato parte dalle giornate già giocate; `offTrain()` lo legge in `newSeason` e lo cancella). In Europa i gironi vengono da `lnGrpSched` (più giri finché chi arriva in fondo gioca almeno `SEASON_MIN` partite): non usare `roundRobin` a mano per i gironi delle leghe europee.
+- **Scuse** (`30-carriera/34-scuse.js`): imprevisti `sc_*` (peso 0), sorteggiati dopo la partita solo con il morale sotto la soglia. Campi del giocatore: `abs` (assenza, non infortunio), `hang` (riduzione delle statistiche, una partita: si azzera a fine giornata), `raise` (aumento di stipendio dentro `wageOf`, fino a fine stagione). Rave, canne e vacanza solo ai maggiorenni.
 - **Staff**: vedi Ondata 3 in [Salvataggio](#salvataggio) (`staffLv`, `staffHire`, `staffLeave`).
 
 ## Ultimate Team

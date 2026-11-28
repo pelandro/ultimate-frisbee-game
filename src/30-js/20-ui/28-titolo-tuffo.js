@@ -20,12 +20,13 @@ function tdOnTop(fn){
   try{fn();}finally{ctx=keep;}
 }
 const TDS={t:-1,done:false,from:null,c0:null,key:''};
-// athlete legge la divisa da cine.kits: qui ne serve una sola, la prima del campo
+// athlete legge la divisa da cine.kits: qui ne serve una sola, rossa come l'omino dell'icona (non quella del campo, che e' blu)
+const TD_KIT={shirt:'#e23b3b',shorts:'#1f2740',socks:'#e23b3b',shoe:'#18202e'};
 // stile del giocatore: pixel grossi (4 pixel del gioco l'uno, come il disco: tdDiscSize) e, a presa fatta, il bordo bianco da adesivo con l'ombra
 const TD_STK=2,TD_Z=4,TD_HK=1,TD_DISC=10;   // TD_DISC: larghezza del disco in pixel grossi (la sua griglia in 02-menu-impostazioni.html)
 let tdTmp=null;
 function tdAthlete(x,gy,hip,pose,rot,tt,hu,stk){
-  const keep=cine,o={...PX_OPT};cine={kits:UNI.map(k=>({...k}))};
+  const keep=cine,o={...PX_OPT};cine={kits:[{...TD_KIT},{...TD_KIT}]};
   Object.assign(PX_OPT,{z:TD_Z,hk:TD_HK,flat:false,noSh:stk>0});
   const draw=()=>athlete(x,gy,hip,1,pose,rot,tt,hu,undefined,false,TD_WHO);
   try{
