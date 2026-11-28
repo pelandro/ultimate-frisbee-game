@@ -2096,6 +2096,8 @@ LANG_TXT.fr={
   "giornata":"journée",
   "finite":"terminées",
   "riposo":"exempt"
+  "Alcuni giocatori potrebbero essere inventati per mancanza di fonti o informazioni sui roster.":"Certains joueurs peuvent être fictifs, faute de sources ou d’informations sur les effectifs.",
+  "Hai informazioni più precise sui roster? Scrivici:":"Tu as des informations plus précises sur les effectifs ? Écris-nous :",
 };
 LANG_PAT.fr=[
   ["Tutti ({0})","Tous ({0})"],
