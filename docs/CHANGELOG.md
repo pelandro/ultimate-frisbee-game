@@ -4,6 +4,7 @@ Una riga per aggiornamento, dal punto di vista di chi gioca. Le righe nuove vann
 Questo file si unisce da solo quando due rami aggiungono righe (vedi `.gitattributes`).
 
 ## Non ancora pubblicato
+- Carriera: dopo aver riaperto il gioco, un giocatore assente per un impegno non risulta più infortunato.
 - Al primo avvio si sceglie la lingua; si può sempre cambiare da Impostazioni › Partita.
 - Carriera: con il morale sotto 55 i giocatori possono trovare scuse (judo, storta a basket, serata in un rave, canne, vacanza con aumento), più spesso nelle serie minori.
 - Carriera: toccando la classifica in breve della schermata Partita si apre la classifica completa.
