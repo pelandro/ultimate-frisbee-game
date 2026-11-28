@@ -2096,6 +2096,8 @@ LANG_TXT.de={
   "giornata":"Spieltag",
   "finite":"vorbei",
   "riposo":"spielfrei"
+  "Alcuni giocatori potrebbero essere inventati per mancanza di fonti o informazioni sui roster.":"Einige Spieler könnten erfunden sein, weil Quellen oder Informationen zu den Kadern fehlen.",
+  "Hai informazioni più precise sui roster? Scrivici:":"Hast du genauere Informationen zu den Kadern? Schreib uns:",
 };
 LANG_PAT.de=[
   ["Tutti ({0})","Alle ({0})"],
